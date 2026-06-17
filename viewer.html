@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rivals Gauntlet Viewer Bracket</title>
+  <link rel="stylesheet" href="style.css?v=27">
+  <style>
+    .team, .champion {
+      pointer-events: none;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bracket-container">
+  <img src="IMG_2141.png" class="bracket-img">
+
+  <div id="A_R1_M1_T1" class="team a-r1-m1-t1">Team 1</div>
+  <div id="A_R1_M1_T2" class="team a-r1-m1-t2">Team 2</div>
+
+  <div id="A_R1_M2_T1" class="team a-r1-m2-t1">Team 3</div>
+  <div id="A_R1_M2_T2" class="team a-r1-m2-t2">Team 4</div>
+
+  <div id="A_WIN_T1" class="team a-win-t1"></div>
+  <div id="A_WIN_T2" class="team a-win-t2"></div>
+
+  <div id="A_LOSE_T1" class="team a-lose-t1"></div>
+  <div id="A_LOSE_T2" class="team a-lose-t2"></div>
+
+  <div id="A_FINAL_LOSE_T1" class="team a-final-lose-t1"></div>
+  <div id="A_FINAL_LOSE_T2" class="team a-final-lose-t2"></div>
+
+  <div id="A_SEMI_T1" class="team a-semi-t1"></div>
+  <div id="A_SEMI_T2" class="team a-semi-t2"></div>
+
+  <div id="B_R1_M1_T1" class="team b-r1-m1-t1">Team 5</div>
+  <div id="B_R1_M1_T2" class="team b-r1-m1-t2">Team 6</div>
+
+  <div id="B_R1_M2_T1" class="team b-r1-m2-t1">Team 7</div>
+  <div id="B_R1_M2_T2" class="team b-r1-m2-t2">Team 8</div>
+
+  <div id="B_WIN_T1" class="team b-win-t1"></div>
+  <div id="B_WIN_T2" class="team b-win-t2"></div>
+
+  <div id="B_LOSE_T1" class="team b-lose-t1"></div>
+  <div id="B_LOSE_T2" class="team b-lose-t2"></div>
+
+  <div id="B_FINAL_LOSE_T1" class="team b-final-lose-t1"></div>
+  <div id="B_FINAL_LOSE_T2" class="team b-final-lose-t2"></div>
+
+  <div id="B_SEMI_T1" class="team b-semi-t1"></div>
+  <div id="B_SEMI_T2" class="team b-semi-t2"></div>
+
+  <div id="GRAND_T1" class="team grand-t1"></div>
+  <div id="GRAND_T2" class="team grand-t2"></div>
+
+  <div id="champion" class="champion">Champion</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="firebase.js"></script>
+<script>
+  window.IS_ADMIN = false;
+</script>
+<script src="script.js"></script>
+
+</body>
+</html>

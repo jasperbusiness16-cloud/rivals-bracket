@@ -1,13 +1,55 @@
-body{
-    margin:0;
-    background:black;
+body {
+  margin: 0;
+  background: black;
 }
 
-.bracket-container{
-    width:100%;
+.bracket-container {
+  position: relative;
+  width: 100%;
+  max-width: 1536px;
+  margin: auto;
 }
 
-#bracket{
-    width:100%;
-    display:block;
+.bracket-img {
+  width: 100%;
+  display: block;
+}
+
+.match, .slot, .champion {
+  position: absolute;
+  background: rgba(0,0,0,0.75);
+  color: gold;
+  border: 1px solid #c99736;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1vw;
+  height: 4%;
+}
+
+.match {
+  appearance: none;
+}
+
+.a1 { left: 4%; top: 34%; width: 12%; }
+.a2 { left: 4%; top: 48%; width: 12%; }
+
+.b1 { left: 84%; top: 34%; width: 12%; }
+.b2 { left: 84%; top: 48%; width: 12%; }
+
+.semiA { left: 21%; top: 40%; width: 12%; }
+.semiB { left: 67%; top: 40%; width: 12%; }
+
+.final { left: 44%; top: 52%; width: 13%; }
+
+.la1 { left: 5%; top: 80%; width: 12%; }
+.la2 { left: 23%; top: 80%; width: 12%; }
+
+.lb1 { left: 68%; top: 80%; width: 12%; }
+.lb2 { left: 84%; top: 80%; width: 12%; }
+
+.champion {
+  left: 43%;
+  top: 63%;
+  width: 15%;
+  height: 5%;
 }

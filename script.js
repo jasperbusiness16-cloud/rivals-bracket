@@ -6,24 +6,36 @@ const slots = {
   A_R1_M1: ["Team 1", "Team 2"],
   A_R1_M2: ["Team 3", "Team 4"],
   B_R1_M1: ["Team 5", "Team 6"],
-  B_R1_M2: ["Team 7", "Team 8"],
+  B_R1_M2: ["Team 7", "Team 8"]
 };
 
-const state = JSON.parse(localStorage.getItem("rivalsBracketV2")) || {};
+let state = {};
+
+try {
+  state = JSON.parse(localStorage.getItem("rivalsBracketV2")) || {};
+} catch {
+  state = {};
+}
 
 function getTeam(value) {
+  if (!value) return "";
+
   if (value.startsWith("slot:")) {
-    return document.getElementById(value.replace("slot:", "")).innerText;
+    const id = value.replace("slot:", "");
+    const el = document.getElementById(id);
+    return el ? el.innerText : "";
   }
+
   return value;
 }
 
 function setText(id, text) {
-  document.getElementById(id).innerText = text || "";
+  const el = document.getElementById(id);
+  if (el) el.innerText = text || "";
 }
 
 function clearText(id) {
-  document.getElementById(id).innerText = "";
+  setText(id, "");
 }
 
 function pick(match, selected) {
@@ -37,14 +49,13 @@ function pick(match, selected) {
 
 function loserOf(match, teams) {
   const winner = state[match];
-  if (!winner) return "";
-  return teams.find(team => team !== winner) || "";
+  if (!winner || !teams) return "";
+  return teams.find(team => team && team !== winner) || "";
 }
 
 function advance() {
   clearAllGenerated();
 
-  // Round 1 winners/losers
   const a1Winner = state.A_R1_M1;
   const a2Winner = state.A_R1_M2;
   const b1Winner = state.B_R1_M1;
@@ -65,33 +76,21 @@ function advance() {
   setText("B_LOSE_T1", b1Loser);
   setText("B_LOSE_T2", b2Loser);
 
-  // Winners match losers drop to final losers match
   const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner]);
   const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner]);
 
-  const aLoseWinner = state.A_LOSE;
-  const bLoseWinner = state.B_LOSE;
-
-  setText("A_FINAL_LOSE_T1", aLoseWinner);
+  setText("A_FINAL_LOSE_T1", state.A_LOSE);
   setText("A_FINAL_LOSE_T2", aWinLoser);
 
-  setText("B_FINAL_LOSE_T1", bLoseWinner);
+  setText("B_FINAL_LOSE_T1", state.B_LOSE);
   setText("B_FINAL_LOSE_T2", bWinLoser);
 
-  // Semi final
-  const aWinWinner = state.A_WIN;
-  const bWinWinner = state.B_WIN;
+  setText("A_SEMI_T1", state.A_WIN);
+  setText("A_SEMI_T2", state.A_FINAL_LOSE);
 
-  const aFinalLoseWinner = state.A_FINAL_LOSE;
-  const bFinalLoseWinner = state.B_FINAL_LOSE;
+  setText("B_SEMI_T1", state.B_WIN);
+  setText("B_SEMI_T2", state.B_FINAL_LOSE);
 
-  setText("A_SEMI_T1", aWinWinner);
-  setText("A_SEMI_T2", aFinalLoseWinner);
-
-  setText("B_SEMI_T1", bWinWinner);
-  setText("B_SEMI_T2", bFinalLoseWinner);
-
-  // Grand final
   setText("GRAND_T1", state.A_SEMI);
   setText("GRAND_T2", state.B_SEMI);
 
@@ -102,11 +101,11 @@ function advance() {
 
 function clearAllGenerated() {
   [
-    "A_WIN_T1","A_WIN_T2","A_LOSE_T1","A_LOSE_T2",
-    "A_FINAL_LOSE_T1","A_FINAL_LOSE_T2","A_SEMI_T1","A_SEMI_T2",
-    "B_WIN_T1","B_WIN_T2","B_LOSE_T1","B_LOSE_T2",
-    "B_FINAL_LOSE_T1","B_FINAL_LOSE_T2","B_SEMI_T1","B_SEMI_T2",
-    "GRAND_T1","GRAND_T2"
+    "A_WIN_T1", "A_WIN_T2", "A_LOSE_T1", "A_LOSE_T2",
+    "A_FINAL_LOSE_T1", "A_FINAL_LOSE_T2", "A_SEMI_T1", "A_SEMI_T2",
+    "B_WIN_T1", "B_WIN_T2", "B_LOSE_T1", "B_LOSE_T2",
+    "B_FINAL_LOSE_T1", "B_FINAL_LOSE_T2", "B_SEMI_T1", "B_SEMI_T2",
+    "GRAND_T1", "GRAND_T2"
   ].forEach(id => clearText(id));
 
   setText("champion", "Champion");
@@ -116,4 +115,8 @@ function save() {
   localStorage.setItem("rivalsBracketV2", JSON.stringify(state));
 }
 
-advance();
+try {
+  advance();
+} catch (e) {
+  console.log(e);
+}

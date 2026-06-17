@@ -33,63 +33,59 @@ body {
   cursor: pointer;
 }
 
-/* LEFT SIDE */
-
-/* Round 1 */
+/* LEFT SIDE ROUND 1 */
 .a-r1-m1-t1 { left: 4.5%; top: 31.6%; }
 .a-r1-m1-t2 { left: 4.5%; top: 34.5%; }
 
 .a-r1-m2-t1 { left: 4.5%; top: 45.8%; }
 .a-r1-m2-t2 { left: 4.5%; top: 48.7%; }
 
-/* Winners Match */
-.a-win-t1 { left: 21.5%; top: 38.5%; }
-.a-win-t2 { left: 21.5%; top: 41.4%; }
+/* LEFT WINNERS MATCH */
+.a-win-t1 { left: 20.0%; top: 40.0%; }
+.a-win-t2 { left: 20.0%; top: 43.0%; }
 
-/* First Losers Match */
+/* LEFT LOSERS MATCH */
 .a-lose-t1 { left: 5.5%; top: 77.2%; }
 .a-lose-t2 { left: 5.5%; top: 80.1%; }
 
-/* Losers Final */
+/* LEFT LOSERS FINAL */
 .a-final-lose-t1 { left: 21.5%; top: 69.5%; }
 .a-final-lose-t2 { left: 21.5%; top: 72.4%; }
 
-/* Semi Final */
-.a-semi-t1 { left: 38.5%; top: 54.5%; }
-.a-semi-t2 { left: 38.5%; top: 57.4%; }
+/* LEFT SEMIFINAL */
+.a-semi-t1 { left: 27%; top: 55%; }
+.a-semi-t2 { left: 27%; top: 58%; }
 
-/* RIGHT SIDE */
-
-/* Round 1 */
+/* RIGHT SIDE ROUND 1 */
 .b-r1-m1-t1 { left: 84.5%; top: 31.6%; }
 .b-r1-m1-t2 { left: 84.5%; top: 34.5%; }
 
 .b-r1-m2-t1 { left: 84.5%; top: 45.8%; }
 .b-r1-m2-t2 { left: 84.5%; top: 48.7%; }
 
-/* Winners Match */
-.b-win-t1 { left: 67.5%; top: 38.5%; }
-.b-win-t2 { left: 67.5%; top: 41.4%; }
+/* RIGHT WINNERS MATCH */
+.b-win-t1 { left: 68.0%; top: 40.0%; }
+.b-win-t2 { left: 68.0%; top: 43.0%; }
 
-/* First Losers Match */
+/* RIGHT LOSERS MATCH */
 .b-lose-t1 { left: 83.5%; top: 77.2%; }
 .b-lose-t2 { left: 83.5%; top: 80.1%; }
 
-/* Losers Final */
+/* RIGHT LOSERS FINAL */
 .b-final-lose-t1 { left: 67.5%; top: 69.5%; }
 .b-final-lose-t2 { left: 67.5%; top: 72.4%; }
 
-/* Semi Final */
-.b-semi-t1 { left: 50.5%; top: 54.5%; }
-.b-semi-t2 { left: 50.5%; top: 57.4%; }
+/* RIGHT SEMIFINAL */
+.b-semi-t1 { left: 61%; top: 55%; }
+.b-semi-t2 { left: 61%; top: 58%; }
 
-/* Grand Final */
-.grand-t1 { left: 44.5%; top: 50.0%; }
-.grand-t2 { left: 44.5%; top: 52.8%; }
+/* GRAND FINAL */
+.grand-t1 { left: 42.5%; top: 51.5%; }
+.grand-t2 { left: 42.5%; top: 54.5%; }
 
 .champion {
   left: 42.5%;
-  top: 58.5%;
+  top: 62%;
   width: 15%;
   height: 3.5%;
 }

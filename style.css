@@ -57,8 +57,8 @@ display: none;
 .a-final-lose-t2 { left: 22.0%; top: 81.0%; }
 
 /* GROUP A SEMIFINAL */
-.a-semi-t1 { left: 25%; top: 51.5%; }
-.a-semi-t2 { left: 25%; top: 54.5%; }
+.a-semi-t1 { left: 29%; top: 58%; }
+.a-semi-t2 { left: 29%; top: 61%; }
 
 /* GROUP B ROUND 1 */
 .b-r1-m1-t1 { left: 83.5%; top: 32.8%; }
@@ -80,8 +80,8 @@ display: none;
 .b-final-lose-t2 { left: 67.0%; top: 81.0%; }
 
 /* GROUP B SEMIFINAL */
-.b-semi-t1 { left: 63%; top: 51.5%; }
-.b-semi-t2 { left: 63%; top: 54.5%; }
+.b-semi-t1 { left: 59%; top: 58%; }
+.b-semi-t2 { left: 59%; top: 61%; }
 
 /* GRAND FINALS */
 .grand-t1 {

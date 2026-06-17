@@ -55,8 +55,8 @@ body {
 .a-final-lose-t2 { left: 21.5%; top: 72.4%; }
 
 /* Semi Final */
-.a-semi-t1 { left: 38.5%; top: 60.5%; }
-.a-semi-t2 { left: 38.5%; top: 63.4%; }
+.a-semi-t1 { left: 38.5%; top: 54.5%; }
+.a-semi-t2 { left: 38.5%; top: 57.4%; }
 
 /* RIGHT SIDE */
 
@@ -80,16 +80,16 @@ body {
 .b-final-lose-t2 { left: 67.5%; top: 72.4%; }
 
 /* Semi Final */
-.b-semi-t1 { left: 50.5%; top: 60.5%; }
-.b-semi-t2 { left: 50.5%; top: 63.4%; }
+.b-semi-t1 { left: 50.5%; top: 54.5%; }
+.b-semi-t2 { left: 50.5%; top: 57.4%; }
 
 /* Grand Final */
-.grand-t1 { left: 44.5%; top: 50.5%; }
-.grand-t2 { left: 44.5%; top: 53.4%; }
+.grand-t1 { left: 44.5%; top: 50.0%; }
+.grand-t2 { left: 44.5%; top: 52.8%; }
 
 .champion {
   left: 42.5%;
-  top: 43%;
+  top: 58.5%;
   width: 15%;
   height: 3.5%;
 }

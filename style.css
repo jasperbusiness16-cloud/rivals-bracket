@@ -56,12 +56,13 @@ body {
 .finalA { left: 45%; top: 50.5%; }
 .finalB { left: 45%; top: 53.4%; }
 
-/* Losers bracket */
-.loserA1 { left: 6%; top: 77.8%; }
-.loserA2 { left: 24%; top: 77.8%; }
+/* Group A losers matchup — both losers go here */
+.loserA1 { left: 6%; top: 77.0%; width: 10%; }
+.loserA2 { left: 6%; top: 79.8%; width: 10%; }
 
-.loserB1 { left: 69%; top: 77.8%; }
-.loserB2 { left: 85%; top: 77.8%; }
+/* Group B losers matchup — both losers go here */
+.loserB1 { left: 69%; top: 77.0%; width: 10%; }
+.loserB2 { left: 69%; top: 79.8%; width: 10%; }
 
 .champion {
   left: 43%;

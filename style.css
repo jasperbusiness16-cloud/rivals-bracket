@@ -38,52 +38,63 @@ body {
 }
 
 /* GROUP A ROUND 1 */
+
 .a-r1-m1-t1 { left: 4.5%; top: 32.8%; }
 .a-r1-m1-t2 { left: 4.5%; top: 35.8%; }
 
 .a-r1-m2-t1 { left: 4.5%; top: 47.2%; }
 .a-r1-m2-t2 { left: 4.5%; top: 50.2%; }
 
-/* GROUP A WINNERS MATCH */
+/* GROUP A WINNERS ROUND 2 */
+
 .a-win-t1 { left: 20.0%; top: 38.5%; }
 .a-win-t2 { left: 20.0%; top: 41.5%; }
 
 /* GROUP A LOSERS MATCH */
+
 .a-lose-t1 { left: 5.5%; top: 78.0%; }
 .a-lose-t2 { left: 5.5%; top: 81.0%; }
 
 /* GROUP A LAST CHANCE MATCH */
+
 .a-final-lose-t1 { left: 22.0%; top: 78.0%; }
 .a-final-lose-t2 { left: 22.0%; top: 81.0%; }
 
 /* GROUP A SEMIFINAL */
-.a-semi-t1 { left: 29%; top: 58%; }
-.a-semi-t2 { left: 29%; top: 61%; }
+
+.a-semi-t1 { left: 27%; top: 53%; }
+.a-semi-t2 { left: 27%; top: 56%; }
 
 /* GROUP B ROUND 1 */
+
 .b-r1-m1-t1 { left: 83.5%; top: 32.8%; }
 .b-r1-m1-t2 { left: 83.5%; top: 35.8%; }
 
 .b-r1-m2-t1 { left: 83.5%; top: 47.2%; }
 .b-r1-m2-t2 { left: 83.5%; top: 50.2%; }
 
-/* GROUP B WINNERS MATCH */
+/* GROUP B WINNERS ROUND 2 */
+
 .b-win-t1 { left: 67.5%; top: 39.0%; }
 .b-win-t2 { left: 67.5%; top: 42.0%; }
 
 /* GROUP B LOSERS MATCH */
+
 .b-lose-t1 { left: 83.5%; top: 78.0%; }
 .b-lose-t2 { left: 83.5%; top: 81.0%; }
 
 /* GROUP B LAST CHANCE MATCH */
+
 .b-final-lose-t1 { left: 67.0%; top: 78.0%; }
 .b-final-lose-t2 { left: 67.0%; top: 81.0%; }
 
 /* GROUP B SEMIFINAL */
-.b-semi-t1 { left: 59%; top: 58%; }
-.b-semi-t2 { left: 59%; top: 61%; }
+
+.b-semi-t1 { left: 60%; top: 53%; }
+.b-semi-t2 { left: 60%; top: 56%; }
 
 /* GRAND FINALS */
+
 .grand-t1 {
   left: 44%;
   top: 52%;

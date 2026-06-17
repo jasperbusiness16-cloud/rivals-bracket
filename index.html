@@ -1,16 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rivals Gauntlet</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Rivals Gauntlet Bracket</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="bracket-container">
-    <img src="IMG_2141.png" id="bracket">
+  <img src="IMG_2141.png" class="bracket-img">
+
+  <select id="m1" class="match a1" onchange="match1()">
+    <option>Team 1 vs Team 2</option>
+    <option>Team 1</option>
+    <option>Team 2</option>
+  </select>
+
+  <select id="m2" class="match a2" onchange="match2()">
+    <option>Team 3 vs Team 4</option>
+    <option>Team 3</option>
+    <option>Team 4</option>
+  </select>
+
+  <select id="m3" class="match b1" onchange="match3()">
+    <option>Team 5 vs Team 6</option>
+    <option>Team 5</option>
+    <option>Team 6</option>
+  </select>
+
+  <select id="m4" class="match b2" onchange="match4()">
+    <option>Team 7 vs Team 8</option>
+    <option>Team 7</option>
+    <option>Team 8</option>
+  </select>
+
+  <select id="semiA" class="match semiA" onchange="semiA()">
+    <option>Group A Final</option>
+  </select>
+
+  <select id="semiB" class="match semiB" onchange="semiB()">
+    <option>Group B Final</option>
+  </select>
+
+  <select id="final" class="match final" onchange="finalWinner()">
+    <option>BO3 Finale</option>
+  </select>
+
+  <div id="la1" class="slot la1">Loser A1</div>
+  <div id="la2" class="slot la2">Loser A2</div>
+  <div id="lb1" class="slot lb1">Loser B1</div>
+  <div id="lb2" class="slot lb2">Loser B2</div>
+
+  <div id="champion" class="champion">Champion</div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>

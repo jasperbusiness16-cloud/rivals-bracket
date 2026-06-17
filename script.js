@@ -100,6 +100,15 @@ function clearAllGenerated() {
   ].forEach(id => setText(id, ""));
 }
 
+function resetTournament() {
+  if (!window.IS_ADMIN) return;
+
+  const confirmReset = confirm("Reset the entire tournament?");
+  if (!confirmReset) return;
+
+  bracketRef.set({});
+}
+
 bracketRef.on("value", snapshot => {
   state = snapshot.val() || {};
   advance();

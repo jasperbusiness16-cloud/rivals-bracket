@@ -1,6 +1,13 @@
 body{
+    margin:0;
     background:black;
-    color:gold;
-    font-family:Arial;
-    text-align:center;
+}
+
+.bracket-container{
+    width:100%;
+}
+
+#bracket{
+    width:100%;
+    display:block;
 }

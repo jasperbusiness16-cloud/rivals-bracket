@@ -1,6 +1,6 @@
-if (window.location.search.includes("reset=1")) {
-  localStorage.removeItem("rivalsBracketV2");
-}
+let state = {};
+
+const bracketRef = database.ref("rivalsBracketV2");
 
 const slots = {
   A_R1_M1: ["Team 1", "Team 2"],
@@ -8,14 +8,6 @@ const slots = {
   B_R1_M1: ["Team 5", "Team 6"],
   B_R1_M2: ["Team 7", "Team 8"]
 };
-
-let state = {};
-
-try {
-  state = JSON.parse(localStorage.getItem("rivalsBracketV2")) || {};
-} catch {
-  state = {};
-}
 
 function getTeam(value) {
   if (!value) return "";
@@ -34,17 +26,14 @@ function setText(id, text) {
   if (el) el.innerText = text || "";
 }
 
-function clearText(id) {
-  setText(id, "");
-}
-
 function pick(match, selected) {
+  if (!window.IS_ADMIN) return;
+
   const winner = getTeam(selected);
   if (!winner) return;
 
   state[match] = winner;
-  advance();
-  save();
+  bracketRef.set(state);
 }
 
 function loserOf(match, teams) {
@@ -96,6 +85,8 @@ function advance() {
 
   if (state.GRAND) {
     setText("champion", "🏆 " + state.GRAND);
+  } else {
+    setText("champion", "Champion");
   }
 }
 
@@ -106,17 +97,10 @@ function clearAllGenerated() {
     "B_WIN_T1", "B_WIN_T2", "B_LOSE_T1", "B_LOSE_T2",
     "B_FINAL_LOSE_T1", "B_FINAL_LOSE_T2", "B_SEMI_T1", "B_SEMI_T2",
     "GRAND_T1", "GRAND_T2"
-  ].forEach(id => clearText(id));
-
-  setText("champion", "Champion");
+  ].forEach(id => setText(id, ""));
 }
 
-function save() {
-  localStorage.setItem("rivalsBracketV2", JSON.stringify(state));
-}
-
-try {
+bracketRef.on("value", snapshot => {
+  state = snapshot.val() || {};
   advance();
-} catch (e) {
-  console.log(e);
-}
+});

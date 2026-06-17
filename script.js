@@ -1,6 +1,8 @@
 if (window.location.search.includes("reset=1")) {
   localStorage.removeItem("rivalsBracket");
-}function pickMatch(match, winner, loser) {
+}
+
+function pickMatch(match, winner, loser) {
   if (match === 1) {
     document.getElementById("semiA1").innerText = winner;
     document.getElementById("loserA1").innerText = loser;
@@ -24,6 +26,7 @@ if (window.location.search.includes("reset=1")) {
   saveBracket();
 }
 
+/* Group A winner goes to finale */
 document.getElementById("semiA1").onclick = function() {
   document.getElementById("finalA").innerText = this.innerText;
   saveBracket();
@@ -34,6 +37,7 @@ document.getElementById("semiA2").onclick = function() {
   saveBracket();
 };
 
+/* Group B winner goes to finale */
 document.getElementById("semiB1").onclick = function() {
   document.getElementById("finalB").innerText = this.innerText;
   saveBracket();
@@ -44,31 +48,43 @@ document.getElementById("semiB2").onclick = function() {
   saveBracket();
 };
 
+/* Finale winner becomes champion */
 document.getElementById("finalA").onclick = function() {
-  document.getElementById("champion").innerText = "🏆 " + this.innerText;
-  saveBracket();
+  if (this.innerText !== "") {
+    document.getElementById("champion").innerText = "🏆 " + this.innerText;
+    saveBracket();
+  }
 };
 
 document.getElementById("finalB").onclick = function() {
-  document.getElementById("champion").innerText = "🏆 " + this.innerText;
-  saveBracket();
+  if (this.innerText !== "") {
+    document.getElementById("champion").innerText = "🏆 " + this.innerText;
+    saveBracket();
+  }
 };
 
 function saveBracket() {
   const data = {};
+
   document.querySelectorAll(".team, .champion").forEach(el => {
-    data[el.id || el.className] = el.innerText;
+    const key = el.id || el.className;
+    data[key] = el.innerText;
   });
+
   localStorage.setItem("rivalsBracket", JSON.stringify(data));
 }
 
 function loadBracket() {
   const saved = JSON.parse(localStorage.getItem("rivalsBracket"));
+
   if (!saved) return;
 
   document.querySelectorAll(".team, .champion").forEach(el => {
     const key = el.id || el.className;
-    if (saved[key]) el.innerText = saved[key];
+
+    if (saved[key]) {
+      el.innerText = saved[key];
+    }
   });
 }
 

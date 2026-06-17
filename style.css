@@ -22,7 +22,17 @@ body {
   border: 1px solid #c99736;
   font-weight: bold;
   text-align: center;
-  font-size: 1vw;
+  .match, .slot, .champion {
+  position: absolute;
+  background: rgba(0,0,0,0.85);
+  color: gold;
+  border: 2px solid #c99736;
+  font-weight: bold;
+  text-align: center;
+  font-size: 10px;
+  height: 4%;
+  z-index: 10;
+}
   height: 4%;
 }
 

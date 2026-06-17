@@ -9,46 +9,32 @@
 <div class="bracket-container">
   <img src="IMG_2141.png" class="bracket-img">
 
-  <select id="m1" class="match a1" onchange="match1()">
-    <option>Team 1 vs Team 2</option>
-    <option>Team 1</option>
-    <option>Team 2</option>
-  </select>
+  <div class="team a1t1" onclick="pickMatch(1, 'Team 1', 'Team 2')">Team 1</div>
+  <div class="team a1t2" onclick="pickMatch(1, 'Team 2', 'Team 1')">Team 2</div>
 
-  <select id="m2" class="match a2" onchange="match2()">
-    <option>Team 3 vs Team 4</option>
-    <option>Team 3</option>
-    <option>Team 4</option>
-  </select>
+  <div class="team a2t1" onclick="pickMatch(2, 'Team 3', 'Team 4')">Team 3</div>
+  <div class="team a2t2" onclick="pickMatch(2, 'Team 4', 'Team 3')">Team 4</div>
 
-  <select id="m3" class="match b1" onchange="match3()">
-    <option>Team 5 vs Team 6</option>
-    <option>Team 5</option>
-    <option>Team 6</option>
-  </select>
+  <div class="team b1t1" onclick="pickMatch(3, 'Team 5', 'Team 6')">Team 5</div>
+  <div class="team b1t2" onclick="pickMatch(3, 'Team 6', 'Team 5')">Team 6</div>
 
-  <select id="m4" class="match b2" onchange="match4()">
-    <option>Team 7 vs Team 8</option>
-    <option>Team 7</option>
-    <option>Team 8</option>
-  </select>
+  <div class="team b2t1" onclick="pickMatch(4, 'Team 7', 'Team 8')">Team 7</div>
+  <div class="team b2t2" onclick="pickMatch(4, 'Team 8', 'Team 7')">Team 8</div>
 
-  <select id="semiA" class="match semiA" onchange="semiA()">
-    <option>Group A Final</option>
-  </select>
+  <div id="semiA1" class="team semiA1"></div>
+  <div id="semiA2" class="team semiA2"></div>
 
-  <select id="semiB" class="match semiB" onchange="semiB()">
-    <option>Group B Final</option>
-  </select>
+  <div id="semiB1" class="team semiB1"></div>
+  <div id="semiB2" class="team semiB2"></div>
 
-  <select id="final" class="match final" onchange="finalWinner()">
-    <option>BO3 Finale</option>
-  </select>
+  <div id="finalA" class="team finalA"></div>
+  <div id="finalB" class="team finalB"></div>
 
-  <div id="la1" class="slot la1">Loser A1</div>
-  <div id="la2" class="slot la2">Loser A2</div>
-  <div id="lb1" class="slot lb1">Loser B1</div>
-  <div id="lb2" class="slot lb2">Loser B2</div>
+  <div id="loserA1" class="team loserA1"></div>
+  <div id="loserA2" class="team loserA2"></div>
+
+  <div id="loserB1" class="team loserB1"></div>
+  <div id="loserB2" class="team loserB2"></div>
 
   <div id="champion" class="champion">Champion</div>
 </div>

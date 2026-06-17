@@ -1,4 +1,6 @@
-function pickMatch(match, winner, loser) {
+if (window.location.search.includes("reset=1")) {
+  localStorage.removeItem("rivalsBracket");
+}function pickMatch(match, winner, loser) {
   if (match === 1) {
     document.getElementById("semiA1").innerText = winner;
     document.getElementById("loserA1").innerText = loser;

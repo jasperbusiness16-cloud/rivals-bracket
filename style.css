@@ -1,40 +1,40 @@
 body {
-margin: 0;
-background: #000;
+  margin: 0;
+  background: #000;
 }
 
 .bracket-container {
-position: relative;
-width: 100%;
-max-width: 1536px;
-margin: auto;
+  position: relative;
+  width: 100%;
+  max-width: 1536px;
+  margin: auto;
 }
 
 .bracket-img {
-width: 100%;
-display: block;
+  width: 100%;
+  display: block;
 }
 
 .team,
 .champion {
-position: absolute;
-background: rgba(0,0,0,.85);
-border: 1px solid #c99736;
-color: gold;
-font-weight: bold;
-font-size: 10px;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-z-index: 20;
-width: 12%;
-height: 2.8%;
-cursor: pointer;
+  position: absolute;
+  background: rgba(0,0,0,.85);
+  border: 1px solid #c99736;
+  color: gold;
+  font-weight: bold;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 20;
+  width: 12%;
+  height: 2.8%;
+  cursor: pointer;
 }
 
 .team:empty {
-display: none;
+  display: none;
 }
 
 /* GROUP A ROUND 1 */
@@ -57,8 +57,8 @@ display: none;
 .a-final-lose-t2 { left: 22.0%; top: 81.0%; }
 
 /* GROUP A SEMIFINAL */
-.a-semi-t1 { left: 26%; top: 62%; }
-.a-semi-t2 { left: 26%; top: 65%; }
+.a-semi-t1 { left: 29%; top: 58%; }
+.a-semi-t2 { left: 29%; top: 61%; }
 
 /* GROUP B ROUND 1 */
 .b-r1-m1-t1 { left: 83.5%; top: 32.8%; }
@@ -80,23 +80,23 @@ display: none;
 .b-final-lose-t2 { left: 67.0%; top: 81.0%; }
 
 /* GROUP B SEMIFINAL */
-.b-semi-t1 { left: 62%; top: 62%; }
-.b-semi-t2 { left: 62%; top: 65%; }
+.b-semi-t1 { left: 59%; top: 58%; }
+.b-semi-t2 { left: 59%; top: 61%; }
 
 /* GRAND FINALS */
 .grand-t1 {
-left: 44%;
-top: 52%;
+  left: 44%;
+  top: 52%;
 }
 
 .grand-t2 {
-left: 44%;
-top: 55%;
+  left: 44%;
+  top: 55%;
 }
 
 .champion {
-left: 43%;
-top: 62.5%;
-width: 14%;
-height: 3.5%;
+  left: 43%;
+  top: 62.5%;
+  width: 14%;
+  height: 3.5%;
 }

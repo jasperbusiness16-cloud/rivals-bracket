@@ -113,3 +113,10 @@ bracketRef.on("value", snapshot => {
   state = snapshot.val() || {};
   advance();
 });
+window.resetTournament = function () {
+  if (!window.IS_ADMIN) return;
+
+  if (!confirm("Reset the entire tournament?")) return;
+
+  bracketRef.set({});
+};

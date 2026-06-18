@@ -139,13 +139,11 @@ body {
   filter: invert(1);
 }
 .tavern-socials {
-    position: fixed;
-    top: 30px;
-    right: 30px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    z-index: 9999;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px auto;
+    position: static;
 }
 
 .tavern-sign::before,

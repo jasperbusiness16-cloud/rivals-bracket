@@ -138,3 +138,81 @@ body {
   height: 100%;
   filter: invert(1);
 }
+.tavern-socials {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 9999;
+}
+
+.tavern-sign::before,
+.tavern-sign::after {
+    content: "";
+    position: absolute;
+    top: -18px;
+    width: 2px;
+    height: 18px;
+    background: #c8c8c8;
+}
+
+.tavern-sign::before {
+    left: 20px;
+}
+
+.tavern-sign::after {
+    right: 20px;
+}
+
+.tavern-sign {
+    position: relative;
+    display: block;
+    min-width: 180px;
+    text-align: center;
+    text-decoration: none;
+    padding: 16px 24px;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #f5e7b5;
+
+    background: linear-gradient(
+        to bottom,
+        #8f5a22 0%,
+        #6d3f14 50%,
+        #3d220c 100%
+    );
+
+    border: 4px solid #c89b3c;
+    border-radius: 10px;
+
+    text-shadow:
+        0 0 5px rgba(255,215,0,0.4),
+        0 0 10px rgba(255,215,0,0.2);
+
+    box-shadow:
+        0 0 15px rgba(0,0,0,0.5),
+        inset 0 0 15px rgba(255,255,255,0.08);
+
+    transition: all 0.25s ease;
+    transform-origin: top center;
+}
+
+.tavern-sign:hover {
+    animation: swing 0.8s ease-in-out;
+    box-shadow:
+        0 0 25px rgba(255,215,0,0.6),
+        0 0 50px rgba(255,215,0,0.25);
+}
+
+@keyframes swing {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(8deg); }
+    40% { transform: rotate(-8deg); }
+    60% { transform: rotate(5deg); }
+    80% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}

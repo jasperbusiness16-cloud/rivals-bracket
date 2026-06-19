@@ -15,27 +15,44 @@ body {
   display: block;
 }
 
-.team,
+.team {
+  position: absolute;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-shadow:
+    0 0 4px #000,
+    0 0 8px #000,
+    2px 2px 3px #000;
+  z-index: 20;
+  width: 9%;
+  height: 5%;
+  cursor: pointer;
+}
+
 .champion {
-position: absolute;
-background: rgba(0,0,0,.85);
-border: 1px solid #c99736;
-color: #f8d87a;
-font-weight: 900;
-font-size: 18px;
-display: flex;
-align-items: center;
-justify-content: center;
-text-align: center;
-text-shadow:
-  0 0 4px #000,
-  0 0 8px #000;
-z-index: 20;
-width: 8.5%;
-height: 5%;
-cursor: pointer;
-line-height: 1.2;
-padding: 2px;
+  position: absolute;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-shadow:
+    0 0 4px #000,
+    0 0 8px #000,
+    2px 2px 3px #000;
+  z-index: 20;
 }
 
 .team:empty {

@@ -85,8 +85,11 @@ function advance() {
   setText("B_SEMI_T1", state.B_WIN);
   setText("B_SEMI_T2", state.B_FINAL_LOSE);
 
-  setText("GRAND_T1", state.A_SEMI);
-  setText("GRAND_T2", state.B_SEMI);
+  const grand1 = state.A_SEMI || "";
+const grand2 = state.B_SEMI || "";
+
+setText("GRAND_T1", grand1);
+setText("GRAND_T2", grand2);
 
 if (state.GRAND) {
   setText("champion", state.GRAND);

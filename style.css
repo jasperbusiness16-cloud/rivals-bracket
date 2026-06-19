@@ -40,7 +40,23 @@ body {
 }
 
 .champion {
- display: none;
+ .champion {
+  position: absolute;
+  left: 38.5%;
+  top: 76.7%;
+  width: 23%;
+  height: 5%;
+  color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow:
+    0 0 4px #000,
+    0 0 8px #000,
+    2px 2px 3px #000;
+  z-index: 20;
+}
 }
 
 .team:empty {

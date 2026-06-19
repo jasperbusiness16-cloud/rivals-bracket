@@ -44,10 +44,10 @@ body {
   background: transparent;
   border: none;
   color: white;
-  font-family: 'Cinzel', serif;
-  font-weight: 900;
-  font-size: 24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
   text-transform: uppercase;
+  letter-spacing: 1px;
   text-align: center;
   text-shadow:
     0 0 4px #000,

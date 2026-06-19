@@ -83,11 +83,11 @@ function advance() {
   setText("GRAND_T1", state.A_SEMI);
   setText("GRAND_T2", state.B_SEMI);
 
-  if (state.GRAND) {
-    setText("champion", "🏆 " + state.GRAND);
-  } else {
-    setText("champion", "Champion");
-  }
+if (state.GRAND) {
+  setText("champion", "🏆 " + state.GRAND);
+} else {
+  setText("champion", "");
+}
 }
 
 function clearAllGenerated() {

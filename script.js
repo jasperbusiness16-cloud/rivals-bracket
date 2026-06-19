@@ -89,7 +89,7 @@ function advance() {
   setText("GRAND_T2", state.B_SEMI);
 
 if (state.GRAND) {
-  setText("champion", "🏆 " + state.GRAND);
+  setText("champion", state.GRAND);
 } else {
   setText("champion", "");
 }

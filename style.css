@@ -90,15 +90,15 @@ body {
 .b-r1-m2-t2 { left: 87.0%; top: 41.3%; }
 
 /* GROUP B WINNERS */
-.b-win-t1 { left: 70.4%; top: 26.0%; }
-.b-win-t2 { left: 70.4%; top: 30.8%; }
+.b-win-t1 { left: 70.1%; top: 26.0%; }
+.b-win-t2 { left: 70.1%; top: 30.8%; }
 
 /* GROUP B LOSERS */
 .b-lose-t1 { left: 87.0%; top: 58.5%; }
 .b-lose-t2 { left: 87.0%; top: 63.3%; }
 
-.b-final-lose-t1 { left: 71.1%; top: 58.5%; }
-.b-final-lose-t2 { left: 71.1%; top: 63.3%; }
+.b-final-lose-t1 { left: 70.9%; top: 58.5%; }
+.b-final-lose-t2 { left: 70.9%; top: 63.3%; }
 
 /* GROUP B SEMIFINAL */
 .b-semi-t1 { left: 55.9%; top: 41.8%; }

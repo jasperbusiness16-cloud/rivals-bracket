@@ -29,7 +29,12 @@ function setText(id, text) {
 function pick(match, selected) {
   if (!window.IS_ADMIN) return;
 
-  const winner = getTeam(selected);
+  let winner = getTeam(selected);
+
+  if (!winner && typeof selected === "string") {
+    winner = selected.trim();
+  }
+
   if (!winner) return;
 
   state[match] = winner;

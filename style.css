@@ -40,7 +40,7 @@ body {
 }
 
 .champion {
-  
+ display: none;
 }
 
 .team:empty {

@@ -54,6 +54,9 @@ body {
   z-index: 30;
   pointer-events: none;
   text-shadow: 0 0 5px #000, 2px 2px 3px #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 }
 

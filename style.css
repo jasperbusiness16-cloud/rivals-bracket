@@ -6,8 +6,8 @@ body {
 .bracket-container {
   position: relative;
   width: 100%;
-  max-width: 1536px;
-  margin: auto;
+  max-width: 1920px;
+  margin: 0 auto;
 }
 
 .bracket-img {
@@ -40,7 +40,6 @@ body {
 }
 
 .champion {
- .champion {
   position: absolute;
   left: 38.5%;
   top: 76.7%;

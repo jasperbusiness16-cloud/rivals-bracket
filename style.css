@@ -64,26 +64,26 @@ body {
 }
 
 /* GROUP A ROUND 1 */
-.a-r1-m1-t1 { left: 4.2%; top: 18.0%; }
-.a-r1-m1-t2 { left: 4.2%; top: 23.8%; }
+.a-r1-m1-t1 { left: 4.2%; top: 17.7%; }
+.a-r1-m1-t2 { left: 4.2%; top: 23.5%; }
 
-.a-r1-m2-t1 { left: 4.2%; top: 35.5%; }
-.a-r1-m2-t2 { left: 4.2%; top: 41.3%; }
+.a-r1-m2-t1 { left: 4.2%; top: 35.4%; }
+.a-r1-m2-t2 { left: 4.2%; top: 41.2%; }
 
 /* GROUP A WINNERS */
-.a-win-t1 { left: 21.3%; top: 25.0%; }
-.a-win-t2 { left: 21.3%; top: 30.8%; }
+.a-win-t1 { left: 21.3%; top: 24.0%; }
+.a-win-t2 { left: 21.3%; top: 29.8%; }
 
 /* GROUP A LOSERS */
-.a-lose-t1 { left: 4.2%; top: 57.5%; }
-.a-lose-t2 { left: 4.2%; top: 63.3%; }
+.a-lose-t1 { left: 4.2%; top: 57.4%; }
+.a-lose-t2 { left: 4.2%; top: 63.2%; }
 
-.a-final-lose-t1 { left: 20.4%; top: 57.5%; }
-.a-final-lose-t2 { left: 20.4%; top: 63.3%; }
+.a-final-lose-t1 { left: 20.4%; top: 57.4%; }
+.a-final-lose-t2 { left: 20.4%; top: 63.2%; }
 
 /* GROUP A SEMIFINAL */
-.a-semi-t1 { left: 35.2%; top: 40.8%; }
-.a-semi-t2 { left: 35.2%; top: 46.6%; }
+.a-semi-t1 { left: 35.2%; top: 40.7%; }
+.a-semi-t2 { left: 35.2%; top: 46.5%; }
 
 /* GROUP B ROUND 1 */
 .b-r1-m1-t1 { left: 87.0%; top: 18.0%; }

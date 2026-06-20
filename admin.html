@@ -22,19 +22,30 @@ border:2px solid gold;
 Reset Tournament
 </button>
 
- <div style="
+<div style="
 position:fixed;
 bottom:10px;
 left:10px;
 z-index:9999;
 background:black;
-border:2px solid gold;
-padding:10px;
+border:3px solid gold;
+padding:18px;
 color:white;
+font-size:22px;
+border-radius:10px;
+box-shadow:0 0 12px rgba(255,215,0,.4);
+min-width:320px;
 ">
 <b>Now Casting</b><br><br>
 
-<select id="currentMatchSelect">
+<select id="currentMatchSelect" style="
+width:100%;
+font-size:20px;
+padding:12px;
+margin-top:10px;
+margin-bottom:10px;
+border-radius:6px;
+">
   <option value="A_R1_M1">Team 1 vs Team 2</option>
   <option value="A_R1_M2">Team 3 vs Team 4</option>
   <option value="B_R1_M1">Team 5 vs Team 6</option>
@@ -46,7 +57,17 @@ color:white;
 
 <br><br>
 
-<button onclick="setNowCasting()">
+<button onclick="setNowCasting()" style="
+width:100%;
+font-size:22px;
+padding:12px;
+font-weight:bold;
+cursor:pointer;
+background:gold;
+color:black;
+border:none;
+border-radius:6px;
+">
 Set Match
 </button>
 

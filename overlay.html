@@ -1,1 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rivals Gauntlet Overlay</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: Georgia, serif;
+      color: #f5d36b;
+    }
 
+    .overlay {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1050px;
+      padding: 18px 30px;
+      background: rgba(8, 6, 3, 0.78);
+      border: 2px solid #d6a83f;
+      box-shadow: 0 0 18px rgba(214,168,63,0.45);
+      text-align: center;
+      border-radius: 10px;
+    }
+
+    .title {
+      font-size: 24px;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      color: #ffd86b;
+    }
+
+    .teams {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .team {
+      width: 40%;
+    }
+
+    .team-name {
+      font-size: 34px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 8px black;
+    }
+
+    .record {
+      font-size: 18px;
+      margin-top: 5px;
+      color: #f5d36b;
+    }
+
+    .vs {
+      font-size: 28px;
+      color: #ffd86b;
+    }
+
+    .match {
+      margin-top: 12px;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="overlay">
+  <div class="title">⚔ RIVALS GAUNTLET ⚔</div>
+
+  <div class="teams">
+    <div class="team">
+      <div id="teamA" class="team-name">Team 1</div>
+      <div id="recordA" class="record">0W • 0L</div>
+    </div>
+
+    <div class="vs">VS</div>
+
+    <div class="team">
+      <div id="teamB" class="team-name">Team 2</div>
+      <div id="recordB" class="record">0W • 0L</div>
+    </div>
+  </div>
+
+  <div id="matchName" class="match">ROUND 1</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+  // PASTE YOUR SAME FIREBASE CONFIG FROM admin.html/viewer.html HERE
+  const firebaseConfig = {
+    apiKey: "PASTE_HERE",
+    authDomain: "PASTE_HERE",
+    databaseURL: "PASTE_HERE",
+    projectId: "PASTE_HERE",
+    storageBucket: "PASTE_HERE",
+    messagingSenderId: "PASTE_HERE",
+    appId: "PASTE_HERE"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const database = firebase.database();
+  const bracketRef = database.ref("rivalsBracketV2");
+
+  const firstRoundMatches = [
+    {
+      id: "A_R1_M1",
+      teamA: "Team 1",
+      teamB: "Team 2",
+      name: "ROUND 1"
+    },
+    {
+      id: "A_R1_M2",
+      teamA: "Team 3",
+      teamB: "Team 4",
+      name: "ROUND 1"
+    },
+    {
+      id: "B_R1_M1",
+      teamA: "Team 5",
+      teamB: "Team 6",
+      name: "ROUND 1"
+    },
+    {
+      id: "B_R1_M2",
+      teamA: "Team 7",
+      teamB: "Team 8",
+      name: "ROUND 1"
+    }
+  ];
+
+  function addWin(records, team) {
+    if (!team) return;
+    if (!records[team]) records[team] = { wins: 0, losses: 0 };
+    records[team].wins++;
+  }
+
+  function addLoss(records, team) {
+    if (!team) return;
+    if (!records[team]) records[team] = { wins: 0, losses: 0 };
+    records[team].losses++;
+  }
+
+  function getLoser(teamA, teamB, winner) {
+    if (!winner) return "";
+    return winner === teamA ? teamB : teamA;
+  }
+
+  function calculateRecords(state) {
+    const records = {};
+
+    firstRoundMatches.forEach(match => {
+      const winner = state[match.id];
+      const loser = getLoser(match.teamA, match.teamB, winner);
+
+      if (winner) addWin(records, winner);
+      if (loser) addLoss(records, loser);
+    });
+
+    if (state.A_FINAL) addWin(records, state.A_FINAL);
+    if (state.B_FINAL) addWin(records, state.B_FINAL);
+    if (state.GRAND_FINAL) addWin(records, state.GRAND_FINAL);
+
+    return records;
+  }
+
+  function getRecordText(records, team) {
+    const record = records[team] || { wins: 0, losses: 0 };
+    return `${record.wins}W • ${record.losses}L`;
+  }
+
+  function getCurrentMatch(state) {
+    if (!state.A_R1_M1) {
+      return { teamA: "Team 1", teamB: "Team 2", name: "ROUND 1" };
+    }
+
+    if (!state.A_R1_M2) {
+      return { teamA: "Team 3", teamB: "Team 4", name: "ROUND 1" };
+    }
+
+    if (!state.B_R1_M1) {
+      return { teamA: "Team 5", teamB: "Team 6", name: "ROUND 1" };
+    }
+
+    if (!state.B_R1_M2) {
+      return { teamA: "Team 7", teamB: "Team 8", name: "ROUND 1" };
+    }
+
+    if (!state.A_FINAL) {
+      return {
+        teamA: state.A_R1_M1,
+        teamB: state.A_R1_M2,
+        name: "WINNERS FINAL"
+      };
+    }
+
+    if (!state.B_FINAL) {
+      return {
+        teamA: state.B_R1_M1,
+        teamB: state.B_R1_M2,
+        name: "LOSERS FINAL"
+      };
+    }
+
+    if (!state.GRAND_FINAL) {
+      return {
+        teamA: state.A_FINAL,
+        teamB: state.B_FINAL,
+        name: "GRAND FINALS"
+      };
+    }
+
+    return {
+      teamA: state.GRAND_FINAL,
+      teamB: "",
+      name: "CHAMPION"
+    };
+  }
+
+  bracketRef.on("value", snapshot => {
+    const state = snapshot.val() || {};
+    const records = calculateRecords(state);
+    const current = getCurrentMatch(state);
+
+    document.getElementById("teamA").innerText = current.teamA || "";
+    document.getElementById("teamB").innerText = current.teamB || "";
+
+    document.getElementById("recordA").innerText =
+      current.teamA ? getRecordText(records, current.teamA) : "";
+
+    document.getElementById("recordB").innerText =
+      current.teamB ? getRecordText(records, current.teamB) : "";
+
+    document.getElementById("matchName").innerText = current.name;
+  });
+</script>
+
+</body>
+</html>

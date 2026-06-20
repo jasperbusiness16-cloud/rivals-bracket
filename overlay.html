@@ -4,35 +4,98 @@
   <title>Rivals Gauntlet Overlay</title>
   <meta name="viewport" content="width=1920, initial-scale=0.42">
   <style>
-    body { margin:0; background:transparent; overflow:hidden; font-family:Arial, Helvetica, sans-serif; color:white; }
+    body {
+      margin: 0;
+      background: transparent;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+    }
 
     .overlay {
-      position:absolute; top:22px; left:50%; transform:translateX(-50%);
-      width:1180px; height:96px; display:flex; align-items:center; justify-content:center; gap:14px;
+      position: absolute;
+      top: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1180px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
     }
 
     .team-panel {
-      width:405px; height:74px;
-      background:linear-gradient(180deg, rgba(20,20,20,.92), rgba(5,5,5,.88));
-      border:2px solid #d6a83f; display:flex; flex-direction:column; justify-content:center;
-      padding:0 22px; box-shadow:0 0 16px rgba(0,0,0,.65);
+      width: 405px;
+      height: 74px;
+      background: linear-gradient(180deg, rgba(20,20,20,.94), rgba(5,5,5,.9));
+      border: 2px solid #d6a83f;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 22px;
+      box-shadow: 0 0 16px rgba(0,0,0,.65);
     }
 
-    .left { text-align:left; border-radius:8px 0 0 8px; }
-    .right { text-align:right; border-radius:0 8px 8px 0; }
+    .left {
+      text-align: left;
+      border-radius: 8px 0 0 8px;
+    }
 
-    .team-name { font-size:30px; font-weight:900; letter-spacing:1px; text-transform:uppercase; line-height:1; }
-    .record { margin-top:8px; font-size:15px; color:#f5d36b; font-weight:bold; letter-spacing:1px; }
+    .right {
+      text-align: right;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .team-name {
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .record {
+      margin-top: 8px;
+      font-size: 15px;
+      color: #f5d36b;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
     .center-panel {
-      width:250px; height:88px; background:rgba(0,0,0,.92);
-      border:2px solid #d6a83f; display:flex; flex-direction:column; align-items:center; justify-content:center;
-      box-shadow:0 0 18px rgba(214,168,63,.25); border-radius:8px;
+      width: 250px;
+      height: 88px;
+      background: rgba(0,0,0,.94);
+      border: 2px solid #d6a83f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(214,168,63,.25);
+      border-radius: 8px;
     }
 
-    .title { font-size:19px; font-weight:900; letter-spacing:2px; color:#ffd86b; }
-    .vs { font-size:18px; font-weight:900; margin-top:2px; }
-    .match { font-size:13px; margin-top:6px; letter-spacing:1.5px; color:#ddd; text-transform:uppercase; }
+    .title {
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffd86b;
+    }
+
+    .vs {
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 2px;
+    }
+
+    .match {
+      font-size: 13px;
+      margin-top: 6px;
+      letter-spacing: 1.5px;
+      color: #ddd;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 
@@ -76,159 +139,177 @@ const database = firebase.database();
 const bracketRef = database.ref("rivalsBracketV2");
 const currentMatchRef = database.ref("streamOverlay/currentMatch");
 
-let bracketState = {};
+let state = {};
 let selectedMatch = "A_R1_M1";
 
-function addWin(records, team) {
+function ensureRecord(records, team) {
   if (!team) return;
   if (!records[team]) records[team] = { wins: 0, losses: 0 };
-  records[team].wins++;
+}
+
+function addWin(records, team) {
+  ensureRecord(records, team);
+  if (team) records[team].wins++;
 }
 
 function addLoss(records, team) {
-  if (!team) return;
-  if (!records[team]) records[team] = { wins: 0, losses: 0 };
-  records[team].losses++;
+  ensureRecord(records, team);
+  if (team) records[team].losses++;
 }
 
-function getLoser(teamA, teamB, winner) {
-  if (!winner) return "";
-  return winner === teamA ? teamB : teamA;
-}
-
-function loserOf(matchId, teams, state) {
+function loserOf(matchId, teams) {
   const winner = state[matchId];
   if (!winner) return "";
-  return teams.find(team => team && team !== winner) || "";
+  return teams.find(t => t && t !== winner) || "";
 }
 
-function calculateRecords(state) {
+function recordMatch(records, matchId, teamA, teamB) {
+  const winner = state[matchId];
+  if (!winner || !teamA || !teamB) return;
+
+  const loser = winner === teamA ? teamB : teamA;
+
+  addWin(records, winner);
+  addLoss(records, loser);
+}
+
+function calculateRecords() {
   const records = {};
-
-  function recordMatch(matchId, teamA, teamB) {
-    const winner = state[matchId];
-    if (!winner || !teamA || !teamB) return;
-
-    const loser = winner === teamA ? teamB : teamA;
-
-    addWin(records, winner);
-    addLoss(records, loser);
-  }
 
   const a1Winner = state.A_R1_M1;
   const a2Winner = state.A_R1_M2;
   const b1Winner = state.B_R1_M1;
   const b2Winner = state.B_R1_M2;
 
-  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"], state);
-  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"], state);
-  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"], state);
-  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"], state);
+  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"]);
+  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"]);
+  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"]);
+  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"]);
 
-  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner], state);
-  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner], state);
+  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner]);
+  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner]);
 
-  recordMatch("A_R1_M1", "Team 1", "Team 2");
-  recordMatch("A_R1_M2", "Team 3", "Team 4");
-  recordMatch("B_R1_M1", "Team 5", "Team 6");
-  recordMatch("B_R1_M2", "Team 7", "Team 8");
+  recordMatch(records, "A_R1_M1", "Team 1", "Team 2");
+  recordMatch(records, "A_R1_M2", "Team 3", "Team 4");
+  recordMatch(records, "B_R1_M1", "Team 5", "Team 6");
+  recordMatch(records, "B_R1_M2", "Team 7", "Team 8");
 
-  recordMatch("A_WIN", a1Winner, a2Winner);
-  recordMatch("A_LOSE", a1Loser, a2Loser);
-  recordMatch("A_FINAL_LOSE", state.A_LOSE, aWinLoser);
-  recordMatch("A_SEMI", state.A_WIN, state.A_FINAL_LOSE);
+  recordMatch(records, "A_WIN", a1Winner, a2Winner);
+  recordMatch(records, "A_LOSE", a1Loser, a2Loser);
+  recordMatch(records, "A_FINAL_LOSE", state.A_LOSE, aWinLoser);
+  recordMatch(records, "A_SEMI", state.A_WIN, state.A_FINAL_LOSE);
 
-  recordMatch("B_WIN", b1Winner, b2Winner);
-  recordMatch("B_LOSE", b1Loser, b2Loser);
-  recordMatch("B_FINAL_LOSE", state.B_LOSE, bWinLoser);
-  recordMatch("B_SEMI", state.B_WIN, state.B_FINAL_LOSE);
+  recordMatch(records, "B_WIN", b1Winner, b2Winner);
+  recordMatch(records, "B_LOSE", b1Loser, b2Loser);
+  recordMatch(records, "B_FINAL_LOSE", state.B_LOSE, bWinLoser);
+  recordMatch(records, "B_SEMI", state.B_WIN, state.B_FINAL_LOSE);
 
-  recordMatch("GRAND", state.A_SEMI, state.B_SEMI);
-
-  return records;
-}
-
-  const matches = [
-    ["A_R1_M1", "Team 1", "Team 2"],
-    ["A_R1_M2", "Team 3", "Team 4"],
-    ["B_R1_M1", "Team 5", "Team 6"],
-    ["B_R1_M2", "Team 7", "Team 8"],
-
-    ["A_WIN", state.A_R1_M1, state.A_R1_M2],
-    ["A_LOSE", loserOf("A_R1_M1", ["Team 1", "Team 2"], state), loserOf("A_R1_M2", ["Team 3", "Team 4"], state)],
-    ["A_FINAL_LOSE", state.A_LOSE, loserOf("A_WIN", [state.A_R1_M1, state.A_R1_M2], state)],
-    ["A_SEMI", state.A_WIN, state.A_FINAL_LOSE],
-
-    ["B_WIN", state.B_R1_M1, state.B_R1_M2],
-    ["B_LOSE", loserOf("B_R1_M1", ["Team 5", "Team 6"], state), loserOf("B_R1_M2", ["Team 7", "Team 8"], state)],
-    ["B_FINAL_LOSE", state.B_LOSE, loserOf("B_WIN", [state.B_R1_M1, state.B_R1_M2], state)],
-    ["B_SEMI", state.B_WIN, state.B_FINAL_LOSE],
-
-    ["GRAND", state.A_SEMI, state.B_SEMI]
-  ];
-
-  matches.forEach(([matchId, teamA, teamB]) => {
-    const winner = state[matchId];
-    const loser = getLoser(teamA, teamB, winner);
-
-    if (winner) addWin(records, winner);
-    if (loser) addLoss(records, loser);
-  });
+  recordMatch(records, "GRAND", state.A_SEMI, state.B_SEMI);
 
   return records;
 }
 
-function getRecordText(records, team) {
-  const record = records[team] || { wins: 0, losses: 0 };
-  return `${record.wins}W • ${record.losses}L`;
+function recordText(records, team) {
+  const r = records[team] || { wins: 0, losses: 0 };
+  return `${r.wins}W • ${r.losses}L`;
 }
 
-function getMatchById(id, state) {
+function getMatch(id) {
   const a1Winner = state.A_R1_M1 || "";
   const a2Winner = state.A_R1_M2 || "";
   const b1Winner = state.B_R1_M1 || "";
   const b2Winner = state.B_R1_M2 || "";
 
-  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"], state);
-  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"], state);
-  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"], state);
-  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"], state);
+  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"]);
+  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"]);
+  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"]);
+  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"]);
 
-  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner], state);
-  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner], state);
+  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner]);
+  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner]);
 
-  if (id === "A_R1_M1") return { teamA: "Team 1", teamB: "Team 2", name: "A ROUND 1" };
-  if (id === "A_R1_M2") return { teamA: "Team 3", teamB: "Team 4", name: "A ROUND 1" };
-  if (id === "A_WIN") return { teamA: a1Winner || "A R1 M1 Winner", teamB: a2Winner || "A R1 M2 Winner", name: "A WINNERS MATCH" };
-  if (id === "A_LOSE") return { teamA: a1Loser || "A R1 M1 Loser", teamB: a2Loser || "A R1 M2 Loser", name: "A LOSERS MATCH" };
-  if (id === "A_FINAL_LOSE") return { teamA: state.A_LOSE || "A Losers Winner", teamB: aWinLoser || "A Winners Loser", name: "A FINAL LOSERS" };
-  if (id === "A_SEMI") return { teamA: state.A_WIN || "A Winners Winner", teamB: state.A_FINAL_LOSE || "A Final Losers Winner", name: "A SEMIFINAL" };
+  const matches = {
+    A_R1_M1: { teamA: "Team 1", teamB: "Team 2", name: "A ROUND 1" },
+    A_R1_M2: { teamA: "Team 3", teamB: "Team 4", name: "A ROUND 1" },
 
-  if (id === "B_R1_M1") return { teamA: "Team 5", teamB: "Team 6", name: "B ROUND 1" };
-  if (id === "B_R1_M2") return { teamA: "Team 7", teamB: "Team 8", name: "B ROUND 1" };
-  if (id === "B_WIN") return { teamA: b1Winner || "B R1 M1 Winner", teamB: b2Winner || "B R1 M2 Winner", name: "B WINNERS MATCH" };
-  if (id === "B_LOSE") return { teamA: b1Loser || "B R1 M1 Loser", teamB: b2Loser || "B R1 M2 Loser", name: "B LOSERS MATCH" };
-  if (id === "B_FINAL_LOSE") return { teamA: state.B_LOSE || "B Losers Winner", teamB: bWinLoser || "B Winners Loser", name: "B FINAL LOSERS" };
-  if (id === "B_SEMI") return { teamA: state.B_WIN || "B Winners Winner", teamB: state.B_FINAL_LOSE || "B Final Losers Winner", name: "B SEMIFINAL" };
+    A_WIN: {
+      teamA: a1Winner || "A R1 M1 Winner",
+      teamB: a2Winner || "A R1 M2 Winner",
+      name: "A WINNERS MATCH"
+    },
 
-  if (id === "GRAND") return { teamA: state.A_SEMI || "A Semifinal Winner", teamB: state.B_SEMI || "B Semifinal Winner", name: "GRAND FINALS" };
+    A_LOSE: {
+      teamA: a1Loser || "A R1 M1 Loser",
+      teamB: a2Loser || "A R1 M2 Loser",
+      name: "A LOSERS MATCH"
+    },
 
-  return { teamA: "UNKNOWN", teamB: id, name: "CHECK MATCH ID" };
+    A_FINAL_LOSE: {
+      teamA: state.A_LOSE || "A Losers Winner",
+      teamB: aWinLoser || "A Winners Loser",
+      name: "A FINAL LOSERS"
+    },
+
+    A_SEMI: {
+      teamA: state.A_WIN || "A Winners Winner",
+      teamB: state.A_FINAL_LOSE || "A Final Losers Winner",
+      name: "A SEMIFINAL"
+    },
+
+    B_R1_M1: { teamA: "Team 5", teamB: "Team 6", name: "B ROUND 1" },
+    B_R1_M2: { teamA: "Team 7", teamB: "Team 8", name: "B ROUND 1" },
+
+    B_WIN: {
+      teamA: b1Winner || "B R1 M1 Winner",
+      teamB: b2Winner || "B R1 M2 Winner",
+      name: "B WINNERS MATCH"
+    },
+
+    B_LOSE: {
+      teamA: b1Loser || "B R1 M1 Loser",
+      teamB: b2Loser || "B R1 M2 Loser",
+      name: "B LOSERS MATCH"
+    },
+
+    B_FINAL_LOSE: {
+      teamA: state.B_LOSE || "B Losers Winner",
+      teamB: bWinLoser || "B Winners Loser",
+      name: "B FINAL LOSERS"
+    },
+
+    B_SEMI: {
+      teamA: state.B_WIN || "B Winners Winner",
+      teamB: state.B_FINAL_LOSE || "B Final Losers Winner",
+      name: "B SEMIFINAL"
+    },
+
+    GRAND: {
+      teamA: state.A_SEMI || "A Semifinal Winner",
+      teamB: state.B_SEMI || "B Semifinal Winner",
+      name: "GRAND FINALS"
+    }
+  };
+
+  return matches[id] || {
+    teamA: "UNKNOWN",
+    teamB: id,
+    name: "CHECK MATCH ID"
+  };
 }
 
 function updateOverlay() {
-  const records = calculateRecords(bracketState);
-  const current = getMatchById(selectedMatch, bracketState);
+  const records = calculateRecords();
+  const current = getMatch(selectedMatch);
 
   document.getElementById("teamA").innerText = current.teamA || "";
   document.getElementById("teamB").innerText = current.teamB || "";
-  document.getElementById("recordA").innerText = current.teamA ? getRecordText(records, current.teamA) : "";
-  document.getElementById("recordB").innerText = current.teamB ? getRecordText(records, current.teamB) : "";
+  document.getElementById("recordA").innerText = current.teamA ? recordText(records, current.teamA) : "";
+  document.getElementById("recordB").innerText = current.teamB ? recordText(records, current.teamB) : "";
   document.getElementById("matchName").innerText = current.name;
 }
 
 bracketRef.on("value", snapshot => {
-  bracketState = snapshot.val() || {};
+  state = snapshot.val() || {};
   updateOverlay();
 });
 

@@ -92,9 +92,9 @@ setText("GRAND_T1", grand1);
 setText("GRAND_T2", grand2);
 
 if (state.GRAND) {
-  setText("champion", state.GRAND);
+  setText("CHAMPION", state.GRAND);
 } else {
-  setText("champion", "");
+  setText("CHAMPION", "");
 }
 }
 

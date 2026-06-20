@@ -64,51 +64,51 @@ body {
 }
 
 /* GROUP A ROUND 1 */
-.a-r1-m1-t1 { left: 4.2%; top: 19.0%; }
+.a-r1-m1-t1 { left: 4.2%; top: 18.0%; }
 .a-r1-m1-t2 { left: 4.2%; top: 23.8%; }
 
-.a-r1-m2-t1 { left: 4.2%; top: 36.5%; }
+.a-r1-m2-t1 { left: 4.2%; top: 35.5%; }
 .a-r1-m2-t2 { left: 4.2%; top: 41.3%; }
 
 /* GROUP A WINNERS */
-.a-win-t1 { left: 21.3%; top: 26.0%; }
+.a-win-t1 { left: 21.3%; top: 25.0%; }
 .a-win-t2 { left: 21.3%; top: 30.8%; }
 
 /* GROUP A LOSERS */
-.a-lose-t1 { left: 4.2%; top: 58.5%; }
+.a-lose-t1 { left: 4.2%; top: 57.5%; }
 .a-lose-t2 { left: 4.2%; top: 63.3%; }
 
-.a-final-lose-t1 { left: 20.4%; top: 58.5%; }
+.a-final-lose-t1 { left: 20.4%; top: 57.5%; }
 .a-final-lose-t2 { left: 20.4%; top: 63.3%; }
 
 /* GROUP A SEMIFINAL */
-.a-semi-t1 { left: 35.2%; top: 41.8%; }
+.a-semi-t1 { left: 35.2%; top: 40.8%; }
 .a-semi-t2 { left: 35.2%; top: 46.6%; }
 
 /* GROUP B ROUND 1 */
-.b-r1-m1-t1 { left: 87.0%; top: 19.0%; }
+.b-r1-m1-t1 { left: 87.0%; top: 18.0%; }
 .b-r1-m1-t2 { left: 87.0%; top: 23.8%; }
 
-.b-r1-m2-t1 { left: 87.0%; top: 36.5%; }
+.b-r1-m2-t1 { left: 87.0%; top: 35.5%; }
 .b-r1-m2-t2 { left: 87.0%; top: 41.3%; }
 
 /* GROUP B WINNERS */
-.b-win-t1 { left: 70.1%; top: 26.0%; }
+.b-win-t1 { left: 70.1%; top: 25.0%; }
 .b-win-t2 { left: 70.1%; top: 30.8%; }
 
 /* GROUP B LOSERS */
-.b-lose-t1 { left: 87.0%; top: 58.5%; }
+.b-lose-t1 { left: 87.0%; top: 57.5%; }
 .b-lose-t2 { left: 87.0%; top: 63.3%; }
 
-.b-final-lose-t1 { left: 70.9%; top: 58.5%; }
+.b-final-lose-t1 { left: 70.9%; top: 57.5%; }
 .b-final-lose-t2 { left: 70.9%; top: 63.3%; }
 
 /* GROUP B SEMIFINAL */
-.b-semi-t1 { left: 55.9%; top: 41.8%; }
+.b-semi-t1 { left: 55.9%; top: 40.8%; }
 .b-semi-t2 { left: 55.9%; top: 46.6%; }
 
 /* GRAND FINALS */
-.grand-t1 { left: 45.5%; top: 70.0%; }
+.grand-t1 { left: 45.5%; top: 79.0%; }
 .grand-t2 { left: 45.5%; top: 74.8%; }
 
 .champion {

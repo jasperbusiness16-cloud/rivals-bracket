@@ -191,8 +191,80 @@ function getRecordText(records, team) {
 }
 
 function getMatchById(id, state) {
+  function loserOf(matchId, teams) {
+  const winner = bracketState[matchId];
+  if (!winner) return "";
+  return teams.find(team => team && team !== winner) || "";
+}
+
+function getMatchById(id, state) {
+  const a1Winner = state.A_R1_M1 || "";
+  const a2Winner = state.A_R1_M2 || "";
+  const b1Winner = state.B_R1_M1 || "";
+  const b2Winner = state.B_R1_M2 || "";
+
+  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"]);
+  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"]);
+  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"]);
+  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"]);
+
+  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner]);
+  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner]);
+
   if (id === "A_R1_M1") {
-    return { teamA: "Team 1", teamB: "Team 2", name: "ROUND 1" };
+    return { teamA: "Team 1", teamB: "Team 2", name: "A ROUND 1" };
+  }
+
+  if (id === "A_R1_M2") {
+    return { teamA: "Team 3", teamB: "Team 4", name: "A ROUND 1" };
+  }
+
+  if (id === "A_WIN") {
+    return { teamA: a1Winner || "A R1 Match 1 Winner", teamB: a2Winner || "A R1 Match 2 Winner", name: "A WINNERS MATCH" };
+  }
+
+  if (id === "A_LOSE") {
+    return { teamA: a1Loser || "A R1 Match 1 Loser", teamB: a2Loser || "A R1 Match 2 Loser", name: "A LOSERS MATCH" };
+  }
+
+  if (id === "A_FINAL_LOSE") {
+    return { teamA: state.A_LOSE || "A Losers Winner", teamB: aWinLoser || "A Winners Loser", name: "A FINAL LOSERS MATCH" };
+  }
+
+  if (id === "A_SEMI") {
+    return { teamA: state.A_WIN || "A Winners Winner", teamB: state.A_FINAL_LOSE || "A Final Losers Winner", name: "A SEMIFINAL" };
+  }
+
+  if (id === "B_R1_M1") {
+    return { teamA: "Team 5", teamB: "Team 6", name: "B ROUND 1" };
+  }
+
+  if (id === "B_R1_M2") {
+    return { teamA: "Team 7", teamB: "Team 8", name: "B ROUND 1" };
+  }
+
+  if (id === "B_WIN") {
+    return { teamA: b1Winner || "B R1 Match 1 Winner", teamB: b2Winner || "B R1 Match 2 Winner", name: "B WINNERS MATCH" };
+  }
+
+  if (id === "B_LOSE") {
+    return { teamA: b1Loser || "B R1 Match 1 Loser", teamB: b2Loser || "B R1 Match 2 Loser", name: "B LOSERS MATCH" };
+  }
+
+  if (id === "B_FINAL_LOSE") {
+    return { teamA: state.B_LOSE || "B Losers Winner", teamB: bWinLoser || "B Winners Loser", name: "B FINAL LOSERS MATCH" };
+  }
+
+  if (id === "B_SEMI") {
+    return { teamA: state.B_WIN || "B Winners Winner", teamB: state.B_FINAL_LOSE || "B Final Losers Winner", name: "B SEMIFINAL" };
+  }
+
+  if (id === "GRAND") {
+    return { teamA: state.A_SEMI || "A Semifinal Winner", teamB: state.B_SEMI || "B Semifinal Winner", name: "GRAND FINALS" };
+  }
+
+  return { teamA: "Team 1", teamB: "Team 2", name: "A ROUND 1" };
+}
   }
 
   if (id === "A_R1_M2") {

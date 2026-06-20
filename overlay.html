@@ -105,6 +105,49 @@ function loserOf(matchId, teams, state) {
 function calculateRecords(state) {
   const records = {};
 
+  function recordMatch(matchId, teamA, teamB) {
+    const winner = state[matchId];
+    if (!winner || !teamA || !teamB) return;
+
+    const loser = winner === teamA ? teamB : teamA;
+
+    addWin(records, winner);
+    addLoss(records, loser);
+  }
+
+  const a1Winner = state.A_R1_M1;
+  const a2Winner = state.A_R1_M2;
+  const b1Winner = state.B_R1_M1;
+  const b2Winner = state.B_R1_M2;
+
+  const a1Loser = loserOf("A_R1_M1", ["Team 1", "Team 2"], state);
+  const a2Loser = loserOf("A_R1_M2", ["Team 3", "Team 4"], state);
+  const b1Loser = loserOf("B_R1_M1", ["Team 5", "Team 6"], state);
+  const b2Loser = loserOf("B_R1_M2", ["Team 7", "Team 8"], state);
+
+  const aWinLoser = loserOf("A_WIN", [a1Winner, a2Winner], state);
+  const bWinLoser = loserOf("B_WIN", [b1Winner, b2Winner], state);
+
+  recordMatch("A_R1_M1", "Team 1", "Team 2");
+  recordMatch("A_R1_M2", "Team 3", "Team 4");
+  recordMatch("B_R1_M1", "Team 5", "Team 6");
+  recordMatch("B_R1_M2", "Team 7", "Team 8");
+
+  recordMatch("A_WIN", a1Winner, a2Winner);
+  recordMatch("A_LOSE", a1Loser, a2Loser);
+  recordMatch("A_FINAL_LOSE", state.A_LOSE, aWinLoser);
+  recordMatch("A_SEMI", state.A_WIN, state.A_FINAL_LOSE);
+
+  recordMatch("B_WIN", b1Winner, b2Winner);
+  recordMatch("B_LOSE", b1Loser, b2Loser);
+  recordMatch("B_FINAL_LOSE", state.B_LOSE, bWinLoser);
+  recordMatch("B_SEMI", state.B_WIN, state.B_FINAL_LOSE);
+
+  recordMatch("GRAND", state.A_SEMI, state.B_SEMI);
+
+  return records;
+}
+
   const matches = [
     ["A_R1_M1", "Team 1", "Team 2"],
     ["A_R1_M2", "Team 3", "Team 4"],

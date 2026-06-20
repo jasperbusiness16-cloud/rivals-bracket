@@ -135,9 +135,12 @@ Set Match
   document.getElementById("resetBtn").addEventListener("click", function () {
     if (!confirm("Reset the entire tournament?")) return;
 
-    database.ref("rivalsBracketV2").set({})
-      .then(() => alert("Tournament reset."))
-      .catch((error) => alert("Reset failed: " + error.message));
+    Promise.all([
+  database.ref("rivalsBracketV2").set({}),
+  database.ref("streamOverlay/currentMatch").set("A_R1_M1")
+])
+.then(() => alert("Tournament reset."))
+.catch((error) => alert("Reset failed: " + error.message));
   });
 </script>
 

@@ -128,3 +128,13 @@ window.resetTournament = function () {
 
   bracketRef.set({});
 };
+function setNowCasting() {
+  if (!window.IS_ADMIN) return;
+
+  const select = document.getElementById("currentMatchSelect");
+  if (!select) return;
+
+  database.ref("streamOverlay/currentMatch").set(select.value);
+}
+
+

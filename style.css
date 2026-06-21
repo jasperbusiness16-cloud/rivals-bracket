@@ -580,8 +580,8 @@ nav a {
 
 .hero-logo {
   display: block;
-  width: 95%;
-  max-width: 1000px;
+  width: 100%;
+  max-width: 1200px;
   height: auto;
-  margin: 0 auto 20px;
+  margin: 0 auto 10px;
 }

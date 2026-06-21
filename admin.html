@@ -8,25 +8,58 @@
 </head>
 <body>
 
+<script>
+const adminPassword = prompt("Enter admin password:");
+
+if (adminPassword !== "77hawkeyes") {
+  document.body.innerHTML =
+    "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+}
+</script>
+
 <section class="page-hero">
   <p class="eyebrow">ADMIN PANEL</p>
   <h1>Rivals Gauntlet Control</h1>
   <p>Update tournament info across the website.</p>
 </section>
 
-<section class="event-card">
+<section class="event-card admin-card">
   <h2>Site Controls</h2>
 
+  <label>Event Name</label>
   <input id="eventName" placeholder="Event Name">
-  <input id="prizePool" placeholder="Prize Pool">
-  <input id="registrationStatus" placeholder="Registration Status">
-  <input id="countdownDate" placeholder="Countdown Date">
-  <input id="status" placeholder="Live Status">
-  <input id="currentMatch" placeholder="Current Match">
-  <input id="totalPayout" placeholder="Total Payout">
-  <input id="eventsHosted" placeholder="Events Hosted">
+
+  <label>Prize Pool</label>
+  <input id="prizePool" placeholder="$60">
+
+  <label>Registration Status</label>
+  <input id="registrationStatus" placeholder="OPEN / CLOSED / FULL">
+
+  <label>Countdown Date</label>
+  <input id="countdownDate" placeholder="2026-06-27T19:00:00-06:00">
+
+  <label>Live Status</label>
+  <input id="status" placeholder="● OFFLINE / ● LIVE">
+
+  <label>Current Match</label>
+  <input id="currentMatch" placeholder="No Match Live">
+
+  <label>Total Payout</label>
+  <input id="totalPayout" placeholder="$0">
+
+  <label>Events Hosted</label>
+  <input id="eventsHosted" placeholder="1">
+
+  <label>Tournament Format</label>
+  <select id="formatType">
+    <option value="8_single_elim">8 Team Single Elimination</option>
+    <option value="16_single_elim">16 Team Single Elimination</option>
+    <option value="8_double_elim">8 Team Double Elimination</option>
+  </select>
 
   <button class="join-btn" onclick="saveSiteData()">SAVE CHANGES</button>
+
+  <p id="saveStatus"></p>
 </section>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

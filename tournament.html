@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament | Rivals Gauntlet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header>
+  <a href="index.html" class="logo">
+    <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <nav id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+    <a href="about.html">About</a>
+
+    <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+      JOIN THE ACTION
+    </a>
+  </nav>
+
+  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+    JOIN THE ACTION
+  </a>
+</header>
+
+<section class="page-hero">
+  <p class="eyebrow">CURRENT TOURNAMENT</p>
+  <h1>Rivals Gauntlet Weekly</h1>
+  <p>8 Teams • Single Elimination • Bo3 Matches • Bo5 Grand Finals</p>
+</section>
+
+<section class="tournament-grid">
+  <div class="info-card">
+    <h2>Format</h2>
+    <p>Quarterfinals: Bo3</p>
+    <p>Semifinals: Bo3</p>
+    <p>Grand Finals: Bo5</p>
+  </div>
+
+  <div class="info-card live-card">
+    <h2>Live Match</h2>
+    <p class="status-dot">● Not Live</p>
+    <p>Current match will appear here.</p>
+    <a href="watch.html" class="event-btn">Watch Live</a>
+  </div>
+
+  <div class="info-card">
+    <h2>Team Formation</h2>
+    <p>Captain draft, rank-balanced, or randomized depending on the event.</p>
+  </div>
+</section>
+
+<section class="bracket-section">
+  <div class="section-heading">
+    <p class="eyebrow">BRACKET</p>
+    <h2>Single Elimination</h2>
+  </div>
+
+  <div class="bracket-placeholder">
+    <div class="round">
+      <h3>Quarterfinals</h3>
+      <div class="match"><span>Team 1</span><span>Team 2</span></div>
+      <div class="match"><span>Team 3</span><span>Team 4</span></div>
+      <div class="match"><span>Team 5</span><span>Team 6</span></div>
+      <div class="match"><span>Team 7</span><span>Team 8</span></div>
+    </div>
+
+    <div class="round">
+      <h3>Semifinals</h3>
+      <div class="match"><span>Winner QF1</span><span>Winner QF2</span></div>
+      <div class="match"><span>Winner QF3</span><span>Winner QF4</span></div>
+    </div>
+
+    <div class="round">
+      <h3>Grand Finals</h3>
+      <div class="match final"><span>Winner SF1</span><span>Winner SF2</span></div>
+    </div>
+  </div>
+</section>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

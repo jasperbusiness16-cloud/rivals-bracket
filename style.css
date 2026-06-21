@@ -430,3 +430,13 @@ nav a {
     margin-top: 0;
   }
 }
+
+.footer-links i {
+  font-size: 22px;
+  transition: .2s;
+}
+
+.footer-links i:hover {
+  transform: scale(1.15);
+  color: #e63946;
+}

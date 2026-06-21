@@ -477,3 +477,12 @@ nav a {
   color: #e63946 !important;
   transform: scale(1.1);
 }
+
+.footer-socials a i,
+.footer-socials a:visited i {
+  color: #b0b0b0 !important;
+}
+
+.footer-socials a:hover i {
+  color: #e63946 !important;
+}

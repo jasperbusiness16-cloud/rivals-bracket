@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Live | Rivals Gauntlet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header>
+  <a href="index.html" class="logo">
+    <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <nav id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+    <a href="about.html">About</a>
+
+    <a class="join-btn mobile-join"
+       href="https://discord.gg/82HPpfkhQN"
+       target="_blank">
+       JOIN THE ACTION
+    </a>
+  </nav>
+
+  <a class="join-btn desktop-join"
+     href="https://discord.gg/82HPpfkhQN"
+     target="_blank">
+     JOIN THE ACTION
+  </a>
+</header>
+
+<section class="page-hero">
+  <p class="eyebrow">LIVE BROADCAST</p>
+  <h1>Watch Rivals Gauntlet</h1>
+  <p>
+    Live matches, tournament coverage, and community events.
+  </p>
+</section>
+
+<section class="tournament-grid">
+
+  <div class="info-card">
+    <h2>Stream</h2>
+    <p>Main tournament broadcast.</p>
+    <a href="#" class="event-btn">Watch Stream</a>
+  </div>
+
+  <div class="info-card">
+    <h2>Current Match</h2>
+    <p>Team Alpha vs Team Omega</p>
+    <p>Quarterfinals</p>
+  </div>
+
+  <div class="info-card">
+    <h2>Tournament Status</h2>
+    <p class="status-dot">● Offline</p>
+    <p>Next event coming soon.</p>
+  </div>
+
+</section>
+
+<section class="event-card">
+  <h2>BROADCAST SCHEDULE</h2>
+
+  <h3>Upcoming Events</h3>
+
+  <p>Rivals Gauntlet Open #1</p>
+  <p>Saturday • 7:00 PM CST</p>
+</section>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

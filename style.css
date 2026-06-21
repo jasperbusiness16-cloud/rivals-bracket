@@ -703,3 +703,48 @@ nav a {
   font-size: 28px;
   color: #ffffff;
 }
+
+.stats-section {
+  max-width: 900px;
+  margin: 0 auto 100px;
+  padding: 40px;
+  background: #161b22;
+  border: 1px solid #252c36;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.stats-section h2 {
+  color: #e63946;
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.stat-box {
+  background: #0d1117;
+  border: 1px solid #2d3748;
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.stat-box strong {
+  display: block;
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.stat-box span {
+  color: #b0b0b0;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

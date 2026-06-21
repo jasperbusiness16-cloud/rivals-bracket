@@ -31,10 +31,14 @@ database.ref("site").on("value", (snapshot) => {
   };
 
   scores = {
-    qf1Score: data.qf1Score || "0-0",
-    qf2Score: data.qf2Score || "0-0",
-    qf3Score: data.qf3Score || "0-0",
-    qf4Score: data.qf4Score || "0-0"
+    qf1Team1Score: data.qf1Team1Score || "0",
+    qf1Team2Score: data.qf1Team2Score || "0",
+    qf2Team1Score: data.qf2Team1Score || "0",
+    qf2Team2Score: data.qf2Team2Score || "0",
+    qf3Team1Score: data.qf3Team1Score || "0",
+    qf3Team2Score: data.qf3Team2Score || "0",
+    qf4Team1Score: data.qf4Team1Score || "0",
+    qf4Team2Score: data.qf4Team2Score || "0"
   };
 
   const formatType = data.formatType || "8_single_elim";
@@ -61,26 +65,26 @@ function show8SingleElim() {
 
         <div class="pro-match">
           <div class="match-label">QF1 • Bo3</div>
-          <div class="team-row"><span>${teams.team1}</span><strong>${scores.qf1Score}</strong></div>
-          <div class="team-row"><span>${teams.team2}</span><strong></strong></div>
+          <div class="team-row"><span>${teams.team1}</span><strong>${scores.qf1Team1Score}</strong></div>
+          <div class="team-row"><span>${teams.team2}</span><strong>${scores.qf1Team2Score}</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF2 • Bo3</div>
-          <div class="team-row"><span>${teams.team3}</span><strong>${scores.qf2Score}</strong></div>
-          <div class="team-row"><span>${teams.team4}</span><strong></strong></div>
+          <div class="team-row"><span>${teams.team3}</span><strong>${scores.qf2Team1Score}</strong></div>
+          <div class="team-row"><span>${teams.team4}</span><strong>${scores.qf2Team2Score}</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF3 • Bo3</div>
-          <div class="team-row"><span>${teams.team5}</span><strong>${scores.qf3Score}</strong></div>
-          <div class="team-row"><span>${teams.team6}</span><strong></strong></div>
+          <div class="team-row"><span>${teams.team5}</span><strong>${scores.qf3Team1Score}</strong></div>
+          <div class="team-row"><span>${teams.team6}</span><strong>${scores.qf3Team2Score}</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF4 • Bo3</div>
-          <div class="team-row"><span>${teams.team7}</span><strong>${scores.qf4Score}</strong></div>
-          <div class="team-row"><span>${teams.team8}</span><strong></strong></div>
+          <div class="team-row"><span>${teams.team7}</span><strong>${scores.qf4Team1Score}</strong></div>
+          <div class="team-row"><span>${teams.team8}</span><strong>${scores.qf4Team2Score}</strong></div>
         </div>
       </div>
 

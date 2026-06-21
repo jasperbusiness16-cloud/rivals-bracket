@@ -24,4 +24,12 @@ siteRef.on("value", (snapshot) => {
   document.querySelectorAll("[data-format]").forEach(el => {
     el.innerText = data.format || "";
   });
+
+  document.querySelectorAll("[data-prize-pool]").forEach(el => {
+    el.innerText = data.prizePool || "";
+  });
+
+  document.querySelectorAll("[data-total-payout]").forEach(el => {
+    el.innerText = data.totalPayout || "";
+  });
 });

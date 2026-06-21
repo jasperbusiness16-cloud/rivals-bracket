@@ -22,7 +22,34 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team6").value = data.team6 || "";
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
+const teamOptions = [
+  data.team1 || "Team 1",
+  data.team2 || "Team 2",
+  data.team3 || "Team 3",
+  data.team4 || "Team 4",
+  data.team5 || "Team 5",
+  data.team6 || "Team 6",
+  data.team7 || "Team 7",
+  data.team8 || "Team 8"
+];
 
+[
+  "qf1Winner",
+  "qf2Winner",
+  "qf3Winner",
+  "qf4Winner",
+  "sf1Winner",
+  "sf2Winner",
+  "grandWinner"
+].forEach(id => {
+  const select = document.getElementById(id);
+
+  select.innerHTML = '<option value="">-- Select Winner --</option>';
+
+  teamOptions.forEach(team => {
+    select.innerHTML += `<option value="${team}">${team}</option>`;
+  });
+});
   document.getElementById("qf1Winner").value = data.qf1Winner || "";
   document.getElementById("qf2Winner").value = data.qf2Winner || "";
   document.getElementById("qf3Winner").value = data.qf3Winner || "";

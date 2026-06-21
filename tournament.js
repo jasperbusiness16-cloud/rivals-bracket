@@ -1,6 +1,7 @@
 const bracketContainer = document.getElementById("dynamicBracket");
 
 let teams = {};
+let winners = {};
 
 database.ref("site").on("value", (snapshot) => {
   const data = snapshot.val();
@@ -16,6 +17,16 @@ database.ref("site").on("value", (snapshot) => {
     team6: data.team6 || "Team 6",
     team7: data.team7 || "Team 7",
     team8: data.team8 || "Team 8"
+  };
+
+  winners = {
+    qf1Winner: data.qf1Winner || "Winner QF1",
+    qf2Winner: data.qf2Winner || "Winner QF2",
+    qf3Winner: data.qf3Winner || "Winner QF3",
+    qf4Winner: data.qf4Winner || "Winner QF4",
+    sf1Winner: data.sf1Winner || "Winner SF1",
+    sf2Winner: data.sf2Winner || "Winner SF2",
+    grandWinner: data.grandWinner || ""
   };
 
   const formatType = data.formatType || "8_single_elim";
@@ -70,14 +81,14 @@ function show8SingleElim() {
 
         <div class="pro-match semi-spacer">
           <div class="match-label">SF1 • Bo3</div>
-          <div class="team-row"><span>Winner QF1</span><strong>0</strong></div>
-          <div class="team-row"><span>Winner QF2</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.qf1Winner}</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.qf2Winner}</span><strong>0</strong></div>
         </div>
 
         <div class="pro-match semi-spacer">
           <div class="match-label">SF2 • Bo3</div>
-          <div class="team-row"><span>Winner QF3</span><strong>0</strong></div>
-          <div class="team-row"><span>Winner QF4</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.qf3Winner}</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.qf4Winner}</span><strong>0</strong></div>
         </div>
       </div>
 
@@ -86,9 +97,16 @@ function show8SingleElim() {
 
         <div class="pro-match grand-spacer grand-match">
           <div class="match-label">GF • Bo5</div>
-          <div class="team-row"><span>Winner SF1</span><strong>0</strong></div>
-          <div class="team-row"><span>Winner SF2</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.sf1Winner}</span><strong>0</strong></div>
+          <div class="team-row"><span>${winners.sf2Winner}</span><strong>0</strong></div>
         </div>
+
+        ${winners.grandWinner ? `
+          <div class="pro-match grand-match">
+            <div class="match-label">CHAMPION</div>
+            <div class="team-row"><span>${winners.grandWinner}</span><strong>🏆</strong></div>
+          </div>
+        ` : ""}
       </div>
 
     </div>

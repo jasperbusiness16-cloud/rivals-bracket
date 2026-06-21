@@ -7,38 +7,34 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <script>
-function toggleMenu() {
-  document.getElementById("mobileNav")
-    .classList.toggle("active");
-}
-</script>
 
 <header>
   <a href="index.html" class="logo">
-  <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
-  <span>RIVALS GAUNTLET</span>
-</a>
+    <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
 
- <button class="menu-toggle" onclick="toggleMenu()">
-  ☰
-</button>
+  <button class="menu-toggle" onclick="toggleMenu()">
+    ☰
+  </button>
 
-<nav id="mobileNav">
-  <a href="index.html">Home</a>
-  <a href="tournament.html">Tournament</a>
-  <a href="watch.html">Watch Live</a>
-  <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
-  <a href="about.html">About</a>
+  <nav id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+    <a href="about.html">About</a>
 
-  <a class="join-btn mobile-join"
+    <a class="join-btn mobile-join"
+       href="https://discord.gg/82HPpfkhQN"
+       target="_blank">
+      JOIN THE ACTION
+    </a>
+  </nav>
+
+  <a class="join-btn desktop-join"
      href="https://discord.gg/82HPpfkhQN"
      target="_blank">
-     JOIN THE ACTION
-  </a>
-</nav>
-
-  <a class="join-btn" href="https://discord.gg/82HPpfkhQN" target="_blank">
     JOIN THE ACTION
   </a>
 </header>
@@ -78,6 +74,13 @@ function toggleMenu() {
     View Bracket
   </a>
 </section>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav")
+    .classList.toggle("active");
+}
+</script>
 
 </body>
 </html>

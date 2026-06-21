@@ -83,63 +83,7 @@
     <h2 data-event-name>Rivals Gauntlet Open #1</h2>
   </div>
 
-  <div class="pro-bracket">
-
-    <div class="pro-round">
-      <h3>Quarterfinals</h3>
-
-      <div class="pro-match">
-        <div class="match-label">QF1 • Bo3</div>
-        <div class="team-row"><span>Team 1</span><strong>0</strong></div>
-        <div class="team-row"><span>Team 2</span><strong>0</strong></div>
-      </div>
-
-      <div class="pro-match">
-        <div class="match-label">QF2 • Bo3</div>
-        <div class="team-row"><span>Team 3</span><strong>0</strong></div>
-        <div class="team-row"><span>Team 4</span><strong>0</strong></div>
-      </div>
-
-      <div class="pro-match">
-        <div class="match-label">QF3 • Bo3</div>
-        <div class="team-row"><span>Team 5</span><strong>0</strong></div>
-        <div class="team-row"><span>Team 6</span><strong>0</strong></div>
-      </div>
-
-      <div class="pro-match">
-        <div class="match-label">QF4 • Bo3</div>
-        <div class="team-row"><span>Team 7</span><strong>0</strong></div>
-        <div class="team-row"><span>Team 8</span><strong>0</strong></div>
-      </div>
-    </div>
-
-    <div class="pro-round">
-      <h3>Semifinals</h3>
-
-      <div class="pro-match semi-spacer">
-        <div class="match-label">SF1 • Bo3</div>
-        <div class="team-row"><span>Winner QF1</span><strong>0</strong></div>
-        <div class="team-row"><span>Winner QF2</span><strong>0</strong></div>
-      </div>
-
-      <div class="pro-match semi-spacer">
-        <div class="match-label">SF2 • Bo3</div>
-        <div class="team-row"><span>Winner QF3</span><strong>0</strong></div>
-        <div class="team-row"><span>Winner QF4</span><strong>0</strong></div>
-      </div>
-    </div>
-
-    <div class="pro-round">
-      <h3>Grand Finals</h3>
-
-      <div class="pro-match grand-spacer grand-match">
-        <div class="match-label">GF • Bo5</div>
-        <div class="team-row"><span>Winner SF1</span><strong>0</strong></div>
-        <div class="team-row"><span>Winner SF2</span><strong>0</strong></div>
-      </div>
-    </div>
-
-  </div>
+  <div id="dynamicBracket"></div>
 </section>
 
 <footer class="footer">
@@ -168,6 +112,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="firebase.js"></script>
 <script src="site.js"></script>
+<script src="tournament.js"></script>
 
 <script>
 function toggleMenu() {

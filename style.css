@@ -801,3 +801,17 @@ nav a {
     grid-template-columns: 1fr;
   }
 }
+
+.status-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  font-weight: bold;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}

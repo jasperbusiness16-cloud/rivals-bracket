@@ -22,42 +22,47 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team6").value = data.team6 || "";
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
-const teamOptions = [
-  data.team1 || "Team 1",
-  data.team2 || "Team 2",
-  data.team3 || "Team 3",
-  data.team4 || "Team 4",
-  data.team5 || "Team 5",
-  data.team6 || "Team 6",
-  data.team7 || "Team 7",
-  data.team8 || "Team 8"
-];
 
-[
-  "qf1Winner",
-  "qf2Winner",
-  "qf3Winner",
-  "qf4Winner",
-  "sf1Winner",
-  "sf2Winner",
-  "grandWinner"
-].forEach(id => {
+  const teamOptions = [
+    data.team1 || "Team 1",
+    data.team2 || "Team 2",
+    data.team3 || "Team 3",
+    data.team4 || "Team 4",
+    data.team5 || "Team 5",
+    data.team6 || "Team 6",
+    data.team7 || "Team 7",
+    data.team8 || "Team 8"
+  ];
+
+  fillWinnerDropdown("qf1Winner", teamOptions, data.qf1Winner);
+  fillWinnerDropdown("qf2Winner", teamOptions, data.qf2Winner);
+  fillWinnerDropdown("qf3Winner", teamOptions, data.qf3Winner);
+  fillWinnerDropdown("qf4Winner", teamOptions, data.qf4Winner);
+  fillWinnerDropdown("sf1Winner", teamOptions, data.sf1Winner);
+  fillWinnerDropdown("sf2Winner", teamOptions, data.sf2Winner);
+  fillWinnerDropdown("grandWinner", teamOptions, data.grandWinner);
+});
+
+function fillWinnerDropdown(id, teams, selectedValue) {
   const select = document.getElementById(id);
+  if (!select) return;
 
-  select.innerHTML = '<option value="">-- Select Winner --</option>';
+  select.innerHTML = "";
 
-  teamOptions.forEach(team => {
-    select.innerHTML += `<option value="${team}">${team}</option>`;
+  const blank = document.createElement("option");
+  blank.value = "";
+  blank.textContent = "-- Select Winner --";
+  select.appendChild(blank);
+
+  teams.forEach(team => {
+    const option = document.createElement("option");
+    option.value = team;
+    option.textContent = team;
+    select.appendChild(option);
   });
-});
-  document.getElementById("qf1Winner").value = data.qf1Winner || "";
-  document.getElementById("qf2Winner").value = data.qf2Winner || "";
-  document.getElementById("qf3Winner").value = data.qf3Winner || "";
-  document.getElementById("qf4Winner").value = data.qf4Winner || "";
-  document.getElementById("sf1Winner").value = data.sf1Winner || "";
-  document.getElementById("sf2Winner").value = data.sf2Winner || "";
-  document.getElementById("grandWinner").value = data.grandWinner || "";
-});
+
+  select.value = selectedValue || "";
+}
 
 function saveSiteData() {
   siteRef.update({
@@ -89,6 +94,5 @@ function saveSiteData() {
     grandWinner: document.getElementById("grandWinner").value
   });
 
-  document.getElementById("saveStatus").innerText =
-    "✓ Saved successfully";
+  document.getElementById("saveStatus").innerText = "✓ Saved successfully";
 }

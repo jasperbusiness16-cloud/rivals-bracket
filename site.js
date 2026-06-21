@@ -32,4 +32,7 @@ siteRef.on("value", (snapshot) => {
   document.querySelectorAll("[data-total-payout]").forEach(el => {
     el.innerText = data.totalPayout || "";
   });
+document.querySelectorAll("[data-registration-status]").forEach(el => {
+  el.innerText = data.registrationStatus || "";
+});
 });

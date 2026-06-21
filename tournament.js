@@ -1,7 +1,24 @@
 const bracketContainer = document.getElementById("dynamicBracket");
 
-database.ref("site/formatType").on("value", (snapshot) => {
-  const formatType = snapshot.val() || "8_single_elim";
+let teams = {};
+
+database.ref("site").on("value", (snapshot) => {
+  const data = snapshot.val();
+
+  if (!data) return;
+
+  teams = {
+    team1: data.team1 || "Team 1",
+    team2: data.team2 || "Team 2",
+    team3: data.team3 || "Team 3",
+    team4: data.team4 || "Team 4",
+    team5: data.team5 || "Team 5",
+    team6: data.team6 || "Team 6",
+    team7: data.team7 || "Team 7",
+    team8: data.team8 || "Team 8"
+  };
+
+  const formatType = data.formatType || "8_single_elim";
 
   if (formatType === "8_single_elim") {
     show8SingleElim();
@@ -25,26 +42,26 @@ function show8SingleElim() {
 
         <div class="pro-match">
           <div class="match-label">QF1 • Bo3</div>
-          <div class="team-row"><span>Team 1</span><strong>0</strong></div>
-          <div class="team-row"><span>Team 2</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team1}</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team2}</span><strong>0</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF2 • Bo3</div>
-          <div class="team-row"><span>Team 3</span><strong>0</strong></div>
-          <div class="team-row"><span>Team 4</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team3}</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team4}</span><strong>0</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF3 • Bo3</div>
-          <div class="team-row"><span>Team 5</span><strong>0</strong></div>
-          <div class="team-row"><span>Team 6</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team5}</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team6}</span><strong>0</strong></div>
         </div>
 
         <div class="pro-match">
           <div class="match-label">QF4 • Bo3</div>
-          <div class="team-row"><span>Team 7</span><strong>0</strong></div>
-          <div class="team-row"><span>Team 8</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team7}</span><strong>0</strong></div>
+          <div class="team-row"><span>${teams.team8}</span><strong>0</strong></div>
         </div>
       </div>
 

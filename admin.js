@@ -22,6 +22,14 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team6").value = data.team6 || "";
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
+
+  document.getElementById("qf1Winner").value = data.qf1Winner || "";
+  document.getElementById("qf2Winner").value = data.qf2Winner || "";
+  document.getElementById("qf3Winner").value = data.qf3Winner || "";
+  document.getElementById("qf4Winner").value = data.qf4Winner || "";
+  document.getElementById("sf1Winner").value = data.sf1Winner || "";
+  document.getElementById("sf2Winner").value = data.sf2Winner || "";
+  document.getElementById("grandWinner").value = data.grandWinner || "";
 });
 
 function saveSiteData() {
@@ -43,7 +51,15 @@ function saveSiteData() {
     team5: document.getElementById("team5").value,
     team6: document.getElementById("team6").value,
     team7: document.getElementById("team7").value,
-    team8: document.getElementById("team8").value
+    team8: document.getElementById("team8").value,
+
+    qf1Winner: document.getElementById("qf1Winner").value,
+    qf2Winner: document.getElementById("qf2Winner").value,
+    qf3Winner: document.getElementById("qf3Winner").value,
+    qf4Winner: document.getElementById("qf4Winner").value,
+    sf1Winner: document.getElementById("sf1Winner").value,
+    sf2Winner: document.getElementById("sf2Winner").value,
+    grandWinner: document.getElementById("grandWinner").value
   });
 
   document.getElementById("saveStatus").innerText =

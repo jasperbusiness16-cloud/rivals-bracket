@@ -35,4 +35,31 @@ siteRef.on("value", (snapshot) => {
 document.querySelectorAll("[data-registration-status]").forEach(el => {
   el.innerText = data.registrationStatus || "";
 });
+if (data.countdownDate) {
+  startCountdown(data.countdownDate);
+}
 });
+
+function startCountdown(targetDate) {
+  const target = new Date(targetDate).getTime();
+
+  setInterval(() => {
+    const now = new Date().getTime();
+    const distance = target - now;
+
+    if (distance <= 0) {
+      document.querySelectorAll("[data-countdown]").forEach(el => {
+        el.innerText = "Event is live";
+      });
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+
+    document.querySelectorAll("[data-countdown]").forEach(el => {
+      el.innerText = `${days}d ${hours}h ${minutes}m`;
+    });
+  }, 1000);
+}

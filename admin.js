@@ -23,6 +23,15 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
 
+  document.getElementById("qf1Team1Label").innerText = `${data.team1 || "Team 1"} Score`;
+  document.getElementById("qf1Team2Label").innerText = `${data.team2 || "Team 2"} Score`;
+  document.getElementById("qf2Team1Label").innerText = `${data.team3 || "Team 3"} Score`;
+  document.getElementById("qf2Team2Label").innerText = `${data.team4 || "Team 4"} Score`;
+  document.getElementById("qf3Team1Label").innerText = `${data.team5 || "Team 5"} Score`;
+  document.getElementById("qf3Team2Label").innerText = `${data.team6 || "Team 6"} Score`;
+  document.getElementById("qf4Team1Label").innerText = `${data.team7 || "Team 7"} Score`;
+  document.getElementById("qf4Team2Label").innerText = `${data.team8 || "Team 8"} Score`;
+
   document.getElementById("qf1Team1Score").value = data.qf1Team1Score || "";
   document.getElementById("qf1Team2Score").value = data.qf1Team2Score || "";
   document.getElementById("qf2Team1Score").value = data.qf2Team1Score || "";

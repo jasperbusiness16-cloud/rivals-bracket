@@ -10,3 +10,13 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+
+database.ref("site").set({
+  eventName: "Rivals Gauntlet Open #1",
+  status: "● OFFLINE",
+  nextEvent: "Saturday • 7:00 PM CST",
+  currentMatch: "No Match Live",
+  format: "8 Teams • Single Elimination",
+  prizePool: "$0",
+  totalPayout: "$0"
+});

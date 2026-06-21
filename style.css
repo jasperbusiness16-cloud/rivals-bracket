@@ -457,3 +457,21 @@ nav a {
 .stream-card {
   grid-column: 1 / -1;
 }
+
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-bottom: 20px;
+}
+
+.footer-socials a {
+  color: #b0b0b0;
+  font-size: 32px;
+  transition: .2s;
+}
+
+.footer-socials a:hover {
+  color: #e63946;
+  transform: scale(1.1);
+}

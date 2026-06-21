@@ -14,9 +14,7 @@
     <span>RIVALS GAUNTLET</span>
   </a>
 
-  <button class="menu-toggle" onclick="toggleMenu()">
-    ☰
-  </button>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
   <nav id="mobileNav">
     <a href="index.html">Home</a>
@@ -25,16 +23,12 @@
     <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
     <a href="about.html">About</a>
 
-    <a class="join-btn mobile-join"
-       href="https://discord.gg/82HPpfkhQN"
-       target="_blank">
+    <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
       JOIN THE ACTION
     </a>
   </nav>
 
-  <a class="join-btn desktop-join"
-     href="https://discord.gg/82HPpfkhQN"
-     target="_blank">
+  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
     JOIN THE ACTION
   </a>
 </header>
@@ -75,15 +69,33 @@
   </a>
 </section>
 
-<script>
-function toggleMenu() {
-  document.getElementById("mobileNav")
-    .classList.toggle("active");
-}
-</script>
+<section class="event-card">
+  <h2>LIVE STATUS</h2>
 
-</body>
-</html>
+  <h3>● OFFLINE</h3>
+
+  <p>Next Event:</p>
+  <p>Saturday • 7:00 PM CST</p>
+
+  <a href="watch.html" class="event-btn">
+    Watch Live
+  </a>
+</section>
+
+<section class="event-card">
+  <h2>JOIN THE COMMUNITY</h2>
+
+  <h3>Compete. Watch. Connect.</h3>
+
+  <p>
+    Sign up for future tournaments, find teammates,
+    watch broadcasts, and stay updated on upcoming events.
+  </p>
+
+  <a href="https://discord.gg/82HPpfkhQN" target="_blank" class="join-btn">
+    JOIN THE ACTION
+  </a>
+</section>
 
 <footer class="footer">
   <div class="footer-logo">RIVALS GAUNTLET</div>
@@ -97,3 +109,12 @@ function toggleMenu() {
 
   <p>© 2026 Rivals Gauntlet</p>
 </footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

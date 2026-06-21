@@ -863,3 +863,22 @@ nav a {
   color: #22c55e;
   font-weight: bold;
 }
+
+.team-row.winner-row {
+  background: rgba(34, 197, 94, 0.22);
+  border-left: 4px solid #22c55e;
+}
+
+.team-row.loser-row {
+  background: rgba(239, 68, 68, 0.18);
+  border-left: 4px solid #ef4444;
+}
+
+.team-row.winner-row span::after {
+  content: " ✓";
+  color: #22c55e;
+}
+
+.team-row.loser-row {
+  opacity: 0.82;
+}

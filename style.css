@@ -423,3 +423,10 @@ nav a {
   border: 2px solid #ff4655;
   box-shadow: 0 0 20px rgba(255,70,85,.25);
 }
+
+@media (max-width: 900px) {
+  .match.semi,
+  .match.final {
+    margin-top: 0;
+  }
+}

@@ -35,8 +35,8 @@
 
 <section class="page-hero">
   <p class="eyebrow">CURRENT TOURNAMENT</p>
-  <h1>Rivals Gauntlet Open #1</h1>
-  <p>8 Teams • Single Elimination • Bo3 Matches • Bo5 Grand Finals</p>
+  <h1 data-event-name>Rivals Gauntlet Open #1</h1>
+  <p data-format>8 Teams • Single Elimination • Bo3 Matches • Bo5 Grand Finals</p>
 </section>
 
 <section class="tournament-grid">
@@ -49,8 +49,8 @@
 
   <div class="info-card live-card">
     <h2>Live Match</h2>
-    <p class="status-dot">● Not Live</p>
-    <p>Current match will appear here.</p>
+    <p class="status-dot" data-status>● Not Live</p>
+    <p data-current-match>Current match will appear here.</p>
     <a href="watch.html" class="event-btn">Watch Live</a>
   </div>
 
@@ -88,15 +88,6 @@
   </div>
 </section>
 
-<script>
-function toggleMenu() {
-  document.getElementById("mobileNav").classList.toggle("active");
-}
-</script>
-
-</body>
-</html>
-
 <footer class="footer">
   <div class="footer-logo">RIVALS GAUNTLET</div>
 
@@ -109,3 +100,17 @@ function toggleMenu() {
 
   <p>© 2026 Rivals Gauntlet</p>
 </footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="site.js"></script>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

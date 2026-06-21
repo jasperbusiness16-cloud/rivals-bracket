@@ -23,10 +23,14 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
 
-  document.getElementById("qf1Score").value = data.qf1Score || "";
-  document.getElementById("qf2Score").value = data.qf2Score || "";
-  document.getElementById("qf3Score").value = data.qf3Score || "";
-  document.getElementById("qf4Score").value = data.qf4Score || "";
+  document.getElementById("qf1Team1Score").value = data.qf1Team1Score || "";
+  document.getElementById("qf1Team2Score").value = data.qf1Team2Score || "";
+  document.getElementById("qf2Team1Score").value = data.qf2Team1Score || "";
+  document.getElementById("qf2Team2Score").value = data.qf2Team2Score || "";
+  document.getElementById("qf3Team1Score").value = data.qf3Team1Score || "";
+  document.getElementById("qf3Team2Score").value = data.qf3Team2Score || "";
+  document.getElementById("qf4Team1Score").value = data.qf4Team1Score || "";
+  document.getElementById("qf4Team2Score").value = data.qf4Team2Score || "";
 
   const qf1Options = [data.team1 || "Team 1", data.team2 || "Team 2"];
   const qf2Options = [data.team3 || "Team 3", data.team4 || "Team 4"];
@@ -107,10 +111,14 @@ function saveSiteData() {
     sf2Winner: document.getElementById("sf2Winner").value,
     grandWinner: document.getElementById("grandWinner").value,
 
-    qf1Score: document.getElementById("qf1Score").value,
-    qf2Score: document.getElementById("qf2Score").value,
-    qf3Score: document.getElementById("qf3Score").value,
-    qf4Score: document.getElementById("qf4Score").value
+    qf1Team1Score: document.getElementById("qf1Team1Score").value,
+    qf1Team2Score: document.getElementById("qf1Team2Score").value,
+    qf2Team1Score: document.getElementById("qf2Team1Score").value,
+    qf2Team2Score: document.getElementById("qf2Team2Score").value,
+    qf3Team1Score: document.getElementById("qf3Team1Score").value,
+    qf3Team2Score: document.getElementById("qf3Team2Score").value,
+    qf4Team1Score: document.getElementById("qf4Team1Score").value,
+    qf4Team2Score: document.getElementById("qf4Team2Score").value
   });
 
   document.getElementById("saveStatus").innerText = "✓ Saved successfully";

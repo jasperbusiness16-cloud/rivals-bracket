@@ -827,3 +827,39 @@ nav a {
   color: white;
   font-size: 16px;
 }
+
+.admin-card {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.admin-card label {
+  display: block;
+  text-align: left;
+  margin-top: 18px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #f5f5f5;
+}
+
+.admin-card input,
+.admin-card select {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #303846;
+  background: #0d1117;
+  color: white;
+  font-size: 16px;
+}
+
+.admin-card .join-btn {
+  margin-top: 25px;
+}
+
+#saveStatus {
+  margin-top: 15px;
+  color: #22c55e;
+  font-weight: bold;
+}

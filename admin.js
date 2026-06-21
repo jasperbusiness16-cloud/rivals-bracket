@@ -13,6 +13,15 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("totalPayout").value = data.totalPayout || "";
   document.getElementById("eventsHosted").value = data.eventsHosted || "";
   document.getElementById("formatType").value = data.formatType || "8_single_elim";
+
+  document.getElementById("team1").value = data.team1 || "";
+  document.getElementById("team2").value = data.team2 || "";
+  document.getElementById("team3").value = data.team3 || "";
+  document.getElementById("team4").value = data.team4 || "";
+  document.getElementById("team5").value = data.team5 || "";
+  document.getElementById("team6").value = data.team6 || "";
+  document.getElementById("team7").value = data.team7 || "";
+  document.getElementById("team8").value = data.team8 || "";
 });
 
 function saveSiteData() {
@@ -25,8 +34,18 @@ function saveSiteData() {
     currentMatch: document.getElementById("currentMatch").value,
     totalPayout: document.getElementById("totalPayout").value,
     eventsHosted: document.getElementById("eventsHosted").value,
-    formatType: document.getElementById("formatType").value
+    formatType: document.getElementById("formatType").value,
+
+    team1: document.getElementById("team1").value,
+    team2: document.getElementById("team2").value,
+    team3: document.getElementById("team3").value,
+    team4: document.getElementById("team4").value,
+    team5: document.getElementById("team5").value,
+    team6: document.getElementById("team6").value,
+    team7: document.getElementById("team7").value,
+    team8: document.getElementById("team8").value
   });
 
-  document.getElementById("saveStatus").innerText = "✓ Saved successfully";
+  document.getElementById("saveStatus").innerText =
+    "✓ Saved successfully";
 }

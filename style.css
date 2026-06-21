@@ -375,3 +375,51 @@ nav a {
 .footer p {
   color: #666;
 }
+
+.esports-bracket {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.bracket-column {
+  width: 320px;
+}
+
+.bracket-column h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ff4655;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.match {
+  background: #161b22;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.match span {
+  display: block;
+  padding: 18px;
+  border-bottom: 1px solid #2d3748;
+}
+
+.match span:last-child {
+  border-bottom: none;
+}
+
+.match.semi {
+  margin-top: 80px;
+}
+
+.match.final {
+  margin-top: 160px;
+  border: 2px solid #ff4655;
+  box-shadow: 0 0 20px rgba(255,70,85,.25);
+}

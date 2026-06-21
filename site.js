@@ -35,6 +35,11 @@ siteRef.on("value", (snapshot) => {
 document.querySelectorAll("[data-registration-status]").forEach(el => {
   el.innerText = data.registrationStatus || "";
 });
+
+document.querySelectorAll("[data-events-hosted]").forEach(el => {
+  el.innerText = data.eventsHosted || "";
+});
+  
 if (data.countdownDate) {
   startCountdown(data.countdownDate);
 }

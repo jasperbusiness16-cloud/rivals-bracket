@@ -12,6 +12,7 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("currentMatch").value = data.currentMatch || "";
   document.getElementById("totalPayout").value = data.totalPayout || "";
   document.getElementById("eventsHosted").value = data.eventsHosted || "";
+  document.getElementById("formatType").value = data.formatType || "8_single_elim";
 });
 
 function saveSiteData() {
@@ -23,8 +24,9 @@ function saveSiteData() {
     status: document.getElementById("status").value,
     currentMatch: document.getElementById("currentMatch").value,
     totalPayout: document.getElementById("totalPayout").value,
-    eventsHosted: document.getElementById("eventsHosted").value
+    eventsHosted: document.getElementById("eventsHosted").value,
+    formatType: document.getElementById("formatType").value
   });
 
-  alert("Site updated!");
+  document.getElementById("saveStatus").innerText = "✓ Saved successfully";
 }

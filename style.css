@@ -11,6 +11,7 @@ body {
 }
 
 header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -36,6 +37,7 @@ header {
 nav {
   display: flex;
   gap: 24px;
+  align-items: center;
 }
 
 nav a {
@@ -47,6 +49,7 @@ nav a {
 .primary,
 .secondary,
 .event-btn {
+  display: inline-block;
   text-decoration: none;
   padding: 12px 22px;
   border-radius: 8px;
@@ -64,6 +67,8 @@ nav a {
   border: 1px solid #e63946;
   color: white;
 }
+
+/* HOME PAGE */
 
 .hero {
   text-align: center;
@@ -112,89 +117,8 @@ nav a {
   color: #c0c0c0;
 }
 
-.event-btn {
-  display: inline-block;
-  margin-top: 20px;
-}
+/* TOURNAMENT PAGE */
 
-@media (max-width: 900px) {
-  header {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  nav {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .hero h1 {
-    font-size: 48px;
-  }
-
-  .hero p {
-    font-size: 18px;
-  }
-}
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 32px;
-  cursor: pointer;
-}
-
-.mobile-join {
-  display: none;
-}
-
-@media (max-width: 900px) {
-
-  header {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  .desktop-join {
-    display: none;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  nav {
-    display: none;
-    position: absolute;
-    top: 90px;
-    left: 0;
-    width: 100%;
-    background: #161b22;
-    flex-direction: column;
-    align-items: center;
-    padding: 25px;
-    gap: 20px;
-    border-top: 1px solid #333;
-    z-index: 1000;
-  }
-
-  nav.active {
-    display: flex;
-  }
-
-  .mobile-join {
-    display: inline-block;
-  }
-
-  .logo span {
-    font-size: 18px;
-  }
-
-  .logo img {
-    height: 40px;
-  }
-}
 .page-hero {
   text-align: center;
   padding: 80px 20px 40px;
@@ -306,7 +230,74 @@ nav a {
   box-shadow: 0 0 24px rgba(230, 57, 70, 0.15);
 }
 
+/* MOBILE MENU */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.mobile-join {
+  display: none;
+}
+
 @media (max-width: 900px) {
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .desktop-join {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  nav {
+    display: none;
+    position: absolute;
+    top: 90px;
+    left: 0;
+    width: 100%;
+    background: #161b22;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+    gap: 20px;
+    border-top: 1px solid #333;
+    z-index: 1000;
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .mobile-join {
+    display: inline-block;
+  }
+
+  .logo span {
+    font-size: 18px;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
   .page-hero h1 {
     font-size: 40px;
   }

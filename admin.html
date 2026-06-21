@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Rivals Gauntlet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<section class="page-hero">
+  <p class="eyebrow">ADMIN PANEL</p>
+  <h1>Rivals Gauntlet Control</h1>
+  <p>Update tournament info across the website.</p>
+</section>
+
+<section class="event-card">
+  <h2>Site Controls</h2>
+
+  <input id="eventName" placeholder="Event Name">
+  <input id="prizePool" placeholder="Prize Pool">
+  <input id="registrationStatus" placeholder="Registration Status">
+  <input id="countdownDate" placeholder="Countdown Date">
+  <input id="status" placeholder="Live Status">
+  <input id="currentMatch" placeholder="Current Match">
+  <input id="totalPayout" placeholder="Total Payout">
+  <input id="eventsHosted" placeholder="Events Hosted">
+
+  <button class="join-btn" onclick="saveSiteData()">SAVE CHANGES</button>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>

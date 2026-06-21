@@ -23,24 +23,33 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
 
-  const teamOptions = [
-    data.team1 || "Team 1",
-    data.team2 || "Team 2",
-    data.team3 || "Team 3",
-    data.team4 || "Team 4",
-    data.team5 || "Team 5",
-    data.team6 || "Team 6",
-    data.team7 || "Team 7",
-    data.team8 || "Team 8"
-  ];
+  const qf1Options = [data.team1 || "Team 1", data.team2 || "Team 2"];
+const qf2Options = [data.team3 || "Team 3", data.team4 || "Team 4"];
+const qf3Options = [data.team5 || "Team 5", data.team6 || "Team 6"];
+const qf4Options = [data.team7 || "Team 7", data.team8 || "Team 8"];
 
-  fillWinnerDropdown("qf1Winner", teamOptions, data.qf1Winner);
-  fillWinnerDropdown("qf2Winner", teamOptions, data.qf2Winner);
-  fillWinnerDropdown("qf3Winner", teamOptions, data.qf3Winner);
-  fillWinnerDropdown("qf4Winner", teamOptions, data.qf4Winner);
-  fillWinnerDropdown("sf1Winner", teamOptions, data.sf1Winner);
-  fillWinnerDropdown("sf2Winner", teamOptions, data.sf2Winner);
-  fillWinnerDropdown("grandWinner", teamOptions, data.grandWinner);
+const sf1Options = [
+  data.qf1Winner || "Winner QF1",
+  data.qf2Winner || "Winner QF2"
+];
+
+const sf2Options = [
+  data.qf3Winner || "Winner QF3",
+  data.qf4Winner || "Winner QF4"
+];
+
+const grandOptions = [
+  data.sf1Winner || "Winner SF1",
+  data.sf2Winner || "Winner SF2"
+];
+
+fillWinnerDropdown("qf1Winner", qf1Options, data.qf1Winner);
+fillWinnerDropdown("qf2Winner", qf2Options, data.qf2Winner);
+fillWinnerDropdown("qf3Winner", qf3Options, data.qf3Winner);
+fillWinnerDropdown("qf4Winner", qf4Options, data.qf4Winner);
+fillWinnerDropdown("sf1Winner", sf1Options, data.sf1Winner);
+fillWinnerDropdown("sf2Winner", sf2Options, data.sf2Winner);
+fillWinnerDropdown("grandWinner", grandOptions, data.grandWinner);
 });
 
 function fillWinnerDropdown(id, teams, selectedValue) {

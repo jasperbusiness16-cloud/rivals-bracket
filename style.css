@@ -73,6 +73,15 @@ nav a {
 .hero {
   text-align: center;
   padding: 120px 20px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(230,57,70,.12) 0%,
+      rgba(13,17,23,0) 60%
+    );
+
+  position: relative;
 }
 
 .hero h1 {

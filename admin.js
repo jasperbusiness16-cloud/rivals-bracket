@@ -229,3 +229,82 @@ function saveSiteData() {
 
   document.getElementById("saveStatus").innerText = "✓ Saved successfully";
 }
+
+function resetScoresOnly() {
+  if (!confirm("Reset all match scores? Winners and team names will stay.")) return;
+
+  siteRef.update({
+    qf1Team1Score: "",
+    qf1Team2Score: "",
+    qf2Team1Score: "",
+    qf2Team2Score: "",
+    qf3Team1Score: "",
+    qf3Team2Score: "",
+    qf4Team1Score: "",
+    qf4Team2Score: "",
+
+    sf1Team1Score: "",
+    sf1Team2Score: "",
+    sf2Team1Score: "",
+    sf2Team2Score: "",
+
+    gfTeam1Score: "",
+    gfTeam2Score: ""
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Scores reset";
+}
+
+function resetWinnersOnly() {
+  if (!confirm("Reset all winners? Scores and team names will stay.")) return;
+
+  siteRef.update({
+    qf1Winner: "",
+    qf2Winner: "",
+    qf3Winner: "",
+    qf4Winner: "",
+    sf1Winner: "",
+    sf2Winner: "",
+    grandWinner: "",
+    currentMatch: "No Match Live",
+    status: "● OFFLINE"
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Winners reset";
+}
+
+function resetFullTournament() {
+  if (!confirm("Reset winners, scores, live status, and current match? Team names and event info will stay.")) return;
+
+  siteRef.update({
+    qf1Winner: "",
+    qf2Winner: "",
+    qf3Winner: "",
+    qf4Winner: "",
+    sf1Winner: "",
+    sf2Winner: "",
+    grandWinner: "",
+
+    qf1Team1Score: "",
+    qf1Team2Score: "",
+    qf2Team1Score: "",
+    qf2Team2Score: "",
+    qf3Team1Score: "",
+    qf3Team2Score: "",
+    qf4Team1Score: "",
+    qf4Team2Score: "",
+
+    sf1Team1Score: "",
+    sf1Team2Score: "",
+    sf2Team1Score: "",
+    sf2Team2Score: "",
+
+    gfTeam1Score: "",
+    gfTeam2Score: "",
+
+    currentMatch: "No Match Live",
+    status: "● OFFLINE"
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Tournament reset";
+}

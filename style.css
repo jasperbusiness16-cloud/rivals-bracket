@@ -988,3 +988,38 @@ nav a {
   color: #e63946;
   font-weight: 900;
 }
+
+.broadcast-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.broadcast-item {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.broadcast-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.broadcast-item h3 {
+  margin-bottom: 10px;
+}
+
+.broadcast-item p {
+  color: #b0b0b0;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .broadcast-grid {
+    grid-template-columns: 1fr;
+  }
+}

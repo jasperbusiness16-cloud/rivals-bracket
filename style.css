@@ -1166,8 +1166,10 @@ nav a {
 
 .goal-fill {
   height: 100%;
+  width: 0%;
   background: #e63946;
   border-radius: 999px;
+  transition: width 0.4s ease;
 }
 
 .donation-breakdown {

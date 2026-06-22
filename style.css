@@ -1218,3 +1218,9 @@ nav a {
   font-weight: bold;
   font-size: 14px;
 }
+
+@media (min-width: 901px) {
+  .logo span {
+    display: none;
+  }
+}

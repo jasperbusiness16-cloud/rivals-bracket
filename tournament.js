@@ -3,11 +3,14 @@ const bracketContainer = document.getElementById("dynamicBracket");
 let teams = {};
 let winners = {};
 let scores = {};
+let currentMatch = "";
 
 database.ref("site").on("value", (snapshot) => {
   const data = snapshot.val();
 
   if (!data) return;
+
+  currentMatch = (data.currentMatch || "").trim().toLowerCase();
 
   teams = {
     team1: data.team1 || "Team 1",
@@ -68,6 +71,10 @@ function rowClass(teamName, winnerName, hasWinner) {
   return teamName === winnerName ? "winner-row" : "loser-row";
 }
 
+function matchClass(matchId) {
+  return currentMatch === matchId.toLowerCase() ? "live-match" : "";
+}
+
 function show8SingleElim() {
   const qf1Done = winners.qf1Winner !== "";
   const qf2Done = winners.qf2Winner !== "";
@@ -90,25 +97,25 @@ function show8SingleElim() {
       <div class="pro-round">
         <h3>Quarterfinals</h3>
 
-        <div class="pro-match">
+        <div class="pro-match ${matchClass("QF1")}">
           <div class="match-label">QF1 • Bo3</div>
           <div class="team-row ${rowClass(teams.team1, winners.qf1Winner, qf1Done)}"><span>${teams.team1}</span><strong>${scores.qf1Team1Score}</strong></div>
           <div class="team-row ${rowClass(teams.team2, winners.qf1Winner, qf1Done)}"><span>${teams.team2}</span><strong>${scores.qf1Team2Score}</strong></div>
         </div>
 
-        <div class="pro-match">
+        <div class="pro-match ${matchClass("QF2")}">
           <div class="match-label">QF2 • Bo3</div>
           <div class="team-row ${rowClass(teams.team3, winners.qf2Winner, qf2Done)}"><span>${teams.team3}</span><strong>${scores.qf2Team1Score}</strong></div>
           <div class="team-row ${rowClass(teams.team4, winners.qf2Winner, qf2Done)}"><span>${teams.team4}</span><strong>${scores.qf2Team2Score}</strong></div>
         </div>
 
-        <div class="pro-match">
+        <div class="pro-match ${matchClass("QF3")}">
           <div class="match-label">QF3 • Bo3</div>
           <div class="team-row ${rowClass(teams.team5, winners.qf3Winner, qf3Done)}"><span>${teams.team5}</span><strong>${scores.qf3Team1Score}</strong></div>
           <div class="team-row ${rowClass(teams.team6, winners.qf3Winner, qf3Done)}"><span>${teams.team6}</span><strong>${scores.qf3Team2Score}</strong></div>
         </div>
 
-        <div class="pro-match">
+        <div class="pro-match ${matchClass("QF4")}">
           <div class="match-label">QF4 • Bo3</div>
           <div class="team-row ${rowClass(teams.team7, winners.qf4Winner, qf4Done)}"><span>${teams.team7}</span><strong>${scores.qf4Team1Score}</strong></div>
           <div class="team-row ${rowClass(teams.team8, winners.qf4Winner, qf4Done)}"><span>${teams.team8}</span><strong>${scores.qf4Team2Score}</strong></div>
@@ -118,13 +125,13 @@ function show8SingleElim() {
       <div class="pro-round">
         <h3>Semifinals</h3>
 
-        <div class="pro-match semi-spacer">
+        <div class="pro-match semi-spacer ${matchClass("SF1")}">
           <div class="match-label">SF1 • Bo3</div>
           <div class="team-row ${rowClass(sf1Team1, winners.sf1Winner, sf1Done)}"><span>${sf1Team1}</span><strong>${scores.sf1Team1Score}</strong></div>
           <div class="team-row ${rowClass(sf1Team2, winners.sf1Winner, sf1Done)}"><span>${sf1Team2}</span><strong>${scores.sf1Team2Score}</strong></div>
         </div>
 
-        <div class="pro-match semi-spacer">
+        <div class="pro-match semi-spacer ${matchClass("SF2")}">
           <div class="match-label">SF2 • Bo3</div>
           <div class="team-row ${rowClass(sf2Team1, winners.sf2Winner, sf2Done)}"><span>${sf2Team1}</span><strong>${scores.sf2Team1Score}</strong></div>
           <div class="team-row ${rowClass(sf2Team2, winners.sf2Winner, sf2Done)}"><span>${sf2Team2}</span><strong>${scores.sf2Team2Score}</strong></div>
@@ -134,7 +141,7 @@ function show8SingleElim() {
       <div class="pro-round">
         <h3>Grand Finals</h3>
 
-        <div class="pro-match grand-spacer grand-match">
+        <div class="pro-match grand-spacer grand-match ${matchClass("GF")}">
           <div class="match-label">GF • Bo5</div>
           <div class="team-row ${rowClass(gfTeam1, winners.grandWinner, grandDone)}"><span>${gfTeam1}</span><strong>${scores.gfTeam1Score}</strong></div>
           <div class="team-row ${rowClass(gfTeam2, winners.grandWinner, grandDone)}"><span>${gfTeam2}</span><strong>${scores.gfTeam2Score}</strong></div>

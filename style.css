@@ -923,3 +923,29 @@ nav a {
   font-weight: 900;
   text-transform: uppercase;
 }
+
+.live-now-card {
+  max-width: 900px;
+  margin: 30px auto 40px;
+  padding: 34px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(230,57,70,.22), rgba(13,17,23,.95));
+  border: 2px solid #e63946;
+  border-radius: 18px;
+  box-shadow: 0 0 35px rgba(230,57,70,.28);
+}
+
+.live-now-card h2 {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+
+.live-now-card p {
+  color: #ddd;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.live-now-card strong {
+  color: white;
+}

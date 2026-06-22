@@ -39,7 +39,14 @@ document.querySelectorAll("[data-registration-status]").forEach(el => {
 document.querySelectorAll("[data-events-hosted]").forEach(el => {
   el.innerText = data.eventsHosted || "";
 });
-  
+  const liveCard = document.getElementById("liveNowCard");
+
+if (liveCard) {
+  const isLive =
+    (data.status || "").toLowerCase().includes("live");
+
+  liveCard.style.display = isLive ? "block" : "none";
+}
 if (data.countdownDate) {
   startCountdown(data.countdownDate);
 }

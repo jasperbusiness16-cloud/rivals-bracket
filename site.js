@@ -63,6 +63,11 @@ const goalFill = document.getElementById("goalFill");
 if (goalFill) {
   goalFill.style.width = `${goalPercent}%`;
 }
+document.querySelectorAll("[data-goal-percent]").forEach(el => {
+  el.innerText =
+    `${data.prizePool || "$0"} / ${data.donationGoal || "$250"} (${Math.round(goalPercent)}%)`;
+});
+
   
   document.querySelectorAll("[data-total-payout]").forEach(el => {
     el.innerText = data.totalPayout || "";

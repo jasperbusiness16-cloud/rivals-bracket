@@ -148,11 +148,11 @@ function show8SingleElim() {
         </div>
 
         ${winners.grandWinner ? `
-          <div class="pro-match grand-match">
-            <div class="match-label">CHAMPION</div>
-            <div class="team-row winner-row"><span>${winners.grandWinner}</span><strong>🏆</strong></div>
-          </div>
-        ` : ""}
+  <div class="champion-banner">
+    <div class="champion-title">🏆 Tournament Champion</div>
+    <div class="champion-name">${winners.grandWinner}</div>
+  </div>
+` : ""}
       </div>
 
     </div>

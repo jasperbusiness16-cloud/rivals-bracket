@@ -1040,8 +1040,10 @@ nav a {
 }
 
 .feature-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 360px;
+  background: #161b22;
+  border: 1px solid #252c36;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  min-height: auto;
 }

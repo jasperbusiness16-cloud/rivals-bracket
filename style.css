@@ -1169,3 +1169,42 @@ nav a {
   background: #e63946;
   border-radius: 999px;
 }
+
+.donation-breakdown {
+  max-width: 700px;
+  margin: 30px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.donation-breakdown div {
+  background: #0d1117;
+  border: 1px solid #303846;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.donation-breakdown span {
+  display: block;
+  color: #8b949e;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.donation-breakdown strong {
+  display: block;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .donation-breakdown {
+    grid-template-columns: 1fr;
+  }
+}

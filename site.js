@@ -40,6 +40,10 @@ document.querySelectorAll("[data-community-donations]").forEach(el => {
   el.innerText = data.communityDonations || "+$0";
 });
 
+document.querySelectorAll("[data-donation-goal]").forEach(el => {
+  el.innerText = data.donationGoal || "$250";
+});
+  
 const goalAmount = Number(
   (data.donationGoal || "$250").replace(/[^0-9.]/g, "")
 );

@@ -72,15 +72,18 @@ function rowClass(teamName, winnerName, hasWinner) {
 }
 
 function matchClass(matchId) {
-  const matchMap = {
-    QF1: "qf1 • bo3",
-    QF2: "qf2 • bo3",
-    QF3: "qf3 • bo3",
-    QF4: "qf4 • bo3",
-    SF1: "sf1 • bo3",
-    SF2: "sf2 • bo3",
-    GF: "grand finals • bo5"
-  };
+  const match = currentMatch.toLowerCase();
+
+  if (matchId === "QF1" && match.includes("qf1")) return "live-match";
+  if (matchId === "QF2" && match.includes("qf2")) return "live-match";
+  if (matchId === "QF3" && match.includes("qf3")) return "live-match";
+  if (matchId === "QF4" && match.includes("qf4")) return "live-match";
+  if (matchId === "SF1" && match.includes("sf1")) return "live-match";
+  if (matchId === "SF2" && match.includes("sf2")) return "live-match";
+  if (matchId === "GF" && match.includes("grand finals")) return "live-match";
+
+  return "";
+}
 
   return currentMatch === matchMap[matchId] ? "live-match" : "";
 }

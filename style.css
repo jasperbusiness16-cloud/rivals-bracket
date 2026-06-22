@@ -1230,3 +1230,16 @@ nav a {
     display: none;
   }
 }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 360px));
+  justify-content: center;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

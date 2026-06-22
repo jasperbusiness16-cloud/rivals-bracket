@@ -882,3 +882,7 @@ nav a {
 .team-row.loser-row {
   opacity: 0.82;
 }
+
+.team-row.loser-row {
+  opacity: 0.72;
+}

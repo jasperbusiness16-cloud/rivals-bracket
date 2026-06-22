@@ -897,3 +897,29 @@ nav a {
   color: #e63946;
   margin-left: 8px;
 }
+
+.champion-banner {
+  margin-top: 22px;
+  padding: 28px 20px;
+  border: 2px solid #facc15;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(250,204,21,.18), rgba(230,57,70,.12));
+  text-align: center;
+  box-shadow: 0 0 35px rgba(250,204,21,.25);
+}
+
+.champion-banner .champion-title {
+  color: #facc15;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.champion-banner .champion-name {
+  color: white;
+  font-size: 30px;
+  font-weight: 900;
+  text-transform: uppercase;
+}

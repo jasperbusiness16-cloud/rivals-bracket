@@ -40,7 +40,9 @@ document.querySelectorAll("[data-community-donations]").forEach(el => {
   el.innerText = data.communityDonations || "+$0";
 });
 
-const goalAmount = 250;
+const goalAmount = Number(
+  (data.donationGoal || "$250").replace(/[^0-9.]/g, "")
+);
 
 const currentPrizeNumber = Number(
   (data.prizePool || "0").replace(/[^0-9.]/g, "")
@@ -53,7 +55,7 @@ document.querySelectorAll("[data-goal-current]").forEach(el => {
 });
 
 document.querySelectorAll("[data-goal-target]").forEach(el => {
-  el.innerText = `$${goalAmount} Goal`;
+  el.innerText = `${data.donationGoal || "$250"} Goal`;
 });
 
 const goalFill = document.getElementById("goalFill");

@@ -1,1 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donations | Rivals Gauntlet</title>
+  <link rel="stylesheet" href="style.css">
 
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <nav id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="donate.html">Donations</a>
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+    <a href="about.html">About</a>
+
+    <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+      JOIN THE ACTION
+    </a>
+  </nav>
+
+  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+    JOIN THE ACTION
+  </a>
+</header>
+
+<section class="page-hero">
+  <p class="eyebrow">COMMUNITY FUNDED PRIZE POOLS</p>
+  <h1>Support Rivals Gauntlet</h1>
+  <p>
+    Help grow future tournaments, increase prize pools, and support the Rivals Gauntlet community.
+  </p>
+</section>
+
+<section class="event-card">
+  <h2>CURRENT PRIZE POOL</h2>
+
+  <div class="prize-card">
+    <p>PRIZE POOL</p>
+    <strong data-prize-pool>$60</strong>
+  </div>
+
+  <p>
+    Community donations help increase future Rivals Gauntlet prize pools.
+  </p>
+</section>
+
+<section class="event-card">
+  <h2>COMMUNITY GOAL</h2>
+
+  <div class="donation-goal">
+    <div class="goal-top">
+      <span data-prize-pool>$60</span>
+      <span>$250 Goal</span>
+    </div>
+
+    <div class="goal-bar">
+      <div class="goal-fill" style="width:24%;"></div>
+    </div>
+  </div>
+
+  <p>
+    The goal bar is currently updated manually and will be improved as the event grows.
+  </p>
+</section>
+
+<section class="event-card">
+  <h2>DONATE TO THE PRIZE POOL</h2>
+
+  <p>
+    100% of community donations received for Rivals Gauntlet prize funding go toward tournament prize pools and community events.
+  </p>
+
+  <a href="#" class="join-btn">
+    DONATION LINK COMING SOON
+  </a>
+
+  <p style="margin-top:18px;font-size:13px;color:#777;">
+    Donations are voluntary and non-refundable.
+  </p>
+</section>
+
+<section class="features-section">
+  <div class="section-heading">
+    <p class="eyebrow">TRANSPARENCY</p>
+    <h2>Where Donations Go</h2>
+  </div>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <span>🏆</span>
+      <h3>Prize Pools</h3>
+      <p>Community donations are used to increase tournament rewards for competing players.</p>
+    </div>
+
+    <div class="feature-card">
+      <span>📊</span>
+      <h3>Public Tracking</h3>
+      <p>Prize pool totals are displayed on the site so players and viewers can see what is being funded.</p>
+    </div>
+
+    <div class="feature-card">
+      <span>🎙️</span>
+      <h3>Community Events</h3>
+      <p>Support helps Rivals Gauntlet continue creating organized broadcasts and competitive events.</p>
+    </div>
+
+    <div class="feature-card">
+      <span>🤝</span>
+      <h3>Community Support</h3>
+      <p>Every contribution helps make future tournaments feel bigger, better, and more rewarding.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="event-card">
+  <h2>COMMUNITY SUPPORTERS</h2>
+  <p>Supporter recognition may be added here in the future.</p>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">RIVALS GAUNTLET</div>
+
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="donate.html">Donations</a>
+  </div>
+
+  <div class="footer-socials">
+    <a href="https://www.twitch.tv/atrophylive" target="_blank">
+      <i class="fab fa-twitch"></i>
+    </a>
+
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">
+      <i class="fab fa-discord"></i>
+    </a>
+  </div>
+
+  <p>© 2026 Rivals Gauntlet</p>
+
+  <p style="
+    margin-top:12px;
+    font-size:12px;
+    color:#666;
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+  ">
+    Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
+  </p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="site.js"></script>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>

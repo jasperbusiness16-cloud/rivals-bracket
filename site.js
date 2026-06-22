@@ -43,6 +43,24 @@ siteRef.on("value", (snapshot) => {
     el.innerText = data.eventsHosted || "";
   });
 
+document.querySelectorAll("[data-next-event-date]").forEach(el => {
+  if (!data.countdownDate) {
+    el.innerText = "";
+    return;
+  }
+
+  const eventDate = new Date(data.countdownDate);
+
+  el.innerText = eventDate.toLocaleString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short"
+  });
+});
+  
   const liveCard = document.getElementById("liveNowCard");
 
   if (liveCard) {

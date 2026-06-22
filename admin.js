@@ -197,6 +197,7 @@ function saveSiteData() {
     prizePool: document.getElementById("prizePool").value,
     startingPrizePool: document.getElementById("startingPrizePool").value,
     communityDonations: document.getElementById("communityDonations").value,
+    donationGoal: document.getElementById("donationGoal").value,
     registrationStatus: document.getElementById("registrationStatus").value,
     countdownDate: document.getElementById("countdownDate").value,
     status: document.getElementById("status").value,

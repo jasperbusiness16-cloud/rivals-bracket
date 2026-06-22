@@ -39,6 +39,28 @@ document.querySelectorAll("[data-starting-prize-pool]").forEach(el => {
 document.querySelectorAll("[data-community-donations]").forEach(el => {
   el.innerText = data.communityDonations || "+$0";
 });
+
+const goalAmount = 250;
+
+const currentPrizeNumber = Number(
+  (data.prizePool || "0").replace(/[^0-9.]/g, "")
+);
+
+const goalPercent = Math.min((currentPrizeNumber / goalAmount) * 100, 100);
+
+document.querySelectorAll("[data-goal-current]").forEach(el => {
+  el.innerText = data.prizePool || "$0";
+});
+
+document.querySelectorAll("[data-goal-target]").forEach(el => {
+  el.innerText = `$${goalAmount} Goal`;
+});
+
+const goalFill = document.getElementById("goalFill");
+
+if (goalFill) {
+  goalFill.style.width = `${goalPercent}%`;
+}
   
   document.querySelectorAll("[data-total-payout]").forEach(el => {
     el.innerText = data.totalPayout || "";

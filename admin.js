@@ -23,6 +23,13 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
 
+  const sf1Team1 = data.qf1Winner || "SF1 Team 1";
+  const sf1Team2 = data.qf2Winner || "SF1 Team 2";
+  const sf2Team1 = data.qf3Winner || "SF2 Team 1";
+  const sf2Team2 = data.qf4Winner || "SF2 Team 2";
+  const gfTeam1 = data.sf1Winner || "GF Team 1";
+  const gfTeam2 = data.sf2Winner || "GF Team 2";
+
   document.getElementById("qf1Team1Label").innerText = `${data.team1 || "Team 1"} Score`;
   document.getElementById("qf1Team2Label").innerText = `${data.team2 || "Team 2"} Score`;
   document.getElementById("qf2Team1Label").innerText = `${data.team3 || "Team 3"} Score`;
@@ -32,6 +39,13 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("qf4Team1Label").innerText = `${data.team7 || "Team 7"} Score`;
   document.getElementById("qf4Team2Label").innerText = `${data.team8 || "Team 8"} Score`;
 
+  document.getElementById("sf1Team1Label").innerText = `${sf1Team1} Score`;
+  document.getElementById("sf1Team2Label").innerText = `${sf1Team2} Score`;
+  document.getElementById("sf2Team1Label").innerText = `${sf2Team1} Score`;
+  document.getElementById("sf2Team2Label").innerText = `${sf2Team2} Score`;
+  document.getElementById("gfTeam1Label").innerText = `${gfTeam1} Score`;
+  document.getElementById("gfTeam2Label").innerText = `${gfTeam2} Score`;
+
   document.getElementById("qf1Team1Score").value = data.qf1Team1Score || "";
   document.getElementById("qf1Team2Score").value = data.qf1Team2Score || "";
   document.getElementById("qf2Team1Score").value = data.qf2Team1Score || "";
@@ -40,6 +54,13 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("qf3Team2Score").value = data.qf3Team2Score || "";
   document.getElementById("qf4Team1Score").value = data.qf4Team1Score || "";
   document.getElementById("qf4Team2Score").value = data.qf4Team2Score || "";
+
+  document.getElementById("sf1Team1Score").value = data.sf1Team1Score || "";
+  document.getElementById("sf1Team2Score").value = data.sf1Team2Score || "";
+  document.getElementById("sf2Team1Score").value = data.sf2Team1Score || "";
+  document.getElementById("sf2Team2Score").value = data.sf2Team2Score || "";
+  document.getElementById("gfTeam1Score").value = data.gfTeam1Score || "";
+  document.getElementById("gfTeam2Score").value = data.gfTeam2Score || "";
 
   const qf1Options = [data.team1 || "Team 1", data.team2 || "Team 2"];
   const qf2Options = [data.team3 || "Team 3", data.team4 || "Team 4"];
@@ -127,7 +148,14 @@ function saveSiteData() {
     qf3Team1Score: document.getElementById("qf3Team1Score").value,
     qf3Team2Score: document.getElementById("qf3Team2Score").value,
     qf4Team1Score: document.getElementById("qf4Team1Score").value,
-    qf4Team2Score: document.getElementById("qf4Team2Score").value
+    qf4Team2Score: document.getElementById("qf4Team2Score").value,
+
+    sf1Team1Score: document.getElementById("sf1Team1Score").value,
+    sf1Team2Score: document.getElementById("sf1Team2Score").value,
+    sf2Team1Score: document.getElementById("sf2Team1Score").value,
+    sf2Team2Score: document.getElementById("sf2Team2Score").value,
+    gfTeam1Score: document.getElementById("gfTeam1Score").value,
+    gfTeam2Score: document.getElementById("gfTeam2Score").value
   });
 
   document.getElementById("saveStatus").innerText = "✓ Saved successfully";

@@ -1031,3 +1031,17 @@ nav a {
   display: block;
   margin: 0 auto 16px;
 }
+
+.feature-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.feature-icon img {
+  width: 64px !important;
+  height: 64px !important;
+  max-width: 64px !important;
+  max-height: 64px !important;
+  object-fit: contain;
+}

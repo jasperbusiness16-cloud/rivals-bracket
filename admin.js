@@ -6,6 +6,8 @@ siteRef.on("value", (snapshot) => {
 
   document.getElementById("eventName").value = data.eventName || "";
   document.getElementById("prizePool").value = data.prizePool || "";
+  document.getElementById("startingPrizePool").value = data.startingPrizePool || "";
+  document.getElementById("communityDonations").value = data.communityDonations || "";
   document.getElementById("registrationStatus").value = data.registrationStatus || "";
   document.getElementById("countdownDate").value = data.countdownDate || "";
   document.getElementById("status").value = data.status || "";

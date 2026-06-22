@@ -85,8 +85,7 @@ function matchClass(matchId) {
   return "";
 }
 
-  return currentMatch === matchMap[matchId] ? "live-match" : "";
-}
+  
 
 function show8SingleElim() {
   const qf1Done = winners.qf1Winner !== "";

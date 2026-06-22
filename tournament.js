@@ -72,7 +72,17 @@ function rowClass(teamName, winnerName, hasWinner) {
 }
 
 function matchClass(matchId) {
-  return currentMatch === matchId.toLowerCase() ? "live-match" : "";
+  const matchMap = {
+    QF1: "qf1 • bo3",
+    QF2: "qf2 • bo3",
+    QF3: "qf3 • bo3",
+    QF4: "qf4 • bo3",
+    SF1: "sf1 • bo3",
+    SF2: "sf2 • bo3",
+    GF: "grand finals • bo5"
+  };
+
+  return currentMatch === matchMap[matchId] ? "live-match" : "";
 }
 
 function show8SingleElim() {

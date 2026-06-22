@@ -1053,3 +1053,29 @@ nav a {
 
   min-height: 240px;
 }
+
+.features-section .features-grid .feature-card {
+  padding: 28px 24px !important;
+  min-height: 240px !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.features-section .feature-icon {
+  margin-bottom: 16px !important;
+}
+
+.features-section .feature-icon img {
+  width: 120px !important;
+  height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
+  object-fit: contain !important;
+}
+
+.features-section .feature-card h3 {
+  margin: 12px 0 10px !important;
+}

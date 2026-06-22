@@ -973,3 +973,18 @@ nav a {
 .live-now-card strong {
   color: white;
 }
+
+.pro-match.live-match {
+  border: 2px solid #e63946;
+  box-shadow: 0 0 28px rgba(230, 57, 70, 0.45);
+}
+
+.pro-match.live-match .match-label {
+  color: #ffffff;
+}
+
+.pro-match.live-match .match-label::after {
+  content: "  🔴 LIVE";
+  color: #e63946;
+  font-weight: 900;
+}

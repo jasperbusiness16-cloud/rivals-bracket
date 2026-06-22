@@ -1035,13 +1035,21 @@ nav a {
 .feature-icon {
   display: flex;
   justify-content: center;
-  margin-bottom: 18px;
+  align-items: center;
+  margin-bottom: 22px;
 }
 
 .feature-icon img {
-  width: 64px !important;
-  height: 64px !important;
-  max-width: 64px !important;
-  max-height: 64px !important;
+  width: 120px !important;
+  height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
   object-fit: contain;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 360px;
 }

@@ -1039,11 +1039,11 @@ nav a {
   object-fit: contain;
 }
 
-.feature-card {
+.features-section .feature-card {
   background: #161b22;
   border: 1px solid #252c36;
   border-radius: 16px;
-  padding: 34px 24px;
+  padding: 28px 24px;
   text-align: center;
 
   display: flex;

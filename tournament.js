@@ -38,7 +38,14 @@ database.ref("site").on("value", (snapshot) => {
     qf3Team1Score: data.qf3Team1Score || "0",
     qf3Team2Score: data.qf3Team2Score || "0",
     qf4Team1Score: data.qf4Team1Score || "0",
-    qf4Team2Score: data.qf4Team2Score || "0"
+    qf4Team2Score: data.qf4Team2Score || "0",
+
+    sf1Team1Score: data.sf1Team1Score || "0",
+    sf1Team2Score: data.sf1Team2Score || "0",
+    sf2Team1Score: data.sf2Team1Score || "0",
+    sf2Team2Score: data.sf2Team2Score || "0",
+    gfTeam1Score: data.gfTeam1Score || "0",
+    gfTeam2Score: data.gfTeam2Score || "0"
   };
 
   const formatType = data.formatType || "8_single_elim";
@@ -69,6 +76,13 @@ function show8SingleElim() {
   const sf1Done = winners.sf1Winner !== "";
   const sf2Done = winners.sf2Winner !== "";
   const grandDone = winners.grandWinner !== "";
+
+  const sf1Team1 = winners.qf1Winner || "Winner QF1";
+  const sf1Team2 = winners.qf2Winner || "Winner QF2";
+  const sf2Team1 = winners.qf3Winner || "Winner QF3";
+  const sf2Team2 = winners.qf4Winner || "Winner QF4";
+  const gfTeam1 = winners.sf1Winner || "Winner SF1";
+  const gfTeam2 = winners.sf2Winner || "Winner SF2";
 
   bracketContainer.innerHTML = `
     <div class="pro-bracket">
@@ -106,14 +120,14 @@ function show8SingleElim() {
 
         <div class="pro-match semi-spacer">
           <div class="match-label">SF1 • Bo3</div>
-          <div class="team-row ${rowClass(winners.qf1Winner || "Winner QF1", winners.sf1Winner, sf1Done)}"><span>${winners.qf1Winner || "Winner QF1"}</span><strong>0</strong></div>
-          <div class="team-row ${rowClass(winners.qf2Winner || "Winner QF2", winners.sf1Winner, sf1Done)}"><span>${winners.qf2Winner || "Winner QF2"}</span><strong>0</strong></div>
+          <div class="team-row ${rowClass(sf1Team1, winners.sf1Winner, sf1Done)}"><span>${sf1Team1}</span><strong>${scores.sf1Team1Score}</strong></div>
+          <div class="team-row ${rowClass(sf1Team2, winners.sf1Winner, sf1Done)}"><span>${sf1Team2}</span><strong>${scores.sf1Team2Score}</strong></div>
         </div>
 
         <div class="pro-match semi-spacer">
           <div class="match-label">SF2 • Bo3</div>
-          <div class="team-row ${rowClass(winners.qf3Winner || "Winner QF3", winners.sf2Winner, sf2Done)}"><span>${winners.qf3Winner || "Winner QF3"}</span><strong>0</strong></div>
-          <div class="team-row ${rowClass(winners.qf4Winner || "Winner QF4", winners.sf2Winner, sf2Done)}"><span>${winners.qf4Winner || "Winner QF4"}</span><strong>0</strong></div>
+          <div class="team-row ${rowClass(sf2Team1, winners.sf2Winner, sf2Done)}"><span>${sf2Team1}</span><strong>${scores.sf2Team1Score}</strong></div>
+          <div class="team-row ${rowClass(sf2Team2, winners.sf2Winner, sf2Done)}"><span>${sf2Team2}</span><strong>${scores.sf2Team2Score}</strong></div>
         </div>
       </div>
 
@@ -122,8 +136,8 @@ function show8SingleElim() {
 
         <div class="pro-match grand-spacer grand-match">
           <div class="match-label">GF • Bo5</div>
-          <div class="team-row ${rowClass(winners.sf1Winner || "Winner SF1", winners.grandWinner, grandDone)}"><span>${winners.sf1Winner || "Winner SF1"}</span><strong>0</strong></div>
-          <div class="team-row ${rowClass(winners.sf2Winner || "Winner SF2", winners.grandWinner, grandDone)}"><span>${winners.sf2Winner || "Winner SF2"}</span><strong>0</strong></div>
+          <div class="team-row ${rowClass(gfTeam1, winners.grandWinner, grandDone)}"><span>${gfTeam1}</span><strong>${scores.gfTeam1Score}</strong></div>
+          <div class="team-row ${rowClass(gfTeam2, winners.grandWinner, grandDone)}"><span>${gfTeam2}</span><strong>${scores.gfTeam2Score}</strong></div>
         </div>
 
         ${winners.grandWinner ? `

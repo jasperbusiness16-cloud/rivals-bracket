@@ -1109,12 +1109,14 @@ nav a {
 }
 
 .caster-card img {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
+  width: 260px;
+  height: 320px;
+  border-radius: 12px;
   object-fit: cover;
+  object-position: center;
   border: 2px solid #e63946;
   margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(230,57,70,.25);
 }
 
 .caster-card h3 {

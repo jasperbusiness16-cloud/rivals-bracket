@@ -704,6 +704,30 @@ nav a {
   color: #ffffff;
 }
 
+.prize-card {
+  margin: 18px auto;
+  padding: 14px;
+  max-width: 260px;
+  border: 1px solid #e63946;
+  border-radius: 14px;
+  background: rgba(230, 57, 70, 0.08);
+  text-align: center;
+}
+
+.prize-card p {
+  color: #e63946;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.prize-card strong {
+  display: block;
+  font-size: 34px;
+  color: #ffffff;
+}
+
 .stats-section {
   max-width: 900px;
   margin: 0 auto 100px;

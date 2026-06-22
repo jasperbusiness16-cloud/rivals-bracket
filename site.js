@@ -27,10 +27,19 @@ siteRef.on("value", (snapshot) => {
     el.innerText = data.format || "";
   });
 
+  
   document.querySelectorAll("[data-prize-pool]").forEach(el => {
-    el.innerText = data.prizePool || "";
-  });
+  el.innerText = data.prizePool || "";
+});
 
+document.querySelectorAll("[data-starting-prize-pool]").forEach(el => {
+  el.innerText = data.startingPrizePool || "$0";
+});
+
+document.querySelectorAll("[data-community-donations]").forEach(el => {
+  el.innerText = data.communityDonations || "+$0";
+});
+  
   document.querySelectorAll("[data-total-payout]").forEach(el => {
     el.innerText = data.totalPayout || "";
   });

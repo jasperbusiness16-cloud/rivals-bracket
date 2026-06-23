@@ -142,6 +142,13 @@ nav a {
   z-index: 2;
 }
 
+.hero-logo {
+  width: min(850px, 92vw);
+  margin: 10px auto 20px;
+  display: block;
+  filter: drop-shadow(0 0 28px rgba(230,57,70,.25));
+}
+
 .hero-buttons {
   display: flex;
   justify-content: center;

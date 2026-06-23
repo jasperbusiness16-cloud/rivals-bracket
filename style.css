@@ -10,6 +10,19 @@ body {
   font-family: Arial, sans-serif;
 }
 
+h1,
+h2,
+h3,
+.logo span,
+.join-btn,
+.primary,
+.secondary,
+.event-btn {
+  font-family: 'Rajdhani', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
 header {
   position: relative;
   display: flex;

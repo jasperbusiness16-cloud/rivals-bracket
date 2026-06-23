@@ -1,4 +1,6 @@
 const siteRef = database.ref("site");
+let latestSiteData = {};
+let latestDonations = [];
 
 siteRef.on("value", (snapshot) => {
   const data = snapshot.val();

@@ -71,17 +71,44 @@ nav a {
 /* HOME PAGE */
 
 .hero {
+  position: relative;
+  overflow: hidden;
+
   text-align: center;
-  padding: 120px 20px;
+  padding: 140px 20px 120px;
 
   background:
-    radial-gradient(
-      circle at center,
-      rgba(230,57,70,.12) 0%,
-      rgba(13,17,23,0) 60%
+    radial-gradient(circle at 15% 50%, rgba(230,57,70,.22), transparent 28%),
+    radial-gradient(circle at 85% 35%, rgba(230,57,70,.15), transparent 30%),
+    linear-gradient(
+      135deg,
+      #050505 0%,
+      #0d1117 55%,
+      #050505 100%
+    );
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      120deg,
+      transparent 0 42%,
+      rgba(230,57,70,.15) 43%,
+      transparent 44%
+    ),
+    linear-gradient(
+      120deg,
+      transparent 0 58%,
+      rgba(255,255,255,.04) 59%,
+      transparent 60%
     );
 
-  position: relative;
+  opacity: .5;
+  pointer-events: none;
 }
 
 .hero h1 {

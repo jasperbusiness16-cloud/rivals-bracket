@@ -98,7 +98,7 @@ nav a {
     radial-gradient(circle at 88% 40%, rgba(230,57,70,.20), transparent 26%),
     linear-gradient(135deg, #020202 0%, #07090d 45%, #020202 100%);
 }
-}
+
 
 .hero::before {
   content: "";
@@ -115,8 +115,9 @@ nav a {
   pointer-events: none;
 }
 
-  opacity: .5;
-  pointer-events: none;
+  .hero > * {
+  position: relative;
+  z-index: 2;
 }
 
 .hero h1 {

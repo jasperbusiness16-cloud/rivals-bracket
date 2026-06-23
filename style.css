@@ -647,19 +647,6 @@ nav a {
   }
 }
 
-.hero-logo {
-  display: block;
-  width: 100%;
-  max-width: 1200px;
-  height: auto;
-  margin: 0 auto 10px;
-}
-
-@media (min-width: 901px) {
-  .hero-logo {
-    max-width: 900px;
-  }
-}
 
 .features-section {
   max-width: 1100px;

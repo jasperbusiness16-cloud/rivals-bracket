@@ -7,6 +7,7 @@ siteRef.on("value", (snapshot) => {
 
   if (!data) return;
 latestSiteData = data;
+updateDonationTotals();
   
   const matchDisplay = getCurrentMatchDisplay(data);
 

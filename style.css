@@ -86,19 +86,14 @@ nav a {
 .hero {
   position: relative;
   overflow: hidden;
-
   text-align: center;
-  padding: 90px 20px 80px;
+  padding: 115px 20px 95px;
 
   background:
-    radial-gradient(circle at 15% 50%, rgba(230,57,70,.22), transparent 28%),
-    radial-gradient(circle at 85% 35%, rgba(230,57,70,.15), transparent 30%),
-    linear-gradient(
-      135deg,
-      #050505 0%,
-      #0d1117 55%,
-      #050505 100%
-    );
+    radial-gradient(circle at 12% 55%, rgba(230,57,70,.28), transparent 22%),
+    radial-gradient(circle at 88% 40%, rgba(230,57,70,.20), transparent 26%),
+    linear-gradient(135deg, #020202 0%, #07090d 45%, #020202 100%);
+}
 }
 
 .hero::before {

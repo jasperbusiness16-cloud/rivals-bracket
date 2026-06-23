@@ -190,3 +190,79 @@ function startCountdown(targetDate) {
     });
   }, 1000);
 }
+
+const donationsRef = database.ref("donations");
+
+donationsRef.on("value", (snapshot) => {
+  const data = snapshot.val() || {};
+
+  const donations = Object.values(data)
+    .filter(d => d && d.name && d.amount)
+    .map(d => ({
+      name: d.name || "Anonymous",
+      amount: Number(d.amount) || 0,
+      createdAt: Number(d.createdAt) || 0
+    }))
+    .sort((a, b) => b.createdAt - a.createdAt);
+
+  renderRecentDonations(donations);
+  renderTopDonators(donations);
+});
+
+function renderRecentDonations(donations) {
+  const container = document.getElementById("recentDonations");
+  if (!container) return;
+
+  if (donations.length === 0) {
+    container.innerHTML = `
+      <div class="donation-entry">
+        <strong>No donations yet</strong>
+        <span>Be the first supporter</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = donations.slice(0, 5).map(donation => `
+    <div class="donation-entry">
+      <strong>${donation.name}</strong>
+      <span>donated $${donation.amount}</span>
+    </div>
+  `).join("");
+}
+
+function renderTopDonators(donations) {
+  const container = document.getElementById("topDonators");
+  if (!container) return;
+
+  if (donations.length === 0) {
+    container.innerHTML = `
+      <div class="donation-entry">
+        <strong>No donors yet</strong>
+        <span>Leaderboard coming soon</span>
+      </div>
+    `;
+    return;
+  }
+
+  const totals = {};
+
+  donations.forEach(donation => {
+    const name = donation.name || "Anonymous";
+    totals[name] = (totals[name] || 0) + donation.amount;
+  });
+
+  const medals = ["🥇", "🥈", "🥉", "4.", "5."];
+
+  const topDonators = Object.entries(totals)
+    .map(([name, total]) => ({ name, total }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+
+  container.innerHTML = topDonators.map((donator, index) => `
+    <div class="donation-entry">
+      <strong>${medals[index]} ${donator.name}</strong>
+      <span>$${donator.total} Total</span>
+    </div>
+  `).join("");
+}

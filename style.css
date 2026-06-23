@@ -25,6 +25,8 @@ h3,
 
 header {
   position: relative;
+  z-index: 1001;
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -338,6 +340,9 @@ nav a {
   color: white;
   font-size: 32px;
   cursor: pointer;
+
+  position: relative;
+  z-index: 1002;
 }
 
 .mobile-join {

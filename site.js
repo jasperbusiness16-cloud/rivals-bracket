@@ -194,23 +194,68 @@ function startCountdown(targetDate) {
   }, 1000);
 }
 
+function getMoneyNumber(value) {
+  return Number(String(value || "0").replace(/[^0-9.]/g, "")) || 0;
+}
+
+function formatMoney(value) {
+  return `$${Math.round(Number(value || 0))}`;
+}
 const donationsRef = database.ref("donations");
 
 donationsRef.on("value", (snapshot) => {
   const data = snapshot.val() || {};
 
-  const donations = Object.values(data)
-    .filter(d => d && d.name && d.amount)
-    .map(d => ({
-      name: d.name || "Anonymous",
-      amount: Number(d.amount) || 0,
-      createdAt: Number(d.createdAt) || 0
-    }))
-    .sort((a, b) => b.createdAt - a.createdAt);
+  latestDonations = Object.values(data)
+  .filter(d => d && d.name && d.amount)
+  .map(d => ({
+    name: d.name || "Anonymous",
+    amount: Number(d.amount) || 0,
+    createdAt: Number(d.createdAt) || 0
+  }))
+  .sort((a, b) => b.createdAt - a.createdAt);
 
-  renderRecentDonations(donations);
-  renderTopDonators(donations);
+renderRecentDonations(latestDonations);
+renderTopDonators(latestDonations);
+updateDonationTotals();
 });
+
+function updateDonationTotals() {
+  const donationTotal = latestDonations.reduce((sum, donation) => {
+    return sum + (Number(donation.amount) || 0);
+  }, 0);
+
+  const startingPrizePool = getMoneyNumber(latestSiteData.startingPrizePool || "$0");
+  const currentPrizePool = startingPrizePool + donationTotal;
+  const goalAmount = getMoneyNumber(latestSiteData.donationGoal || "$250");
+
+  const goalPercent =
+    goalAmount > 0
+      ? Math.min((currentPrizePool / goalAmount) * 100, 100)
+      : 0;
+
+  document.querySelectorAll("[data-community-donations]").forEach(el => {
+    el.innerText = `+${formatMoney(donationTotal)}`;
+  });
+
+  document.querySelectorAll("[data-prize-pool]").forEach(el => {
+    el.innerText = formatMoney(currentPrizePool);
+  });
+
+  document.querySelectorAll("[data-goal-current]").forEach(el => {
+    el.innerText = formatMoney(currentPrizePool);
+  });
+
+  document.querySelectorAll("[data-goal-percent]").forEach(el => {
+    el.innerText =
+      `${formatMoney(currentPrizePool)} / ${latestSiteData.donationGoal || "$250"} (${Math.round(goalPercent)}%)`;
+  });
+
+  const goalFill = document.getElementById("goalFill");
+  if (goalFill) {
+    goalFill.style.width = `${goalPercent}%`;
+  }
+}
 
 function renderRecentDonations(donations) {
   const container = document.getElementById("recentDonations");

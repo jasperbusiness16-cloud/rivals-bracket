@@ -200,7 +200,7 @@ function getMoneyNumber(value) {
 }
 
 function formatMoney(value) {
-  return `$${Math.round(Number(value || 0))}`;
+  return `$${Number(value || 0).toLocaleString("en-US")}`;
 }
 const donationsRef = database.ref("donations");
 

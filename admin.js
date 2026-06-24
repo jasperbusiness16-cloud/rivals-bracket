@@ -58,6 +58,11 @@ document.getElementById("team16").value = data.team16 || "";
   document.getElementById("gfTeam1Label").innerText = `${gfTeam1} Score`;
   document.getElementById("gfTeam2Label").innerText = `${gfTeam2} Score`;
 
+
+  for (let i = 1; i <= 8; i++) {
+  document.getElementById(`r16m${i}Team1Score`).value = data[`r16m${i}Team1Score`] || "";
+  document.getElementById(`r16m${i}Team2Score`).value = data[`r16m${i}Team2Score`] || "";
+}
   document.getElementById("qf1Team1Score").value = data.qf1Team1Score || "";
   document.getElementById("qf1Team2Score").value = data.qf1Team2Score || "";
   document.getElementById("qf2Team1Score").value = data.qf2Team1Score || "";

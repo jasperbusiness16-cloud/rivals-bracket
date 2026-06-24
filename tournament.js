@@ -299,215 +299,181 @@ function showComingSoon(formatName) {
 }
 
 function show16SingleElim() {
-
   bracketContainer.innerHTML = `
     <div class="pro-bracket">
 
       <div class="pro-round">
         <h3>Round of 16</h3>
 
-        <div class="pro-match">
-  <div class="match-label">R16-1 • Bo3</div>
+        <div class="pro-match ${matchClass("R16M1")}">
+          <div class="match-label">R16-1 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team1, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+            <span>${teams.team1}</span><strong>${scores.r16m1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team2, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+            <span>${teams.team2}</span><strong>${scores.r16m1Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="team-row ${rowClass(teams.team1, winners.r16m1Winner, winners.r16m1Winner !== "")}">
-    <span>${teams.team1}</span>
-    <strong>${scores.r16m1Team1Score || "0"}</strong>
-  </div>
+        <div class="pro-match ${matchClass("R16M2")}">
+          <div class="match-label">R16-2 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team3, winners.r16m2Winner, winners.r16m2Winner !== "")}">
+            <span>${teams.team3}</span><strong>${scores.r16m2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team4, winners.r16m2Winner, winners.r16m2Winner !== "")}">
+            <span>${teams.team4}</span><strong>${scores.r16m2Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="team-row ${rowClass(teams.team2, winners.r16m1Winner, winners.r16m1Winner !== "")}">
-    <span>${teams.team2}</span>
-    <strong>${scores.r16m1Team2Score || "0"}</strong>
-  </div>
-</div>
+        <div class="pro-match ${matchClass("R16M3")}">
+          <div class="match-label">R16-3 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team5, winners.r16m3Winner, winners.r16m3Winner !== "")}">
+            <span>${teams.team5}</span><strong>${scores.r16m3Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team6, winners.r16m3Winner, winners.r16m3Winner !== "")}">
+            <span>${teams.team6}</span><strong>${scores.r16m3Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-        <div class="pro-match">
-  <div class="match-label">R16-2 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team3, winners.r16m2Winner, winners.r16m2Winner !== "")}">
-    <span>${teams.team3}</span>
-    <strong>${scores.r16m2Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team4, winners.r16m2Winner, winners.r16m2Winner !== "")}">
-    <span>${teams.team4}</span>
-    <strong>${scores.r16m2Team2Score || "0"}</strong>
-  </div>
-</div>
+        <div class="pro-match ${matchClass("R16M4")}">
+          <div class="match-label">R16-4 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team7, winners.r16m4Winner, winners.r16m4Winner !== "")}">
+            <span>${teams.team7}</span><strong>${scores.r16m4Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team8, winners.r16m4Winner, winners.r16m4Winner !== "")}">
+            <span>${teams.team8}</span><strong>${scores.r16m4Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-<div class="pro-match">
-  <div class="match-label">R16-3 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team5, winners.r16m3Winner, winners.r16m3Winner !== "")}">
-    <span>${teams.team5}</span>
-    <strong>${scores.r16m3Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team6, winners.r16m3Winner, winners.r16m3Winner !== "")}">
-    <span>${teams.team6}</span>
-    <strong>${scores.r16m3Team2Score || "0"}</strong>
-  </div>
-</div>
+        <div class="pro-match ${matchClass("R16M5")}">
+          <div class="match-label">R16-5 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team9, winners.r16m5Winner, winners.r16m5Winner !== "")}">
+            <span>${teams.team9}</span><strong>${scores.r16m5Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team10, winners.r16m5Winner, winners.r16m5Winner !== "")}">
+            <span>${teams.team10}</span><strong>${scores.r16m5Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-<div class="pro-match">
-  <div class="match-label">R16-4 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team7, winners.r16m4Winner, winners.r16m4Winner !== "")}">
-    <span>${teams.team7}</span>
-    <strong>${scores.r16m4Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team8, winners.r16m4Winner, winners.r16m4Winner !== "")}">
-    <span>${teams.team8}</span>
-    <strong>${scores.r16m4Team2Score || "0"}</strong>
-  </div>
-</div>
+        <div class="pro-match ${matchClass("R16M6")}">
+          <div class="match-label">R16-6 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team11, winners.r16m6Winner, winners.r16m6Winner !== "")}">
+            <span>${teams.team11}</span><strong>${scores.r16m6Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team12, winners.r16m6Winner, winners.r16m6Winner !== "")}">
+            <span>${teams.team12}</span><strong>${scores.r16m6Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-<div class="pro-match">
-  <div class="match-label">R16-5 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team9, winners.r16m5Winner, winners.r16m5Winner !== "")}">
-    <span>${teams.team9}</span>
-    <strong>${scores.r16m5Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team10, winners.r16m5Winner, winners.r16m5Winner !== "")}">
-    <span>${teams.team10}</span>
-    <strong>${scores.r16m5Team2Score || "0"}</strong>
-  </div>
-</div>
+        <div class="pro-match ${matchClass("R16M7")}">
+          <div class="match-label">R16-7 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team13, winners.r16m7Winner, winners.r16m7Winner !== "")}">
+            <span>${teams.team13}</span><strong>${scores.r16m7Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team14, winners.r16m7Winner, winners.r16m7Winner !== "")}">
+            <span>${teams.team14}</span><strong>${scores.r16m7Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-<div class="pro-match">
-  <div class="match-label">R16-6 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team11, winners.r16m6Winner, winners.r16m6Winner !== "")}">
-    <span>${teams.team11}</span>
-    <strong>${scores.r16m6Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team12, winners.r16m6Winner, winners.r16m6Winner !== "")}">
-    <span>${teams.team12}</span>
-    <strong>${scores.r16m6Team2Score || "0"}</strong>
-  </div>
-</div>
-
-<div class="pro-match">
-  <div class="match-label">R16-7 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team13, winners.r16m7Winner, winners.r16m7Winner !== "")}">
-    <span>${teams.team13}</span>
-    <strong>${scores.r16m7Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team14, winners.r16m7Winner, winners.r16m7Winner !== "")}">
-    <span>${teams.team14}</span>
-    <strong>${scores.r16m7Team2Score || "0"}</strong>
-  </div>
-</div>
-
-<div class="pro-match">
-  <div class="match-label">R16-8 • Bo3</div>
-  <div class="team-row ${rowClass(teams.team15, winners.r16m8Winner, winners.r16m8Winner !== "")}">
-    <span>${teams.team15}</span>
-    <strong>${scores.r16m8Team1Score || "0"}</strong>
-  </div>
-  <div class="team-row ${rowClass(teams.team16, winners.r16m8Winner, winners.r16m8Winner !== "")}">
-    <span>${teams.team16}</span>
-    <strong>${scores.r16m8Team2Score || "0"}</strong>
-  </div>
-</div>
-
-</div>
+        <div class="pro-match ${matchClass("R16M8")}">
+          <div class="match-label">R16-8 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team15, winners.r16m8Winner, winners.r16m8Winner !== "")}">
+            <span>${teams.team15}</span><strong>${scores.r16m8Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team16, winners.r16m8Winner, winners.r16m8Winner !== "")}">
+            <span>${teams.team16}</span><strong>${scores.r16m8Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
 
       <div class="pro-round">
-  <h3>Quarterfinals</h3>
+        <h3>Quarterfinals</h3>
 
-  <div class="pro-match semi-spacer">
-    <div class="match-label">QF1 • Bo3</div>
-    <div class="team-row ${rowClass(winners.r16m1Winner || "Winner R16-1", winners.qf1Winner, winners.qf1Winner !== "")}">
-      <span>${winners.r16m1Winner || "Winner R16-1"}</span>
-      <strong>${scores.qf1Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.r16m2Winner || "Winner R16-2", winners.qf1Winner, winners.qf1Winner !== "")}">
-      <span>${winners.r16m2Winner || "Winner R16-2"}</span>
-      <strong>${scores.qf1Team2Score || "0"}</strong>
-    </div>
-  </div>
+        <div class="pro-match semi-spacer ${matchClass("QF1")}">
+          <div class="match-label">QF1 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m1Winner || "Winner R16-1", winners.qf1Winner, winners.qf1Winner !== "")}">
+            <span>${winners.r16m1Winner || "Winner R16-1"}</span><strong>${scores.qf1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m2Winner || "Winner R16-2", winners.qf1Winner, winners.qf1Winner !== "")}">
+            <span>${winners.r16m2Winner || "Winner R16-2"}</span><strong>${scores.qf1Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="pro-match semi-spacer">
-    <div class="match-label">QF2 • Bo3</div>
-    <div class="team-row ${rowClass(winners.r16m3Winner || "Winner R16-3", winners.qf2Winner, winners.qf2Winner !== "")}">
-      <span>${winners.r16m3Winner || "Winner R16-3"}</span>
-      <strong>${scores.qf2Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.r16m4Winner || "Winner R16-4", winners.qf2Winner, winners.qf2Winner !== "")}">
-      <span>${winners.r16m4Winner || "Winner R16-4"}</span>
-      <strong>${scores.qf2Team2Score || "0"}</strong>
-    </div>
-  </div>
+        <div class="pro-match semi-spacer ${matchClass("QF2")}">
+          <div class="match-label">QF2 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m3Winner || "Winner R16-3", winners.qf2Winner, winners.qf2Winner !== "")}">
+            <span>${winners.r16m3Winner || "Winner R16-3"}</span><strong>${scores.qf2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m4Winner || "Winner R16-4", winners.qf2Winner, winners.qf2Winner !== "")}">
+            <span>${winners.r16m4Winner || "Winner R16-4"}</span><strong>${scores.qf2Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="pro-match semi-spacer">
-    <div class="match-label">QF3 • Bo3</div>
-    <div class="team-row ${rowClass(winners.r16m5Winner || "Winner R16-5", winners.qf3Winner, winners.qf3Winner !== "")}">
-      <span>${winners.r16m5Winner || "Winner R16-5"}</span>
-      <strong>${scores.qf3Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.r16m6Winner || "Winner R16-6", winners.qf3Winner, winners.qf3Winner !== "")}">
-      <span>${winners.r16m6Winner || "Winner R16-6"}</span>
-      <strong>${scores.qf3Team2Score || "0"}</strong>
-    </div>
-  </div>
+        <div class="pro-match semi-spacer ${matchClass("QF3")}">
+          <div class="match-label">QF3 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m5Winner || "Winner R16-5", winners.qf3Winner, winners.qf3Winner !== "")}">
+            <span>${winners.r16m5Winner || "Winner R16-5"}</span><strong>${scores.qf3Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m6Winner || "Winner R16-6", winners.qf3Winner, winners.qf3Winner !== "")}">
+            <span>${winners.r16m6Winner || "Winner R16-6"}</span><strong>${scores.qf3Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="pro-match semi-spacer">
-    <div class="match-label">QF4 • Bo3</div>
-    <div class="team-row ${rowClass(winners.r16m7Winner || "Winner R16-7", winners.qf4Winner, winners.qf4Winner !== "")}">
-      <span>${winners.r16m7Winner || "Winner R16-7"}</span>
-      <strong>${scores.qf4Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.r16m8Winner || "Winner R16-8", winners.qf4Winner, winners.qf4Winner !== "")}">
-      <span>${winners.r16m8Winner || "Winner R16-8"}</span>
-      <strong>${scores.qf4Team2Score || "0"}</strong>
-    </div>
-  </div>
-</div>
+        <div class="pro-match semi-spacer ${matchClass("QF4")}">
+          <div class="match-label">QF4 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m7Winner || "Winner R16-7", winners.qf4Winner, winners.qf4Winner !== "")}">
+            <span>${winners.r16m7Winner || "Winner R16-7"}</span><strong>${scores.qf4Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m8Winner || "Winner R16-8", winners.qf4Winner, winners.qf4Winner !== "")}">
+            <span>${winners.r16m8Winner || "Winner R16-8"}</span><strong>${scores.qf4Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
 
       <div class="pro-round">
-  <h3>Semifinals</h3>
+        <h3>Semifinals</h3>
 
-  <div class="pro-match grand-spacer">
-    <div class="match-label">SF1 • Bo3</div>
-    <div class="team-row ${rowClass(winners.qf1Winner || "Winner QF1", winners.sf1Winner, winners.sf1Winner !== "")}">
-      <span>${winners.qf1Winner || "Winner QF1"}</span>
-      <strong>${scores.sf1Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.qf2Winner || "Winner QF2", winners.sf1Winner, winners.sf1Winner !== "")}">
-      <span>${winners.qf2Winner || "Winner QF2"}</span>
-      <strong>${scores.sf1Team2Score || "0"}</strong>
-    </div>
-  </div>
+        <div class="pro-match grand-spacer ${matchClass("SF1")}">
+          <div class="match-label">SF1 • Bo3</div>
+          <div class="team-row ${rowClass(winners.qf1Winner || "Winner QF1", winners.sf1Winner, winners.sf1Winner !== "")}">
+            <span>${winners.qf1Winner || "Winner QF1"}</span><strong>${scores.sf1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.qf2Winner || "Winner QF2", winners.sf1Winner, winners.sf1Winner !== "")}">
+            <span>${winners.qf2Winner || "Winner QF2"}</span><strong>${scores.sf1Team2Score || "0"}</strong>
+          </div>
+        </div>
 
-  <div class="pro-match grand-spacer">
-    <div class="match-label">SF2 • Bo3</div>
-    <div class="team-row ${rowClass(winners.qf3Winner || "Winner QF3", winners.sf2Winner, winners.sf2Winner !== "")}">
-      <span>${winners.qf3Winner || "Winner QF3"}</span>
-      <strong>${scores.sf2Team1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.qf4Winner || "Winner QF4", winners.sf2Winner, winners.sf2Winner !== "")}">
-      <span>${winners.qf4Winner || "Winner QF4"}</span>
-      <strong>${scores.sf2Team2Score || "0"}</strong>
-    </div>
-  </div>
-</div>
+        <div class="pro-match grand-spacer ${matchClass("SF2")}">
+          <div class="match-label">SF2 • Bo3</div>
+          <div class="team-row ${rowClass(winners.qf3Winner || "Winner QF3", winners.sf2Winner, winners.sf2Winner !== "")}">
+            <span>${winners.qf3Winner || "Winner QF3"}</span><strong>${scores.sf2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.qf4Winner || "Winner QF4", winners.sf2Winner, winners.sf2Winner !== "")}">
+            <span>${winners.qf4Winner || "Winner QF4"}</span><strong>${scores.sf2Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
 
       <div class="pro-round">
-  <h3>Grand Finals</h3>
+        <h3>Grand Finals</h3>
 
-  <div class="pro-match grand-match">
-    <div class="match-label">GF • Bo5</div>
-    <div class="team-row ${rowClass(winners.sf1Winner || "Winner SF1", winners.grandWinner, winners.grandWinner !== "")}">
-      <span>${winners.sf1Winner || "Winner SF1"}</span>
-      <strong>${scores.gfTeam1Score || "0"}</strong>
-    </div>
-    <div class="team-row ${rowClass(winners.sf2Winner || "Winner SF2", winners.grandWinner, winners.grandWinner !== "")}">
-      <span>${winners.sf2Winner || "Winner SF2"}</span>
-      <strong>${scores.gfTeam2Score || "0"}</strong>
-    </div>
-  </div>
+        <div class="pro-match grand-match ${matchClass("GF")}">
+          <div class="match-label">GF • Bo5</div>
+          <div class="team-row ${rowClass(winners.sf1Winner || "Winner SF1", winners.grandWinner, winners.grandWinner !== "")}">
+            <span>${winners.sf1Winner || "Winner SF1"}</span><strong>${scores.gfTeam1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.sf2Winner || "Winner SF2", winners.grandWinner, winners.grandWinner !== "")}">
+            <span>${winners.sf2Winner || "Winner SF2"}</span><strong>${scores.gfTeam2Score || "0"}</strong>
+          </div>
+        </div>
 
-  ${winners.grandWinner ? `
-    <div class="champion-banner">
-      <div class="champion-title">🏆 Tournament Champion</div>
-      <div class="champion-name">${winners.grandWinner}</div>
-    </div>
-  ` : ""}
-</div>
+        ${winners.grandWinner ? `
+          <div class="champion-banner">
+            <div class="champion-title">🏆 Tournament Champion</div>
+            <div class="champion-name">${winners.grandWinner}</div>
+          </div>
+        ` : ""}
+      </div>
 
     </div>
   `;

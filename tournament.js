@@ -206,10 +206,18 @@ function show16SingleElim() {
         <h3>Round of 16</h3>
 
         <div class="pro-match">
-          <div class="match-label">R16-1 • Bo3</div>
-          <div class="team-row"><span>${teams.team1}</span></div>
-          <div class="team-row"><span>${teams.team2}</span></div>
-        </div>
+  <div class="match-label">R16-1 • Bo3</div>
+
+  <div class="team-row ${rowClass(teams.team1, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+    <span>${teams.team1}</span>
+    <strong>${scores.r16m1Team1Score || "0"}</strong>
+  </div>
+
+  <div class="team-row ${rowClass(teams.team2, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+    <span>${teams.team2}</span>
+    <strong>${scores.r16m1Team2Score || "0"}</strong>
+  </div>
+</div>
 
         <div class="pro-match">
           <div class="match-label">R16-2 • Bo3</div>

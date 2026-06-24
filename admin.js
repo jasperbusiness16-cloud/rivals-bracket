@@ -16,7 +16,13 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("totalPayout").value = data.totalPayout || "";
   document.getElementById("eventsHosted").value = data.eventsHosted || "";
   document.getElementById("formatType").value = data.formatType || "8_single_elim";
+const is16Team =
+  (data.formatType || "8_single_elim") === "16_single_elim";
 
+document.getElementById("r16AdminSection").style.display =
+  is16Team ? "block" : "none";
+
+  
   document.getElementById("team1").value = data.team1 || "";
   document.getElementById("team2").value = data.team2 || "";
   document.getElementById("team3").value = data.team3 || "";

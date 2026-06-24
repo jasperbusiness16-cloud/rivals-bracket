@@ -159,13 +159,10 @@ if (adminPassword !== "77hawkeyes") {
 <div class="admin-section">
 <h2>Bracket Controls</h2>
 
-<details open>
-<summary>▶ Quarterfinals</summary>
-  
-  <details id="r16AdminSection" class="admin-details" open>
-  <summary>Round of 16</summary>
+<details id="r16AdminSection" class="admin-details" open>
+  <summary>▶ Round of 16</summary>
 
-<label>R16 M1 Winner</label>
+  <label>R16 M1 Winner</label>
 <select id="r16m1Winner"></select>
 <label id="r16m1Team1Label">Team 1 Score</label>
 <input id="r16m1Team1Score" placeholder="0">
@@ -221,7 +218,8 @@ if (adminPassword !== "77hawkeyes") {
 <label id="r16m8Team2Label">Team 16 Score</label>
 <input id="r16m8Team2Score" placeholder="0">
 </details>
-    
+    <details class="admin-details" open>
+  <summary>▶ Quarterfinals</summary>
   <label>QF1 Winner</label>
   <select id="qf1Winner"></select>
 

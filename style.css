@@ -969,6 +969,25 @@ nav a:hover {
   font-size: 16px;
 }
 
+.admin-section {
+  margin-top: 28px;
+  padding: 24px;
+  background: #0d1117;
+  border: 1px solid #252c36;
+  border-radius: 14px;
+}
+
+.admin-section h2 {
+  margin-bottom: 18px;
+  color: #e63946;
+}
+
+.admin-divider {
+  margin: 35px 0 20px;
+  border: none;
+  border-top: 1px solid #252c36;
+}
+
 .admin-card .join-btn {
   margin-top: 25px;
 }

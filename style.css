@@ -1324,10 +1324,8 @@ nav a:hover {
   font-size: 14px;
 }
 
-@media (min-width: 901px) {
-  .logo span {
-    display: none;
-  }
+.logo span {
+  display: none;
 }
 
 .stats-grid {

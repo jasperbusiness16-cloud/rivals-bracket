@@ -982,6 +982,37 @@ nav a:hover {
   color: #e63946;
 }
 
+.admin-details {
+  margin-top: 22px;
+  padding: 18px;
+  background: #11161f;
+  border: 1px solid #252c36;
+  border-radius: 12px;
+}
+
+.admin-details summary {
+  cursor: pointer;
+  color: #e63946;
+  font-family: 'Rajdhani', Arial, sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  list-style: none;
+}
+
+.admin-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-details summary::before {
+  content: "▶ ";
+}
+
+.admin-details[open] summary::before {
+  content: "▼ ";
+}
+
 .admin-divider {
   margin: 35px 0 20px;
   border: none;

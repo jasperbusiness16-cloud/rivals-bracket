@@ -94,37 +94,77 @@ winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Sc
 winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner);
 winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner);
 
+ const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
+
+if (is16Team) {
+
   winners.qf1Winner = autoWinner(
-  winners.r16m1Winner || "Winner R16-1",
-  winners.r16m2Winner || "Winner R16-2",
-  scores.qf1Team1Score,
-  scores.qf1Team2Score,
-  winners.qf1Winner
-);
+    winners.r16m1Winner || "Winner R16-1",
+    winners.r16m2Winner || "Winner R16-2",
+    scores.qf1Team1Score,
+    scores.qf1Team2Score,
+    winners.qf1Winner
+  );
 
-winners.qf2Winner = autoWinner(
-  winners.r16m3Winner || "Winner R16-3",
-  winners.r16m4Winner || "Winner R16-4",
-  scores.qf2Team1Score,
-  scores.qf2Team2Score,
-  winners.qf2Winner
-);
+  winners.qf2Winner = autoWinner(
+    winners.r16m3Winner || "Winner R16-3",
+    winners.r16m4Winner || "Winner R16-4",
+    scores.qf2Team1Score,
+    scores.qf2Team2Score,
+    winners.qf2Winner
+  );
 
-winners.qf3Winner = autoWinner(
-  winners.r16m5Winner || "Winner R16-5",
-  winners.r16m6Winner || "Winner R16-6",
-  scores.qf3Team1Score,
-  scores.qf3Team2Score,
-  winners.qf3Winner
-);
+  winners.qf3Winner = autoWinner(
+    winners.r16m5Winner || "Winner R16-5",
+    winners.r16m6Winner || "Winner R16-6",
+    scores.qf3Team1Score,
+    scores.qf3Team2Score,
+    winners.qf3Winner
+  );
 
-winners.qf4Winner = autoWinner(
-  winners.r16m7Winner || "Winner R16-7",
-  winners.r16m8Winner || "Winner R16-8",
-  scores.qf4Team1Score,
-  scores.qf4Team2Score,
-  winners.qf4Winner
-);
+  winners.qf4Winner = autoWinner(
+    winners.r16m7Winner || "Winner R16-7",
+    winners.r16m8Winner || "Winner R16-8",
+    scores.qf4Team1Score,
+    scores.qf4Team2Score,
+    winners.qf4Winner
+  );
+
+} else {
+
+  winners.qf1Winner = autoWinner(
+    teams.team1,
+    teams.team2,
+    scores.qf1Team1Score,
+    scores.qf1Team2Score,
+    winners.qf1Winner
+  );
+
+  winners.qf2Winner = autoWinner(
+    teams.team3,
+    teams.team4,
+    scores.qf2Team1Score,
+    scores.qf2Team2Score,
+    winners.qf2Winner
+  );
+
+  winners.qf3Winner = autoWinner(
+    teams.team5,
+    teams.team6,
+    scores.qf3Team1Score,
+    scores.qf3Team2Score,
+    winners.qf3Winner
+  );
+
+  winners.qf4Winner = autoWinner(
+    teams.team7,
+    teams.team8,
+    scores.qf4Team1Score,
+    scores.qf4Team2Score,
+    winners.qf4Winner
+  );
+
+}
 
 winners.sf1Winner = autoWinner(
   winners.qf1Winner || "Winner QF1",

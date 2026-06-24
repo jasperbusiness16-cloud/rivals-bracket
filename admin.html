@@ -159,6 +159,9 @@ if (adminPassword !== "77hawkeyes") {
 <div class="admin-section">
 <h2>Bracket Controls</h2>
 
+<details open>
+<summary>▶ Quarterfinals</summary>
+  
   <details id="r16AdminSection" class="admin-details" open>
   <summary>Round of 16</summary>
 
@@ -254,8 +257,12 @@ if (adminPassword !== "77hawkeyes") {
 
   <label id="qf4Team2Label">Team 8 Score</label>
   <input id="qf4Team2Score" placeholder="0">
+ </details>
 
-  <label>SF1 Winner</label>
+  <details>
+<summary>▶ Semifinals</summary>
+  
+    <label>SF1 Winner</label>
 <select id="sf1Winner"></select>
 
 <label id="sf1Team1Label">SF1 Team 1 Score</label>
@@ -272,8 +279,11 @@ if (adminPassword !== "77hawkeyes") {
 
 <label id="sf2Team2Label">SF2 Team 2 Score</label>
 <input id="sf2Team2Score" placeholder="0">
+</details>
 
-<label>Grand Finals Winner</label>
+  <details>
+<summary>▶ Grand Finals</summary>
+  <label>Grand Finals Winner</label>
 <select id="grandWinner"></select>
 
 <label id="gfTeam1Label">GF Team 1 Score</label>
@@ -282,6 +292,8 @@ if (adminPassword !== "77hawkeyes") {
 <label id="gfTeam2Label">GF Team 2 Score</label>
 <input id="gfTeam2Score" placeholder="0">
 
+</details>
+    
   <button class="join-btn" onclick="saveSiteData()">SAVE CHANGES</button>
 
 <div style="margin-top:25px; display:grid; gap:12px;">

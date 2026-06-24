@@ -120,11 +120,23 @@ for (let i = 1; i <= 8; i++) {
     data[`r16m${i}Winner`]
   );
 }
-  const qf1Options = [data.team1 || "Team 1", data.team2 || "Team 2"];
-  const qf2Options = [data.team3 || "Team 3", data.team4 || "Team 4"];
-  const qf3Options = [data.team5 || "Team 5", data.team6 || "Team 6"];
-  const qf4Options = [data.team7 || "Team 7", data.team8 || "Team 8"];
+  const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
 
+const qf1Options = is16Team
+  ? [data.r16m1Winner || "Winner R16-1", data.r16m2Winner || "Winner R16-2"]
+  : [data.team1 || "Team 1", data.team2 || "Team 2"];
+
+const qf2Options = is16Team
+  ? [data.r16m3Winner || "Winner R16-3", data.r16m4Winner || "Winner R16-4"]
+  : [data.team3 || "Team 3", data.team4 || "Team 4"];
+
+const qf3Options = is16Team
+  ? [data.r16m5Winner || "Winner R16-5", data.r16m6Winner || "Winner R16-6"]
+  : [data.team5 || "Team 5", data.team6 || "Team 6"];
+
+const qf4Options = is16Team
+  ? [data.r16m7Winner || "Winner R16-7", data.r16m8Winner || "Winner R16-8"]
+  : [data.team7 || "Team 7", data.team8 || "Team 8"];
   const sf1Options = [
     data.qf1Winner || "Winner QF1",
     data.qf2Winner || "Winner QF2"

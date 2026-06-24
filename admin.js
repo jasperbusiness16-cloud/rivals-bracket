@@ -79,6 +79,25 @@ document.getElementById("team16").value = data.team16 || "";
   document.getElementById("gfTeam1Score").value = data.gfTeam1Score || "";
   document.getElementById("gfTeam2Score").value = data.gfTeam2Score || "";
 
+
+  const r16Options = [
+  [data.team1 || "Team 1", data.team2 || "Team 2"],
+  [data.team3 || "Team 3", data.team4 || "Team 4"],
+  [data.team5 || "Team 5", data.team6 || "Team 6"],
+  [data.team7 || "Team 7", data.team8 || "Team 8"],
+  [data.team9 || "Team 9", data.team10 || "Team 10"],
+  [data.team11 || "Team 11", data.team12 || "Team 12"],
+  [data.team13 || "Team 13", data.team14 || "Team 14"],
+  [data.team15 || "Team 15", data.team16 || "Team 16"]
+];
+
+for (let i = 1; i <= 8; i++) {
+  fillWinnerDropdown(
+    `r16m${i}Winner`,
+    r16Options[i - 1],
+    data[`r16m${i}Winner`]
+  );
+}
   const qf1Options = [data.team1 || "Team 1", data.team2 || "Team 2"];
   const qf2Options = [data.team3 || "Team 3", data.team4 || "Team 4"];
   const qf3Options = [data.team5 || "Team 5", data.team6 || "Team 6"];
@@ -158,7 +177,23 @@ const team14 = document.getElementById("team14").value;
 const team15 = document.getElementById("team15").value;
 const team16 = document.getElementById("team16").value;
 
-  
+
+  const r16Winners = [];
+
+for (let i = 1; i <= 8; i++) {
+  const teamA = document.getElementById(`team${i * 2 - 1}`).value;
+  const teamB = document.getElementById(`team${i * 2}`).value;
+
+  const winner = scoreWinner(
+    teamA,
+    teamB,
+    document.getElementById(`r16m${i}Team1Score`).value,
+    document.getElementById(`r16m${i}Team2Score`).value,
+    document.getElementById(`r16m${i}Winner`).value
+  );
+
+  r16Winners.push(winner);
+}
   const qf1Winner = scoreWinner(
     team1,
     team2,
@@ -232,6 +267,15 @@ const team16 = document.getElementById("team16").value;
     team1, team2, team3, team4, team5, team6, team7, team8,
 team9, team10, team11, team12, team13, team14, team15, team16,
 
+
+    r16m1Winner: r16Winners[0],
+r16m2Winner: r16Winners[1],
+r16m3Winner: r16Winners[2],
+r16m4Winner: r16Winners[3],
+r16m5Winner: r16Winners[4],
+r16m6Winner: r16Winners[5],
+r16m7Winner: r16Winners[6],
+r16m8Winner: r16Winners[7],
     qf1Winner,
     qf2Winner,
     qf3Winner,
@@ -240,6 +284,23 @@ team9, team10, team11, team12, team13, team14, team15, team16,
     sf2Winner,
     grandWinner,
 
+
+    r16m1Team1Score: document.getElementById("r16m1Team1Score").value,
+r16m1Team2Score: document.getElementById("r16m1Team2Score").value,
+r16m2Team1Score: document.getElementById("r16m2Team1Score").value,
+r16m2Team2Score: document.getElementById("r16m2Team2Score").value,
+r16m3Team1Score: document.getElementById("r16m3Team1Score").value,
+r16m3Team2Score: document.getElementById("r16m3Team2Score").value,
+r16m4Team1Score: document.getElementById("r16m4Team1Score").value,
+r16m4Team2Score: document.getElementById("r16m4Team2Score").value,
+r16m5Team1Score: document.getElementById("r16m5Team1Score").value,
+r16m5Team2Score: document.getElementById("r16m5Team2Score").value,
+r16m6Team1Score: document.getElementById("r16m6Team1Score").value,
+r16m6Team2Score: document.getElementById("r16m6Team2Score").value,
+r16m7Team1Score: document.getElementById("r16m7Team1Score").value,
+r16m7Team2Score: document.getElementById("r16m7Team2Score").value,
+r16m8Team1Score: document.getElementById("r16m8Team1Score").value,
+r16m8Team2Score: document.getElementById("r16m8Team2Score").value,
     qf1Team1Score: document.getElementById("qf1Team1Score").value,
     qf1Team2Score: document.getElementById("qf1Team2Score").value,
     qf2Team1Score: document.getElementById("qf2Team1Score").value,

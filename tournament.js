@@ -13,15 +13,23 @@ database.ref("site").on("value", (snapshot) => {
   currentMatch = (data.currentMatch || "").trim().toLowerCase();
 
   teams = {
-    team1: data.team1 || "Team 1",
-    team2: data.team2 || "Team 2",
-    team3: data.team3 || "Team 3",
-    team4: data.team4 || "Team 4",
-    team5: data.team5 || "Team 5",
-    team6: data.team6 || "Team 6",
-    team7: data.team7 || "Team 7",
-    team8: data.team8 || "Team 8"
-  };
+  team1: data.team1 || "Team 1",
+  team2: data.team2 || "Team 2",
+  team3: data.team3 || "Team 3",
+  team4: data.team4 || "Team 4",
+  team5: data.team5 || "Team 5",
+  team6: data.team6 || "Team 6",
+  team7: data.team7 || "Team 7",
+  team8: data.team8 || "Team 8",
+  team9: data.team9 || "Team 9",
+  team10: data.team10 || "Team 10",
+  team11: data.team11 || "Team 11",
+  team12: data.team12 || "Team 12",
+  team13: data.team13 || "Team 13",
+  team14: data.team14 || "Team 14",
+  team15: data.team15 || "Team 15",
+  team16: data.team16 || "Team 16"
+};
 
   winners = {
     qf1Winner: data.qf1Winner || "",

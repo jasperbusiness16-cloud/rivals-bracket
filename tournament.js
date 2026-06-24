@@ -184,6 +184,14 @@ function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner) {
 function matchClass(matchId) {
   const match = currentMatch.toLowerCase();
 
+  if (matchId === "R16-1" && match.includes("r16-1")) return "live-match";
+if (matchId === "R16-2" && match.includes("r16-2")) return "live-match";
+if (matchId === "R16-3" && match.includes("r16-3")) return "live-match";
+if (matchId === "R16-4" && match.includes("r16-4")) return "live-match";
+if (matchId === "R16-5" && match.includes("r16-5")) return "live-match";
+if (matchId === "R16-6" && match.includes("r16-6")) return "live-match";
+if (matchId === "R16-7" && match.includes("r16-7")) return "live-match";
+if (matchId === "R16-8" && match.includes("r16-8")) return "live-match";
   if (matchId === "QF1" && match.includes("qf1")) return "live-match";
   if (matchId === "QF2" && match.includes("qf2")) return "live-match";
   if (matchId === "QF3" && match.includes("qf3")) return "live-match";

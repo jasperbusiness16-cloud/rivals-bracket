@@ -85,6 +85,15 @@ r16m8Team2Score: data.r16m8Team2Score || "0",
     gfTeam2Score: data.gfTeam2Score || "0"
   };
 
+   winners.r16m1Winner = autoWinner(teams.team1, teams.team2, scores.r16m1Team1Score, scores.r16m1Team2Score, winners.r16m1Winner);
+winners.r16m2Winner = autoWinner(teams.team3, teams.team4, scores.r16m2Team1Score, scores.r16m2Team2Score, winners.r16m2Winner);
+winners.r16m3Winner = autoWinner(teams.team5, teams.team6, scores.r16m3Team1Score, scores.r16m3Team2Score, winners.r16m3Winner);
+winners.r16m4Winner = autoWinner(teams.team7, teams.team8, scores.r16m4Team1Score, scores.r16m4Team2Score, winners.r16m4Winner);
+winners.r16m5Winner = autoWinner(teams.team9, teams.team10, scores.r16m5Team1Score, scores.r16m5Team2Score, winners.r16m5Winner);
+winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Score, scores.r16m6Team2Score, winners.r16m6Winner);
+winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner);
+winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner);
+  
   const formatType = data.formatType || "8_single_elim";
 
   if (formatType === "8_single_elim") {
@@ -103,6 +112,18 @@ r16m8Team2Score: data.r16m8Team2Score || "0",
 function rowClass(teamName, winnerName, hasWinner) {
   if (!hasWinner) return "";
   return teamName === winnerName ? "winner-row" : "loser-row";
+}
+
+function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner) {
+  if (savedWinner) return savedWinner;
+
+  const a = Number(scoreA);
+  const b = Number(scoreB);
+
+  if (Number.isNaN(a) || Number.isNaN(b)) return "";
+  if (a === b) return "";
+
+  return a > b ? teamA : teamB;
 }
 
 function matchClass(matchId) {

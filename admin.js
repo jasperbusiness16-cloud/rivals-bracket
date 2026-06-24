@@ -18,11 +18,15 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("formatType").value = data.formatType || "8_single_elim";
 const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
 
-document.getElementById("r16AdminSection").style.display =
-  is16Team ? "block" : "none";
+const r16Section = document.getElementById("r16AdminSection");
+if (r16Section) {
+  r16Section.style.display = is16Team ? "block" : "none";
+}
 
-document.getElementById("extraTeamsSection").style.display =
-  is16Team ? "block" : "none";
+const extraTeamsSection = document.getElementById("extraTeamsSection");
+if (extraTeamsSection) {
+  extraTeamsSection.style.display = is16Team ? "block" : "none";
+}
 
   
   document.getElementById("team1").value = data.team1 || "";
@@ -128,8 +132,7 @@ for (let i = 1; i <= 8; i++) {
     data[`r16m${i}Winner`]
   );
 }
-  const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
-
+  
 const qf1Options = is16Team
   ? [data.r16m1Winner || "Winner R16-1", data.r16m2Winner || "Winner R16-2"]
   : [data.team1 || "Team 1", data.team2 || "Team 2"];

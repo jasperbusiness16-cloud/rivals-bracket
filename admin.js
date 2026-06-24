@@ -160,22 +160,22 @@ function scoreWinner(teamA, teamB, scoreA, scoreB, fallbackWinner) {
 }
 
 function saveSiteData() {
-  const team1 = document.getElementById("team1").value;
-  const team2 = document.getElementById("team2").value;
-  const team3 = document.getElementById("team3").value;
-  const team4 = document.getElementById("team4").value;
-  const team5 = document.getElementById("team5").value;
-  const team6 = document.getElementById("team6").value;
-  const team7 = document.getElementById("team7").value;
-  const team8 = document.getElementById("team8").value;
-  const team9 = document.getElementById("team9").value;
-const team10 = document.getElementById("team10").value;
-const team11 = document.getElementById("team11").value;
-const team12 = document.getElementById("team12").value;
-const team13 = document.getElementById("team13").value;
-const team14 = document.getElementById("team14").value;
-const team15 = document.getElementById("team15").value;
-const team16 = document.getElementById("team16").value;
+  const team1 = document.getElementById("team1").value || "Team 1";
+const team2 = document.getElementById("team2").value || "Team 2";
+const team3 = document.getElementById("team3").value || "Team 3";
+const team4 = document.getElementById("team4").value || "Team 4";
+const team5 = document.getElementById("team5").value || "Team 5";
+const team6 = document.getElementById("team6").value || "Team 6";
+const team7 = document.getElementById("team7").value || "Team 7";
+const team8 = document.getElementById("team8").value || "Team 8";
+const team9 = document.getElementById("team9").value || "Team 9";
+const team10 = document.getElementById("team10").value || "Team 10";
+const team11 = document.getElementById("team11").value || "Team 11";
+const team12 = document.getElementById("team12").value || "Team 12";
+const team13 = document.getElementById("team13").value || "Team 13";
+const team14 = document.getElementById("team14").value || "Team 14";
+const team15 = document.getElementById("team15").value || "Team 15";
+const team16 = document.getElementById("team16").value || "Team 16";
 
 
   const r16Winners = [];

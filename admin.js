@@ -33,7 +33,29 @@ document.getElementById("team13").value = data.team13 || "";
 document.getElementById("team14").value = data.team14 || "";
 document.getElementById("team15").value = data.team15 || "";
 document.getElementById("team16").value = data.team16 || "";
+document.getElementById("r16m1Team1Label").innerText = `${data.team1 || "Team 1"} Score`;
+document.getElementById("r16m1Team2Label").innerText = `${data.team2 || "Team 2"} Score`;
 
+document.getElementById("r16m2Team1Label").innerText = `${data.team3 || "Team 3"} Score`;
+document.getElementById("r16m2Team2Label").innerText = `${data.team4 || "Team 4"} Score`;
+
+document.getElementById("r16m3Team1Label").innerText = `${data.team5 || "Team 5"} Score`;
+document.getElementById("r16m3Team2Label").innerText = `${data.team6 || "Team 6"} Score`;
+
+document.getElementById("r16m4Team1Label").innerText = `${data.team7 || "Team 7"} Score`;
+document.getElementById("r16m4Team2Label").innerText = `${data.team8 || "Team 8"} Score`;
+
+document.getElementById("r16m5Team1Label").innerText = `${data.team9 || "Team 9"} Score`;
+document.getElementById("r16m5Team2Label").innerText = `${data.team10 || "Team 10"} Score`;
+
+document.getElementById("r16m6Team1Label").innerText = `${data.team11 || "Team 11"} Score`;
+document.getElementById("r16m6Team2Label").innerText = `${data.team12 || "Team 12"} Score`;
+
+document.getElementById("r16m7Team1Label").innerText = `${data.team13 || "Team 13"} Score`;
+document.getElementById("r16m7Team2Label").innerText = `${data.team14 || "Team 14"} Score`;
+
+document.getElementById("r16m8Team1Label").innerText = `${data.team15 || "Team 15"} Score`;
+document.getElementById("r16m8Team2Label").innerText = `${data.team16 || "Team 16"} Score`;
   
   const sf1Team1 = data.qf1Winner || "SF1 Team 1";
   const sf1Team2 = data.qf2Winner || "SF1 Team 2";

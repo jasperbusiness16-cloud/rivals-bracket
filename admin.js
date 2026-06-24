@@ -226,8 +226,11 @@ const team16 = document.getElementById("team16").value || "Team 16";
   const r16Winners = [];
 
 for (let i = 1; i <= 8; i++) {
-  const teamA = document.getElementById(`team${i * 2 - 1}`).value;
-  const teamB = document.getElementById(`team${i * 2}`).value;
+  const teamA =
+  document.getElementById(`team${i * 2 - 1}`).value || `Team ${i * 2 - 1}`;
+
+const teamB =
+  document.getElementById(`team${i * 2}`).value || `Team ${i * 2}`;
 
   const winner = scoreWinner(
     teamA,

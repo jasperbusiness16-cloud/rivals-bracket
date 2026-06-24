@@ -1397,7 +1397,6 @@ nav a:hover {
 
     flex-direction: column !important;
     align-items: center !important;
-
     padding: 24px 25px 30px !important;
     gap: 24px !important;
 
@@ -1406,13 +1405,13 @@ nav a:hover {
     z-index: 1000 !important;
   }
 
-  nav a {
-    font-family: 'Rajdhani', sans-serif !important;
+  nav a,
+  nav .mobile-join {
+    font-family: 'Rajdhani', Arial, sans-serif !important;
     font-weight: 700 !important;
-    letter-spacing: 1.5px !important;
+    letter-spacing: 2px !important;
     font-size: 1.15rem !important;
     text-transform: uppercase !important;
-    color: rgba(255,255,255,.88) !important;
     text-decoration: none !important;
   }
 

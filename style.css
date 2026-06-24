@@ -1069,16 +1069,30 @@ nav a {
 }
 
 .broadcast-item {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px;
-  padding: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(22,27,34,.96),
+    rgba(10,14,20,.96)
+  );
+  border: 1px solid rgba(230,57,70,.18);
+  border-radius: 18px;
+  padding: 36px 26px;
   text-align: center;
+  box-shadow: 0 0 24px rgba(0,0,0,.22);
+  transition: all .25s ease;
+}
+
+.broadcast-item:hover {
+  transform: translateY(-3px);
+  border-color: rgba(230,57,70,.45);
+  box-shadow: 0 0 28px rgba(230,57,70,.14);
 }
 
 .broadcast-icon {
-  font-size: 36px;
-  margin-bottom: 12px;
+  display: block;
+  font-size: 48px;
+  color: #e63946;
+  margin-bottom: 20px;
 }
 
 .broadcast-item h3 {

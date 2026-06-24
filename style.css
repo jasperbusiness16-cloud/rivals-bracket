@@ -1337,7 +1337,7 @@ nav a {
 .stats-section {
   max-width: 900px !important;
   margin: 80px auto 120px !important;
-  padding: 80px 40px !important;
+  padding: 55px 40px; !important;
   background: #161b22 !important;
   border: 1px solid #252c36 !important;
   border-radius: 16px !important;
@@ -1345,5 +1345,5 @@ nav a {
 }
 
 .stats-section h2 {
-  margin-bottom: 55px !important;
+  margin-bottom: 40px !important;
 }

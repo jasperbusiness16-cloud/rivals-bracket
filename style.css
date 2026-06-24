@@ -1417,3 +1417,16 @@ nav a:hover {
     display: flex !important;
   }
 }
+
+/* FINAL MOBILE MENU TEXT STYLE */
+@media (max-width: 900px) {
+  nav a,
+  nav .mobile-join {
+    font-family: 'Rajdhani', Arial, sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+  }
+}

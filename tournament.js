@@ -305,7 +305,7 @@ function show16SingleElim() {
       <div class="pro-round">
         <h3>Round of 16</h3>
 
-        <div class="pro-match ${matchClass("R16M1")}">
+        <div class="pro-match ${matchClass("R16-1")}">
           <div class="match-label">R16-1 • Bo3</div>
           <div class="team-row ${rowClass(teams.team1, winners.r16m1Winner, winners.r16m1Winner !== "")}">
             <span>${teams.team1}</span><strong>${scores.r16m1Team1Score || "0"}</strong>
@@ -315,7 +315,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M2")}">
+        <div class="pro-match ${matchClass("R16-2")}">
           <div class="match-label">R16-2 • Bo3</div>
           <div class="team-row ${rowClass(teams.team3, winners.r16m2Winner, winners.r16m2Winner !== "")}">
             <span>${teams.team3}</span><strong>${scores.r16m2Team1Score || "0"}</strong>
@@ -325,7 +325,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M3")}">
+        <div class="pro-match ${matchClass("R16-3")}">
           <div class="match-label">R16-3 • Bo3</div>
           <div class="team-row ${rowClass(teams.team5, winners.r16m3Winner, winners.r16m3Winner !== "")}">
             <span>${teams.team5}</span><strong>${scores.r16m3Team1Score || "0"}</strong>
@@ -335,7 +335,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M4")}">
+        <div class="pro-match ${matchClass("R16-4")}">
           <div class="match-label">R16-4 • Bo3</div>
           <div class="team-row ${rowClass(teams.team7, winners.r16m4Winner, winners.r16m4Winner !== "")}">
             <span>${teams.team7}</span><strong>${scores.r16m4Team1Score || "0"}</strong>
@@ -345,7 +345,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M5")}">
+        <div class="pro-match ${matchClass("R16-5")}">
           <div class="match-label">R16-5 • Bo3</div>
           <div class="team-row ${rowClass(teams.team9, winners.r16m5Winner, winners.r16m5Winner !== "")}">
             <span>${teams.team9}</span><strong>${scores.r16m5Team1Score || "0"}</strong>
@@ -355,7 +355,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M6")}">
+        <div class="pro-match ${matchClass("R16-6")}">
           <div class="match-label">R16-6 • Bo3</div>
           <div class="team-row ${rowClass(teams.team11, winners.r16m6Winner, winners.r16m6Winner !== "")}">
             <span>${teams.team11}</span><strong>${scores.r16m6Team1Score || "0"}</strong>
@@ -365,7 +365,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M7")}">
+        <div class="pro-match ${matchClass("R16-7")}">
           <div class="match-label">R16-7 • Bo3</div>
           <div class="team-row ${rowClass(teams.team13, winners.r16m7Winner, winners.r16m7Winner !== "")}">
             <span>${teams.team13}</span><strong>${scores.r16m7Team1Score || "0"}</strong>
@@ -375,7 +375,7 @@ function show16SingleElim() {
           </div>
         </div>
 
-        <div class="pro-match ${matchClass("R16M8")}">
+        <div class="pro-match ${matchClass("R16-8")}">
           <div class="match-label">R16-8 • Bo3</div>
           <div class="team-row ${rowClass(teams.team15, winners.r16m8Winner, winners.r16m8Winner !== "")}">
             <span>${teams.team15}</span><strong>${scores.r16m8Team1Score || "0"}</strong>

@@ -383,13 +383,29 @@ nav a {
   align-items: center;
 
   padding: 18px 25px 24px;
-  gap: 22px;
+  gap: 26px;
 
   border-top: 1px solid rgba(255,255,255,.06);
   border-bottom: 1px solid rgba(230,57,70,.22);
   z-index: 1000;
 }
 
+nav a {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.88);
+
+  transition: all .2s ease;
+}
+
+nav a:hover {
+  color: #e63946;
+  transform: translateY(-1px);
+}
+  
   nav.active {
     display: flex;
   }

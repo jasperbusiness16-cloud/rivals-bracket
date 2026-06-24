@@ -32,14 +32,23 @@ database.ref("site").on("value", (snapshot) => {
 };
 
   winners = {
-    qf1Winner: data.qf1Winner || "",
-    qf2Winner: data.qf2Winner || "",
-    qf3Winner: data.qf3Winner || "",
-    qf4Winner: data.qf4Winner || "",
-    sf1Winner: data.sf1Winner || "",
-    sf2Winner: data.sf2Winner || "",
-    grandWinner: data.grandWinner || ""
-  };
+  r16m1Winner: data.r16m1Winner || "",
+  r16m2Winner: data.r16m2Winner || "",
+  r16m3Winner: data.r16m3Winner || "",
+  r16m4Winner: data.r16m4Winner || "",
+  r16m5Winner: data.r16m5Winner || "",
+  r16m6Winner: data.r16m6Winner || "",
+  r16m7Winner: data.r16m7Winner || "",
+  r16m8Winner: data.r16m8Winner || "",
+
+  qf1Winner: data.qf1Winner || "",
+  qf2Winner: data.qf2Winner || "",
+  qf3Winner: data.qf3Winner || "",
+  qf4Winner: data.qf4Winner || "",
+  sf1Winner: data.sf1Winner || "",
+  sf2Winner: data.sf2Winner || "",
+  grandWinner: data.grandWinner || ""
+};
 
   scores = {
     qf1Team1Score: data.qf1Team1Score || "0",
@@ -66,8 +75,8 @@ database.ref("site").on("value", (snapshot) => {
   }
 
   if (formatType === "16_single_elim") {
-    showComingSoon("16 Team Single Elimination");
-  }
+  show16SingleElim();
+}
 
   if (formatType === "8_double_elim") {
     showComingSoon("8 Team Double Elimination");
@@ -184,6 +193,17 @@ function showComingSoon(formatName) {
     <div class="event-card">
       <h2>${formatName}</h2>
       <p>This bracket format is coming soon.</p>
+    </div>
+  `;
+}
+
+function show16SingleElim() {
+  bracketContainer.innerHTML = `
+    <div class="event-card">
+      <h2>16 Team Single Elimination</h2>
+      <p>Bracket renderer connected successfully.</p>
+      <p>${teams.team1} vs ${teams.team2}</p>
+      <p>${teams.team15} vs ${teams.team16}</p>
     </div>
   `;
 }

@@ -325,6 +325,23 @@ function resetScoresOnly() {
   if (!confirm("Reset all match scores? Winners and team names will stay.")) return;
 
   siteRef.update({
+    r16m1Team1Score: "",
+    r16m1Team2Score: "",
+    r16m2Team1Score: "",
+    r16m2Team2Score: "",
+    r16m3Team1Score: "",
+    r16m3Team2Score: "",
+    r16m4Team1Score: "",
+    r16m4Team2Score: "",
+    r16m5Team1Score: "",
+    r16m5Team2Score: "",
+    r16m6Team1Score: "",
+    r16m6Team2Score: "",
+    r16m7Team1Score: "",
+    r16m7Team2Score: "",
+    r16m8Team1Score: "",
+    r16m8Team2Score: "",
+
     qf1Team1Score: "",
     qf1Team2Score: "",
     qf2Team1Score: "",
@@ -345,11 +362,19 @@ function resetScoresOnly() {
 
   document.getElementById("saveStatus").innerText = "✓ Scores reset";
 }
-
 function resetWinnersOnly() {
   if (!confirm("Reset all winners? Scores and team names will stay.")) return;
 
   siteRef.update({
+    r16m1Winner: "",
+    r16m2Winner: "",
+    r16m3Winner: "",
+    r16m4Winner: "",
+    r16m5Winner: "",
+    r16m6Winner: "",
+    r16m7Winner: "",
+    r16m8Winner: "",
+
     qf1Winner: "",
     qf2Winner: "",
     qf3Winner: "",
@@ -357,6 +382,7 @@ function resetWinnersOnly() {
     sf1Winner: "",
     sf2Winner: "",
     grandWinner: "",
+
     currentMatch: "No Match Live",
     status: "● OFFLINE"
   });
@@ -368,14 +394,49 @@ function resetFullTournament() {
   if (!confirm("Reset winners, scores, live status, and current match? Team names and event info will stay.")) return;
 
   siteRef.update({
+
+    // Round of 16 winners
+    r16m1Winner: "",
+    r16m2Winner: "",
+    r16m3Winner: "",
+    r16m4Winner: "",
+    r16m5Winner: "",
+    r16m6Winner: "",
+    r16m7Winner: "",
+    r16m8Winner: "",
+
+    // Quarterfinal winners
     qf1Winner: "",
     qf2Winner: "",
     qf3Winner: "",
     qf4Winner: "",
+
+    // Semifinal winners
     sf1Winner: "",
     sf2Winner: "",
+
+    // Grand Finals winner
     grandWinner: "",
 
+    // Round of 16 scores
+    r16m1Team1Score: "",
+    r16m1Team2Score: "",
+    r16m2Team1Score: "",
+    r16m2Team2Score: "",
+    r16m3Team1Score: "",
+    r16m3Team2Score: "",
+    r16m4Team1Score: "",
+    r16m4Team2Score: "",
+    r16m5Team1Score: "",
+    r16m5Team2Score: "",
+    r16m6Team1Score: "",
+    r16m6Team2Score: "",
+    r16m7Team1Score: "",
+    r16m7Team2Score: "",
+    r16m8Team1Score: "",
+    r16m8Team2Score: "",
+
+    // Quarterfinal scores
     qf1Team1Score: "",
     qf1Team2Score: "",
     qf2Team1Score: "",
@@ -385,14 +446,17 @@ function resetFullTournament() {
     qf4Team1Score: "",
     qf4Team2Score: "",
 
+    // Semifinal scores
     sf1Team1Score: "",
     sf1Team2Score: "",
     sf2Team1Score: "",
     sf2Team2Score: "",
 
+    // Grand Finals scores
     gfTeam1Score: "",
     gfTeam2Score: "",
 
+    // Stream status
     currentMatch: "No Match Live",
     status: "● OFFLINE"
   });

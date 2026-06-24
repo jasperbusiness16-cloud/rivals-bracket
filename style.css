@@ -1076,7 +1076,7 @@ nav a {
   );
   border: 1px solid rgba(230,57,70,.18);
   border-radius: 18px;
-  padding: 36px 26px;
+  padding: 28px 22px;
   text-align: center;
   box-shadow: 0 0 24px rgba(0,0,0,.22);
   transition: all .25s ease;
@@ -1090,9 +1090,9 @@ nav a {
 
 .broadcast-icon {
   display: block;
-  font-size: 48px;
+  font-size: 54px;
   color: #e63946;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .broadcast-item h3 {

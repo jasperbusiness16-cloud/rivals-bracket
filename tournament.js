@@ -51,6 +51,23 @@ database.ref("site").on("value", (snapshot) => {
 };
 
   scores = {
+    r16m1Team1Score: data.r16m1Team1Score || "0",
+r16m1Team2Score: data.r16m1Team2Score || "0",
+r16m2Team1Score: data.r16m2Team1Score || "0",
+r16m2Team2Score: data.r16m2Team2Score || "0",
+r16m3Team1Score: data.r16m3Team1Score || "0",
+r16m3Team2Score: data.r16m3Team2Score || "0",
+r16m4Team1Score: data.r16m4Team1Score || "0",
+r16m4Team2Score: data.r16m4Team2Score || "0",
+r16m5Team1Score: data.r16m5Team1Score || "0",
+r16m5Team2Score: data.r16m5Team2Score || "0",
+r16m6Team1Score: data.r16m6Team1Score || "0",
+r16m6Team2Score: data.r16m6Team2Score || "0",
+r16m7Team1Score: data.r16m7Team1Score || "0",
+r16m7Team2Score: data.r16m7Team2Score || "0",
+r16m8Team1Score: data.r16m8Team1Score || "0",
+r16m8Team2Score: data.r16m8Team2Score || "0",
+    
     qf1Team1Score: data.qf1Team1Score || "0",
     qf1Team2Score: data.qf1Team2Score || "0",
     qf2Team1Score: data.qf2Team1Score || "0",
@@ -301,6 +318,8 @@ function show16SingleElim() {
     <span>${teams.team16}</span>
     <strong>${scores.r16m8Team2Score || "0"}</strong>
   </div>
+</div>
+
 </div>
 
       <div class="pro-round">

@@ -94,7 +94,7 @@ nav a {
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: 165px 20px 95px;
+  padding: 135px 20px 80px;
 
   background:
     radial-gradient(circle at 12% 55%, rgba(230,57,70,.28), transparent 22%),
@@ -113,7 +113,7 @@ nav a {
   linear-gradient(120deg, transparent 0 42%, rgba(255,255,255,.08) 42.3%, transparent 42.7%),
   linear-gradient(120deg, transparent 0 76%, rgba(230,57,70,.28) 76.3%, transparent 76.7%),
   linear-gradient(120deg, transparent 0 90%, rgba(255,255,255,.06) 90.3%, transparent 90.7%);
-  opacity: .65;
+  opacity: .45;
   pointer-events: none;
 }
 

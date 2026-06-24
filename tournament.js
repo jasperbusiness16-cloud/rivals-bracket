@@ -198,12 +198,116 @@ function showComingSoon(formatName) {
 }
 
 function show16SingleElim() {
+
   bracketContainer.innerHTML = `
-    <div class="event-card">
-      <h2>16 Team Single Elimination</h2>
-      <p>Bracket renderer connected successfully.</p>
-      <p>${teams.team1} vs ${teams.team2}</p>
-      <p>${teams.team15} vs ${teams.team16}</p>
+    <div class="pro-bracket">
+
+      <div class="pro-round">
+        <h3>Round of 16</h3>
+
+        <div class="pro-match">
+          <div class="match-label">R16-1 • Bo3</div>
+          <div class="team-row"><span>${teams.team1}</span></div>
+          <div class="team-row"><span>${teams.team2}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-2 • Bo3</div>
+          <div class="team-row"><span>${teams.team3}</span></div>
+          <div class="team-row"><span>${teams.team4}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-3 • Bo3</div>
+          <div class="team-row"><span>${teams.team5}</span></div>
+          <div class="team-row"><span>${teams.team6}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-4 • Bo3</div>
+          <div class="team-row"><span>${teams.team7}</span></div>
+          <div class="team-row"><span>${teams.team8}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-5 • Bo3</div>
+          <div class="team-row"><span>${teams.team9}</span></div>
+          <div class="team-row"><span>${teams.team10}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-6 • Bo3</div>
+          <div class="team-row"><span>${teams.team11}</span></div>
+          <div class="team-row"><span>${teams.team12}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-7 • Bo3</div>
+          <div class="team-row"><span>${teams.team13}</span></div>
+          <div class="team-row"><span>${teams.team14}</span></div>
+        </div>
+
+        <div class="pro-match">
+          <div class="match-label">R16-8 • Bo3</div>
+          <div class="team-row"><span>${teams.team15}</span></div>
+          <div class="team-row"><span>${teams.team16}</span></div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Quarterfinals</h3>
+
+        <div class="pro-match semi-spacer">
+          <div class="match-label">QF1 • Bo3</div>
+          <div class="team-row"><span>Winner R16-1</span></div>
+          <div class="team-row"><span>Winner R16-2</span></div>
+        </div>
+
+        <div class="pro-match semi-spacer">
+          <div class="match-label">QF2 • Bo3</div>
+          <div class="team-row"><span>Winner R16-3</span></div>
+          <div class="team-row"><span>Winner R16-4</span></div>
+        </div>
+
+        <div class="pro-match semi-spacer">
+          <div class="match-label">QF3 • Bo3</div>
+          <div class="team-row"><span>Winner R16-5</span></div>
+          <div class="team-row"><span>Winner R16-6</span></div>
+        </div>
+
+        <div class="pro-match semi-spacer">
+          <div class="match-label">QF4 • Bo3</div>
+          <div class="team-row"><span>Winner R16-7</span></div>
+          <div class="team-row"><span>Winner R16-8</span></div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Semifinals</h3>
+
+        <div class="pro-match grand-spacer">
+          <div class="match-label">SF1 • Bo3</div>
+          <div class="team-row"><span>Winner QF1</span></div>
+          <div class="team-row"><span>Winner QF2</span></div>
+        </div>
+
+        <div class="pro-match grand-spacer">
+          <div class="match-label">SF2 • Bo3</div>
+          <div class="team-row"><span>Winner QF3</span></div>
+          <div class="team-row"><span>Winner QF4</span></div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Grand Finals</h3>
+
+        <div class="pro-match grand-match">
+          <div class="match-label">GF • Bo5</div>
+          <div class="team-row"><span>Winner SF1</span></div>
+          <div class="team-row"><span>Winner SF2</span></div>
+        </div>
+      </div>
+
     </div>
   `;
 }

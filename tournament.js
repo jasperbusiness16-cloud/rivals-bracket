@@ -255,32 +255,32 @@ function show16SingleElim() {
       </div>
 
       <div class="pro-round">
-        <h3>Quarterfinals</h3>
+  <h3>Quarterfinals</h3>
 
-        <div class="pro-match semi-spacer">
-          <div class="match-label">QF1 • Bo3</div>
-          <div class="team-row"><span>Winner R16-1</span></div>
-          <div class="team-row"><span>Winner R16-2</span></div>
-        </div>
+  <div class="pro-match semi-spacer">
+    <div class="match-label">QF1 • Bo3</div>
+    <div class="team-row"><span>${winners.r16m1Winner || "Winner R16-1"}</span></div>
+    <div class="team-row"><span>${winners.r16m2Winner || "Winner R16-2"}</span></div>
+  </div>
 
-        <div class="pro-match semi-spacer">
-          <div class="match-label">QF2 • Bo3</div>
-          <div class="team-row"><span>Winner R16-3</span></div>
-          <div class="team-row"><span>Winner R16-4</span></div>
-        </div>
+  <div class="pro-match semi-spacer">
+    <div class="match-label">QF2 • Bo3</div>
+    <div class="team-row"><span>${winners.r16m3Winner || "Winner R16-3"}</span></div>
+    <div class="team-row"><span>${winners.r16m4Winner || "Winner R16-4"}</span></div>
+  </div>
 
-        <div class="pro-match semi-spacer">
-          <div class="match-label">QF3 • Bo3</div>
-          <div class="team-row"><span>Winner R16-5</span></div>
-          <div class="team-row"><span>Winner R16-6</span></div>
-        </div>
+  <div class="pro-match semi-spacer">
+    <div class="match-label">QF3 • Bo3</div>
+    <div class="team-row"><span>${winners.r16m5Winner || "Winner R16-5"}</span></div>
+    <div class="team-row"><span>${winners.r16m6Winner || "Winner R16-6"}</span></div>
+  </div>
 
-        <div class="pro-match semi-spacer">
-          <div class="match-label">QF4 • Bo3</div>
-          <div class="team-row"><span>Winner R16-7</span></div>
-          <div class="team-row"><span>Winner R16-8</span></div>
-        </div>
-      </div>
+  <div class="pro-match semi-spacer">
+    <div class="match-label">QF4 • Bo3</div>
+    <div class="team-row"><span>${winners.r16m7Winner || "Winner R16-7"}</span></div>
+    <div class="team-row"><span>${winners.r16m8Winner || "Winner R16-8"}</span></div>
+  </div>
+</div>
 
       <div class="pro-round">
         <h3>Semifinals</h3>

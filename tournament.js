@@ -125,6 +125,30 @@ winners.qf4Winner = autoWinner(
   scores.qf4Team2Score,
   winners.qf4Winner
 );
+
+winners.sf1Winner = autoWinner(
+  winners.qf1Winner || "Winner QF1",
+  winners.qf2Winner || "Winner QF2",
+  scores.sf1Team1Score,
+  scores.sf1Team2Score,
+  winners.sf1Winner
+);
+
+winners.sf2Winner = autoWinner(
+  winners.qf3Winner || "Winner QF3",
+  winners.qf4Winner || "Winner QF4",
+  scores.sf2Team1Score,
+  scores.sf2Team2Score,
+  winners.sf2Winner
+);
+
+winners.grandWinner = autoWinner(
+  winners.sf1Winner || "Winner SF1",
+  winners.sf2Winner || "Winner SF2",
+  scores.gfTeam1Score,
+  scores.gfTeam2Score,
+  winners.grandWinner
+);
   
   const formatType = data.formatType || "8_single_elim";
 

@@ -144,7 +144,16 @@ function saveSiteData() {
   const team6 = document.getElementById("team6").value;
   const team7 = document.getElementById("team7").value;
   const team8 = document.getElementById("team8").value;
+  const team9 = document.getElementById("team9").value;
+const team10 = document.getElementById("team10").value;
+const team11 = document.getElementById("team11").value;
+const team12 = document.getElementById("team12").value;
+const team13 = document.getElementById("team13").value;
+const team14 = document.getElementById("team14").value;
+const team15 = document.getElementById("team15").value;
+const team16 = document.getElementById("team16").value;
 
+  
   const qf1Winner = scoreWinner(
     team1,
     team2,

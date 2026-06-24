@@ -25,7 +25,16 @@ siteRef.on("value", (snapshot) => {
   document.getElementById("team6").value = data.team6 || "";
   document.getElementById("team7").value = data.team7 || "";
   document.getElementById("team8").value = data.team8 || "";
+  document.getElementById("team9").value = data.team9 || "";
+document.getElementById("team10").value = data.team10 || "";
+document.getElementById("team11").value = data.team11 || "";
+document.getElementById("team12").value = data.team12 || "";
+document.getElementById("team13").value = data.team13 || "";
+document.getElementById("team14").value = data.team14 || "";
+document.getElementById("team15").value = data.team15 || "";
+document.getElementById("team16").value = data.team16 || "";
 
+  
   const sf1Team1 = data.qf1Winner || "SF1 Team 1";
   const sf1Team2 = data.qf2Winner || "SF1 Team 2";
   const sf2Team1 = data.qf3Winner || "SF2 Team 1";

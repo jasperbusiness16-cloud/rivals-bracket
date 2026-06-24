@@ -1242,6 +1242,22 @@ nav a:hover {
   line-height: 1.5;
 }
 
+.caster-socials {
+  margin: 14px 0 18px;
+}
+
+.caster-socials a {
+  color: #ffffff;
+  font-size: 28px;
+  text-decoration: none;
+  transition: all .2s ease;
+}
+
+.caster-socials a:hover {
+  color: #e63946;
+  transform: scale(1.1);
+}
+
 @media (max-width: 900px) {
   .casters-grid {
     grid-template-columns: 1fr;

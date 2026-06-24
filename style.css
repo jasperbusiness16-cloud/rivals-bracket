@@ -371,19 +371,21 @@ nav a {
   }
 
   nav {
-    display: none;
-    position: absolute;
-    top: 90px;
-    left: 0;
-    width: 100%;
-    background: #161b22;
-    flex-direction: column;
-    align-items: center;
-    padding: 25px;
-    gap: 20px;
-    border-top: 1px solid #333;
-    z-index: 1000;
-  }
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: rgba(13,17,23,.96);
+  backdrop-filter: blur(12px);
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 25px 28px;
+  gap: 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(230,57,70,.22);
+  z-index: 1000;
+}
 
   nav.active {
     display: flex;

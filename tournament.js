@@ -356,30 +356,55 @@ function show16SingleElim() {
 </div>
 
       <div class="pro-round">
-        <h3>Semifinals</h3>
+  <h3>Semifinals</h3>
 
-        <div class="pro-match grand-spacer">
-          <div class="match-label">SF1 • Bo3</div>
-          <div class="team-row"><span>Winner QF1</span></div>
-          <div class="team-row"><span>Winner QF2</span></div>
-        </div>
+  <div class="pro-match grand-spacer">
+    <div class="match-label">SF1 • Bo3</div>
+    <div class="team-row ${rowClass(winners.qf1Winner || "Winner QF1", winners.sf1Winner, winners.sf1Winner !== "")}">
+      <span>${winners.qf1Winner || "Winner QF1"}</span>
+      <strong>${scores.sf1Team1Score || "0"}</strong>
+    </div>
+    <div class="team-row ${rowClass(winners.qf2Winner || "Winner QF2", winners.sf1Winner, winners.sf1Winner !== "")}">
+      <span>${winners.qf2Winner || "Winner QF2"}</span>
+      <strong>${scores.sf1Team2Score || "0"}</strong>
+    </div>
+  </div>
 
-        <div class="pro-match grand-spacer">
-          <div class="match-label">SF2 • Bo3</div>
-          <div class="team-row"><span>Winner QF3</span></div>
-          <div class="team-row"><span>Winner QF4</span></div>
-        </div>
-      </div>
+  <div class="pro-match grand-spacer">
+    <div class="match-label">SF2 • Bo3</div>
+    <div class="team-row ${rowClass(winners.qf3Winner || "Winner QF3", winners.sf2Winner, winners.sf2Winner !== "")}">
+      <span>${winners.qf3Winner || "Winner QF3"}</span>
+      <strong>${scores.sf2Team1Score || "0"}</strong>
+    </div>
+    <div class="team-row ${rowClass(winners.qf4Winner || "Winner QF4", winners.sf2Winner, winners.sf2Winner !== "")}">
+      <span>${winners.qf4Winner || "Winner QF4"}</span>
+      <strong>${scores.sf2Team2Score || "0"}</strong>
+    </div>
+  </div>
+</div>
 
       <div class="pro-round">
-        <h3>Grand Finals</h3>
+  <h3>Grand Finals</h3>
 
-        <div class="pro-match grand-match">
-          <div class="match-label">GF • Bo5</div>
-          <div class="team-row"><span>Winner SF1</span></div>
-          <div class="team-row"><span>Winner SF2</span></div>
-        </div>
-      </div>
+  <div class="pro-match grand-match">
+    <div class="match-label">GF • Bo5</div>
+    <div class="team-row ${rowClass(winners.sf1Winner || "Winner SF1", winners.grandWinner, winners.grandWinner !== "")}">
+      <span>${winners.sf1Winner || "Winner SF1"}</span>
+      <strong>${scores.gfTeam1Score || "0"}</strong>
+    </div>
+    <div class="team-row ${rowClass(winners.sf2Winner || "Winner SF2", winners.grandWinner, winners.grandWinner !== "")}">
+      <span>${winners.sf2Winner || "Winner SF2"}</span>
+      <strong>${scores.gfTeam2Score || "0"}</strong>
+    </div>
+  </div>
+
+  ${winners.grandWinner ? `
+    <div class="champion-banner">
+      <div class="champion-title">🏆 Tournament Champion</div>
+      <div class="champion-name">${winners.grandWinner}</div>
+    </div>
+  ` : ""}
+</div>
 
     </div>
   `;

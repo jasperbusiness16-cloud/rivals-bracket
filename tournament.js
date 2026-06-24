@@ -147,15 +147,14 @@ function rowClass(teamName, winnerName, hasWinner) {
 }
 
 function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner) {
-  if (savedWinner) return savedWinner;
-
   const a = Number(scoreA);
   const b = Number(scoreB);
 
-  if (Number.isNaN(a) || Number.isNaN(b)) return "";
-  if (a === b) return "";
+  if (!Number.isNaN(a) && !Number.isNaN(b) && scoreA !== "" && scoreB !== "" && a !== b) {
+    return a > b ? teamA : teamB;
+  }
 
-  return a > b ? teamA : teamB;
+  return savedWinner || "";
 }
 
 function matchClass(matchId) {

@@ -797,10 +797,11 @@ nav a {
   color: #ffffff;
 }
 
+
 .stats-section {
   max-width: 900px;
   margin: 0 auto 100px;
-  padding: 40px;
+  padding: 60px 40px;
   background: #161b22;
   border: 1px solid #252c36;
   border-radius: 16px;

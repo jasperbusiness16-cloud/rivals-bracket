@@ -93,6 +93,38 @@ winners.r16m5Winner = autoWinner(teams.team9, teams.team10, scores.r16m5Team1Sco
 winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Score, scores.r16m6Team2Score, winners.r16m6Winner);
 winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner);
 winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner);
+
+  winners.qf1Winner = autoWinner(
+  winners.r16m1Winner || "Winner R16-1",
+  winners.r16m2Winner || "Winner R16-2",
+  scores.qf1Team1Score,
+  scores.qf1Team2Score,
+  winners.qf1Winner
+);
+
+winners.qf2Winner = autoWinner(
+  winners.r16m3Winner || "Winner R16-3",
+  winners.r16m4Winner || "Winner R16-4",
+  scores.qf2Team1Score,
+  scores.qf2Team2Score,
+  winners.qf2Winner
+);
+
+winners.qf3Winner = autoWinner(
+  winners.r16m5Winner || "Winner R16-5",
+  winners.r16m6Winner || "Winner R16-6",
+  scores.qf3Team1Score,
+  scores.qf3Team2Score,
+  winners.qf3Winner
+);
+
+winners.qf4Winner = autoWinner(
+  winners.r16m7Winner || "Winner R16-7",
+  winners.r16m8Winner || "Winner R16-8",
+  scores.qf4Team1Score,
+  scores.qf4Team2Score,
+  winners.qf4Winner
+);
   
   const formatType = data.formatType || "8_single_elim";
 

@@ -1372,7 +1372,7 @@ nav a:hover {
 .stats-section {
   max-width: 900px !important;
   margin: 80px auto 120px !important;
-  padding: 55px 40px; !important;
+  padding: 55px 40px !important;
   background: #161b22 !important;
   border: 1px solid #252c36 !important;
   border-radius: 16px !important;
@@ -1397,12 +1397,23 @@ nav a:hover {
 
     flex-direction: column !important;
     align-items: center !important;
-    padding: 22px 25px 26px !important;
-    gap: 14px !important;
+
+    padding: 24px 25px 30px !important;
+    gap: 24px !important;
 
     border-top: 1px solid rgba(255,255,255,.06) !important;
     border-bottom: 1px solid rgba(230,57,70,.22) !important;
     z-index: 1000 !important;
+  }
+
+  nav a {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    font-size: 1.15rem !important;
+    text-transform: uppercase !important;
+    color: rgba(255,255,255,.88) !important;
+    text-decoration: none !important;
   }
 
   nav.active {

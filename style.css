@@ -1500,3 +1500,70 @@ nav a:hover {
 .about-cta {
   margin-top: 140px;
 }
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.team-card {
+  background: #111;
+  border: 1px solid #252c36;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.team-card-highlight {
+  border-color: #e63946;
+  box-shadow: 0 0 25px rgba(230, 57, 70, 0.35);
+}
+
+.team-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.team-card-header h2 {
+  margin: 4px 0 0;
+  color: white;
+  text-transform: uppercase;
+}
+
+.team-count {
+  color: #e63946;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #e63946;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.team-roster-list {
+  display: grid;
+  gap: 10px;
+}
+
+.team-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #0d1117;
+  border: 1px solid #252c36;
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+
+.team-player span {
+  color: #e63946;
+  font-weight: bold;
+  width: 20px;
+}
+
+.team-player strong {
+  color: white;
+}

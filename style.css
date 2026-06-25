@@ -1680,3 +1680,20 @@ nav a:hover {
   color: #666;
   font-style: normal;
 }
+
+.champion-admin-item {
+  background: #0d1117;
+  border: 1px solid #252c36;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+}
+
+.champion-admin-item strong {
+  color: white;
+}
+
+.champion-admin-item p {
+  color: #aaa;
+  margin: 6px 0 12px;
+}

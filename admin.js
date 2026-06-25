@@ -596,3 +596,37 @@ function resetAllRosters() {
   siteRef.update(updates);
   document.getElementById("saveStatus").innerText = "✓ All rosters reset";
 }
+
+function saveChampion() {
+  const championRef = database.ref("champions").push();
+
+  const players = [];
+
+  for (let i = 1; i <= 6; i++) {
+    players.push({
+      name: document.getElementById(`championPlayer${i}`).value || `Player ${i}`,
+      link: document.getElementById(`championPlayer${i}Link`).value || ""
+    });
+  }
+
+  championRef.set({
+    eventName: document.getElementById("championEventName").value || "Rivals Gauntlet Event",
+    teamName: document.getElementById("championTeamName").value || "Champion Team",
+    date: document.getElementById("championDate").value || "",
+    finalScore: document.getElementById("championFinalScore").value || "",
+    players,
+    createdAt: Date.now()
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Champion saved";
+
+  document.getElementById("championEventName").value = "";
+  document.getElementById("championTeamName").value = "";
+  document.getElementById("championDate").value = "";
+  document.getElementById("championFinalScore").value = "";
+
+  for (let i = 1; i <= 6; i++) {
+    document.getElementById(`championPlayer${i}`).value = "";
+    document.getElementById(`championPlayer${i}Link`).value = "";
+  }
+}

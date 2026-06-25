@@ -85,94 +85,36 @@ r16m8Team2Score: data.r16m8Team2Score || "0",
     gfTeam2Score: data.gfTeam2Score || "0"
   };
 
-   winners.r16m1Winner = autoWinner(teams.team1, teams.team2, scores.r16m1Team1Score, scores.r16m1Team2Score, winners.r16m1Winner);
-winners.r16m2Winner = autoWinner(teams.team3, teams.team4, scores.r16m2Team1Score, scores.r16m2Team2Score, winners.r16m2Winner);
-winners.r16m3Winner = autoWinner(teams.team5, teams.team6, scores.r16m3Team1Score, scores.r16m3Team2Score, winners.r16m3Winner);
-winners.r16m4Winner = autoWinner(teams.team7, teams.team8, scores.r16m4Team1Score, scores.r16m4Team2Score, winners.r16m4Winner);
-winners.r16m5Winner = autoWinner(teams.team9, teams.team10, scores.r16m5Team1Score, scores.r16m5Team2Score, winners.r16m5Winner);
-winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Score, scores.r16m6Team2Score, winners.r16m6Winner);
-winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner);
-winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner);
+   const formatType = data.formatType || "8_single_elim";
+const is16Team = formatType === "16_single_elim";
 
- const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
-
-if (is16Team) {
-
-  const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
+winners.r16m1Winner = autoWinner(teams.team1, teams.team2, scores.r16m1Team1Score, scores.r16m1Team2Score, winners.r16m1Winner, 3);
+winners.r16m2Winner = autoWinner(teams.team3, teams.team4, scores.r16m2Team1Score, scores.r16m2Team2Score, winners.r16m2Winner, 3);
+winners.r16m3Winner = autoWinner(teams.team5, teams.team6, scores.r16m3Team1Score, scores.r16m3Team2Score, winners.r16m3Winner, 3);
+winners.r16m4Winner = autoWinner(teams.team7, teams.team8, scores.r16m4Team1Score, scores.r16m4Team2Score, winners.r16m4Winner, 3);
+winners.r16m5Winner = autoWinner(teams.team9, teams.team10, scores.r16m5Team1Score, scores.r16m5Team2Score, winners.r16m5Winner, 3);
+winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Score, scores.r16m6Team2Score, winners.r16m6Winner, 3);
+winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner, 3);
+winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner, 3);
 
 if (is16Team) {
-  winners.qf1Winner = autoWinner(winners.r16m1Winner || "Winner R16-1", winners.r16m2Winner || "Winner R16-2", scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner);
-  winners.qf2Winner = autoWinner(winners.r16m3Winner || "Winner R16-3", winners.r16m4Winner || "Winner R16-4", scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner);
-  winners.qf3Winner = autoWinner(winners.r16m5Winner || "Winner R16-5", winners.r16m6Winner || "Winner R16-6", scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner);
-  winners.qf4Winner = autoWinner(winners.r16m7Winner || "Winner R16-7", winners.r16m8Winner || "Winner R16-8", scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner);
+  winners.qf1Winner = autoWinner(winners.r16m1Winner || "Winner R16-1", winners.r16m2Winner || "Winner R16-2", scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner, 3);
+  winners.qf2Winner = autoWinner(winners.r16m3Winner || "Winner R16-3", winners.r16m4Winner || "Winner R16-4", scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner, 3);
+  winners.qf3Winner = autoWinner(winners.r16m5Winner || "Winner R16-5", winners.r16m6Winner || "Winner R16-6", scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner, 3);
+  winners.qf4Winner = autoWinner(winners.r16m7Winner || "Winner R16-7", winners.r16m8Winner || "Winner R16-8", scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner, 3);
 } else {
-  winners.qf1Winner = autoWinner(teams.team1, teams.team2, scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner);
-  winners.qf2Winner = autoWinner(teams.team3, teams.team4, scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner);
-  winners.qf3Winner = autoWinner(teams.team5, teams.team6, scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner);
-  winners.qf4Winner = autoWinner(teams.team7, teams.team8, scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner);
+  winners.qf1Winner = autoWinner(teams.team1, teams.team2, scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner, 3);
+  winners.qf2Winner = autoWinner(teams.team3, teams.team4, scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner, 3);
+  winners.qf3Winner = autoWinner(teams.team5, teams.team6, scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner, 3);
+  winners.qf4Winner = autoWinner(teams.team7, teams.team8, scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner, 3);
 }
 
-} else {
+winners.sf1Winner = autoWinner(winners.qf1Winner || "Winner QF1", winners.qf2Winner || "Winner QF2", scores.sf1Team1Score, scores.sf1Team2Score, winners.sf1Winner, 3);
+winners.sf2Winner = autoWinner(winners.qf3Winner || "Winner QF3", winners.qf4Winner || "Winner QF4", scores.sf2Team1Score, scores.sf2Team2Score, winners.sf2Winner, 3);
 
-  winners.qf1Winner = autoWinner(
-    teams.team1,
-    teams.team2,
-    scores.qf1Team1Score,
-    scores.qf1Team2Score,
-    winners.qf1Winner
-  );
-
-  winners.qf2Winner = autoWinner(
-    teams.team3,
-    teams.team4,
-    scores.qf2Team1Score,
-    scores.qf2Team2Score,
-    winners.qf2Winner
-  );
-
-  winners.qf3Winner = autoWinner(
-    teams.team5,
-    teams.team6,
-    scores.qf3Team1Score,
-    scores.qf3Team2Score,
-    winners.qf3Winner
-  );
-
-  winners.qf4Winner = autoWinner(
-    teams.team7,
-    teams.team8,
-    scores.qf4Team1Score,
-    scores.qf4Team2Score,
-    winners.qf4Winner
-  );
-
-}
-
-winners.sf1Winner = autoWinner(
-  winners.qf1Winner || "Winner QF1",
-  winners.qf2Winner || "Winner QF2",
-  scores.sf1Team1Score,
-  scores.sf1Team2Score,
-  winners.sf1Winner
-);
-
-winners.sf2Winner = autoWinner(
-  winners.qf3Winner || "Winner QF3",
-  winners.qf4Winner || "Winner QF4",
-  scores.sf2Team1Score,
-  scores.sf2Team2Score,
-  winners.sf2Winner
-);
-
-winners.grandWinner = autoWinner(
-  winners.sf1Winner || "Winner SF1",
-  winners.sf2Winner || "Winner SF2",
-  scores.gfTeam1Score,
-  scores.gfTeam2Score,
-  winners.grandWinner
-);
+winners.grandWinner = autoWinner(winners.sf1Winner || "Winner SF1", winners.sf2Winner || "Winner SF2", scores.gfTeam1Score, scores.gfTeam2Score, winners.grandWinner, 5);
   
-  const formatType = data.formatType || "8_single_elim";
+  
 
   if (formatType === "8_single_elim") {
     show8SingleElim();
@@ -192,15 +134,24 @@ function rowClass(teamName, winnerName, hasWinner) {
   return teamName === winnerName ? "winner-row" : "loser-row";
 }
 
-function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner) {
+function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner, bestOf = 3) {
   const a = Number(scoreA);
   const b = Number(scoreB);
 
-  if (!Number.isNaN(a) && !Number.isNaN(b) && scoreA !== "" && scoreB !== "" && a !== b) {
-    return a > b ? teamA : teamB;
+  if (scoreA === "" || scoreB === "") return savedWinner || "";
+  if (Number.isNaN(a) || Number.isNaN(b)) return savedWinner || "";
+  if (a === b) return savedWinner || "";
+
+  // Bo3 = first to 2
+  // Bo5 = first to 3
+  const winsNeeded = bestOf === 5 ? 3 : 2;
+
+  // Match isn't finished yet
+  if (a < winsNeeded && b < winsNeeded) {
+    return savedWinner || "";
   }
 
-  return savedWinner || "";
+  return a > b ? teamA : teamB;
 }
 
 function matchClass(matchId) {

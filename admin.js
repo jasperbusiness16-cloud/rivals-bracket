@@ -610,13 +610,14 @@ function saveChampion() {
   }
 
   championRef.set({
-    eventName: document.getElementById("championEventName").value || "Rivals Gauntlet Event",
-    teamName: document.getElementById("championTeamName").value || "Champion Team",
-    date: document.getElementById("championDate").value || "",
-    finalScore: document.getElementById("championFinalScore").prizeWon: document.getElementById("championPrizeWon").value || "",
-    players,
-    createdAt: Date.now()
-  });
+  eventName: document.getElementById("championEventName").value || "Rivals Gauntlet Event",
+  teamName: document.getElementById("championTeamName").value || "Champion Team",
+  date: document.getElementById("championDate").value || "",
+  finalScore: document.getElementById("championFinalScore").value || "",
+  prizeWon: document.getElementById("championPrizeWon").value || "",
+  players,
+  createdAt: Date.now()
+});
 
   document.getElementById("saveStatus").innerText = "✓ Champion saved";
 

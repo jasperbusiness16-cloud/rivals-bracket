@@ -171,11 +171,64 @@ if (adminPassword !== "77hawkeyes") {
 </div>
 
 <div class="admin-section">
-<h2>Bracket Controls</h2>
-  
+  <h2>Hall of Champions</h2>
+
+  <details class="admin-details">
+    <summary>▶ Add Champion</summary>
+
+    <label>Champion Event Name</label>
+    <input id="championEventName" placeholder="Rivals Gauntlet Open #1">
+
+    <label>Champion Team Name</label>
+    <input id="championTeamName" placeholder="Team Sharks">
+
+    <label>Champion Date</label>
+    <input id="championDate" placeholder="June 2026">
+
+    <label>Finals Score</label>
+    <input id="championFinalScore" placeholder="3 - 1">
+
+    <label>Prize Won</label>
+    <input id="championPrizeWon" placeholder="$150">
+
+    <h3 style="margin-top:25px;">Winning Roster</h3>
+
+    <label>Player 1</label>
+    <input id="championPlayer1" placeholder="Player 1">
+    <label>Player 1 Twitch/Social Link</label>
+    <input id="championPlayer1Link" placeholder="https://twitch.tv/player">
+
+    <label>Player 2</label>
+    <input id="championPlayer2" placeholder="Player 2">
+    <label>Player 2 Twitch/Social Link</label>
+    <input id="championPlayer2Link" placeholder="https://twitch.tv/player">
+
+    <label>Player 3</label>
+    <input id="championPlayer3" placeholder="Player 3">
+    <label>Player 3 Twitch/Social Link</label>
+    <input id="championPlayer3Link" placeholder="https://twitch.tv/player">
+
+    <label>Player 4</label>
+    <input id="championPlayer4" placeholder="Player 4">
+    <label>Player 4 Twitch/Social Link</label>
+    <input id="championPlayer4Link" placeholder="https://twitch.tv/player">
+
+    <label>Player 5</label>
+    <input id="championPlayer5" placeholder="Player 5">
+    <label>Player 5 Twitch/Social Link</label>
+    <input id="championPlayer5Link" placeholder="https://twitch.tv/player">
+
+    <label>Player 6</label>
+    <input id="championPlayer6" placeholder="Player 6">
+    <label>Player 6 Twitch/Social Link</label>
+    <input id="championPlayer6Link" placeholder="https://twitch.tv/player">
+
+    <button class="join-btn" onclick="saveChampion()">SAVE CHAMPION</button>
+  </details>
+</div>
+
 <div class="admin-section">
 <h2>Bracket Controls</h2>
-
 <details id="r16AdminSection" class="admin-details" open>
   <summary>▶ Round of 16</summary>
 

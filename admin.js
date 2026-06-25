@@ -1,5 +1,43 @@
 const siteRef = database.ref("site");
 
+function renderRosterInputs(data, is16Team) {
+  const container = document.getElementById("teamRostersAdmin");
+  if (!container) return;
+
+  const teamCount = is16Team ? 16 : 8;
+  let html = "";
+
+  for (let teamNum = 1; teamNum <= teamCount; teamNum++) {
+    const teamName = data[`team${teamNum}`] || `Team ${teamNum}`;
+
+    html += `
+      <details class="admin-details">
+        <summary>▶ ${teamName} Roster</summary>
+
+        ${[1, 2, 3, 4, 5, 6].map(playerNum => `
+          <label>${teamName} Player ${playerNum}</label>
+          <input id="team${teamNum}Player${playerNum}" placeholder="Player ${playerNum}">
+        `).join("")}
+
+        <button class="secondary" onclick="resetTeamRoster(${teamNum})" style="margin-top:15px;">
+          RESET ${teamName.toUpperCase()} ROSTER
+        </button>
+      </details>
+    `;
+  }
+
+  container.innerHTML = html;
+
+  for (let teamNum = 1; teamNum <= teamCount; teamNum++) {
+    for (let playerNum = 1; playerNum <= 6; playerNum++) {
+      const input = document.getElementById(`team${teamNum}Player${playerNum}`);
+      if (input) {
+        input.value = data[`team${teamNum}Player${playerNum}`] || "";
+      }
+    }
+  }
+}
+
 siteRef.on("value", (snapshot) => {
   const data = snapshot.val();
   if (!data) return;
@@ -27,7 +65,7 @@ const extraTeamsSection = document.getElementById("extraTeamsSection");
 if (extraTeamsSection) {
   extraTeamsSection.style.display = is16Team ? "block" : "none";
 }
-
+renderRosterInputs(data, is16Team);
   
   document.getElementById("team1").value = data.team1 || "";
   document.getElementById("team2").value = data.team2 || "";
@@ -305,6 +343,15 @@ const teamB =
   5
 );
 
+const rosterData = {};
+
+for (let teamNum = 1; teamNum <= 16; teamNum++) {
+  for (let playerNum = 1; playerNum <= 6; playerNum++) {
+    const input = document.getElementById(`team${teamNum}Player${playerNum}`);
+    rosterData[`team${teamNum}Player${playerNum}`] = input ? input.value : "";
+  }
+}
+  
   siteRef.update({
     eventName: document.getElementById("eventName").value,
     prizePool: document.getElementById("prizePool").value,
@@ -371,6 +418,9 @@ r16m8Team2Score: document.getElementById("r16m8Team2Score").value,
     sf2Team2Score: document.getElementById("sf2Team2Score").value,
     gfTeam1Score: document.getElementById("gfTeam1Score").value,
     gfTeam2Score: document.getElementById("gfTeam2Score").value
+ 
+    ...rosterData,
+  
   });
 
   document.getElementById("saveStatus").innerText = "✓ Saved successfully";
@@ -517,4 +567,32 @@ function resetFullTournament() {
   });
 
   document.getElementById("saveStatus").innerText = "✓ Tournament reset";
+}
+
+function resetTeamRoster(teamNum) {
+  if (!confirm(`Reset Team ${teamNum} roster?`)) return;
+
+  const updates = {};
+
+  for (let playerNum = 1; playerNum <= 6; playerNum++) {
+    updates[`team${teamNum}Player${playerNum}`] = "";
+  }
+
+  siteRef.update(updates);
+  document.getElementById("saveStatus").innerText = `✓ Team ${teamNum} roster reset`;
+}
+
+function resetAllRosters() {
+  if (!confirm("Reset all team rosters?")) return;
+
+  const updates = {};
+
+  for (let teamNum = 1; teamNum <= 16; teamNum++) {
+    for (let playerNum = 1; playerNum <= 6; playerNum++) {
+      updates[`team${teamNum}Player${playerNum}`] = "";
+    }
+  }
+
+  siteRef.update(updates);
+  document.getElementById("saveStatus").innerText = "✓ All rosters reset";
 }

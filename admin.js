@@ -613,7 +613,7 @@ function saveChampion() {
     eventName: document.getElementById("championEventName").value || "Rivals Gauntlet Event",
     teamName: document.getElementById("championTeamName").value || "Champion Team",
     date: document.getElementById("championDate").value || "",
-    finalScore: document.getElementById("championFinalScore").value || "",
+    finalScore: document.getElementById("championFinalScore").prizeWon: document.getElementById("championPrizeWon").value || "",
     players,
     createdAt: Date.now()
   });
@@ -624,7 +624,8 @@ function saveChampion() {
   document.getElementById("championTeamName").value = "";
   document.getElementById("championDate").value = "";
   document.getElementById("championFinalScore").value = "";
-
+  document.getElementById("championPrizeWon").value = "";
+  
   for (let i = 1; i <= 6; i++) {
     document.getElementById(`championPlayer${i}`).value = "";
     document.getElementById(`championPlayer${i}Link`).value = "";

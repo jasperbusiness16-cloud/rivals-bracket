@@ -1578,3 +1578,105 @@ nav a:hover {
     color:#e63946;
     text-shadow:0 0 8px rgba(230,57,70,.8);
 }
+
+.champions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.champion-card {
+  background: #111;
+  border: 1px solid #252c36;
+  border-radius: 18px;
+  padding: 24px;
+  position: relative;
+}
+
+.current-champion-card {
+  border-color: #e63946;
+  box-shadow: 0 0 25px rgba(230, 57, 70, 0.25);
+}
+
+.current-champion-badge {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #e63946;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #e63946;
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.champion-card h2 {
+  margin: 8px 0 18px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.champion-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.champion-stats div {
+  background: #0d1117;
+  border: 1px solid #252c36;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.champion-stats span {
+  display: block;
+  color: #888;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.champion-stats strong {
+  color: white;
+  font-size: 16px;
+}
+
+.champion-roster summary {
+  cursor: pointer;
+  color: #e63946;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.champion-player-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.champion-player {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: #0d1117;
+  border: 1px solid #252c36;
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+
+.champion-player span {
+  color: white;
+  font-weight: bold;
+}
+
+.champion-player a {
+  color: #e63946;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.champion-player em {
+  color: #666;
+  font-style: normal;
+}

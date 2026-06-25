@@ -176,6 +176,35 @@ if (matchId === "R16-8" && match.includes("r16-8")) return "live-match";
   return "";
 }
 
+function getTeamNumber(teamName) {
+  for (let i = 1; i <= 16; i++) {
+    if (teams[`team${i}`] === teamName) {
+      return i;
+    }
+  }
+  return null;
+}
+
+function makeBracketLinks() {
+
+  document.querySelectorAll(".team-row").forEach(row => {
+
+    if (row.querySelector("a")) return;
+
+    const span = row.querySelector("span");
+    if (!span) return;
+
+    const teamName = span.textContent.trim();
+
+    const teamNumber = getTeamNumber(teamName);
+
+    if (!teamNumber) return;
+
+    span.innerHTML =
+      `<a class="team-link" href="teams.html#team${teamNumber}">${teamName}</a>`;
+  });
+
+}
   
 
 function show8SingleElim() {
@@ -259,7 +288,9 @@ function show8SingleElim() {
       </div>
 
     </div>
-  `;
+    `;
+
+  makeBracketLinks();
 }
 
 function showComingSoon(formatName) {
@@ -449,5 +480,7 @@ function show16SingleElim() {
       </div>
 
     </div>
-  `;
+    `;
+
+  makeBracketLinks();
 }

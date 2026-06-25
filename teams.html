@@ -1,1 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teams | Rivals Gauntlet</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
 
+<header>
+  <a href="index.html" class="logo">
+    <img src="IMG_2302.png" alt="Rivals Gauntlet Logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <nav id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="teams.html">Teams</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="donate.html">Donations</a>
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+    <a href="about.html">About</a>
+
+    <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+      JOIN THE ACTION
+    </a>
+  </nav>
+
+  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+    JOIN THE ACTION
+  </a>
+</header>
+
+<section class="page-hero">
+  <p class="eyebrow">TEAM ROSTERS</p>
+  <h1>Rivals Gauntlet Teams</h1>
+  <p>View team lineups, players, and tournament rosters.</p>
+</section>
+
+<section class="bracket-section">
+  <div class="section-heading">
+    <p class="eyebrow">ROSTERS</p>
+    <h2>Current Teams</h2>
+  </div>
+
+  <div id="teamsGrid" class="teams-grid">
+    <p>Loading teams...</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">RIVALS GAUNTLET</div>
+
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="tournament.html">Tournament</a>
+    <a href="teams.html">Teams</a>
+    <a href="watch.html">Watch Live</a>
+    <a href="donate.html">Donations</a>
+  </div>
+
+  <div class="footer-socials">
+    <a href="https://www.twitch.tv/atrophylive" target="_blank">
+      <i class="fab fa-twitch"></i>
+    </a>
+
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">
+      <i class="fab fa-discord"></i>
+    </a>
+  </div>
+
+  <p>© 2026 Rivals Gauntlet</p>
+
+  <p style="
+    margin-top:12px;
+    font-size:12px;
+    color:#666;
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+  ">
+    Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
+  </p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+
+function renderTeams(data) {
+  const grid = document.getElementById("teamsGrid");
+  const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
+  const teamCount = is16Team ? 16 : 8;
+
+  let html = "";
+
+  for (let teamNum = 1; teamNum <= teamCount; teamNum++) {
+    const teamName = data[`team${teamNum}`] || `Team ${teamNum}`;
+
+    const players = [];
+    for (let playerNum = 1; playerNum <= 6; playerNum++) {
+      players.push(data[`team${teamNum}Player${playerNum}`] || `Player ${playerNum}`);
+    }
+
+    html += `
+      <div class="team-card" id="team${teamNum}">
+        <div class="team-card-header">
+          <div>
+            <p class="eyebrow">TEAM ${teamNum}</p>
+            <h2>${teamName}</h2>
+          </div>
+          <span class="team-count">6 Players</span>
+        </div>
+
+        <div class="team-roster-list">
+          ${players.map((player, index) => `
+            <div class="team-player">
+              <span>${index + 1}</span>
+              <strong>${player}</strong>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.classList.add("team-card-highlight");
+      }, 300);
+    }
+  }
+}
+
+database.ref("site").on("value", (snapshot) => {
+  const data = snapshot.val();
+  if (!data) return;
+  renderTeams(data);
+});
+</script>
+
+</body>
+</html>

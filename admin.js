@@ -417,9 +417,9 @@ r16m8Team2Score: document.getElementById("r16m8Team2Score").value,
     sf2Team1Score: document.getElementById("sf2Team1Score").value,
     sf2Team2Score: document.getElementById("sf2Team2Score").value,
     gfTeam1Score: document.getElementById("gfTeam1Score").value,
-    gfTeam2Score: document.getElementById("gfTeam2Score").value
+    gfTeam2Score: document.getElementById("gfTeam2Score").value,
  
-    ...rosterData,
+    ...rosterData
   
   });
 

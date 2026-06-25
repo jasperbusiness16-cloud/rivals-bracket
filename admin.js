@@ -193,13 +193,19 @@ function fillWinnerDropdown(id, teams, selectedValue) {
   select.value = selectedValue || "";
 }
 
-function scoreWinner(teamA, teamB, scoreA, scoreB, fallbackWinner) {
+function scoreWinner(teamA, teamB, scoreA, scoreB, fallbackWinner, bestOf = 3) {
   const a = Number(scoreA);
   const b = Number(scoreB);
 
   if (scoreA === "" || scoreB === "") return fallbackWinner || "";
   if (Number.isNaN(a) || Number.isNaN(b)) return fallbackWinner || "";
   if (a === b) return fallbackWinner || "";
+
+  const winsNeeded = bestOf === 5 ? 3 : 2;
+
+  if (a < winsNeeded && b < winsNeeded) {
+    return fallbackWinner || "";
+  }
 
   return a > b ? teamA : teamB;
 }
@@ -291,12 +297,13 @@ const teamB =
   );
 
   const grandWinner = scoreWinner(
-    sf1Winner,
-    sf2Winner,
-    document.getElementById("gfTeam1Score").value,
-    document.getElementById("gfTeam2Score").value,
-    document.getElementById("grandWinner").value
-  );
+  sf1Winner,
+  sf2Winner,
+  document.getElementById("gfTeam1Score").value,
+  document.getElementById("gfTeam2Score").value,
+  document.getElementById("grandWinner").value,
+  5
+);
 
   siteRef.update({
     eventName: document.getElementById("eventName").value,

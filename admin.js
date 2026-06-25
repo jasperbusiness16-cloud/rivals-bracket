@@ -632,3 +632,38 @@ function saveChampion() {
     document.getElementById(`championPlayer${i}Link`).value = "";
   }
 }
+
+database.ref("champions").on("value", (snapshot) => {
+  const list = document.getElementById("championsAdminList");
+  if (!list) return;
+
+  const data = snapshot.val();
+
+  if (!data) {
+    list.innerHTML = "<p>No champions saved yet.</p>";
+    return;
+  }
+
+  const champions = Object.entries(data).sort((a, b) => {
+    return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+  });
+
+  list.innerHTML = champions.map(([id, champion]) => `
+    <div class="champion-admin-item">
+      <strong>${champion.eventName || "Rivals Gauntlet Event"}</strong>
+      <p>${champion.teamName || "Champion Team"} • ${champion.prizeWon || "Prize TBD"}</p>
+      <button class="secondary" onclick="deleteChampion('${id}')">
+        DELETE
+      </button>
+    </div>
+  `).join("");
+});
+
+function deleteChampion(id) {
+  if (!confirm("Delete this champion from the Hall of Champions?")) return;
+
+  database.ref("champions/" + id).remove();
+
+  const saveStatus = document.getElementById("saveStatus");
+  if (saveStatus) saveStatus.innerText = "✓ Champion deleted";
+}

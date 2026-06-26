@@ -1,13 +1,13 @@
 const siteRef = database.ref("site");
 
-function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = value;
-}
+const matchLabel = document.getElementById("matchLabel");
+const dock = document.getElementById("matchDock");
 
-function getStage(match) {
+let lastLabel = "";
 
-    const text = (match || "").toLowerCase();
+function prettyStage(match = "") {
+
+    const text = match.toLowerCase();
 
     if (text.includes("grand"))
         return "GRAND FINALS";
@@ -33,20 +33,41 @@ function getStage(match) {
     return "CURRENT MATCH";
 }
 
-siteRef.on("value", snapshot => {
+function updateDock(label){
+
+    if(label === lastLabel) return;
+
+    lastLabel = label;
+
+    matchLabel.style.opacity = 0;
+    matchLabel.style.transform = "translateY(6px)";
+
+    setTimeout(()=>{
+
+        matchLabel.textContent = label;
+
+        matchLabel.style.opacity = 1;
+        matchLabel.style.transform = "translateY(0)";
+
+    },180);
+
+}
+
+siteRef.on("value", snapshot=>{
 
     const data = snapshot.val();
-    if (!data) return;
+
+    if(!data) return;
 
     const currentMatch = data.currentMatch || "";
 
-    const isBo5 = currentMatch.toLowerCase().includes("bo5");
+    const stage = prettyStage(currentMatch);
 
-    const format = isBo5 ? "BO5" : "BO3";
+    const format =
+        currentMatch.toLowerCase().includes("bo5")
+        ? "BO5"
+        : "BO3";
 
-    setText(
-        "matchLabel",
-        `${getStage(currentMatch)} • ${format}`
-    );
+    updateDock(`${stage} • ${format}`);
 
 });

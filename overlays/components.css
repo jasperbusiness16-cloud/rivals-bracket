@@ -1,1 +1,120 @@
+/* ==========================================
+   RG BROADCAST SYSTEM
+   COMPONENT LIBRARY v1.0
+   ========================================== */
 
+/* ---------- Glass Panel ---------- */
+
+.rg-panel {
+    position: relative;
+    background: rgba(9,12,17,.88);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.05),
+        0 0 18px rgba(230,57,70,.18);
+    overflow: hidden;
+}
+
+.rg-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 2px;
+    background: var(--rg-red);
+    box-shadow: 0 0 12px var(--rg-red);
+}
+
+/* ---------- Team Name ---------- */
+
+.team-name{
+    font-family:var(--font-main);
+    font-weight:700;
+    letter-spacing:1.6px;
+    text-transform:uppercase;
+    color:#fff;
+}
+
+/* ---------- Label ---------- */
+
+.rg-label{
+    color:var(--rg-red);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:3px;
+    text-transform:uppercase;
+}
+
+/* ---------- Score Box ---------- */
+
+.score-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:48px;
+    height:38px;
+
+    background:linear-gradient(
+        180deg,
+        #ef4956,
+        #c41d2d
+    );
+
+    color:#fff;
+
+    font-weight:700;
+    font-size:24px;
+
+    clip-path:polygon(
+        10% 0,
+        100% 0,
+        90% 100%,
+        0 100%
+    );
+
+    box-shadow:
+        0 0 16px rgba(230,57,70,.35);
+}
+
+/* ---------- Logo Frame ---------- */
+
+.logo-frame{
+
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid rgba(230,57,70,.45);
+
+    background:rgba(230,57,70,.08);
+}
+
+/* ---------- Series ---------- */
+
+.series{
+    display:flex;
+    gap:5px;
+}
+
+.series-piece{
+
+    width:12px;
+    height:4px;
+
+    background:rgba(255,255,255,.18);
+
+    transform:skew(-30deg);
+
+    border-radius:2px;
+}
+
+.series-piece.active{
+    background:var(--rg-red);
+    box-shadow:0 0 8px rgba(230,57,70,.55);
+}

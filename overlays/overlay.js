@@ -9,6 +9,8 @@ function renderSeries(containerId, score, winsNeeded) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
+  console.log("Rendering series:", containerId, score, winsNeeded);
+  
   container.innerHTML = "";
 
   const needed = Math.max(Number(winsNeeded) || 2, 2);
@@ -116,3 +118,8 @@ siteRef.on("value", (snapshot) => {
 
   updateMatchHeader(getMatchData(data));
 });
+
+setTimeout(() => {
+  console.log("seriesA HTML:", document.getElementById("seriesA")?.innerHTML);
+  console.log("seriesB HTML:", document.getElementById("seriesB")?.innerHTML);
+}, 2000);

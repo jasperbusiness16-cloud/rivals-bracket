@@ -48,4 +48,136 @@ body {
   align-items: center;
   background: linear-gradient(90deg, rgba(8,10,14,.94), rgba(18,22,30,.88));
   border: 1px solid rgba(255,255,255,.12);
- 
+  box-shadow: 0 0 18px rgba(230,57,70,.22);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  position: relative;
+}
+
+.left-panel {
+  margin-left: 22px;
+  padding: 0 18px 0 16px;
+  clip-path: polygon(0 0, 96% 0, 100% 50%, 96% 100%, 0 100%);
+}
+
+.right-panel {
+  margin-right: 22px;
+  padding: 0 16px 0 18px;
+  justify-content: flex-end;
+  clip-path: polygon(4% 0, 100% 0, 100% 100%, 4% 100%, 0 50%);
+}
+
+.side-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 140px;
+  height: 2px;
+  background: var(--rg-red);
+  box-shadow: 0 0 10px var(--rg-red);
+}
+
+.left-panel::before {
+  left: 0;
+}
+
+.right-panel::before {
+  right: 0;
+}
+
+.rg-mark {
+  width: 42px;
+  height: 42px;
+  margin-right: 16px;
+  display: grid;
+  place-items: center;
+  color: var(--rg-white);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 1px;
+  border: 1px solid rgba(230,57,70,.6);
+  background: rgba(230,57,70,.12);
+}
+
+.right-panel .rg-mark {
+  margin-right: 0;
+  margin-left: 16px;
+}
+
+.rg-mark img {
+  max-width: 30px;
+  max-height: 30px;
+  object-fit: contain;
+}
+
+.team-block {
+  min-width: 0;
+}
+
+.team-meta {
+  display: block;
+  color: var(--rg-red);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.team-block h1 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  max-width: 330px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right-panel .team-block {
+  text-align: right;
+}
+
+.score-box {
+  width: 48px;
+  height: 38px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  background: var(--rg-red);
+  color: white;
+  font-size: 25px;
+  font-weight: 900;
+  clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+}
+
+.right-panel .score-box {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+.series-dots {
+  display: flex;
+  gap: 5px;
+  margin-left: 12px;
+}
+
+.right-panel .series-dots {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.12);
+}
+
+.dot.active {
+  background: var(--rg-red);
+  border-color: var(--rg-red);
+  box-shadow: 0 0 8px rgba(230,57,70,.9);
+}

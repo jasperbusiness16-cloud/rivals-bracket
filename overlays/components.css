@@ -244,3 +244,25 @@
         inset 0 1px rgba(255,255,255,.18),
         0 0 10px rgba(230,57,70,.65);
 }
+
+/* ---------- Series tracker hard fix ---------- */
+
+.series {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  flex: 0 0 48px !important;
+}
+
+.series-piece {
+  display: inline-block !important;
+  position: relative !important;
+  width: 16px !important;
+  height: 6px !important;
+  min-width: 16px !important;
+  flex: 0 0 16px !important;
+}

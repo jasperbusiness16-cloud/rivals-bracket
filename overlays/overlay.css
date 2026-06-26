@@ -1,386 +1,147 @@
-/* ==============================
+/* ==========================================
    RIVALS GAUNTLET BROADCAST SYSTEM
-   Core Design System v1.0
-   ============================== */
+   Layout System
+   ========================================== */
 
-* {
-  box-sizing: border-box;
+*{
+    box-sizing:border-box;
 }
 
-:root {
-  /* Brand */
-  --rg-red: #e63946;
-  --rg-red-dark: #9f121f;
-  --rg-white: #ffffff;
-  --rg-black: #05070b;
-  --rg-charcoal: #080b10;
-  --rg-panel: rgba(8, 11, 16, 0.88);
-  --rg-panel-strong: rgba(5, 7, 11, 0.96);
-  --rg-muted: #b8beca;
+:root{
 
-  /* Glass */
-  --rg-glass-blur: 14px;
-  --rg-border: rgba(255, 255, 255, 0.12);
-  --rg-border-red: rgba(230, 57, 70, 0.65);
+    --stage-width:1920px;
+    --stage-height:1080px;
 
-  /* Glow */
-  --rg-red-glow: 0 0 18px rgba(230, 57, 70, 0.28);
-  --rg-red-glow-strong: 0 0 34px rgba(230, 57, 70, 0.48);
+    --panel-height:58px;
+    --header-height:66px;
 
-  /* Typography */
-  --font-main: "Rajdhani", sans-serif;
-  --font-team: 25px;
-  --font-meta: 10px;
-  --font-score: 25px;
+    --left-width:680px;
+    --center-width:560px;
+    --right-width:680px;
 
-  /* Layout */
-  --stage-width: 1920px;
-  --stage-height: 1080px;
-  --gameplay-panel-height: 58px;
-  --gameplay-zone-height: 66px;
+    --panel-gap:22px;
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --speed-fast: 180ms;
-  --speed-normal: 360ms;
-  --speed-slow: 620ms;
+    --font-main:"Rajdhani",sans-serif;
 }
 
-body {
-  margin: 0;
-  width: var(--stage-width);
-  height: var(--stage-height);
-  overflow: hidden;
-  background: transparent;
-  font-family: var(--font-main);
-  color: var(--rg-white);
+body{
+    margin:0;
+    width:var(--stage-width);
+    height:var(--stage-height);
+    overflow:hidden;
+    background:transparent;
+    font-family:var(--font-main);
 }
 
-.stage {
-  position: relative;
-  width: var(--stage-width);
-  height: var(--stage-height);
-  overflow: hidden;
+.stage{
+    position:relative;
+    width:100%;
+    height:100%;
 }
 
-/* ==============================
-   GAMEPLAY SAFE MATCH HEADER
-   Left and right panels only.
-   Center stays clear for Marvel Rivals UI.
-   ============================== */
+.gameplay-header{
 
-.gameplay-header {
-  position: absolute;
-  top: 14px;
-  left: 0;
-  width: var(--stage-width);
-  height: var(--gameplay-zone-height);
-  display: grid;
-  grid-template-columns: 680px 560px 680px;
-  align-items: start;
-  pointer-events: none;
+    position:absolute;
+
+    top:14px;
+    left:0;
+
+    width:100%;
+    height:var(--header-height);
+
+    display:grid;
+
+    grid-template-columns:
+        var(--left-width)
+        var(--center-width)
+        var(--right-width);
+
+    pointer-events:none;
 }
 
-.center-safe-zone {
-  height: var(--gameplay-zone-height);
+.center-safe-zone{
+    height:100%;
 }
 
-.side-panel {
-  position: relative;
-  height: var(--gameplay-panel-height);
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.035), transparent 28%),
-    linear-gradient(180deg, rgba(255,255,255,0.045), transparent),
-    var(--rg-panel);
-  border: 1px solid var(--rg-border);
-  box-shadow: var(--rg-red-glow);
-  backdrop-filter: blur(var(--rg-glass-blur));
-  animation: panelIn var(--speed-slow) var(--ease-out) both;
-}
+/* ---------- Panels ---------- */
 
-.left-panel {
-  margin-left: 22px;
-  padding: 0 18px 0 16px;
-  clip-path: polygon(
-    0 0,
-    97% 0,
-    100% 34%,
-    98.5% 50%,
-    100% 66%,
-    97% 100%,
-    0 100%,
-    2% 50%
-  );
-}
+.side-panel{
 
-.right-panel {
-  margin-right: 22px;
-  padding: 0 16px 0 18px;
-  justify-content: flex-end;
-  clip-path: polygon(
-    3% 0,
-    100% 0,
-    98% 50%,
-    100% 100%,
-    3% 100%,
-    0 66%,
-    1.5% 50%,
-    0 34%
-  );
-}
+    position:relative;
 
-.side-panel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  width: 170px;
-  height: 2px;
-  background: var(--rg-red);
-  box-shadow: 0 0 10px var(--rg-red);
-}
-
-.left-panel::before {
-    left: 26px;
-}
-
-.right-panel::before {
-    left: auto;
-    right: 26px;
-}
-/* subtle animated light sweep */
-.side-panel::after {
-  content: "";
-  position: absolute;
-  top: -20%;
-  width: 80px;
-  height: 140%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-  opacity: 0.45;
-  transform: skewX(-20deg);
-  animation: lightSweep 5.5s ease-in-out infinite;
-}
-
-.left-panel::after {
-  left: -120px;
-}
-
-.right-panel::after {
-  right: -120px;
-  animation-delay: 1.2s;
-}
-
-.rg-mark {
-  width: 42px;
-  height: 42px;
-  margin-right: 16px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  color: var(--rg-white);
-  font-weight: 900;
-  font-size: 13px;
-  letter-spacing: 1px;
-  border: 1px solid var(--rg-border-red);
-  background: rgba(230, 57, 70, 0.12);
-}
-
-.right-panel .rg-mark {
-  margin-right: 0;
-  margin-left: 16px;
-}
-
-.rg-mark img {
-  max-width: 30px;
-  max-height: 30px;
-  object-fit: contain;
-}
-
-.team-block {
-  min-width: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.right-panel .team-block {
-  text-align: right;
-}
-
-.team-meta {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--rg-red);
-  font-size: var(--font-meta);
-  font-weight: 900;
-  letter-spacing: 3px;
-  line-height: 1;
-}
-
-.team-block h1 {
-  margin: 0;
-  max-width: 330px;
-  overflow: hidden;
-  color: var(--rg-white);
-  font-size: var(--font-team);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 2px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.score-box{
-    width:58px;
-    height:54px;
+    height:var(--panel-height);
 
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:space-between;
 
-    margin-left:auto;
+    overflow:hidden;
+}
 
-    font-size:32px;
-    font-weight:900;
-    letter-spacing:-1px;
+.left-panel{
 
-    color:#fff;
+    margin-left:var(--panel-gap);
 
-    background:
-        linear-gradient(
-            180deg,
-            #ef4d59 0%,
-            #d72d3a 100%
-        );
-
-    border:1px solid rgba(255,255,255,.08);
-
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.18),
-        0 0 14px rgba(230,57,70,.28);
+    padding-left:16px;
+    padding-right:18px;
 
     clip-path:polygon(
-        12% 0,
-        100% 0,
-        88% 100%,
-        0 100%
+        0 0,
+        97% 0,
+        100% 34%,
+        98.5% 50%,
+        100% 66%,
+        97% 100%,
+        0 100%,
+        2% 50%
     );
-
-    transition:.25s;
 }
 
-.left-panel .score-box {
-  margin-left: auto;
-  margin-right: 14px;
+.right-panel{
+
+    margin-right:var(--panel-gap);
+
+    padding-left:18px;
+    padding-right:16px;
+
+    clip-path:polygon(
+        3% 0,
+        100% 0,
+        98% 50%,
+        100% 100%,
+        3% 100%,
+        0 66%,
+        1.5% 50%,
+        0 34%
+    );
 }
 
-.right-panel .score-box{
-    margin-right:14px;
-    margin-left:14px;
+/* ---------- Layout Groups ---------- */
+
+.panel-brand{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    min-width:0;
 }
 
-.series {
-  display: flex;
-  gap: 6px;
-  align-items: center;
+.panel-score{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
-.left-panel .series {
-  margin-left: 0;
-  margin-right: 18px;
+.team-block{
+    min-width:0;
 }
 
-.right-panel .series {
-  margin-left: 18px;
-  margin-right: 0;
+.right-panel .team-block{
+    text-align:right;
 }
 
-.right-panel .series-dots {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.55);
-  background: rgba(255,255,255,0.12);
-}
-
-.dot.active {
-  background: var(--rg-red);
-  border-color: var(--rg-red);
-  box-shadow: 0 0 8px rgba(230,57,70,0.9);
-}
-
-/* ==============================
-   ANIMATIONS
-   ============================== */
-
-@keyframes panelIn {
-  from {
-    opacity: 0;
-    transform: translateY(-16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes lightSweep {
-  0%, 68% {
-    transform: translateX(0) skewX(-20deg);
-    opacity: 0;
-  }
-  75% {
-    opacity: 0.45;
-  }
-  100% {
-    transform: translateX(850px) skewX(-20deg);
-    opacity: 0;
-  }
-}
-
-.panel-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.panel-score {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.left-panel {
-  justify-content: space-between;
-}
-
-.right-panel {
-  justify-content: space-between;
-}
-
-.right-panel .panel-brand {
-  text-align: right;
-}
-
-.right-panel .team-block {
-  text-align: right;
-}
-
-/* ---------- Correct mirrored accent positions ---------- */
-
-.left-panel.rg-panel::before {
-  left: 26px;
-  right: auto;
-}
-
-.right-panel.rg-panel::before {
-  left: auto;
-  right: 26px;
+.right-panel .panel-brand{
+    flex-direction:row;
 }

@@ -126,10 +126,3 @@ siteRef.on("value", (snapshot) => {
   updateMatchHeader(getMatchData(data));
 });
 
-setTimeout(() => {
-  const a = document.getElementById("seriesA");
-  const b = document.getElementById("seriesB");
-
-  if (a) a.innerHTML = '<span style="display:block;width:40px;height:12px;background:yellow;"></span>';
-  if (b) b.innerHTML = '<span style="display:block;width:40px;height:12px;background:yellow;"></span>';
-}, 2000);

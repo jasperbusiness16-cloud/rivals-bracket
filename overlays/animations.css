@@ -1,1 +1,141 @@
+/* ==========================================
+   RG BROADCAST SYSTEM
+   ANIMATION LIBRARY v1.0
+   ========================================== */
 
+:root {
+  --anim-fast: 180ms;
+  --anim-normal: 360ms;
+  --anim-slow: 620ms;
+  --anim-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Entrances ---------- */
+
+.anim-panel-in {
+  animation: rgPanelIn var(--anim-slow) var(--anim-ease) both;
+}
+
+.anim-fade-in {
+  animation: rgFadeIn var(--anim-normal) var(--anim-ease) both;
+}
+
+.anim-slide-up {
+  animation: rgSlideUp var(--anim-normal) var(--anim-ease) both;
+}
+
+/* ---------- Gameplay ---------- */
+
+.anim-score-pulse {
+  animation: rgScorePulse 420ms var(--anim-ease) both;
+}
+
+.anim-red-flash {
+  animation: rgRedFlash 520ms var(--anim-ease) both;
+}
+
+.anim-light-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.anim-light-sweep::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: -120px;
+  width: 80px;
+  height: 150%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.16),
+    transparent
+  );
+  transform: skewX(-22deg);
+  animation: rgLightSweep 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes rgPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rgFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rgSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rgScorePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(230,57,70,.35);
+  }
+
+  45% {
+    transform: scale(1.14);
+    box-shadow: 0 0 34px rgba(230,57,70,.85);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 16px rgba(230,57,70,.35);
+  }
+}
+
+@keyframes rgRedFlash {
+  0% {
+    filter: brightness(1);
+  }
+
+  45% {
+    filter: brightness(1.45);
+  }
+
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes rgLightSweep {
+  0%, 70% {
+    opacity: 0;
+    transform: translateX(0) skewX(-22deg);
+  }
+
+  78% {
+    opacity: .55;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(900px) skewX(-22deg);
+  }
+}

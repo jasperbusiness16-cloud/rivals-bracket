@@ -1,157 +1,135 @@
 /* ==========================================
-   RG BROADCAST SYSTEM
-   ANIMATION LIBRARY v1.0
+   RIVALS GAUNTLET BROADCAST SYSTEM
+   ANIMATION LIBRARY v2.0
    ========================================== */
 
-:root {
-  --anim-fast: 180ms;
-  --anim-normal: 360ms;
-  --anim-slow: 620ms;
-  --anim-ease: cubic-bezier(0.16, 1, 0.3, 1);
+:root{
+    --anim-fast:180ms;
+    --anim-normal:360ms;
+    --anim-slow:620ms;
+
+    --anim-ease:cubic-bezier(.16,1,.3,1);
 }
 
-/* ---------- Entrances ---------- */
+/* ==========================================
+   ENTRANCES
+   ========================================== */
 
-.anim-panel-in {
-  animation: rgPanelIn var(--anim-slow) var(--anim-ease) both;
+.anim-panel-in{
+    animation:rgPanelIn var(--anim-slow) var(--anim-ease) both;
 }
 
-.anim-fade-in {
-  animation: rgFadeIn var(--anim-normal) var(--anim-ease) both;
+.anim-fade-in{
+    animation:rgFadeIn var(--anim-normal) var(--anim-ease) both;
 }
 
-.anim-slide-up {
-  animation: rgSlideUp var(--anim-normal) var(--anim-ease) both;
+.anim-slide-up{
+    animation:rgSlideUp var(--anim-normal) var(--anim-ease) both;
 }
 
-/* ---------- Gameplay ---------- */
+/* ==========================================
+   GAMEPLAY
+   ========================================== */
 
-.anim-score-pulse {
-  animation: rgScorePulse 420ms var(--anim-ease) both;
+.anim-score-pulse{
+    animation:rgScorePulse .45s var(--anim-ease);
 }
 
-.anim-red-flash {
-  animation: rgRedFlash 520ms var(--anim-ease) both;
+/* ==========================================
+   GLASS SWEEP
+   ========================================== */
+
+.rg-panel::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:-30%;
+    left:-120px;
+
+    width:90px;
+    height:170%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.10),
+            transparent
+        );
+
+    transform:skewX(-22deg);
+
+    pointer-events:none;
+
+    animation:rgGlassSweep 9s ease-in-out infinite;
 }
 
-.anim-light-sweep {
-  position: relative;
-  overflow: hidden;
+/* ==========================================
+   KEYFRAMES
+   ========================================== */
+
+@keyframes rgPanelIn{
+
+    from{
+        opacity:0;
+        transform:translateY(-14px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
-.anim-light-sweep::after {
-  content: "";
-  position: absolute;
-  top: -25%;
-  left: -120px;
-  width: 80px;
-  height: 150%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,.16),
-    transparent
-  );
-  transform: skewX(-22deg);
-  animation: rgLightSweep 5.5s ease-in-out infinite;
-  pointer-events: none;
+@keyframes rgFadeIn{
+
+    from{opacity:0;}
+    to{opacity:1;}
 }
 
-/* ---------- Keyframes ---------- */
+@keyframes rgSlideUp{
 
-@keyframes rgPanelIn {
-  from {
-    opacity: 0;
-    transform: translateY(-16px) scale(.98);
-  }
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
-@keyframes rgFadeIn {
-  from {
-    opacity: 0;
-  }
+@keyframes rgScorePulse{
 
-  to {
-    opacity: 1;
-  }
+    0%{
+        transform:scale(1);
+    }
+
+    45%{
+        transform:scale(1.12);
+    }
+
+    100%{
+        transform:scale(1);
+    }
 }
 
-@keyframes rgSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
+@keyframes rgGlassSweep{
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+    0%,72%{
+        opacity:0;
+        transform:translateX(0) skewX(-22deg);
+    }
 
-@keyframes rgScorePulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 16px rgba(230,57,70,.35);
-  }
+    80%{
+        opacity:.28;
+    }
 
-  45% {
-    transform: scale(1.14);
-    box-shadow: 0 0 34px rgba(230,57,70,.85);
-  }
-
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 16px rgba(230,57,70,.35);
-  }
-}
-
-@keyframes rgRedFlash {
-  0% {
-    filter: brightness(1);
-  }
-
-  45% {
-    filter: brightness(1.45);
-  }
-
-  100% {
-    filter: brightness(1);
-  }
-}
-
-@keyframes rgLightSweep {
-  0%, 70% {
-    opacity: 0;
-    transform: translateX(0) skewX(-22deg);
-  }
-
-  78% {
-    opacity: .55;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateX(900px) skewX(-22deg);
-  }
-}
-
-@keyframes rgGlassSweep {
-  0%, 72% {
-    transform: translateX(0) skewX(-22deg);
-    opacity: 0;
-  }
-
-  78% {
-    opacity: .35;
-  }
-
-  100% {
-    transform: translateX(900px) skewX(-22deg);
-    opacity: 0;
-  }
+    100%{
+        opacity:0;
+        transform:translateX(900px) skewX(-22deg);
+    }
 }

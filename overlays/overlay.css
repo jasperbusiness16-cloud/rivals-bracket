@@ -1,37 +1,80 @@
+/* ==============================
+   RIVALS GAUNTLET BROADCAST SYSTEM
+   Core Design System v1.0
+   ============================== */
+
 * {
   box-sizing: border-box;
 }
 
 :root {
+  /* Brand */
   --rg-red: #e63946;
-  --rg-black: rgba(7, 9, 13, 0.86);
-  --rg-dark: #080b10;
+  --rg-red-dark: #9f121f;
   --rg-white: #ffffff;
+  --rg-black: #05070b;
+  --rg-charcoal: #080b10;
+  --rg-panel: rgba(8, 11, 16, 0.88);
+  --rg-panel-strong: rgba(5, 7, 11, 0.96);
   --rg-muted: #b8beca;
+
+  /* Glass */
+  --rg-glass-blur: 14px;
+  --rg-border: rgba(255, 255, 255, 0.12);
+  --rg-border-red: rgba(230, 57, 70, 0.65);
+
+  /* Glow */
+  --rg-red-glow: 0 0 18px rgba(230, 57, 70, 0.28);
+  --rg-red-glow-strong: 0 0 34px rgba(230, 57, 70, 0.48);
+
+  /* Typography */
+  --font-main: Arial, Helvetica, sans-serif;
+  --font-team: 25px;
+  --font-meta: 10px;
+  --font-score: 25px;
+
+  /* Layout */
+  --stage-width: 1920px;
+  --stage-height: 1080px;
+  --gameplay-panel-height: 58px;
+  --gameplay-zone-height: 66px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --speed-fast: 180ms;
+  --speed-normal: 360ms;
+  --speed-slow: 620ms;
 }
 
 body {
   margin: 0;
-  width: 1920px;
-  height: 1080px;
+  width: var(--stage-width);
+  height: var(--stage-height);
   overflow: hidden;
   background: transparent;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-main);
   color: var(--rg-white);
 }
 
 .stage {
   position: relative;
-  width: 1920px;
-  height: 1080px;
+  width: var(--stage-width);
+  height: var(--stage-height);
+  overflow: hidden;
 }
+
+/* ==============================
+   GAMEPLAY SAFE MATCH HEADER
+   Left and right panels only.
+   Center stays clear for Marvel Rivals UI.
+   ============================== */
 
 .gameplay-header {
   position: absolute;
   top: 14px;
   left: 0;
-  width: 1920px;
-  height: 66px;
+  width: var(--stage-width);
+  height: var(--gameplay-zone-height);
   display: grid;
   grid-template-columns: 680px 560px 680px;
   align-items: start;
@@ -39,19 +82,23 @@ body {
 }
 
 .center-safe-zone {
-  height: 66px;
+  height: var(--gameplay-zone-height);
 }
 
 .side-panel {
-  height: 58px;
+  position: relative;
+  height: var(--gameplay-panel-height);
   display: flex;
   align-items: center;
-  background: linear-gradient(90deg, rgba(8,10,14,.94), rgba(18,22,30,.88));
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: 0 0 18px rgba(230,57,70,.22);
-  backdrop-filter: blur(10px);
   overflow: hidden;
-  position: relative;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.035), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.045), transparent),
+    var(--rg-panel);
+  border: 1px solid var(--rg-border);
+  box-shadow: var(--rg-red-glow);
+  backdrop-filter: blur(var(--rg-glass-blur));
+  animation: panelIn var(--speed-slow) var(--ease-out) both;
 }
 
 .left-panel {
@@ -85,18 +132,41 @@ body {
   right: 0;
 }
 
+/* subtle animated light sweep */
+.side-panel::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  width: 80px;
+  height: 140%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  opacity: 0.45;
+  transform: skewX(-20deg);
+  animation: lightSweep 5.5s ease-in-out infinite;
+}
+
+.left-panel::after {
+  left: -120px;
+}
+
+.right-panel::after {
+  right: -120px;
+  animation-delay: 1.2s;
+}
+
 .rg-mark {
   width: 42px;
   height: 42px;
   margin-right: 16px;
   display: grid;
   place-items: center;
+  flex: 0 0 auto;
   color: var(--rg-white);
   font-weight: 900;
   font-size: 13px;
   letter-spacing: 1px;
-  border: 1px solid rgba(230,57,70,.6);
-  background: rgba(230,57,70,.12);
+  border: 1px solid var(--rg-border-red);
+  background: rgba(230, 57, 70, 0.12);
 }
 
 .right-panel .rg-mark {
@@ -112,31 +182,35 @@ body {
 
 .team-block {
   min-width: 0;
-}
-
-.team-meta {
-  display: block;
-  color: var(--rg-red);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 3px;
-  line-height: 1;
-  margin-bottom: 5px;
-}
-
-.team-block h1 {
-  margin: 0;
-  font-size: 25px;
-  line-height: 1;
-  letter-spacing: 2px;
-  white-space: nowrap;
-  max-width: 330px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  position: relative;
+  z-index: 2;
 }
 
 .right-panel .team-block {
   text-align: right;
+}
+
+.team-meta {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--rg-red);
+  font-size: var(--font-meta);
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.team-block h1 {
+  margin: 0;
+  max-width: 330px;
+  overflow: hidden;
+  color: var(--rg-white);
+  font-size: var(--font-team);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .score-box {
@@ -145,11 +219,15 @@ body {
   margin-left: auto;
   display: grid;
   place-items: center;
-  background: var(--rg-red);
-  color: white;
-  font-size: 25px;
+  flex: 0 0 auto;
+  background: linear-gradient(180deg, var(--rg-red), var(--rg-red-dark));
+  color: var(--rg-white);
+  font-size: var(--font-score);
   font-weight: 900;
+  box-shadow: 0 0 14px rgba(230, 57, 70, 0.35);
   clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+  position: relative;
+  z-index: 2;
 }
 
 .right-panel .score-box {
@@ -161,6 +239,8 @@ body {
   display: flex;
   gap: 5px;
   margin-left: 12px;
+  position: relative;
+  z-index: 2;
 }
 
 .right-panel .series-dots {
@@ -172,12 +252,41 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.55);
-  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.12);
 }
 
 .dot.active {
   background: var(--rg-red);
   border-color: var(--rg-red);
-  box-shadow: 0 0 8px rgba(230,57,70,.9);
+  box-shadow: 0 0 8px rgba(230,57,70,0.9);
+}
+
+/* ==============================
+   ANIMATIONS
+   ============================== */
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lightSweep {
+  0%, 68% {
+    transform: translateX(0) skewX(-20deg);
+    opacity: 0;
+  }
+  75% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateX(850px) skewX(-20deg);
+    opacity: 0;
+  }
 }

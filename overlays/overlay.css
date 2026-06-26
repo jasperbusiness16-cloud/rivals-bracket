@@ -343,3 +343,32 @@ body {
     opacity: 0;
   }
 }
+
+.panel-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.panel-score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.left-panel {
+  justify-content: space-between;
+}
+
+.right-panel {
+  justify-content: space-between;
+}
+
+.right-panel .panel-brand {
+  text-align: right;
+}
+
+.right-panel .team-block {
+  text-align: right;
+}

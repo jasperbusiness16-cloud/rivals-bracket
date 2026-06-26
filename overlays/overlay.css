@@ -231,21 +231,43 @@ body {
   text-overflow: ellipsis;
 }
 
-.score-box {
-  width: 48px;
-  height: 38px;
-  margin-left: auto;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  background: linear-gradient(180deg, var(--rg-red), var(--rg-red-dark));
-  color: var(--rg-white);
-  font-size: var(--font-score);
-  font-weight: 900;
-  box-shadow: 0 0 14px rgba(230, 57, 70, 0.35);
-  clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
-  position: relative;
-  z-index: 2;
+.score-box{
+    width:58px;
+    height:54px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-left:auto;
+
+    font-size:32px;
+    font-weight:900;
+    letter-spacing:-1px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ef4d59 0%,
+            #d72d3a 100%
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.18),
+        0 0 14px rgba(230,57,70,.28);
+
+    clip-path:polygon(
+        12% 0,
+        100% 0,
+        88% 100%,
+        0 100%
+    );
+
+    transition:.25s;
 }
 
 .left-panel .score-box {
@@ -253,9 +275,9 @@ body {
   margin-right: 14px;
 }
 
-.right-panel .score-box {
-  margin-left: 14px;
-  margin-right: auto;
+.right-panel .score-box{
+    margin-right:14px;
+    margin-left:14px;
 }
 
 .series {

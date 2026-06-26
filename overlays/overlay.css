@@ -125,11 +125,12 @@ body {
 }
 
 .left-panel::before {
-  left: 26px;
+    left: 26px;
 }
 
 .right-panel::before {
-  right: 26px;
+    left: auto;
+    right: 26px;
 }
 /* subtle animated light sweep */
 .side-panel::after {

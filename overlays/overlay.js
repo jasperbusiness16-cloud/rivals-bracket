@@ -97,11 +97,22 @@ function getMatchData(data) {
   };
 }
 
+function getStageLabel(currentMatch) {
+  const text = (currentMatch || "").toLowerCase();
+
+  if (text.includes("grand")) return "GRAND FINALS";
+  if (text.includes("sf")) return "SEMIFINALS";
+  if (text.includes("qf")) return "QUARTERFINALS";
+  if (text.includes("r16")) return "ROUND OF 16";
+
+  return "CURRENT MATCH";
+}
+
 function updateMatchHeader(match) {
   setText("teamA", match.teamA.toUpperCase());
   setText("teamB", match.teamB.toUpperCase());
-  setText("teamAMeta", match.teamAMeta);
-  setText("teamBMeta", match.teamBMeta);
+  setText("matchStageA", getStageLabel(match.teamAMeta));
+  setText("matchFormatB", match.teamBMeta.replace("BEST OF ", "BO"));
   setText("scoreA", match.scoreA);
   setText("scoreB", match.scoreB);
 

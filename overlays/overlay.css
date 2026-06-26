@@ -372,3 +372,15 @@ body {
 .right-panel .team-block {
   text-align: right;
 }
+
+/* ---------- Correct mirrored accent positions ---------- */
+
+.left-panel.rg-panel::before {
+  left: 26px;
+  right: auto;
+}
+
+.right-panel.rg-panel::before {
+  left: auto;
+  right: 26px;
+}

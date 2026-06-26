@@ -139,3 +139,19 @@
     transform: translateX(900px) skewX(-22deg);
   }
 }
+
+@keyframes rgGlassSweep {
+  0%, 72% {
+    transform: translateX(0) skewX(-22deg);
+    opacity: 0;
+  }
+
+  78% {
+    opacity: .35;
+  }
+
+  100% {
+    transform: translateX(900px) skewX(-22deg);
+    opacity: 0;
+  }
+}

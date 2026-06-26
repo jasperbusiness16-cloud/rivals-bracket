@@ -415,3 +415,11 @@ calc(100% - 18px) 100%,
     }
 
 }
+
+.dock-match{
+
+    transition:
+        opacity .22s ease,
+        transform .22s ease;
+
+}

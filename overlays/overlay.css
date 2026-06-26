@@ -118,20 +118,19 @@ body {
   content: "";
   position: absolute;
   top: 0;
-  width: 140px;
+  width: 170px;
   height: 2px;
   background: var(--rg-red);
   box-shadow: 0 0 10px var(--rg-red);
 }
 
 .left-panel::before {
-  left: 0;
+  left: 26px;
 }
 
 .right-panel::before {
-  right: 0;
+  right: 26px;
 }
-
 /* subtle animated light sweep */
 .side-panel::after {
   content: "";
@@ -230,17 +229,30 @@ body {
   z-index: 2;
 }
 
-.right-panel .score-box {
-  margin-left: 14px;
+.left-panel .score-box {
+  margin-left: auto;
   margin-right: 14px;
 }
 
-.series-dots {
+.right-panel .score-box {
+  margin-left: 14px;
+  margin-right: auto;
+}
+
+.series {
   display: flex;
-  gap: 5px;
-  margin-left: 12px;
-  position: relative;
-  z-index: 2;
+  gap: 6px;
+  align-items: center;
+}
+
+.left-panel .series {
+  margin-left: 0;
+  margin-right: 18px;
+}
+
+.right-panel .series {
+  margin-left: 18px;
+  margin-right: 0;
 }
 
 .right-panel .series-dots {

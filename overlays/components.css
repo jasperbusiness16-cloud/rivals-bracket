@@ -130,7 +130,7 @@
 
     color:#fff;
 
-    font-size:26px;
+    font-size:36px;
     font-weight:700;
 
     letter-spacing:1.6px;
@@ -265,4 +265,21 @@
   height: 6px !important;
   min-width: 16px !important;
   flex: 0 0 16px !important;
+}
+
+/* ---------- Match Info Tags ---------- */
+
+.match-tag{
+    color:var(--rg-red);
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    white-space:nowrap;
+}
+
+.format-tag{
+    padding:4px 10px;
+    border:1px solid rgba(230,57,70,.45);
+    background:rgba(230,57,70,.08);
 }

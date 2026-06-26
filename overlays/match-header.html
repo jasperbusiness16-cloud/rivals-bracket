@@ -17,40 +17,45 @@
 
     <section class="gameplay-header">
 
-  <div class="side-panel left-panel rg-panel anim-panel-in anim-light-sweep">
-    <div class="logo-frame">
-      <span>RG</span>
+  <div class="side-panel left-panel rg-panel anim-panel-in">
+    <div class="panel-brand">
+      <div class="logo-frame">
+        <span>RG</span>
+      </div>
+
+      <div class="team-block">
+        <span class="rg-label" id="teamAMeta">QF1 • BO3</span>
+        <h1 class="team-name" id="teamA">TEAM ALPHA</h1>
+      </div>
     </div>
 
-    <div class="team-block">
-      <span class="rg-label" id="teamAMeta">#1 SEED</span>
-      <h1 class="team-name" id="teamA">TEAM ALPHA</h1>
+    <div class="panel-score">
+      <div class="score-box" id="scoreA">0</div>
+      <div class="series" id="seriesA"></div>
     </div>
-
-    <div class="score-box" id="scoreA">0</div>
-
-    <div class="series" id="seriesA"></div>
   </div>
 
   <div class="center-safe-zone"></div>
 
-  <div class="side-panel right-panel rg-panel anim-panel-in anim-light-sweep">
-    <div class="series" id="seriesB"></div>
-
-    <div class="score-box" id="scoreB">0</div>
-
-    <div class="team-block">
-      <span class="rg-label" id="teamBMeta">#4 SEED</span>
-      <h1 class="team-name" id="teamB">TEAM BRAVO</h1>
+  <div class="side-panel right-panel rg-panel anim-panel-in">
+    <div class="panel-score">
+      <div class="series" id="seriesB"></div>
+      <div class="score-box" id="scoreB">0</div>
     </div>
 
-    <div class="logo-frame">
-      <span>RG</span>
+    <div class="panel-brand">
+      <div class="team-block">
+        <span class="rg-label" id="teamBMeta">BEST OF 3</span>
+        <h1 class="team-name" id="teamB">TEAM BRAVO</h1>
+      </div>
+
+      <div class="logo-frame">
+        <span>RG</span>
+      </div>
     </div>
   </div>
 
 </section>
-
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

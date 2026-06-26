@@ -189,3 +189,25 @@
 }
 
 
+/* ---------- Final Logo + Glass Overrides ---------- */
+
+.rg-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.025) 45%, rgba(0,0,0,.18)),
+    rgba(8,11,16,.82) !important;
+
+  border: 1px solid rgba(255,255,255,.16) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.6),
+    0 8px 24px rgba(0,0,0,.35),
+    0 0 24px rgba(230,57,70,.22) !important;
+}
+
+.logo-frame img {
+  width: 88% !important;
+  height: 88% !important;
+  object-fit: contain;
+  display: block;
+}

@@ -11,9 +11,17 @@ function renderSeries(containerId, score, winsNeeded) {
 
   container.innerHTML = "";
 
-  for (let i = 1; i <= winsNeeded; i++) {
+  const needed = Math.max(Number(winsNeeded) || 2, 2);
+  const currentScore = Number(score) || 0;
+
+  for (let i = 1; i <= needed; i++) {
     const piece = document.createElement("span");
-    piece.className = i <= score ? "series-piece active" : "series-piece";
+    piece.classList.add("series-piece");
+
+    if (i <= currentScore) {
+      piece.classList.add("active");
+    }
+
     container.appendChild(piece);
   }
 }

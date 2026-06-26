@@ -129,8 +129,16 @@ body{
 .panel-score{
 
     display:flex;
+
     align-items:center;
+
+    justify-content:space-between;
+
     gap:14px;
+
+    width:116px;
+
+    flex:0 0 116px;
 }
 
 .team-block{
@@ -145,10 +153,16 @@ body{
     flex-direction:row;
 }
 
+
+
 .left-panel .panel-score{
-    margin-left:28px;
+
+    margin-left:18px;
 }
 
+
+
 .right-panel .panel-score{
-    margin-right:28px;
+
+    margin-right:18px;
 }

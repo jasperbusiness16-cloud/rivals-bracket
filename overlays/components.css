@@ -1,149 +1,193 @@
 /* ==========================================
-   RG BROADCAST SYSTEM
-   COMPONENT LIBRARY v1.0
+   RIVALS GAUNTLET BROADCAST SYSTEM
+   COMPONENT LIBRARY v2.0
    ========================================== */
 
-/* ---------- Glass Panel ---------- */
+:root{
 
-.rg-panel {
-    position: relative;
-    overflow: hidden;
+    --rg-red:#e63946;
+    --rg-red-dark:#b81f2c;
+
+    --glass-bg:rgba(8,11,16,.84);
+    --glass-border:rgba(255,255,255,.10);
+
+    --white:#fff;
+    --muted:#bcc4cf;
+}
+
+/* ==========================================
+   GLASS PANEL
+   ========================================== */
+
+.rg-panel{
+
+    position:relative;
+    overflow:hidden;
 
     background:
         linear-gradient(
             180deg,
-            rgba(255,255,255,.055) 0%,
-            rgba(255,255,255,.018) 38%,
-            rgba(0,0,0,.12) 100%
+            rgba(255,255,255,.06),
+            rgba(255,255,255,.018) 42%,
+            rgba(0,0,0,.16)
         ),
-        rgba(8,11,16,.86);
+        var(--glass-bg);
 
-    backdrop-filter: blur(14px) saturate(120%);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter:blur(14px) saturate(120%);
+    -webkit-backdrop-filter:blur(14px) saturate(120%);
 
-    border: 1px solid rgba(255,255,255,.10);
+    border:1px solid var(--glass-border);
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.10),
-        inset 0 -1px 0 rgba(0,0,0,.45),
+        inset 0 1px rgba(255,255,255,.10),
+        inset 0 -1px rgba(0,0,0,.45),
         0 8px 24px rgba(0,0,0,.28),
-        0 0 22px rgba(230,57,70,.16);
+        0 0 22px rgba(230,57,70,.18);
 }
 
-.rg-panel::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 140px;
-    height: 2px;
-    background: var(--rg-red);
-    box-shadow: 0 0 12px var(--rg-red);
+.rg-panel::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    width:150px;
+    height:2px;
+
+    background:var(--rg-red);
+
+    box-shadow:0 0 12px var(--rg-red);
 }
 
-.rg-panel::after {
-    content: "";
-    position: absolute;
-    top: -40%;
-    left: -120px;
-    width: 90px;
-    height: 180%;
+.left-panel.rg-panel::before{
 
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.11),
-        transparent
-    );
-
-    transform: skewX(-22deg);
-    opacity: .35;
-    pointer-events: none;
-
-    animation: rgGlassSweep 8s ease-in-out infinite;
+    left:26px;
 }
 
-/* ---------- Team Name ---------- */
+.right-panel.rg-panel::before{
 
-.team-name{
-    font-family:var(--font-main);
-    font-weight:700;
-    letter-spacing:1.6px;
-    text-transform:uppercase;
-    color:#fff;
+    right:26px;
 }
 
-/* ---------- Label ---------- */
+/* ==========================================
+   LOGO
+   ========================================== */
 
-.rg-label{
-    color:var(--rg-red);
-    font-size:10px;
-    font-weight:700;
-    letter-spacing:3px;
-    text-transform:uppercase;
-}
+.logo-frame{
 
-/* ---------- Score Box ---------- */
+    width:44px;
+    height:44px;
 
-.score-box{
     display:flex;
     align-items:center;
     justify-content:center;
 
-    width:48px;
-    height:38px;
+    background:rgba(230,57,70,.05);
 
-    background:linear-gradient(
-        180deg,
-        #ef4956,
-        #c41d2d
-    );
+    border:1px solid rgba(230,57,70,.45);
+
+    flex-shrink:0;
+}
+
+.logo-frame img{
+
+    width:82%;
+    height:82%;
+
+    object-fit:contain;
+
+    display:block;
+}
+
+/* ==========================================
+   TEAM
+   ========================================== */
+
+.rg-label{
+
+    color:var(--rg-red);
+
+    font-size:10px;
+    font-weight:700;
+
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+}
+
+.team-name{
+
+    margin:0;
 
     color:#fff;
 
+    font-size:26px;
     font-weight:700;
-    font-size:24px;
+
+    letter-spacing:1.6px;
+
+    text-transform:uppercase;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    max-width:330px;
+}
+
+/* ==========================================
+   SCORE
+   ========================================== */
+
+.score-box{
+
+    width:58px;
+    height:54px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:31px;
+    font-weight:800;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ef4d59,
+            #cb2432
+        );
 
     clip-path:polygon(
-        10% 0,
+        12% 0,
         100% 0,
-        90% 100%,
+        88% 100%,
         0 100%
     );
 
+    border:1px solid rgba(255,255,255,.08);
+
     box-shadow:
-        0 0 16px rgba(230,57,70,.35);
+        inset 0 1px rgba(255,255,255,.16),
+        0 0 18px rgba(230,57,70,.30);
 }
 
-/* ---------- Logo Frame ---------- */
-
-.logo-frame{
-
-    width:42px;
-    height:42px;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    background: rgba(255,0,0,.04);
-
-    border: 1px solid rgba(230,57,70,.45);
-}
-
-/* ---------- Series ---------- */
-
-/* ---------- Series Tracker ---------- */
+/* ==========================================
+   SERIES
+   ========================================== */
 
 .series{
+
     display:flex;
     align-items:center;
     gap:7px;
 }
 
 .series-piece{
+
     width:16px;
     height:6px;
 
@@ -155,59 +199,17 @@
         82% 100%,
         0 100%
     );
-
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.12);
 }
 
 .series-piece.active{
-    background:linear-gradient(
-        180deg,
-        #ef4d59,
-        #c91f2d
-    );
+
+    background:
+        linear-gradient(
+            180deg,
+            #ef4d59,
+            #cb2432
+        );
 
     box-shadow:
-        0 0 10px rgba(230,57,70,.65),
-        inset 0 1px rgba(255,255,255,.18);
-}
-
-.logo-frame img {
-    width: 72%;
-    height: 72%;
-    object-fit: contain;
-    display: block;
-}
-
-/* ---------- Final Logo Override ---------- */
-
-.logo-frame img {
-  width: 82% !important;
-  height: 82% !important;
-  object-fit: contain;
-  display: block;
-}
-
-
-/* ---------- Final Logo + Glass Overrides ---------- */
-
-.rg-panel {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.025) 45%, rgba(0,0,0,.18)),
-    rgba(8,11,16,.82) !important;
-
-  border: 1px solid rgba(255,255,255,.16) !important;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.14),
-    inset 0 -1px 0 rgba(0,0,0,.6),
-    0 8px 24px rgba(0,0,0,.35),
-    0 0 24px rgba(230,57,70,.22) !important;
-}
-
-.logo-frame img {
-  width: 88% !important;
-  height: 88% !important;
-  object-fit: contain;
-  display: block;
+        0 0 10px rgba(230,57,70,.65);
 }

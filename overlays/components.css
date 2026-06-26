@@ -133,3 +133,9 @@
         0 0 10px rgba(230,57,70,.65),
         inset 0 1px rgba(255,255,255,.18);
 }
+
+.logo-frame img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}

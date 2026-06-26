@@ -13,16 +13,16 @@ function setText(id, value) {
   if (el) el.textContent = value;
 }
 
-function renderSeriesDots(containerId, score, winsNeeded) {
+function renderSeries(containerId, score, winsNeeded) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   container.innerHTML = "";
 
   for (let i = 1; i <= winsNeeded; i++) {
-    const dot = document.createElement("span");
-    dot.className = i <= score ? "dot active" : "dot";
-    container.appendChild(dot);
+    const piece = document.createElement("span");
+    piece.className = i <= score ? "series-piece active" : "series-piece";
+    container.appendChild(piece);
   }
 }
 
@@ -34,8 +34,8 @@ function updateMatchHeader(data) {
   setText("scoreA", data.scoreA);
   setText("scoreB", data.scoreB);
 
-  renderSeriesDots("seriesA", Number(data.scoreA), data.winsNeeded);
-  renderSeriesDots("seriesB", Number(data.scoreB), data.winsNeeded);
+  renderSeries("seriesA", Number(data.scoreA), data.winsNeeded);
+  renderSeries("seriesB", Number(data.scoreB), data.winsNeeded);
 }
 
 updateMatchHeader(matchData);

@@ -1,10 +1,3 @@
-setTimeout(() => {
-  const a = document.getElementById("seriesA");
-  const b = document.getElementById("seriesB");
-
-  if (a) a.innerHTML = '<span style="display:block;width:40px;height:12px;background:yellow;"></span>';
-  if (b) b.innerHTML = '<span style="display:block;width:40px;height:12px;background:yellow;"></span>';
-}, 2000);
 const siteRef = database.ref("site");
 
 function setText(id, value) {
@@ -16,25 +9,22 @@ function renderSeries(containerId, score, winsNeeded) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  console.log("Rendering series:", containerId, score, winsNeeded);
-  
   container.innerHTML = "";
 
-  const needed = Math.max(Number(winsNeeded) || 2, 2);
+  const needed = Number(winsNeeded) || 2;
   const currentScore = Number(score) || 0;
 
-  for (let i = 1; i <= needed; i++) {
-    const piece = document.createElement("span");
-    piece.classList.add("series-piece");
+  for (let i = 0; i < needed; i++) {
+    const piece = document.createElement("div");
+    piece.className = "series-piece";
 
-    if (i <= currentScore) {
+    if (i < currentScore) {
       piece.classList.add("active");
     }
 
     container.appendChild(piece);
   }
 }
-
 function getMatchData(data) {
   const currentMatch = data.currentMatch || "No Match Live";
   const isBo5 = currentMatch.toLowerCase().includes("bo5");

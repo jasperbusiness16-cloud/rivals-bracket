@@ -140,4 +140,5 @@
     width: 72%;
     height: 72%;
     object-fit: contain;
+    display: block;
 }

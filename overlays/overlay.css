@@ -104,14 +104,32 @@ body {
 .left-panel {
   margin-left: 22px;
   padding: 0 18px 0 16px;
-  clip-path: polygon(0 0, 96% 0, 100% 50%, 96% 100%, 0 100%);
+  clip-path: polygon(
+    0 0,
+    97% 0,
+    100% 34%,
+    98.5% 50%,
+    100% 66%,
+    97% 100%,
+    0 100%,
+    2% 50%
+  );
 }
 
 .right-panel {
   margin-right: 22px;
   padding: 0 16px 0 18px;
   justify-content: flex-end;
-  clip-path: polygon(4% 0, 100% 0, 100% 100%, 4% 100%, 0 50%);
+  clip-path: polygon(
+    3% 0,
+    100% 0,
+    98% 50%,
+    100% 100%,
+    3% 100%,
+    0 66%,
+    1.5% 50%,
+    0 34%
+  );
 }
 
 .side-panel::before {

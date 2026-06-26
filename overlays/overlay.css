@@ -144,3 +144,11 @@ body{
 .right-panel .panel-brand{
     flex-direction:row;
 }
+
+.left-panel .panel-score{
+    margin-left:28px;
+}
+
+.right-panel .panel-score{
+    margin-right:28px;
+}

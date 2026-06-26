@@ -86,13 +86,15 @@
     width:42px;
     height:42px;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display: flex;
 
-    border:1px solid rgba(230,57,70,.45);
+    justify-content: center;
 
-    background:rgba(230,57,70,.08);
+    align-items: center;
+
+    background: rgba(255,0,0,.04);
+
+    border: 1px solid rgba(230,57,70,.45);
 }
 
 /* ---------- Series ---------- */
@@ -135,7 +137,7 @@
 }
 
 .logo-frame img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
 }

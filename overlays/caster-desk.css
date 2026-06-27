@@ -323,7 +323,7 @@ body {
 
 .desk-red-streak {
   position: absolute;
-  top: 50px;
+  top:26px;
   left: 50%;
   transform: translateX(-50%);
   width: 680px;

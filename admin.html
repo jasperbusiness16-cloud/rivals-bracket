@@ -107,9 +107,16 @@ if (adminPassword !== "777") {
   <input id="upNextTeamA" placeholder="Team Alpha">
 
   <label>Team B</label>
-  <input id="upNextTeamB" placeholder="Team Bravo">
+<input id="upNextTeamB" placeholder="Team Bravo">
 
-  <h3>Matchups</h3>
+<button
+  class="secondary"
+  onclick="autoFillUpNext()"
+  style="margin:15px 0 25px 0;">
+  AUTO FILL UP NEXT
+</button>
+
+<h3>Matchups</h3>
 
   <label>Match 1</label>
   <input id="match1Label" placeholder="QF1">

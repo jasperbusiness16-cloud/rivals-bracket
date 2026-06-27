@@ -1,4 +1,5 @@
 const siteRef = database.ref("site");
+const countdownRef = database.ref("broadcastCountdown");
 
 function renderRosterInputs(data, is16Team) {
   const container = document.getElementById("teamRostersAdmin");
@@ -666,4 +667,99 @@ function deleteChampion(id) {
 
   const saveStatus = document.getElementById("saveStatus");
   if (saveStatus) saveStatus.innerText = "✓ Champion deleted";
+}
+
+countdownRef.on("value", (snapshot) => {
+  const data = snapshot.val() || {};
+
+  document.getElementById("countdownEventName").value = data.eventName || "";
+  document.getElementById("countdownStartTime").value = data.startTimeLocal || "";
+  document.getElementById("countdownRotationMs").value = data.rotationMs || "9000";
+  document.getElementById("countdownWebsite").value = data.website || "RIVALSGAUNTLET.COM";
+
+  const upNext = data.upNext || {};
+  document.getElementById("upNextLabel").value = upNext.label || "";
+  document.getElementById("upNextTeamA").value = upNext.teamA || "";
+  document.getElementById("upNextTeamB").value = upNext.teamB || "";
+
+  const matchups = data.matchups || {};
+  document.getElementById("match1Label").value = matchups.match1Label || "";
+  document.getElementById("match1A").value = matchups.match1A || "";
+  document.getElementById("match1B").value = matchups.match1B || "";
+
+  document.getElementById("match2Label").value = matchups.match2Label || "";
+  document.getElementById("match2A").value = matchups.match2A || "";
+  document.getElementById("match2B").value = matchups.match2B || "";
+
+  document.getElementById("match3Label").value = matchups.match3Label || "";
+  document.getElementById("match3A").value = matchups.match3A || "";
+  document.getElementById("match3B").value = matchups.match3B || "";
+
+  document.getElementById("match4Label").value = matchups.match4Label || "";
+  document.getElementById("match4A").value = matchups.match4A || "";
+  document.getElementById("match4B").value = matchups.match4B || "";
+
+  const prize = data.prize || {};
+  document.getElementById("countdownPrizePool").value = prize.prizePool || "";
+  document.getElementById("countdownGoalPercent").value = prize.goalPercent || "";
+  
+  const follow = data.follow || {};
+  document.getElementById("countdownDiscord").value = follow.discord || "";
+  document.getElementById("countdownTwitch").value = follow.twitch || "";
+  document.getElementById("countdownYoutube").value = follow.youtube || "";
+});
+
+function saveCountdownData() {
+  const localStart = document.getElementById("countdownStartTime").value;
+
+  let startTime = "";
+  if (localStart) {
+    startTime = new Date(localStart).toISOString();
+  }
+
+  countdownRef.update({
+    eventName: document.getElementById("countdownEventName").value,
+    startTime,
+    startTimeLocal: localStart,
+    rotationMs: document.getElementById("countdownRotationMs").value || "9000",
+    website: document.getElementById("countdownWebsite").value || "RIVALSGAUNTLET.COM",
+
+    upNext: {
+      label: document.getElementById("upNextLabel").value,
+      teamA: document.getElementById("upNextTeamA").value,
+      teamB: document.getElementById("upNextTeamB").value
+    },
+
+    matchups: {
+      match1Label: document.getElementById("match1Label").value,
+      match1A: document.getElementById("match1A").value,
+      match1B: document.getElementById("match1B").value,
+
+      match2Label: document.getElementById("match2Label").value,
+      match2A: document.getElementById("match2A").value,
+      match2B: document.getElementById("match2B").value,
+
+      match3Label: document.getElementById("match3Label").value,
+      match3A: document.getElementById("match3A").value,
+      match3B: document.getElementById("match3B").value,
+
+      match4Label: document.getElementById("match4Label").value,
+      match4A: document.getElementById("match4A").value,
+      match4B: document.getElementById("match4B").value
+    },
+
+    prize: {
+      prizePool: document.getElementById("countdownPrizePool").value,
+      goalPercent: document.getElementById("countdownGoalPercent").value
+    },
+
+    follow: {
+      website: document.getElementById("countdownWebsite").value || "RIVALSGAUNTLET.COM",
+      discord: document.getElementById("countdownDiscord").value,
+      twitch: document.getElementById("countdownTwitch").value,
+      youtube: document.getElementById("countdownYoutube").value
+    }
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Countdown saved";
 }

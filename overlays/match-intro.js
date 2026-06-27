@@ -145,7 +145,7 @@ function getPlayersByTeam(teamNum, teamNameFallback) {
 
 function renderPlayers(container, players, sideDelay = 0) {
   container.innerHTML = players.map((player, index) => {
-    const delay = sideDelay + index * 0.12;
+    const delay = sideDelay + index * 0.20;
 
     const rankHtml = player.rankImage
       ? `<img src="${player.rankImage}" alt="Peak Rank">`
@@ -186,8 +186,8 @@ function renderIntro() {
   matchFormat.textContent = format;
   introFooter.textContent = clean(countdownData.website, "RIVALSGAUNTLET.COM").toUpperCase();
 
-  renderPlayers(teamAPlayers, getPlayersByTeam(aNum, aName), 0.35);
-  renderPlayers(teamBPlayers, getPlayersByTeam(bNum, bName), 0.65);
+  renderPlayers(teamAPlayers, getPlayersByTeam(aNum, aName), 0.8);
+  renderPlayers(teamBPlayers, getPlayersByTeam(bNum, bName), 2.2);
 }
 
 siteRef.on("value", snapshot => {

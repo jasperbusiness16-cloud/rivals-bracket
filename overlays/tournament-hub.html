@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
 
+  <title>Rivals Gauntlet | Tournament Hub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="tournament-hub.css?v=1">
+</head>
+
+<body>
+  <main class="hub-stage">
+
+    <div class="hub-bg-grid"></div>
+    <div class="hub-red-core"></div>
+    <div class="hub-sweep"></div>
+    <div class="hub-particles dust-layer"></div>
+    <div class="hub-particles ember-layer"></div>
+    <div class="hub-frame"></div>
+
+    <header class="hub-header">
+      <div class="brand-lockup">
+        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+        <div>
+          <p>RIVALS GAUNTLET</p>
+          <h1 id="hubEventName">Rivals Gauntlet Open #1</h1>
+        </div>
+      </div>
+
+      <div class="hub-status">
+        <span></span>
+        <p>LIVE TOURNAMENT</p>
+      </div>
+    </header>
+
+    <section class="hub-center">
+      <p class="hub-kicker" id="hubStatusText">WE’LL BE RIGHT BACK</p>
+
+      <div class="timer-wrap">
+        <div class="timer-glow"></div>
+        <h2 id="hubTimer">03:00</h2>
+        <div class="timer-progress">
+          <div id="timerProgressFill"></div>
+        </div>
+      </div>
+
+      <section class="feature-panel" id="featurePanel">
+        <div class="feature-content active" id="featureContent">
+          <!-- JS fills feature panel -->
+        </div>
+      </section>
+    </section>
+
+    <section class="info-strip">
+      <div class="info-card active" id="infoCard">
+        <!-- JS fills rotating info -->
+      </div>
+    </section>
+
+    <footer class="hub-footer">
+      <p id="hubWebsite">RIVALSGAUNTLET.COM</p>
+      <span></span>
+      <p>MARVEL RIVALS COMMUNITY TOURNAMENTS</p>
+      <span></span>
+      <p>JOIN THE DISCORD</p>
+    </footer>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="../firebase.js"></script>
+  <script src="tournament-hub.js?v=1"></script>
+</body>
+</html>

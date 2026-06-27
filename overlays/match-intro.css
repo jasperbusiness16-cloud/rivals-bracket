@@ -606,3 +606,110 @@ body{
   from{ opacity:0; transform:translateX(-50%) translateY(18px); }
   to{ opacity:1; transform:translateX(-50%) translateY(0); }
 }
+
+/* ==========================================
+   CINEMATIC INTRO SEQUENCE PASS
+   ========================================== */
+
+.intro-stage {
+  animation: stageImpact 9s ease-in-out both;
+}
+
+.intro-header {
+  animation: headerIn .8s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: .15s;
+}
+
+.team-left {
+  animation: leftTeamIn .85s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: .75s;
+}
+
+.team-right {
+  animation: rightTeamIn .85s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: 1s;
+}
+
+.vs-core {
+  animation: vsBlastIn .8s cubic-bezier(.16,1,.3,1) both;
+  animation-delay: 1.45s;
+}
+
+.player-card {
+  animation-name: playerReveal;
+  animation-duration: .55s;
+  animation-timing-function: cubic-bezier(.16,1,.3,1);
+  animation-fill-mode: forwards;
+}
+
+.team-left .player-card:nth-child(1) { animation-delay: 1.9s !important; }
+.team-left .player-card:nth-child(2) { animation-delay: 2.08s !important; }
+.team-left .player-card:nth-child(3) { animation-delay: 2.26s !important; }
+.team-left .player-card:nth-child(4) { animation-delay: 2.44s !important; }
+.team-left .player-card:nth-child(5) { animation-delay: 2.62s !important; }
+.team-left .player-card:nth-child(6) { animation-delay: 2.8s !important; }
+
+.team-right .player-card:nth-child(1) { animation-delay: 3.12s !important; }
+.team-right .player-card:nth-child(2) { animation-delay: 3.3s !important; }
+.team-right .player-card:nth-child(3) { animation-delay: 3.48s !important; }
+.team-right .player-card:nth-child(4) { animation-delay: 3.66s !important; }
+.team-right .player-card:nth-child(5) { animation-delay: 3.84s !important; }
+.team-right .player-card:nth-child(6) { animation-delay: 4.02s !important; }
+
+.intro-footer {
+  animation-delay: 4.35s;
+}
+
+@keyframes vsBlastIn {
+  0% {
+    opacity: 0;
+    transform: scale(.45) rotate(-8deg);
+    filter: brightness(1);
+  }
+  58% {
+    opacity: 1;
+    transform: scale(1.14) rotate(0deg);
+    filter: brightness(1.45);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes playerReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(.96);
+    filter: brightness(.85);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.025);
+    filter: brightness(1.22);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes stageImpact {
+  0% {
+    filter: brightness(.78);
+  }
+  12% {
+    filter: brightness(1.08);
+  }
+  28% {
+    filter: brightness(.96);
+  }
+  55% {
+    filter: brightness(1.03);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}

@@ -711,7 +711,19 @@ body{
   transform: translateX(-120%);
   animation: cardShine 1.4s ease-out both;
 }
+.team-left .player-card:nth-child(1)::after { animation-delay: 2.05s; }
+.team-left .player-card:nth-child(2)::after { animation-delay: 2.25s; }
+.team-left .player-card:nth-child(3)::after { animation-delay: 2.45s; }
+.team-left .player-card:nth-child(4)::after { animation-delay: 2.65s; }
+.team-left .player-card:nth-child(5)::after { animation-delay: 2.85s; }
+.team-left .player-card:nth-child(6)::after { animation-delay: 3.05s; }
 
+.team-right .player-card:nth-child(1)::after { animation-delay: 3.65s; }
+.team-right .player-card:nth-child(2)::after { animation-delay: 3.85s; }
+.team-right .player-card:nth-child(3)::after { animation-delay: 4.05s; }
+.team-right .player-card:nth-child(4)::after { animation-delay: 4.25s; }
+.team-right .player-card:nth-child(5)::after { animation-delay: 4.45s; }
+.team-right .player-card:nth-child(6)::after { animation-delay: 4.65s; }
 
 
 .player-rank {

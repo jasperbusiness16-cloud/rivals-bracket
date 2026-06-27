@@ -1250,3 +1250,101 @@ body{
     transform:translateX(1500px) skewX(-20deg);
   }
 }
+
+/* ==========================================
+   SECTION 7 — FINAL POLISH / OVERRIDES
+   ========================================== */
+
+.hub-stage.returning .feature-panel,
+.hub-stage.returning .info-strip{
+  opacity:.72;
+  filter:brightness(.85);
+}
+
+.hub-stage.returning .timer-progress{
+  opacity:0;
+}
+
+.hub-stage.returning .hub-kicker{
+  color:#fff;
+  text-shadow:
+    0 0 20px rgba(255,255,255,.18),
+    0 0 44px rgba(230,57,70,.42);
+}
+
+.hub-stage.returning .timer-wrap{
+  width:820px;
+}
+
+.hub-stage.returning #hubTimer{
+  white-space:nowrap;
+}
+
+/* Prevent long names from breaking broadcast layout */
+
+.feature-content,
+.info-card,
+.brand-lockup{
+  min-width:0;
+}
+
+.match-team,
+.bracket-box,
+.info-main strong,
+.brand-lockup h1{
+  min-width:0;
+}
+
+/* Final cinematic idle movement */
+
+.hub-stage{
+  animation:stageBreath 18s ease-in-out infinite;
+}
+
+@keyframes stageBreath{
+  0%,100%{
+    filter:brightness(1);
+  }
+
+  50%{
+    filter:brightness(1.035);
+  }
+}
+
+/* OBS/browser source safety */
+
+img{
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+body,
+.hub-stage{
+  user-select:none;
+}
+
+/* Optional sponsor area later */
+
+.sponsor-slot{
+  position:absolute;
+  top:0;
+  right:0;
+  display:none;
+}
+
+/* Performance safety */
+
+.hub-bg-grid,
+.hub-red-core,
+.hub-sweep,
+.hub-particles,
+.hub-frame,
+.timer-glow{
+  will-change:transform, opacity;
+}
+
+.feature-content,
+.info-card,
+#hubTimer{
+  will-change:transform, opacity;
+}

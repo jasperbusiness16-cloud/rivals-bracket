@@ -172,7 +172,7 @@ container.innerHTML = visualOrder.map((playerIndex) => {
 
         <div class="player-info">
           <strong>${clean(player.name, `Player ${index + 1}`)}</strong>
-          <small>${clean(player.name, `Player ${index + 1}`)} Peak Rank</small>
+          <small>Peak Rank</small>
         </div>
       </div>
     `;

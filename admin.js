@@ -1,6 +1,29 @@
 const siteRef = database.ref("site");
 const countdownRef = database.ref("broadcastCountdown");
 
+const rankOptions = [
+  { label: "No Rank", value: "" },
+  { label: "Bronze", value: "assets/ranks/bronze.png" },
+  { label: "Silver", value: "assets/ranks/silver.png" },
+  { label: "Gold", value: "assets/ranks/gold.png" },
+  { label: "Platinum", value: "assets/ranks/platinum.png" },
+  { label: "Diamond", value: "assets/ranks/diamond.png" },
+  { label: "Grandmaster", value: "assets/ranks/grandmaster.png" },
+  { label: "Celestial", value: "assets/ranks/celestial.png" },
+  { label: "Eternity", value: "assets/ranks/eternity.png" },
+  { label: "One Above All", value: "assets/ranks/one-above-all.png" }
+];
+
+function rankDropdown(id) {
+  return `
+    <select id="${id}">
+      ${rankOptions.map(rank => `
+        <option value="${rank.value}">${rank.label}</option>
+      `).join("")}
+    </select>
+  `;
+}
+
 function renderRosterInputs(data, is16Team) {
   const container = document.getElementById("teamRostersAdmin");
   if (!container) return;
@@ -18,6 +41,9 @@ function renderRosterInputs(data, is16Team) {
         ${[1, 2, 3, 4, 5, 6].map(playerNum => `
           <label>${teamName} Player ${playerNum}</label>
           <input id="team${teamNum}Player${playerNum}" placeholder="Player ${playerNum}">
+
+          <label>${teamName} Player ${playerNum} Peak Rank</label>
+          ${rankDropdown(`team${teamNum}Player${playerNum}RankImage`)}
         `).join("")}
 
         <button class="secondary" onclick="resetTeamRoster(${teamNum})" style="margin-top:15px;">
@@ -34,6 +60,11 @@ function renderRosterInputs(data, is16Team) {
       const input = document.getElementById(`team${teamNum}Player${playerNum}`);
       if (input) {
         input.value = data[`team${teamNum}Player${playerNum}`] || "";
+      }
+
+      const rankSelect = document.getElementById(`team${teamNum}Player${playerNum}RankImage`);
+      if (rankSelect) {
+        rankSelect.value = data[`team${teamNum}Player${playerNum}RankImage`] || "";
       }
     }
   }
@@ -350,6 +381,8 @@ for (let teamNum = 1; teamNum <= 16; teamNum++) {
   for (let playerNum = 1; playerNum <= 6; playerNum++) {
     const input = document.getElementById(`team${teamNum}Player${playerNum}`);
     rosterData[`team${teamNum}Player${playerNum}`] = input ? input.value : "";
+    const rankSelect = document.getElementById(`team${teamNum}Player${playerNum}RankImage`);
+    rosterData[`team${teamNum}Player${playerNum}RankImage`] = rankSelect ? rankSelect.value : "";
   }
 }
   
@@ -577,6 +610,7 @@ function resetTeamRoster(teamNum) {
 
   for (let playerNum = 1; playerNum <= 6; playerNum++) {
     updates[`team${teamNum}Player${playerNum}`] = "";
+    updates[`team${teamNum}Player${playerNum}RankImage`] = "";
   }
 
   siteRef.update(updates);
@@ -591,6 +625,7 @@ function resetAllRosters() {
   for (let teamNum = 1; teamNum <= 16; teamNum++) {
     for (let playerNum = 1; playerNum <= 6; playerNum++) {
       updates[`team${teamNum}Player${playerNum}`] = "";
+      updates[`team${teamNum}Player${playerNum}RankImage`] = "";
     }
   }
 

@@ -298,11 +298,15 @@ body {
 .desk-logo-wrap {
   width: 118px;
   height: 118px;
-
+  
+   
   display: flex;
   align-items: center;
   justify-content: center;
 
+  position: relative;
+  left: -28px;
+   
   z-index: 4;
 
   filter:

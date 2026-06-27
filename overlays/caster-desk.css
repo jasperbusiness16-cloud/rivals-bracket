@@ -68,10 +68,10 @@ body {
   left: -12%;
   bottom: 135px;
   width: 124%;
-  height: 260px;
-  opacity: .18;
+  height: 360px;
+  opacity: .34;
   pointer-events: none;
-  filter: blur(18px);
+  filter: blur(24px);
   mix-blend-mode: screen;
 }
 
@@ -84,8 +84,8 @@ body {
 }
 
 .smoke-b {
-  bottom: 190px;
-  opacity: .10;
+  bottom: 230px;
+  opacity: .22;
   background:
     radial-gradient(ellipse at 35% 70%, rgba(255,255,255,.10), transparent 48%),
     radial-gradient(ellipse at 68% 75%, rgba(230,57,70,.14), transparent 52%);
@@ -100,7 +100,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: .24;
+  opacity: .36;
   background-image:
     radial-gradient(circle, rgba(255,255,255,.28) 0 1px, transparent 1.6px),
     radial-gradient(circle, rgba(230,57,70,.18) 0 1px, transparent 1.8px);

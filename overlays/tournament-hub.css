@@ -129,10 +129,10 @@ body{
 .info-strip{
   position:absolute;
   left:50%;
-  bottom:114px;
+  bottom:90px;
   transform:translateX(-50%);
 
-  width:1320px;
+  width:1380px;
   height:118px;
 
   z-index:8;
@@ -726,8 +726,8 @@ body{
 .feature-panel{
   position:relative;
   margin-top:34px;
-  width:1080px;
-  height:225px;
+  width:1180px;
+  height:320px;
 
   background:
     linear-gradient(180deg, rgba(255,255,255,.095), rgba(255,255,255,.025)),
@@ -897,8 +897,8 @@ body{
 }
 
 .bracket-box{
-  min-height:42px;
-  padding:10px 14px;
+  min-height:38px;
+  padding:8px 12px;
 
   display:flex;
   align-items:center;
@@ -908,7 +908,7 @@ body{
   background:rgba(255,255,255,.045);
   border:1px solid rgba(255,255,255,.08);
 
-  font-size:17px;
+  font-size:15px;
   font-weight:700;
   letter-spacing:1px;
   text-transform:uppercase;

@@ -10,12 +10,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="caster-desk.css?v=1">
+  <link rel="stylesheet" href="caster-desk.css?v=2">
 </head>
 
 <body>
 
   <main class="desk-stage">
+
+    <div class="studio-bg"></div>
+    <div class="studio-vignette"></div>
+    <div class="studio-smoke smoke-a"></div>
+    <div class="studio-smoke smoke-b"></div>
+    <div class="particle-layer"></div>
 
     <section class="desk-panel" id="deskPanel">
 
@@ -32,10 +38,11 @@
         </div>
 
         <div class="desk-text">
-          <div class="desk-title">RIVALS GAUNTLET DESK</div>
+          <div class="desk-title" id="deskTitle">RIVALS GAUNTLET DESK</div>
+
           <div class="desk-subline">
             <span></span>
-            <p id="deskInfo">COMMUNITY TOURNAMENT BROADCAST</p>
+            <p id="deskInfo">RIVALSGAUNTLET.COM</p>
             <span></span>
           </div>
         </div>
@@ -49,7 +56,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="../firebase.js"></script>
-  <script src="caster-desk.js?v=1"></script>
+  <script src="caster-desk.js?v=2"></script>
 
 </body>
 </html>

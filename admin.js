@@ -763,3 +763,54 @@ function saveCountdownData() {
 
   document.getElementById("saveStatus").innerText = "✓ Countdown saved";
 }
+
+function autoFillUpNext() {
+  const data = {
+    currentMatch: document.getElementById("currentMatch").value,
+
+    team1: document.getElementById("team1").value || "Team 1",
+    team2: document.getElementById("team2").value || "Team 2",
+    team3: document.getElementById("team3").value || "Team 3",
+    team4: document.getElementById("team4").value || "Team 4",
+    team5: document.getElementById("team5").value || "Team 5",
+    team6: document.getElementById("team6").value || "Team 6",
+    team7: document.getElementById("team7").value || "Team 7",
+    team8: document.getElementById("team8").value || "Team 8",
+
+    qf1Winner: document.getElementById("qf1Winner").value || "Winner QF1",
+    qf2Winner: document.getElementById("qf2Winner").value || "Winner QF2",
+    qf3Winner: document.getElementById("qf3Winner").value || "Winner QF3",
+    qf4Winner: document.getElementById("qf4Winner").value || "Winner QF4",
+
+    sf1Winner: document.getElementById("sf1Winner").value || "Winner SF1",
+    sf2Winner: document.getElementById("sf2Winner").value || "Winner SF2"
+  };
+
+  const match = data.currentMatch || "";
+
+  let next = {
+    label: "QF1",
+    teamA: data.team1,
+    teamB: data.team2
+  };
+
+  if (match.includes("QF1")) {
+    next = { label: "QF2", teamA: data.team3, teamB: data.team4 };
+  } else if (match.includes("QF2")) {
+    next = { label: "QF3", teamA: data.team5, teamB: data.team6 };
+  } else if (match.includes("QF3")) {
+    next = { label: "QF4", teamA: data.team7, teamB: data.team8 };
+  } else if (match.includes("QF4")) {
+    next = { label: "SF1", teamA: data.qf1Winner, teamB: data.qf2Winner };
+  } else if (match.includes("SF1")) {
+    next = { label: "SF2", teamA: data.qf3Winner, teamB: data.qf4Winner };
+  } else if (match.includes("SF2")) {
+    next = { label: "GRAND FINALS", teamA: data.sf1Winner, teamB: data.sf2Winner };
+  } else if (match.includes("Grand")) {
+    next = { label: "GRAND FINALS", teamA: data.sf1Winner, teamB: data.sf2Winner };
+  }
+
+  document.getElementById("upNextLabel").value = next.label;
+  document.getElementById("upNextTeamA").value = next.teamA;
+  document.getElementById("upNextTeamB").value = next.teamB;
+}

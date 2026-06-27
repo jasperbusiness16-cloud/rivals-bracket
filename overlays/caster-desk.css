@@ -424,17 +424,18 @@ body {
   top: -25%;
   left: -260px;
 
-  width: 150px;
+  width: 70px;
   height: 180%;
 
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255,255,255,.08),
-    rgba(255,255,255,.28),
-    rgba(255,255,255,.08),
+    rgba(255,255,255,.04),
+    rgba(255,255,255,.14),
+    rgba(255,255,255,.04),
     transparent
-  );
+);
+
 
   transform: skewX(-20deg);
   animation: deskSweep 15s ease-in-out infinite;
@@ -544,8 +545,8 @@ body {
     transform: translateX(0) skewX(-20deg);
   }
   84% {
-    opacity: .48;
-  }
+    opacity: .22;
+}
   100% {
     opacity: 0;
     transform: translateX(1500px) skewX(-20deg);

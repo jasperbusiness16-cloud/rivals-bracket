@@ -370,8 +370,8 @@ body{
 }
 
 .player-rank img{
-  width:54px;
-  height:54px;
+  width:66px;
+  height:66px;
   object-fit:contain;
   filter:drop-shadow(0 0 10px rgba(230,57,70,.25));
 }

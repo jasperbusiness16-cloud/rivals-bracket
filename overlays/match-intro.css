@@ -452,6 +452,8 @@ body{
   text-shadow:
     0 0 18px rgba(255,255,255,.14),
     0 0 36px rgba(230,57,70,.30);
+
+  animation: vsHeartbeat 2.2s ease-in-out infinite;
 }
 
 .vs-core p{
@@ -975,6 +977,22 @@ body{
       inset 0 -1px rgba(0,0,0,.62),
       0 22px 48px rgba(0,0,0,.42),
       0 0 58px rgba(230,57,70,.34);
+  }
+}
+
+@keyframes vsHeartbeat {
+  0%,100%{
+    transform: scale(1);
+    text-shadow:
+      0 0 18px rgba(255,255,255,.14),
+      0 0 36px rgba(230,57,70,.30);
+  }
+
+  50%{
+    transform: scale(1.08);
+    text-shadow:
+      0 0 26px rgba(255,255,255,.24),
+      0 0 60px rgba(230,57,70,.65);
   }
 }
 

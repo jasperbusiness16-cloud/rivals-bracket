@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
 
+  <title>Rivals Gauntlet | Countdown</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="countdown.css?v=1">
+</head>
+
+<body>
+
+  <main class="countdown-stage" id="countdownStage">
+
+    <div class="bg-grid"></div>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-sweep"></div>
+    <div class="particle-layer dust-layer"></div>
+    <div class="particle-layer ember-layer"></div>
+    <div class="edge-frame"></div>
+
+    <section class="hero">
+
+      <div class="brand-row">
+        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+        <span id="eventName">RIVALS GAUNTLET OPEN #1</span>
+      </div>
+
+      <div class="timer-wrap">
+        <div id="countdownTimer" class="countdown-timer">15:00</div>
+        <div class="timer-glow"></div>
+      </div>
+
+    </section>
+
+    <section class="info-shell">
+
+      <div class="info-topline"></div>
+
+      <div class="info-header">
+        <span id="rotationTitle">TODAY'S MATCHUPS</span>
+      </div>
+
+      <div class="info-body" id="rotationBody">
+
+        <div class="matchup-list">
+
+          <div class="matchup-row">
+            <span>QF1</span>
+            <p>TEAM ALPHA</p>
+            <strong>VS</strong>
+            <p>TEAM BRAVO</p>
+          </div>
+
+          <div class="matchup-row">
+            <span>QF2</span>
+            <p>TEAM GAMMA</p>
+            <strong>VS</strong>
+            <p>TEAM DELTA</p>
+          </div>
+
+          <div class="matchup-row">
+            <span>QF3</span>
+            <p>TEAM OMEGA</p>
+            <strong>VS</strong>
+            <p>TEAM SIGMA</p>
+          </div>
+
+          <div class="matchup-row">
+            <span>QF4</span>
+            <p>TEAM ECHO</p>
+            <strong>VS</strong>
+            <p>TEAM NOVA</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <footer class="bottom-brand">
+      <span></span>
+      <p id="footerText">RIVALSGAUNTLET.COM</p>
+      <span></span>
+    </footer>
+
+    <section class="broadcast-starting" id="broadcastStarting">
+      <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+      <h1>RIVALS GAUNTLET</h1>
+      <p>BROADCAST STARTING</p>
+    </section>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="../firebase.js"></script>
+  <script src="countdown.js?v=1"></script>
+
+</body>
+</html>

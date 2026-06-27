@@ -39,7 +39,9 @@ function renderRosterInputs(data, is16Team) {
         <summary>▶ ${teamName} Roster</summary>
 
         ${[1, 2, 3, 4, 5, 6].map(playerNum => `
-          <label>${teamName} Player ${playerNum}</label>
+          <label id="team${teamNum}Player${playerNum}RankLabel">
+  ${(data[`team${teamNum}Player${playerNum}`] || `${teamName} Player ${playerNum}`)} Peak Rank
+</label>
           <input id="team${teamNum}Player${playerNum}" placeholder="Player ${playerNum}">
 
           <label>${teamName} Player ${playerNum} Peak Rank</label>

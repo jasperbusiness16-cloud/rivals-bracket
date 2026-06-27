@@ -154,7 +154,11 @@ function getPlayersByTeam(teamNum, teamNameFallback) {
 }
 
 function renderPlayers(container, players, sideDelay = 0) {
-  container.innerHTML = players.map((player, index) => {
+  const visualOrder = [1, 0, 3, 5, 4, 2];
+
+container.innerHTML = visualOrder.map((playerIndex) => {
+  const player = players[playerIndex];
+  const index = playerIndex;
 
     const rankHtml = player.rankImage
       ? `<img src="${player.rankImage}" alt="Peak Rank">`

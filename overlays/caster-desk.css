@@ -110,16 +110,16 @@ body {
 }
 
 /* ==========================================
-   MAIN DESK
+   MAIN DESK — FINAL HEAVY PASS
    ========================================== */
 
 .desk-panel {
   position: absolute;
   left: 50%;
-  bottom: 52px;
+  bottom: 34px;
   transform: translateX(-50%);
-  width: 1320px;
-  height: 142px;
+  width: 1560px;
+  height: 184px;
 
   display: flex;
   align-items: center;
@@ -133,136 +133,135 @@ body {
 
 .desk-core {
   position: relative;
-  width: 860px;
-  height: 132px;
+  width: 1040px;
+  height: 156px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 38px;
 
   background:
-    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.035) 32%, rgba(0,0,0,.26)),
-    linear-gradient(90deg, rgba(255,255,255,.035), transparent 28%, transparent 72%, rgba(255,255,255,.025)),
-    var(--glass);
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.055) 26%, rgba(0,0,0,.34) 100%),
+    linear-gradient(90deg, rgba(255,255,255,.055), transparent 24%, transparent 76%, rgba(255,255,255,.035)),
+    linear-gradient(135deg, rgba(230,57,70,.10), transparent 28%, transparent 72%, rgba(230,57,70,.08)),
+    rgba(6, 8, 12, .84);
 
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,.16);
 
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
 
   box-shadow:
-    inset 0 1px rgba(255,255,255,.18),
-    inset 0 -1px rgba(0,0,0,.72),
-    0 22px 46px rgba(0,0,0,.44),
-    0 0 38px rgba(230,57,70,.22);
+    inset 0 1px rgba(255,255,255,.24),
+    inset 0 -2px rgba(0,0,0,.78),
+    inset 0 0 34px rgba(255,255,255,.035),
+    0 28px 56px rgba(0,0,0,.54),
+    0 0 52px rgba(230,57,70,.28);
 
   clip-path: polygon(
-    32px 0,
-    calc(100% - 32px) 0,
-    100% 32px,
-    100% calc(100% - 32px),
-    calc(100% - 32px) 100%,
-    32px 100%,
-    0 calc(100% - 32px),
-    0 32px
+    42px 0,
+    calc(100% - 42px) 0,
+    100% 42px,
+    100% calc(100% - 42px),
+    calc(100% - 42px) 100%,
+    42px 100%,
+    0 calc(100% - 42px),
+    0 42px
   );
 
   overflow: hidden;
   z-index: 5;
 }
 
-/* inner red stage line */
 .desk-core::before {
   content: "";
   position: absolute;
   top: 0;
-  left: 70px;
-  right: 70px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--rg-red), transparent);
-  box-shadow: 0 0 16px rgba(230,57,70,.75);
+  left: 86px;
+  right: 86px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ff4a58, transparent);
+  box-shadow:
+    0 0 16px rgba(230,57,70,.95),
+    0 0 36px rgba(230,57,70,.55);
 }
 
 .desk-core::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 110px;
-  right: 110px;
+  left: 130px;
+  right: 130px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.30), transparent);
 }
 
-/* ==========================================
-   WINGS
-   ========================================== */
+/* ---------- Desk side wings ---------- */
 
 .desk-left-wing,
 .desk-right-wing {
   position: absolute;
-  top: 44px;
-  width: 420px;
-  height: 58px;
+  top: 58px;
+  width: 520px;
+  height: 74px;
 
   background:
-    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.018)),
-    rgba(7,10,15,.68);
+    linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.025)),
+    linear-gradient(90deg, rgba(230,57,70,.08), transparent 45%),
+    rgba(6, 8, 12, .76);
 
-  border: 1px solid rgba(255,255,255,.075);
+  border: 1px solid rgba(255,255,255,.10);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
   box-shadow:
-    inset 0 1px rgba(255,255,255,.08),
-    0 0 20px rgba(230,57,70,.12);
+    inset 0 1px rgba(255,255,255,.13),
+    inset 0 -1px rgba(0,0,0,.62),
+    0 0 28px rgba(230,57,70,.16);
 
   z-index: 2;
 }
 
 .desk-left-wing {
   left: 0;
-  clip-path: polygon(0 50%, 8% 0, 100% 0, 92% 100%, 8% 100%);
+  clip-path: polygon(0 50%, 7% 0, 100% 0, 92% 100%, 7% 100%);
   animation: wingLeft .9s cubic-bezier(.16,1,.3,1) both;
 }
 
 .desk-right-wing {
   right: 0;
-  clip-path: polygon(0 0, 92% 0, 100% 50%, 92% 100%, 0 100%, 8% 50%);
+  clip-path: polygon(0 0, 93% 0, 100% 50%, 93% 100%, 0 100%, 8% 50%);
   animation: wingRight .9s cubic-bezier(.16,1,.3,1) both;
 }
 
-/* ==========================================
-   LOGO
-   ========================================== */
+/* ---------- Logo ---------- */
 
 .desk-logo-wrap {
-  width: 88px;
-  height: 88px;
+  width: 118px;
+  height: 118px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  filter:
-    brightness(1.08)
-    drop-shadow(0 0 18px rgba(230,57,70,.42));
-
   z-index: 4;
+
+  filter:
+    brightness(1.1)
+    drop-shadow(0 0 22px rgba(230,57,70,.48));
 
   animation: logoIgnite 1.05s cubic-bezier(.16,1,.3,1) both;
 }
 
 .desk-logo {
-  width: 84px;
-  height: 84px;
+  width: 108px;
+  height: 108px;
   object-fit: contain;
 }
 
-/* ==========================================
-   TEXT
-   ========================================== */
+/* ---------- Text ---------- */
 
 .desk-text {
   display: flex;
@@ -275,17 +274,18 @@ body {
 }
 
 .desk-title {
-  font-size: 46px;
+  font-size: 58px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: 3.5px;
+  letter-spacing: 4.2px;
   text-transform: uppercase;
   color: #fff;
   white-space: nowrap;
 
   text-shadow:
-    0 1px 0 rgba(255,255,255,.10),
-    0 0 16px rgba(255,255,255,.10);
+    0 1px 0 rgba(255,255,255,.14),
+    0 0 18px rgba(255,255,255,.14),
+    0 0 26px rgba(230,57,70,.10);
 
   transition:
     opacity .24s ease,
@@ -293,24 +293,24 @@ body {
 }
 
 .desk-subline {
-  margin-top: 14px;
+  margin-top: 18px;
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 24px;
   width: 100%;
 }
 
 .desk-subline span {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.24), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.32), transparent);
 }
 
 .desk-subline p {
-  color: rgba(255,255,255,.82);
-  font-size: 16px;
+  color: rgba(255,255,255,.88);
+  font-size: 19px;
   font-weight: 600;
-  letter-spacing: 3.5px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   white-space: nowrap;
 
@@ -319,32 +319,28 @@ body {
     transform .24s ease;
 }
 
-/* ==========================================
-   RED STREAK
-   ========================================== */
+/* ---------- Red streak ---------- */
 
 .desk-red-streak {
   position: absolute;
-  top: 38px;
+  top: 50px;
   left: 50%;
   transform: translateX(-50%);
-  width: 520px;
-  height: 2px;
+  width: 680px;
+  height: 3px;
 
-  background: var(--rg-red);
+  background: #e63946;
 
   box-shadow:
-    0 0 14px var(--rg-red),
-    0 0 36px rgba(230,57,70,.50);
+    0 0 18px #e63946,
+    0 0 44px rgba(230,57,70,.58);
 
   z-index: 8;
 
   animation: redStreak .85s cubic-bezier(.16,1,.3,1) both;
 }
 
-/* ==========================================
-   GLASS SWEEP
-   ========================================== */
+/* ---------- Glass sweep ---------- */
 
 .desk-glass-sweep {
   position: absolute;
@@ -358,16 +354,16 @@ body {
   content: "";
   position: absolute;
   top: -25%;
-  left: -220px;
+  left: -260px;
 
-  width: 120px;
-  height: 170%;
+  width: 150px;
+  height: 180%;
 
   background: linear-gradient(
     90deg,
     transparent,
     rgba(255,255,255,.08),
-    rgba(255,255,255,.24),
+    rgba(255,255,255,.28),
     rgba(255,255,255,.08),
     transparent
   );
@@ -375,7 +371,6 @@ body {
   transform: skewX(-20deg);
   animation: deskSweep 15s ease-in-out infinite;
 }
-
 /* ==========================================
    TRANSITION STATE
    ========================================== */

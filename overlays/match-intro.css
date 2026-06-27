@@ -845,3 +845,82 @@ body{
   }
 }
 
+/* Better player card intro */
+.player-card {
+  transform-origin: center;
+  animation-name: playerCardEliteReveal;
+  animation-duration: .72s;
+}
+
+.player-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  background: var(--rg-red);
+  box-shadow: 0 0 14px rgba(230,57,70,.7);
+  opacity: 0;
+  animation: cardRedBar .65s ease-out forwards;
+}
+
+.player-card::after {
+  animation-duration: 1.1s;
+}
+
+.player-rank {
+  transform-origin: center;
+  animation-name: rankBadgeElitePop;
+  animation-duration: .68s;
+}
+
+@keyframes playerCardEliteReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(.94);
+    filter: brightness(.65) blur(2px);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.025);
+    filter: brightness(1.28) blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes rankBadgeElitePop {
+  0% {
+    opacity: 0;
+    transform: scale(.55) rotate(-6deg);
+    filter: brightness(.6);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.12) rotate(0deg);
+    filter: brightness(1.45);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes cardRedBar {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .85;
+    transform: scaleY(1);
+  }
+}

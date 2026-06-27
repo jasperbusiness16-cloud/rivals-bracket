@@ -100,13 +100,70 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: .36;
+  z-index: 4;
+}
+
+/* tiny white dust */
+.dust-layer {
+  opacity: .38;
   background-image:
-    radial-gradient(circle, rgba(255,255,255,.28) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(255,255,255,.22) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255,255,255,.12) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(255,255,255,.08) 0 1px, transparent 1.3px);
+  background-size: 120px 120px, 180px 180px, 260px 260px;
+  background-position: 20px 40px, 90px 120px, 150px 20px;
+  animation: dustFloat 58s linear infinite;
+}
+
+/* sparse red embers */
+.ember-layer {
+  opacity: .22;
+  background-image:
+    radial-gradient(circle, rgba(230,57,70,.32) 0 1.2px, transparent 2px),
     radial-gradient(circle, rgba(230,57,70,.18) 0 1px, transparent 1.8px);
-  background-size: 180px 180px, 260px 260px;
-  background-position: 20px 40px, 90px 120px;
-  animation: particlesFloat 46s linear infinite;
+  background-size: 260px 260px, 420px 420px;
+  background-position: 40px 90px, 210px 160px;
+  animation: emberDrift 72s linear infinite;
+}
+
+/* soft atmospheric shimmer */
+.shimmer-layer {
+  opacity: .13;
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(255,255,255,.08), transparent 38%),
+    radial-gradient(ellipse at 70% 72%, rgba(230,57,70,.10), transparent 42%);
+  filter: blur(26px);
+  mix-blend-mode: screen;
+  animation: shimmerBreathe 24s ease-in-out infinite;
+}
+
+@keyframes dustFloat {
+  from {
+    background-position: 20px 40px, 90px 120px, 150px 20px;
+  }
+  to {
+    background-position: 20px -320px, 90px -260px, 150px -420px;
+  }
+}
+
+@keyframes emberDrift {
+  from {
+    background-position: 40px 90px, 210px 160px;
+  }
+  to {
+    background-position: 170px -260px, 90px -340px;
+  }
+}
+
+@keyframes shimmerBreathe {
+  0%, 100% {
+    opacity: .09;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: .18;
+    transform: translateX(22px);
+  }
 }
 
 /* ==========================================

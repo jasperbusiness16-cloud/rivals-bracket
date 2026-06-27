@@ -496,45 +496,7 @@ body{
   text-transform:uppercase;
 }
 
-/* Match starting takeover */
 
-.match-starting{
-  position:absolute;
-  inset:0;
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-
-  background:
-    radial-gradient(circle at center, rgba(230,57,70,.24), transparent 38%),
-    rgba(0,0,0,.86);
-
-  opacity:0;
-  pointer-events:none;
-  z-index:20;
-
-  transition:opacity .45s ease;
-}
-
-.match-starting.active{
-  opacity:1;
-}
-
-.match-starting h1{
-  font-size:86px;
-  letter-spacing:7px;
-  text-transform:uppercase;
-}
-
-.match-starting p{
-  margin-top:12px;
-  color:var(--rg-red);
-  font-size:24px;
-  letter-spacing:5px;
-  text-transform:uppercase;
-}
 
 /* Animations */
 
@@ -805,9 +767,6 @@ body{
   animation: introSpotlightDrift 18s ease-in-out infinite;
 }
 
-.match-starting {
-  animation: matchStartingPreview 10s ease-in-out both;
-}
 
 @keyframes teamNameHit {
   0% {

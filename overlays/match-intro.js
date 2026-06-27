@@ -13,6 +13,16 @@ const introFooter = document.getElementById("introFooter");
 let siteData = {};
 let countdownData = {};
 
+let renderTimeout = null;
+
+function scheduleRenderIntro() {
+  clearTimeout(renderTimeout);
+
+  renderTimeout = setTimeout(() => {
+    renderIntro();
+  }, 150);
+}
+
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
@@ -192,10 +202,10 @@ function renderIntro() {
 
 siteRef.on("value", snapshot => {
   siteData = snapshot.val() || {};
-  renderIntro();
+  scheduleRenderIntro();
 });
 
 countdownRef.on("value", snapshot => {
   countdownData = snapshot.val() || {};
-  renderIntro();
+  scheduleRenderIntro();
 });

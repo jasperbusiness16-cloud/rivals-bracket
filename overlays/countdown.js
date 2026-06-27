@@ -240,7 +240,13 @@ function getCards() {
 }
 
 function renderCard(card) {
+  const infoShell = document.querySelector(".info-shell");
+
   rotationBodyEl.classList.add("info-changing");
+
+  if (infoShell) {
+    infoShell.classList.toggle("up-next-mode", card.title === "UP NEXT");
+  }
 
   setTimeout(() => {
     rotationTitleEl.textContent = card.title;

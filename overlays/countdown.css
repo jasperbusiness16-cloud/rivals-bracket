@@ -310,7 +310,7 @@ body {
   position: absolute;
   top: -25%;
   left: -220px;
-  width: 100px;
+  width: 80px;
   height: 160%;
   background: linear-gradient(
     90deg,
@@ -321,7 +321,7 @@ body {
     transparent
   );
   transform: skewX(-20deg);
-  animation: cardSweep 15s ease-in-out infinite;
+  animation: cardSweep 10s ease-in-out infinite;
 }
 
 .info-header {

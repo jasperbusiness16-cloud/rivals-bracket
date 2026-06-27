@@ -1,6 +1,7 @@
 /* ==========================================
    RIVALS GAUNTLET
-   CASTER DESK v1.0
+   CASTER DESK v2.0
+   Full Studio Scene
    ========================================== */
 
 * {
@@ -12,8 +13,9 @@
 :root {
   --rg-red: #e63946;
   --rg-red-dark: #9f121f;
-  --glass: rgba(7, 10, 15, 0.82);
-  --border: rgba(255,255,255,.12);
+  --glass: rgba(7, 10, 15, 0.78);
+  --glass-strong: rgba(5, 7, 11, 0.92);
+  --border: rgba(255, 255, 255, 0.12);
   --font: "Rajdhani", sans-serif;
 }
 
@@ -21,7 +23,7 @@ body {
   width: 1920px;
   height: 1080px;
   overflow: hidden;
-  background: transparent;
+  background: #000;
   font-family: var(--font);
   color: white;
 }
@@ -30,17 +32,94 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
-/* main desk */
+/* ==========================================
+   STUDIO BACKGROUND
+   ========================================== */
+
+.studio-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("assets/backgrounds/caster-studio.PNG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.01);
+  animation: studioBreath 22s ease-in-out infinite;
+}
+
+.studio-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, transparent 38%, rgba(0,0,0,.22) 72%, rgba(0,0,0,.62) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.22));
+  pointer-events: none;
+}
+
+/* ==========================================
+   SLOW SMOKE / ATMOSPHERE
+   ========================================== */
+
+.studio-smoke {
+  position: absolute;
+  left: -12%;
+  bottom: 135px;
+  width: 124%;
+  height: 260px;
+  opacity: .18;
+  pointer-events: none;
+  filter: blur(18px);
+  mix-blend-mode: screen;
+}
+
+.smoke-a {
+  background:
+    radial-gradient(ellipse at 20% 70%, rgba(230,57,70,.20), transparent 45%),
+    radial-gradient(ellipse at 55% 80%, rgba(255,255,255,.08), transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(230,57,70,.16), transparent 45%);
+  animation: smokeDriftA 54s linear infinite;
+}
+
+.smoke-b {
+  bottom: 190px;
+  opacity: .10;
+  background:
+    radial-gradient(ellipse at 35% 70%, rgba(255,255,255,.10), transparent 48%),
+    radial-gradient(ellipse at 68% 75%, rgba(230,57,70,.14), transparent 52%);
+  animation: smokeDriftB 72s linear infinite;
+}
+
+/* ==========================================
+   PARTICLES
+   ========================================== */
+
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .24;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.28) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(230,57,70,.18) 0 1px, transparent 1.8px);
+  background-size: 180px 180px, 260px 260px;
+  background-position: 20px 40px, 90px 120px;
+  animation: particlesFloat 46s linear infinite;
+}
+
+/* ==========================================
+   MAIN DESK
+   ========================================== */
 
 .desk-panel {
   position: absolute;
   left: 50%;
-  bottom: 54px;
+  bottom: 52px;
   transform: translateX(-50%);
-  width: 1180px;
-  height: 118px;
+  width: 1320px;
+  height: 142px;
 
   display: flex;
   align-items: center;
@@ -54,56 +133,80 @@ body {
 
 .desk-core {
   position: relative;
-  width: 620px;
-  height: 118px;
+  width: 860px;
+  height: 132px;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 30px;
 
   background:
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.025) 38%, rgba(0,0,0,.24)),
+    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.035) 32%, rgba(0,0,0,.26)),
     linear-gradient(90deg, rgba(255,255,255,.035), transparent 28%, transparent 72%, rgba(255,255,255,.025)),
     var(--glass);
 
   border: 1px solid var(--border);
 
-  backdrop-filter: blur(18px) saturate(135%);
-  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 
   box-shadow:
-    inset 0 1px rgba(255,255,255,.16),
-    inset 0 -1px rgba(0,0,0,.62),
-    0 18px 42px rgba(0,0,0,.42),
-    0 0 34px rgba(230,57,70,.20);
+    inset 0 1px rgba(255,255,255,.18),
+    inset 0 -1px rgba(0,0,0,.72),
+    0 22px 46px rgba(0,0,0,.44),
+    0 0 38px rgba(230,57,70,.22);
 
   clip-path: polygon(
-    26px 0,
-    calc(100% - 26px) 0,
-    100% 26px,
-    100% calc(100% - 26px),
-    calc(100% - 26px) 100%,
-    26px 100%,
-    0 calc(100% - 26px),
-    0 26px
+    32px 0,
+    calc(100% - 32px) 0,
+    100% 32px,
+    100% calc(100% - 32px),
+    calc(100% - 32px) 100%,
+    32px 100%,
+    0 calc(100% - 32px),
+    0 32px
   );
 
   overflow: hidden;
   z-index: 5;
 }
 
-/* wings */
+/* inner red stage line */
+.desk-core::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 70px;
+  right: 70px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--rg-red), transparent);
+  box-shadow: 0 0 16px rgba(230,57,70,.75);
+}
+
+.desk-core::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 110px;
+  right: 110px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+}
+
+/* ==========================================
+   WINGS
+   ========================================== */
 
 .desk-left-wing,
 .desk-right-wing {
   position: absolute;
-  top: 31px;
-  width: 360px;
-  height: 56px;
+  top: 44px;
+  width: 420px;
+  height: 58px;
 
   background:
-    linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.015)),
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.018)),
     rgba(7,10,15,.68);
 
   border: 1px solid rgba(255,255,255,.075);
@@ -113,7 +216,7 @@ body {
 
   box-shadow:
     inset 0 1px rgba(255,255,255,.08),
-    0 0 18px rgba(230,57,70,.10);
+    0 0 20px rgba(230,57,70,.12);
 
   z-index: 2;
 }
@@ -130,11 +233,13 @@ body {
   animation: wingRight .9s cubic-bezier(.16,1,.3,1) both;
 }
 
-/* logo */
+/* ==========================================
+   LOGO
+   ========================================== */
 
 .desk-logo-wrap {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
 
   display: flex;
   align-items: center;
@@ -142,18 +247,22 @@ body {
 
   filter:
     brightness(1.08)
-    drop-shadow(0 0 16px rgba(230,57,70,.38));
+    drop-shadow(0 0 18px rgba(230,57,70,.42));
 
   z-index: 4;
+
+  animation: logoIgnite 1.05s cubic-bezier(.16,1,.3,1) both;
 }
 
 .desk-logo {
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   object-fit: contain;
 }
 
-/* text */
+/* ==========================================
+   TEXT
+   ========================================== */
 
 .desk-text {
   display: flex;
@@ -166,59 +275,76 @@ body {
 }
 
 .desk-title {
-  font-size: 38px;
+  font-size: 46px;
   line-height: 1;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
   color: #fff;
+  white-space: nowrap;
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.10),
+    0 0 16px rgba(255,255,255,.10);
+
+  transition:
+    opacity .24s ease,
+    transform .24s ease;
 }
 
 .desk-subline {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   width: 100%;
 }
 
 .desk-subline span {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.20), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.24), transparent);
 }
 
 .desk-subline p {
-  color: rgba(255,255,255,.74);
-  font-size: 14px;
+  color: rgba(255,255,255,.82);
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 3px;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
   white-space: nowrap;
+
+  transition:
+    opacity .24s ease,
+    transform .24s ease;
 }
 
-/* red streak */
+/* ==========================================
+   RED STREAK
+   ========================================== */
 
 .desk-red-streak {
   position: absolute;
-  top: 28px;
+  top: 38px;
   left: 50%;
   transform: translateX(-50%);
-  width: 420px;
+  width: 520px;
   height: 2px;
 
   background: var(--rg-red);
 
   box-shadow:
     0 0 14px var(--rg-red),
-    0 0 34px rgba(230,57,70,.45);
+    0 0 36px rgba(230,57,70,.50);
 
   z-index: 8;
 
   animation: redStreak .85s cubic-bezier(.16,1,.3,1) both;
 }
 
-/* glass sweep */
+/* ==========================================
+   GLASS SWEEP
+   ========================================== */
 
 .desk-glass-sweep {
   position: absolute;
@@ -231,31 +357,80 @@ body {
 .desk-glass-sweep::before {
   content: "";
   position: absolute;
-  top: -20%;
+  top: -25%;
   left: -220px;
 
-  width: 110px;
-  height: 160%;
+  width: 120px;
+  height: 170%;
 
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255,255,255,.10),
+    rgba(255,255,255,.08),
     rgba(255,255,255,.24),
-    rgba(255,255,255,.10),
+    rgba(255,255,255,.08),
     transparent
   );
 
   transform: skewX(-20deg);
-  animation: deskSweep 10s ease-in-out infinite;
+  animation: deskSweep 15s ease-in-out infinite;
 }
 
-/* animations */
+/* ==========================================
+   TRANSITION STATE
+   ========================================== */
+
+.text-changing {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes studioBreath {
+  0%, 100% {
+    filter: brightness(1) contrast(1.02);
+    transform: scale(1.01);
+  }
+  50% {
+    filter: brightness(1.035) contrast(1.04);
+    transform: scale(1.015);
+  }
+}
+
+@keyframes smokeDriftA {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(90px);
+  }
+}
+
+@keyframes smokeDriftB {
+  from {
+    transform: translateX(80px);
+  }
+  to {
+    transform: translateX(-80px);
+  }
+}
+
+@keyframes particlesFloat {
+  from {
+    background-position: 20px 40px, 90px 120px;
+  }
+  to {
+    background-position: 20px -220px, 90px -180px;
+  }
+}
 
 @keyframes deskEnter {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(34px) scale(.96);
+    transform: translateX(-50%) translateY(38px) scale(.96);
   }
   to {
     opacity: 1;
@@ -266,7 +441,7 @@ body {
 @keyframes wingLeft {
   from {
     opacity: 0;
-    transform: translateX(160px) scaleX(.55);
+    transform: translateX(190px) scaleX(.55);
   }
   to {
     opacity: 1;
@@ -277,7 +452,7 @@ body {
 @keyframes wingRight {
   from {
     opacity: 0;
-    transform: translateX(-160px) scaleX(.55);
+    transform: translateX(-190px) scaleX(.55);
   }
   to {
     opacity: 1;
@@ -292,24 +467,48 @@ body {
   }
   45% {
     opacity: 1;
-    width: 760px;
+    width: 980px;
   }
   100% {
     opacity: .95;
-    width: 420px;
+    width: 520px;
   }
 }
 
 @keyframes deskSweep {
-  0%, 70% {
+  0%, 76% {
     opacity: 0;
     transform: translateX(0) skewX(-20deg);
   }
-  78% {
-    opacity: .55;
+  84% {
+    opacity: .48;
   }
   100% {
     opacity: 0;
-    transform: translateX(1400px) skewX(-20deg);
+    transform: translateX(1500px) skewX(-20deg);
+  }
+}
+
+@keyframes logoIgnite {
+  0% {
+    opacity: 0;
+    transform: scale(.88);
+    filter:
+      brightness(.9)
+      drop-shadow(0 0 0 rgba(230,57,70,0));
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.06);
+    filter:
+      brightness(1.2)
+      drop-shadow(0 0 26px rgba(230,57,70,.72));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter:
+      brightness(1.08)
+      drop-shadow(0 0 18px rgba(230,57,70,.42));
   }
 }

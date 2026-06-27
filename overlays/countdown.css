@@ -664,3 +664,71 @@ body {
     opacity: 1;
   }
 }
+
+.up-next-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:210px;
+}
+
+.up-next-card small{
+  color:var(--rg-red);
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  margin-bottom:22px;
+}
+
+.up-next-teams{
+  display:grid;
+  grid-template-columns:1fr 90px 1fr;
+  align-items:center;
+  width:100%;
+  gap:22px;
+}
+
+.up-next-teams strong{
+  font-size:42px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.up-next-teams span{
+  color:rgba(255,255,255,.55);
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:3px;
+  text-align:center;
+}
+
+/* 30-second energy pulse */
+.final-minute .info-shell{
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.18),
+    inset 0 -1px rgba(0,0,0,.62),
+    0 22px 48px rgba(0,0,0,.38),
+    0 0 52px rgba(230,57,70,.26);
+}
+
+.final-ten .info-shell{
+  animation:
+    panelIn .9s cubic-bezier(.16,1,.3,1) both,
+    finalPanelPulse 1s ease-in-out infinite;
+}
+
+@keyframes finalPanelPulse{
+  0%,100%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.08);
+  }
+}

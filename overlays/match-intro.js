@@ -155,14 +155,13 @@ function getPlayersByTeam(teamNum, teamNameFallback) {
 
 function renderPlayers(container, players, sideDelay = 0) {
   container.innerHTML = players.map((player, index) => {
-    const delay = sideDelay + index * 0.20;
 
     const rankHtml = player.rankImage
       ? `<img src="${player.rankImage}" alt="Peak Rank">`
       : `<div class="rank-placeholder">RG</div>`;
 
     return `
-      <div class="player-card" style="animation-delay:${delay}s">
+      <div class="player-card">
         <div class="player-rank">
           ${rankHtml}
         </div>

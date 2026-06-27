@@ -1,1 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
 
+  <title>Rivals Gauntlet | Match Intro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="match-intro.css?v=1">
+</head>
+
+<body>
+
+  <main class="intro-stage" id="introStage">
+
+    <div class="intro-bg-grid"></div>
+    <div class="intro-red-core"></div>
+    <div class="intro-sweep"></div>
+    <div class="intro-particles dust-layer"></div>
+    <div class="intro-particles ember-layer"></div>
+    <div class="intro-frame"></div>
+
+    <section class="intro-header">
+      <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+      <div>
+        <p id="introEvent">RIVALS GAUNTLET</p>
+        <h1 id="introRound">QUARTERFINAL 1 • BO3</h1>
+      </div>
+    </section>
+
+    <section class="versus-zone">
+
+      <div class="team-panel team-left">
+        <div class="team-tag">TEAM A</div>
+        <h2 id="teamAName">TEAM ALPHA</h2>
+
+        <div class="player-grid" id="teamAPlayers">
+          <!-- JS fills players -->
+        </div>
+      </div>
+
+      <div class="vs-core">
+        <div class="vs-ring"></div>
+        <div class="vs-text">VS</div>
+        <p id="matchFormat">BO3</p>
+      </div>
+
+      <div class="team-panel team-right">
+        <div class="team-tag">TEAM B</div>
+        <h2 id="teamBName">TEAM BRAVO</h2>
+
+        <div class="player-grid" id="teamBPlayers">
+          <!-- JS fills players -->
+        </div>
+      </div>
+
+    </section>
+
+    <footer class="intro-footer">
+      <span></span>
+      <p id="introFooter">RIVALSGAUNTLET.COM</p>
+      <span></span>
+    </footer>
+
+    <section class="match-starting" id="matchStarting">
+      <h1>MATCH STARTING</h1>
+      <p>RIVALS GAUNTLET</p>
+    </section>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="../firebase.js"></script>
+  <script src="match-intro.js?v=1"></script>
+
+</body>
+</html>

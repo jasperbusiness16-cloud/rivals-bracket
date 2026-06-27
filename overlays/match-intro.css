@@ -845,11 +845,3 @@ body{
   }
 }
 
-@keyframes matchStartingPreview {
-  0%, 88% {
-    opacity: 0;
-  }
-  93%, 100% {
-    opacity: 1;
-  }
-}

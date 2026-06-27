@@ -853,6 +853,10 @@ body{
   animation: cardRedBar .65s ease-out forwards;
 }
 
+.player-card::before {
+  animation-delay: inherit;
+}
+
 .player-card::after {
   animation-duration: 1.1s;
 }

@@ -732,3 +732,134 @@ body {
     filter:brightness(1.08);
   }
 }
+
+/* ==========================================
+   PREMIUM TIMER RING
+   ========================================== */
+
+.timer-ring{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:820px;
+  height:260px;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:1;
+}
+
+.ring-segment{
+  position:absolute;
+  height:2px;
+  background:linear-gradient(90deg, transparent, rgba(230,57,70,.55), transparent);
+  box-shadow:0 0 14px rgba(230,57,70,.45);
+  opacity:.45;
+}
+
+.seg-1{
+  top:0;
+  left:140px;
+  width:220px;
+}
+
+.seg-2{
+  top:0;
+  right:140px;
+  width:220px;
+}
+
+.seg-3{
+  bottom:0;
+  left:160px;
+  width:190px;
+}
+
+.seg-4{
+  bottom:0;
+  right:160px;
+  width:190px;
+}
+
+.final-minute .ring-segment{
+  opacity:.72;
+  animation:ringPulse 1.8s ease-in-out infinite;
+}
+
+.final-ten .ring-segment{
+  opacity:.95;
+  animation:ringPulse 1s ease-in-out infinite;
+}
+
+@keyframes ringPulse{
+  0%,100%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.45);
+  }
+}
+
+/* ==========================================
+   UP NEXT TAKEOVER
+   ========================================== */
+
+.info-shell.up-next-mode{
+  min-height:360px;
+  transform:translateX(-50%) scale(1.035);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.20),
+    inset 0 -1px rgba(0,0,0,.64),
+    0 26px 54px rgba(0,0,0,.45),
+    0 0 58px rgba(230,57,70,.26);
+}
+
+.info-shell.up-next-mode .info-header span{
+  font-size:28px;
+  letter-spacing:6px;
+}
+
+.info-shell.up-next-mode .up-next-card{
+  min-height:250px;
+}
+
+.info-shell.up-next-mode .up-next-teams{
+  grid-template-columns:1fr;
+  gap:14px;
+}
+
+.info-shell.up-next-mode .up-next-teams strong{
+  font-size:54px;
+}
+
+.info-shell.up-next-mode .up-next-teams span{
+  font-size:28px;
+  color:var(--rg-red);
+}
+
+/* ==========================================
+   BROADCAST ENERGY STATES
+   ========================================== */
+
+.urgent{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(230,57,70,.22), transparent 34%),
+    radial-gradient(circle at 18% 75%, rgba(230,57,70,.12), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(255,255,255,.06), transparent 28%),
+    linear-gradient(135deg, #05070b 0%, #0a0d13 45%, #05070b 100%);
+}
+
+.final-minute{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(230,57,70,.28), transparent 34%),
+    radial-gradient(circle at 18% 75%, rgba(230,57,70,.16), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(255,255,255,.07), transparent 28%),
+    linear-gradient(135deg, #05070b 0%, #0b0e15 45%, #05070b 100%);
+}
+
+.final-ten{
+  background:
+    radial-gradient(circle at 50% 35%, rgba(230,57,70,.36), transparent 34%),
+    radial-gradient(circle at 18% 75%, rgba(230,57,70,.20), transparent 30%),
+    radial-gradient(circle at 82% 72%, rgba(255,255,255,.08), transparent 28%),
+    linear-gradient(135deg, #05070b 0%, #0c1018 45%, #05070b 100%);
+}

@@ -977,3 +977,18 @@ body{
       0 0 58px rgba(230,57,70,.34);
   }
 }
+
+/* Simple roster reveal */
+.player-card {
+  animation-delay: 1.75s !important;
+}
+
+.team-right .player-card {
+  animation-delay: 2.15s !important;
+}
+
+.player-card::before,
+.player-card::after,
+.player-rank {
+  animation-delay: inherit !important;
+}

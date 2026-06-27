@@ -205,8 +205,32 @@ function makeReminderCard() {
   };
 }
 
+function makeUpNextCard() {
+  const matchups = countdownData.matchups || {};
+  const upNext = countdownData.upNext || {};
+
+  const label = upNext.label || matchups.match1Label || "QF1";
+  const teamA = upNext.teamA || matchups.match1A || getTeam(1);
+  const teamB = upNext.teamB || matchups.match1B || getTeam(2);
+
+  return {
+    title: "UP NEXT",
+    html: `
+      <div class="up-next-card">
+        <small>${safeText(label)}</small>
+        <div class="up-next-teams">
+          <strong>${safeText(teamA)}</strong>
+          <span>VS</span>
+          <strong>${safeText(teamB)}</strong>
+        </div>
+      </div>
+    `
+  };
+}
+
 function getCards() {
   return [
+    makeUpNextCard(),
     makeMatchupsCard(),
     makeFormatCard(),
     makePrizeCard(),
@@ -260,6 +284,13 @@ function updateTimer() {
   stageEl.classList.toggle("final-minute", remaining <= 60 * 1000);
   stageEl.classList.toggle("final-ten", remaining <= 10 * 1000);
 
+  const newRotationSpeed = remaining <= 60 * 1000 ? 6000 : Number(countdownData.rotationMs || 9000);
+
+if (window.currentRotationSpeed !== newRotationSpeed) {
+  window.currentRotationSpeed = newRotationSpeed;
+  startRotation();
+}
+  
   if (remaining <= 0) {
     startingEl.classList.add("active");
     timerEl.textContent = "00:00";

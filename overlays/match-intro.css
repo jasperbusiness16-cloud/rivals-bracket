@@ -839,6 +839,20 @@ body{
   animation-name: playerCardEliteReveal;
   animation-duration: .72s;
 }
+.team-left .player-card:nth-child(1) { animation-delay: .80s !important; }
+.team-left .player-card:nth-child(3) { animation-delay: 1.00s !important; }
+.team-left .player-card:nth-child(5) { animation-delay: 1.20s !important; }
+.team-left .player-card:nth-child(2) { animation-delay: 1.40s !important; }
+.team-left .player-card:nth-child(4) { animation-delay: 1.60s !important; }
+.team-left .player-card:nth-child(6) { animation-delay: 1.80s !important; }
+
+.team-right .player-card:nth-child(1) { animation-delay: 2.20s !important; }
+.team-right .player-card:nth-child(3) { animation-delay: 2.40s !important; }
+.team-right .player-card:nth-child(5) { animation-delay: 2.60s !important; }
+.team-right .player-card:nth-child(2) { animation-delay: 2.80s !important; }
+.team-right .player-card:nth-child(4) { animation-delay: 3.00s !important; }
+.team-right .player-card:nth-child(6) { animation-delay: 3.20s !important; }
+
 
 .player-card::before {
   content: "";

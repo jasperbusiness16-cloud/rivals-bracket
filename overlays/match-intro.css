@@ -604,19 +604,7 @@ body{
   animation-fill-mode: forwards;
 }
 
-.team-left .player-card:nth-child(1) { animation-delay: 1.9s !important; }
-.team-left .player-card:nth-child(2) { animation-delay: 2.08s !important; }
-.team-left .player-card:nth-child(3) { animation-delay: 2.26s !important; }
-.team-left .player-card:nth-child(4) { animation-delay: 2.44s !important; }
-.team-left .player-card:nth-child(5) { animation-delay: 2.62s !important; }
-.team-left .player-card:nth-child(6) { animation-delay: 2.8s !important; }
 
-.team-right .player-card:nth-child(1) { animation-delay: 3.12s !important; }
-.team-right .player-card:nth-child(2) { animation-delay: 3.3s !important; }
-.team-right .player-card:nth-child(3) { animation-delay: 3.48s !important; }
-.team-right .player-card:nth-child(4) { animation-delay: 3.66s !important; }
-.team-right .player-card:nth-child(5) { animation-delay: 3.84s !important; }
-.team-right .player-card:nth-child(6) { animation-delay: 4.02s !important; }
 
 .intro-footer {
   animation-delay: 4.35s;
@@ -724,19 +712,7 @@ body{
   animation: cardShine 1.4s ease-out both;
 }
 
-.team-left .player-card:nth-child(1) .player-rank { animation-delay: 2.00s; }
-.team-left .player-card:nth-child(2) .player-rank { animation-delay: 2.20s; }
-.team-left .player-card:nth-child(3) .player-rank { animation-delay: 2.40s; }
-.team-left .player-card:nth-child(4) .player-rank { animation-delay: 2.60s; }
-.team-left .player-card:nth-child(5) .player-rank { animation-delay: 2.80s; }
-.team-left .player-card:nth-child(6) .player-rank { animation-delay: 3.00s; }
 
-.team-right .player-card:nth-child(1) .player-rank { animation-delay: 3.60s; }
-.team-right .player-card:nth-child(2) .player-rank { animation-delay: 3.80s; }
-.team-right .player-card:nth-child(3) .player-rank { animation-delay: 4.00s; }
-.team-right .player-card:nth-child(4) .player-rank { animation-delay: 4.20s; }
-.team-right .player-card:nth-child(5) .player-rank { animation-delay: 4.40s; }
-.team-right .player-card:nth-child(6) .player-rank { animation-delay: 4.60s; }
 
 .player-rank {
   animation: rankBadgePop .55s cubic-bezier(.16,1,.3,1) both;

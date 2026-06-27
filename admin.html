@@ -79,8 +79,78 @@ if (adminPassword !== "777") {
  <option value="Grand Finals • Bo5">Grand Finals • Bo5</option>
 </select>
 
+
+  
 </div>
 
+<div class="admin-section">
+  <h2>Broadcast Countdown</h2>
+
+  <label>Countdown Event Name</label>
+  <input id="countdownEventName" placeholder="Rivals Gauntlet Open #1">
+
+  <label>Start Time</label>
+  <input id="countdownStartTime" type="datetime-local">
+
+  <label>Rotation Speed (ms)</label>
+  <input id="countdownRotationMs" placeholder="9000">
+
+  <label>Website</label>
+  <input id="countdownWebsite" placeholder="RIVALSGAUNTLET.COM">
+
+  <h3>Up Next</h3>
+
+  <label>Match Label</label>
+  <input id="upNextLabel" placeholder="QF1">
+
+  <label>Team A</label>
+  <input id="upNextTeamA" placeholder="Team Alpha">
+
+  <label>Team B</label>
+  <input id="upNextTeamB" placeholder="Team Bravo">
+
+  <h3>Matchups</h3>
+
+  <label>Match 1</label>
+  <input id="match1Label" placeholder="QF1">
+  <input id="match1A" placeholder="Team 1">
+  <input id="match1B" placeholder="Team 2">
+
+  <label>Match 2</label>
+  <input id="match2Label" placeholder="QF2">
+  <input id="match2A" placeholder="Team 3">
+  <input id="match2B" placeholder="Team 4">
+
+  <label>Match 3</label>
+  <input id="match3Label" placeholder="QF3">
+  <input id="match3A" placeholder="Team 5">
+  <input id="match3B" placeholder="Team 6">
+
+  <label>Match 4</label>
+  <input id="match4Label" placeholder="QF4">
+  <input id="match4A" placeholder="Team 7">
+  <input id="match4B" placeholder="Team 8">
+
+  <h3>Countdown Info</h3>
+
+  <label>Prize Pool</label>
+  <input id="countdownPrizePool" placeholder="$250">
+
+  <label>Goal Percent</label>
+  <input id="countdownGoalPercent" placeholder="75">
+
+  <label>Discord Text</label>
+  <input id="countdownDiscord" placeholder="Join The Community">
+
+  <label>Twitch Text</label>
+  <input id="countdownTwitch" placeholder="Live Broadcasts">
+
+  <label>YouTube Text</label>
+  <input id="countdownYoutube" placeholder="Clips & VODs">
+
+  <button onclick="saveCountdownData()">SAVE COUNTDOWN</button>
+</div>
+  
 <div class="admin-section">
 <h2>Tournament Info</h2>
 

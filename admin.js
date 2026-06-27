@@ -814,3 +814,19 @@ function autoFillUpNext() {
   document.getElementById("upNextTeamA").value = next.teamA;
   document.getElementById("upNextTeamB").value = next.teamB;
 }
+
+function startHubTimer(minutes) {
+  const durationMs = minutes * 60 * 1000;
+
+  database.ref("broadcastCountdown").update({
+    hubEndTime: new Date(Date.now() + durationMs).toISOString(),
+    hubDurationMs: durationMs
+  });
+}
+
+function resetHubTimer() {
+  database.ref("broadcastCountdown").update({
+    hubEndTime: null,
+    hubDurationMs: null
+  });
+}

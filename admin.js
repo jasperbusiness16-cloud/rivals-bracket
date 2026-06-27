@@ -3,15 +3,15 @@ const countdownRef = database.ref("broadcastCountdown");
 
 const rankOptions = [
   { label: "No Rank", value: "" },
-  { label: "Bronze", value: "assets/ranks/bronze.png" },
-  { label: "Silver", value: "assets/ranks/silver.png" },
-  { label: "Gold", value: "assets/ranks/gold.png" },
-  { label: "Platinum", value: "assets/ranks/platinum.png" },
-  { label: "Diamond", value: "assets/ranks/diamond.png" },
-  { label: "Grandmaster", value: "assets/ranks/grandmaster.png" },
-  { label: "Celestial", value: "assets/ranks/celestial.png" },
-  { label: "Eternity", value: "assets/ranks/eternity.png" },
-  { label: "One Above All", value: "assets/ranks/one-above-all.png" }
+  { label: "Bronze", value: "assets/ranks/bronze.PNG" },
+  { label: "Silver", value: "assets/ranks/silver.PNG" },
+  { label: "Gold", value: "assets/ranks/gold.PNG" },
+  { label: "Platinum", value: "assets/ranks/platinum.PNG" },
+  { label: "Diamond", value: "assets/ranks/diamond.PNG" },
+  { label: "Grandmaster", value: "assets/ranks/grandmaster.PNG" },
+  { label: "Celestial", value: "assets/ranks/celestial.PNG" },
+  { label: "Eternity", value: "assets/ranks/eternity.PNG" },
+  { label: "One Above All", value: "assets/ranks/one-above-all.PNG" }
 ];
 
 function rankDropdown(id) {

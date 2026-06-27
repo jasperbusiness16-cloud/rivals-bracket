@@ -860,7 +860,7 @@ body{
 .player-rank {
   transform-origin: center;
   animation-name: rankBadgeElitePop;
-  animation-duration: .68s;
+  animation-duration: .72s;
 }
 
 @keyframes playerCardEliteReveal {

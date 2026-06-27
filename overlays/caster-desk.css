@@ -507,3 +507,23 @@ body {
       drop-shadow(0 0 18px rgba(230,57,70,.42));
   }
 }
+
+.studio-bg{
+  z-index: 1;
+}
+
+.studio-vignette{
+  z-index: 2;
+}
+
+.studio-smoke{
+  z-index: 3;
+}
+
+.particle-layer{
+  z-index: 4;
+}
+
+.desk-panel{
+  z-index: 10;
+}

@@ -275,16 +275,9 @@ function updateTimer() {
   const timeText = formatCountdown(remaining);
 
   if (timeText !== lastTimeText) {
-    lastTimeText = timeText;
-    timerEl.style.opacity = "0.85";
-    timerEl.style.transform = "translateY(4px)";
-
-    setTimeout(() => {
-      timerEl.textContent = timeText;
-      timerEl.style.opacity = "1";
-      timerEl.style.transform = "translateY(0)";
-    }, 90);
-  }
+  lastTimeText = timeText;
+  timerEl.textContent = timeText;
+}
 
   stageEl.classList.toggle("urgent", remaining <= 5 * 60 * 1000);
   stageEl.classList.toggle("final-minute", remaining <= 60 * 1000);

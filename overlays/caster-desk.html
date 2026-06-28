@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet Studio</title>
+  <link rel="stylesheet" href="caster-desk.css?v=1">
+</head>
+<body>
 
+<div class="studio-stage">
+  <div class="studio-bg-grid"></div>
+  <div class="studio-red-core"></div>
+  <div class="studio-sweep"></div>
+  <div class="studio-particles dust-layer"></div>
+  <div class="studio-particles ember-layer"></div>
+  <div class="studio-frame"></div>
+
+  <header class="studio-header">
+    <img src="assets/logos/rg-logo.png" alt="Rivals Gauntlet">
+    <h1 id="studioEventName">RIVALS GAUNTLET OPEN #1</h1>
+  </header>
+
+  <main class="caster-layout layout-2" id="casterLayout">
+    <section class="caster-slot caster-1">
+      <div class="camera-space"></div>
+      <div class="caster-nameplate">
+        <strong id="caster1Name">JASPER HARVEY</strong>
+        <small id="caster1Role">HOST</small>
+      </div>
+    </section>
+
+    <section class="caster-slot caster-2">
+      <div class="camera-space"></div>
+      <div class="caster-nameplate">
+        <strong id="caster2Name">CASTER TWO</strong>
+        <small id="caster2Role">ANALYST</small>
+      </div>
+    </section>
+
+    <section class="caster-slot caster-3 hidden">
+      <div class="camera-space"></div>
+      <div class="caster-nameplate">
+        <strong id="caster3Name">GUEST CASTER</strong>
+        <small id="caster3Role">GUEST</small>
+      </div>
+    </section>
+  </main>
+
+  <footer class="studio-footer">
+    <span></span>
+    <p id="studioWebsite">RIVALSGAUNTLET.COM</p>
+    <span></span>
+  </footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="caster-desk.js?v=1"></script>
+
+</body>
+</html>

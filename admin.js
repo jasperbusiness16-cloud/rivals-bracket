@@ -100,7 +100,18 @@ if (extraTeamsSection) {
   extraTeamsSection.style.display = is16Team ? "block" : "none";
 }
 renderRosterInputs(data, is16Team);
-  
+
+  if (document.getElementById("casterCount")) {
+  document.getElementById("casterCount").value =
+    data.caster3Enabled ? "3" : data.caster2Enabled === false ? "1" : "2";
+
+  document.getElementById("caster1NameInput").value = data.caster1Name || "";
+  document.getElementById("caster1RoleInput").value = data.caster1Role || "";
+  document.getElementById("caster2NameInput").value = data.caster2Name || "";
+  document.getElementById("caster2RoleInput").value = data.caster2Role || "";
+  document.getElementById("caster3NameInput").value = data.caster3Name || "";
+  document.getElementById("caster3RoleInput").value = data.caster3Role || "";
+}
   document.getElementById("team1").value = data.team1 || "";
   document.getElementById("team2").value = data.team2 || "";
   document.getElementById("team3").value = data.team3 || "";
@@ -878,8 +889,10 @@ function saveCasterDeskData() {
 
     caster1Name: document.getElementById("caster1NameInput").value,
     caster1Role: document.getElementById("caster1RoleInput").value,
+
     caster2Name: document.getElementById("caster2NameInput").value,
     caster2Role: document.getElementById("caster2RoleInput").value,
+
     caster3Name: document.getElementById("caster3NameInput").value,
     caster3Role: document.getElementById("caster3RoleInput").value
   });

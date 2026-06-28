@@ -176,20 +176,27 @@ function buildCredits({ champion, donors, siteData }) {
   );
 
   return `
-    ${section(
-      "Event Complete",
-      `
-        <div class="credit-main">${eventName}</div>
-        <div class="credit-small">Thank you for watching.</div>
-      `
-    )}
+    <section class="credit-section intro-section">
+
+        <img class="credits-logo"
+             src="assets/logos/clean logo.PNG">
+
+        <div class="credit-main">
+            THANK YOU FOR WATCHING
+        </div>
+
+        <div class="credit-small">
+            ${eventName}
+        </div>
+
+    </section>
 
     ${championSection}
     ${donorSection}
     ${broadcastSection}
     ${thanksSection}
     ${finalSection}
-  `;
+`;
 }
 
 Promise.all([

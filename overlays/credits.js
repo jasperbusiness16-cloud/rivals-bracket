@@ -222,10 +222,19 @@ Promise.all([
     siteData
   });
 
-  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
     creditsStage.classList.remove("loading");
 
     setTimeout(() => {
-        creditsStage.classList.add("ready");
+      creditsStage.classList.add("ready");
     }, 3500);
+  });
+}).catch(error => {
+  creditsStage.classList.remove("loading");
+  creditsScroll.innerHTML = `
+    <section class="credit-section intro-section">
+      <div class="credit-main">CREDITS ERROR</div>
+      <div class="credit-small">${error.message}</div>
+    </section>
+  `;
 });

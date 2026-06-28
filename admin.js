@@ -867,3 +867,22 @@ function resetHubTimer() {
     hubDurationMs: null
   });
 }
+
+function saveCasterDeskData() {
+  const count = document.getElementById("casterCount").value;
+
+  siteRef.update({
+    caster1Enabled: true,
+    caster2Enabled: count === "2" || count === "3",
+    caster3Enabled: count === "3",
+
+    caster1Name: document.getElementById("caster1NameInput").value,
+    caster1Role: document.getElementById("caster1RoleInput").value,
+    caster2Name: document.getElementById("caster2NameInput").value,
+    caster2Role: document.getElementById("caster2RoleInput").value,
+    caster3Name: document.getElementById("caster3NameInput").value,
+    caster3Role: document.getElementById("caster3RoleInput").value
+  });
+
+  document.getElementById("saveStatus").innerText = "✓ Caster desk saved";
+}

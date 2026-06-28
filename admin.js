@@ -39,13 +39,15 @@ function renderRosterInputs(data, is16Team) {
         <summary>▶ ${teamName} Roster</summary>
 
         ${[1, 2, 3, 4, 5, 6].map(playerNum => `
-          <label id="team${teamNum}Player${playerNum}RankLabel">
+          <label id="team${teamNum}Player${playerNum}NameLabel">
+  ${teamName} Player ${playerNum} Name
+</label>
+<input id="team${teamNum}Player${playerNum}" placeholder="Player ${playerNum}">
+
+<label id="team${teamNum}Player${playerNum}RankLabel">
   ${(data[`team${teamNum}Player${playerNum}`] || `${teamName} Player ${playerNum}`)} Peak Rank
 </label>
-          <input id="team${teamNum}Player${playerNum}" placeholder="Player ${playerNum}">
-
-          <label>${teamName} Player ${playerNum} Peak Rank</label>
-          ${rankDropdown(`team${teamNum}Player${playerNum}RankImage`)}
+${rankDropdown(`team${teamNum}Player${playerNum}RankImage`)}
         `).join("")}
 
         <button class="secondary" onclick="resetTeamRoster(${teamNum})" style="margin-top:15px;">

@@ -78,30 +78,7 @@ body{
   pointer-events:none;
 }
 
-.credits-header{
-  position:absolute;
-  top:58px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:5;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:18px;
-  animation:headerIn 1s ease both;
-}
 
-.credits-header img{
-  width:78px;
-  filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
-}
-
-.credits-header h1{
-  font-size:38px;
-  letter-spacing:6px;
-  font-weight:700;
-  text-transform:uppercase;
-}
 
 .credits-window{
   position:absolute;
@@ -228,7 +205,3 @@ body{
   to{background-position:20px -520px,120px -480px;}
 }
 
-@keyframes headerIn{
-  from{opacity:0;transform:translateX(-50%) translateY(-20px);}
-  to{opacity:1;transform:translateX(-50%) translateY(0);}
-}

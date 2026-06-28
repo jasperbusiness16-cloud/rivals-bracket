@@ -1,1 +1,452 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
+:root{
+  --red:#e63946;
+  --glass:rgba(8,11,16,.72);
+  --border:rgba(255,255,255,.12);
+  --font:"Rajdhani",sans-serif;
+}
+
+body{
+  width:1920px;
+  height:1080px;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  font-family:var(--font);
+}
+
+.champ-stage{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+
+  background:
+  radial-gradient(circle at 50% 42%,rgba(230,57,70,.18),transparent 32%),
+  radial-gradient(circle at 20% 75%,rgba(230,57,70,.10),transparent 35%),
+  linear-gradient(135deg,#04060a,#0b1018,#05070b);
+
+  opacity:1;
+}
+
+.champ-stage.loading>*{
+  opacity:0;
+}
+
+.champ-bg-grid{
+  position:absolute;
+  inset:0;
+
+  background-image:
+  linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+
+  background-size:84px 84px;
+
+  mask-image:radial-gradient(circle at center,black 0%,transparent 78%);
+
+  animation:gridMove 34s linear infinite;
+}
+
+.champ-red-core{
+  position:absolute;
+  left:50%;
+  top:50%;
+
+  width:1200px;
+  height:620px;
+
+  transform:translate(-50%,-50%);
+
+  background:
+  radial-gradient(circle,
+  rgba(230,57,70,.24),
+  transparent 72%);
+
+  filter:blur(45px);
+
+  animation:redPulse 8s ease-in-out infinite;
+}
+
+.champ-sweep::before{
+  content:"";
+
+  position:absolute;
+  top:-20%;
+  left:-250px;
+
+  width:120px;
+  height:150%;
+
+  background:
+  linear-gradient(
+  90deg,
+  transparent,
+  rgba(255,255,255,.05),
+  rgba(230,57,70,.18),
+  rgba(255,255,255,.05),
+  transparent);
+
+  transform:skewX(-24deg);
+
+  animation:sweep 18s infinite;
+}
+
+.champ-frame{
+  position:absolute;
+  inset:28px;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+  inset 0 0 40px rgba(230,57,70,.12),
+  0 0 30px rgba(230,57,70,.08);
+}
+
+.champ-logo-wrap{
+  position:absolute;
+  top:70px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+
+  animation:fadeDown .8s both;
+}
+
+.champ-logo-wrap img{
+  width:92px;
+  filter:drop-shadow(0 0 18px rgba(230,57,70,.5));
+}
+
+.champ-logo-wrap p{
+  letter-spacing:5px;
+  font-size:18px;
+  color:#ddd;
+}
+
+.champ-main{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:translate(-50%,-50%);
+
+  width:1500px;
+
+  text-align:center;
+}
+
+.champ-kicker{
+
+  color:#bbb;
+  letter-spacing:5px;
+  font-size:18px;
+
+  margin-bottom:18px;
+
+  animation:fadeUp 1s .3s both;
+}
+
+.champ-main h1{
+
+  font-size:108px;
+
+  letter-spacing:10px;
+
+  color:white;
+
+  text-shadow:
+  0 0 20px rgba(230,57,70,.35);
+
+  animation:champReveal .8s .7s both;
+}
+
+.champ-main h2{
+
+  margin-top:12px;
+
+  font-size:72px;
+
+  color:var(--red);
+
+  letter-spacing:6px;
+
+  animation:fadeUp .8s 1.3s both;
+}
+
+.champ-meta{
+
+  margin-top:20px;
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:40px;
+
+  font-size:22px;
+
+  color:#ddd;
+
+  letter-spacing:3px;
+
+  animation:fadeUp .8s 1.8s both;
+}
+
+.champ-stats{
+
+  margin-top:55px;
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:90px;
+
+  animation:fadeUp .8s 2.2s both;
+}
+
+.champ-stat{
+
+  min-width:220px;
+}
+
+.champ-stat small{
+
+  display:block;
+
+  color:#bbb;
+
+  font-size:18px;
+
+  letter-spacing:3px;
+
+  margin-bottom:8px;
+}
+
+.champ-stat strong{
+
+  font-size:40px;
+
+  color:white;
+}
+
+.champ-roster{
+
+  margin-top:65px;
+
+  display:grid;
+
+  grid-template-columns:repeat(3,1fr);
+
+  gap:24px;
+
+  animation:fadeUp .8s 2.7s both;
+}
+
+.player-card{
+
+  padding:18px;
+
+  background:var(--glass);
+
+  border:1px solid var(--border);
+
+  backdrop-filter:blur(12px);
+
+  border-radius:12px;
+
+  box-shadow:
+  0 12px 28px rgba(0,0,0,.35),
+  inset 0 1px rgba(255,255,255,.08);
+}
+
+.player-card strong{
+
+  display:block;
+
+  font-size:28px;
+
+  letter-spacing:2px;
+}
+
+.player-card small{
+
+  display:block;
+
+  margin-top:8px;
+
+  color:var(--red);
+
+  letter-spacing:3px;
+}
+
+.champ-footer{
+
+  position:absolute;
+
+  bottom:50px;
+
+  width:100%;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  gap:20px;
+
+  animation:fadeUp .8s 3.2s both;
+}
+
+.champ-footer span{
+
+  width:180px;
+
+  height:1px;
+
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+}
+
+.champ-footer p{
+
+  letter-spacing:5px;
+
+  color:#ddd;
+}
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(25px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:none;
+
+}
+
+}
+
+@keyframes fadeDown{
+
+from{
+
+opacity:0;
+
+transform:translate(-50%,-20px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:translate(-50%,0);
+
+}
+
+}
+
+@keyframes champReveal{
+
+0%{
+
+opacity:0;
+
+transform:scale(.92);
+
+}
+
+60%{
+
+transform:scale(1.05);
+
+}
+
+100%{
+
+opacity:1;
+
+transform:scale(1);
+
+}
+
+}
+
+@keyframes redPulse{
+
+0%,100%{
+
+transform:translate(-50%,-50%) scale(1);
+
+}
+
+50%{
+
+transform:translate(-50%,-50%) scale(1.08);
+
+}
+
+}
+
+@keyframes sweep{
+
+0%{
+
+transform:translateX(0) skewX(-24deg);
+
+opacity:0;
+
+}
+
+80%{
+
+opacity:.45;
+
+}
+
+100%{
+
+transform:translateX(2400px) skewX(-24deg);
+
+opacity:0;
+
+}
+
+}
+
+@keyframes gridMove{
+
+from{
+
+background-position:0 0;
+
+}
+
+to{
+
+background-position:84px 84px;
+
+}
+
+}

@@ -1,1 +1,234 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
+:root{
+  --red:#e63946;
+  --font:"Rajdhani",sans-serif;
+}
+
+body{
+  width:1920px;
+  height:1080px;
+  overflow:hidden;
+  background:#000;
+  color:white;
+  font-family:var(--font);
+}
+
+.credits-stage{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(230,57,70,.14),transparent 34%),
+    radial-gradient(circle at 22% 76%,rgba(230,57,70,.08),transparent 34%),
+    linear-gradient(135deg,#04060a,#0b1018,#05070b);
+}
+
+.credits-stage.loading > *{
+  opacity:0;
+}
+
+.credits-grid{
+  position:absolute;
+  inset:0;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:84px 84px;
+  mask-image:radial-gradient(circle at center,black 0%,transparent 78%);
+  animation:gridMove 42s linear infinite;
+}
+
+.credits-glow{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:1200px;
+  height:640px;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(230,57,70,.18),transparent 72%);
+  filter:blur(48px);
+  animation:glowPulse 10s ease-in-out infinite;
+}
+
+.credits-particles{
+  position:absolute;
+  inset:0;
+  opacity:.20;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.16) 0 1px,transparent 1.5px),
+    radial-gradient(circle,rgba(230,57,70,.22) 0 1px,transparent 1.8px);
+  background-size:180px 180px,340px 340px;
+  animation:particlesMove 90s linear infinite;
+}
+
+.credits-frame{
+  position:absolute;
+  inset:28px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:
+    inset 0 0 38px rgba(230,57,70,.10),
+    0 0 30px rgba(230,57,70,.07);
+  pointer-events:none;
+}
+
+.credits-header{
+  position:absolute;
+  top:58px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  animation:headerIn 1s ease both;
+}
+
+.credits-header img{
+  width:78px;
+  filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
+}
+
+.credits-header h1{
+  font-size:38px;
+  letter-spacing:6px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.credits-window{
+  position:absolute;
+  inset:190px 360px 135px 360px;
+  z-index:4;
+  overflow:hidden;
+
+  mask-image:linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 14%,
+    black 82%,
+    transparent 100%
+  );
+}
+
+.credits-scroll{
+  position:absolute;
+  width:100%;
+  text-align:center;
+  transform:translateY(100%);
+}
+
+.credits-stage.ready .credits-scroll{
+  animation:creditsRoll 90s linear forwards;
+}
+
+.credit-section{
+  margin-bottom:105px;
+}
+
+.credit-section h2{
+  color:var(--red);
+  font-size:34px;
+  letter-spacing:6px;
+  text-transform:uppercase;
+  margin-bottom:34px;
+}
+
+.credit-main{
+  font-size:46px;
+  font-weight:700;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.credit-line{
+  font-size:30px;
+  letter-spacing:3px;
+  color:rgba(255,255,255,.88);
+  margin:15px 0;
+}
+
+.credit-small{
+  font-size:21px;
+  letter-spacing:4px;
+  color:rgba(255,255,255,.55);
+  text-transform:uppercase;
+  margin-top:20px;
+}
+
+.credit-donor{
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  font-size:30px;
+  letter-spacing:3px;
+  margin:16px 0;
+}
+
+.credit-donor strong{
+  color:white;
+}
+
+.credit-donor span{
+  color:var(--red);
+}
+
+.credits-footer{
+  position:absolute;
+  left:50%;
+  bottom:50px;
+  transform:translateX(-50%);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.credits-footer span{
+  width:180px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+}
+
+.credits-footer p{
+  font-size:15px;
+  letter-spacing:4px;
+  color:rgba(255,255,255,.78);
+}
+
+@keyframes creditsRoll{
+  from{
+    transform:translateY(100%);
+  }
+  to{
+    transform:translateY(-112%);
+  }
+}
+
+@keyframes gridMove{
+  from{background-position:0 0;}
+  to{background-position:84px 84px;}
+}
+
+@keyframes glowPulse{
+  0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1);}
+  50%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}
+}
+
+@keyframes particlesMove{
+  from{background-position:20px 40px,120px 80px;}
+  to{background-position:20px -520px,120px -480px;}
+}
+
+@keyframes headerIn{
+  from{opacity:0;transform:translateX(-50%) translateY(-20px);}
+  to{opacity:1;transform:translateX(-50%) translateY(0);}
+}

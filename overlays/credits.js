@@ -217,6 +217,8 @@ Promise.all([
 
   requestAnimationFrame(() => {
     creditsStage.classList.remove("loading");
-    creditsStage.classList.add("ready");
-  });
+
+    setTimeout(() => {
+        creditsStage.classList.add("ready");
+    }, 3500);
 });

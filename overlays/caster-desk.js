@@ -5,19 +5,6 @@ const studioEventName = document.getElementById("studioEventName");
 const studioWebsite = document.getElementById("studioWebsite");
 const casterLayout = document.getElementById("casterLayout");
 
-const debugBox = document.createElement("div");
-debugBox.style.cssText = `
-  position:fixed;
-  top:10px;
-  left:10px;
-  z-index:99999;
-  background:red;
-  color:white;
-  padding:12px;
-  font-size:20px;
-`;
-document.body.appendChild(debugBox);
-
 
 let siteData = {};
 let countdownData = {};
@@ -27,12 +14,6 @@ function clean(value, fallback = "") {
 }
 
 function renderStudio() {
-  debugBox.innerText = `
-JS WORKING
-Caster 1: ${siteData.caster1Name || "none"}
-Caster 2: ${siteData.caster2Name || "none"}
-Caster 3 Enabled: ${siteData.caster3Enabled}
-`;
   
   
   studioEventName.textContent = clean(siteData.eventName, "RIVALS GAUNTLET OPEN #1").toUpperCase();

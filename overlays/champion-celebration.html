@@ -1,1 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet Champion Celebration</title>
+  <link rel="stylesheet" href="champion-celebration.css?v=1">
+</head>
+<body>
 
+<div class="champ-stage loading" id="champStage">
+  <div class="champ-bg-grid"></div>
+  <div class="champ-red-core"></div>
+  <div class="champ-sweep"></div>
+  <div class="champ-particles dust-layer"></div>
+  <div class="champ-particles ember-layer"></div>
+  <div class="champ-frame"></div>
+
+  <div class="champ-flash"></div>
+
+  <header class="champ-logo-wrap">
+    <img src="assets/logos/clean logo.PNG" alt="Rivals Gauntlet">
+    <p>RIVALS GAUNTLET</p>
+  </header>
+
+  <main class="champ-main">
+    <p class="champ-kicker" id="champKicker">YOUR RIVALS GAUNTLET</p>
+
+    <h1>CHAMPIONS</h1>
+
+    <h2 id="champTeamName">TEAM NAME</h2>
+
+    <div class="champ-meta">
+      <span id="champEventName">RIVALS GAUNTLET OPEN #1</span>
+      <span id="champDate">JUNE 2026</span>
+    </div>
+
+    <div class="champ-stats">
+      <div class="champ-stat">
+        <small>FINAL SCORE</small>
+        <strong id="champFinalScore">3 — 1</strong>
+      </div>
+
+      <div class="champ-stat">
+        <small>PRIZE WON</small>
+        <strong id="champPrizeWon">$0</strong>
+      </div>
+
+      <div class="champ-stat">
+        <small>LEGACY</small>
+        <strong id="champNumber">CHAMPION #1</strong>
+      </div>
+    </div>
+
+    <section class="champ-roster" id="champRoster"></section>
+  </main>
+
+  <footer class="champ-footer">
+    <span></span>
+    <p id="champFooterText">THE FIRST RIVALS GAUNTLET CHAMPIONS</p>
+    <span></span>
+  </footer>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="../firebase.js"></script>
+<script src="champion-celebration.js?v=1"></script>
+
+</body>
+</html>

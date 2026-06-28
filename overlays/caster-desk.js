@@ -50,7 +50,7 @@ function renderStudio() {
     {
       name: clean(siteData.caster2Name, "CASTER TWO"),
       role: clean(siteData.caster2Role, "ANALYST"),
-      enabled: siteData.caster2Enabled !== false
+      enabled: siteData.caster2Enabled === true
     },
     {
       name: clean(siteData.caster3Name, "GUEST CASTER"),

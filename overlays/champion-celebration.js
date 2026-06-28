@@ -55,7 +55,7 @@ function renderChampion(champion, count) {
   const finalScore = clean(champion.finalScore, "Final");
   const prizeWon = clean(champion.prizeWon, "Prize TBD");
 
-  champKicker.textContent = "YOUR RIVALS GAUNTLET";
+  
   champTeamName.textContent = teamName.toUpperCase();
   champEventName.textContent = eventName.toUpperCase();
   champDate.textContent = date.toUpperCase();
@@ -63,10 +63,7 @@ function renderChampion(champion, count) {
   champPrizeWon.textContent = prizeWon.toUpperCase();
   champNumber.textContent = `CHAMPION #${count}`;
 
-  champFooterText.textContent =
-    count === 1
-      ? "THE FIRST RIVALS GAUNTLET CHAMPIONS"
-      : "RIVALS GAUNTLET CHAMPIONS";
+  champFooterText.textContent = "ETCHED INTO RIVALS GAUNTLET HISTORY";
 
   renderRoster(champion.players || []);
 

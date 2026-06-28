@@ -202,8 +202,8 @@ body{
 
 @keyframes creditsRoll{
   from{
-    transform:translateY(100%);
-  }
+  transform:translateY(10%);
+}
   to{
     transform:translateY(-112%);
   }

@@ -181,6 +181,25 @@ body{
   color:rgba(255,255,255,.78);
 }
 
+.intro-section{
+
+    padding-top:120px;
+    margin-bottom:180px;
+
+}
+
+.credits-logo{
+
+    width:95px;
+
+    display:block;
+
+    margin:0 auto 40px auto;
+
+    filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
+
+}
+
 @keyframes creditsRoll{
   from{
     transform:translateY(100%);
@@ -205,21 +224,4 @@ body{
   to{background-position:20px -520px,120px -480px;}
 }
 
-.intro-section{
 
-    padding-top:120px;
-    margin-bottom:180px;
-
-}
-
-.credits-logo{
-
-    width:95px;
-
-    display:block;
-
-    margin:0 auto 40px auto;
-
-    filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
-
-}

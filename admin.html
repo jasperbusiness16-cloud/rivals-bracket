@@ -176,8 +176,39 @@ if (adminPassword !== "777") {
     START 10 MIN BREAK
   </button>
 
-  <button onclick="resetHubTimer()">
+    <button onclick="resetHubTimer()">
     RESET HUB TIMER
+  </button>
+
+  <h3>Studio / Caster Desk</h3>
+
+  <label>Caster Count</label>
+  <select id="casterCount">
+    <option value="1">1 Caster</option>
+    <option value="2">2 Casters</option>
+    <option value="3">3 Casters</option>
+  </select>
+
+  <label>Caster 1 Name</label>
+  <input id="caster1NameInput" placeholder="Jasper Harvey">
+
+  <label>Caster 1 Role</label>
+  <input id="caster1RoleInput" placeholder="Host">
+
+  <label>Caster 2 Name</label>
+  <input id="caster2NameInput" placeholder="Caster Two">
+
+  <label>Caster 2 Role</label>
+  <input id="caster2RoleInput" placeholder="Analyst">
+
+  <label>Caster 3 Name</label>
+  <input id="caster3NameInput" placeholder="Guest Caster">
+
+  <label>Caster 3 Role</label>
+  <input id="caster3RoleInput" placeholder="Guest">
+
+  <button class="join-btn" onclick="saveCasterDeskData()">
+    SAVE CASTER DESK
   </button>
 </div>
 

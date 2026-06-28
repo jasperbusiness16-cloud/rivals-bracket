@@ -5,24 +5,6 @@ const studioEventName = document.getElementById("studioEventName");
 const studioWebsite = document.getElementById("studioWebsite");
 const casterLayout = document.getElementById("casterLayout");
 
-const casterSlots = [
-  {
-    slot: document.querySelector(".caster-1"),
-    name: document.getElementById("caster1Name"),
-    role: document.getElementById("caster1Role")
-  },
-  {
-    slot: document.querySelector(".caster-2"),
-    name: document.getElementById("caster2Name"),
-    role: document.getElementById("caster2Role")
-  },
-  {
-    slot: document.querySelector(".caster-3"),
-    name: document.getElementById("caster3Name"),
-    role: document.getElementById("caster3Role")
-  }
-];
-
 let siteData = {};
 let countdownData = {};
 
@@ -31,59 +13,26 @@ function clean(value, fallback = "") {
 }
 
 function renderStudio() {
-  studioEventName.textContent = clean(
-    siteData.eventName,
-    "RIVALS GAUNTLET OPEN #1"
-  ).toUpperCase();
+  studioEventName.textContent = clean(siteData.eventName, "RIVALS GAUNTLET OPEN #1").toUpperCase();
+  studioWebsite.textContent = clean(countdownData.website, "RIVALSGAUNTLET.COM").toUpperCase();
 
-  studioWebsite.textContent = clean(
-    countdownData.website,
-    "RIVALSGAUNTLET.COM"
-  ).toUpperCase();
-
-  const casters = [
-    {
-      name: clean(siteData.caster1Name, "JASPER HARVEY"),
-      role: clean(siteData.caster1Role, "HOST"),
-      enabled: siteData.caster1Enabled !== false
-    },
-    {
-      name: clean(siteData.caster2Name, "CASTER TWO"),
-      role: clean(siteData.caster2Role, "ANALYST"),
-      enabled: siteData.caster2Enabled === true
-    },
-    {
-      name: clean(siteData.caster3Name, "GUEST CASTER"),
-      role: clean(siteData.caster3Role, "GUEST"),
-      enabled: siteData.caster3Enabled === true
-    }
-  ];
-
-  let activeCount = 0;
-
-  casters.forEach((caster, index) => {
-    const item = casterSlots[index];
-    if (!item || !item.slot) return;
-
-    if (caster.enabled) {
-      activeCount++;
-      item.slot.classList.remove("hidden");
-      item.name.textContent = caster.name.toUpperCase();
-      item.role.textContent = caster.role.toUpperCase();
-    } else {
-      item.slot.classList.add("hidden");
-    }
-  });
+  const count = siteData.caster3Enabled ? 3 : siteData.caster2Enabled ? 2 : 1;
 
   casterLayout.classList.remove("layout-1", "layout-2", "layout-3");
+  casterLayout.classList.add(`layout-${count}`);
 
-  if (activeCount <= 1) {
-    casterLayout.classList.add("layout-1");
-  } else if (activeCount === 2) {
-    casterLayout.classList.add("layout-2");
-  } else {
-    casterLayout.classList.add("layout-3");
-  }
+  document.querySelector(".caster-1").classList.remove("hidden");
+  document.querySelector(".caster-2").classList.toggle("hidden", count < 2);
+  document.querySelector(".caster-3").classList.toggle("hidden", count < 3);
+
+  document.getElementById("caster1Name").textContent = clean(siteData.caster1Name, "JASPER HARVEY").toUpperCase();
+  document.getElementById("caster1Role").textContent = clean(siteData.caster1Role, "HOST").toUpperCase();
+
+  document.getElementById("caster2Name").textContent = clean(siteData.caster2Name, "CASTER TWO").toUpperCase();
+  document.getElementById("caster2Role").textContent = clean(siteData.caster2Role, "ANALYST").toUpperCase();
+
+  document.getElementById("caster3Name").textContent = clean(siteData.caster3Name, "GUEST CASTER").toUpperCase();
+  document.getElementById("caster3Role").textContent = clean(siteData.caster3Role, "GUEST").toUpperCase();
 }
 
 siteRef.on("value", snapshot => {

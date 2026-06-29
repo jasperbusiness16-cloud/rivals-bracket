@@ -63,6 +63,11 @@ nav {
 nav a {
   color: white;
   text-decoration: none;
+  font-family: 'Rajdhani', Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
 .join-btn,

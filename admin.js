@@ -901,3 +901,35 @@ function saveCasterDeskData() {
 
   document.getElementById("saveStatus").innerText = "✓ Caster desk saved";
 }
+
+function archiveDonations() {
+  if (!confirm("Archive current donations and reset them for the next tournament?")) return;
+
+  const eventName =
+    document.getElementById("eventName")?.value ||
+    "Rivals Gauntlet Event";
+
+  const archiveKey =
+    new Date().toISOString().slice(0, 10) + "_" +
+    eventName.replace(/[^a-zA-Z0-9]/g, "_");
+
+  database.ref("donations").once("value").then(snapshot => {
+    const donations = snapshot.val() || {};
+
+    return database.ref("donationHistory/" + archiveKey).set({
+      eventName,
+      archivedAt: Date.now(),
+      donations
+    });
+  }).then(() => {
+    return database.ref("donations").remove();
+  }).then(() => {
+    return siteRef.update({
+      communityDonations: "+$0",
+      prizePool: ""
+    });
+  }).then(() => {
+    document.getElementById("saveStatus").innerText =
+      "✓ Donations archived and reset";
+  });
+}

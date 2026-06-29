@@ -1,4 +1,6 @@
 const championsRef = database.ref("champions");
+const siteRef = database.ref("site");
+
 
 const champStage = document.getElementById("champStage");
 const champKicker = document.getElementById("champKicker");
@@ -13,6 +15,17 @@ const champFooterText = document.getElementById("champFooterText");
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
+}
+
+function findTeamNumberByName(name, siteData) {
+  const target = clean(name).toLowerCase();
+
+  for (let i = 1; i <= 16; i++) {
+    const teamName = clean(siteData[`team${i}`]).toLowerCase();
+    if (teamName === target) return i;
+  }
+
+  return null;
 }
 
 function getLatestChampion(data) {
@@ -72,22 +85,52 @@ function renderChampion(champion, count) {
   });
 }
 
-championsRef.once("value").then(snapshot => {
-  const data = snapshot.val();
-  const result = getLatestChampion(data);
+Promise.all([
+  championsRef.once("value"),
+  siteRef.once("value")
+]).then(([championsSnap, siteSnap]) => {
+  const championsData = championsSnap.val();
+  const siteData = siteSnap.val() || {};
+  const result = getLatestChampion(championsData);
 
-  if (!result || !result.latest) {
+  const grandWinner = clean(siteData.grandWinner, "");
+
+  if (grandWinner) {
+    const teamNum = findTeamNumberByName(grandWinner, siteData);
+
+    const players = [];
+
+    if (teamNum) {
+      for (let i = 1; i <= 6; i++) {
+        players.push({
+          name: clean(siteData[`team${teamNum}Player${i}`], `Player ${i}`)
+        });
+      }
+    }
+
     renderChampion({
-      teamName: "Champion Team",
-      eventName: "Rivals Gauntlet Open #1",
+      teamName: grandWinner,
+      eventName: clean(siteData.eventName, "Rivals Gauntlet Open #1"),
       date: "Event Complete",
-      finalScore: "Final",
-      prizeWon: "Prize TBD",
-      players: []
-    }, 1);
+      finalScore: `${clean(siteData.gfTeam1Score, "0")} - ${clean(siteData.gfTeam2Score, "0")}`,
+      prizeWon: clean(siteData.prizePool, "Prize TBD"),
+      players
+    }, result ? result.count + 1 : 1);
 
     return;
   }
 
-  renderChampion(result.latest, result.count);
+  if (result && result.latest) {
+    renderChampion(result.latest, result.count);
+    return;
+  }
+
+  renderChampion({
+    teamName: "Champion Team",
+    eventName: "Rivals Gauntlet Open #1",
+    date: "Event Complete",
+    finalScore: "Final",
+    prizeWon: "Prize TBD",
+    players: []
+  }, 1);
 });

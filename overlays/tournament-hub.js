@@ -336,7 +336,7 @@ function renderSupporterFeature() {
       `;
 
   return `
-    <p class="feature-eyebrow">Top Supporters</p>
+    <p class="feature-eyebrow">Top Weekly Supporters</p>
     <h2 class="feature-title">THANK YOU FOR SUPPORTING THE GAUNTLET</h2>
     <div class="supporter-list">${pills}</div>
   `;

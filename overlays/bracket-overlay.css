@@ -68,7 +68,7 @@ body{
 
 .bracket-sweep{
   position:absolute;
-  inset:-30%;
+  inset:-70%;
   background:linear-gradient(
     115deg,
     transparent 42%,
@@ -355,7 +355,7 @@ body{
   z-index:5;
   display:flex;
   align-items:center;
-  gap:22px;
+  gap:18px;
 }
 
 .bracket-footer p{

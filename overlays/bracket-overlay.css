@@ -66,6 +66,43 @@ body{
   pointer-events:none;
 }
 
+.bracket-sweep{
+  position:absolute;
+  inset:-30%;
+  background:linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(255,255,255,.025) 49%,
+    rgba(230,57,70,.06) 50%,
+    rgba(255,255,255,.025) 51%,
+    transparent 58%
+  );
+  animation:sweep 12s linear infinite;
+  pointer-events:none;
+}
+
+.bracket-particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.dust-layer{
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 2px);
+  background-size:180px 180px;
+  opacity:.18;
+  animation:dustMove 45s linear infinite;
+}
+
+.ember-layer{
+  background-image:
+    radial-gradient(circle,rgba(230,57,70,.35) 1px,transparent 3px);
+  background-size:260px 260px;
+  opacity:.12;
+  animation:embers 26s linear infinite;
+}
+
 .bracket-header{
   position:absolute;
   top:54px;
@@ -237,9 +274,7 @@ body{
 
 .pro-match.live-match{
   border:2px solid var(--red);
-  box-shadow:
-    0 0 32px rgba(230,57,70,.44),
-    0 18px 38px rgba(0,0,0,.35);
+  animation:livePulse 2s ease-in-out infinite;
 }
 
 .pro-match.live-match .match-label{
@@ -340,4 +375,45 @@ body{
 @keyframes gridMove{
   from{background-position:0 0;}
   to{background-position:84px 84px;}
+}
+
+@keyframes sweep{
+  from{
+    transform:translateX(-20%) translateY(-10%);
+  }
+  to{
+    transform:translateX(20%) translateY(10%);
+  }
+}
+
+@keyframes dustMove{
+  from{
+    background-position:0 0;
+  }
+  to{
+    background-position:-220px -120px;
+  }
+}
+
+@keyframes embers{
+  from{
+    background-position:0 0;
+  }
+  to{
+    background-position:0 -260px;
+  }
+}
+
+@keyframes livePulse{
+  0%,100%{
+    box-shadow:
+      0 0 22px rgba(230,57,70,.30),
+      0 18px 38px rgba(0,0,0,.35);
+  }
+
+  50%{
+    box-shadow:
+      0 0 42px rgba(230,57,70,.55),
+      0 18px 38px rgba(0,0,0,.35);
+  }
 }

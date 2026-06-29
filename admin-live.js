@@ -156,8 +156,26 @@ function saveCurrentResult() {
   }
 
   siteRef.update(updates).then(() => {
-    showToast("✓ Result Saved");
+  const next = getAutoNextMatch();
+
+  nextMatch = next;
+
+  document.getElementById("nextLabel").textContent = next.label;
+  document.getElementById("nextTeams").textContent =
+    next.teamA && next.teamB
+      ? `${next.teamA} vs ${next.teamB}`
+      : "Tournament Complete";
+
+  return countdownRef.update({
+    upNext: {
+      label: next.label,
+      teamA: next.teamA,
+      teamB: next.teamB
+    }
   });
+}).then(() => {
+  showToast("✓ Result + Up Next Saved");
+});
 }
 
 function getAutoNextMatch() {

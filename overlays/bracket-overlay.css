@@ -380,10 +380,10 @@ body{
 
 @keyframes sweep{
   from{
-    transform:translateX(-20%) translateY(-10%);
+    transform:translateX(-55%) translateY(-18%);
   }
   to{
-    transform:translateX(20%) translateY(10%);
+    transform:translateX(55%) translateY(18%);
   }
 }
 

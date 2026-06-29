@@ -113,7 +113,12 @@ Promise.all([
       eventName: clean(siteData.eventName, "Rivals Gauntlet Open #1"),
       date: "Event Complete",
       finalScore: `${clean(siteData.gfTeam1Score, "0")} - ${clean(siteData.gfTeam2Score, "0")}`,
-      prizeWon: clean(siteData.prizePool, "Prize TBD"),
+      prizeWon: clean(
+  siteData.prizePool ||
+  `$${Number(String(siteData.startingPrizePool || "0").replace(/[^0-9.]/g, "")) +
+      Number(String(siteData.communityDonations || "0").replace(/[^0-9.]/g, ""))}`,
+  "Prize TBD"
+),
       players
     }, result ? result.count + 1 : 1);
 

@@ -1,6 +1,26 @@
 const siteRef = database.ref("site");
 const countdownRef = database.ref("broadcastCountdown");
 
+function showToast(message = "✓ Saved", button = null) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  if (navigator.vibrate) navigator.vibrate(40);
+
+  if (button) {
+    const oldText = button.textContent;
+    button.textContent = "✓ Saved";
+    setTimeout(() => {
+      button.textContent = oldText;
+    }, 1400);
+  }
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2200);
+}
+
 let siteData = {};
 let currentMatchId = "No Match Live";
 let teamAScore = 0;
@@ -136,7 +156,7 @@ function saveCurrentResult() {
   }
 
   siteRef.update(updates).then(() => {
-    document.getElementById("saveStatus").textContent = "✓ Result saved";
+    showToast("✓ Status Saved");
   });
 }
 
@@ -199,7 +219,7 @@ function saveNextMatch() {
       teamB: nextMatch.teamB
     }
   }).then(() => {
-    document.getElementById("saveStatus").textContent = "✓ Up Next saved";
+    showToast("✓ Up Next Saved");
   });
 }
 
@@ -207,7 +227,7 @@ function saveStatus() {
   siteRef.update({
     status: document.getElementById("statusSelect").value
   }).then(() => {
-    document.getElementById("saveStatus").textContent = "✓ Status saved";
+    showToast("✓ Result Saved");
   });
 }
 
@@ -219,7 +239,7 @@ function startHubTimer(minutes) {
     hubDurationMs: durationMs
   });
 
-  document.getElementById("saveStatus").textContent = `✓ ${minutes} min break started`;
+  showToast(`✓ ${minutes} Min Break Started`);
 }
 
 function resetHubTimer() {
@@ -228,7 +248,7 @@ function resetHubTimer() {
     hubDurationMs: null
   });
 
-  document.getElementById("saveStatus").textContent = "✓ Timer reset";
+  showToast("✓ Timer Reset");
 }
 
 document.getElementById("currentMatchSelect").addEventListener("change", e => {

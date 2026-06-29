@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
 
+  <title>Rivals Gauntlet | Bracket Overlay</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="bracket-overlay.css?v=1">
+</head>
+
+<body>
+
+  <main class="bracket-stage">
+
+    <div class="bracket-bg-grid"></div>
+    <div class="bracket-red-core"></div>
+    <div class="bracket-sweep"></div>
+    <div class="bracket-particles dust-layer"></div>
+    <div class="bracket-particles ember-layer"></div>
+    <div class="bracket-frame"></div>
+
+    <header class="bracket-header">
+      <div class="brand-lockup">
+        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+        <div>
+          <p>RIVALS GAUNTLET</p>
+          <h1 data-event-name>Rivals Gauntlet Open #1</h1>
+        </div>
+      </div>
+
+      <div class="bracket-status">
+        <span></span>
+        <p>TOURNAMENT BRACKET</p>
+      </div>
+    </header>
+
+    <section class="bracket-overlay-content">
+      <div id="dynamicBracket"></div>
+    </section>
+
+    <footer class="bracket-footer">
+      <p>RIVALSGAUNTLET.COM</p>
+      <span></span>
+      <p>MARVEL RIVALS COMMUNITY TOURNAMENTS</p>
+      <span></span>
+      <p>RIVALS GAUNTLET</p>
+    </footer>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="../firebase.js"></script>
+  <script src="../site.js"></script>
+  <script src="bracket-overlay.js?v=1"></script>
+
+</body>
+</html>

@@ -223,12 +223,10 @@ Promise.all([
   });
 
     requestAnimationFrame(() => {
-    creditsStage.classList.remove("loading");
+  creditsStage.classList.remove("loading");
+  creditsStage.classList.add("ready");
+});
 
-    setTimeout(() => {
-      creditsStage.classList.add("ready");
-    }, 3500);
-  });
 }).catch(error => {
   creditsStage.classList.remove("loading");
   creditsScroll.innerHTML = `

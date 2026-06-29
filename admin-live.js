@@ -156,7 +156,7 @@ function saveCurrentResult() {
   }
 
   siteRef.update(updates).then(() => {
-    showToast("✓ Status Saved");
+    showToast("✓ Result Saved");
   });
 }
 
@@ -227,7 +227,7 @@ function saveStatus() {
   siteRef.update({
     status: document.getElementById("statusSelect").value
   }).then(() => {
-    showToast("✓ Result Saved");
+    showToast("✓ Status Saved");
   });
 }
 

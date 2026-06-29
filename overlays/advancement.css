@@ -86,9 +86,9 @@ body{
 }
 
 .advance-card h1{
-  font-size:96px;
-  line-height:.95;
-  letter-spacing:7px;
+  font-size:128px;
+  line-height:.9;
+  letter-spacing:8px;
   text-transform:uppercase;
   animation:slamIn .65s .45s both;
 }

@@ -364,6 +364,7 @@ body{
   font-weight:800;
   letter-spacing:3px;
   text-transform:uppercase;
+  white-space:nowrap;
 }
 
 .bracket-footer span{

@@ -1,1 +1,132 @@
+*{margin:0;padding:0;box-sizing:border-box}
 
+:root{
+  --red:#e63946;
+  --font:"Rajdhani",Arial,sans-serif;
+}
+
+body{
+  width:1920px;
+  height:1080px;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  font-family:var(--font);
+}
+
+.advance-stage{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(230,57,70,.18),transparent 34%),
+    linear-gradient(135deg,#04060a,#0b1018,#05070b);
+}
+
+.advance-stage > *{
+  transition:opacity .45s ease;
+}
+
+.advance-stage.loading > *{
+  opacity:0;
+}
+
+.advance-bg-grid{
+  position:absolute;
+  inset:0;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:84px 84px;
+  animation:gridMove 38s linear infinite;
+}
+
+.advance-red-core{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:1200px;
+  height:640px;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(230,57,70,.24),transparent 72%);
+  filter:blur(48px);
+}
+
+.advance-sweep{
+  position:absolute;
+  inset:-70%;
+  background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.03) 49%,rgba(230,57,70,.08) 50%,rgba(255,255,255,.03) 51%,transparent 58%);
+  animation:sweep 9s linear infinite;
+}
+
+.advance-frame{
+  position:absolute;
+  inset:28px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 0 38px rgba(230,57,70,.10);
+}
+
+.advance-card{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  text-align:center;
+  width:1400px;
+}
+
+.advance-card img{
+  width:92px;
+  margin-bottom:34px;
+  filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
+  animation:fadeUp .65s .15s both;
+}
+
+.advance-card h1{
+  font-size:96px;
+  line-height:.95;
+  letter-spacing:7px;
+  text-transform:uppercase;
+  animation:slamIn .65s .45s both;
+}
+
+.advance-card p{
+  margin-top:32px;
+  color:var(--red);
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:8px;
+  text-transform:uppercase;
+  animation:fadeUp .55s 1s both;
+}
+
+.advance-card h2{
+  margin-top:18px;
+  font-size:64px;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  animation:fadeUp .55s 1.35s both;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes slamIn{
+  from{opacity:0;transform:scale(.94)}
+  to{opacity:1;transform:scale(1)}
+}
+
+@keyframes gridMove{
+  from{background-position:0 0}
+  to{background-position:84px 84px}
+}
+
+@keyframes sweep{
+  from{transform:translateX(-55%) translateY(-18%)}
+  to{transform:translateX(55%) translateY(18%)}
+}

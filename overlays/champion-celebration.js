@@ -1,6 +1,6 @@
 const championsRef = database.ref("champions");
 const siteRef = database.ref("site");
-
+const donationsRef = database.ref("donations");
 
 const champStage = document.getElementById("champStage");
 const champKicker = document.getElementById("champKicker");
@@ -87,10 +87,22 @@ function renderChampion(champion, count) {
 
 Promise.all([
   championsRef.once("value"),
-  siteRef.once("value")
-]).then(([championsSnap, siteSnap]) => {
+  siteRef.once("value"),
+  donationsRef.once("value")
+]).then(([championsSnap, siteSnap, donationsSnap]) => {
   const championsData = championsSnap.val();
   const siteData = siteSnap.val() || {};
+  const donationsData = donationsSnap.val() || {};
+
+const donationTotal = Object.values(donationsData).reduce((sum, donation) => {
+  return sum + (Number(donation.amount) || 0);
+}, 0);
+
+const startingPrizePool =
+  Number(String(siteData.startingPrizePool || "0").replace(/[^0-9.]/g, "")) || 0;
+
+const calculatedPrizePool =
+  `$${(startingPrizePool + donationTotal).toLocaleString("en-US")}`;
   const result = getLatestChampion(championsData);
 
   const grandWinner = clean(siteData.grandWinner, "");
@@ -113,12 +125,7 @@ Promise.all([
       eventName: clean(siteData.eventName, "Rivals Gauntlet Open #1"),
       date: "Event Complete",
       finalScore: `${clean(siteData.gfTeam1Score, "0")} - ${clean(siteData.gfTeam2Score, "0")}`,
-      prizeWon: clean(
-  siteData.prizePool ||
-  `$${Number(String(siteData.startingPrizePool || "0").replace(/[^0-9.]/g, "")) +
-      Number(String(siteData.communityDonations || "0").replace(/[^0-9.]/g, ""))}`,
-  "Prize TBD"
-),
+      prizeWon: calculatedPrizePool,
       players
     }, result ? result.count + 1 : 1);
 

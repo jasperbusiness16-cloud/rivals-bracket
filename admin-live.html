@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Admin | Rivals Gauntlet</title>
 
+  <link rel="stylesheet" href="admin-live.css?v=1">
+</head>
+<body>
+
+<script>
+const adminPassword = prompt("Enter admin password:");
+if (adminPassword !== "777") {
+  document.body.innerHTML =
+    "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+}
+</script>
+
+<main class="live-admin">
+
+  <header class="live-header">
+    <p>RIVALS GAUNTLET</p>
+    <h1>Live Control</h1>
+  </header>
+
+  <section class="live-card">
+    <h2>Current Match</h2>
+
+    <select id="currentMatchSelect"></select>
+
+    <div class="score-box">
+      <h3 id="teamAName">Team A</h3>
+      <div class="score-controls">
+        <button onclick="changeScore('A', -1)">−</button>
+        <strong id="teamAScore">0</strong>
+        <button onclick="changeScore('A', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="vs">VS</div>
+
+    <div class="score-box">
+      <h3 id="teamBName">Team B</h3>
+      <div class="score-controls">
+        <button onclick="changeScore('B', -1)">−</button>
+        <strong id="teamBScore">0</strong>
+        <button onclick="changeScore('B', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="winner-preview">
+      Winner: <strong id="winnerPreview">—</strong>
+    </div>
+
+    <button class="primary-btn" onclick="saveCurrentResult()">
+      Save Result
+    </button>
+  </section>
+
+  <section class="live-card">
+    <h2>Next Match</h2>
+
+    <div class="next-preview">
+      <p id="nextLabel">—</p>
+      <strong id="nextTeams">— vs —</strong>
+    </div>
+
+    <button class="secondary-btn" onclick="autoGenerateNext()">
+      Auto Generate Next
+    </button>
+
+    <button class="primary-btn" onclick="saveNextMatch()">
+      Save Up Next
+    </button>
+  </section>
+
+  <section class="live-card">
+    <h2>Broadcast</h2>
+
+    <select id="statusSelect">
+      <option value="● OFFLINE">● OFFLINE</option>
+      <option value="● LIVE">● LIVE</option>
+    </select>
+
+    <button class="primary-btn" onclick="saveStatus()">
+      Save Status
+    </button>
+
+    <div class="break-grid">
+      <button onclick="startHubTimer(3)">3 Min</button>
+      <button onclick="startHubTimer(5)">5 Min</button>
+      <button onclick="startHubTimer(10)">10 Min</button>
+      <button onclick="resetHubTimer()">Reset Timer</button>
+    </div>
+  </section>
+
+  <p id="saveStatus"></p>
+
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="admin-live.js?v=1"></script>
+
+</body>
+</html>

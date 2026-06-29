@@ -1,5 +1,6 @@
 const countdownRef = database.ref("broadcastCountdown");
 const siteRef = database.ref("site");
+const donationsRef = database.ref("donations");
 
 const eventNameEl = document.getElementById("eventName");
 const timerEl = document.getElementById("countdownTimer");
@@ -11,6 +12,7 @@ const startingEl = document.getElementById("broadcastStarting");
 
 let countdownData = {};
 let siteData = {};
+let donationTotal = 0;
 let rotationIndex = 0;
 let rotationTimer = null;
 let countdownTimer = null;
@@ -117,9 +119,19 @@ function makeFormatCard() {
 
 function makePrizeCard() {
   const prize = countdownData.prize || {};
-  const prizePool = prize.prizePool || siteData.prizePool || "$0";
-  const goalPercentRaw = Number(prize.goalPercent || countdownData.goalPercent || 0);
-  const goalPercent = Math.max(0, Math.min(100, goalPercentRaw));
+
+  const startingPrizePool =
+    Number(String(siteData.startingPrizePool || "0").replace(/[^0-9.]/g, "")) || 0;
+
+  const currentPrizePool = startingPrizePool + donationTotal;
+
+  const goalAmount =
+    Number(String(siteData.donationGoal || "250").replace(/[^0-9.]/g, "")) || 250;
+
+  const goalPercent = Math.max(
+    0,
+    Math.min(100, Math.round((currentPrizePool / goalAmount) * 100))
+  );
 
   return {
     title: "CURRENT PRIZE POOL",
@@ -127,7 +139,7 @@ function makePrizeCard() {
       <div class="info-grid">
         <div class="info-item">
           <small>Prize Pool</small>
-          <strong>${safeText(prizePool)}</strong>
+          <strong>$${currentPrizePool.toLocaleString("en-US")}</strong>
         </div>
         <div class="info-item">
           <small>Community Goal</small>
@@ -317,5 +329,15 @@ countdownRef.on("value", snapshot => {
 
 siteRef.on("value", snapshot => {
   siteData = snapshot.val() || {};
+  renderAll();
+});
+
+donationsRef.on("value", snapshot => {
+  const donations = snapshot.val() || {};
+
+  donationTotal = Object.values(donations).reduce((sum, donation) => {
+    return sum + (Number(donation.amount) || 0);
+  }, 0);
+
   renderAll();
 });

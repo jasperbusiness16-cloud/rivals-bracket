@@ -1703,13 +1703,16 @@ nav a:hover {
   margin: 6px 0 12px;
 }
 
-@media (max-width: 900px) {
-  nav a,
-  nav .mobile-join {
-    font-family: 'Rajdhani', Arial, sans-serif !important;
-    font-size: 18px !important;
-    font-weight: 700 !important;
-    letter-spacing: 2px !important;
-    text-transform: uppercase !important;
-  }
+@media (max-width:900px){
+
+nav a,
+nav .mobile-join{
+    font-family:'Rajdhani',sans-serif !important;
+    font-size:19px !important;
+    font-weight:700 !important;
+    letter-spacing:2px !important;
+    text-transform:uppercase !important;
+    color:#fff !important;
+}
+
 }

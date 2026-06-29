@@ -29,8 +29,13 @@ body{
     linear-gradient(135deg,#04060a,#0b1018,#05070b);
 }
 
+.credits-stage > *{
+    opacity:1;
+    transition:opacity .8s ease;
+}
+
 .credits-stage.loading > *{
-  opacity:0;
+    opacity:0;
 }
 
 .credits-grid{
@@ -198,6 +203,21 @@ body{
 
     filter:drop-shadow(0 0 18px rgba(230,57,70,.45));
 
+}
+
+.intro-section{
+    animation:introFade 1.2s ease both;
+}
+
+@keyframes introFade{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 @keyframes creditsRoll{

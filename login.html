@@ -1,1 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=50">
+</head>
+<body>
+
+<section class="page-hero">
+  <p class="eyebrow">RIVALS GAUNTLET ACCOUNT</p>
+  <h1>Sign In</h1>
+  <p>Access your creator dashboard, applications, and player profile.</p>
+</section>
+
+<section class="event-card admin-card">
+  <div class="admin-section">
+
+    <h2>Login</h2>
+
+    <label>Email</label>
+    <input id="email" type="email" placeholder="you@example.com">
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="join-btn" onclick="loginUser()">
+      SIGN IN
+    </button>
+
+    <button class="secondary" onclick="resetPassword()" style="margin-top:12px;">
+      RESET PASSWORD
+    </button>
+
+    <p id="loginStatus"></p>
+
+    <p style="margin-top:18px;color:#aaa;">
+      Need an account?
+      <a href="signup.html" style="color:#e63946;">Create one</a>
+    </p>
+
+  </div>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=1"></script>
+
+<script>
+function clean(value) {
+  return String(value || "").trim();
+}
+
+function loginUser() {
+  const email = clean(document.getElementById("email").value);
+  const password = document.getElementById("password").value;
+  const status = document.getElementById("loginStatus");
+
+  if (!email || !password) {
+    status.innerText = "Please enter your email and password.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((credential) => {
+      const user = credential.user;
+
+      return database.ref(`users/${user.uid}`).update({
+        emailVerified: user.emailVerified,
+        lastLogin: Date.now()
+      });
+    })
+    .then(() => {
+      status.innerText = "✓ Signed in. Redirecting...";
+      status.style.color = "#22c55e";
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 800);
+    })
+    .catch((error) => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+
+function resetPassword() {
+  const email = clean(document.getElementById("email").value);
+  const status = document.getElementById("loginStatus");
+
+  if (!email) {
+    status.innerText = "Enter your email first, then tap Reset Password.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      status.innerText = "✓ Password reset email sent.";
+      status.style.color = "#22c55e";
+    })
+    .catch((error) => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+</script>
+
+</body>
+</html>

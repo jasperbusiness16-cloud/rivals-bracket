@@ -100,11 +100,13 @@
 }
 
 .account-rg-id{
-  color:#8b949e;
-  font-weight:800;
-  letter-spacing:2px;
-  font-size:13px;
-  margin-bottom:14px;
+    color:#f3f4f6;
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin:8px 0 12px;
+    text-shadow:0 0 10px rgba(230,57,70,.18);
 }
 
 .account-badge{

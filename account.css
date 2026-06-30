@@ -687,3 +687,33 @@
     flex-wrap:wrap;
     margin-top:22px;
 }
+
+/* ADMIN APPLICATION SUMMARY */
+.application-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;
+  margin-top:18px;
+}
+
+.application-summary-box{
+  background:#0f141b;
+  border:1px solid #252b36;
+  border-radius:14px;
+  padding:18px;
+  text-align:center;
+}
+
+.application-summary-box strong{
+  display:block;
+  font-size:30px;
+  color:#ffffff;
+}
+
+.application-summary-box span{
+  color:#8b949e;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}

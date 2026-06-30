@@ -1742,3 +1742,10 @@ nav .mobile-join{
   max-width: 150px !important;
   max-height: 150px !important;
 }
+
+.player-rank-icon{
+  width:30px;
+  height:30px;
+  object-fit:contain;
+  margin-left:auto;
+}

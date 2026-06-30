@@ -1,1 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=50">
+</head>
+<body>
+
+<section class="page-hero">
+  <p class="eyebrow">RIVALS GAUNTLET ACCOUNT</p>
+  <h1>Create Account</h1>
+  <p>Build your creator profile, apply for tournaments, and track your Rivals Gauntlet history.</p>
+</section>
+
+<section class="event-card admin-card">
+  <div class="admin-section">
+
+    <h2>Player Account</h2>
+
+    <label>Email</label>
+    <input id="email" type="email" placeholder="you@example.com">
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Create a password">
+
+    <label>Display Name</label>
+    <input id="displayName" placeholder="Atrophy">
+
+    <label>Marvel Rivals IGN</label>
+    <input id="rivalsIgn" placeholder="Your in-game name">
+
+    <label>Discord Username</label>
+    <input id="discordUsername" placeholder="yourname#0000">
+
+    <button class="join-btn" onclick="createAccount()">
+      CREATE ACCOUNT
+    </button>
+
+    <p id="signupStatus"></p>
+
+    <p style="margin-top:18px;color:#aaa;">
+      Already have an account?
+      <a href="login.html" style="color:#e63946;">Sign in</a>
+    </p>
+
+  </div>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=1"></script>
+
+<script>
+function clean(value) {
+  return String(value || "").trim();
+}
+
+function createAccount() {
+  const email = clean(document.getElementById("email").value);
+  const password = document.getElementById("password").value;
+  const displayName = clean(document.getElementById("displayName").value);
+  const rivalsIgn = clean(document.getElementById("rivalsIgn").value);
+  const discordUsername = clean(document.getElementById("discordUsername").value);
+  const status = document.getElementById("signupStatus");
+
+  if (!email || !password || !displayName || !rivalsIgn || !discordUsername) {
+    status.innerText = "Please fill out every field.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  auth.createUserWithEmailAndPassword(email, password)
+    .then((credential) => {
+      const user = credential.user;
+
+      return user.sendEmailVerification().then(() => {
+        const now = Date.now();
+
+        const updates = {};
+
+        updates[`users/${user.uid}`] = {
+          email,
+          emailVerified: false,
+          role: "player",
+          createdAt: now,
+          lastLogin: now
+        };
+
+        updates[`players/${user.uid}`] = {
+          uid: user.uid,
+          displayName,
+          rivalsIgn,
+          discordUsername,
+          discordMember: false,
+          region: "",
+          platform: "",
+          bio: "",
+          profileImage: "",
+          socials: {
+            twitch: "",
+            youtube: "",
+            tiktok: "",
+            x: ""
+          },
+          createdAt: now,
+          updatedAt: now
+        };
+
+        return database.ref().update(updates);
+      });
+    })
+    .then(() => {
+      status.innerText = "✓ Account created. Check your email to verify your account.";
+      status.style.color = "#22c55e";
+    })
+    .catch((error) => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+</script>
+
+</body>
+</html>

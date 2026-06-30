@@ -55,7 +55,27 @@
     <strong id="sidebarBestFinish">--</strong>
   </div>
 </div>
-      
+      <div class="creator-card-status">
+  <div class="creator-status-row">
+    <span>Discord</span>
+    <strong id="statusDiscord">--</strong>
+  </div>
+
+  <div class="creator-status-row">
+    <span>Twitch</span>
+    <strong id="statusTwitch">--</strong>
+  </div>
+
+  <div class="creator-status-row">
+    <span>YouTube</span>
+    <strong id="statusYoutube">--</strong>
+  </div>
+
+  <div class="creator-status-row">
+    <span>TikTok</span>
+    <strong id="statusTiktok">--</strong>
+  </div>
+</div>
       </div>
 
       <nav class="account-nav">
@@ -190,6 +210,28 @@ function renderProfile(player) {
   document.getElementById("sidebarId").innerText =
     player.rgId || "RG ACCOUNT";
 
+document.getElementById("sidebarEvents").innerText =
+  player.eventsPlayed || 0;
+
+document.getElementById("sidebarChamps").innerText =
+  player.championships || 0;
+
+document.getElementById("sidebarBestFinish").innerText =
+  player.bestFinish || "--";
+
+const socials = player.socials || {};
+
+function setCardStatus(id, active) {
+  const el = document.getElementById(id);
+  el.innerText = active ? "✓" : "—";
+  el.classList.toggle("missing", !active);
+}
+
+setCardStatus("statusDiscord", player.discordMember);
+setCardStatus("statusTwitch", socials.twitch);
+setCardStatus("statusYoutube", socials.youtube);
+setCardStatus("statusTiktok", socials.tiktok);
+  
   document.getElementById("sidebarEvents").innerText =
   player.eventsPlayed || 0;
 

@@ -1,0 +1,486 @@
+const bracketContainer = document.getElementById("dynamicBracket");
+
+let teams = {};
+let winners = {};
+let scores = {};
+let currentMatch = "";
+
+database.ref("site").on("value", (snapshot) => {
+  const data = snapshot.val();
+
+  if (!data) return;
+
+  currentMatch = (data.currentMatch || "").trim().toLowerCase();
+
+  teams = {
+  team1: data.team1 || "Team 1",
+  team2: data.team2 || "Team 2",
+  team3: data.team3 || "Team 3",
+  team4: data.team4 || "Team 4",
+  team5: data.team5 || "Team 5",
+  team6: data.team6 || "Team 6",
+  team7: data.team7 || "Team 7",
+  team8: data.team8 || "Team 8",
+  team9: data.team9 || "Team 9",
+  team10: data.team10 || "Team 10",
+  team11: data.team11 || "Team 11",
+  team12: data.team12 || "Team 12",
+  team13: data.team13 || "Team 13",
+  team14: data.team14 || "Team 14",
+  team15: data.team15 || "Team 15",
+  team16: data.team16 || "Team 16"
+};
+
+  winners = {
+  r16m1Winner: data.r16m1Winner || "",
+  r16m2Winner: data.r16m2Winner || "",
+  r16m3Winner: data.r16m3Winner || "",
+  r16m4Winner: data.r16m4Winner || "",
+  r16m5Winner: data.r16m5Winner || "",
+  r16m6Winner: data.r16m6Winner || "",
+  r16m7Winner: data.r16m7Winner || "",
+  r16m8Winner: data.r16m8Winner || "",
+
+  qf1Winner: data.qf1Winner || "",
+  qf2Winner: data.qf2Winner || "",
+  qf3Winner: data.qf3Winner || "",
+  qf4Winner: data.qf4Winner || "",
+  sf1Winner: data.sf1Winner || "",
+  sf2Winner: data.sf2Winner || "",
+  grandWinner: data.grandWinner || ""
+};
+
+  scores = {
+    r16m1Team1Score: data.r16m1Team1Score || "0",
+r16m1Team2Score: data.r16m1Team2Score || "0",
+r16m2Team1Score: data.r16m2Team1Score || "0",
+r16m2Team2Score: data.r16m2Team2Score || "0",
+r16m3Team1Score: data.r16m3Team1Score || "0",
+r16m3Team2Score: data.r16m3Team2Score || "0",
+r16m4Team1Score: data.r16m4Team1Score || "0",
+r16m4Team2Score: data.r16m4Team2Score || "0",
+r16m5Team1Score: data.r16m5Team1Score || "0",
+r16m5Team2Score: data.r16m5Team2Score || "0",
+r16m6Team1Score: data.r16m6Team1Score || "0",
+r16m6Team2Score: data.r16m6Team2Score || "0",
+r16m7Team1Score: data.r16m7Team1Score || "0",
+r16m7Team2Score: data.r16m7Team2Score || "0",
+r16m8Team1Score: data.r16m8Team1Score || "0",
+r16m8Team2Score: data.r16m8Team2Score || "0",
+    
+    qf1Team1Score: data.qf1Team1Score || "0",
+    qf1Team2Score: data.qf1Team2Score || "0",
+    qf2Team1Score: data.qf2Team1Score || "0",
+    qf2Team2Score: data.qf2Team2Score || "0",
+    qf3Team1Score: data.qf3Team1Score || "0",
+    qf3Team2Score: data.qf3Team2Score || "0",
+    qf4Team1Score: data.qf4Team1Score || "0",
+    qf4Team2Score: data.qf4Team2Score || "0",
+
+    sf1Team1Score: data.sf1Team1Score || "0",
+    sf1Team2Score: data.sf1Team2Score || "0",
+    sf2Team1Score: data.sf2Team1Score || "0",
+    sf2Team2Score: data.sf2Team2Score || "0",
+    gfTeam1Score: data.gfTeam1Score || "0",
+    gfTeam2Score: data.gfTeam2Score || "0"
+  };
+
+   const formatType = data.formatType || "8_single_elim";
+const is16Team = formatType === "16_single_elim";
+
+winners.r16m1Winner = autoWinner(teams.team1, teams.team2, scores.r16m1Team1Score, scores.r16m1Team2Score, winners.r16m1Winner, 3);
+winners.r16m2Winner = autoWinner(teams.team3, teams.team4, scores.r16m2Team1Score, scores.r16m2Team2Score, winners.r16m2Winner, 3);
+winners.r16m3Winner = autoWinner(teams.team5, teams.team6, scores.r16m3Team1Score, scores.r16m3Team2Score, winners.r16m3Winner, 3);
+winners.r16m4Winner = autoWinner(teams.team7, teams.team8, scores.r16m4Team1Score, scores.r16m4Team2Score, winners.r16m4Winner, 3);
+winners.r16m5Winner = autoWinner(teams.team9, teams.team10, scores.r16m5Team1Score, scores.r16m5Team2Score, winners.r16m5Winner, 3);
+winners.r16m6Winner = autoWinner(teams.team11, teams.team12, scores.r16m6Team1Score, scores.r16m6Team2Score, winners.r16m6Winner, 3);
+winners.r16m7Winner = autoWinner(teams.team13, teams.team14, scores.r16m7Team1Score, scores.r16m7Team2Score, winners.r16m7Winner, 3);
+winners.r16m8Winner = autoWinner(teams.team15, teams.team16, scores.r16m8Team1Score, scores.r16m8Team2Score, winners.r16m8Winner, 3);
+
+if (is16Team) {
+  winners.qf1Winner = autoWinner(winners.r16m1Winner || "Winner R16-1", winners.r16m2Winner || "Winner R16-2", scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner, 3);
+  winners.qf2Winner = autoWinner(winners.r16m3Winner || "Winner R16-3", winners.r16m4Winner || "Winner R16-4", scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner, 3);
+  winners.qf3Winner = autoWinner(winners.r16m5Winner || "Winner R16-5", winners.r16m6Winner || "Winner R16-6", scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner, 3);
+  winners.qf4Winner = autoWinner(winners.r16m7Winner || "Winner R16-7", winners.r16m8Winner || "Winner R16-8", scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner, 3);
+} else {
+  winners.qf1Winner = autoWinner(teams.team1, teams.team2, scores.qf1Team1Score, scores.qf1Team2Score, winners.qf1Winner, 3);
+  winners.qf2Winner = autoWinner(teams.team3, teams.team4, scores.qf2Team1Score, scores.qf2Team2Score, winners.qf2Winner, 3);
+  winners.qf3Winner = autoWinner(teams.team5, teams.team6, scores.qf3Team1Score, scores.qf3Team2Score, winners.qf3Winner, 3);
+  winners.qf4Winner = autoWinner(teams.team7, teams.team8, scores.qf4Team1Score, scores.qf4Team2Score, winners.qf4Winner, 3);
+}
+
+winners.sf1Winner = autoWinner(winners.qf1Winner || "Winner QF1", winners.qf2Winner || "Winner QF2", scores.sf1Team1Score, scores.sf1Team2Score, winners.sf1Winner, 3);
+winners.sf2Winner = autoWinner(winners.qf3Winner || "Winner QF3", winners.qf4Winner || "Winner QF4", scores.sf2Team1Score, scores.sf2Team2Score, winners.sf2Winner, 3);
+
+winners.grandWinner = autoWinner(winners.sf1Winner || "Winner SF1", winners.sf2Winner || "Winner SF2", scores.gfTeam1Score, scores.gfTeam2Score, winners.grandWinner, 5);
+  
+  
+
+  if (formatType === "8_single_elim") {
+    show8SingleElim();
+  }
+
+  if (formatType === "16_single_elim") {
+  show16SingleElim();
+}
+
+  if (formatType === "8_double_elim") {
+    showComingSoon("8 Team Double Elimination");
+  }
+});
+
+function rowClass(teamName, winnerName, hasWinner) {
+  if (!hasWinner) return "";
+  return teamName === winnerName ? "winner-row" : "loser-row";
+}
+
+function autoWinner(teamA, teamB, scoreA, scoreB, savedWinner, bestOf = 3) {
+  const a = Number(scoreA);
+  const b = Number(scoreB);
+
+  if (scoreA === "" || scoreB === "") return savedWinner || "";
+  if (Number.isNaN(a) || Number.isNaN(b)) return savedWinner || "";
+  if (a === b) return savedWinner || "";
+
+  // Bo3 = first to 2
+  // Bo5 = first to 3
+  const winsNeeded = bestOf === 5 ? 3 : 2;
+
+  // Match isn't finished yet
+  if (a < winsNeeded && b < winsNeeded) {
+    return savedWinner || "";
+  }
+
+  return a > b ? teamA : teamB;
+}
+
+function matchClass(matchId) {
+  const match = currentMatch.toLowerCase();
+
+  if (matchId === "R16-1" && match.includes("r16-1")) return "live-match";
+if (matchId === "R16-2" && match.includes("r16-2")) return "live-match";
+if (matchId === "R16-3" && match.includes("r16-3")) return "live-match";
+if (matchId === "R16-4" && match.includes("r16-4")) return "live-match";
+if (matchId === "R16-5" && match.includes("r16-5")) return "live-match";
+if (matchId === "R16-6" && match.includes("r16-6")) return "live-match";
+if (matchId === "R16-7" && match.includes("r16-7")) return "live-match";
+if (matchId === "R16-8" && match.includes("r16-8")) return "live-match";
+  if (matchId === "QF1" && match.includes("qf1")) return "live-match";
+  if (matchId === "QF2" && match.includes("qf2")) return "live-match";
+  if (matchId === "QF3" && match.includes("qf3")) return "live-match";
+  if (matchId === "QF4" && match.includes("qf4")) return "live-match";
+  if (matchId === "SF1" && match.includes("sf1")) return "live-match";
+  if (matchId === "SF2" && match.includes("sf2")) return "live-match";
+  if (matchId === "GF" && match.includes("grand finals")) return "live-match";
+
+  return "";
+}
+
+function getTeamNumber(teamName) {
+  for (let i = 1; i <= 16; i++) {
+    if (teams[`team${i}`] === teamName) {
+      return i;
+    }
+  }
+  return null;
+}
+
+function makeBracketLinks() {
+
+  document.querySelectorAll(".team-row").forEach(row => {
+
+    if (row.querySelector("a")) return;
+
+    const span = row.querySelector("span");
+    if (!span) return;
+
+    const teamName = span.textContent.trim();
+
+    const teamNumber = getTeamNumber(teamName);
+
+    if (!teamNumber) return;
+
+    span.innerHTML =
+      `<a class="team-link" href="teams.html#team${teamNumber}">${teamName}</a>`;
+  });
+
+}
+  
+
+function show8SingleElim() {
+  const qf1Done = winners.qf1Winner !== "";
+  const qf2Done = winners.qf2Winner !== "";
+  const qf3Done = winners.qf3Winner !== "";
+  const qf4Done = winners.qf4Winner !== "";
+  const sf1Done = winners.sf1Winner !== "";
+  const sf2Done = winners.sf2Winner !== "";
+  const grandDone = winners.grandWinner !== "";
+
+  const sf1Team1 = winners.qf1Winner || "Winner QF1";
+  const sf1Team2 = winners.qf2Winner || "Winner QF2";
+  const sf2Team1 = winners.qf3Winner || "Winner QF3";
+  const sf2Team2 = winners.qf4Winner || "Winner QF4";
+  const gfTeam1 = winners.sf1Winner || "Winner SF1";
+  const gfTeam2 = winners.sf2Winner || "Winner SF2";
+
+  bracketContainer.innerHTML = `
+    <div class="pro-bracket">
+
+      <div class="pro-round">
+        <h3>Quarterfinals</h3>
+
+        <div class="pro-match ${matchClass("QF1")}">
+          <div class="match-label">QF1 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team1, winners.qf1Winner, qf1Done)}"><span>${teams.team1}</span><strong>${scores.qf1Team1Score}</strong></div>
+          <div class="team-row ${rowClass(teams.team2, winners.qf1Winner, qf1Done)}"><span>${teams.team2}</span><strong>${scores.qf1Team2Score}</strong></div>
+        </div>
+
+        <div class="pro-match ${matchClass("QF2")}">
+          <div class="match-label">QF2 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team3, winners.qf2Winner, qf2Done)}"><span>${teams.team3}</span><strong>${scores.qf2Team1Score}</strong></div>
+          <div class="team-row ${rowClass(teams.team4, winners.qf2Winner, qf2Done)}"><span>${teams.team4}</span><strong>${scores.qf2Team2Score}</strong></div>
+        </div>
+
+        <div class="pro-match ${matchClass("QF3")}">
+          <div class="match-label">QF3 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team5, winners.qf3Winner, qf3Done)}"><span>${teams.team5}</span><strong>${scores.qf3Team1Score}</strong></div>
+          <div class="team-row ${rowClass(teams.team6, winners.qf3Winner, qf3Done)}"><span>${teams.team6}</span><strong>${scores.qf3Team2Score}</strong></div>
+        </div>
+
+        <div class="pro-match ${matchClass("QF4")}">
+          <div class="match-label">QF4 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team7, winners.qf4Winner, qf4Done)}"><span>${teams.team7}</span><strong>${scores.qf4Team1Score}</strong></div>
+          <div class="team-row ${rowClass(teams.team8, winners.qf4Winner, qf4Done)}"><span>${teams.team8}</span><strong>${scores.qf4Team2Score}</strong></div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Semifinals</h3>
+
+        <div class="pro-match semi-spacer ${matchClass("SF1")}">
+          <div class="match-label">SF1 • Bo3</div>
+          <div class="team-row ${rowClass(sf1Team1, winners.sf1Winner, sf1Done)}"><span>${sf1Team1}</span><strong>${scores.sf1Team1Score}</strong></div>
+          <div class="team-row ${rowClass(sf1Team2, winners.sf1Winner, sf1Done)}"><span>${sf1Team2}</span><strong>${scores.sf1Team2Score}</strong></div>
+        </div>
+
+        <div class="pro-match semi-spacer ${matchClass("SF2")}">
+          <div class="match-label">SF2 • Bo3</div>
+          <div class="team-row ${rowClass(sf2Team1, winners.sf2Winner, sf2Done)}"><span>${sf2Team1}</span><strong>${scores.sf2Team1Score}</strong></div>
+          <div class="team-row ${rowClass(sf2Team2, winners.sf2Winner, sf2Done)}"><span>${sf2Team2}</span><strong>${scores.sf2Team2Score}</strong></div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Grand Finals</h3>
+
+        <div class="pro-match grand-spacer grand-match ${matchClass("GF")}">
+          <div class="match-label">GF • Bo5</div>
+          <div class="team-row ${rowClass(gfTeam1, winners.grandWinner, grandDone)}"><span>${gfTeam1}</span><strong>${scores.gfTeam1Score}</strong></div>
+          <div class="team-row ${rowClass(gfTeam2, winners.grandWinner, grandDone)}"><span>${gfTeam2}</span><strong>${scores.gfTeam2Score}</strong></div>
+        </div>
+
+        ${winners.grandWinner ? `
+  <div class="champion-banner">
+    <div class="champion-title">🏆 Tournament Champion</div>
+    <div class="champion-name">${winners.grandWinner}</div>
+  </div>
+` : ""}
+      </div>
+
+    </div>
+    `;
+
+  makeBracketLinks();
+}
+
+function showComingSoon(formatName) {
+  bracketContainer.innerHTML = `
+    <div class="event-card">
+      <h2>${formatName}</h2>
+      <p>This bracket format is coming soon.</p>
+    </div>
+  `;
+}
+
+function show16SingleElim() {
+  bracketContainer.innerHTML = `
+    <div class="pro-bracket">
+
+      <div class="pro-round">
+        <h3>Round of 16</h3>
+
+        <div class="pro-match ${matchClass("R16-1")}">
+          <div class="match-label">R16-1 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team1, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+            <span>${teams.team1}</span><strong>${scores.r16m1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team2, winners.r16m1Winner, winners.r16m1Winner !== "")}">
+            <span>${teams.team2}</span><strong>${scores.r16m1Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-2")}">
+          <div class="match-label">R16-2 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team3, winners.r16m2Winner, winners.r16m2Winner !== "")}">
+            <span>${teams.team3}</span><strong>${scores.r16m2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team4, winners.r16m2Winner, winners.r16m2Winner !== "")}">
+            <span>${teams.team4}</span><strong>${scores.r16m2Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-3")}">
+          <div class="match-label">R16-3 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team5, winners.r16m3Winner, winners.r16m3Winner !== "")}">
+            <span>${teams.team5}</span><strong>${scores.r16m3Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team6, winners.r16m3Winner, winners.r16m3Winner !== "")}">
+            <span>${teams.team6}</span><strong>${scores.r16m3Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-4")}">
+          <div class="match-label">R16-4 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team7, winners.r16m4Winner, winners.r16m4Winner !== "")}">
+            <span>${teams.team7}</span><strong>${scores.r16m4Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team8, winners.r16m4Winner, winners.r16m4Winner !== "")}">
+            <span>${teams.team8}</span><strong>${scores.r16m4Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-5")}">
+          <div class="match-label">R16-5 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team9, winners.r16m5Winner, winners.r16m5Winner !== "")}">
+            <span>${teams.team9}</span><strong>${scores.r16m5Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team10, winners.r16m5Winner, winners.r16m5Winner !== "")}">
+            <span>${teams.team10}</span><strong>${scores.r16m5Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-6")}">
+          <div class="match-label">R16-6 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team11, winners.r16m6Winner, winners.r16m6Winner !== "")}">
+            <span>${teams.team11}</span><strong>${scores.r16m6Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team12, winners.r16m6Winner, winners.r16m6Winner !== "")}">
+            <span>${teams.team12}</span><strong>${scores.r16m6Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-7")}">
+          <div class="match-label">R16-7 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team13, winners.r16m7Winner, winners.r16m7Winner !== "")}">
+            <span>${teams.team13}</span><strong>${scores.r16m7Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team14, winners.r16m7Winner, winners.r16m7Winner !== "")}">
+            <span>${teams.team14}</span><strong>${scores.r16m7Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match ${matchClass("R16-8")}">
+          <div class="match-label">R16-8 • Bo3</div>
+          <div class="team-row ${rowClass(teams.team15, winners.r16m8Winner, winners.r16m8Winner !== "")}">
+            <span>${teams.team15}</span><strong>${scores.r16m8Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(teams.team16, winners.r16m8Winner, winners.r16m8Winner !== "")}">
+            <span>${teams.team16}</span><strong>${scores.r16m8Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Quarterfinals</h3>
+
+        <div class="pro-match semi-spacer ${matchClass("QF1")}">
+          <div class="match-label">QF1 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m1Winner || "Winner R16-1", winners.qf1Winner, winners.qf1Winner !== "")}">
+            <span>${winners.r16m1Winner || "Winner R16-1"}</span><strong>${scores.qf1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m2Winner || "Winner R16-2", winners.qf1Winner, winners.qf1Winner !== "")}">
+            <span>${winners.r16m2Winner || "Winner R16-2"}</span><strong>${scores.qf1Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match semi-spacer ${matchClass("QF2")}">
+          <div class="match-label">QF2 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m3Winner || "Winner R16-3", winners.qf2Winner, winners.qf2Winner !== "")}">
+            <span>${winners.r16m3Winner || "Winner R16-3"}</span><strong>${scores.qf2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m4Winner || "Winner R16-4", winners.qf2Winner, winners.qf2Winner !== "")}">
+            <span>${winners.r16m4Winner || "Winner R16-4"}</span><strong>${scores.qf2Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match semi-spacer ${matchClass("QF3")}">
+          <div class="match-label">QF3 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m5Winner || "Winner R16-5", winners.qf3Winner, winners.qf3Winner !== "")}">
+            <span>${winners.r16m5Winner || "Winner R16-5"}</span><strong>${scores.qf3Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m6Winner || "Winner R16-6", winners.qf3Winner, winners.qf3Winner !== "")}">
+            <span>${winners.r16m6Winner || "Winner R16-6"}</span><strong>${scores.qf3Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match semi-spacer ${matchClass("QF4")}">
+          <div class="match-label">QF4 • Bo3</div>
+          <div class="team-row ${rowClass(winners.r16m7Winner || "Winner R16-7", winners.qf4Winner, winners.qf4Winner !== "")}">
+            <span>${winners.r16m7Winner || "Winner R16-7"}</span><strong>${scores.qf4Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.r16m8Winner || "Winner R16-8", winners.qf4Winner, winners.qf4Winner !== "")}">
+            <span>${winners.r16m8Winner || "Winner R16-8"}</span><strong>${scores.qf4Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Semifinals</h3>
+
+        <div class="pro-match grand-spacer ${matchClass("SF1")}">
+          <div class="match-label">SF1 • Bo3</div>
+          <div class="team-row ${rowClass(winners.qf1Winner || "Winner QF1", winners.sf1Winner, winners.sf1Winner !== "")}">
+            <span>${winners.qf1Winner || "Winner QF1"}</span><strong>${scores.sf1Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.qf2Winner || "Winner QF2", winners.sf1Winner, winners.sf1Winner !== "")}">
+            <span>${winners.qf2Winner || "Winner QF2"}</span><strong>${scores.sf1Team2Score || "0"}</strong>
+          </div>
+        </div>
+
+        <div class="pro-match grand-spacer ${matchClass("SF2")}">
+          <div class="match-label">SF2 • Bo3</div>
+          <div class="team-row ${rowClass(winners.qf3Winner || "Winner QF3", winners.sf2Winner, winners.sf2Winner !== "")}">
+            <span>${winners.qf3Winner || "Winner QF3"}</span><strong>${scores.sf2Team1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.qf4Winner || "Winner QF4", winners.sf2Winner, winners.sf2Winner !== "")}">
+            <span>${winners.qf4Winner || "Winner QF4"}</span><strong>${scores.sf2Team2Score || "0"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-round">
+        <h3>Grand Finals</h3>
+
+        <div class="pro-match grand-match ${matchClass("GF")}">
+          <div class="match-label">GF • Bo5</div>
+          <div class="team-row ${rowClass(winners.sf1Winner || "Winner SF1", winners.grandWinner, winners.grandWinner !== "")}">
+            <span>${winners.sf1Winner || "Winner SF1"}</span><strong>${scores.gfTeam1Score || "0"}</strong>
+          </div>
+          <div class="team-row ${rowClass(winners.sf2Winner || "Winner SF2", winners.grandWinner, winners.grandWinner !== "")}">
+            <span>${winners.sf2Winner || "Winner SF2"}</span><strong>${scores.gfTeam2Score || "0"}</strong>
+          </div>
+        </div>
+
+        ${winners.grandWinner ? `
+          <div class="champion-banner">
+            <div class="champion-title">🏆 Tournament Champion</div>
+            <div class="champion-name">${winners.grandWinner}</div>
+          </div>
+        ` : ""}
+      </div>
+
+    </div>
+    `;
+
+  makeBracketLinks();
+}

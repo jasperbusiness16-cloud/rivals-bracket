@@ -136,52 +136,105 @@ function renderApplications() {
     return;
   }
 
-  list.innerHTML = filtered.map(app => `
-    <div class="account-panel full" style="margin-bottom:18px;">
-      <h2>${app.rgId || "RG ID"} — ${app.displayName || "Player"}</h2>
+  list.innerHTML = filtered.map(app => {
+  const initials = clean(app.displayName, "RG")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(word => word[0])
+    .join("")
+    .toUpperCase();
 
-      <p><strong>Status:</strong> ${statusBadge(app.status || "pending")}</p>
-      <p><strong>IGN:</strong> ${app.rivalsIgn || "N/A"}</p>
-      <p><strong>Discord:</strong> ${app.discordUsername || "N/A"}</p>
-      <p><strong>Peak Rank:</strong> ${app.peakRank || "N/A"}</p>
-      <p><strong>Role:</strong> ${app.mainRole || "N/A"}</p>
-      <p><strong>Heroes:</strong> ${app.mainHeroes || "N/A"}</p>
-      <p><strong>Region / Platform:</strong> ${app.region || "N/A"} / ${app.platform || "N/A"}</p>
-      <p><strong>Followers:</strong> ${app.followerCount || 0}</p>
-      <p><strong>Streaming:</strong> ${app.willStream || "N/A"}</p>
-      <p><strong>Wants Sub:</strong> ${app.wantsSub || "N/A"}</p>
-      <p><strong>Notes:</strong> ${app.adminNotes || "None"}</p>
+  const avatarHtml = app.profileImage
+    ? `<img class="application-avatar" src="${app.profileImage}" alt="${app.displayName || "Applicant"}">`
+    : `<div class="application-avatar-fallback">${initials}</div>`;
 
-      <div class="account-actions">
-        <a class="account-secondary" href="player.html?id=${app.uid}" target="_blank">
-          View Profile
-        </a>
-
-        <button class="account-primary" onclick="updateStatus('${app.uid}', 'accepted')">
-          Accept
-        </button>
-
-        <button class="account-secondary" onclick="updateStatus('${app.uid}', 'waitlist')">
-          Waitlist
-        </button>
-
-        <button class="account-secondary" onclick="updateStatus('${app.uid}', 'declined')">
-          Decline
-        </button>
+  return `
+    <div class="application-card">
+      <div class="application-left">
+        ${avatarHtml}
+        <div class="application-rgid">${app.rgId || "RG ID"}</div>
       </div>
 
-      <div class="account-field account-full" style="margin-top:18px;">
-        <label>Admin Notes</label>
-        <textarea id="note-${app.uid}" placeholder="Internal notes only">${app.internalAdminNotes || ""}</textarea>
-      </div>
+      <div class="application-right">
+        <div class="application-top-row">
+          <div>
+            <h2>${app.displayName || "Player"}</h2>
+            <p><strong>IGN:</strong> ${app.rivalsIgn || "N/A"}</p>
+          </div>
 
-      <div class="account-actions">
-        <button class="account-secondary" onclick="saveAdminNote('${app.uid}')">
-          Save Admin Note
-        </button>
+          <div>
+            ${statusBadge(app.status || "pending")}
+          </div>
+        </div>
+
+        <div class="application-tags">
+          <span class="application-tag">${app.peakRank || "No Rank"}</span>
+          <span class="application-tag">${app.mainRole || "No Role"}</span>
+          <span class="application-tag">${app.region || "No Region"}</span>
+          <span class="application-tag">${app.platform || "No Platform"}</span>
+          <span class="application-tag">Stream: ${app.willStream || "N/A"}</span>
+          <span class="application-tag">Sub: ${app.wantsSub || "N/A"}</span>
+        </div>
+
+        <div class="application-grid">
+          <div class="application-stat">
+            <span>Discord</span>
+            <strong>${app.discordUsername || "N/A"}</strong>
+          </div>
+
+          <div class="application-stat">
+            <span>Followers</span>
+            <strong>${app.followerCount || 0}</strong>
+          </div>
+
+          <div class="application-stat">
+            <span>Main Heroes</span>
+            <strong>${app.mainHeroes || "N/A"}</strong>
+          </div>
+
+          <div class="application-stat">
+            <span>Availability</span>
+            <strong>${app.availability || "N/A"}</strong>
+          </div>
+        </div>
+
+        <p style="margin-top:16px;">
+          <strong>Applicant Notes:</strong> ${app.adminNotes || "None"}
+        </p>
+
+        <div class="application-buttons">
+          <a class="account-secondary" href="player.html?id=${app.uid}" target="_blank">
+            View Profile
+          </a>
+
+          <button class="account-primary" onclick="updateStatus('${app.uid}', 'accepted')">
+            Accept
+          </button>
+
+          <button class="account-secondary" onclick="updateStatus('${app.uid}', 'waitlist')">
+            Waitlist
+          </button>
+
+          <button class="account-secondary" onclick="updateStatus('${app.uid}', 'declined')">
+            Decline
+          </button>
+        </div>
+
+        <div class="account-field account-full" style="margin-top:18px;">
+          <label>Admin Notes</label>
+          <textarea id="note-${app.uid}" placeholder="Internal notes only">${app.internalAdminNotes || ""}</textarea>
+        </div>
+
+        <div class="application-buttons">
+          <button class="account-secondary" onclick="saveAdminNote('${app.uid}')">
+            Save Admin Note
+          </button>
+        </div>
       </div>
     </div>
-  `).join("");
+  `;
+}).join("");
 }
 
 function updateStatus(uid, status) {

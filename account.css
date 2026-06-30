@@ -481,3 +481,50 @@
     padding:20px;
   }
 }
+
+/* CREATOR CARD V1 UPGRADE */
+.account-mini-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(230,57,70,.35);
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.06),
+    0 0 28px rgba(230,57,70,.16);
+}
+
+.account-mini-card::before{
+  content:"CREATOR CARD";
+  display:block;
+  margin-bottom:16px;
+  color:#e63946;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2.5px;
+  text-align:left;
+}
+
+.creator-card-stats{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.1);
+  display:grid;
+  gap:10px;
+}
+
+.creator-stat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.creator-stat-row span{
+  color:#8b949e;
+}
+
+.creator-stat-row strong{
+  color:#fff;
+}

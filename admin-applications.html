@@ -40,6 +40,20 @@
       </div>
 
       <section class="account-panel full">
+  <h2 id="tournamentName">Loading Tournament...</h2>
+
+  <p><strong>Status:</strong> <span id="tournamentStatus">Loading...</span></p>
+  <p><strong>Accepted Players:</strong> <span id="acceptedPlayers">0</span> / <span id="maxPlayers">48</span></p>
+  <p><strong>Teams:</strong> <span id="teamCount">8</span></p>
+
+  <div class="account-actions">
+    <button class="account-secondary" disabled style="opacity:.5;cursor:not-allowed;">
+      Team Builder Coming Soon
+    </button>
+  </div>
+</section>
+      
+      <section class="account-panel full">
   <h2>Application Overview</h2>
 
   <div class="application-summary-grid">
@@ -109,6 +123,7 @@
 <script>
 const tournamentId = "open1";
 let applications = [];
+let tournamentData = {};
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -161,6 +176,22 @@ function renderApplications() {
   });
 
   document.getElementById("applicationCount").innerText = `(${filtered.length})`;
+  const acceptedCount = applications.filter(app => app.status === "accepted").length;
+
+document.getElementById("tournamentName").innerText =
+  tournamentData.name || "Rivals Gauntlet Tournament";
+
+document.getElementById("tournamentStatus").innerText =
+  (tournamentData.status || "unknown").replaceAll("_", " ").toUpperCase();
+
+document.getElementById("acceptedPlayers").innerText =
+  acceptedCount;
+
+document.getElementById("maxPlayers").innerText =
+  tournamentData.maxPlayers || 48;
+
+document.getElementById("teamCount").innerText =
+  tournamentData.teamCount || 8;
   document.getElementById("totalCount").innerText = applications.length;
 document.getElementById("pendingCount").innerText =
   applications.filter(app => (app.status || "pending") === "pending").length;

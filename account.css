@@ -824,3 +824,30 @@
   padding:7px 10px;
   cursor:pointer;
 }
+
+/* DRAG AND DROP TEAM BUILDER */
+.builder-drop-zone{
+  min-height:80px;
+}
+
+.builder-player-card{
+  cursor:grab;
+}
+
+.builder-player-card:active,
+.builder-team-player:active{
+  cursor:grabbing;
+}
+
+.builder-team-card{
+  transition:.2s ease;
+}
+
+.builder-team-card:hover{
+  border-color:#e63946;
+  box-shadow:0 0 18px rgba(230,57,70,.12);
+}
+
+.builder-team-player{
+  cursor:grab;
+}

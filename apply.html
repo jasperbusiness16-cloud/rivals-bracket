@@ -1,1 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ACCOUNT CENTER</h2>
+      </div>
+
+      <div class="account-mini-card">
+        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
+        <div id="sidebarFallback" class="account-avatar-fallback">RG</div>
+
+        <h1 id="sidebarName">Player</h1>
+        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
+        <span class="account-badge">VERIFIED CREATOR</span>
+
+        <div class="profile-progress">
+          <div class="profile-progress-top">
+            <span>Profile</span>
+            <span id="profilePercent">0%</span>
+          </div>
+          <div class="profile-progress-track">
+            <div id="profileFill" class="profile-progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="creator-card-stats">
+          <div class="creator-stat-row">
+            <span>Events Played</span>
+            <strong id="sidebarEvents">0</strong>
+          </div>
+
+          <div class="creator-stat-row">
+            <span>Championships</span>
+            <strong id="sidebarChamps">0</strong>
+          </div>
+
+          <div class="creator-stat-row">
+            <span>Best Finish</span>
+            <strong id="sidebarBestFinish">--</strong>
+          </div>
+        </div>
+
+        <div class="creator-card-status">
+          <div class="creator-status-row">
+            <span>Discord</span>
+            <strong id="statusDiscord">--</strong>
+          </div>
+
+          <div class="creator-status-row">
+            <span>Twitch</span>
+            <strong id="statusTwitch">--</strong>
+          </div>
+
+          <div class="creator-status-row">
+            <span>YouTube</span>
+            <strong id="statusYoutube">--</strong>
+          </div>
+
+          <div class="creator-status-row">
+            <span>TikTok</span>
+            <strong id="statusTiktok">--</strong>
+          </div>
+        </div>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a id="publicProfileLink" href="#">Public Profile</a>
+        <a class="active" href="apply.html">Applications</a>
+        <a href="#">Tournament History</a>
+        <a href="#">Career Stats</a>
+        <a href="#">Achievements</a>
+        <a href="#">Notifications</a>
+        <a href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>TOURNAMENT APPLICATION</p>
+          <h1>Apply for Rivals Gauntlet</h1>
+          <span>Your account info is auto-filled. Complete the tournament-specific questions below.</span>
+        </div>
+      </div>
+
+      <div class="account-panel-grid">
+
+        <section class="account-panel full">
+          <h2>Applicant Profile</h2>
+
+          <p><strong>RG ID:</strong> <span id="appRgId">Loading...</span></p>
+          <p><strong>Display Name:</strong> <span id="appDisplayName">Loading...</span></p>
+          <p><strong>Marvel Rivals IGN:</strong> <span id="appIgn">Loading...</span></p>
+          <p><strong>Discord:</strong> <span id="appDiscord">Loading...</span></p>
+          <p><strong>Region:</strong> <span id="appRegion">Loading...</span></p>
+          <p><strong>Platform:</strong> <span id="appPlatform">Loading...</span></p>
+
+          <div class="account-actions">
+            <a class="account-secondary" href="settings.html">
+              Edit Account Info
+            </a>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Requirements</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Are you at least 13 years old?</label>
+              <select id="ageConfirm">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Are you currently in the Rivals Gauntlet Discord?</label>
+              <select id="discordConfirm">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Will you be completely free on tournament day?</label>
+              <select id="availability">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="Mostly, but I may have a conflict">Mostly, but I may have a conflict</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Do you have a working mic?</label>
+              <select id="workingMic">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Can you join a custom lobby on time?</label>
+              <select id="customLobby">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Are you willing to use team VC in Discord?</label>
+              <select id="teamVc">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Competitive Info</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Peak Rank</label>
+              <select id="peakRank">
+                <option value="">Select Peak Rank</option>
+                <option value="Bronze">Bronze</option>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+                <option value="Platinum">Platinum</option>
+                <option value="Diamond">Diamond</option>
+                <option value="Grandmaster">Grandmaster</option>
+                <option value="Celestial">Celestial</option>
+                <option value="Eternity">Eternity</option>
+                <option value="One Above All">One Above All</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Main Role</label>
+              <select id="mainRole">
+                <option value="">Select Role</option>
+                <option value="Vanguard">Vanguard</option>
+                <option value="Duelist">Duelist</option>
+                <option value="Strategist">Strategist</option>
+                <option value="Flex">Flex</option>
+              </select>
+            </div>
+
+            <div class="account-field account-full">
+              <label>Main Heroes</label>
+              <input id="mainHeroes" placeholder="Example: Hela, Luna Snow, Doctor Strange">
+            </div>
+
+            <div class="account-field">
+              <label>Have you participated in Rivals Gauntlet before?</label>
+              <select id="participatedBefore">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>If not accepted, would you like to be considered as a substitute?</label>
+              <select id="wantsSub">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Creator Info</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Will you be livestreaming your matches?</label>
+              <select id="willStream">
+                <option value="">Select One</option>
+                <option value="Yes">Yes</option>
+                <option value="Maybe">Maybe</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Total Combined Follower Count</label>
+              <input id="followerCount" type="number" min="0" placeholder="Example: 2500">
+            </div>
+
+            <div class="account-field account-full">
+              <label>Anything admins should know?</label>
+              <textarea id="adminNotes" placeholder="Schedule notes, creator info, preferred role, teammate context, etc."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Submit Application</h2>
+          <p>
+            By submitting, you confirm that your information is accurate and that you understand
+            tournament communication, team voice chats, check-ins, and replacements will be handled through the Rivals Gauntlet Discord.
+          </p>
+
+          <div class="account-actions">
+            <button class="account-primary" onclick="submitApplication()">
+              Submit Application
+            </button>
+
+            <a class="account-secondary" href="dashboard.html">
+              Back to Dashboard
+            </a>
+          </div>
+
+          <p id="applyStatus" class="account-status"></p>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+let currentUser = null;
+let currentPlayer = null;
+const tournamentId = "open1";
+const tournamentName = "Rivals Gauntlet Open #1";
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getInitials(name) {
+  const words = clean(name, "RG").split(" ").filter(Boolean);
+  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+}
+
+function calculateProfileCompletion(player) {
+  const socials = player.socials || {};
+
+  const fields = [
+    player.displayName,
+    player.rivalsIgn,
+    player.discordUsername,
+    player.region,
+    player.platform,
+    player.bio,
+    player.profileImage,
+    socials.twitch || socials.youtube || socials.tiktok || socials.x
+  ];
+
+  const completed = fields.filter(value => clean(value)).length;
+  return Math.round((completed / fields.length) * 100);
+}
+
+function setCardStatus(id, active) {
+  const el = document.getElementById(id);
+  el.innerText = active ? "✓" : "—";
+  el.classList.toggle("missing", !active);
+}
+
+function renderSidebar(player, user) {
+  const socials = player.socials || {};
+  const displayName = clean(player.displayName, "Player");
+
+  document.getElementById("sidebarName").innerText = displayName;
+  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
+  document.getElementById("sidebarId").innerText = player.rgId || "RG ACCOUNT";
+
+  document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
+  document.getElementById("sidebarChamps").innerText = player.championships || 0;
+  document.getElementById("sidebarBestFinish").innerText = player.bestFinish || "--";
+
+  setCardStatus("statusDiscord", player.discordMember);
+  setCardStatus("statusTwitch", socials.twitch);
+  setCardStatus("statusYoutube", socials.youtube);
+  setCardStatus("statusTiktok", socials.tiktok);
+
+  const avatar = document.getElementById("sidebarAvatar");
+  const fallback = document.getElementById("sidebarFallback");
+
+  if (player.profileImage) {
+    avatar.src = player.profileImage;
+    avatar.style.display = "block";
+    fallback.style.display = "none";
+  } else {
+    avatar.style.display = "none";
+    fallback.style.display = "flex";
+  }
+
+  const percent = calculateProfileCompletion(player);
+  document.getElementById("profilePercent").innerText = `${percent}%`;
+  document.getElementById("profileFill").style.width = `${percent}%`;
+
+  document.getElementById("publicProfileLink").href = `player.html?id=${user.uid}`;
+}
+
+function renderApplicantProfile(player) {
+  document.getElementById("appRgId").innerText = player.rgId || "RG ACCOUNT";
+  document.getElementById("appDisplayName").innerText = player.displayName || "Not set";
+  document.getElementById("appIgn").innerText = player.rivalsIgn || "Not set";
+  document.getElementById("appDiscord").innerText = player.discordUsername || "Not set";
+  document.getElementById("appRegion").innerText = player.region || "Not set";
+  document.getElementById("appPlatform").innerText = player.platform || "Not set";
+
+  document.getElementById("discordConfirm").value =
+    player.discordMember ? "Yes" : "";
+}
+
+function requiredValue(id) {
+  return clean(document.getElementById(id).value);
+}
+
+function submitApplication() {
+  if (!currentUser || !currentPlayer) return;
+
+  const status = document.getElementById("applyStatus");
+
+  const requiredFields = [
+    "ageConfirm",
+    "discordConfirm",
+    "availability",
+    "workingMic",
+    "customLobby",
+    "teamVc",
+    "peakRank",
+    "mainRole",
+    "mainHeroes",
+    "participatedBefore",
+    "wantsSub",
+    "willStream",
+    "followerCount"
+  ];
+
+  const missing = requiredFields.some(id => !requiredValue(id));
+
+  if (missing) {
+    status.innerText = "Please complete every required field.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  if (requiredValue("ageConfirm") !== "Yes") {
+    status.innerText = "You must meet the age requirement to apply.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  if (requiredValue("discordConfirm") !== "Yes") {
+    status.innerText = "You must be in the Rivals Gauntlet Discord to apply.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  const socials = currentPlayer.socials || {};
+  const now = Date.now();
+
+  const application = {
+    tournamentId,
+    tournamentName,
+    uid: currentUser.uid,
+    rgId: currentPlayer.rgId || "",
+    displayName: currentPlayer.displayName || "",
+    rivalsIgn: currentPlayer.rivalsIgn || "",
+    discordUsername: currentPlayer.discordUsername || "",
+    discordMember: currentPlayer.discordMember || false,
+    region: currentPlayer.region || "",
+    platform: currentPlayer.platform || "",
+    profileImage: currentPlayer.profileImage || "",
+    socials: {
+      twitch: socials.twitch || "",
+      youtube: socials.youtube || "",
+      tiktok: socials.tiktok || "",
+      x: socials.x || ""
+    },
+
+    ageConfirm: requiredValue("ageConfirm"),
+    discordConfirm: requiredValue("discordConfirm"),
+    availability: requiredValue("availability"),
+    workingMic: requiredValue("workingMic"),
+    customLobby: requiredValue("customLobby"),
+    teamVc: requiredValue("teamVc"),
+
+    peakRank: requiredValue("peakRank"),
+    mainRole: requiredValue("mainRole"),
+    mainHeroes: requiredValue("mainHeroes"),
+    participatedBefore: requiredValue("participatedBefore"),
+    wantsSub: requiredValue("wantsSub"),
+
+    willStream: requiredValue("willStream"),
+    followerCount: Number(requiredValue("followerCount")) || 0,
+    adminNotes: requiredValue("adminNotes"),
+
+    status: "pending",
+    submittedAt: now,
+    updatedAt: now
+  };
+
+  database.ref(`applications/${tournamentId}/${currentUser.uid}`).once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        status.innerText = "You already submitted an application for this tournament.";
+        status.style.color = "#ef4444";
+        return null;
+      }
+
+      return database.ref(`applications/${tournamentId}/${currentUser.uid}`).set(application);
+    })
+    .then(result => {
+      if (result === null) return;
+
+      status.innerText = "✓ Application submitted successfully.";
+      status.style.color = "#22c55e";
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
+    const player = snapshot.val();
+
+    if (!player) {
+      window.location.href = "settings.html";
+      return;
+    }
+
+    currentPlayer = player;
+    renderSidebar(player, user);
+    renderApplicantProfile(player);
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

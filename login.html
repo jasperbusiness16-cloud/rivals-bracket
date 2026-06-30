@@ -6,49 +6,59 @@
   <title>Sign In | Rivals Gauntlet</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
-<body>
 
-<section class="page-hero">
-  <p class="eyebrow">RIVALS GAUNTLET ACCOUNT</p>
-  <h1>Sign In</h1>
-  <p>Access your creator dashboard, applications, and player profile.</p>
-</section>
+<body class="account-body">
 
-<section class="event-card admin-card">
-  <div class="admin-section">
+<div class="auth-shell">
 
-    <h2>Login</h2>
+  <section class="auth-brand-side">
+    <p>RIVALS GAUNTLET</p>
+    <h1>COMPETE.<br>CREATE.<br>CONQUER.</h1>
+    <span>
+      Sign in to manage your creator profile, tournament applications,
+      player history, and Rivals Gauntlet account.
+    </span>
+  </section>
 
-    <label>Email</label>
-    <input id="email" type="email" placeholder="you@example.com">
+  <section class="auth-form-side">
+    <div class="auth-card">
+      <h2>Sign In</h2>
+      <p>Access your player dashboard and creator profile.</p>
 
-    <label>Password</label>
-    <input id="password" type="password" placeholder="Password">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@example.com">
 
-    <button class="join-btn" onclick="loginUser()">
-      SIGN IN
-    </button>
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Password">
 
-    <button class="secondary" onclick="resetPassword()" style="margin-top:12px;">
-      RESET PASSWORD
-    </button>
+      <div class="account-actions">
+        <button class="account-primary" onclick="loginUser()">
+          SIGN IN
+        </button>
 
-    <p id="loginStatus"></p>
+        <button class="account-secondary" onclick="resetPassword()">
+          RESET PASSWORD
+        </button>
+      </div>
 
-    <p style="margin-top:18px;color:#aaa;">
-      Need an account?
-      <a href="signup.html" style="color:#e63946;">Create one</a>
-    </p>
+      <p id="loginStatus" class="account-status"></p>
 
-  </div>
-</section>
+      <p style="margin-top:22px;color:#aaa;">
+        Need an account?
+        <a href="signup.html" style="color:#e63946;font-weight:900;">Create one</a>
+      </p>
+    </div>
+  </section>
+
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
 
 <script>
 function clean(value) {

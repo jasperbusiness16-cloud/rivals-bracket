@@ -6,75 +6,202 @@
   <title>Dashboard | Rivals Gauntlet</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
-<body>
 
-<section class="page-hero">
-  <p class="eyebrow">PLAYER DASHBOARD</p>
-  <h1 id="welcomeName">Welcome Back</h1>
-  <p>Manage your profile, applications, and Rivals Gauntlet history.</p>
-</section>
+<body class="account-body">
 
-<section class="event-card admin-card">
-  <div class="admin-section">
-    <h2>Account Status</h2>
-    <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
-    <p><strong>Verified:</strong> <span id="verifiedStatus">Loading...</span></p>
+<div class="account-center-shell">
+  <div class="account-center">
 
-    <button class="secondary" onclick="resendVerification()">
-      RESEND VERIFICATION EMAIL
-    </button>
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ACCOUNT CENTER</h2>
+      </div>
+
+      <div class="account-mini-card">
+        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
+
+        <div id="sidebarFallback" class="account-avatar-fallback">
+          RG
+        </div>
+
+        <h1 id="sidebarName">Player</h1>
+        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
+
+        <span class="account-badge">PLAYER</span>
+
+        <div class="profile-progress">
+          <div class="profile-progress-top">
+            <span>Profile</span>
+            <span id="profilePercent">0%</span>
+          </div>
+
+          <div class="profile-progress-track">
+            <div id="profileFill" class="profile-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="account-nav">
+        <a class="active" href="dashboard.html">Dashboard</a>
+        <a id="publicProfileLink" href="#">Public Profile</a>
+        <a href="#">Applications</a>
+        <a href="#">Tournament History</a>
+        <a href="#">Career Stats</a>
+        <a href="#">Achievements</a>
+        <a href="#">Notifications</a>
+        <a href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>PLAYER DASHBOARD</p>
+          <h1 id="welcomeName">Welcome Back</h1>
+          <span>Manage your profile, applications, and Rivals Gauntlet career.</span>
+        </div>
+
+        <a id="topProfileBtn" class="account-secondary" href="#">
+          View Public Profile
+        </a>
+      </div>
+
+      <div class="account-panel-grid">
+
+        <section class="account-panel full">
+          <h2>Current Event</h2>
+          <p>Applications for upcoming Rivals Gauntlet events will appear here.</p>
+
+          <div class="account-actions">
+            <button class="account-primary" disabled style="opacity:.5;cursor:not-allowed;">
+              Apply Coming Soon
+            </button>
+
+            <a class="account-secondary" href="settings.html">
+              Complete Profile
+            </a>
+          </div>
+        </section>
+
+        <section class="account-panel">
+          <h2>Account Status</h2>
+          <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+          <p><strong>Verified:</strong> <span id="verifiedStatus">Loading...</span></p>
+
+          <div class="account-actions">
+            <button class="account-secondary" onclick="resendVerification()">
+              Resend Verification
+            </button>
+          </div>
+        </section>
+
+        <section class="account-panel">
+          <h2>Profile Snapshot</h2>
+          <p><strong>Display Name:</strong> <span id="displayName">Loading...</span></p>
+          <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
+          <p><strong>Discord:</strong> <span id="discordUsername">Loading...</span></p>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Career Snapshot</h2>
+
+          <div class="account-stat-grid">
+            <div class="account-stat">
+              <strong id="eventsPlayed">0</strong>
+              <span>Events Played</span>
+            </div>
+
+            <div class="account-stat">
+              <strong id="championships">0</strong>
+              <span>Championships</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Recent Notifications</h2>
+          <p>No notifications yet. Application updates, team assignments, and tournament alerts will appear here.</p>
+        </section>
+
+      </div>
+
+      <p id="dashboardStatus" class="account-status"></p>
+    </main>
+
   </div>
-
-  <div class="admin-section">
-  <h2>Player Profile</h2>
-
-  <p><strong>Display Name:</strong> <span id="displayName">Loading...</span></p>
-  <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
-  <p><strong>Discord:</strong> <span id="discordUsername">Loading...</span></p>
-
-  <a class="join-btn" href="settings.html" style="margin-top:18px;">
-    ACCOUNT SETTINGS
-  </a>
-
-  <a id="publicProfileBtn"
-     class="secondary"
-     href="#"
-     style="display:block;margin-top:12px;text-align:center;">
-    VIEW MY PUBLIC PROFILE
-  </a>
-
 </div>
-
-  <div class="admin-section">
-    <h2>Current Event</h2>
-    <p>Applications and event status will appear here soon.</p>
-
-    <button class="join-btn" disabled style="opacity:.5;cursor:not-allowed;">
-      APPLY COMING SOON
-    </button>
-  </div>
-
-  <div class="admin-section">
-    <h2>Rivals Gauntlet History</h2>
-    <p>Your tournament history, placements, achievements, and stats will appear here after events.</p>
-  </div>
-
-  <button class="secondary" onclick="logoutUser()" style="margin-top:25px;">
-    SIGN OUT
-  </button>
-
-  <p id="dashboardStatus"></p>
-</section>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
 
 <script>
 const statusEl = document.getElementById("dashboardStatus");
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getInitials(name) {
+  const words = clean(name, "RG").split(" ").filter(Boolean);
+  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+}
+
+function calculateProfileCompletion(player) {
+  const socials = player.socials || {};
+
+  const fields = [
+    player.displayName,
+    player.rivalsIgn,
+    player.discordUsername,
+    player.region,
+    player.platform,
+    player.bio,
+    player.profileImage,
+    socials.twitch || socials.youtube || socials.tiktok || socials.x
+  ];
+
+  const completed = fields.filter(value => clean(value)).length;
+  return Math.round((completed / fields.length) * 100);
+}
+
+function renderSidebar(player, user) {
+  const displayName = clean(player.displayName, "Player");
+
+  document.getElementById("sidebarName").innerText = displayName;
+  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
+
+  document.getElementById("sidebarId").innerText =
+    player.rgId || "RG ACCOUNT";
+
+  const avatar = document.getElementById("sidebarAvatar");
+  const fallback = document.getElementById("sidebarFallback");
+
+  if (player.profileImage) {
+    avatar.src = player.profileImage;
+    avatar.style.display = "block";
+    fallback.style.display = "none";
+  } else {
+    avatar.style.display = "none";
+    fallback.style.display = "flex";
+  }
+
+  const percent = calculateProfileCompletion(player);
+  document.getElementById("profilePercent").innerText = `${percent}%`;
+  document.getElementById("profileFill").style.width = `${percent}%`;
+
+  document.getElementById("publicProfileLink").href =
+    `player.html?id=${user.uid}`;
+
+  document.getElementById("topProfileBtn").href =
+    `player.html?id=${user.uid}`;
+}
 
 auth.onAuthStateChanged((user) => {
   if (!user) {
@@ -82,9 +209,6 @@ auth.onAuthStateChanged((user) => {
     return;
   }
 
-  document.getElementById("publicProfileBtn").href =
-    `player.html?id=${user.uid}`;
-  
   document.getElementById("accountEmail").innerText = user.email || "";
   document.getElementById("verifiedStatus").innerText =
     user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
@@ -97,6 +221,8 @@ auth.onAuthStateChanged((user) => {
   database.ref(`players/${user.uid}`).once("value").then(snapshot => {
     const player = snapshot.val() || {};
 
+    renderSidebar(player, user);
+
     document.getElementById("welcomeName").innerText =
       `Welcome Back, ${player.displayName || "Player"}`;
 
@@ -108,6 +234,12 @@ auth.onAuthStateChanged((user) => {
 
     document.getElementById("discordUsername").innerText =
       player.discordUsername || "Not set";
+
+    document.getElementById("eventsPlayed").innerText =
+      player.eventsPlayed || 0;
+
+    document.getElementById("championships").innerText =
+      player.championships || 0;
   });
 });
 

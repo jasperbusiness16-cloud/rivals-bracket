@@ -136,13 +136,15 @@ function renderPublishedTeams(teamData) {
           ${
             players.length
               ? players.map((player, index) => `
-                <div class="team-player">
-                  <span>${index + 1}</span>
-                  <strong>${player.displayName || "Player"}</strong>
-                  <small style="color:#8b949e;">
-                    ${player.peakRank || "No Rank"} • ${player.mainRole || "No Role"}
-                  </small>
-                </div>
+                <a class="team-player"
+   href="player.html?id=${player.uid}"
+   style="text-decoration:none;color:inherit;">
+  <span>${index + 1}</span>
+  <strong>${player.displayName || "Player"}</strong>
+  <small style="color:#8b949e;">
+    ${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}
+  </small>
+</a>
               `).join("")
               : `<p>No players assigned.</p>`
           }

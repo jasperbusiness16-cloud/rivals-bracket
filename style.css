@@ -1734,3 +1734,11 @@ nav .mobile-join{
     text-transform:uppercase !important;
   }
 }
+
+/* FINAL FEATURE ICON SIZE */
+.features-section .feature-icon img {
+  width: 150px !important;
+  height: 150px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
+}

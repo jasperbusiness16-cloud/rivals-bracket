@@ -96,72 +96,66 @@
 <script src="firebase.js"></script>
 
 <script>
+const tournamentId = "open1";
+
 function toggleMenu() {
   document.getElementById("mobileNav").classList.toggle("active");
 }
 
-function renderTeams(data) {
+function renderPublishedTeams(teamData) {
   const grid = document.getElementById("teamsGrid");
-  const is16Team = (data.formatType || "8_single_elim") === "16_single_elim";
-  const teamCount = is16Team ? 16 : 8;
 
+  if (!teamData || !teamData.published || !teamData.teams) {
+    grid.innerHTML = `
+      <div class="team-card">
+        <h2>Teams Not Published Yet</h2>
+        <p>Rosters will appear here once Rivals Gauntlet staff publish teams.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const teams = teamData.teams;
   let html = "";
 
-  for (let teamNum = 1; teamNum <= teamCount; teamNum++) {
-    const teamName = data[`team${teamNum}`] || `Team ${teamNum}`;
-
-    const players = [];
-for (let playerNum = 1; playerNum <= 6; playerNum++) {
-  players.push({
-    name: data[`team${teamNum}Player${playerNum}`] || `Player ${playerNum}`,
-    rank: data[`team${teamNum}Player${playerNum}RankImage`] || ""
-  });
-}
+  Object.keys(teams).forEach((teamKey) => {
+    const players = teams[teamKey] || [];
+    const teamNumber = teamKey.replace("team", "");
 
     html += `
-      <div class="team-card" id="team${teamNum}">
+      <div class="team-card" id="${teamKey}">
         <div class="team-card-header">
           <div>
-            <p class="eyebrow">TEAM ${teamNum}</p>
-            <h2>${teamName}</h2>
+            <p class="eyebrow">TEAM ${teamNumber}</p>
+            <h2>Team ${teamNumber}</h2>
           </div>
-          <span class="team-count">6 Players</span>
+          <span class="team-count">${players.length} Players</span>
         </div>
 
         <div class="team-roster-list">
-          ${players.map((player, index) => `
-  <div class="team-player">
-    <span>${index + 1}</span>
-    <strong>${player.name}</strong>
-    ${
-      player.rank
-        ? `<img class="player-rank-icon" src="${player.rank.replace('assets/ranks/', 'overlays/assets/ranks/')}" alt="Peak Rank">`
-        : ""
-    }
-  </div>
-`).join("")}
+          ${
+            players.length
+              ? players.map((player, index) => `
+                <div class="team-player">
+                  <span>${index + 1}</span>
+                  <strong>${player.displayName || "Player"}</strong>
+                  <small style="color:#8b949e;">
+                    ${player.peakRank || "No Rank"} • ${player.mainRole || "No Role"}
+                  </small>
+                </div>
+              `).join("")
+              : `<p>No players assigned.</p>`
+          }
         </div>
       </div>
     `;
-  }
+  });
 
   grid.innerHTML = html;
-
-  if (window.location.hash) {
-    const target = document.querySelector(window.location.hash);
-    if (target) {
-      setTimeout(() => {
-        target.scrollIntoView({ behavior: "smooth", block: "center" });
-        target.classList.add("team-card-highlight");
-      }, 300);
-    }
-  }
 }
 
-database.ref("site").on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (!data) return;
-  renderTeams(data);
+database.ref(`teams/${tournamentId}`).on("value", (snapshot) => {
+  renderPublishedTeams(snapshot.val());
 });
 </script>
 

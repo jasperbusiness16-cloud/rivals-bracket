@@ -1716,3 +1716,21 @@ nav .mobile-join{
 }
 
 }
+
+/* FINAL MOBILE NAV LOCK */
+@media (max-width:900px){
+  nav{
+    gap:30px !important;
+    padding:24px 25px 30px !important;
+  }
+
+  nav a,
+  nav .mobile-join{
+    font-family:'Rajdhani', Arial, sans-serif !important;
+    font-size:22px !important;
+    font-weight:700 !important;
+    letter-spacing:4px !important;
+    line-height:1.25 !important;
+    text-transform:uppercase !important;
+  }
+}

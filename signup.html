@@ -6,54 +6,64 @@
   <title>Create Account | Rivals Gauntlet</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
-<body>
 
-<section class="page-hero">
-  <p class="eyebrow">RIVALS GAUNTLET ACCOUNT</p>
-  <h1>Create Account</h1>
-  <p>Build your creator profile, apply for tournaments, and track your Rivals Gauntlet history.</p>
-</section>
+<body class="account-body">
 
-<section class="event-card admin-card">
-  <div class="admin-section">
+<div class="auth-shell">
 
-    <h2>Player Account</h2>
+  <section class="auth-brand-side">
+    <p>RIVALS GAUNTLET</p>
+    <h1>BUILD YOUR<br>COMPETITIVE<br>LEGACY.</h1>
+    <span>
+      Create your Rivals Gauntlet account to apply for tournaments,
+      build your creator profile, track your history, and compete on broadcast.
+    </span>
+  </section>
 
-    <label>Email</label>
-    <input id="email" type="email" placeholder="you@example.com">
+  <section class="auth-form-side">
+    <div class="auth-card">
+      <h2>Create Account</h2>
+      <p>Start your Rivals Gauntlet creator profile.</p>
 
-    <label>Password</label>
-    <input id="password" type="password" placeholder="Create a password">
+      <label>Email</label>
+      <input id="email" type="email" placeholder="you@example.com">
 
-    <label>Display Name</label>
-    <input id="displayName" placeholder="Atrophy">
+      <label>Password</label>
+      <input id="password" type="password" placeholder="Create a password">
 
-    <label>Marvel Rivals IGN</label>
-    <input id="rivalsIgn" placeholder="Your in-game name">
+      <label>Display Name</label>
+      <input id="displayName" placeholder="Atrophy">
 
-    <label>Discord Username</label>
-    <input id="discordUsername" placeholder="yourname#0000">
+      <label>Marvel Rivals IGN</label>
+      <input id="rivalsIgn" placeholder="Your in-game name">
 
-    <button class="join-btn" onclick="createAccount()">
-      CREATE ACCOUNT
-    </button>
+      <label>Discord Username</label>
+      <input id="discordUsername" placeholder="yourname">
 
-    <p id="signupStatus"></p>
+      <div class="account-actions">
+        <button class="account-primary" onclick="createAccount()">
+          CREATE ACCOUNT
+        </button>
+      </div>
 
-    <p style="margin-top:18px;color:#aaa;">
-      Already have an account?
-      <a href="login.html" style="color:#e63946;">Sign in</a>
-    </p>
+      <p id="signupStatus" class="account-status"></p>
 
-  </div>
-</section>
+      <p style="margin-top:22px;color:#aaa;">
+        Already have an account?
+        <a href="login.html" style="color:#e63946;font-weight:900;">Sign in</a>
+      </p>
+    </div>
+  </section>
+
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
 
 <script>
 function clean(value) {
@@ -107,6 +117,8 @@ function createAccount() {
             tiktok: "",
             x: ""
           },
+          eventsPlayed: 0,
+          championships: 0,
           createdAt: now,
           updatedAt: now
         };

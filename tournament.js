@@ -4,31 +4,46 @@ let teams = {};
 let winners = {};
 let scores = {};
 let currentMatch = "";
+const tournamentId = "open1";
 
-database.ref("site").on("value", (snapshot) => {
+
+database.ref("site").on("value", async (snapshot) => {
   const data = snapshot.val();
 
   if (!data) return;
+  const publishedTeamsSnapshot = await database.ref(`teams/${tournamentId}`).once("value");
+const publishedTeamData = publishedTeamsSnapshot.val() || {};
 
+function getBracketTeamName(teamNumber, fallback) {
+  const teamKey = `team${teamNumber}`;
+  const hasPublishedTeam = publishedTeamData.published && publishedTeamData.teams && publishedTeamData.teams[teamKey];
+
+  if (hasPublishedTeam) {
+    return data[teamKey] || `Team ${teamNumber}`;
+  }
+
+  return fallback;
+}
+  
   currentMatch = (data.currentMatch || "").trim().toLowerCase();
 
   teams = {
-  team1: data.team1 || "Team 1",
-  team2: data.team2 || "Team 2",
-  team3: data.team3 || "Team 3",
-  team4: data.team4 || "Team 4",
-  team5: data.team5 || "Team 5",
-  team6: data.team6 || "Team 6",
-  team7: data.team7 || "Team 7",
-  team8: data.team8 || "Team 8",
-  team9: data.team9 || "Team 9",
-  team10: data.team10 || "Team 10",
-  team11: data.team11 || "Team 11",
-  team12: data.team12 || "Team 12",
-  team13: data.team13 || "Team 13",
-  team14: data.team14 || "Team 14",
-  team15: data.team15 || "Team 15",
-  team16: data.team16 || "Team 16"
+  team1: getBracketTeamName(1, data.team1 || "Team 1"),
+  team2: getBracketTeamName(2, data.team2 || "Team 2"),
+  team3: getBracketTeamName(3, data.team3 || "Team 3"),
+  team4: getBracketTeamName(4, data.team4 || "Team 4"),
+  team5: getBracketTeamName(5, data.team5 || "Team 5"),
+  team6: getBracketTeamName(6, data.team6 || "Team 6"),
+  team7: getBracketTeamName(7, data.team7 || "Team 7"),
+  team8: getBracketTeamName(8, data.team8 || "Team 8"),
+  team9: getBracketTeamName(9, data.team9 || "Team 9"),
+  team10: getBracketTeamName(10, data.team10 || "Team 10"),
+  team11: getBracketTeamName(11, data.team11 || "Team 11"),
+  team12: getBracketTeamName(12, data.team12 || "Team 12"),
+  team13: getBracketTeamName(13, data.team13 || "Team 13"),
+  team14: getBracketTeamName(14, data.team14 || "Team 14"),
+  team15: getBracketTeamName(15, data.team15 || "Team 15"),
+  team16: getBracketTeamName(16, data.team16 || "Team 16")
 };
 
   winners = {

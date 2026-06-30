@@ -277,10 +277,29 @@ function renderCurrentEvent() {
 
     if (myTeam) {
       description.innerHTML = `
-        <strong>You are on ${myTeam.teamName}.</strong><br><br>
-        Teammates:<br>
-        ${myTeam.players.map(player => `• ${player.displayName || "Player"} — ${player.peakRank || "No Rank"} / ${player.mainRole || "No Role"}`).join("<br>")}
-      `;
+  <div class="dashboard-event-status">✓ TEAM ASSIGNED</div>
+
+  <div class="dashboard-event-team">
+    <span>Your Team</span>
+    <strong>${myTeam.teamName}</strong>
+  </div>
+
+  <div class="dashboard-roster">
+    <span>Roster</span>
+    ${myTeam.players.map(player => `
+      <a class="dashboard-roster-player"
+         href="player.html?id=${player.uid}">
+        <strong>${player.displayName || "Player"}</strong>
+        <small>${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}</small>
+      </a>
+    `).join("")}
+  </div>
+
+  <div class="dashboard-next-step">
+    <span>Next Step</span>
+    <strong>Check-in and match schedule coming soon.</strong>
+  </div>
+`;
 
       actions.innerHTML = `
         <a class="account-secondary" href="teams.html">View Teams</a>

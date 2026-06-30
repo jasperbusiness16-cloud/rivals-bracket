@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Profile | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=50">
+</head>
+<body>
+
+<section class="page-hero">
+  <p class="eyebrow">RIVALS GAUNTLET PROFILE</p>
+  <h1 id="profileName">Loading Player...</h1>
+  <p id="profileBio">Public creator profile and tournament history.</p>
+</section>
+
+<section class="event-card admin-card">
+
+  <div class="admin-section" style="text-align:center;">
+    <img id="profileImage" src="" alt="Profile Image" style="
+      width:130px;
+      height:130px;
+      object-fit:cover;
+      border-radius:50%;
+      border:2px solid #e63946;
+      display:none;
+      margin:0 auto 20px;
+    ">
+
+    <h2 id="cardName">Player</h2>
+    <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
+    <p><strong>Region:</strong> <span id="region">Loading...</span></p>
+    <p><strong>Platform:</strong> <span id="platform">Loading...</span></p>
+    <p><strong>Discord:</strong> <span id="discord">Loading...</span></p>
+  </div>
+
+  <div class="admin-section">
+    <h2>Creator Links</h2>
+    <div id="creatorLinks">
+      <p>No creator links added yet.</p>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>Rivals Gauntlet Career</h2>
+
+    <div class="stats-grid">
+      <div class="stat-box">
+        <strong id="eventsPlayed">0</strong>
+        <span>Events Played</span>
+      </div>
+
+      <div class="stat-box">
+        <strong id="championships">0</strong>
+        <span>Championships</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <h2>Tournament History</h2>
+    <p id="historyEmpty">Tournament history will appear here after events.</p>
+    <div id="tournamentHistory"></div>
+  </div>
+
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=1"></script>
+
+<script>
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getPlayerId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
+
+function socialLink(label, url) {
+  if (!url) return "";
+
+  return `
+    <a href="${url}" target="_blank" class="event-btn" style="margin:6px;">
+      ${label}
+    </a>
+  `;
+}
+
+function renderProfile(player) {
+  const socials = player.socials || {};
+
+  document.getElementById("profileName").innerText =
+    clean(player.displayName, "Player").toUpperCase();
+
+  document.getElementById("cardName").innerText =
+    clean(player.displayName, "Player");
+
+  document.getElementById("profileBio").innerText =
+    clean(player.bio, "Public creator profile and tournament history.");
+
+  document.getElementById("rivalsIgn").innerText =
+    clean(player.rivalsIgn, "Not set");
+
+  document.getElementById("region").innerText =
+    clean(player.region, "Not set");
+
+  document.getElementById("platform").innerText =
+    clean(player.platform, "Not set");
+
+  document.getElementById("discord").innerText =
+    clean(player.discordUsername, "Not set");
+
+  const img = document.getElementById("profileImage");
+  if (player.profileImage) {
+    img.src = player.profileImage;
+    img.style.display = "block";
+  }
+
+  const links = [
+    socialLink("Twitch", socials.twitch),
+    socialLink("YouTube", socials.youtube),
+    socialLink("TikTok", socials.tiktok),
+    socialLink("X", socials.x)
+  ].join("");
+
+  document.getElementById("creatorLinks").innerHTML =
+    links || "<p>No creator links added yet.</p>";
+
+  document.getElementById("eventsPlayed").innerText =
+    player.eventsPlayed || 0;
+
+  document.getElementById("championships").innerText =
+    player.championships || 0;
+}
+
+const playerId = getPlayerId();
+
+if (!playerId) {
+  document.getElementById("profileName").innerText = "PLAYER NOT FOUND";
+  document.getElementById("profileBio").innerText = "No player ID was provided.";
+} else {
+  database.ref(`players/${playerId}`).once("value").then(snapshot => {
+    const player = snapshot.val();
+
+    if (!player) {
+      document.getElementById("profileName").innerText = "PLAYER NOT FOUND";
+      document.getElementById("profileBio").innerText = "This profile does not exist.";
+      return;
+    }
+
+    renderProfile(player);
+  });
+}
+</script>
+
+</body>
+</html>

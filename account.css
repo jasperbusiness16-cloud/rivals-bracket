@@ -851,3 +851,23 @@
 .builder-team-player{
   cursor:grab;
 }
+
+/* MOBILE TAP-TO-ASSIGN */
+.selected-player{
+  border-color:#e63946 !important;
+  box-shadow:0 0 18px rgba(230,57,70,.35);
+}
+
+.builder-team-card{
+  cursor:pointer;
+}
+
+@media(max-width:700px){
+  .builder-player-wrap{
+    grid-template-columns:1fr;
+  }
+
+  .builder-player-card{
+    padding:10px;
+  }
+}

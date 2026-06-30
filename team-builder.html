@@ -1,1 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Builder | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ADMIN CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="admin-applications.html">Applications</a>
+        <a class="active" href="team-builder.html">Team Builder</a>
+        <a href="#">Check-In</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>TOURNAMENT CONTROL</p>
+          <h1>Team Builder</h1>
+          <span>Assign accepted players into teams for Rivals Gauntlet Open #1.</span>
+        </div>
+      </div>
+
+      <section class="account-panel full">
+        <h2>Builder Controls</h2>
+
+        <div class="account-actions">
+          <button class="account-secondary" onclick="generateRandomTeams()">Random Teams</button>
+          <button class="account-secondary" disabled style="opacity:.5;">Rank Balanced Coming Soon</button>
+          <button class="account-secondary" disabled style="opacity:.5;">Captain Draft Coming Soon</button>
+          <button class="account-primary" onclick="saveTeams()">Save Teams</button>
+        </div>
+
+        <p id="builderStatus" class="account-status"></p>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Accepted Players</h2>
+        <div id="acceptedPlayersList" class="team-builder-player-list"></div>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Teams</h2>
+        <div id="teamsGrid" class="team-builder-grid"></div>
+      </section>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+const tournamentId = "open1";
+const teamCount = 8;
+
+let acceptedPlayers = [];
+let teams = {};
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function playerCard(player) {
+  const initials = clean(player.displayName, "RG")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(word => word[0])
+    .join("")
+    .toUpperCase();
+
+  const avatar = player.profileImage
+    ? `<img class="application-avatar" src="${player.profileImage}" alt="${player.displayName}">`
+    : `<div class="application-avatar-fallback">${initials}</div>`;
+
+  return `
+    <div class="builder-player-card">
+      ${avatar}
+      <div>
+        <strong>${player.displayName || "Player"}</strong>
+        <span>${player.rgId || "RG ID"}</span>
+        <small>${player.peakRank || "No Rank"} • ${player.mainRole || "No Role"} • ${player.region || "No Region"}</small>
+      </div>
+    </div>
+  `;
+}
+
+function renderAcceptedPlayers() {
+  const container = document.getElementById("acceptedPlayersList");
+
+  const assignedUids = new Set(
+    Object.values(teams).flat().map(player => player.uid)
+  );
+
+  const unassigned = acceptedPlayers.filter(player => !assignedUids.has(player.uid));
+
+  if (!unassigned.length) {
+    container.innerHTML = "<p>All accepted players are currently assigned.</p>";
+    return;
+  }
+
+  container.innerHTML = unassigned.map(player => `
+    <div class="builder-player-wrap">
+      ${playerCard(player)}
+
+      <select onchange="assignPlayer('${player.uid}', this.value)">
+        <option value="">Assign to Team</option>
+        ${Array.from({ length: teamCount }, (_, i) => `
+          <option value="team${i + 1}">Team ${i + 1}</option>
+        `).join("")}
+      </select>
+    </div>
+  `).join("");
+}
+
+function renderTeams() {
+  const grid = document.getElementById("teamsGrid");
+  let html = "";
+
+  for (let i = 1; i <= teamCount; i++) {
+    const teamKey = `team${i}`;
+    const players = teams[teamKey] || [];
+
+    html += `
+      <div class="builder-team-card">
+        <h3>Team ${i}</h3>
+        <p>${players.length}/6 Players</p>
+
+        <div class="builder-team-slots">
+          ${
+            players.length
+              ? players.map(player => `
+                  <div class="builder-team-player">
+                    <strong>${player.displayName}</strong>
+                    <span>${player.peakRank || "No Rank"} • ${player.mainRole || "No Role"}</span>
+                    <button onclick="removePlayer('${player.uid}')">Remove</button>
+                  </div>
+                `).join("")
+              : "<p>Empty team</p>"
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+}
+
+function renderAll() {
+  renderAcceptedPlayers();
+  renderTeams();
+}
+
+function assignPlayer(uid, teamKey) {
+  if (!teamKey) return;
+
+  const player = acceptedPlayers.find(p => p.uid === uid);
+  if (!player) return;
+
+  removePlayer(uid);
+
+  teams[teamKey] = teams[teamKey] || [];
+
+  if (teams[teamKey].length >= 6) {
+    alert("That team already has 6 players.");
+    renderAll();
+    return;
+  }
+
+  teams[teamKey].push(player);
+  renderAll();
+}
+
+function removePlayer(uid) {
+  Object.keys(teams).forEach(teamKey => {
+    teams[teamKey] = (teams[teamKey] || []).filter(player => player.uid !== uid);
+  });
+
+  renderAll();
+}
+
+function generateRandomTeams() {
+  const shuffled = [...acceptedPlayers].sort(() => Math.random() - 0.5);
+
+  teams = {};
+  for (let i = 1; i <= teamCount; i++) {
+    teams[`team${i}`] = [];
+  }
+
+  shuffled.forEach((player, index) => {
+    const teamKey = `team${(index % teamCount) + 1}`;
+    teams[teamKey].push(player);
+  });
+
+  renderAll();
+}
+
+function saveTeams() {
+  const status = document.getElementById("builderStatus");
+
+  database.ref(`teams/${tournamentId}`).set({
+    teams,
+    updatedAt: Date.now()
+  }).then(() => {
+    status.innerText = "✓ Teams saved successfully.";
+    status.style.color = "#22c55e";
+  }).catch(error => {
+    status.innerText = error.message;
+    status.style.color = "#ef4444";
+  });
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  database.ref(`users/${user.uid}`).once("value").then(snapshot => {
+    const userData = snapshot.val() || {};
+
+    if (userData.role !== "admin" && userData.role !== "owner") {
+      document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+      return;
+    }
+
+    database.ref(`applications/${tournamentId}`).on("value", snapshot => {
+      const data = snapshot.val() || {};
+
+      acceptedPlayers = Object.values(data)
+        .filter(app => app.status === "accepted")
+        .sort((a, b) => (a.displayName || "").localeCompare(b.displayName || ""));
+
+      renderAll();
+    });
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

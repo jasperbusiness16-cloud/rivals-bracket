@@ -55,6 +55,12 @@
         <h2>Accepted Player Pool</h2>
         <p>Drag players from this pool into a team card below.</p>
 
+        <p id="selectedPlayerNotice" class="account-status"></p>
+
+<button class="account-secondary" onclick="cancelSelection()" style="margin-bottom:14px;">
+  Cancel Selection
+</button>
+        
         <div id="acceptedPlayersList"
              class="team-builder-player-list builder-drop-zone"
              ondragover="allowDrop(event)"
@@ -83,6 +89,7 @@ const playersPerTeam = 6;
 
 let acceptedPlayers = [];
 let teams = {};
+let selectedPlayerUid = null;
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -140,9 +147,10 @@ function playerCard(player) {
     : `<div class="application-avatar-fallback">${initials}</div>`;
 
   return `
-    <div class="builder-player-card"
-         draggable="true"
-         ondragstart="dragStart(event, '${player.uid}')">
+    <div class="builder-player-card ${selectedPlayerUid === player.uid ? "selected-player" : ""}"
+     draggable="true"
+     onclick="selectPlayer('${player.uid}')"
+     ondragstart="dragStart(event, '${player.uid}')">
       ${avatar}
 
       <div>
@@ -156,6 +164,12 @@ function playerCard(player) {
 
 function renderAcceptedPlayers() {
   const container = document.getElementById("acceptedPlayersList");
+  const notice = document.getElementById("selectedPlayerNotice");
+const selectedPlayer = getPlayer(selectedPlayerUid);
+
+notice.innerText = selectedPlayer
+  ? `Selected: ${selectedPlayer.displayName}. Tap a team to assign.`
+  : "Tap a player, then tap a team to assign on mobile.";
   const assignedUids = getAssignedUids();
 
   const unassigned = acceptedPlayers.filter(player => !assignedUids.has(player.uid));
@@ -182,8 +196,9 @@ function renderTeams() {
 
     html += `
       <div class="builder-team-card builder-drop-zone"
-           ondragover="allowDrop(event)"
-           ondrop="dropToTeam(event, '${teamKey}')">
+     onclick="tapAssignToTeam('${teamKey}')"
+     ondragover="allowDrop(event)"
+     ondrop="dropToTeam(event, '${teamKey}')">
         <h3>Team ${i}</h3>
         <p>${players.length}/${playersPerTeam} Players</p>
 
@@ -209,6 +224,23 @@ function renderTeams() {
   grid.innerHTML = html;
 }
 
+function selectPlayer(uid) {
+  selectedPlayerUid = selectedPlayerUid === uid ? null : uid;
+  renderAll();
+}
+
+function tapAssignToTeam(teamKey) {
+  if (!selectedPlayerUid) return;
+  assignPlayer(selectedPlayerUid, teamKey);
+  selectedPlayerUid = null;
+  renderAll();
+}
+
+function cancelSelection() {
+  selectedPlayerUid = null;
+  renderAll();
+}
+  
 function renderAll() {
   renderAcceptedPlayers();
   renderTeams();

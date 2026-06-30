@@ -111,9 +111,12 @@ function renderTeams(data) {
     const teamName = data[`team${teamNum}`] || `Team ${teamNum}`;
 
     const players = [];
-    for (let playerNum = 1; playerNum <= 6; playerNum++) {
-      players.push(data[`team${teamNum}Player${playerNum}`] || `Player ${playerNum}`);
-    }
+for (let playerNum = 1; playerNum <= 6; playerNum++) {
+  players.push({
+    name: data[`team${teamNum}Player${playerNum}`] || `Player ${playerNum}`,
+    rank: data[`team${teamNum}Player${playerNum}RankImage`] || ""
+  });
+}
 
     html += `
       <div class="team-card" id="team${teamNum}">
@@ -127,11 +130,16 @@ function renderTeams(data) {
 
         <div class="team-roster-list">
           ${players.map((player, index) => `
-            <div class="team-player">
-              <span>${index + 1}</span>
-              <strong>${player}</strong>
-            </div>
-          `).join("")}
+  <div class="team-player">
+    <span>${index + 1}</span>
+    <strong>${player.name}</strong>
+    ${
+      player.rank
+        ? `<img class="player-rank-icon" src="${player.rank}" alt="Rank">`
+        : ""
+    }
+  </div>
+`).join("")}
         </div>
       </div>
     `;

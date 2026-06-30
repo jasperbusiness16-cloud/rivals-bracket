@@ -560,3 +560,130 @@
 .creator-status-row strong.missing{
   color:#ef4444;
 }
+
+/* ===========================
+   ADMIN APPLICANT CARDS
+=========================== */
+
+.application-card{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:28px;
+
+    background:#12161d;
+    border:1px solid #252b36;
+    border-radius:18px;
+
+    padding:28px;
+
+    transition:.2s;
+    margin-bottom:22px;
+}
+
+.application-card:hover{
+    border-color:#e63946;
+    transform:translateY(-2px);
+}
+
+.application-left{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.application-avatar{
+    width:82px;
+    height:82px;
+    border-radius:50%;
+    object-fit:cover;
+
+    border:3px solid #e63946;
+    background:#0d1117;
+}
+
+.application-avatar-fallback{
+    width:82px;
+    height:82px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:28px;
+    font-weight:800;
+
+    background:#191f28;
+    border:3px solid #e63946;
+}
+
+.application-right h2{
+    margin:0;
+    font-size:28px;
+}
+
+.application-rgid{
+    color:#d1d5db;
+    letter-spacing:3px;
+    font-size:15px;
+    margin-top:4px;
+}
+
+.application-top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.application-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:18px 0;
+}
+
+.application-tag{
+    background:#1b2029;
+    border:1px solid #2d3643;
+    border-radius:999px;
+
+    padding:6px 12px;
+
+    font-size:13px;
+    font-weight:700;
+}
+
+.application-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:16px;
+    margin-top:16px;
+}
+
+.application-stat{
+    background:#0f141b;
+    border:1px solid #232a35;
+    border-radius:12px;
+
+    padding:14px;
+}
+
+.application-stat span{
+    display:block;
+    color:#8b949e;
+    font-size:12px;
+    margin-bottom:6px;
+}
+
+.application-stat strong{
+    font-size:18px;
+}
+
+.application-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}

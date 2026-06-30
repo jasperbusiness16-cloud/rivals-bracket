@@ -28,15 +28,24 @@
   </div>
 
   <div class="admin-section">
-    <h2>Player Profile</h2>
-    <p><strong>Display Name:</strong> <span id="displayName">Loading...</span></p>
-    <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
-    <p><strong>Discord:</strong> <span id="discordUsername">Loading...</span></p>
+  <h2>Player Profile</h2>
 
-    <a class="join-btn" href="settings.html" style="margin-top:18px;">
-      ACCOUNT SETTINGS
-    </a>
-  </div>
+  <p><strong>Display Name:</strong> <span id="displayName">Loading...</span></p>
+  <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
+  <p><strong>Discord:</strong> <span id="discordUsername">Loading...</span></p>
+
+  <a class="join-btn" href="settings.html" style="margin-top:18px;">
+    ACCOUNT SETTINGS
+  </a>
+
+  <a id="publicProfileBtn"
+     class="secondary"
+     href="#"
+     style="display:block;margin-top:12px;text-align:center;">
+    VIEW MY PUBLIC PROFILE
+  </a>
+
+</div>
 
   <div class="admin-section">
     <h2>Current Event</h2>
@@ -73,6 +82,9 @@ auth.onAuthStateChanged((user) => {
     return;
   }
 
+  document.getElementById("publicProfileBtn").href =
+    `player.html?id=${user.uid}`;
+  
   document.getElementById("accountEmail").innerText = user.email || "";
   document.getElementById("verifiedStatus").innerText =
     user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";

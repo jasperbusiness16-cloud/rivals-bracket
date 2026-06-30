@@ -717,3 +717,110 @@
   letter-spacing:1.4px;
   text-transform:uppercase;
 }
+
+/* TEAM BUILDER */
+.team-builder-player-list{
+  display:grid;
+  gap:14px;
+}
+
+.builder-player-wrap{
+  display:grid;
+  grid-template-columns:1fr 190px;
+  gap:14px;
+  align-items:center;
+  background:#0f141b;
+  border:1px solid #252b36;
+  border-radius:14px;
+  padding:14px;
+}
+
+.builder-player-wrap select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #303846;
+  background:#0d1117;
+  color:white;
+}
+
+.builder-player-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.builder-player-card strong{
+  display:block;
+  color:white;
+  font-size:20px;
+}
+
+.builder-player-card span{
+  display:block;
+  color:#d1d5db;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.builder-player-card small{
+  display:block;
+  color:#8b949e;
+  margin-top:4px;
+}
+
+.team-builder-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+}
+
+.builder-team-card{
+  background:#0f141b;
+  border:1px solid #252b36;
+  border-radius:16px;
+  padding:18px;
+}
+
+.builder-team-card h3{
+  color:#e63946;
+  font-size:26px;
+  margin-bottom:6px;
+}
+
+.builder-team-card p{
+  color:#8b949e;
+}
+
+.builder-team-slots{
+  margin-top:14px;
+  display:grid;
+  gap:10px;
+}
+
+.builder-team-player{
+  background:#111820;
+  border:1px solid #2d3643;
+  border-radius:12px;
+  padding:12px;
+}
+
+.builder-team-player strong{
+  display:block;
+  color:white;
+}
+
+.builder-team-player span{
+  display:block;
+  color:#8b949e;
+  margin:4px 0 10px;
+}
+
+.builder-team-player button{
+  border:1px solid #e63946;
+  background:#0d1117;
+  color:white;
+  border-radius:8px;
+  padding:7px 10px;
+  cursor:pointer;
+}

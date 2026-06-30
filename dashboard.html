@@ -292,7 +292,7 @@ function renderCurrentEvent() {
   const actions = document.getElementById("eventActions");
 
   const tournamentName = currentTournament.name || "Rivals Gauntlet Open #1";
-  const appStatus = currentApplication?.status || "";
+  const appStatus = currentApplication ? currentApplication.status : "";
   const teamsPublished = currentTournament.teamsPublished || currentTeams.published;
 
   title.innerText = tournamentName;

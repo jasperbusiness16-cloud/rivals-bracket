@@ -129,9 +129,11 @@
 </section>
         
         <section class="account-panel full">
-          <h2>Recent Notifications</h2>
-          <p>No notifications yet. Application updates, team assignments, and tournament alerts will appear here.</p>
-        </section>
+  <h2>Activity Feed</h2>
+  <div id="activityFeed" class="dashboard-activity-feed">
+    <p>Loading activity...</p>
+  </div>
+</section>
 
       </div>
 
@@ -252,7 +254,72 @@ function findMyTeam(uid) {
   return null;
 }
 
+function renderActivityFeed() {
+  const feed = document.getElementById("activityFeed");
+  if (!feed) return;
+
+  const items = [];
+
+  if (currentApplication) {
+    items.push({
+      title: "Application Submitted",
+      detail: currentTournament.name || "Rivals Gauntlet Open #1"
+    });
+
+    if (currentApplication.status === "accepted") {
+      items.push({
+        title: "Application Accepted",
+        detail: "You were accepted for this event."
+      });
+    }
+
+    if (currentApplication.status === "waitlist") {
+      items.push({
+        title: "Waitlisted",
+        detail: "You are currently on the waitlist."
+      });
+    }
+
+    if (currentApplication.status === "declined") {
+      items.push({
+        title: "Application Reviewed",
+        detail: "You were not selected for this event."
+      });
+    }
+  }
+
+  const teamsPublished = currentTournament.teamsPublished || currentTeams.published;
+  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
+
+  if (teamsPublished && myTeam) {
+    items.push({
+      title: "Team Assigned",
+      detail: `You were assigned to ${myTeam.teamName}.`
+    });
+  }
+
+  if (!items.length) {
+    feed.innerHTML = `
+      <div class="dashboard-activity-empty">
+        No activity yet. Application updates, team assignments, and tournament alerts will appear here.
+      </div>
+    `;
+    return;
+  }
+
+  feed.innerHTML = items.reverse().map(item => `
+    <div class="dashboard-activity-item">
+      <div class="dashboard-activity-icon">✓</div>
+      <div>
+        <strong>${item.title}</strong>
+        <span>${item.detail}</span>
+      </div>
+    </div>
+  `).join("");
+}
+  
 function renderCurrentEvent() {
+  renderActivityFeed();
   const title = document.getElementById("eventTitle");
   const description = document.getElementById("eventDescription");
   const actions = document.getElementById("eventActions");

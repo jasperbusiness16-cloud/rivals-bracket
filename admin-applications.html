@@ -338,15 +338,20 @@ auth.onAuthStateChanged((user) => {
       return;
     }
 
-    database.ref(`applications/${tournamentId}`).on("value", snapshot => {
-      const data = snapshot.val() || {};
+    database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+  tournamentData = snapshot.val() || {};
+  renderApplications();
+});
 
-      applications = Object.values(data).sort((a, b) => {
-        return (b.submittedAt || 0) - (a.submittedAt || 0);
-      });
+database.ref(`applications/${tournamentId}`).on("value", snapshot => {
+  const data = snapshot.val() || {};
 
-      renderApplications();
-    });
+  applications = Object.values(data).sort((a, b) => {
+    return (b.submittedAt || 0) - (a.submittedAt || 0);
+  });
+
+  renderApplications();
+});
   });
 });
 

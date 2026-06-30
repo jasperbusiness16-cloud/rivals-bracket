@@ -40,6 +40,37 @@
       </div>
 
       <section class="account-panel full">
+  <h2>Application Overview</h2>
+
+  <div class="application-summary-grid">
+    <div class="application-summary-box">
+      <strong id="totalCount">0</strong>
+      <span>Total</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="pendingCount">0</strong>
+      <span>Pending</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="acceptedCount">0</strong>
+      <span>Accepted</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="waitlistCount">0</strong>
+      <span>Waitlist</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="declinedCount">0</strong>
+      <span>Declined</span>
+    </div>
+  </div>
+</section>
+      
+      <section class="account-panel full">
         <h2>Controls</h2>
 
         <div class="account-form-grid">
@@ -130,7 +161,16 @@ function renderApplications() {
   });
 
   document.getElementById("applicationCount").innerText = `(${filtered.length})`;
-
+  document.getElementById("totalCount").innerText = applications.length;
+document.getElementById("pendingCount").innerText =
+  applications.filter(app => (app.status || "pending") === "pending").length;
+document.getElementById("acceptedCount").innerText =
+  applications.filter(app => app.status === "accepted").length;
+document.getElementById("waitlistCount").innerText =
+  applications.filter(app => app.status === "waitlist").length;
+document.getElementById("declinedCount").innerText =
+  applications.filter(app => app.status === "declined").length;
+  
   if (!filtered.length) {
     list.innerHTML = "<p>No applications found.</p>";
     return;

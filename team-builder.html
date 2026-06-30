@@ -324,9 +324,12 @@ function publishTeams() {
 
   database.ref().update(updates)
     .then(() => {
-      status.innerText = "✓ Teams published successfully.";
-      status.style.color = "#22c55e";
-    })
+  selectedPlayerUid = null;
+  renderAll();
+
+  status.innerText = "✓ Teams published successfully.";
+  status.style.color = "#22c55e";
+})
     .catch(error => {
       status.innerText = error.message;
       status.style.color = "#ef4444";

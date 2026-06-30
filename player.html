@@ -210,37 +210,26 @@ function renderProfile(player) {
   document.getElementById("sidebarId").innerText =
     player.rgId || "RG ACCOUNT";
 
-document.getElementById("sidebarEvents").innerText =
-  player.eventsPlayed || 0;
-
-document.getElementById("sidebarChamps").innerText =
-  player.championships || 0;
-
-document.getElementById("sidebarBestFinish").innerText =
-  player.bestFinish || "--";
-
-const socials = player.socials || {};
-
-function setCardStatus(id, active) {
-  const el = document.getElementById(id);
-  el.innerText = active ? "✓" : "—";
-  el.classList.toggle("missing", !active);
-}
-
-setCardStatus("statusDiscord", player.discordMember);
-setCardStatus("statusTwitch", socials.twitch);
-setCardStatus("statusYoutube", socials.youtube);
-setCardStatus("statusTiktok", socials.tiktok);
-  
   document.getElementById("sidebarEvents").innerText =
-  player.eventsPlayed || 0;
+    player.eventsPlayed || 0;
 
-document.getElementById("sidebarChamps").innerText =
-  player.championships || 0;
+  document.getElementById("sidebarChamps").innerText =
+    player.championships || 0;
 
-document.getElementById("sidebarBestFinish").innerText =
-  player.bestFinish || "--";
-  
+  document.getElementById("sidebarBestFinish").innerText =
+    player.bestFinish || "--";
+
+  function setCardStatus(id, active) {
+    const el = document.getElementById(id);
+    el.innerText = active ? "✓" : "—";
+    el.classList.toggle("missing", !active);
+  }
+
+  setCardStatus("statusDiscord", player.discordMember);
+  setCardStatus("statusTwitch", socials.twitch);
+  setCardStatus("statusYoutube", socials.youtube);
+  setCardStatus("statusTiktok", socials.tiktok);
+
   document.getElementById("profileBio").innerText =
     clean(player.bio, "Public Rivals Gauntlet profile and tournament history.");
 

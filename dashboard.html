@@ -182,6 +182,13 @@
 
 <script>
 const statusEl = document.getElementById("dashboardStatus");
+const tournamentId = "open1";
+let currentUser = null;
+let currentPlayer = null;
+let currentApplication = null;
+let currentTeams = {};
+let currentTournament = {};
+  
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -259,12 +266,114 @@ setCardStatus("statusTiktok", socials.tiktok);
     `player.html?id=${user.uid}`;
 }
 
+function findMyTeam(uid) {
+  const teamsObj = currentTeams.teams || currentTeams || {};
+
+  for (const teamKey in teamsObj) {
+    const players = teamsObj[teamKey] || [];
+
+    const found = players.find(player => player.uid === uid);
+
+    if (found) {
+      return {
+        teamKey,
+        teamName: teamKey.replace("team", "Team "),
+        players
+      };
+    }
+  }
+
+  return null;
+}
+
+function renderCurrentEvent() {
+  const title = document.getElementById("eventTitle");
+  const description = document.getElementById("eventDescription");
+  const actions = document.getElementById("eventActions");
+
+  const tournamentName = currentTournament.name || "Rivals Gauntlet Open #1";
+  const appStatus = currentApplication?.status || "";
+  const teamsPublished = currentTournament.teamsPublished || currentTeams.published;
+
+  title.innerText = tournamentName;
+
+  if (!currentApplication) {
+    description.innerText = "Applications are open. Submit your application to be considered for this event.";
+    actions.innerHTML = `
+      <a class="account-primary" href="apply.html">Apply Now</a>
+      <a class="account-secondary" href="settings.html">Complete Profile</a>
+    `;
+    return;
+  }
+
+  if (teamsPublished) {
+    const myTeam = findMyTeam(currentUser.uid);
+
+    if (myTeam) {
+      description.innerHTML = `
+        <strong>You are on ${myTeam.teamName}.</strong><br><br>
+        Teammates:<br>
+        ${myTeam.players.map(player => `• ${player.displayName || "Player"} — ${player.peakRank || "No Rank"} / ${player.mainRole || "No Role"}`).join("<br>")}
+      `;
+
+      actions.innerHTML = `
+        <a class="account-secondary" href="teams.html">View Teams</a>
+      `;
+      return;
+    }
+  }
+
+  if (appStatus === "pending") {
+    description.innerText = "Application submitted. Your application is currently waiting for review.";
+    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
+    return;
+  }
+
+  if (appStatus === "accepted") {
+    description.innerText = "You have been accepted for this event. Team assignments have not been published yet.";
+    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
+    return;
+  }
+
+  if (appStatus === "waitlist") {
+    description.innerText = "You are currently on the waitlist. You may be contacted if a spot opens.";
+    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
+    return;
+  }
+
+  if (appStatus === "declined") {
+    description.innerText = "You were not selected for this event. You may still be considered for future tournaments.";
+    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
+    return;
+  }
+
+  description.innerText = "Checking tournament status...";
+  actions.innerHTML = "";
+}
+  
 auth.onAuthStateChanged((user) => {
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
+  currentUser = user;
+
+database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+  currentTournament = snapshot.val() || {};
+  renderCurrentEvent();
+});
+
+database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
+  currentApplication = snapshot.val();
+  renderCurrentEvent();
+});
+
+database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+  currentTeams = snapshot.val() || {};
+  renderCurrentEvent();
+});
+  
   document.getElementById("accountEmail").innerText = user.email || "";
   document.getElementById("verifiedStatus").innerText =
     user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
@@ -276,7 +385,9 @@ auth.onAuthStateChanged((user) => {
 
   database.ref(`players/${user.uid}`).once("value").then(snapshot => {
     const player = snapshot.val() || {};
-
+    currentPlayer = player;
+renderCurrentEvent();
+    
     renderSidebar(player, user);
 
     document.getElementById("welcomeName").innerText =

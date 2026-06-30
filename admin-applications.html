@@ -180,7 +180,20 @@ function renderApplications() {
 
   document.getElementById("applicationCount").innerText = `(${filtered.length})`;
   const acceptedCount = applications.filter(app => app.status === "accepted").length;
+  const teamBuilderBtn = document.getElementById("teamBuilderBtn");
 
+if (acceptedCount > 0) {
+  teamBuilderBtn.innerText = "Open Team Builder";
+  teamBuilderBtn.href = "team-builder.html";
+  teamBuilderBtn.style.opacity = "1";
+  teamBuilderBtn.style.pointerEvents = "auto";
+} else {
+  teamBuilderBtn.innerText = "Team Builder Locked";
+  teamBuilderBtn.href = "#";
+  teamBuilderBtn.style.opacity = ".5";
+  teamBuilderBtn.style.pointerEvents = "none";
+}
+  
 document.getElementById("tournamentName").innerText =
   tournamentData.name || "Rivals Gauntlet Tournament";
 

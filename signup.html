@@ -85,24 +85,31 @@ function createAccount() {
   }
 
   auth.createUserWithEmailAndPassword(email, password)
-    .then((credential) => {
-      const user = credential.user;
+  .then((credential) => {
+    const user = credential.user;
+    const now = Date.now();
+
+    return database.ref("counters/nextRgId").transaction((currentValue) => {
+      return (currentValue || 1) + 1;
+    }).then((result) => {
+      const assignedNumber = result.snapshot.val() - 1;
+      const rgId = `RG${String(assignedNumber).padStart(6, "0")}`;
 
       return user.sendEmailVerification().then(() => {
-        const now = Date.now();
-
         const updates = {};
 
         updates[`users/${user.uid}`] = {
           email,
           emailVerified: false,
           role: "player",
+          rgId,
           createdAt: now,
           lastLogin: now
         };
 
         updates[`players/${user.uid}`] = {
           uid: user.uid,
+          rgId,
           displayName,
           rivalsIgn,
           discordUsername,
@@ -119,13 +126,15 @@ function createAccount() {
           },
           eventsPlayed: 0,
           championships: 0,
+          bestFinish: "--",
           createdAt: now,
           updatedAt: now
         };
 
         return database.ref().update(updates);
       });
-    })
+    });
+  })
     .then(() => {
       status.innerText = "✓ Account created. Check your email to verify your account.";
       status.style.color = "#22c55e";

@@ -1,1 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Applications | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ADMIN CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Player Dashboard</a>
+        <a class="active" href="admin-applications.html">Applications</a>
+        <a href="#">Team Builder</a>
+        <a href="#">Check-In</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>ADMIN APPLICATIONS</p>
+          <h1>Application Review</h1>
+          <span>Review applicants, update statuses, and manage internal notes.</span>
+        </div>
+      </div>
+
+      <section class="account-panel full">
+        <h2>Controls</h2>
+
+        <div class="account-form-grid">
+          <div class="account-field">
+            <label>Search</label>
+            <input id="searchInput" placeholder="Search name, IGN, RG ID, rank..." oninput="renderApplications()">
+          </div>
+
+          <div class="account-field">
+            <label>Status Filter</label>
+            <select id="statusFilter" onchange="renderApplications()">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="accepted">Accepted</option>
+              <option value="waitlist">Waitlist</option>
+              <option value="declined">Declined</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Applications <span id="applicationCount"></span></h2>
+        <div id="applicationsList"></div>
+      </section>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+const tournamentId = "open1";
+let applications = [];
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function statusBadge(status) {
+  const colors = {
+    pending: "#facc15",
+    accepted: "#22c55e",
+    waitlist: "#3b82f6",
+    declined: "#ef4444"
+  };
+
+  return `
+    <span style="
+      color:${colors[status] || "#aaa"};
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    ">
+      ${status || "pending"}
+    </span>
+  `;
+}
+
+function matchesSearch(app, search) {
+  const text = `
+    ${app.rgId}
+    ${app.displayName}
+    ${app.rivalsIgn}
+    ${app.discordUsername}
+    ${app.peakRank}
+    ${app.region}
+    ${app.platform}
+    ${app.mainRole}
+  `.toLowerCase();
+
+  return text.includes(search.toLowerCase());
+}
+
+function renderApplications() {
+  const list = document.getElementById("applicationsList");
+  const search = clean(document.getElementById("searchInput").value);
+  const filter = document.getElementById("statusFilter").value;
+
+  let filtered = applications.filter(app => {
+    const statusMatch = filter === "all" || app.status === filter;
+    const searchMatch = !search || matchesSearch(app, search);
+    return statusMatch && searchMatch;
+  });
+
+  document.getElementById("applicationCount").innerText = `(${filtered.length})`;
+
+  if (!filtered.length) {
+    list.innerHTML = "<p>No applications found.</p>";
+    return;
+  }
+
+  list.innerHTML = filtered.map(app => `
+    <div class="account-panel full" style="margin-bottom:18px;">
+      <h2>${app.rgId || "RG ID"} — ${app.displayName || "Player"}</h2>
+
+      <p><strong>Status:</strong> ${statusBadge(app.status || "pending")}</p>
+      <p><strong>IGN:</strong> ${app.rivalsIgn || "N/A"}</p>
+      <p><strong>Discord:</strong> ${app.discordUsername || "N/A"}</p>
+      <p><strong>Peak Rank:</strong> ${app.peakRank || "N/A"}</p>
+      <p><strong>Role:</strong> ${app.mainRole || "N/A"}</p>
+      <p><strong>Heroes:</strong> ${app.mainHeroes || "N/A"}</p>
+      <p><strong>Region / Platform:</strong> ${app.region || "N/A"} / ${app.platform || "N/A"}</p>
+      <p><strong>Followers:</strong> ${app.followerCount || 0}</p>
+      <p><strong>Streaming:</strong> ${app.willStream || "N/A"}</p>
+      <p><strong>Wants Sub:</strong> ${app.wantsSub || "N/A"}</p>
+      <p><strong>Notes:</strong> ${app.adminNotes || "None"}</p>
+
+      <div class="account-actions">
+        <a class="account-secondary" href="player.html?id=${app.uid}" target="_blank">
+          View Profile
+        </a>
+
+        <button class="account-primary" onclick="updateStatus('${app.uid}', 'accepted')">
+          Accept
+        </button>
+
+        <button class="account-secondary" onclick="updateStatus('${app.uid}', 'waitlist')">
+          Waitlist
+        </button>
+
+        <button class="account-secondary" onclick="updateStatus('${app.uid}', 'declined')">
+          Decline
+        </button>
+      </div>
+
+      <div class="account-field account-full" style="margin-top:18px;">
+        <label>Admin Notes</label>
+        <textarea id="note-${app.uid}" placeholder="Internal notes only">${app.internalAdminNotes || ""}</textarea>
+      </div>
+
+      <div class="account-actions">
+        <button class="account-secondary" onclick="saveAdminNote('${app.uid}')">
+          Save Admin Note
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function updateStatus(uid, status) {
+  database.ref(`applications/${tournamentId}/${uid}`).update({
+    status,
+    updatedAt: Date.now()
+  });
+}
+
+function saveAdminNote(uid) {
+  const note = document.getElementById(`note-${uid}`).value;
+
+  database.ref(`applications/${tournamentId}/${uid}`).update({
+    internalAdminNotes: note,
+    updatedAt: Date.now()
+  });
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  database.ref(`users/${user.uid}`).once("value").then(snapshot => {
+    const userData = snapshot.val() || {};
+
+    if (userData.role !== "admin" && userData.role !== "owner") {
+      document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+      return;
+    }
+
+    database.ref(`applications/${tournamentId}`).on("value", snapshot => {
+      const data = snapshot.val() || {};
+
+      applications = Object.values(data).sort((a, b) => {
+        return (b.submittedAt || 0) - (a.submittedAt || 0);
+      });
+
+      renderApplications();
+    });
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

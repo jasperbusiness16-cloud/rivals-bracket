@@ -34,7 +34,7 @@
         <div>
           <p>TOURNAMENT CONTROL</p>
           <h1>Team Builder</h1>
-          <span>Assign accepted players into teams for Rivals Gauntlet Open #1.</span>
+          <span>Drag accepted players into teams for Rivals Gauntlet Open #1.</span>
         </div>
       </div>
 
@@ -52,8 +52,14 @@
       </section>
 
       <section class="account-panel full">
-        <h2>Accepted Players</h2>
-        <div id="acceptedPlayersList" class="team-builder-player-list"></div>
+        <h2>Accepted Player Pool</h2>
+        <p>Drag players from this pool into a team card below.</p>
+
+        <div id="acceptedPlayersList"
+             class="team-builder-player-list builder-drop-zone"
+             ondragover="allowDrop(event)"
+             ondrop="dropToPool(event)">
+        </div>
       </section>
 
       <section class="account-panel full">
@@ -73,6 +79,7 @@
 <script>
 const tournamentId = "open1";
 const teamCount = 8;
+const playersPerTeam = 6;
 
 let acceptedPlayers = [];
 let teams = {};
@@ -81,22 +88,63 @@ function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
 
-function playerCard(player) {
-  const initials = clean(player.displayName, "RG")
+function getInitials(name) {
+  return clean(name, "RG")
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map(word => word[0])
     .join("")
     .toUpperCase();
+}
+
+function getPlayer(uid) {
+  return acceptedPlayers.find(player => player.uid === uid);
+}
+
+function getAssignedUids() {
+  return new Set(Object.values(teams).flat().map(player => player.uid));
+}
+
+function dragStart(event, uid) {
+  event.dataTransfer.setData("text/plain", uid);
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+}
+
+function dropToTeam(event, teamKey) {
+  event.preventDefault();
+
+  const uid = event.dataTransfer.getData("text/plain");
+  if (!uid) return;
+
+  assignPlayer(uid, teamKey);
+}
+
+function dropToPool(event) {
+  event.preventDefault();
+
+  const uid = event.dataTransfer.getData("text/plain");
+  if (!uid) return;
+
+  removePlayer(uid);
+}
+
+function playerCard(player) {
+  const initials = getInitials(player.displayName);
 
   const avatar = player.profileImage
     ? `<img class="application-avatar" src="${player.profileImage}" alt="${player.displayName}">`
     : `<div class="application-avatar-fallback">${initials}</div>`;
 
   return `
-    <div class="builder-player-card">
+    <div class="builder-player-card"
+         draggable="true"
+         ondragstart="dragStart(event, '${player.uid}')">
       ${avatar}
+
       <div>
         <strong>${player.displayName || "Player"}</strong>
         <span>${player.rgId || "RG ID"}</span>
@@ -108,10 +156,7 @@ function playerCard(player) {
 
 function renderAcceptedPlayers() {
   const container = document.getElementById("acceptedPlayersList");
-
-  const assignedUids = new Set(
-    Object.values(teams).flat().map(player => player.uid)
-  );
+  const assignedUids = getAssignedUids();
 
   const unassigned = acceptedPlayers.filter(player => !assignedUids.has(player.uid));
 
@@ -123,13 +168,6 @@ function renderAcceptedPlayers() {
   container.innerHTML = unassigned.map(player => `
     <div class="builder-player-wrap">
       ${playerCard(player)}
-
-      <select onchange="assignPlayer('${player.uid}', this.value)">
-        <option value="">Assign to Team</option>
-        ${Array.from({ length: teamCount }, (_, i) => `
-          <option value="team${i + 1}">Team ${i + 1}</option>
-        `).join("")}
-      </select>
     </div>
   `).join("");
 }
@@ -143,21 +181,25 @@ function renderTeams() {
     const players = teams[teamKey] || [];
 
     html += `
-      <div class="builder-team-card">
+      <div class="builder-team-card builder-drop-zone"
+           ondragover="allowDrop(event)"
+           ondrop="dropToTeam(event, '${teamKey}')">
         <h3>Team ${i}</h3>
-        <p>${players.length}/6 Players</p>
+        <p>${players.length}/${playersPerTeam} Players</p>
 
         <div class="builder-team-slots">
           ${
             players.length
               ? players.map(player => `
-                  <div class="builder-team-player">
+                  <div class="builder-team-player"
+                       draggable="true"
+                       ondragstart="dragStart(event, '${player.uid}')">
                     <strong>${player.displayName}</strong>
                     <span>${player.peakRank || "No Rank"} • ${player.mainRole || "No Role"}</span>
                     <button onclick="removePlayer('${player.uid}')">Remove</button>
                   </div>
                 `).join("")
-              : "<p>Empty team</p>"
+              : "<p>Drop players here</p>"
           }
         </div>
       </div>
@@ -173,16 +215,14 @@ function renderAll() {
 }
 
 function assignPlayer(uid, teamKey) {
-  if (!teamKey) return;
-
-  const player = acceptedPlayers.find(p => p.uid === uid);
+  const player = getPlayer(uid);
   if (!player) return;
 
-  removePlayer(uid);
+  removePlayer(uid, false);
 
   teams[teamKey] = teams[teamKey] || [];
 
-  if (teams[teamKey].length >= 6) {
+  if (teams[teamKey].length >= playersPerTeam) {
     alert("That team already has 6 players.");
     renderAll();
     return;
@@ -192,12 +232,12 @@ function assignPlayer(uid, teamKey) {
   renderAll();
 }
 
-function removePlayer(uid) {
+function removePlayer(uid, shouldRender = true) {
   Object.keys(teams).forEach(teamKey => {
     teams[teamKey] = (teams[teamKey] || []).filter(player => player.uid !== uid);
   });
 
-  renderAll();
+  if (shouldRender) renderAll();
 }
 
 function generateRandomTeams() {

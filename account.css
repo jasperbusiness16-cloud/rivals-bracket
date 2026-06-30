@@ -871,3 +871,81 @@
     padding:10px;
   }
 }
+
+/* PREMIUM DASHBOARD EVENT CARD */
+.dashboard-event-status{
+  display:inline-block;
+  color:#22c55e;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin:8px 0 22px;
+}
+
+.dashboard-event-team{
+  background:#111820;
+  border:1px solid #252b36;
+  border-radius:16px;
+  padding:18px;
+  margin:18px 0;
+}
+
+.dashboard-event-team span,
+.dashboard-roster span,
+.dashboard-next-step span{
+  display:block;
+  color:#8b949e;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+
+.dashboard-event-team strong{
+  color:#ffffff;
+  font-size:34px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.dashboard-roster{
+  margin-top:22px;
+  display:grid;
+  gap:10px;
+}
+
+.dashboard-roster-player{
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  background:#0f141b;
+  border:1px solid #252b36;
+  border-radius:14px;
+  padding:14px;
+  transition:.2s;
+}
+
+.dashboard-roster-player:hover{
+  border-color:#e63946;
+  transform:translateY(-2px);
+}
+
+.dashboard-roster-player strong{
+  display:block;
+  color:#fff;
+  font-size:20px;
+}
+
+.dashboard-roster-player small{
+  display:block;
+  color:#8b949e;
+  margin-top:4px;
+}
+
+.dashboard-next-step{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid #252b36;
+}

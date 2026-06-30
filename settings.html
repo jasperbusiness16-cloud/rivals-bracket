@@ -3,121 +3,264 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Account Settings | Rivals Gauntlet</title>
+  <title>Settings | Rivals Gauntlet</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
-<body>
 
-<section class="page-hero">
-  <p class="eyebrow">PLAYER ACCOUNT</p>
-  <h1>Account Settings</h1>
-  <p>Update your creator profile, Marvel Rivals info, and account details.</p>
-</section>
+<body class="account-body">
 
-<section class="event-card admin-card">
+<div class="account-center-shell">
+  <div class="account-center">
 
-  <div class="admin-section">
-    <h2>Profile</h2>
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ACCOUNT CENTER</h2>
+      </div>
 
-    <label>Display Name</label>
-    <input id="displayName" placeholder="Atrophy">
+      <div class="account-mini-card">
+        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
+        <div id="sidebarFallback" class="account-avatar-fallback">RG</div>
 
-    <label>Bio</label>
-    <input id="bio" placeholder="Short creator bio">
+        <h1 id="sidebarName">Player</h1>
+        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
+        <span class="account-badge">PLAYER</span>
 
-    <label>Profile Image URL</label>
-    <input id="profileImage" placeholder="https://...">
+        <div class="profile-progress">
+          <div class="profile-progress-top">
+            <span>Profile</span>
+            <span id="profilePercent">0%</span>
+          </div>
+          <div class="profile-progress-track">
+            <div id="profileFill" class="profile-progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a id="publicProfileLink" href="#">Public Profile</a>
+        <a href="#">Applications</a>
+        <a href="#">Tournament History</a>
+        <a href="#">Career Stats</a>
+        <a href="#">Achievements</a>
+        <a href="#">Notifications</a>
+        <a class="active" href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>ACCOUNT SETTINGS</p>
+          <h1>Profile Setup</h1>
+          <span>Update your creator profile, Marvel Rivals info, and account details.</span>
+        </div>
+      </div>
+
+      <div class="account-panel-grid">
+
+        <section class="account-panel full">
+          <h2>Profile</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Display Name</label>
+              <input id="displayName" placeholder="Atrophy">
+            </div>
+
+            <div class="account-field">
+              <label>Profile Image URL</label>
+              <input id="profileImage" placeholder="https://...">
+            </div>
+
+            <div class="account-field account-full">
+              <label>Bio</label>
+              <textarea id="bio" placeholder="Short creator bio"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Marvel Rivals</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Marvel Rivals IGN</label>
+              <input id="rivalsIgn" placeholder="Your in-game name">
+            </div>
+
+            <div class="account-field">
+              <label>Region</label>
+              <select id="region">
+                <option value="">Select Region</option>
+                <option value="NA East">NA East</option>
+                <option value="NA Central">NA Central</option>
+                <option value="NA West">NA West</option>
+                <option value="EU">EU</option>
+                <option value="Asia">Asia</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="account-field">
+              <label>Platform</label>
+              <select id="platform">
+                <option value="">Select Platform</option>
+                <option value="PC">PC</option>
+                <option value="PlayStation">PlayStation</option>
+                <option value="Xbox">Xbox</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Discord</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Discord Username</label>
+              <input id="discordUsername" placeholder="yourname">
+            </div>
+
+            <div class="account-field">
+              <label>Are you in the Rivals Gauntlet Discord?</label>
+              <select id="discordMember">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Creator Links</h2>
+
+          <div class="account-form-grid">
+            <div class="account-field">
+              <label>Twitch</label>
+              <input id="twitch" placeholder="https://twitch.tv/yourname">
+            </div>
+
+            <div class="account-field">
+              <label>YouTube</label>
+              <input id="youtube" placeholder="https://youtube.com/@yourname">
+            </div>
+
+            <div class="account-field">
+              <label>TikTok</label>
+              <input id="tiktok" placeholder="https://tiktok.com/@yourname">
+            </div>
+
+            <div class="account-field">
+              <label>X / Twitter</label>
+              <input id="x" placeholder="https://x.com/yourname">
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Account</h2>
+          <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+          <p><strong>Email Status:</strong> <span id="emailStatus">Loading...</span></p>
+
+          <div class="account-actions">
+            <button class="account-secondary" onclick="sendPasswordReset()">
+              Send Password Reset
+            </button>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <div class="account-actions">
+            <button class="account-primary" onclick="saveSettings()">
+              Save Settings
+            </button>
+
+            <a id="viewProfileBtn" class="account-secondary" href="#">
+              View Public Profile
+            </a>
+
+            <button class="account-secondary" onclick="logoutUser()">
+              Sign Out
+            </button>
+          </div>
+
+          <p id="settingsStatus" class="account-status"></p>
+        </section>
+
+      </div>
+    </main>
+
   </div>
-
-  <div class="admin-section">
-    <h2>Marvel Rivals</h2>
-
-    <label>Marvel Rivals IGN</label>
-    <input id="rivalsIgn" placeholder="Your in-game name">
-
-    <label>Region</label>
-    <select id="region">
-      <option value="">Select Region</option>
-      <option value="NA East">NA East</option>
-      <option value="NA Central">NA Central</option>
-      <option value="NA West">NA West</option>
-      <option value="EU">EU</option>
-      <option value="Asia">Asia</option>
-      <option value="Other">Other</option>
-    </select>
-
-    <label>Platform</label>
-    <select id="platform">
-      <option value="">Select Platform</option>
-      <option value="PC">PC</option>
-      <option value="PlayStation">PlayStation</option>
-      <option value="Xbox">Xbox</option>
-    </select>
-  </div>
-
-  <div class="admin-section">
-    <h2>Discord</h2>
-
-    <label>Discord Username</label>
-    <input id="discordUsername" placeholder="yourname">
-
-    <label>Are you currently in the Rivals Gauntlet Discord?</label>
-    <select id="discordMember">
-      <option value="false">No</option>
-      <option value="true">Yes</option>
-    </select>
-  </div>
-
-  <div class="admin-section">
-    <h2>Creator Links</h2>
-
-    <label>Twitch</label>
-    <input id="twitch" placeholder="https://twitch.tv/yourname">
-
-    <label>YouTube</label>
-    <input id="youtube" placeholder="https://youtube.com/@yourname">
-
-    <label>TikTok</label>
-    <input id="tiktok" placeholder="https://tiktok.com/@yourname">
-
-    <label>X / Twitter</label>
-    <input id="x" placeholder="https://x.com/yourname">
-  </div>
-
-  <div class="admin-section">
-    <h2>Account</h2>
-
-    <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
-    <p><strong>Email Status:</strong> <span id="emailStatus">Loading...</span></p>
-
-    <button class="secondary" onclick="sendPasswordReset()">
-      SEND PASSWORD RESET EMAIL
-    </button>
-  </div>
-
-  <button class="join-btn" onclick="saveSettings()" style="margin-top:25px;">
-    SAVE SETTINGS
-  </button>
-
-  <button class="secondary" onclick="logoutUser()" style="margin-top:12px;">
-    SIGN OUT
-  </button>
-
-  <p id="settingsStatus"></p>
-</section>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
 
 <script>
 let currentUser = null;
+let currentPlayer = {};
 
-function clean(value) {
-  return String(value || "").trim();
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getInitials(name) {
+  const words = clean(name, "RG").split(" ").filter(Boolean);
+  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+}
+
+function calculateProfileCompletion(player) {
+  const socials = player.socials || {};
+
+  const fields = [
+    player.displayName,
+    player.rivalsIgn,
+    player.discordUsername,
+    player.region,
+    player.platform,
+    player.bio,
+    player.profileImage,
+    socials.twitch || socials.youtube || socials.tiktok || socials.x
+  ];
+
+  const completed = fields.filter(value => clean(value)).length;
+  return Math.round((completed / fields.length) * 100);
+}
+
+function renderSidebar(player, user) {
+  const displayName = clean(player.displayName, "Player");
+
+  document.getElementById("sidebarName").innerText = displayName;
+  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
+  document.getElementById("sidebarId").innerText = player.rgId || "RG ACCOUNT";
+
+  const avatar = document.getElementById("sidebarAvatar");
+  const fallback = document.getElementById("sidebarFallback");
+
+  if (player.profileImage) {
+    avatar.src = player.profileImage;
+    avatar.style.display = "block";
+    fallback.style.display = "none";
+  } else {
+    avatar.style.display = "none";
+    fallback.style.display = "flex";
+  }
+
+  const percent = calculateProfileCompletion(player);
+  document.getElementById("profilePercent").innerText = `${percent}%`;
+  document.getElementById("profileFill").style.width = `${percent}%`;
+
+  document.getElementById("publicProfileLink").href = `player.html?id=${user.uid}`;
+  document.getElementById("viewProfileBtn").href = `player.html?id=${user.uid}`;
 }
 
 function setStatus(message, good = true) {
@@ -140,6 +283,10 @@ auth.onAuthStateChanged((user) => {
 
   database.ref(`players/${user.uid}`).once("value").then(snapshot => {
     const player = snapshot.val() || {};
+    currentPlayer = player;
+
+    renderSidebar(player, user);
+
     const socials = player.socials || {};
 
     document.getElementById("displayName").value = player.displayName || "";
@@ -181,6 +328,8 @@ function saveSettings() {
 
   database.ref(`players/${currentUser.uid}`).update(updates)
     .then(() => {
+      currentPlayer = { ...currentPlayer, ...updates };
+      renderSidebar(currentPlayer, currentUser);
       setStatus("✓ Settings saved");
     })
     .catch(error => {

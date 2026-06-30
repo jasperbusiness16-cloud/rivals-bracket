@@ -46,6 +46,9 @@
           <button class="account-secondary" disabled style="opacity:.5;">Rank Balanced Coming Soon</button>
           <button class="account-secondary" disabled style="opacity:.5;">Captain Draft Coming Soon</button>
           <button class="account-primary" onclick="saveTeams()">Save Teams</button>
+          <button class="account-primary" onclick="publishTeams()">
+  Publish Teams
+</button>
         </div>
 
         <p id="builderStatus" class="account-status"></p>
@@ -303,6 +306,33 @@ function saveTeams() {
   });
 }
 
+function publishTeams() {
+  const status = document.getElementById("builderStatus");
+
+  const updates = {};
+
+  updates[`teams/${tournamentId}`] = {
+    teams,
+    published: true,
+    publishedAt: Date.now(),
+    updatedAt: Date.now()
+  };
+
+  updates[`tournaments/${tournamentId}/teamsPublished`] = true;
+  updates[`tournaments/${tournamentId}/teamsPublishedAt`] = Date.now();
+  updates[`tournaments/${tournamentId}/status`] = "teams_published";
+
+  database.ref().update(updates)
+    .then(() => {
+      status.innerText = "✓ Teams published successfully.";
+      status.style.color = "#22c55e";
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+  
 auth.onAuthStateChanged((user) => {
   if (!user) {
     window.location.href = "login.html";

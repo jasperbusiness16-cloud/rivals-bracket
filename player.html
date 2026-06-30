@@ -38,6 +38,24 @@
             <div id="profileFill" class="profile-progress-fill"></div>
           </div>
         </div>
+      
+      <div class="creator-card-stats">
+  <div class="creator-stat-row">
+    <span>Events Played</span>
+    <strong id="sidebarEvents">0</strong>
+  </div>
+
+  <div class="creator-stat-row">
+    <span>Championships</span>
+    <strong id="sidebarChamps">0</strong>
+  </div>
+
+  <div class="creator-stat-row">
+    <span>Best Finish</span>
+    <strong id="sidebarBestFinish">--</strong>
+  </div>
+</div>
+      
       </div>
 
       <nav class="account-nav">
@@ -172,6 +190,15 @@ function renderProfile(player) {
   document.getElementById("sidebarId").innerText =
     player.rgId || "RG ACCOUNT";
 
+  document.getElementById("sidebarEvents").innerText =
+  player.eventsPlayed || 0;
+
+document.getElementById("sidebarChamps").innerText =
+  player.championships || 0;
+
+document.getElementById("sidebarBestFinish").innerText =
+  player.bestFinish || "--";
+  
   document.getElementById("profileBio").innerText =
     clean(player.bio, "Public Rivals Gauntlet profile and tournament history.");
 

@@ -6,70 +6,117 @@
   <title>Player Profile | Rivals Gauntlet</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
 </head>
-<body>
 
-<section class="page-hero">
-  <p class="eyebrow">RIVALS GAUNTLET PROFILE</p>
-  <h1 id="profileName">Loading Player...</h1>
-  <p id="profileBio">Public creator profile and tournament history.</p>
-</section>
+<body class="account-body">
 
-<section class="event-card admin-card">
+<div class="account-center-shell">
+  <div class="account-center">
 
-  <div class="admin-section" style="text-align:center;">
-    <img id="profileImage" src="" alt="Profile Image" style="
-      width:130px;
-      height:130px;
-      object-fit:cover;
-      border-radius:50%;
-      border:2px solid #e63946;
-      display:none;
-      margin:0 auto 20px;
-    ">
-
-    <h2 id="cardName">Player</h2>
-    <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
-    <p><strong>Region:</strong> <span id="region">Loading...</span></p>
-    <p><strong>Platform:</strong> <span id="platform">Loading...</span></p>
-    <p><strong>Discord:</strong> <span id="discord">Loading...</span></p>
-  </div>
-
-  <div class="admin-section">
-    <h2>Creator Links</h2>
-    <div id="creatorLinks">
-      <p>No creator links added yet.</p>
-    </div>
-  </div>
-
-  <div class="admin-section">
-    <h2>Rivals Gauntlet Career</h2>
-
-    <div class="stats-grid">
-      <div class="stat-box">
-        <strong id="eventsPlayed">0</strong>
-        <span>Events Played</span>
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>PLAYER PROFILE</h2>
       </div>
 
-      <div class="stat-box">
-        <strong id="championships">0</strong>
-        <span>Championships</span>
+      <div class="account-mini-card">
+        <img id="profileAvatar" class="account-avatar" src="" alt="Profile">
+        <div id="profileFallback" class="account-avatar-fallback">RG</div>
+
+        <h1 id="sidebarName">Player</h1>
+        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
+        <span class="account-badge">CREATOR</span>
+
+        <div class="profile-progress">
+          <div class="profile-progress-top">
+            <span>Profile</span>
+            <span id="profilePercent">0%</span>
+          </div>
+          <div class="profile-progress-track">
+            <div id="profileFill" class="profile-progress-fill"></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="admin-section">
-    <h2>Tournament History</h2>
-    <p id="historyEmpty">Tournament history will appear here after events.</p>
-    <div id="tournamentHistory"></div>
-  </div>
+      <nav class="account-nav">
+        <a href="index.html">Home</a>
+        <a href="tournament.html">Tournament</a>
+        <a href="teams.html">Teams</a>
+        <a href="champions.html">Champions</a>
+        <a href="watch.html">Watch Live</a>
+      </nav>
+    </aside>
 
-</section>
+    <main class="account-main">
+
+      <div class="account-topbar">
+        <div>
+          <p>PUBLIC CREATOR PROFILE</p>
+          <h1 id="profileName">Loading Player</h1>
+          <span id="profileBio">Public Rivals Gauntlet profile and tournament history.</span>
+        </div>
+      </div>
+
+      <div class="account-panel-grid">
+
+        <section class="account-panel full">
+          <h2>Creator Card</h2>
+
+          <div class="account-stat-grid">
+            <div class="account-stat">
+              <strong id="eventsPlayed">0</strong>
+              <span>Events Played</span>
+            </div>
+
+            <div class="account-stat">
+              <strong id="championships">0</strong>
+              <span>Championships</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="account-panel">
+          <h2>Marvel Rivals</h2>
+          <p><strong>IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
+          <p><strong>Region:</strong> <span id="region">Loading...</span></p>
+          <p><strong>Platform:</strong> <span id="platform">Loading...</span></p>
+        </section>
+
+        <section class="account-panel">
+          <h2>Community</h2>
+          <p><strong>Discord:</strong> <span id="discord">Loading...</span></p>
+          <p><strong>RG Discord:</strong> <span id="discordMember">Loading...</span></p>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Creator Links</h2>
+          <div id="creatorLinks" class="account-actions">
+            <p>No creator links added yet.</p>
+          </div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Tournament History</h2>
+          <p id="historyEmpty">Tournament history will appear here after official Rivals Gauntlet events.</p>
+          <div id="tournamentHistory"></div>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Achievements</h2>
+          <p>Badges, championships, MVP awards, and season milestones will appear here.</p>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
 
 <script>
 function clean(value, fallback = "") {
@@ -81,11 +128,34 @@ function getPlayerId() {
   return params.get("id");
 }
 
+function getInitials(name) {
+  const words = clean(name, "RG").split(" ").filter(Boolean);
+  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
+}
+
+function calculateProfileCompletion(player) {
+  const socials = player.socials || {};
+
+  const fields = [
+    player.displayName,
+    player.rivalsIgn,
+    player.discordUsername,
+    player.region,
+    player.platform,
+    player.bio,
+    player.profileImage,
+    socials.twitch || socials.youtube || socials.tiktok || socials.x
+  ];
+
+  const completed = fields.filter(value => clean(value)).length;
+  return Math.round((completed / fields.length) * 100);
+}
+
 function socialLink(label, url) {
   if (!url) return "";
 
   return `
-    <a href="${url}" target="_blank" class="event-btn" style="margin:6px;">
+    <a href="${url}" target="_blank" class="account-secondary">
       ${label}
     </a>
   `;
@@ -93,15 +163,17 @@ function socialLink(label, url) {
 
 function renderProfile(player) {
   const socials = player.socials || {};
+  const displayName = clean(player.displayName, "Player");
 
-  document.getElementById("profileName").innerText =
-    clean(player.displayName, "Player").toUpperCase();
+  document.getElementById("profileName").innerText = displayName.toUpperCase();
+  document.getElementById("sidebarName").innerText = displayName;
+  document.getElementById("profileFallback").innerText = getInitials(displayName);
 
-  document.getElementById("cardName").innerText =
-    clean(player.displayName, "Player");
+  document.getElementById("sidebarId").innerText =
+    player.rgId || "RG ACCOUNT";
 
   document.getElementById("profileBio").innerText =
-    clean(player.bio, "Public creator profile and tournament history.");
+    clean(player.bio, "Public Rivals Gauntlet profile and tournament history.");
 
   document.getElementById("rivalsIgn").innerText =
     clean(player.rivalsIgn, "Not set");
@@ -115,11 +187,24 @@ function renderProfile(player) {
   document.getElementById("discord").innerText =
     clean(player.discordUsername, "Not set");
 
-  const img = document.getElementById("profileImage");
+  document.getElementById("discordMember").innerText =
+    player.discordMember ? "✅ Member" : "Not confirmed";
+
+  const avatar = document.getElementById("profileAvatar");
+  const fallback = document.getElementById("profileFallback");
+
   if (player.profileImage) {
-    img.src = player.profileImage;
-    img.style.display = "block";
+    avatar.src = player.profileImage;
+    avatar.style.display = "block";
+    fallback.style.display = "none";
+  } else {
+    avatar.style.display = "none";
+    fallback.style.display = "flex";
   }
+
+  const percent = calculateProfileCompletion(player);
+  document.getElementById("profilePercent").innerText = `${percent}%`;
+  document.getElementById("profileFill").style.width = `${percent}%`;
 
   const links = [
     socialLink("Twitch", socials.twitch),

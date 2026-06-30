@@ -1,1 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=50">
+</head>
+<body>
+
+<section class="page-hero">
+  <p class="eyebrow">PLAYER DASHBOARD</p>
+  <h1 id="welcomeName">Welcome Back</h1>
+  <p>Manage your profile, applications, and Rivals Gauntlet history.</p>
+</section>
+
+<section class="event-card admin-card">
+  <div class="admin-section">
+    <h2>Account Status</h2>
+    <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+    <p><strong>Verified:</strong> <span id="verifiedStatus">Loading...</span></p>
+
+    <button class="secondary" onclick="resendVerification()">
+      RESEND VERIFICATION EMAIL
+    </button>
+  </div>
+
+  <div class="admin-section">
+  <h2>Player Profile</h2>
+
+  <p><strong>Display Name:</strong> <span id="displayName">Loading...</span></p>
+  <p><strong>Marvel Rivals IGN:</strong> <span id="rivalsIgn">Loading...</span></p>
+  <p><strong>Discord:</strong> <span id="discordUsername">Loading...</span></p>
+
+  <a class="join-btn" href="settings.html" style="margin-top:18px;">
+    ACCOUNT SETTINGS
+  </a>
+
+  <a id="publicProfileBtn"
+     class="secondary"
+     href="#"
+     style="display:block;margin-top:12px;text-align:center;">
+    VIEW MY PUBLIC PROFILE
+  </a>
+
+</div>
+
+  <div class="admin-section">
+    <h2>Current Event</h2>
+    <p>Applications and event status will appear here soon.</p>
+
+    <button class="join-btn" disabled style="opacity:.5;cursor:not-allowed;">
+      APPLY COMING SOON
+    </button>
+  </div>
+
+  <div class="admin-section">
+    <h2>Rivals Gauntlet History</h2>
+    <p>Your tournament history, placements, achievements, and stats will appear here after events.</p>
+  </div>
+
+  <button class="secondary" onclick="logoutUser()" style="margin-top:25px;">
+    SIGN OUT
+  </button>
+
+  <p id="dashboardStatus"></p>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=1"></script>
+
+<script>
+const statusEl = document.getElementById("dashboardStatus");
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("publicProfileBtn").href =
+    `player.html?id=${user.uid}`;
+  
+  document.getElementById("accountEmail").innerText = user.email || "";
+  document.getElementById("verifiedStatus").innerText =
+    user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
+
+  database.ref(`users/${user.uid}`).update({
+    emailVerified: user.emailVerified,
+    lastLogin: Date.now()
+  });
+
+  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
+    const player = snapshot.val() || {};
+
+    document.getElementById("welcomeName").innerText =
+      `Welcome Back, ${player.displayName || "Player"}`;
+
+    document.getElementById("displayName").innerText =
+      player.displayName || "Not set";
+
+    document.getElementById("rivalsIgn").innerText =
+      player.rivalsIgn || "Not set";
+
+    document.getElementById("discordUsername").innerText =
+      player.discordUsername || "Not set";
+  });
+});
+
+function resendVerification() {
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  if (user.emailVerified) {
+    statusEl.innerText = "Your email is already verified.";
+    statusEl.style.color = "#22c55e";
+    return;
+  }
+
+  user.sendEmailVerification()
+    .then(() => {
+      statusEl.innerText = "✓ Verification email sent.";
+      statusEl.style.color = "#22c55e";
+    })
+    .catch(error => {
+      statusEl.innerText = error.message;
+      statusEl.style.color = "#ef4444";
+    });
+}
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,1 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Settings | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=50">
+</head>
+<body>
+
+<section class="page-hero">
+  <p class="eyebrow">PLAYER ACCOUNT</p>
+  <h1>Account Settings</h1>
+  <p>Update your creator profile, Marvel Rivals info, and account details.</p>
+</section>
+
+<section class="event-card admin-card">
+
+  <div class="admin-section">
+    <h2>Profile</h2>
+
+    <label>Display Name</label>
+    <input id="displayName" placeholder="Atrophy">
+
+    <label>Bio</label>
+    <input id="bio" placeholder="Short creator bio">
+
+    <label>Profile Image URL</label>
+    <input id="profileImage" placeholder="https://...">
+  </div>
+
+  <div class="admin-section">
+    <h2>Marvel Rivals</h2>
+
+    <label>Marvel Rivals IGN</label>
+    <input id="rivalsIgn" placeholder="Your in-game name">
+
+    <label>Region</label>
+    <select id="region">
+      <option value="">Select Region</option>
+      <option value="NA East">NA East</option>
+      <option value="NA Central">NA Central</option>
+      <option value="NA West">NA West</option>
+      <option value="EU">EU</option>
+      <option value="Asia">Asia</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Platform</label>
+    <select id="platform">
+      <option value="">Select Platform</option>
+      <option value="PC">PC</option>
+      <option value="PlayStation">PlayStation</option>
+      <option value="Xbox">Xbox</option>
+    </select>
+  </div>
+
+  <div class="admin-section">
+    <h2>Discord</h2>
+
+    <label>Discord Username</label>
+    <input id="discordUsername" placeholder="yourname">
+
+    <label>Are you currently in the Rivals Gauntlet Discord?</label>
+    <select id="discordMember">
+      <option value="false">No</option>
+      <option value="true">Yes</option>
+    </select>
+  </div>
+
+  <div class="admin-section">
+    <h2>Creator Links</h2>
+
+    <label>Twitch</label>
+    <input id="twitch" placeholder="https://twitch.tv/yourname">
+
+    <label>YouTube</label>
+    <input id="youtube" placeholder="https://youtube.com/@yourname">
+
+    <label>TikTok</label>
+    <input id="tiktok" placeholder="https://tiktok.com/@yourname">
+
+    <label>X / Twitter</label>
+    <input id="x" placeholder="https://x.com/yourname">
+  </div>
+
+  <div class="admin-section">
+    <h2>Account</h2>
+
+    <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+    <p><strong>Email Status:</strong> <span id="emailStatus">Loading...</span></p>
+
+    <button class="secondary" onclick="sendPasswordReset()">
+      SEND PASSWORD RESET EMAIL
+    </button>
+  </div>
+
+  <button class="join-btn" onclick="saveSettings()" style="margin-top:25px;">
+    SAVE SETTINGS
+  </button>
+
+  <button class="secondary" onclick="logoutUser()" style="margin-top:12px;">
+    SIGN OUT
+  </button>
+
+  <p id="settingsStatus"></p>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=1"></script>
+
+<script>
+let currentUser = null;
+
+function clean(value) {
+  return String(value || "").trim();
+}
+
+function setStatus(message, good = true) {
+  const status = document.getElementById("settingsStatus");
+  status.innerText = message;
+  status.style.color = good ? "#22c55e" : "#ef4444";
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  document.getElementById("accountEmail").innerText = user.email || "";
+  document.getElementById("emailStatus").innerText =
+    user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
+
+  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
+    const player = snapshot.val() || {};
+    const socials = player.socials || {};
+
+    document.getElementById("displayName").value = player.displayName || "";
+    document.getElementById("bio").value = player.bio || "";
+    document.getElementById("profileImage").value = player.profileImage || "";
+    document.getElementById("rivalsIgn").value = player.rivalsIgn || "";
+    document.getElementById("region").value = player.region || "";
+    document.getElementById("platform").value = player.platform || "";
+    document.getElementById("discordUsername").value = player.discordUsername || "";
+    document.getElementById("discordMember").value = String(player.discordMember || false);
+
+    document.getElementById("twitch").value = socials.twitch || "";
+    document.getElementById("youtube").value = socials.youtube || "";
+    document.getElementById("tiktok").value = socials.tiktok || "";
+    document.getElementById("x").value = socials.x || "";
+  });
+});
+
+function saveSettings() {
+  if (!currentUser) return;
+
+  const updates = {
+    displayName: clean(document.getElementById("displayName").value),
+    bio: clean(document.getElementById("bio").value),
+    profileImage: clean(document.getElementById("profileImage").value),
+    rivalsIgn: clean(document.getElementById("rivalsIgn").value),
+    region: document.getElementById("region").value,
+    platform: document.getElementById("platform").value,
+    discordUsername: clean(document.getElementById("discordUsername").value),
+    discordMember: document.getElementById("discordMember").value === "true",
+    socials: {
+      twitch: clean(document.getElementById("twitch").value),
+      youtube: clean(document.getElementById("youtube").value),
+      tiktok: clean(document.getElementById("tiktok").value),
+      x: clean(document.getElementById("x").value)
+    },
+    updatedAt: Date.now()
+  };
+
+  database.ref(`players/${currentUser.uid}`).update(updates)
+    .then(() => {
+      setStatus("✓ Settings saved");
+    })
+    .catch(error => {
+      setStatus(error.message, false);
+    });
+}
+
+function sendPasswordReset() {
+  if (!currentUser || !currentUser.email) return;
+
+  auth.sendPasswordResetEmail(currentUser.email)
+    .then(() => {
+      setStatus("✓ Password reset email sent");
+    })
+    .catch(error => {
+      setStatus(error.message, false);
+    });
+}
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

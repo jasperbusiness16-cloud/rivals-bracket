@@ -274,12 +274,20 @@ function renderTeams() {
                             </small>
                           </div>
 
-                          <div style="
-                            color:#22c55e;
-                            font-weight:700;
-                          ">
-                            ${sub.replacementScore}%
-                          </div>
+                          <div style="text-align:right;">
+  <div style="
+    color:#22c55e;
+    font-weight:700;
+    margin-bottom:6px;
+  ">
+    ${sub.replacementScore}%
+  </div>
+
+  <button class="account-secondary"
+          onclick="replacePlayer('${player.uid}', '${sub.uid}', '${teamKey}')">
+    Replace
+  </button>
+</div>
 
                         </div>
                       `).join("")
@@ -310,6 +318,51 @@ function renderTeams() {
   grid.innerHTML = html;
 }
 
+function replacePlayer(missingUid, subUid, teamKey) {
+  const teamsObj = teamsData.teams || {};
+  const team = teamsObj[teamKey] || [];
+
+  const sub = applications.find(app => app.uid === subUid);
+
+  if (!sub) {
+    alert("Substitute not found.");
+    return;
+  }
+
+  const updatedTeam = team.map(player => {
+    if (player.uid === missingUid) {
+      return {
+        ...sub,
+        status: "accepted",
+        replacedPlayerUid: missingUid,
+        addedAsSubstitute: true,
+        substitutedAt: Date.now()
+      };
+    }
+
+    return player;
+  });
+
+  const updates = {};
+
+  updates[`teams/${tournamentId}/teams/${teamKey}`] = updatedTeam;
+  updates[`applications/${tournamentId}/${subUid}/status`] = "accepted";
+  updates[`applications/${tournamentId}/${subUid}/addedAsSubstitute`] = true;
+  updates[`applications/${tournamentId}/${subUid}/substitutedInto`] = teamKey;
+  updates[`applications/${tournamentId}/${subUid}/substitutedAt`] = Date.now();
+
+  updates[`applications/${tournamentId}/${missingUid}/replacedBySubUid`] = subUid;
+  updates[`applications/${tournamentId}/${missingUid}/replacedAt`] = Date.now();
+
+  database.ref().update(updates)
+    .then(() => {
+      alert("Player replaced successfully.");
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+}
+  
 function renderSubs() {
   const pool = document.getElementById("subPool");
   const checkedSubs = getCheckedInSubs();

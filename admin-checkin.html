@@ -64,6 +64,18 @@
         </div>
       </section>
 
+<div id="ownerTools" style="display:none;margin-top:20px;">
+  <div class="account-actions">
+    <button class="account-secondary" onclick="checkInAllTestSubs()">
+      Check In All Test Subs
+    </button>
+
+    <button class="account-secondary" onclick="clearAllCheckIns()">
+      Clear All Check-Ins
+    </button>
+  </div>
+</div>
+      
       <section class="account-panel full">
         <h2>Team Check-In</h2>
         <div id="teamCheckInGrid" class="team-builder-grid">
@@ -93,7 +105,7 @@ const tournamentId = "open1";
 
 let teamsData = {};
 let checkIns = {};
-let applications = {};
+let applications = [];
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -417,6 +429,10 @@ auth.onAuthStateChanged((user) => {
       return;
     }
 
+    if (userData.role === "owner") {
+  document.getElementById("ownerTools").style.display = "block";
+}
+    
     database.ref(`teams/${tournamentId}`).on("value", snapshot => {
       teamsData = snapshot.val() || {};
       renderAll();
@@ -428,12 +444,59 @@ auth.onAuthStateChanged((user) => {
     });
 
     database.ref(`applications/${tournamentId}`).on("value", snapshot => {
-      applications = snapshot.val() || {};
-      renderAll();
-    });
+  const data = snapshot.val() || {};
+  applications = Object.values(data);
+  renderAll();
+});
   });
 });
 
+function checkInAllTestSubs() {
+
+  const updates = {};
+
+  applications.forEach(player => {
+
+    if (
+      player.testPlayer &&
+      player.status === "waitlist" &&
+      player.wantsSub === "Yes"
+    ) {
+
+      updates[`checkIns/${tournamentId}/${player.uid}`] = {
+        uid: player.uid,
+        displayName: player.displayName,
+        rgId: player.rgId,
+        peakRank: player.peakRank,
+        mainRole: player.mainRole,
+        region: player.region,
+        platform: player.platform,
+        checkedIn: true,
+        type: "substitute",
+        checkedInAt: Date.now()
+      };
+
+    }
+
+  });
+
+  database.ref().update(updates)
+    .then(() => {
+      alert("All test substitutes checked in.");
+    });
+
+}
+
+function clearAllCheckIns() {
+
+  database.ref(`checkIns/${tournamentId}`)
+    .remove()
+    .then(() => {
+      alert("All check-ins cleared.");
+    });
+
+}
+  
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";

@@ -91,22 +91,41 @@
         <h2>Controls</h2>
 
         <div class="account-form-grid">
-          <div class="account-field">
-            <label>Search</label>
-            <input id="searchInput" placeholder="Search name, IGN, RG ID, rank..." oninput="renderApplications()">
-          </div>
 
-          <div class="account-field">
-            <label>Status Filter</label>
-            <select id="statusFilter" onchange="renderApplications()">
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="accepted">Accepted</option>
-              <option value="waitlist">Waitlist</option>
-              <option value="declined">Declined</option>
-            </select>
-          </div>
-        </div>
+  <div class="account-field">
+    <label>Search</label>
+    <input id="searchInput"
+           placeholder="Search name, IGN, RG ID, rank..."
+           oninput="renderApplications()">
+  </div>
+
+  <div class="account-field">
+    <label>Status Filter</label>
+    <select id="statusFilter" onchange="renderApplications()">
+      <option value="all">All</option>
+      <option value="pending">Pending</option>
+      <option value="accepted">Accepted</option>
+      <option value="waitlist">Waitlist</option>
+      <option value="declined">Declined</option>
+    </select>
+  </div>
+
+  <!-- NEW -->
+  <div class="account-field">
+    <label>Sort By</label>
+    <select id="sortFilter" onchange="renderApplications()">
+      <option value="newest">Newest</option>
+      <option value="oldest">Oldest</option>
+      <option value="followersHigh">Most Followers</option>
+      <option value="followersLow">Least Followers</option>
+      <option value="rankHigh">Highest Rank</option>
+      <option value="rankLow">Lowest Rank</option>
+      <option value="role">Preferred Role</option>
+      <option value="region">Region</option>
+    </select>
+  </div>
+
+</div>
       </section>
 
       <section class="account-panel full">
@@ -167,6 +186,22 @@ function matchesSearch(app, search) {
   return text.includes(search.toLowerCase());
 }
 
+function getRankValue(rank) {
+  const values = {
+    "One Above All": 9,
+    "Eternity": 8,
+    "Celestial": 7,
+    "Grandmaster": 6,
+    "Diamond": 5,
+    "Platinum": 4,
+    "Gold": 3,
+    "Silver": 2,
+    "Bronze": 1
+  };
+
+  return values[rank] || 0;
+}
+  
 function renderApplications() {
   const list = document.getElementById("applicationsList");
   const search = clean(document.getElementById("searchInput").value);
@@ -178,6 +213,21 @@ function renderApplications() {
     return statusMatch && searchMatch;
   });
 
+  const sortBy = document.getElementById("sortFilter").value;
+
+filtered.sort((a, b) => {
+  if (sortBy === "newest") return (b.submittedAt || 0) - (a.submittedAt || 0);
+  if (sortBy === "oldest") return (a.submittedAt || 0) - (b.submittedAt || 0);
+  if (sortBy === "followersHigh") return Number(b.followerCount || 0) - Number(a.followerCount || 0);
+  if (sortBy === "followersLow") return Number(a.followerCount || 0) - Number(b.followerCount || 0);
+  if (sortBy === "rankHigh") return getRankValue(b.peakRank) - getRankValue(a.peakRank);
+  if (sortBy === "rankLow") return getRankValue(a.peakRank) - getRankValue(b.peakRank);
+  if (sortBy === "role") return String(a.mainRole || "").localeCompare(String(b.mainRole || ""));
+  if (sortBy === "region") return String(a.region || "").localeCompare(String(b.region || ""));
+
+  return 0;
+});
+  
   document.getElementById("applicationCount").innerText = `(${filtered.length})`;
   const acceptedCount = applications.filter(app => app.status === "accepted").length;
   const teamBuilderBtn = document.getElementById("teamBuilderBtn");

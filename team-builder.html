@@ -393,8 +393,14 @@ function updateBalancePanel() {
 }
   
 function generateBalancedTeams() {
-  const sortedPlayers = [...acceptedPlayers].sort((a, b) => {
-    return getRankValue(b.peakRank) - getRankValue(a.peakRank);
+  const sortedPlayers = [...acceptedPlayers]
+  .sort(() => Math.random() - 0.5)
+  .sort((a, b) => {
+    const rankDiff = getRankValue(b.peakRank) - getRankValue(a.peakRank);
+
+    if (rankDiff !== 0) return rankDiff;
+
+    return Math.random() - 0.5;
   });
 
   teams = {};

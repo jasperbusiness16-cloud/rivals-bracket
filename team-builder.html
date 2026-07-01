@@ -472,7 +472,7 @@ function generateTestPlayers() {
 
   const updates = {};
 
-  for (let i = 1; i <= 48; i++) {
+  for (let i = 1; i <= 56; i++) {
     const uid = `testPlayer${String(i).padStart(2, "0")}`;
     const displayName = `${randomFrom(names)}${i}`;
     const rgId = `TEST${String(i).padStart(4, "0")}`;
@@ -501,11 +501,11 @@ function generateTestPlayers() {
       customLobby: "Yes",
       teamVc: "Yes",
       willStream: randomFrom(["Yes", "Maybe", "No"]),
-      wantsSub: randomFrom(["Yes", "No"]),
+      wantsSub: i <= 48 ? "No" : "Yes",
       followerCount: Math.floor(Math.random() * 5000),
       adminNotes: "Generated test applicant.",
       internalAdminNotes: "",
-      status: "accepted",
+      status: i <= 48 ? "accepted" : "waitlist",
       testPlayer: true,
       submittedAt: Date.now() + i,
       updatedAt: Date.now()

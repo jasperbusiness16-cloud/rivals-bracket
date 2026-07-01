@@ -409,18 +409,22 @@ ${
                         ">
 
                           <div>
+  <div>
   <strong>${sub.displayName}</strong><br>
-  <small>
-    ${
-      sub.subCheckedIn
-        ? "✓ CHECKED IN"
-        : "○ NOT CHECKED IN"
-    }
-    •
-    ${sub.peakRank}
-    •
-    ${sub.mainRole}
+
+  <small style="
+    color:${sub.subCheckedIn ? "#22c55e" : "#facc15"};
+    font-weight:700;
+  ">
+    ${sub.subCheckedIn ? "✓ CHECKED IN" : "○ NOT CHECKED IN"}
   </small>
+
+  <br>
+
+  <small>
+    ${sub.peakRank} • ${sub.mainRole}
+  </small>
+</div>
 </div>
 
                           <div style="text-align:right;">

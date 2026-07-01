@@ -65,6 +65,32 @@
     </button>
   </div>
 </div>
+        <div id="balancePanel" class="balance-panel">
+  <div>
+    <span>Balance Grade</span>
+    <strong id="balanceGrade">--</strong>
+  </div>
+
+  <div>
+    <span>Average Strength</span>
+    <strong id="averageStrength">0</strong>
+  </div>
+
+  <div>
+    <span>Strongest Team</span>
+    <strong id="strongestTeam">0</strong>
+  </div>
+
+  <div>
+    <span>Weakest Team</span>
+    <strong id="weakestTeam">0</strong>
+  </div>
+
+  <div>
+    <span>Difference</span>
+    <strong id="strengthDifference">0</strong>
+  </div>
+</div>
         <p id="builderStatus" class="account-status"></p>
       </section>
 
@@ -306,6 +332,7 @@ function generateRandomTeams() {
   });
 
   renderAll();
+  updateBalancePanel();
 }
 
 function getRankValue(rank) {
@@ -334,6 +361,34 @@ function getRoleCount(team, role) {
   return team.filter(player => player.mainRole === role).length;
 }
 
+function updateBalancePanel() {
+  const scores = Object.values(teams).map(team => getTeamScore(team));
+
+  if (!scores.length) return;
+
+  const strongest = Math.max(...scores);
+  const weakest = Math.min(...scores);
+  const average = (
+    scores.reduce((a, b) => a + b, 0) / scores.length
+  ).toFixed(1);
+
+  const difference = strongest - weakest;
+
+  let grade = "C";
+
+  if (difference <= 1) grade = "A+";
+  else if (difference === 2) grade = "A";
+  else if (difference === 3) grade = "B+";
+  else if (difference === 4) grade = "B";
+  else if (difference === 5) grade = "C+";
+
+  document.getElementById("balanceGrade").innerText = grade;
+  document.getElementById("averageStrength").innerText = average;
+  document.getElementById("strongestTeam").innerText = strongest;
+  document.getElementById("weakestTeam").innerText = weakest;
+  document.getElementById("strengthDifference").innerText = difference;
+}
+  
 function generateBalancedTeams() {
   const sortedPlayers = [...acceptedPlayers].sort((a, b) => {
     return getRankValue(b.peakRank) - getRankValue(a.peakRank);
@@ -374,7 +429,9 @@ function generateBalancedTeams() {
 
   selectedPlayerUid = null;
   renderAll();
+  updateBalancePanel();
 
+  
   const status = document.getElementById("builderStatus");
   status.innerText = "✓ Rank balanced teams generated.";
   status.style.color = "#22c55e";

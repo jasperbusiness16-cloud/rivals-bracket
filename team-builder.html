@@ -377,6 +377,114 @@ function generateBalancedTeams() {
   status.innerText = "✓ Rank balanced teams generated.";
   status.style.color = "#22c55e";
 }
+
+function randomFrom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function generateTestPlayers() {
+  if (currentUserRole !== "owner") return;
+
+  const status = document.getElementById("builderStatus");
+
+  const names = [
+    "Nova", "Blaze", "Vortex", "Echo", "Titan", "Cipher",
+    "Rogue", "Phantom", "Apex", "Shadow", "Crimson", "Flux",
+    "Onyx", "Pulse", "Storm", "Frost", "Vector", "Rift"
+  ];
+
+  const ranks = [
+    "Bronze", "Silver", "Gold", "Platinum", "Diamond",
+    "Grandmaster", "Celestial", "Eternity", "One Above All"
+  ];
+
+  const roles = ["Vanguard", "Duelist", "Strategist", "Flex"];
+  const regions = ["NA East", "NA Central", "NA West", "EU"];
+  const platforms = ["PC", "PlayStation", "Xbox"];
+
+  const updates = {};
+
+  for (let i = 1; i <= 48; i++) {
+    const uid = `testPlayer${String(i).padStart(2, "0")}`;
+    const displayName = `${randomFrom(names)}${i}`;
+    const rgId = `TEST${String(i).padStart(4, "0")}`;
+
+    updates[`applications/${tournamentId}/${uid}`] = {
+      uid,
+      rgId,
+      displayName,
+      rivalsIgn: displayName,
+      discordUsername: `${displayName.toLowerCase()}#0000`,
+      discordMember: true,
+      region: randomFrom(regions),
+      platform: randomFrom(platforms),
+      profileImage: "",
+      socials: {
+        twitch: "",
+        youtube: "",
+        tiktok: "",
+        x: ""
+      },
+      peakRank: randomFrom(ranks),
+      mainRole: randomFrom(roles),
+      mainHeroes: "Hela, Luna Snow, Doctor Strange",
+      availability: "Yes",
+      workingMic: "Yes",
+      customLobby: "Yes",
+      teamVc: "Yes",
+      willStream: randomFrom(["Yes", "Maybe", "No"]),
+      wantsSub: randomFrom(["Yes", "No"]),
+      followerCount: Math.floor(Math.random() * 5000),
+      adminNotes: "Generated test applicant.",
+      internalAdminNotes: "",
+      status: "accepted",
+      testPlayer: true,
+      submittedAt: Date.now() + i,
+      updatedAt: Date.now()
+    };
+  }
+
+  database.ref().update(updates)
+    .then(() => {
+      status.innerText = "✓ 48 test players generated.";
+      status.style.color = "#22c55e";
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+
+function deleteTestPlayers() {
+  if (currentUserRole !== "owner") return;
+
+  const status = document.getElementById("builderStatus");
+
+  database.ref(`applications/${tournamentId}`).once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+    const updates = {};
+
+    Object.keys(data).forEach(uid => {
+      if (data[uid].testPlayer) {
+        updates[`applications/${tournamentId}/${uid}`] = null;
+      }
+    });
+
+    updates[`teams/${tournamentId}`] = null;
+
+    return database.ref().update(updates);
+  }).then(() => {
+    teams = {};
+    selectedPlayerUid = null;
+    renderAll();
+
+    status.innerText = "✓ Test players deleted.";
+    status.style.color = "#22c55e";
+  }).catch(error => {
+    status.innerText = error.message;
+    status.style.color = "#ef4444";
+  });
+}
   
 function saveTeams() {
   const status = document.getElementById("builderStatus");

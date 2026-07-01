@@ -211,7 +211,8 @@ function renderTeams() {
   for (let i = 1; i <= teamCount; i++) {
     const teamKey = `team${i}`;
     const players = teams[teamKey] || [];
-
+    const teamStrength = getTeamScore(players);
+    
     html += `
       <div class="builder-team-card builder-drop-zone"
      onclick="tapAssignToTeam('${teamKey}')"
@@ -219,6 +220,7 @@ function renderTeams() {
      ondrop="dropToTeam(event, '${teamKey}')">
         <h3>Team ${i}</h3>
         <p>${players.length}/${playersPerTeam} Players</p>
+<p><strong>Strength:</strong> ${teamStrength}</p>
 
         <div class="builder-team-slots">
           ${

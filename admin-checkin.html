@@ -1,1 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Check-In | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ADMIN CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="admin-applications.html">Applications</a>
+        <a href="team-builder.html">Team Builder</a>
+        <a class="active" href="admin-checkin.html">Check-In</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>TOURNAMENT OPERATIONS</p>
+          <h1>Check-In Command Center</h1>
+          <span>Track main roster players, missing players, and checked-in substitutes.</span>
+        </div>
+      </div>
+
+      <section class="account-panel full">
+        <h2>Readiness Overview</h2>
+
+        <div class="application-summary-grid">
+          <div class="application-summary-box">
+            <strong id="mainCheckedCount">0/0</strong>
+            <span>Main Checked In</span>
+          </div>
+
+          <div class="application-summary-box">
+            <strong id="missingCount">0</strong>
+            <span>Missing</span>
+          </div>
+
+          <div class="application-summary-box">
+            <strong id="subCheckedCount">0</strong>
+            <span>Subs Ready</span>
+          </div>
+
+          <div class="application-summary-box">
+            <strong id="readyPercent">0%</strong>
+            <span>Ready</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Team Check-In</h2>
+        <div id="teamCheckInGrid" class="team-builder-grid">
+          <p>Loading teams...</p>
+        </div>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Available Substitutes</h2>
+        <div id="subPool" class="team-builder-player-list">
+          <p>Loading substitutes...</p>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+const tournamentId = "open1";
+
+let teamsData = {};
+let checkIns = {};
+let applications = {};
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function isCheckedIn(uid) {
+  return checkIns[uid] && checkIns[uid].checkedIn;
+}
+
+function getCheckedInSubs() {
+  return Object.values(checkIns).filter(checkIn => checkIn.type === "substitute" && checkIn.checkedIn);
+}
+
+function getMissingPlayers() {
+  const teamsObj = teamsData.teams || {};
+  const missing = [];
+
+  Object.keys(teamsObj).forEach(teamKey => {
+    const players = teamsObj[teamKey] || [];
+
+    players.forEach(player => {
+      if (!isCheckedIn(player.uid)) {
+        missing.push({
+          ...player,
+          teamKey
+        });
+      }
+    });
+  });
+
+  return missing;
+}
+
+function renderOverview() {
+  const teamsObj = teamsData.teams || {};
+  const mainPlayers = Object.values(teamsObj).flat();
+  const checkedMain = mainPlayers.filter(player => isCheckedIn(player.uid)).length;
+  const missing = mainPlayers.length - checkedMain;
+  const subsReady = getCheckedInSubs().length;
+  const percent = mainPlayers.length
+    ? Math.round((checkedMain / mainPlayers.length) * 100)
+    : 0;
+
+  document.getElementById("mainCheckedCount").innerText = `${checkedMain}/${mainPlayers.length}`;
+  document.getElementById("missingCount").innerText = missing;
+  document.getElementById("subCheckedCount").innerText = subsReady;
+  document.getElementById("readyPercent").innerText = `${percent}%`;
+}
+
+function renderTeams() {
+  const grid = document.getElementById("teamCheckInGrid");
+  const teamsObj = teamsData.teams || {};
+
+  if (!Object.keys(teamsObj).length) {
+    grid.innerHTML = "<p>No teams have been published yet.</p>";
+    return;
+  }
+
+  let html = "";
+
+  Object.keys(teamsObj).forEach(teamKey => {
+    const players = teamsObj[teamKey] || [];
+    const checked = players.filter(player => isCheckedIn(player.uid)).length;
+    const missing = players.filter(player => !isCheckedIn(player.uid));
+    const teamNumber = teamKey.replace("team", "");
+
+    html += `
+      <div class="builder-team-card">
+        <h3>Team ${teamNumber}</h3>
+        <p><strong>${checked}/${players.length}</strong> Checked In</p>
+
+        <div class="builder-team-slots">
+          ${players.map(player => `
+            <div class="builder-team-player ${isCheckedIn(player.uid) ? "" : "missing"}">
+              <strong>${isCheckedIn(player.uid) ? "✓" : "○"} ${player.displayName || "Player"}</strong>
+              <span>${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}</span>
+            </div>
+          `).join("")}
+        </div>
+
+        ${
+          missing.length
+            ? `
+              <div class="dashboard-next-step">
+                <span>Missing</span>
+                ${missing.map(player => `
+                  <p>${player.displayName || "Player"} — ${player.peakRank || "No Rank"} / ${player.mainRole || "No Role"}</p>
+                `).join("")}
+              </div>
+            `
+            : `
+              <div class="dashboard-event-status">✓ TEAM READY</div>
+            `
+        }
+      </div>
+    `;
+  });
+
+  grid.innerHTML = html;
+}
+
+function renderSubs() {
+  const pool = document.getElementById("subPool");
+  const checkedSubs = getCheckedInSubs();
+
+  if (!checkedSubs.length) {
+    pool.innerHTML = "<p>No substitutes have checked in yet.</p>";
+    return;
+  }
+
+  pool.innerHTML = checkedSubs.map(sub => `
+    <div class="builder-player-wrap">
+      <div class="builder-player-card">
+        <div class="application-avatar-fallback">
+          ${clean(sub.displayName, "RG").slice(0, 2).toUpperCase()}
+        </div>
+
+        <div>
+          <strong>${sub.displayName || "Substitute"}</strong>
+          <span>${sub.rgId || "RG ID"}</span>
+          <small>${sub.peakRank || "No Rank"} • Preferred: ${sub.mainRole || "No Role"} • ${sub.region || "No Region"}</small>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderAll() {
+  renderOverview();
+  renderTeams();
+  renderSubs();
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  database.ref(`users/${user.uid}`).once("value").then(snapshot => {
+    const userData = snapshot.val() || {};
+
+    if (userData.role !== "admin" && userData.role !== "owner") {
+      document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+      return;
+    }
+
+    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+      teamsData = snapshot.val() || {};
+      renderAll();
+    });
+
+    database.ref(`checkIns/${tournamentId}`).on("value", snapshot => {
+      checkIns = snapshot.val() || {};
+      renderAll();
+    });
+
+    database.ref(`applications/${tournamentId}`).on("value", snapshot => {
+      applications = snapshot.val() || {};
+      renderAll();
+    });
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

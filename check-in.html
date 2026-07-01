@@ -270,6 +270,7 @@ function markNotAvailable() {
 
   const reason = prompt("Optional: Tell staff why you are unavailable.");
 
+  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).remove();
   database.ref(`availability/${tournamentId}/${currentUser.uid}`).set({
     uid: currentUser.uid,
     rgId: currentApplication.rgId || "",

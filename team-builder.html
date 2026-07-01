@@ -622,6 +622,7 @@ if (currentUserRole === "owner") {
   database.ref(`teams/${tournamentId}/teams`).on("value", snapshot => {
   teams = snapshot.val() || {};
   renderAll();
+  updateBalancePanel();
 });
   });
 });

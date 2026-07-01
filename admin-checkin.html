@@ -105,6 +105,7 @@ const tournamentId = "open1";
 
 let teamsData = {};
 let checkIns = {};
+let availability = {};
 let applications = [];
 
 function clean(value, fallback = "") {
@@ -115,6 +116,10 @@ function isCheckedIn(uid) {
   return checkIns[uid] && checkIns[uid].checkedIn;
 }
 
+function isNotAvailable(uid) {
+  return availability[uid] && availability[uid].status === "not_available";
+}
+  
 function getCheckedInSubs() {
   return Object.values(checkIns).filter(checkIn => checkIn.type === "substitute" && checkIn.checkedIn);
 }
@@ -216,7 +221,9 @@ function renderTeams() {
   Object.keys(teamsObj).forEach(teamKey => {
     const players = teamsObj[teamKey] || [];
     const checked = players.filter(player => isCheckedIn(player.uid)).length;
-    const missing = players.filter(player => !isCheckedIn(player.uid));
+    const missing = players.filter(player =>
+  !isCheckedIn(player.uid) || isNotAvailable(player.uid)
+);
     const teamNumber = teamKey.replace("team", "");
 
     html += `
@@ -227,7 +234,16 @@ function renderTeams() {
         <div class="builder-team-slots">
           ${players.map(player => `
             <div class="builder-team-player ${isCheckedIn(player.uid) ? "" : "missing"}">
-              <strong>${isCheckedIn(player.uid) ? "✓" : "○"} ${player.displayName || "Player"}</strong>
+              <strong>
+  ${
+    isNotAvailable(player.uid)
+      ? "✕"
+      : isCheckedIn(player.uid)
+        ? "✓"
+        : "○"
+  }
+  ${player.displayName || "Player"}
+</strong>
               <span>${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}</span>
             </div>
           `).join("")}
@@ -251,8 +267,17 @@ function renderTeams() {
             ">
 
               <strong>${player.displayName || "Player"}</strong><br>
-              ${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}
-
+${
+  isNotAvailable(player.uid)
+    ? `<span style="color:#ef4444;font-weight:900;">NOT AVAILABLE</span><br>`
+    : `<span style="color:#facc15;font-weight:900;">NOT CHECKED IN</span><br>`
+}
+${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}
+${
+  isNotAvailable(player.uid) && availability[player.uid]?.reason
+    ? `<br><small>Reason: ${availability[player.uid].reason}</small>`
+    : ""
+}
               <div style="margin-top:10px;">
 
                 <span style="
@@ -443,6 +468,11 @@ auth.onAuthStateChanged((user) => {
       renderAll();
     });
 
+    database.ref(`availability/${tournamentId}`).on("value", snapshot => {
+  availability = snapshot.val() || {};
+  renderAll();
+});
+    
     database.ref(`applications/${tournamentId}`).on("value", snapshot => {
   const data = snapshot.val() || {};
   applications = Object.values(data);

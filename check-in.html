@@ -143,8 +143,14 @@ function renderCheckIn() {
 
   details.innerHTML = `
     <div class="dashboard-event-status">
-      ${alreadyCheckedIn ? "✓ CHECKED IN" : "○ NOT CHECKED IN"}
-    </div>
+  ${
+    markedUnavailable
+      ? "✕ NOT AVAILABLE"
+      : alreadyCheckedIn
+        ? "✓ CHECKED IN"
+        : "○ NOT CHECKED IN"
+  }
+</div>
 
     <div class="dashboard-event-team">
       <span>${isSubstitute ? "Status" : "Your Team"}</span>

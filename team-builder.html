@@ -52,7 +52,19 @@
   Publish Teams
 </button>
         </div>
+<div id="devTools" style="display:none;margin-top:18px;">
+  <h3 style="color:#e63946;">Owner Test Tools</h3>
 
+  <div class="account-actions">
+    <button class="account-secondary" onclick="generateTestPlayers()">
+      Generate 48 Test Players
+    </button>
+
+    <button class="account-secondary" onclick="deleteTestPlayers()">
+      Delete Test Players
+    </button>
+  </div>
+</div>
         <p id="builderStatus" class="account-status"></p>
       </section>
 
@@ -95,6 +107,7 @@ const playersPerTeam = 6;
 let acceptedPlayers = [];
 let teams = {};
 let selectedPlayerUid = null;
+let currentUserRole = "";
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -424,6 +437,12 @@ auth.onAuthStateChanged((user) => {
       return;
     }
 
+currentUserRole = userData.role;
+
+if (currentUserRole === "owner") {
+  document.getElementById("devTools").style.display = "block";
+}
+    
     database.ref(`applications/${tournamentId}`).on("value", snapshot => {
       const data = snapshot.val() || {};
 

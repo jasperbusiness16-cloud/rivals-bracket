@@ -329,6 +329,14 @@ function replacePlayer(missingUid, subUid, teamKey) {
     return;
   }
 
+const missingPlayer = team.find(player => player.uid === missingUid);
+
+const confirmed = confirm(
+  `Replace ${missingPlayer?.displayName || "missing player"} with ${sub.displayName || "substitute"}?`
+);
+
+if (!confirmed) return;
+  
   const updatedTeam = team.map(player => {
     if (player.uid === missingUid) {
       return {

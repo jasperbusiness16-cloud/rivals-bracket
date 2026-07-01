@@ -121,7 +121,15 @@ function isNotAvailable(uid) {
 }
   
 function getCheckedInSubs() {
-  return Object.values(checkIns).filter(checkIn => checkIn.type === "substitute" && checkIn.checkedIn);
+  return Object.values(checkIns).filter(checkIn => {
+    const app = applications.find(player => player.uid === checkIn.uid);
+
+    return checkIn.type === "substitute" &&
+      checkIn.checkedIn &&
+      app &&
+      app.status === "waitlist" &&
+      app.wantsSub === "Yes";
+  });
 }
 
 function getMissingPlayers() {
@@ -148,7 +156,9 @@ function renderOverview() {
   const teamsObj = teamsData.teams || {};
   const mainPlayers = Object.values(teamsObj).flat();
   const checkedMain = mainPlayers.filter(player => isCheckedIn(player.uid)).length;
-  const missing = mainPlayers.length - checkedMain;
+  const missing = mainPlayers.filter(player =>
+  !isCheckedIn(player.uid) || isNotAvailable(player.uid)
+).length;
   const subsReady = getCheckedInSubs().length;
   const percent = mainPlayers.length
     ? Math.round((checkedMain / mainPlayers.length) * 100)

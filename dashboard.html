@@ -411,24 +411,20 @@ auth.onAuthStateChanged((user) => {
 
   currentUser = user;
 
-database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
-  currentTournament = snapshot.val() || {};
-  renderCurrentEvent();
-});
+  database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+    currentTournament = snapshot.val() || {};
+    renderCurrentEvent();
+  });
 
-database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
-  currentApplication = snapshot.val();
-  renderCurrentEvent();
-});
+  database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
+    currentApplication = snapshot.val();
+    renderCurrentEvent();
+  });
 
-database.ref(`teams/${tournamentId}`).on("value", snapshot => {
-  currentTeams = snapshot.val() || {};
-  renderCurrentEvent();
-});
-  
-  document.getElementById("accountEmail").innerText = user.email || "";
-  document.getElementById("verifiedStatus").innerText =
-    user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
+  database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+    currentTeams = snapshot.val() || {};
+    renderCurrentEvent();
+  });
 
   database.ref(`users/${user.uid}`).update({
     emailVerified: user.emailVerified,
@@ -438,30 +434,14 @@ database.ref(`teams/${tournamentId}`).on("value", snapshot => {
   database.ref(`players/${user.uid}`).on("value", snapshot => {
     const player = snapshot.val() || {};
     currentPlayer = player;
-renderCurrentEvent();
-    
+
     renderSidebar(player, user);
+    renderCurrentEvent();
 
     document.getElementById("welcomeName").innerText =
       `Welcome Back, ${player.displayName || "Player"}`;
-
-    document.getElementById("displayName").innerText =
-      player.displayName || "Not set";
-
-    document.getElementById("rivalsIgn").innerText =
-      player.rivalsIgn || "Not set";
-
-    document.getElementById("discordUsername").innerText =
-      player.discordUsername || "Not set";
-
-    document.getElementById("eventsPlayed").innerText =
-      player.eventsPlayed || 0;
-
-    document.getElementById("championships").innerText =
-      player.championships || 0;
   });
 });
-
 function resendVerification() {
   const user = auth.currentUser;
 

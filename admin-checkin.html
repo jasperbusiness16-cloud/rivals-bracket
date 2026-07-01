@@ -409,28 +409,19 @@ ${
                         ">
 
                           <div>
-                            <strong>${sub.displayName}</strong><br>
-                            function getRecommendedSubs(missingPlayer) {
-  return applications
-    .filter(app =>
-      app.status === "waitlist" &&
-      app.wantsSub === "Yes"
-    )
-    .map(sub => ({
-      ...sub,
-      replacementScore: getReplacementScore(missingPlayer, sub),
-      subCheckedIn: isCheckedIn(sub.uid)
-    }))
-    .sort((a, b) => {
-      if (a.subCheckedIn !== b.subCheckedIn) {
-        return a.subCheckedIn ? -1 : 1;
-      }
-
-      return b.replacementScore - a.replacementScore;
-    })
-    .slice(0, 3);
-}
-                          </div>
+  <strong>${sub.displayName}</strong><br>
+  <small>
+    ${
+      sub.subCheckedIn
+        ? "✓ CHECKED IN"
+        : "○ NOT CHECKED IN"
+    }
+    •
+    ${sub.peakRank}
+    •
+    ${sub.mainRole}
+  </small>
+</div>
 
                           <div style="text-align:right;">
   <div style="

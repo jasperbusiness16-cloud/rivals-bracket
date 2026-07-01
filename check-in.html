@@ -1,1 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check-In | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=2">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>PLAYER CHECK-IN</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="teams.html">Teams</a>
+        <a class="active" href="check-in.html">Check-In</a>
+        <a href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-topbar">
+        <div>
+          <p>TOURNAMENT DAY</p>
+          <h1>Player Check-In</h1>
+          <span>Confirm that you are present and ready for Rivals Gauntlet Open #1.</span>
+        </div>
+      </div>
+
+      <section class="account-panel full">
+        <h2 id="checkInTitle">Loading...</h2>
+        <p id="checkInDescription">Checking your tournament status...</p>
+
+        <div id="checkInDetails"></div>
+
+        <div id="checkInActions" class="account-actions"></div>
+
+        <p id="checkInStatus" class="account-status"></p>
+      </section>
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+const tournamentId = "open1";
+
+let currentUser = null;
+let currentApplication = null;
+let currentCheckIn = null;
+let currentTeams = {};
+
+function findMyTeam(uid) {
+  const teamsObj = currentTeams.teams || currentTeams || {};
+
+  for (const teamKey in teamsObj) {
+    const players = teamsObj[teamKey] || [];
+    const found = players.find(player => player.uid === uid);
+
+    if (found) {
+      return {
+        teamKey,
+        teamName: teamKey.replace("team", "Team "),
+        players
+      };
+    }
+  }
+
+  return null;
+}
+
+function renderCheckIn() {
+  const title = document.getElementById("checkInTitle");
+  const description = document.getElementById("checkInDescription");
+  const details = document.getElementById("checkInDetails");
+  const actions = document.getElementById("checkInActions");
+
+  if (!currentApplication) {
+    title.innerText = "Not Registered";
+    description.innerText = "You have not submitted an application for this event.";
+    details.innerHTML = "";
+    actions.innerHTML = `<a class="account-primary" href="apply.html">Apply Now</a>`;
+    return;
+  }
+
+  if (currentApplication.status === "pending") {
+    title.innerText = "Application Pending";
+    description.innerText = "Your application is still waiting for review.";
+    details.innerHTML = "";
+    actions.innerHTML = "";
+    return;
+  }
+
+  if (currentApplication.status === "declined") {
+    title.innerText = "Not Selected";
+    description.innerText = "You were not selected for this event.";
+    details.innerHTML = "";
+    actions.innerHTML = "";
+    return;
+  }
+
+  const isSubstitute =
+    currentApplication.status === "waitlist" &&
+    currentApplication.wantsSub === "Yes";
+
+  const isMainRoster = currentApplication.status === "accepted";
+  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
+  const alreadyCheckedIn = currentCheckIn && currentCheckIn.checkedIn;
+
+  if (!isMainRoster && !isSubstitute) {
+    title.innerText = "Waitlisted";
+    description.innerText = "You are currently waitlisted for this event.";
+    details.innerHTML = "";
+    actions.innerHTML = "";
+    return;
+  }
+
+  title.innerText = isSubstitute ? "Substitute Check-In" : "Main Roster Check-In";
+
+  description.innerText = alreadyCheckedIn
+    ? "You are checked in and ready."
+    : "Confirm that you are present and ready for tournament staff.";
+
+  details.innerHTML = `
+    <div class="dashboard-event-status">
+      ${alreadyCheckedIn ? "✓ CHECKED IN" : "○ NOT CHECKED IN"}
+    </div>
+
+    <div class="dashboard-event-team">
+      <span>${isSubstitute ? "Status" : "Your Team"}</span>
+      <strong>${isSubstitute ? "Substitute Player" : (myTeam ? myTeam.teamName : "Team Pending")}</strong>
+    </div>
+
+    <div class="dashboard-next-step">
+      <span>Player Info</span>
+      <strong>${currentApplication.displayName || "Player"}</strong><br>
+      ${currentApplication.peakRank || "No Rank"} • Preferred: ${currentApplication.mainRole || "No Role"}
+    </div>
+  `;
+
+  actions.innerHTML = alreadyCheckedIn
+    ? `<button class="account-secondary" onclick="undoCheckIn()">Undo Check-In</button>`
+    : `<button class="account-primary" onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
+        ${isSubstitute ? "Check In as Substitute" : "Check In"}
+      </button>`;
+}
+
+function checkInPlayer(type) {
+  if (!currentUser || !currentApplication) return;
+
+  const status = document.getElementById("checkInStatus");
+
+  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).set({
+    uid: currentUser.uid,
+    rgId: currentApplication.rgId || "",
+    displayName: currentApplication.displayName || "",
+    rivalsIgn: currentApplication.rivalsIgn || "",
+    discordUsername: currentApplication.discordUsername || "",
+    peakRank: currentApplication.peakRank || "",
+    mainRole: currentApplication.mainRole || "",
+    region: currentApplication.region || "",
+    platform: currentApplication.platform || "",
+    type,
+    checkedIn: true,
+    checkedInAt: Date.now()
+  }).then(() => {
+    status.innerText = "✓ Check-in confirmed.";
+    status.style.color = "#22c55e";
+  }).catch(error => {
+    status.innerText = error.message;
+    status.style.color = "#ef4444";
+  });
+}
+
+function undoCheckIn() {
+  if (!currentUser) return;
+
+  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).remove();
+}
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
+    currentApplication = snapshot.val();
+    renderCheckIn();
+  });
+
+  database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
+    currentCheckIn = snapshot.val();
+    renderCheckIn();
+  });
+
+  database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+    currentTeams = snapshot.val() || {};
+    renderCheckIn();
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

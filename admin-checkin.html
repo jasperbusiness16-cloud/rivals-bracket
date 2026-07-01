@@ -333,7 +333,7 @@ function renderTeams() {
 
         <div class="builder-team-slots">
           ${players.map(player => `
-            <div class="builder-team-player ${isCheckedIn(player.uid) ? "" : "missing"}">
+            <div class="builder-team-player ${(!isCheckedIn(player.uid) || isNotAvailable(player.uid)) ? "missing" : ""}">
               <strong>
   ${
     isNotAvailable(player.uid)

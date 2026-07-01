@@ -309,6 +309,16 @@ function getRankValue(rank) {
   return values[rank] || 0;
 }
 
+function getTeamScore(team) {
+  return team.reduce((total, player) => {
+    return total + getRankValue(player.peakRank);
+  }, 0);
+}
+
+function getRoleCount(team, role) {
+  return team.filter(player => player.mainRole === role).length;
+}
+
 function generateBalancedTeams() {
   const sortedPlayers = [...acceptedPlayers].sort((a, b) => {
     return getRankValue(b.peakRank) - getRankValue(a.peakRank);
@@ -320,21 +330,30 @@ function generateBalancedTeams() {
     teams[`team${i}`] = [];
   }
 
-  let teamOrder = [];
+  sortedPlayers.forEach(player => {
+    const role = player.mainRole || "Flex";
 
-  for (let i = 1; i <= teamCount; i++) {
-    teamOrder.push(`team${i}`);
-  }
+    const availableTeams = Object.keys(teams)
+      .filter(teamKey => teams[teamKey].length < playersPerTeam)
+      .sort((a, b) => {
+        const teamA = teams[a];
+        const teamB = teams[b];
 
-  for (let i = teamCount; i >= 1; i--) {
-    teamOrder.push(`team${i}`);
-  }
+        const roleDiff =
+          getRoleCount(teamA, role) - getRoleCount(teamB, role);
 
-  sortedPlayers.forEach((player, index) => {
-    const teamKey = teamOrder[index % teamOrder.length];
+        if (roleDiff !== 0) return roleDiff;
 
-    if (teams[teamKey].length < playersPerTeam) {
-      teams[teamKey].push(player);
+        const scoreDiff =
+          getTeamScore(teamA) - getTeamScore(teamB);
+
+        if (scoreDiff !== 0) return scoreDiff;
+
+        return teamA.length - teamB.length;
+      });
+
+    if (availableTeams.length) {
+      teams[availableTeams[0]].push(player);
     }
   });
 

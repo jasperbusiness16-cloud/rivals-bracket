@@ -435,7 +435,7 @@ database.ref(`teams/${tournamentId}`).on("value", snapshot => {
     lastLogin: Date.now()
   });
 
-  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
+  database.ref(`players/${user.uid}`).on("value", snapshot => {
     const player = snapshot.val() || {};
     currentPlayer = player;
 renderCurrentEvent();

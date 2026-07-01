@@ -67,6 +67,7 @@ let currentApplication = null;
 let currentCheckIn = null;
 let currentAvailability = null;
 let currentTeams = {};
+let siteData = {};
 
 function findMyTeam(uid) {
   const teamsObj = currentTeams.teams || currentTeams || {};
@@ -87,6 +88,17 @@ function findMyTeam(uid) {
   return null;
 }
 
+function isCheckInOpen() {
+  if (!siteData.countdownDate) return false;
+
+  const eventStart = new Date(siteData.countdownDate).getTime();
+  const now = Date.now();
+
+  const oneHourBefore = eventStart - (60 * 60 * 1000);
+
+  return now >= oneHourBefore;
+}
+  
 function renderCheckIn() {
   const title = document.getElementById("checkInTitle");
   const description = document.getElementById("checkInDescription");
@@ -126,6 +138,7 @@ function renderCheckIn() {
   const alreadyCheckedIn = currentCheckIn && currentCheckIn.checkedIn;
   const markedUnavailable =
   currentAvailability && currentAvailability.status === "not_available";
+  const checkInOpen = isCheckInOpen();
   
   if (!isMainRoster && !isSubstitute) {
     title.innerText = "Waitlisted";
@@ -165,27 +178,57 @@ function renderCheckIn() {
   `;
 
   if (markedUnavailable) {
+
   actions.innerHTML = `
     <button class="account-secondary" onclick="markAvailable()">
       Mark Available Again
     </button>
   `;
-} else if (alreadyCheckedIn) {
-  actions.innerHTML = `
-    <button class="account-secondary" onclick="undoCheckIn()">
-      Undo Check-In
-    </button>
-  `;
-} else {
-  actions.innerHTML = `
-    <button class="account-primary" onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
-      ${isSubstitute ? "Check In as Substitute" : "Check In"}
-    </button>
 
+} else {
+
+  let html = "";
+
+  if (checkInOpen) {
+
+    if (alreadyCheckedIn) {
+
+      html += `
+        <button class="account-secondary" onclick="undoCheckIn()">
+          Undo Check-In
+        </button>
+      `;
+
+    } else {
+
+      html += `
+        <button class="account-primary"
+                onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
+          ${isSubstitute ? "Check In as Substitute" : "Check In"}
+        </button>
+      `;
+
+    }
+
+  } else {
+
+    html += `
+      <div class="dashboard-next-step" style="margin-bottom:16px;">
+        <strong>Check-In Closed</strong><br>
+        Check-In opens automatically 1 hour before the tournament begins.
+      </div>
+    `;
+
+  }
+
+  html += `
     <button class="account-secondary" onclick="markNotAvailable()">
-      I’m Not Available
+      I'm Not Available
     </button>
   `;
+
+  actions.innerHTML = html;
+
 }
 }
 
@@ -276,6 +319,12 @@ auth.onAuthStateChanged((user) => {
     currentTeams = snapshot.val() || {};
     renderCheckIn();
   });
+
+database.ref("site").on("value", snapshot => {
+  siteData = snapshot.val() || {};
+  renderCheckIn();
+});
+  
 });
 
 function logoutUser() {

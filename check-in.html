@@ -65,6 +65,7 @@ const tournamentId = "open1";
 let currentUser = null;
 let currentApplication = null;
 let currentCheckIn = null;
+let currentAvailability = null;
 let currentTeams = {};
 
 function findMyTeam(uid) {
@@ -123,7 +124,9 @@ function renderCheckIn() {
   const isMainRoster = currentApplication.status === "accepted";
   const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
   const alreadyCheckedIn = currentCheckIn && currentCheckIn.checkedIn;
-
+  const markedUnavailable =
+  currentAvailability && currentAvailability.status === "not_available";
+  
   if (!isMainRoster && !isSubstitute) {
     title.innerText = "Waitlisted";
     description.innerText = "You are currently waitlisted for this event.";
@@ -155,11 +158,29 @@ function renderCheckIn() {
     </div>
   `;
 
-  actions.innerHTML = alreadyCheckedIn
-    ? `<button class="account-secondary" onclick="undoCheckIn()">Undo Check-In</button>`
-    : `<button class="account-primary" onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
-        ${isSubstitute ? "Check In as Substitute" : "Check In"}
-      </button>`;
+  if (markedUnavailable) {
+  actions.innerHTML = `
+    <button class="account-secondary" onclick="markAvailable()">
+      Mark Available Again
+    </button>
+  `;
+} else if (alreadyCheckedIn) {
+  actions.innerHTML = `
+    <button class="account-secondary" onclick="undoCheckIn()">
+      Undo Check-In
+    </button>
+  `;
+} else {
+  actions.innerHTML = `
+    <button class="account-primary" onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
+      ${isSubstitute ? "Check In as Substitute" : "Check In"}
+    </button>
+
+    <button class="account-secondary" onclick="markNotAvailable()">
+      I’m Not Available
+    </button>
+  `;
+}
 }
 
 function checkInPlayer(type) {
@@ -195,6 +216,33 @@ function undoCheckIn() {
   database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).remove();
 }
 
+function markNotAvailable() {
+  if (!currentUser || !currentApplication) return;
+
+  const reason = prompt("Optional: Tell staff why you are unavailable.");
+
+  database.ref(`availability/${tournamentId}/${currentUser.uid}`).set({
+    uid: currentUser.uid,
+    rgId: currentApplication.rgId || "",
+    displayName: currentApplication.displayName || "",
+    rivalsIgn: currentApplication.rivalsIgn || "",
+    discordUsername: currentApplication.discordUsername || "",
+    peakRank: currentApplication.peakRank || "",
+    mainRole: currentApplication.mainRole || "",
+    region: currentApplication.region || "",
+    platform: currentApplication.platform || "",
+    status: "not_available",
+    reason: reason || "",
+    reportedAt: Date.now()
+  });
+}
+
+function markAvailable() {
+  if (!currentUser) return;
+
+  database.ref(`availability/${tournamentId}/${currentUser.uid}`).remove();
+}
+  
 auth.onAuthStateChanged((user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -213,6 +261,11 @@ auth.onAuthStateChanged((user) => {
     renderCheckIn();
   });
 
+  database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
+  currentAvailability = snapshot.val();
+  renderCheckIn();
+});
+  
   database.ref(`teams/${tournamentId}`).on("value", snapshot => {
     currentTeams = snapshot.val() || {};
     renderCheckIn();

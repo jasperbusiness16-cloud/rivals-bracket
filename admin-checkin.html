@@ -143,6 +143,53 @@ function renderOverview() {
   document.getElementById("readyPercent").innerText = `${percent}%`;
 }
 
+function getRankValue(rank) {
+  const values = {
+    "One Above All": 9,
+    "Eternity": 8,
+    "Celestial": 7,
+    "Grandmaster": 6,
+    "Diamond": 5,
+    "Platinum": 4,
+    "Gold": 3,
+    "Silver": 2,
+    "Bronze": 1
+  };
+
+  return values[rank] || 0;
+}
+
+function getReplacementScore(missingPlayer, sub) {
+  let score = 0;
+
+  if (sub.mainRole === missingPlayer.mainRole) score += 50;
+  if (sub.region === missingPlayer.region) score += 15;
+  if (sub.platform === missingPlayer.platform) score += 10;
+
+  const rankDiff = Math.abs(
+    getRankValue(sub.peakRank) - getRankValue(missingPlayer.peakRank)
+  );
+
+  score += Math.max(0, 25 - rankDiff * 5);
+
+  return score;
+}
+
+function getRecommendedSubs(missingPlayer) {
+  return applications
+    .filter(app =>
+      app.status === "waitlist" &&
+      app.wantsSub === "Yes" &&
+      isCheckedIn(app.uid)
+    )
+    .map(sub => ({
+      ...sub,
+      replacementScore: getReplacementScore(missingPlayer, sub)
+    }))
+    .sort((a, b) => b.replacementScore - a.replacementScore)
+    .slice(0, 3);
+}
+  
 function renderTeams() {
   const grid = document.getElementById("teamCheckInGrid");
   const teamsObj = teamsData.teams || {};
@@ -175,15 +222,83 @@ function renderTeams() {
         </div>
 
         ${
-          missing.length
-            ? `
-              <div class="dashboard-next-step">
-                <span>Missing</span>
-                ${missing.map(player => `
-                  <p>${player.displayName || "Player"} — ${player.peakRank || "No Rank"} / ${player.mainRole || "No Role"}</p>
-                `).join("")}
+  missing.length
+    ? `
+      <div class="dashboard-next-step">
+        <span>Missing Players</span>
+
+        ${missing.map(player => {
+
+          const recommendations = getRecommendedSubs(player);
+
+          return `
+            <div style="
+              margin-top:14px;
+              padding-top:14px;
+              border-top:1px solid rgba(255,255,255,.08);
+            ">
+
+              <strong>${player.displayName || "Player"}</strong><br>
+              ${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}
+
+              <div style="margin-top:10px;">
+
+                <span style="
+                  color:#8b949e;
+                  font-size:12px;
+                  text-transform:uppercase;
+                  letter-spacing:1px;
+                ">
+                  Recommended Replacements
+                </span>
+
+                ${
+                  recommendations.length
+                    ? recommendations.map(sub => `
+                        <div style="
+                          display:flex;
+                          justify-content:space-between;
+                          align-items:center;
+                          margin-top:8px;
+                          padding:8px 10px;
+                          border:1px solid #2a2f38;
+                          border-radius:10px;
+                        ">
+
+                          <div>
+                            <strong>${sub.displayName}</strong><br>
+                            <small>
+                              ${sub.peakRank}
+                              •
+                              ${sub.mainRole}
+                            </small>
+                          </div>
+
+                          <div style="
+                            color:#22c55e;
+                            font-weight:700;
+                          ">
+                            ${sub.replacementScore}%
+                          </div>
+
+                        </div>
+                      `).join("")
+                    : `
+                      <small style="color:#8b949e;">
+                        No checked-in substitutes available.
+                      </small>
+                    `
+                }
+
               </div>
-            `
+
+            </div>
+          `;
+
+        }).join("")}
+
+      </div>
+    `
             : `
               <div class="dashboard-event-status">✓ TEAM READY</div>
             `

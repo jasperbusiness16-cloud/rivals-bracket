@@ -404,16 +404,21 @@ function renderTournamentProgress() {
   progress.innerHTML = rounds.map(([id,name]) => {
 
     let icon = "○";
-    let color = "#8b949e";
+let color = "#8b949e";
+let status = "Waiting";
 
-    if (current.includes(id)) {
-      icon = "🔴";
-      color = "#ef4444";
-      foundCurrent = true;
-    } else if (!foundCurrent && current) {
-      icon = "✓";
-      color = "#22c55e";
-    }
+if (current.includes(id)) {
+  icon = "🔴";
+  color = "#ef4444";
+  status = "LIVE NOW";
+  foundCurrent = true;
+} else if (!foundCurrent && current) {
+  icon = "✓";
+  color = "#22c55e";
+  status = "Complete";
+} else if (foundCurrent) {
+  status = "Upcoming";
+}
 
     return `
       <div style="
@@ -422,8 +427,14 @@ function renderTournamentProgress() {
         padding:10px 0;
         border-top:1px solid rgba(255,255,255,.08);
       ">
-        <span>${name}</span>
-        <strong style="color:${color};">${icon}</strong>
+        <div>
+  <strong>${name}</strong><br>
+  <small style="color:${color};font-weight:700;">
+    ${status}
+  </small>
+</div>
+
+<strong style="color:${color};">${icon}</strong>
       </div>
     `;
 

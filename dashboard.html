@@ -931,8 +931,10 @@ function renderCurrentEvent() {
     <strong>${myTeam.teamName}</strong>
   </div>
 
+  <details class="dashboard-roster-dropdown">
+  <summary>View Roster</summary>
+
   <div class="dashboard-roster">
-    <span>Roster</span>
     ${myTeam.players.map(player => `
       <a class="dashboard-roster-player"
          href="player.html?id=${player.uid}">
@@ -941,6 +943,7 @@ function renderCurrentEvent() {
       </a>
     `).join("")}
   </div>
+</details>
 
   <div class="dashboard-player-status">
 

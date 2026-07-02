@@ -1254,3 +1254,23 @@
 .dashboard-roster-player small {
   font-size: 14px;
 }
+
+#nextMatchCard .dashboard-next-step {
+  padding: 14px 0;
+}
+
+#nextMatchCard .dashboard-next-step span {
+  font-size: 12px;
+}
+
+#nextMatchCard .dashboard-next-step strong {
+  font-size: 20px;
+}
+
+#nextMatchCard .account-actions {
+  margin-top: 12px;
+}
+
+#nextMatchCard .account-secondary {
+  padding: 14px 22px;
+}

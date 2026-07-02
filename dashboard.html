@@ -147,6 +147,15 @@
 
 </section>
         <section class="account-panel full">
+
+  <h2>My Tournament Journey</h2>
+
+  <div id="journeyTimeline">
+    Loading journey...
+  </div>
+
+</section>
+        <section class="account-panel full">
   <h2>Activity Feed</h2>
   <div id="activityFeed" class="dashboard-activity-feed">
     <p>Loading activity...</p>
@@ -511,6 +520,176 @@ function renderActivityFeed() {
   `).join("");
 }
 
+function getMyTournamentJourney(myTeam) {
+  if (!myTeam) return [];
+
+  const myTeamName = clean(myTeam.teamName);
+
+  const matches = [
+    {
+      id: "qf1",
+      name: "Quarterfinal 1",
+      teams: [siteData.team1, siteData.team2],
+      winner: siteData.qf1Winner,
+      score: `${siteData.qf1Team1Score || "0"} - ${siteData.qf1Team2Score || "0"}`
+    },
+    {
+      id: "qf2",
+      name: "Quarterfinal 2",
+      teams: [siteData.team3, siteData.team4],
+      winner: siteData.qf2Winner,
+      score: `${siteData.qf2Team1Score || "0"} - ${siteData.qf2Team2Score || "0"}`
+    },
+    {
+      id: "qf3",
+      name: "Quarterfinal 3",
+      teams: [siteData.team5, siteData.team6],
+      winner: siteData.qf3Winner,
+      score: `${siteData.qf3Team1Score || "0"} - ${siteData.qf3Team2Score || "0"}`
+    },
+    {
+      id: "qf4",
+      name: "Quarterfinal 4",
+      teams: [siteData.team7, siteData.team8],
+      winner: siteData.qf4Winner,
+      score: `${siteData.qf4Team1Score || "0"} - ${siteData.qf4Team2Score || "0"}`
+    },
+    {
+      id: "sf1",
+      name: "Semifinal 1",
+      teams: [siteData.qf1Winner, siteData.qf2Winner],
+      winner: siteData.sf1Winner,
+      score: `${siteData.sf1Team1Score || "0"} - ${siteData.sf1Team2Score || "0"}`
+    },
+    {
+      id: "sf2",
+      name: "Semifinal 2",
+      teams: [siteData.qf3Winner, siteData.qf4Winner],
+      winner: siteData.sf2Winner,
+      score: `${siteData.sf2Team1Score || "0"} - ${siteData.sf2Team2Score || "0"}`
+    },
+    {
+      id: "grand",
+      name: "Grand Finals",
+      teams: [siteData.sf1Winner, siteData.sf2Winner],
+      winner: siteData.grandWinner,
+      score: `${siteData.gfTeam1Score || "0"} - ${siteData.gfTeam2Score || "0"}`
+    }
+  ];
+
+  return matches.filter(match =>
+    match.teams.map(team => clean(team)).includes(myTeamName)
+  );
+}
+
+function renderMyTournamentJourney() {
+
+  const container = document.getElementById("journeyTimeline");
+
+  if (!container) return;
+
+  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
+
+  const journey = getMyTournamentJourney(myTeam);
+
+  const current = getCurrentMatchText().toLowerCase();
+
+  if (!myTeam || !journey.length) {
+
+    container.innerHTML = `
+
+      <div class="dashboard-activity-empty">
+
+        Your tournament path will appear here once your matches are available.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+  container.innerHTML = journey.map(match => {
+
+    const isLive = current.includes(match.id);
+
+    const isComplete = clean(match.winner) !== "";
+
+    const won = clean(match.winner) === clean(myTeam.teamName);
+
+    let label = "Waiting";
+
+    let color = "#8b949e";
+
+    let icon = "○";
+
+    if (isLive) {
+
+      label = "LIVE NOW";
+
+      color = "#ef4444";
+
+      icon = "🔴";
+
+    } else if (isComplete && won) {
+
+      label = "Won";
+
+      color = "#22c55e";
+
+      icon = "✓";
+
+    } else if (isComplete && !won) {
+
+      label = "Lost";
+
+      color = "#ef4444";
+
+      icon = "✕";
+
+    }
+
+    const opponent = match.teams.find(team => clean(team) !== clean(myTeam.teamName)) || "TBD";
+
+    return `
+
+      <div style="
+
+        display:flex;
+
+        justify-content:space-between;
+
+        gap:12px;
+
+        padding:12px 0;
+
+        border-top:1px solid rgba(255,255,255,.08);
+
+      ">
+
+        <div>
+
+          <strong>${match.name}</strong><br>
+
+          <small>vs ${opponent} • ${match.score}</small>
+
+        </div>
+
+        <strong style="color:${color};">
+
+          ${icon} ${label}
+
+        </strong>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+  
 function renderMyMatchLiveAlert() {
   const alertBox = document.getElementById("myMatchLiveAlert");
   const content = document.getElementById("myMatchLiveAlertContent");
@@ -590,6 +769,7 @@ function renderCurrentEvent() {
   renderSubbedInAlert();
   renderMyMatchLiveAlert();
   renderTournamentProgress();
+  renderMyTournamentJourney();
   renderActivityFeed();
   const title = document.getElementById("eventTitle");
   const description = document.getElementById("eventDescription");

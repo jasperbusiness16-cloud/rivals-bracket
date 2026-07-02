@@ -118,6 +118,11 @@
           <div id="subbedInAlertContent"></div>
         </section>
 
+        <section id="myMatchLiveAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;">
+  <h2 style="color:#ef4444;">🔴 Your Match Is Live</h2>
+  <div id="myMatchLiveAlertContent"></div>
+</section>
+        
         <section class="account-panel full">
 
   <h2 id="eventTitle">
@@ -506,6 +511,48 @@ function renderActivityFeed() {
   `).join("");
 }
 
+function renderMyMatchLiveAlert() {
+  const alertBox = document.getElementById("myMatchLiveAlert");
+  const content = document.getElementById("myMatchLiveAlertContent");
+
+  if (!alertBox || !content) return;
+
+  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
+
+  if (!myTeam || !isMyTeamInCurrentMatch(myTeam)) {
+    alertBox.style.display = "none";
+    return;
+  }
+
+  const matchTeams = getCurrentMatchTeams();
+
+  alertBox.style.display = "block";
+
+  content.innerHTML = `
+    <p style="font-size:18px;">
+      <strong>${getCurrentMatchText()}</strong>
+    </p>
+
+    <div style="text-align:center;font-size:22px;font-weight:900;margin:18px 0;">
+      ${matchTeams[0] || "TBD"}
+      <br>
+      <span style="color:#ef4444;">${getCurrentMatchScore()}</span>
+      <br>
+      ${matchTeams[1] || "TBD"}
+    </div>
+
+    <p>
+      Your match is live. Report to your team lobby now and follow tournament staff instructions.
+    </p>
+
+    <div class="account-actions">
+      <a class="account-primary" href="watch.html">Watch Broadcast</a>
+      <a class="account-secondary" href="tournament.html">Open Bracket</a>
+      <a class="account-secondary" href="teams.html">View Team</a>
+    </div>
+  `;
+}
+  
 function renderSubbedInAlert() {
   const alertBox = document.getElementById("subbedInAlert");
   const content = document.getElementById("subbedInAlertContent");
@@ -541,6 +588,7 @@ function renderSubbedInAlert() {
   
 function renderCurrentEvent() {
   renderSubbedInAlert();
+  renderMyMatchLiveAlert();
   renderTournamentProgress();
   renderActivityFeed();
   const title = document.getElementById("eventTitle");

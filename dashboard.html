@@ -160,6 +160,7 @@ let currentUser = null;
 let currentPlayer = null;
 let currentApplication = null;
 let currentCheckIn = null;
+let currentAvailability = null;
 let currentTeams = {};
 let currentTournament = {};
 let currentSubstitution = null;
@@ -425,6 +426,17 @@ function renderCurrentEvent() {
 </div>
 
 <div class="dashboard-next-step">
+  <span>Availability</span>
+  <strong style="color:${currentAvailability?.status === "not_available" ? "#ef4444" : "#22c55e"};">
+    ${
+      currentAvailability?.status === "not_available"
+        ? "✕ Not Available"
+        : "✓ Available"
+    }
+  </strong>
+</div>
+
+<div class="dashboard-next-step">
   <span>Match Status</span>
   <strong>Waiting For Tournament</strong>
 </div>
@@ -485,6 +497,11 @@ auth.onAuthStateChanged((user) => {
 
 database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
   currentCheckIn = snapshot.val();
+  renderCurrentEvent();
+});
+
+database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
+  currentAvailability = snapshot.val();
   renderCurrentEvent();
 });
   

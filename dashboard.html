@@ -835,7 +835,11 @@ function renderSubbedInAlert() {
 
   if (!alertBox || !content) return;
 
-  if (!currentApplication || !currentApplication.addedAsSubstitute) {
+  if (
+  localStorage.getItem(`subbedInDismissed_${tournamentId}_${currentUser?.uid}`) === "yes" ||
+  !currentApplication ||
+  !currentApplication.addedAsSubstitute
+) {
     alertBox.style.display = "none";
     return;
   }
@@ -847,6 +851,18 @@ function renderSubbedInAlert() {
   alertBox.style.display = "block";
 
   content.innerHTML = `
+    <button onclick="dismissSubbedInAlert()" style="
+  float:right;
+  background:transparent;
+  border:1px solid #ef4444;
+  color:#ef4444;
+  border-radius:999px;
+  width:34px;
+  height:34px;
+  font-weight:900;
+">
+  ×
+</button>
     <p style="font-size:18px;">
       You have been added to <strong>${teamName}</strong> for this tournament.
     </p>
@@ -860,6 +876,11 @@ function renderSubbedInAlert() {
       <a class="account-secondary" href="check-in.html">Go to Check-In</a>
     </div>
   `;
+}
+
+function dismissSubbedInAlert() {
+  localStorage.setItem(`subbedInDismissed_${tournamentId}_${currentUser?.uid}`, "yes");
+  renderSubbedInAlert();
 }
   
 function renderCurrentEvent() {

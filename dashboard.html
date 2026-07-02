@@ -113,6 +113,11 @@
 
       <div class="account-panel-grid">
 
+        <section id="subbedInAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;">
+          <h2 style="color:#ef4444;">🚨 You Have Been Subbed In</h2>
+          <div id="subbedInAlertContent"></div>
+        </section>
+
         <section class="account-panel full">
 
   <h2 id="eventTitle">
@@ -156,7 +161,7 @@ let currentPlayer = null;
 let currentApplication = null;
 let currentTeams = {};
 let currentTournament = {};
-  
+let currentSubstitution = null;
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -317,8 +322,42 @@ function renderActivityFeed() {
     </div>
   `).join("");
 }
+
+function renderSubbedInAlert() {
+  const alertBox = document.getElementById("subbedInAlert");
+  const content = document.getElementById("subbedInAlertContent");
+
+  if (!alertBox || !content) return;
+
+  if (!currentApplication || !currentApplication.addedAsSubstitute) {
+    alertBox.style.display = "none";
+    return;
+  }
+
+  const teamName = currentApplication.substitutedInto
+    ? currentApplication.substitutedInto.replace("team", "Team ")
+    : "your assigned team";
+
+  alertBox.style.display = "block";
+
+  content.innerHTML = `
+    <p style="font-size:18px;">
+      You have been added to <strong>${teamName}</strong> for this tournament.
+    </p>
+
+    <p>
+      Please report to your team immediately and watch Discord for tournament staff instructions.
+    </p>
+
+    <div class="account-actions">
+      <a class="account-primary" href="teams.html">View Team</a>
+      <a class="account-secondary" href="check-in.html">Go to Check-In</a>
+    </div>
+  `;
+}
   
 function renderCurrentEvent() {
+  renderSubbedInAlert();
   renderActivityFeed();
   const title = document.getElementById("eventTitle");
   const description = document.getElementById("eventDescription");

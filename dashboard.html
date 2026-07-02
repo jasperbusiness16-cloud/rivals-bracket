@@ -159,6 +159,7 @@ const tournamentId = "open1";
 let currentUser = null;
 let currentPlayer = null;
 let currentApplication = null;
+let currentCheckIn = null;
 let currentTeams = {};
 let currentTournament = {};
 let currentSubstitution = null;
@@ -402,9 +403,31 @@ function renderCurrentEvent() {
   </div>
 
   <div class="dashboard-next-step">
-    <span>Next Step</span>
-    <strong>Check-in and match schedule coming soon.</strong>
-  </div>
+  <span>Next Step</span>
+  <strong>
+    ${
+      currentCheckIn?.checkedIn
+        ? "Waiting for tournament to begin."
+        : "Please check in before the event starts."
+    }
+  </strong>
+</div>
+
+<div class="dashboard-next-step">
+  <span>Check-In Status</span>
+  <strong style="color:${currentCheckIn?.checkedIn ? "#22c55e" : "#facc15"};">
+    ${
+      currentCheckIn?.checkedIn
+        ? "✓ Checked In"
+        : "○ Not Checked In"
+    }
+  </strong>
+</div>
+
+<div class="dashboard-next-step">
+  <span>Match Status</span>
+  <strong>Waiting For Tournament</strong>
+</div>
 `;
 
       actions.innerHTML = `
@@ -460,6 +483,11 @@ auth.onAuthStateChanged((user) => {
     renderCurrentEvent();
   });
 
+database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
+  currentCheckIn = snapshot.val();
+  renderCurrentEvent();
+});
+  
   database.ref(`teams/${tournamentId}`).on("value", snapshot => {
     currentTeams = snapshot.val() || {};
     renderCurrentEvent();

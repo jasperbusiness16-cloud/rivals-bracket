@@ -1315,3 +1315,17 @@
   background: rgba(239,68,68,.12);
   border: 1px solid rgba(239,68,68,.35);
 }
+
+.journey-next-match {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.journey-next-match h3 {
+  margin: 0 0 12px 0;
+  color: #fff;
+  font-size: 26px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

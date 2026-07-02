@@ -1316,10 +1316,10 @@
   border: 1px solid rgba(239,68,68,.35);
 }
 
-.journey-next-match {
-  margin-top: 24px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255,255,255,.1);
+.journey-next-match{
+    margin-top:28px;
+    padding-top:28px;
+    border-top:1px solid rgba(255,255,255,.08);
 }
 
 .journey-next-match h3 {
@@ -1328,4 +1328,12 @@
   font-size: 26px;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.journey-next-match .dashboard-next-step{
+    padding:14px 0;
+}
+
+.journey-next-match .dashboard-next-step strong{
+    margin-top:4px;
 }

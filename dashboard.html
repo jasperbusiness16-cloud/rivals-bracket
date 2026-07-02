@@ -276,6 +276,33 @@ function getCurrentMatchText() {
   return clean(siteData.currentMatch, "");
 }
 
+function getCurrentMatchScore() {
+  const match = getCurrentMatchText().toLowerCase();
+
+  if (match.includes("qf1"))
+    return `${siteData.qf1Team1Score || "0"} - ${siteData.qf1Team2Score || "0"}`;
+
+  if (match.includes("qf2"))
+    return `${siteData.qf2Team1Score || "0"} - ${siteData.qf2Team2Score || "0"}`;
+
+  if (match.includes("qf3"))
+    return `${siteData.qf3Team1Score || "0"} - ${siteData.qf3Team2Score || "0"}`;
+
+  if (match.includes("qf4"))
+    return `${siteData.qf4Team1Score || "0"} - ${siteData.qf4Team2Score || "0"}`;
+
+  if (match.includes("sf1"))
+    return `${siteData.sf1Team1Score || "0"} - ${siteData.sf1Team2Score || "0"}`;
+
+  if (match.includes("sf2"))
+    return `${siteData.sf2Team1Score || "0"} - ${siteData.sf2Team2Score || "0"}`;
+
+  if (match.includes("grand"))
+    return `${siteData.gfTeam1Score || "0"} - ${siteData.gfTeam2Score || "0"}`;
+
+  return "0 - 0";
+}
+  
 function getCurrentMatchTeams() {
 
   const match = getCurrentMatchText().toLowerCase();
@@ -608,6 +635,16 @@ function renderCurrentEvent() {
       text-align:center;
       margin:12px 0;
     ">
+    <div style="
+  text-align:center;
+  margin-bottom:14px;
+  color:${isMyTeamInCurrentMatch(myTeam) ? "#ef4444" : "#8b949e"};
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:1px;
+">
+  ${isMyTeamInCurrentMatch(myTeam) ? "🚨 Your Match" : "Current Broadcast"}
+</div>
       ${getCurrentMatchTeams()[0] || "TBD"}
     </div>
 
@@ -617,7 +654,7 @@ function renderCurrentEvent() {
       font-weight:700;
       margin:6px 0;
     ">
-      VS
+      ${getCurrentMatchScore()}
     </div>
 
     <div style="

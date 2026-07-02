@@ -113,10 +113,25 @@
 
       <div class="account-panel-grid">
 
-        <section id="subbedInAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;">
-          <h2 style="color:#ef4444;">🚨 You Have Been Subbed In</h2>
-          <div id="subbedInAlertContent"></div>
-        </section>
+        <section id="subbedInAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;position:relative;">
+  <button onclick="dismissSubbedInAlert()" style="
+    position:absolute;
+    top:14px;
+    right:14px;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:1px solid #ef4444;
+    background:#160b0b;
+    color:#ef4444;
+    font-size:20px;
+    font-weight:900;
+    z-index:5;
+  ">×</button>
+
+  <h2 style="color:#ef4444;padding-right:44px;">🚨 You Have Been Subbed In</h2>
+  <div id="subbedInAlertContent"></div>
+</section>
 
         <section id="myMatchLiveAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;">
   <h2 style="color:#ef4444;">🔴 Your Match Is Live</h2>

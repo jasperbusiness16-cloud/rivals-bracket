@@ -956,51 +956,31 @@ function renderCurrentEvent() {
   </strong>
 </div>
 
-<div class="dashboard-next-step">
-
-  <span>Current Match</span>
-
-  <div class="match-hub-card">
-    
-
-    <div class="match-hub-label">
-    
-      ${getCurrentMatchText() || "No Match Selected"}
-    </div>
-
-    <div class="match-hub-status">
-  ${isMyTeamInCurrentMatch(myTeam) ? "🚨 Your Match" : "Current Broadcast"}
-</div>
-
-<div class="match-hub-team">
-  ${getCurrentMatchTeams()[0] || "TBD"}
-</div>
-
-    <div class="match-hub-score">
-      
-      ${getCurrentMatchScore()}
-    </div>
-
-    <div class="match-hub-team">
-      
-      ${getCurrentMatchTeams()[1] || "TBD"}
-    </div>
-
-    <div class="match-hub-live">
-      
-      🔴 LIVE NOW
-    </div>
-<div class="account-actions" style="margin-top:18px;justify-content:center;">
-  <a class="account-primary" href="watch.html">
-    Watch Live
-  </a>
-
-  <a class="account-secondary" href="tournament.html">
-    Open Bracket
-  </a>
-</div>
+<div class="match-hub-card">
+  <div class="match-hub-status">
+    ${isMyTeamInCurrentMatch(myTeam) ? "🚨 Your Match" : "Live Match"}
   </div>
 
+  <div class="match-hub-label">
+    ${getCurrentMatchText() || "No Match Selected"}
+  </div>
+
+  <div class="match-row">
+    <span>${getCurrentMatchTeams()[0] || "TBD"}</span>
+    <strong>${getCurrentMatchScore().split("-")[0]?.trim() || "0"}</strong>
+  </div>
+
+  <div class="match-row">
+    <span>${getCurrentMatchTeams()[1] || "TBD"}</span>
+    <strong>${getCurrentMatchScore().split("-")[1]?.trim() || "0"}</strong>
+  </div>
+
+  <div class="match-live-pill">🔴 LIVE NOW</div>
+
+  <div class="account-actions" style="margin-top:18px;justify-content:center;">
+    <a class="account-primary" href="watch.html">Watch Live</a>
+    <a class="account-secondary" href="tournament.html">Open Bracket</a>
+  </div>
 </div>
 
 <div class="dashboard-next-step">

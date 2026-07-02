@@ -132,7 +132,15 @@
   </div>
 
 </section>
-        
+        <section class="account-panel full">
+
+  <h2>Tournament Progress</h2>
+
+  <div id="tournamentProgress">
+    Loading tournament progress...
+  </div>
+
+</section>
         <section class="account-panel full">
   <h2>Activity Feed</h2>
   <div id="activityFeed" class="dashboard-activity-feed">
@@ -312,6 +320,56 @@ function renderTeamReadiness(myTeam) {
     return "";
   }
 
+function renderTournamentProgress() {
+
+  const progress = document.getElementById("tournamentProgress");
+
+  if (!progress) return;
+
+  const current = getCurrentMatchText().toLowerCase();
+
+  const rounds = [
+    ["qf1","Quarterfinal 1"],
+    ["qf2","Quarterfinal 2"],
+    ["qf3","Quarterfinal 3"],
+    ["qf4","Quarterfinal 4"],
+    ["sf1","Semifinal 1"],
+    ["sf2","Semifinal 2"],
+    ["grand","Grand Finals"]
+  ];
+
+  let foundCurrent = false;
+
+  progress.innerHTML = rounds.map(([id,name]) => {
+
+    let icon = "○";
+    let color = "#8b949e";
+
+    if (current.includes(id)) {
+      icon = "🔴";
+      color = "#ef4444";
+      foundCurrent = true;
+    } else if (!foundCurrent && current) {
+      icon = "✓";
+      color = "#22c55e";
+    }
+
+    return `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        padding:10px 0;
+        border-top:1px solid rgba(255,255,255,.08);
+      ">
+        <span>${name}</span>
+        <strong style="color:${color};">${icon}</strong>
+      </div>
+    `;
+
+  }).join("");
+
+}
+  
   const readyCount = myTeam.players.filter(player =>
     allCheckIns[player.uid]?.checkedIn &&
     allAvailability[player.uid]?.status !== "not_available"
@@ -446,6 +504,7 @@ function renderSubbedInAlert() {
   
 function renderCurrentEvent() {
   renderSubbedInAlert();
+  renderTournamentProgress();
   renderActivityFeed();
   const title = document.getElementById("eventTitle");
   const description = document.getElementById("eventDescription");

@@ -164,7 +164,8 @@ let currentAvailability = null;
 let currentTeams = {};
 let currentTournament = {};
 let currentSubstitution = null;
-
+let siteData = {};
+  
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
@@ -261,6 +262,19 @@ function findMyTeam(uid) {
   return null;
 }
 
+function getCurrentMatchText() {
+  return clean(siteData.currentMatch, "");
+}
+
+function isMyTeamInCurrentMatch(myTeam) {
+  if (!myTeam) return false;
+
+  const matchText = getCurrentMatchText().toLowerCase();
+  const teamName = clean(myTeam.teamName).toLowerCase();
+
+  return matchText.includes(teamName);
+}
+  
 function renderActivityFeed() {
   const feed = document.getElementById("activityFeed");
   if (!feed) return;
@@ -437,20 +451,29 @@ function renderCurrentEvent() {
 </div>
 
 <div class="dashboard-next-step">
+  <span>Current Match</span>
+  <strong>${getCurrentMatchText() || "No match selected yet"}</strong>
+</div>
+
+<div class="dashboard-next-step">
   <span>Tournament Status</span>
   <strong style="color:${
     currentAvailability?.status === "not_available"
       ? "#ef4444"
-      : currentCheckIn?.checkedIn
-        ? "#22c55e"
-        : "#facc15"
+      : isMyTeamInCurrentMatch(myTeam)
+        ? "#ef4444"
+        : currentCheckIn?.checkedIn
+          ? "#22c55e"
+          : "#facc15"
   };">
     ${
       currentAvailability?.status === "not_available"
         ? "Not Available"
-        : currentCheckIn?.checkedIn
-          ? "Ready To Play"
-          : "Needs Check-In"
+        : isMyTeamInCurrentMatch(myTeam)
+          ? "🚨 Your Match Is Live"
+          : currentCheckIn?.checkedIn
+            ? "Ready To Play"
+            : "Needs Check-In"
     }
   </strong>
 </div>
@@ -524,6 +547,11 @@ database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot =>
     renderCurrentEvent();
   });
 
+  database.ref("site").on("value", snapshot => {
+  siteData = snapshot.val() || {};
+  renderCurrentEvent();
+});
+  
   database.ref(`users/${user.uid}`).update({
     emailVerified: user.emailVerified,
     lastLogin: Date.now()

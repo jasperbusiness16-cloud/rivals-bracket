@@ -866,40 +866,17 @@ function renderSubbedInAlert() {
   alertBox.style.display = "block";
 
   content.innerHTML = `
-  <div style="position:relative;">
+  <p style="font-size:18px;">
+    You have been added to <strong>${teamName}</strong> for this tournament.
+  </p>
 
-    <button
-      onclick="dismissSubbedInAlert()"
-      style="
-        position:absolute;
-        top:0;
-        right:0;
-        width:34px;
-        height:34px;
-        border-radius:50%;
-        border:1px solid #ef4444;
-        background:transparent;
-        color:#ef4444;
-        font-size:20px;
-        font-weight:900;
-        cursor:pointer;
-      ">
-      ×
-    </button>
+  <p>
+    Please report to your team immediately and watch Discord for tournament staff instructions.
+  </p>
 
-    <p style="font-size:18px;">
-      You have been added to <strong>${teamName}</strong> for this tournament.
-    </p>
-
-    <p>
-      Please report to your team immediately and watch Discord for tournament staff instructions.
-    </p>
-
-    <div class="account-actions">
-      <a class="account-primary" href="teams.html">View Team</a>
-      <a class="account-secondary" href="check-in.html">Go to Check-In</a>
-    </div>
-
+  <div class="account-actions">
+    <a class="account-primary" href="teams.html">View Team</a>
+    <a class="account-secondary" href="check-in.html">Go to Check-In</a>
   </div>
 `;
 }

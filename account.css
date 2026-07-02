@@ -1231,3 +1231,26 @@
     letter-spacing: 1px;
     text-transform: uppercase;
 }
+
+.dashboard-roster {
+  gap: 0;
+  margin-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.dashboard-roster-player {
+  display: block;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-radius: 0;
+  background: transparent;
+}
+
+.dashboard-roster-player strong {
+  font-size: 20px;
+}
+
+.dashboard-roster-player small {
+  font-size: 14px;
+}

@@ -481,8 +481,65 @@ function renderCurrentEvent() {
 </div>
 
 <div class="dashboard-next-step">
+
   <span>Current Match</span>
-  <strong>${getCurrentMatchText() || "No match selected yet"}</strong>
+
+  <div style="
+    margin-top:12px;
+    padding:18px;
+    border:1px solid #2a2f38;
+    border-radius:14px;
+    background:#10141d;
+  ">
+
+    <div style="
+      color:#ef4444;
+      font-weight:700;
+      margin-bottom:14px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    ">
+      ${getCurrentMatchText() || "No Match Selected"}
+    </div>
+
+    <div style="
+      font-size:22px;
+      font-weight:800;
+      text-align:center;
+      margin:12px 0;
+    ">
+      ${getCurrentMatchTeams()[0] || "TBD"}
+    </div>
+
+    <div style="
+      text-align:center;
+      color:#8b949e;
+      font-weight:700;
+      margin:6px 0;
+    ">
+      VS
+    </div>
+
+    <div style="
+      font-size:22px;
+      font-weight:800;
+      text-align:center;
+      margin:12px 0;
+    ">
+      ${getCurrentMatchTeams()[1] || "TBD"}
+    </div>
+
+    <div style="
+      margin-top:16px;
+      text-align:center;
+      color:#ef4444;
+      font-weight:800;
+    ">
+      🔴 LIVE NOW
+    </div>
+
+  </div>
+
 </div>
 
 <div class="dashboard-next-step">

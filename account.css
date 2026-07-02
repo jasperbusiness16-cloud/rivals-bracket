@@ -1380,3 +1380,17 @@
 .dashboard-roster-dropdown .dashboard-roster {
   margin-top: 16px;
 }
+
+.dashboard-top-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.dashboard-top-actions .account-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

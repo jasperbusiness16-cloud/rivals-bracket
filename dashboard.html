@@ -586,12 +586,24 @@ function renderCurrentEvent() {
   </div>
 
   <div class="dashboard-next-step">
-  <span>Next Step</span>
-  <strong>
+  <span>What's Next?</span>
+  <strong style="color:${
+    currentAvailability?.status === "not_available"
+      ? "#ef4444"
+      : isMyTeamInCurrentMatch(myTeam)
+        ? "#ef4444"
+        : currentCheckIn?.checkedIn
+          ? "#22c55e"
+          : "#facc15"
+  };">
     ${
-      currentCheckIn?.checkedIn
-        ? "Waiting for tournament to begin."
-        : "Please check in before the event starts."
+      currentAvailability?.status === "not_available"
+        ? "You are marked unavailable. Staff may replace you."
+        : isMyTeamInCurrentMatch(myTeam)
+          ? "Your match is live. Report to your team now."
+          : currentCheckIn?.checkedIn
+            ? "You are ready. Wait for your match assignment."
+            : "Check in before the event starts."
     }
   </strong>
 </div>

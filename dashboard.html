@@ -960,67 +960,34 @@ function renderCurrentEvent() {
 
   <span>Current Match</span>
 
-  <div style="
-    margin-top:12px;
-    padding:18px;
-    border:1px solid #2a2f38;
-    border-radius:14px;
-    background:#10141d;
-  ">
+  <div class="match-hub-card">
+    
 
-    <div style="
-      color:#ef4444;
-      font-weight:700;
-      margin-bottom:14px;
-      text-transform:uppercase;
-      letter-spacing:1px;
-    ">
+    <div class="match-hub-label">
+    
       ${getCurrentMatchText() || "No Match Selected"}
     </div>
 
-    <div style="
-      font-size:22px;
-      font-weight:800;
-      text-align:center;
-      margin:12px 0;
-    ">
-    <div style="
-  text-align:center;
-  margin-bottom:14px;
-  color:${isMyTeamInCurrentMatch(myTeam) ? "#ef4444" : "#8b949e"};
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:1px;
-">
+    <div class="match-hub-status">
   ${isMyTeamInCurrentMatch(myTeam) ? "🚨 Your Match" : "Current Broadcast"}
 </div>
-      ${getCurrentMatchTeams()[0] || "TBD"}
-    </div>
 
-    <div style="
-      text-align:center;
-      color:#8b949e;
-      font-weight:700;
-      margin:6px 0;
-    ">
+<div class="match-hub-team">
+  ${getCurrentMatchTeams()[0] || "TBD"}
+</div>
+
+    <div class="match-hub-score">
+      
       ${getCurrentMatchScore()}
     </div>
 
-    <div style="
-      font-size:22px;
-      font-weight:800;
-      text-align:center;
-      margin:12px 0;
-    ">
+    <div class="match-hub-team">
+      
       ${getCurrentMatchTeams()[1] || "TBD"}
     </div>
 
-    <div style="
-      margin-top:16px;
-      text-align:center;
-      color:#ef4444;
-      font-weight:800;
-    ">
+    <div class="match-hub-live">
+      
       🔴 LIVE NOW
     </div>
 <div class="account-actions" style="margin-top:18px;justify-content:center;">

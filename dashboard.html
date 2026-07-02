@@ -137,15 +137,7 @@
   </div>
 
 </section>
-        <section class="account-panel full">
-
-  <h2>Tournament Progress</h2>
-
-  <div id="tournamentProgress">
-    Loading tournament progress...
-  </div>
-
-</section>
+        
         <section class="account-panel full">
 
   <h2>My Tournament Journey</h2>
@@ -583,111 +575,103 @@ function getMyTournamentJourney(myTeam) {
 }
 
 function renderMyTournamentJourney() {
-
   const container = document.getElementById("journeyTimeline");
-
   if (!container) return;
 
   const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-
   const journey = getMyTournamentJourney(myTeam);
-
   const current = getCurrentMatchText().toLowerCase();
 
   if (!myTeam || !journey.length) {
-
     container.innerHTML = `
-
       <div class="dashboard-activity-empty">
-
         Your tournament path will appear here once your matches are available.
-
       </div>
-
     `;
-
     return;
-
   }
 
   container.innerHTML = journey.map(match => {
-
     const isLive = current.includes(match.id);
-
     const isComplete = clean(match.winner) !== "";
-
     const won = clean(match.winner) === clean(myTeam.teamName);
+    const opponent = match.teams.find(team => clean(team) !== clean(myTeam.teamName)) || "TBD";
 
     let label = "Waiting";
-
     let color = "#8b949e";
-
     let icon = "○";
 
     if (isLive) {
-
-      label = "LIVE NOW";
-
+      label = "YOUR MATCH IS LIVE";
       color = "#ef4444";
-
       icon = "🔴";
-
     } else if (isComplete && won) {
-
-      label = "Won";
-
+      label = "MATCH WON";
       color = "#22c55e";
-
       icon = "✓";
-
     } else if (isComplete && !won) {
-
-      label = "Lost";
-
+      label = "ELIMINATED";
       color = "#ef4444";
-
       icon = "✕";
-
     }
 
-    const opponent = match.teams.find(team => clean(team) !== clean(myTeam.teamName)) || "TBD";
-
     return `
-
       <div style="
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:12px;
-
-        padding:12px 0;
-
+        padding:18px 0;
         border-top:1px solid rgba(255,255,255,.08);
-
       ">
-
-        <div>
-
-          <strong>${match.name}</strong><br>
-
-          <small>vs ${opponent} • ${match.score}</small>
-
+        <div style="
+          color:${color};
+          font-weight:900;
+          text-transform:uppercase;
+          letter-spacing:1px;
+          margin-bottom:12px;
+        ">
+          ${icon} ${label}
         </div>
 
-        <strong style="color:${color};">
+        <h3 style="margin:0 0 12px 0;">
+          ${match.name}
+        </h3>
 
-          ${icon} ${label}
+        <div style="
+          display:grid;
+          grid-template-columns:1fr auto 1fr;
+          align-items:center;
+          gap:12px;
+          margin:14px 0;
+        ">
+          <strong>${myTeam.teamName}</strong>
 
-        </strong>
+          <div style="
+            color:#ef4444;
+            font-weight:900;
+            font-size:20px;
+            text-align:center;
+          ">
+            ${match.score}
+          </div>
 
+          <strong style="text-align:right;">${opponent}</strong>
+        </div>
+
+        ${
+          isLive
+            ? `
+              <p style="color:#c9d1d9;">
+                Your team is currently playing. Report to your lobby and follow tournament staff instructions.
+              </p>
+
+              <div class="account-actions">
+                <a class="account-primary" href="watch.html">Watch Live</a>
+                <a class="account-secondary" href="tournament.html">Open Bracket</a>
+              </div>
+            `
+            : ""
+        }
       </div>
-
     `;
-
   }).join("");
-
 }
   
 function renderMyMatchLiveAlert() {
@@ -768,7 +752,6 @@ function renderSubbedInAlert() {
 function renderCurrentEvent() {
   renderSubbedInAlert();
   renderMyMatchLiveAlert();
-  renderTournamentProgress();
   renderMyTournamentJourney();
   renderActivityFeed();
   const title = document.getElementById("eventTitle");

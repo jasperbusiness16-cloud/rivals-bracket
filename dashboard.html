@@ -911,99 +911,32 @@ function renderCurrentEvent() {
     `).join("")}
   </div>
 
-  <div class="dashboard-next-step">
-  <span>What's Next?</span>
-  <strong style="color:${
-    currentAvailability?.status === "not_available"
-      ? "#ef4444"
-      : isMyTeamInCurrentMatch(myTeam)
-        ? "#ef4444"
-        : currentCheckIn?.checkedIn
-          ? "#22c55e"
-          : "#facc15"
-  };">
+  <div class="dashboard-player-status">
+
+  <div class="status-chip ${currentCheckIn?.checkedIn ? "success" : "warning"}">
+    ${currentCheckIn?.checkedIn ? "✓ Checked In" : "○ Check-In Required"}
+  </div>
+
+  <div class="status-chip ${currentAvailability?.status === "not_available" ? "danger" : "success"}">
     ${
       currentAvailability?.status === "not_available"
-        ? "You are marked unavailable. Staff may replace you."
-        : isMyTeamInCurrentMatch(myTeam)
-          ? "Your match is live. Report to your team now."
-          : currentCheckIn?.checkedIn
-            ? "You are ready. Wait for your match assignment."
-            : "Check in before the event starts."
-    }
-  </strong>
-</div>
-
-<div class="dashboard-next-step">
-  <span>Check-In Status</span>
-  <strong style="color:${currentCheckIn?.checkedIn ? "#22c55e" : "#facc15"};">
-    ${
-      currentCheckIn?.checkedIn
-        ? "✓ Checked In"
-        : "○ Not Checked In"
-    }
-  </strong>
-</div>
-
-<div class="dashboard-next-step">
-  <span>Availability</span>
-  <strong style="color:${currentAvailability?.status === "not_available" ? "#ef4444" : "#22c55e"};">
-    ${
-      currentAvailability?.status === "not_available"
-        ? "✕ Not Available"
+        ? "✕ Unavailable"
         : "✓ Available"
     }
-  </strong>
-</div>
-
-<div class="match-hub-card">
-  <div class="match-hub-status">
-    ${isMyTeamInCurrentMatch(myTeam) ? "🚨 Your Match" : "Live Match"}
   </div>
 
-  <div class="match-hub-label">
-    ${getCurrentMatchText() || "No Match Selected"}
-  </div>
-
-  <div class="match-row">
-    <span>${getCurrentMatchTeams()[0] || "TBD"}</span>
-    <strong>${getCurrentMatchScore().split("-")[0]?.trim() || "0"}</strong>
-  </div>
-
-  <div class="match-row">
-    <span>${getCurrentMatchTeams()[1] || "TBD"}</span>
-    <strong>${getCurrentMatchScore().split("-")[1]?.trim() || "0"}</strong>
-  </div>
-
-  <div class="match-live-pill">🔴 LIVE NOW</div>
-
-  <div class="account-actions" style="margin-top:18px;justify-content:center;">
-    <a class="account-primary" href="watch.html">Watch Live</a>
-    <a class="account-secondary" href="tournament.html">Open Bracket</a>
-  </div>
-</div>
-
-<div class="dashboard-next-step">
-  <span>Tournament Status</span>
-  <strong style="color:${
-    currentAvailability?.status === "not_available"
-      ? "#ef4444"
-      : isMyTeamInCurrentMatch(myTeam)
-        ? "#ef4444"
-        : currentCheckIn?.checkedIn
-          ? "#22c55e"
-          : "#facc15"
-  };">
+  <div class="status-chip ${
+    isMyTeamInCurrentMatch(myTeam)
+      ? "danger"
+      : "success"
+  }">
     ${
-      currentAvailability?.status === "not_available"
-        ? "Not Available"
-        : isMyTeamInCurrentMatch(myTeam)
-          ? "🚨 Your Match Is Live"
-          : currentCheckIn?.checkedIn
-            ? "Ready To Play"
-            : "Needs Check-In"
+      isMyTeamInCurrentMatch(myTeam)
+        ? "🔴 Match Live"
+        : "🟢 Ready"
     }
-  </strong>
+  </div>
+
 </div>
 
 ${renderTeamReadiness(myTeam)}

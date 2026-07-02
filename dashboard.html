@@ -320,6 +320,40 @@ function renderTeamReadiness(myTeam) {
     return "";
   }
 
+  const readyCount = myTeam.players.filter(player =>
+    allCheckIns[player.uid]?.checkedIn &&
+    allAvailability[player.uid]?.status !== "not_available"
+  ).length;
+
+  return `
+    <div class="dashboard-next-step">
+      <span>Team Readiness</span>
+      <strong>${readyCount}/${myTeam.players.length} Ready</strong>
+
+      <div style="margin-top:12px;">
+        ${myTeam.players.map(player => {
+          const checkedIn = allCheckIns[player.uid]?.checkedIn;
+          const unavailable = allAvailability[player.uid]?.status === "not_available";
+
+          return `
+            <div style="
+              display:flex;
+              justify-content:space-between;
+              gap:12px;
+              padding:8px 0;
+              border-top:1px solid rgba(255,255,255,.08);
+            ">
+              <span>${player.displayName || "Player"}</span>
+              <strong style="color:${unavailable ? "#ef4444" : checkedIn ? "#22c55e" : "#facc15"};">
+                ${unavailable ? "✕ Not Available" : checkedIn ? "✓ Checked In" : "○ Not Checked In"}
+              </strong>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
 function renderTournamentProgress() {
 
   const progress = document.getElementById("tournamentProgress");
@@ -368,41 +402,6 @@ function renderTournamentProgress() {
 
   }).join("");
 
-}
-  
-  const readyCount = myTeam.players.filter(player =>
-    allCheckIns[player.uid]?.checkedIn &&
-    allAvailability[player.uid]?.status !== "not_available"
-  ).length;
-
-  return `
-    <div class="dashboard-next-step">
-      <span>Team Readiness</span>
-      <strong>${readyCount}/${myTeam.players.length} Ready</strong>
-
-      <div style="margin-top:12px;">
-        ${myTeam.players.map(player => {
-          const checkedIn = allCheckIns[player.uid]?.checkedIn;
-          const unavailable = allAvailability[player.uid]?.status === "not_available";
-
-          return `
-            <div style="
-              display:flex;
-              justify-content:space-between;
-              gap:12px;
-              padding:8px 0;
-              border-top:1px solid rgba(255,255,255,.08);
-            ">
-              <span>${player.displayName || "Player"}</span>
-              <strong style="color:${unavailable ? "#ef4444" : checkedIn ? "#22c55e" : "#facc15"};">
-                ${unavailable ? "✕ Not Available" : checkedIn ? "✓ Checked In" : "○ Not Checked In"}
-              </strong>
-            </div>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
 }
   
 function renderActivityFeed() {

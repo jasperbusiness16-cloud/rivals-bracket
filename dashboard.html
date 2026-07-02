@@ -593,7 +593,10 @@ function renderMyTournamentJourney() {
 
   container.innerHTML = journey.map(match => {
     const isLive = current.includes(match.id);
-    const isComplete = clean(match.winner) !== "";
+    const scoreParts = match.score.split("-").map(value => Number(value.trim()));
+const isComplete =
+  clean(match.winner) !== "" ||
+  scoreParts.some(score => score >= 2);
     const won = clean(match.winner) === clean(myTeam.teamName);
     const opponent = match.teams.find(team => clean(team) !== clean(myTeam.teamName)) || "TBD";
 

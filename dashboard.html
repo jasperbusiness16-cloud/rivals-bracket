@@ -266,13 +266,43 @@ function getCurrentMatchText() {
   return clean(siteData.currentMatch, "");
 }
 
+function getCurrentMatchTeams() {
+
+  const match = getCurrentMatchText().toLowerCase();
+
+  if (match.includes("qf1"))
+    return [siteData.team1, siteData.team2];
+
+  if (match.includes("qf2"))
+    return [siteData.team3, siteData.team4];
+
+  if (match.includes("qf3"))
+    return [siteData.team5, siteData.team6];
+
+  if (match.includes("qf4"))
+    return [siteData.team7, siteData.team8];
+
+  if (match.includes("sf1"))
+    return [siteData.qf1Winner, siteData.qf2Winner];
+
+  if (match.includes("sf2"))
+    return [siteData.qf3Winner, siteData.qf4Winner];
+
+  if (match.includes("grand"))
+    return [siteData.sf1Winner, siteData.sf2Winner];
+
+  return [];
+}
+  
 function isMyTeamInCurrentMatch(myTeam) {
   if (!myTeam) return false;
 
-  const matchText = getCurrentMatchText().toLowerCase();
-  const teamName = clean(myTeam.teamName).toLowerCase();
+  const currentTeams = getCurrentMatchTeams()
+    .map(team => clean(team).toLowerCase());
 
-  return matchText.includes(teamName);
+  const myTeamName = clean(myTeam.teamName).toLowerCase();
+
+  return currentTeams.includes(myTeamName);
 }
   
 function renderActivityFeed() {

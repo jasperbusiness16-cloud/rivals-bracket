@@ -437,8 +437,22 @@ function renderCurrentEvent() {
 </div>
 
 <div class="dashboard-next-step">
-  <span>Match Status</span>
-  <strong>Waiting For Tournament</strong>
+  <span>Tournament Status</span>
+  <strong style="color:${
+    currentAvailability?.status === "not_available"
+      ? "#ef4444"
+      : currentCheckIn?.checkedIn
+        ? "#22c55e"
+        : "#facc15"
+  };">
+    ${
+      currentAvailability?.status === "not_available"
+        ? "Not Available"
+        : currentCheckIn?.checkedIn
+          ? "Ready To Play"
+          : "Needs Check-In"
+    }
+  </strong>
 </div>
 `;
 

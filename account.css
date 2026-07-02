@@ -1337,3 +1337,46 @@
 .journey-next-match .dashboard-next-step strong{
     margin-top:4px;
 }
+
+.dashboard-roster-dropdown {
+  margin-top: 20px;
+}
+
+.dashboard-roster-dropdown summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ef4444;
+  padding: 14px 18px;
+  border: 1px solid rgba(239,68,68,.25);
+  border-radius: 12px;
+  background: rgba(239,68,68,.08);
+  transition: .2s;
+}
+
+.dashboard-roster-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.dashboard-roster-dropdown summary::after {
+  content: "▼";
+  float: right;
+  transition: transform .2s;
+}
+
+.dashboard-roster-dropdown[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.dashboard-roster-dropdown summary:hover {
+  background: rgba(239,68,68,.15);
+  border-color: rgba(239,68,68,.5);
+}
+
+.dashboard-roster-dropdown .dashboard-roster {
+  margin-top: 16px;
+}

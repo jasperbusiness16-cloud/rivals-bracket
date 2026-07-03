@@ -297,8 +297,8 @@
 <script>
 let currentUser = null;
 let currentPlayer = null;
-const tournamentId = "open1";
-const tournamentName = "Rivals Gauntlet Open #1";
+let tournamentId = "open1";
+let tournamentName = "Rivals Gauntlet Open #1";
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -500,7 +500,16 @@ auth.onAuthStateChanged((user) => {
 
   currentUser = user;
 
-  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
+  database.ref("site/currentTournament").once("value").then(activeTournament => {
+    tournamentId = activeTournament.val() || "open1";
+
+    return database.ref(`tournaments/${tournamentId}`).once("value");
+  }).then(tournamentSnapshot => {
+    const tournament = tournamentSnapshot.val() || {};
+    tournamentName = tournament.name || "Rivals Gauntlet Open";
+
+    return database.ref(`players/${user.uid}`).once("value");
+  }).then(snapshot => {
     const player = snapshot.val();
 
     if (!player) {

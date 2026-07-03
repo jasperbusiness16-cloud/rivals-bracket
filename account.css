@@ -1287,33 +1287,39 @@
 }
 
 .status-chip {
-  flex: 1;
-  min-width: 140px;
-  text-align: center;
-  padding: 12px 14px;
-  border-radius: 999px;
-  font-weight: 900;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: transparent;
+  color: #d0d7de;
+  font-family: "Rajdhani", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
   letter-spacing: 1px;
-  font-size: 13px;
+  text-transform: uppercase;
+  transition: .2s ease;
 }
 
 .status-chip.success {
-  color: #22c55e;
-  background: rgba(34,197,94,.12);
-  border: 1px solid rgba(34,197,94,.35);
+  color: #3ddc84;
+  border-color: rgba(61,220,132,.45);
+  background: transparent;
 }
 
 .status-chip.warning {
   color: #facc15;
-  background: rgba(250,204,21,.12);
-  border: 1px solid rgba(250,204,21,.35);
+  border-color: rgba(250,204,21,.45);
+  background: transparent;
 }
 
 .status-chip.danger {
   color: #ef4444;
-  background: rgba(239,68,68,.12);
-  border: 1px solid rgba(239,68,68,.35);
+  border-color: rgba(239,68,68,.45);
+  background: transparent;
 }
 
 .journey-next-match{

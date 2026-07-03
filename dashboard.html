@@ -986,6 +986,10 @@ auth.onAuthStateChanged((user) => {
 
   currentUser = user;
 
+  database.ref("site/currentTournament").once("value").then(activeTournament => {
+
+  tournamentId = activeTournament.val() || "open1";
+
   database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
     currentTournament = snapshot.val() || {};
     renderCurrentEvent();
@@ -996,34 +1000,36 @@ auth.onAuthStateChanged((user) => {
     renderCurrentEvent();
   });
 
-database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
-  currentCheckIn = snapshot.val();
-  renderCurrentEvent();
-});
+  database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
+    currentCheckIn = snapshot.val();
+    renderCurrentEvent();
+  });
 
-database.ref(`checkIns/${tournamentId}`).on("value", snapshot => {
-  allCheckIns = snapshot.val() || {};
-  renderCurrentEvent();
-});
-  
-database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
-  currentAvailability = snapshot.val();
-  renderCurrentEvent();
-});
+  database.ref(`checkIns/${tournamentId}`).on("value", snapshot => {
+    allCheckIns = snapshot.val() || {};
+    renderCurrentEvent();
+  });
 
-database.ref(`availability/${tournamentId}`).on("value", snapshot => {
-  allAvailability = snapshot.val() || {};
-  renderCurrentEvent();
-});
-  
+  database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
+    currentAvailability = snapshot.val();
+    renderCurrentEvent();
+  });
+
+  database.ref(`availability/${tournamentId}`).on("value", snapshot => {
+    allAvailability = snapshot.val() || {};
+    renderCurrentEvent();
+  });
+
   database.ref(`teams/${tournamentId}`).on("value", snapshot => {
     currentTeams = snapshot.val() || {};
     renderCurrentEvent();
   });
 
   database.ref("site").on("value", snapshot => {
-  siteData = snapshot.val() || {};
-  renderCurrentEvent();
+    siteData = snapshot.val() || {};
+    renderCurrentEvent();
+  });
+
 });
   
   database.ref(`users/${user.uid}`).update({

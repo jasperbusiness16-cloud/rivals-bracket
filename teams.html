@@ -96,7 +96,7 @@
 <script src="firebase.js"></script>
 
 <script>
-const tournamentId = "open1";
+let tournamentId = "open1";
 
 function toggleMenu() {
   document.getElementById("mobileNav").classList.toggle("active");
@@ -156,8 +156,12 @@ function renderPublishedTeams(teamData) {
   grid.innerHTML = html;
 }
 
-database.ref(`teams/${tournamentId}`).on("value", (snapshot) => {
-  renderPublishedTeams(snapshot.val());
+database.ref("site/currentTournament").once("value").then(activeTournament => {
+  tournamentId = activeTournament.val() || "open1";
+
+  database.ref(`teams/${tournamentId}`).on("value", (snapshot) => {
+    renderPublishedTeams(snapshot.val());
+  });
 });
 </script>
 

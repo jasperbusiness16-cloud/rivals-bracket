@@ -143,7 +143,7 @@
 <script src="firebase.js?v=2"></script>
 
 <script>
-const tournamentId = "open1";
+let tournamentId = "open1";
 let applications = [];
 let tournamentData = {};
 
@@ -404,20 +404,26 @@ auth.onAuthStateChanged((user) => {
       return;
     }
 
+    return database.ref("site/currentTournament").once("value");
+  }).then(activeTournament => {
+    if (!activeTournament) return;
+
+    tournamentId = activeTournament.val() || "open1";
+
     database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
-  tournamentData = snapshot.val() || {};
-  renderApplications();
-});
+      tournamentData = snapshot.val() || {};
+      renderApplications();
+    });
 
-database.ref(`applications/${tournamentId}`).on("value", snapshot => {
-  const data = snapshot.val() || {};
+    database.ref(`applications/${tournamentId}`).on("value", snapshot => {
+      const data = snapshot.val() || {};
 
-  applications = Object.values(data).sort((a, b) => {
-    return (b.submittedAt || 0) - (a.submittedAt || 0);
-  });
+      applications = Object.values(data).sort((a, b) => {
+        return (b.submittedAt || 0) - (a.submittedAt || 0);
+      });
 
-  renderApplications();
-});
+      renderApplications();
+    });
   });
 });
 

@@ -129,7 +129,7 @@
 <script src="firebase.js?v=2"></script>
 
 <script>
-const tournamentId = "open1";
+let tournamentId = "open1";
 const teamCount = 8;
 const playersPerTeam = 6;
 
@@ -613,12 +613,18 @@ auth.onAuthStateChanged((user) => {
       return;
     }
 
-currentUserRole = userData.role;
+    currentUserRole = userData.role;
 
-if (currentUserRole === "owner") {
-  document.getElementById("devTools").style.display = "block";
-}
-    
+    if (currentUserRole === "owner") {
+      document.getElementById("devTools").style.display = "block";
+    }
+
+    return database.ref("site/currentTournament").once("value");
+  }).then(activeTournament => {
+    if (!activeTournament) return;
+
+    tournamentId = activeTournament.val() || "open1";
+
     database.ref(`applications/${tournamentId}`).on("value", snapshot => {
       const data = snapshot.val() || {};
 
@@ -628,11 +634,12 @@ if (currentUserRole === "owner") {
 
       renderAll();
     });
-  database.ref(`teams/${tournamentId}/teams`).on("value", snapshot => {
-  teams = snapshot.val() || {};
-  renderAll();
-  updateBalancePanel();
-});
+
+    database.ref(`teams/${tournamentId}/teams`).on("value", snapshot => {
+      teams = snapshot.val() || {};
+      renderAll();
+      updateBalancePanel();
+    });
   });
 });
 

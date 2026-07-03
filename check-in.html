@@ -60,7 +60,7 @@
 <script src="firebase.js?v=2"></script>
 
 <script>
-const tournamentId = "open1";
+let tournamentId = "open1";
 
 let currentUser = null;
 let currentApplication = null;
@@ -301,31 +301,34 @@ auth.onAuthStateChanged((user) => {
 
   currentUser = user;
 
-  database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
-    currentApplication = snapshot.val();
-    renderCheckIn();
-  });
+  database.ref("site/currentTournament").once("value").then(activeTournament => {
+    tournamentId = activeTournament.val() || "open1";
 
-  database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
-    currentCheckIn = snapshot.val();
-    renderCheckIn();
-  });
+    database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
+      currentApplication = snapshot.val();
+      renderCheckIn();
+    });
 
-  database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
-  currentAvailability = snapshot.val();
-  renderCheckIn();
-});
-  
-  database.ref(`teams/${tournamentId}`).on("value", snapshot => {
-    currentTeams = snapshot.val() || {};
-    renderCheckIn();
-  });
+    database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
+      currentCheckIn = snapshot.val();
+      renderCheckIn();
+    });
 
-database.ref("site").on("value", snapshot => {
-  siteData = snapshot.val() || {};
-  renderCheckIn();
-});
-  
+    database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
+      currentAvailability = snapshot.val();
+      renderCheckIn();
+    });
+
+    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+      currentTeams = snapshot.val() || {};
+      renderCheckIn();
+    });
+
+    database.ref("site").on("value", snapshot => {
+      siteData = snapshot.val() || {};
+      renderCheckIn();
+    });
+  });
 });
 
 function logoutUser() {

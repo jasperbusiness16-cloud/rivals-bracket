@@ -623,48 +623,13 @@ function renderNextMatchCard() {
   const teamName = clean(myTeam.teamName);
 
   const possibleMatches = [
-    {
-      name: "Quarterfinal 1",
-      teams: [siteData.team1, siteData.team2],
-      winner: siteData.qf1Winner,
-      next: "Semifinal 1"
-    },
-    {
-      name: "Quarterfinal 2",
-      teams: [siteData.team3, siteData.team4],
-      winner: siteData.qf2Winner,
-      next: "Semifinal 1"
-    },
-    {
-      name: "Quarterfinal 3",
-      teams: [siteData.team5, siteData.team6],
-      winner: siteData.qf3Winner,
-      next: "Semifinal 2"
-    },
-    {
-      name: "Quarterfinal 4",
-      teams: [siteData.team7, siteData.team8],
-      winner: siteData.qf4Winner,
-      next: "Semifinal 2"
-    },
-    {
-      name: "Semifinal 1",
-      teams: [siteData.qf1Winner, siteData.qf2Winner],
-      winner: siteData.sf1Winner,
-      next: "Grand Finals"
-    },
-    {
-      name: "Semifinal 2",
-      teams: [siteData.qf3Winner, siteData.qf4Winner],
-      winner: siteData.sf2Winner,
-      next: "Grand Finals"
-    },
-    {
-      name: "Grand Finals",
-      teams: [siteData.sf1Winner, siteData.sf2Winner],
-      winner: siteData.grandWinner,
-      next: "Tournament Complete"
-    }
+    { name: "Quarterfinal 1", teams: [siteData.team1, siteData.team2], winner: siteData.qf1Winner, next: "Semifinal 1" },
+    { name: "Quarterfinal 2", teams: [siteData.team3, siteData.team4], winner: siteData.qf2Winner, next: "Semifinal 1" },
+    { name: "Quarterfinal 3", teams: [siteData.team5, siteData.team6], winner: siteData.qf3Winner, next: "Semifinal 2" },
+    { name: "Quarterfinal 4", teams: [siteData.team7, siteData.team8], winner: siteData.qf4Winner, next: "Semifinal 2" },
+    { name: "Semifinal 1", teams: [siteData.qf1Winner, siteData.qf2Winner], winner: siteData.sf1Winner, next: "Grand Finals" },
+    { name: "Semifinal 2", teams: [siteData.qf3Winner, siteData.qf4Winner], winner: siteData.sf2Winner, next: "Grand Finals" },
+    { name: "Grand Finals", teams: [siteData.sf1Winner, siteData.sf2Winner], winner: siteData.grandWinner, next: "Tournament Complete" }
   ];
 
   const nextMatch = possibleMatches.find(match =>
@@ -674,35 +639,37 @@ function renderNextMatchCard() {
 
   if (!nextMatch) {
     container.innerHTML = `
-      <div class="dashboard-next-step">
-        <span>Status</span>
+      <div class="next-match-card">
+        <span class="next-match-eyebrow">Status</span>
         <strong>Tournament path complete or waiting for bracket update.</strong>
       </div>
     `;
     return;
   }
 
-  const opponent =
-    nextMatch.teams.find(team => clean(team) !== teamName) || "TBD";
+  const opponent = nextMatch.teams.find(team => clean(team) !== teamName) || "TBD";
 
   container.innerHTML = `
-    <div class="dashboard-next-step">
-      <span>Match</span>
-      <strong>${nextMatch.name}</strong>
-    </div>
+    <div class="next-match-card">
 
-    <div class="dashboard-next-step">
-      <span>Opponent</span>
-      <strong>${opponent}</strong>
-    </div>
+      <span class="next-match-eyebrow">Upcoming Match</span>
 
-    <div class="dashboard-next-step">
-      <span>Advances To</span>
-      <strong>${nextMatch.next}</strong>
-    </div>
+      <h4>${nextMatch.name}</h4>
 
-    <div class="account-actions">
-      <a class="account-secondary" href="tournament.html">Open Bracket</a>
+      <div class="next-match-versus">
+        <strong>${teamName}</strong>
+        <span>VS</span>
+        <strong>${opponent}</strong>
+      </div>
+
+      <div class="next-match-advance">
+        Winner advances to <strong>${nextMatch.next}</strong>
+      </div>
+
+      <div class="account-actions">
+        <a class="account-secondary" href="tournament.html">Open Bracket</a>
+      </div>
+
     </div>
   `;
 }

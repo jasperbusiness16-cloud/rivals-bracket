@@ -1400,3 +1400,64 @@
   align-items: center;
   justify-content: center;
 }
+
+.next-match-card {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  background: rgba(255,255,255,.025);
+}
+
+.next-match-eyebrow {
+  display: block;
+  color: #ff4655;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.next-match-card h4 {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 28px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.next-match-versus {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.next-match-versus strong {
+  color: #fff;
+  font-size: 20px;
+}
+
+.next-match-versus strong:last-child {
+  text-align: right;
+}
+
+.next-match-versus span {
+  color: #ff4655;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.next-match-advance {
+  margin-top: 16px;
+  color: #8b949e;
+  font-weight: 700;
+}
+
+.next-match-advance strong {
+  color: #fff;
+}

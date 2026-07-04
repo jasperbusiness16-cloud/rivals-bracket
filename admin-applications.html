@@ -60,6 +60,42 @@
   <p id="activeTournamentStatus" class="account-status"></p>
 </section>
 
+<section class="account-panel full">
+  <h2>Create Tournament</h2>
+
+  <div class="account-form-grid">
+
+    <div class="account-field">
+      <label>Tournament ID</label>
+      <input id="newTournamentId" placeholder="open2">
+    </div>
+
+    <div class="account-field">
+      <label>Tournament Name</label>
+      <input id="newTournamentName" placeholder="Rivals Gauntlet Open #2">
+    </div>
+
+    <div class="account-field">
+      <label>Team Count</label>
+      <input id="newTournamentTeamCount" type="number" value="8">
+    </div>
+
+    <div class="account-field">
+      <label>Max Players</label>
+      <input id="newTournamentMaxPlayers" type="number" value="48">
+    </div>
+
+  </div>
+
+  <div class="account-actions">
+    <button class="account-primary" onclick="createTournament()">
+      Create Tournament
+    </button>
+  </div>
+
+  <p id="createTournamentStatus" class="account-status"></p>
+</section>
+      
       <section class="account-panel full">
   <h2 id="tournamentName">Loading Tournament...</h2>
 
@@ -458,6 +494,55 @@ function saveActiveTournament() {
       status.innerText = error.message;
       status.style.color = "#ef4444";
     });
+}
+
+function createTournament() {
+  const status = document.getElementById("createTournamentStatus");
+
+  const id = clean(document.getElementById("newTournamentId").value);
+  const name = clean(document.getElementById("newTournamentName").value);
+  const teamCount = Number(document.getElementById("newTournamentTeamCount").value) || 8;
+  const maxPlayers = Number(document.getElementById("newTournamentMaxPlayers").value) || 48;
+
+  if (!id || !name) {
+    status.innerText = "Please enter a tournament ID and name.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  if (!/^[a-z0-9_-]+$/.test(id)) {
+    status.innerText = "Tournament ID can only use lowercase letters, numbers, hyphens, and underscores.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  database.ref(`tournaments/${id}`).once("value").then(snapshot => {
+    if (snapshot.exists()) {
+      status.innerText = "A tournament with that ID already exists.";
+      status.style.color = "#ef4444";
+      return null;
+    }
+
+    return database.ref(`tournaments/${id}`).set({
+      applicationsOpen: true,
+      createdAt: Date.now(),
+      maxPlayers,
+      name,
+      status: "upcoming",
+      teamCount,
+      teamsPublished: false
+    });
+  }).then(result => {
+    if (result === null) return;
+
+    status.innerText = `✓ ${name} created successfully.`;
+    status.style.color = "#22c55e";
+
+    loadTournamentSwitcher();
+  }).catch(error => {
+    status.innerText = error.message;
+    status.style.color = "#ef4444";
+  });
 }
   
 auth.onAuthStateChanged((user) => {

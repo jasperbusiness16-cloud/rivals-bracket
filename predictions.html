@@ -432,7 +432,7 @@ function renderMatchPrediction() {
 
   const matchId = getCurrentMatchText();
 
-  if (!matchId || matchId === "No Match Live") {
+  if (!matchId || matchId === "No Match Live" || matchId === "NO MATCH") {
     container.innerHTML = `
       <div class="prediction-feature-card">
         <div class="prediction-feature-empty">

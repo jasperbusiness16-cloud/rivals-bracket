@@ -1461,3 +1461,69 @@
 .next-match-advance strong {
   color: #fff;
 }
+
+.prediction-rank-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 24px;
+  padding: 26px;
+  border: 1px solid #2a2f38;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(239,68,68,.12), rgba(15,23,42,.7));
+}
+
+.prediction-label {
+  color: #8b949e;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+.prediction-rank-card h3 {
+  margin: 12px 0 8px;
+  color: #fff;
+  font-size: 44px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.prediction-rank-card > div > strong {
+  color: #ef4444;
+  font-size: 30px;
+  letter-spacing: 4px;
+}
+
+.prediction-rank-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.prediction-rank-stats div {
+  padding: 18px;
+  border: 1px solid #2a2f38;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, .65);
+}
+
+.prediction-rank-stats span {
+  display: block;
+  color: #8b949e;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.prediction-rank-stats strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 28px;
+}
+
+@media (max-width: 700px) {
+  .prediction-rank-card {
+    grid-template-columns: 1fr;
+  }
+}

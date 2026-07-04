@@ -1,5 +1,7 @@
 const siteRef = database.ref("site");
 const countdownRef = database.ref("broadcastCountdown");
+const predictionLocksRef = database.ref("predictionLocks");
+
 
 function showToast(message = "✓ Saved", button = null) {
   const toast = document.getElementById("toast");
@@ -52,6 +54,13 @@ const matches = [
 
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
+}
+
+function getPredictionType(matchId) {
+  return `match_${String(matchId || "")
+    .replaceAll(" ", "_")
+    .replaceAll("•", "")
+    .replaceAll("-", "_")}`;
 }
 
 function getMatchConfig(matchId = currentMatchId) {
@@ -272,6 +281,43 @@ function resetHubTimer() {
 document.getElementById("currentMatchSelect").addEventListener("change", e => {
   currentMatchId = e.target.value;
   renderCurrentMatch();
+  autoGenerateNext();
+
+  const next = getAutoNextMatch();
+  const tournamentId = siteData.currentTournament || "open1";
+
+  const currentPredictionId = getPredictionType(currentMatchId);
+
+  const nextFullMatchId = matches.find(match => {
+    const c = getMatchConfig(match);
+    return c && c.label === next.label;
+  });
+
+  const nextPredictionId = getPredictionType(nextFullMatchId || next.label);
+
+  const updates = {};
+
+  updates[`site/currentMatch`] = currentMatchId;
+
+  updates[`predictionLocks/${tournamentId}/${currentPredictionId}`] = {
+    locked: true,
+    matchId: currentMatchId,
+    lockedAt: Date.now()
+  };
+
+  if (next.label !== "TOURNAMENT COMPLETE") {
+    updates[`predictionLocks/${tournamentId}/${nextPredictionId}`] = null;
+
+    updates[`broadcastCountdown/upNext`] = {
+      label: next.label,
+      teamA: next.teamA,
+      teamB: next.teamB
+    };
+  }
+
+  database.ref().update(updates).then(() => {
+    showToast("✓ Current Match Live + Next Prediction Opened");
+  });
 });
 
 siteRef.on("value", snapshot => {

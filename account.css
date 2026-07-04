@@ -2158,3 +2158,53 @@
     font-size: 24px;
   }
 }
+
+.career-card-clean {
+  padding: 26px;
+}
+
+.career-rp-hero {
+  padding: 24px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(239,68,68,.13), rgba(15,23,42,.65));
+  border: 1px solid rgba(239,68,68,.2);
+}
+
+.career-rp-hero span,
+.career-mini-grid span {
+  display: block;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.career-rp-hero strong {
+  display: block;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 58px;
+  line-height: .9;
+}
+
+.career-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.career-mini-grid div {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+}
+
+.career-mini-grid strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 30px;
+}

@@ -244,36 +244,42 @@ function saveCurrentResult() {
   };
 
   if (winner) {
-  updates[config.winner] = winner;
-}
-
-  siteRef.update(updates).then(() => {
-  if (winner) {
-    return payMatchPredictions(currentMatchId, winner);
+    updates[config.winner] = winner;
   }
-}).then(() => {
-  const next = getAutoNextMatch();
 
-  nextMatch = next;
+  siteRef.update(updates)
+    .then(() => {
+      if (winner) {
+        return payMatchPredictions(currentMatchId, winner);
+      }
+    })
+    .then(() => {
+      const next = getAutoNextMatch();
 
-  document.getElementById("nextLabel").textContent = next.label;
-  document.getElementById("nextTeams").textContent =
-    next.teamA && next.teamB
-      ? `${next.teamA} vs ${next.teamB}`
-      : "Tournament Complete";
+      nextMatch = next;
 
-  return countdownRef.update({
-    upNext: {
-      label: next.label,
-      teamA: next.teamA,
-      teamB: next.teamB
-    }
-  });
-}).then(() => {
-  showToast("✓ Result + Up Next Saved");
-});
+      document.getElementById("nextLabel").textContent = next.label;
+      document.getElementById("nextTeams").textContent =
+        next.teamA && next.teamB
+          ? `${next.teamA} vs ${next.teamB}`
+          : "Tournament Complete";
+
+      return countdownRef.update({
+        upNext: {
+          label: next.label,
+          teamA: next.teamA,
+          teamB: next.teamB
+        }
+      });
+    })
+    .then(() => {
+      showToast(winner ? "✓ Result + Predictions Paid" : "✓ Result Saved");
+    })
+    .catch(error => {
+      console.error(error);
+      alert(error.message);
+    });
 }
-
 function getAutoNextMatch() {
   const match = currentMatchId;
 

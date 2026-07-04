@@ -220,39 +220,34 @@
 
     <div class="career-main-stat">
 
-      <span>Career Accuracy</span>
+  <span>RP Earned From Predictions</span>
 
-      <strong id="careerAccuracy">
-        0%
-      </strong>
+  <strong id="careerRpEarned">
+    0
+  </strong>
 
-      <small>
-        <span id="careerCorrect">0</span>
-        Correct Picks •
-        <span id="careerTotal">0</span>
-        Total Picks
-      </small>
+  <small>
+    <span id="careerCorrect">0</span>
+    Correct Picks •
+    <span id="careerTotal">0</span>
+    Total Picks
+  </small>
 
-    </div>
+</div>
 
-    <div class="career-stat-row">
+<div class="career-stat-row">
 
-      <div class="career-stat-box">
-        <span>Champion Wins</span>
-        <strong id="careerChampionCorrect">0</strong>
-      </div>
+  <div class="career-stat-box">
+    <span>Champion Predictions Correct</span>
+    <strong id="careerChampionCorrect">0</strong>
+  </div>
 
-      <div class="career-stat-box">
-        <span>Match Wins</span>
-        <strong id="careerMatchCorrect">0</strong>
-      </div>
+  <div class="career-stat-box">
+    <span>Match Predictions Correct</span>
+    <strong id="careerMatchCorrect">0</strong>
+  </div>
 
-      <div class="career-stat-box">
-        <span>Prediction RP</span>
-        <strong id="careerRpEarned">0</strong>
-      </div>
-
-    </div>
+</div>
 
   </div>
 
@@ -698,7 +693,6 @@ function renderPredictionCareer() {
 
   document.getElementById("careerCorrect").innerText = correct;
   document.getElementById("careerTotal").innerText = total;
-  document.getElementById("careerAccuracy").innerText = `${accuracy}%`;
   document.getElementById("careerChampionCorrect").innerText = stats.championCorrect || 0;
   document.getElementById("careerMatchCorrect").innerText = stats.matchCorrect || 0;
   document.getElementById("careerRpEarned").innerText =

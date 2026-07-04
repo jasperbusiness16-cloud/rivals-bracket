@@ -1825,3 +1825,29 @@
     grid-template-columns: 1fr;
   }
 }
+
+.champion-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.champion-pick-grid button {
+  min-height: 54px;
+  border: 1px solid rgba(239,68,68,.65);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(239,68,68,.18), rgba(239,68,68,.04));
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .champion-pick-grid {
+    grid-template-columns: 1fr;
+  }
+}

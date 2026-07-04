@@ -238,7 +238,8 @@ function saveCurrentResult() {
   if (!config) return;
 
   const winner = getWinner(config);
-
+alert(`Winner detected: ${winner || "NO WINNER"}`);
+  
   const updates = {
     currentMatch: currentMatchId,
     [config.scoreA]: String(teamAScore),

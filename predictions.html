@@ -601,10 +601,10 @@ function renderPredictionHistory() {
 
   if (championPick) {
     items.push({
-      icon: "🏆",
-      title: "Champion Prediction",
-      detail: `You picked ${championPick.pickName}`,
-      reward: `Potential +${CHAMPION_REWARD} RP`
+      type: "Champion Pick",
+      pickName: championPick.pickName,
+      reward: `+${CHAMPION_REWARD} RP`,
+      icon: "🏆"
     });
   }
 
@@ -615,10 +615,10 @@ function renderPredictionHistory() {
 
     if (prediction) {
       items.push({
-        icon: "⚔️",
-        title: "Match Prediction",
-        detail: `You picked ${prediction.pickName}`,
-        reward: `Potential +${MATCH_REWARD} RP`
+        type: "Match Pick",
+        pickName: prediction.pickName,
+        reward: `+${MATCH_REWARD} RP`,
+        icon: "⚔️"
       });
     }
   });
@@ -633,13 +633,22 @@ function renderPredictionHistory() {
   }
 
   container.innerHTML = items.map(item => `
-    <div class="dashboard-activity-item">
-      <div class="dashboard-activity-icon">${item.icon}</div>
+    <div class="prediction-log-item">
 
-      <div>
-        <strong>${item.title}</strong>
-        <span>${item.detail} • ${item.reward}</span>
+      <div class="prediction-log-icon">
+        ${item.icon}
       </div>
+
+      <div class="prediction-log-main">
+        <span>${item.type}</span>
+        <strong>${item.pickName}</strong>
+        <small>Prediction submitted</small>
+      </div>
+
+      <div class="prediction-log-reward">
+        ${item.reward}
+      </div>
+
     </div>
   `).join("");
 }

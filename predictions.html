@@ -125,33 +125,32 @@
 
   <h2>Prediction Career</h2>
 
-  <div class="prediction-career-card">
+  <div class="prediction-career-card career-card-clean">
 
-    <div class="career-main-stat">
-
+    <div class="career-rp-hero">
       <span>RP Earned From Predictions</span>
-
-      <strong id="careerRpEarned">
-        0
-      </strong>
-
-      <small class="career-record-line">
-        <span id="careerCorrect">0</span> Correct Picks
-        <b>•</b>
-        <span id="careerTotal">0</span> Total Picks
-      </small>
-
+      <strong id="careerRpEarned">0</strong>
     </div>
 
-    <div class="career-stat-row">
+    <div class="career-mini-grid">
 
-      <div class="career-stat-box">
-        <span>Champion Predictions Correct</span>
+      <div>
+        <span>Current Streak</span>
+        <strong id="careerCurrentStreak">0</strong>
+      </div>
+
+      <div>
+        <span>Best Streak</span>
+        <strong id="careerBestStreak">0</strong>
+      </div>
+
+      <div>
+        <span>Champion Correct</span>
         <strong id="careerChampionCorrect">0</strong>
       </div>
 
-      <div class="career-stat-box">
-        <span>Match Predictions Correct</span>
+      <div>
+        <span>Match Correct</span>
         <strong id="careerMatchCorrect">0</strong>
       </div>
 
@@ -160,7 +159,6 @@
   </div>
 
 </section>
-
         <section class="account-panel full">
   <h2>Your Prediction History</h2>
   <div id="predictionHistory">
@@ -632,16 +630,20 @@ function renderPredictionCareer() {
 
   const stats = currentPlayer.predictionStats || {};
 
-  const correct = Number(stats.correct || 0);
-  const total = Number(stats.total || 0);
-  const accuracy = total ? Math.round((correct / total) * 100) : 0;
-
-  document.getElementById("careerCorrect").innerText = correct;
-  document.getElementById("careerTotal").innerText = total;
-  document.getElementById("careerChampionCorrect").innerText = stats.championCorrect || 0;
-  document.getElementById("careerMatchCorrect").innerText = stats.matchCorrect || 0;
   document.getElementById("careerRpEarned").innerText =
     Number(stats.rpEarned || 0).toLocaleString();
+
+  document.getElementById("careerCurrentStreak").innerText =
+    Number(stats.currentStreak || 0);
+
+  document.getElementById("careerBestStreak").innerText =
+    Number(stats.bestStreak || 0);
+
+  document.getElementById("careerChampionCorrect").innerText =
+    Number(stats.championCorrect || 0);
+
+  document.getElementById("careerMatchCorrect").innerText =
+    Number(stats.matchCorrect || 0);
 }
   
 function renderPredictionsPage() {

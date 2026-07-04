@@ -482,6 +482,87 @@
   }
 
 }
+
+.crate-reveal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at center, rgba(168,85,247,.28), transparent 32%),
+    rgba(0,0,0,.86);
+  backdrop-filter:blur(14px);
+}
+
+.crate-reveal-overlay.show{
+  display:flex;
+}
+
+.crate-reveal-card{
+  width:min(520px,100%);
+  text-align:center;
+  padding:38px;
+  border-radius:34px;
+  border:1px solid rgba(168,85,247,.45);
+  background:
+    radial-gradient(circle at top, rgba(168,85,247,.24), transparent 42%),
+    linear-gradient(135deg, rgba(15,23,42,.98), rgba(3,7,18,.98));
+  box-shadow:0 40px 120px rgba(0,0,0,.65);
+  animation:revealPop .35s ease;
+}
+
+.crate-reveal-card span{
+  color:#a855f7;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+}
+
+.crate-reveal-card h2{
+  margin:12px 0 26px;
+  font-size:42px;
+  line-height:.95;
+  text-transform:uppercase;
+}
+
+.reveal-reward-box{
+  margin:0 auto 28px;
+  padding:28px;
+  border-radius:24px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+}
+
+.reveal-reward-box small{
+  display:block;
+  color:#8b949e;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.reveal-reward-box strong{
+  display:block;
+  margin-top:10px;
+  color:#fff;
+  font-size:34px;
+}
+
+@keyframes revealPop{
+  from{
+    opacity:0;
+    transform:scale(.92) translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+}
+    
   </style>
 </head>
 
@@ -583,6 +664,22 @@
 
 </div>
 
+<div id="crateRevealOverlay" class="crate-reveal-overlay">
+  <div class="crate-reveal-card">
+    <span>CRATE OPENED</span>
+    <h2 id="revealCrateName">Elite Crate</h2>
+
+    <div class="reveal-reward-box">
+      <small>You Received</small>
+      <strong id="revealRewardName">Mystery Reward</strong>
+    </div>
+
+    <button class="shop-primary" onclick="closeCrateReveal()">
+      Continue
+    </button>
+  </div>
+</div>
+  
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -808,6 +905,16 @@ function renderOwnedCrates() {
     `;
   }).join("");
 }
+
+function showCrateReveal(crateName, rewardName) {
+  document.getElementById("revealCrateName").innerText = crateName;
+  document.getElementById("revealRewardName").innerText = rewardName;
+  document.getElementById("crateRevealOverlay").classList.add("show");
+}
+
+function closeCrateReveal() {
+  document.getElementById("crateRevealOverlay").classList.remove("show");
+}
   
 function buySelectedItem() {
   if (!currentUser || !currentPlayer) return;
@@ -931,8 +1038,8 @@ function openCrate(itemId) {
     };
 
     return database.ref().update(updates).then(() => {
-      alert(`You opened ${item.name} and received: ${reward}`);
-    });
+  showCrateReveal(item.name, reward);
+});
   }).catch(error => {
     alert(error.message);
   });

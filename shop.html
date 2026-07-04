@@ -7,383 +7,516 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=20">
 
   <style>
-    .shop-hero {
-      position: relative;
-      overflow: hidden;
-      border-radius: 34px;
-      padding: 34px;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Rajdhani,Arial,sans-serif;
+      color:#fff;
+      min-height:100vh;
       background:
-        radial-gradient(circle at top right, rgba(239,68,68,.32), transparent 34%),
-        linear-gradient(135deg, rgba(20,25,40,.98), rgba(5,8,15,.98));
-      border: 1px solid rgba(239,68,68,.28);
-      box-shadow: 0 30px 90px rgba(0,0,0,.4);
+        radial-gradient(circle at 75% 20%, rgba(239,68,68,.22), transparent 30%),
+        radial-gradient(circle at 15% 80%, rgba(90,30,160,.16), transparent 30%),
+        linear-gradient(135deg,#05070c,#0b0f18 45%,#05070c);
+      overflow-x:hidden;
     }
 
-    .shop-hero span {
-      color: #ef4444;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: .32em;
-      text-transform: uppercase;
+    .shop-client{
+      min-height:100vh;
+      padding:22px;
     }
 
-    .shop-hero h1 {
-      margin: 10px 0 0;
-      color: #fff;
-      font-size: clamp(44px, 12vw, 86px);
-      line-height: .9;
-      text-transform: uppercase;
+    .shop-topnav{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:0 24px;
+      border:1px solid rgba(255,255,255,.09);
+      background:rgba(5,8,15,.72);
+      backdrop-filter:blur(16px);
+      border-radius:24px;
+      margin-bottom:22px;
     }
 
-    .shop-hero p {
-      max-width: 620px;
-      color: #9ca3af;
-      font-size: 18px;
-      line-height: 1.5;
+    .shop-brand p{
+      margin:0;
+      color:#ef4444;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.32em;
     }
 
-    .shop-balance-card {
-      margin-top: 22px;
-      padding: 22px;
-      border-radius: 24px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
+    .shop-brand strong{
+      display:block;
+      margin-top:3px;
+      font-size:26px;
+      line-height:1;
+      letter-spacing:.06em;
     }
 
-    .shop-balance-card span {
-      color: #9ca3af;
-      font-size: 12px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      font-weight: 900;
+    .shop-nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
-    .shop-balance-card strong {
-      display: block;
-      color: #fff;
-      font-size: 42px;
-      line-height: 1;
+    .shop-nav a,
+    .shop-nav button{
+      color:#c9d1d9;
+      text-decoration:none;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:999px;
+      padding:10px 14px;
+      font-family:Rajdhani,Arial,sans-serif;
+      font-weight:800;
+      cursor:pointer;
     }
 
-    .shop-section-title {
-      margin: 34px 0 16px;
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 18px;
+    .shop-nav a.active{
+      color:#fff;
+      border-color:rgba(239,68,68,.45);
+      background:rgba(239,68,68,.12);
     }
 
-    .shop-section-title h2 {
-      margin: 0;
-      color: #fff;
-      font-size: 28px;
-      text-transform: uppercase;
+    .shop-balance{
+      text-align:right;
     }
 
-    .shop-section-title span {
-      color: #8b949e;
-      font-weight: 700;
+    .shop-balance span{
+      display:block;
+      color:#8b949e;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.18em;
+      text-transform:uppercase;
     }
 
-    .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+    .shop-balance strong{
+      font-size:24px;
+      color:#fff;
     }
 
-    .shop-item-card {
-      position: relative;
-      overflow: hidden;
-      min-height: 250px;
-      border-radius: 28px;
-      padding: 24px;
+    .shop-hero{
+      position:relative;
+      min-height:620px;
+      overflow:hidden;
+      border-radius:34px;
+      border:1px solid rgba(255,255,255,.1);
       background:
-        radial-gradient(circle at top right, rgba(239,68,68,.18), transparent 34%),
-        linear-gradient(135deg, rgba(15,23,42,.97), rgba(3,7,18,.98));
-      border: 1px solid rgba(255,255,255,.1);
-      box-shadow: 0 22px 60px rgba(0,0,0,.26);
+        radial-gradient(circle at 70% 42%, var(--accentGlow), transparent 34%),
+        linear-gradient(135deg,rgba(15,23,42,.94),rgba(2,6,23,.98));
+      box-shadow:0 34px 120px rgba(0,0,0,.45);
+      display:grid;
+      grid-template-columns:1fr 1.05fr;
+      align-items:center;
+      padding:44px;
     }
 
-    .shop-item-card.featured {
-      min-height: 330px;
-      grid-column: 1 / -1;
-      border-color: rgba(239,68,68,.42);
+    .shop-hero:before{
+      content:"";
+      position:absolute;
+      inset:0;
       background:
-        radial-gradient(circle at top right, rgba(239,68,68,.38), transparent 34%),
-        radial-gradient(circle at bottom left, rgba(255,255,255,.10), transparent 32%),
-        linear-gradient(135deg, rgba(35,13,24,.98), rgba(3,7,18,.99));
+        linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px),
+        linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px);
+      background-size:72px 72px;
+      opacity:.16;
+      pointer-events:none;
     }
 
-    .shop-rarity {
-      display: inline-flex;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(239,68,68,.13);
-      border: 1px solid rgba(239,68,68,.32);
-      color: #ef4444;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .18em;
-      text-transform: uppercase;
+    .shop-hero:after{
+      content:"RIVALS GAUNTLET";
+      position:absolute;
+      right:-60px;
+      bottom:20px;
+      color:rgba(255,255,255,.035);
+      font-size:108px;
+      font-weight:900;
+      letter-spacing:.08em;
+      pointer-events:none;
     }
 
-    .shop-item-card h3 {
-      margin: 18px 0 8px;
-      color: #fff;
-      font-size: 36px;
-      line-height: .95;
-      text-transform: uppercase;
+    .shop-hero-info{
+      position:relative;
+      z-index:2;
+      max-width:560px;
     }
 
-    .shop-item-card p {
-      color: #9ca3af;
-      font-size: 16px;
-      line-height: 1.45;
+    .shop-eyebrow{
+      display:inline-flex;
+      padding:8px 13px;
+      border-radius:999px;
+      color:var(--accent);
+      background:var(--accentSoft);
+      border:1px solid var(--accentBorder);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.22em;
+      text-transform:uppercase;
     }
 
-    .shop-item-bottom {
-      margin-top: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
+    .shop-hero h1{
+      margin:20px 0 12px;
+      font-size:clamp(54px,10vw,104px);
+      line-height:.86;
+      text-transform:uppercase;
     }
 
-    .shop-price {
-      color: #fff;
-      font-size: 28px;
-      font-weight: 900;
+    .shop-hero p{
+      color:#a8b3c4;
+      font-size:19px;
+      line-height:1.5;
+      max-width:520px;
     }
 
-    .shop-stock {
-      color: #facc15;
-      font-weight: 900;
-      text-transform: uppercase;
+    .shop-meta{
+      margin-top:26px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      max-width:560px;
     }
 
-    .shop-buy-btn {
-      border: none;
-      border-radius: 16px;
-      padding: 14px 18px;
-      background: #ef4444;
-      color: #fff;
-      font-family: Rajdhani, sans-serif;
-      font-size: 16px;
-      font-weight: 900;
-      text-transform: uppercase;
-      cursor: pointer;
+    .shop-meta div{
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.09);
     }
 
-    .shop-buy-btn:hover {
-      filter: brightness(1.12);
-      transform: translateY(-1px);
+    .shop-meta span{
+      display:block;
+      color:#8b949e;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.16em;
+      text-transform:uppercase;
     }
 
-    @media (max-width: 760px) {
-      .shop-grid {
-        grid-template-columns: 1fr;
+    .shop-meta strong{
+      display:block;
+      margin-top:6px;
+      font-size:22px;
+    }
+
+    .shop-actions{
+      margin-top:28px;
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .shop-primary{
+      border:none;
+      border-radius:18px;
+      padding:16px 28px;
+      background:var(--accent);
+      color:#fff;
+      font-family:Rajdhani,Arial,sans-serif;
+      font-size:18px;
+      font-weight:900;
+      text-transform:uppercase;
+      cursor:pointer;
+      box-shadow:0 16px 50px var(--accentShadow);
+    }
+
+    .shop-secondary{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:16px 22px;
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      font-family:Rajdhani,Arial,sans-serif;
+      font-size:18px;
+      font-weight:900;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+
+    .shop-stage{
+      position:relative;
+      z-index:2;
+      min-height:450px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .shop-crate-img{
+      width:min(82%,520px);
+      max-height:480px;
+      object-fit:contain;
+      filter:drop-shadow(0 38px 60px var(--accentShadow));
+      animation:floatCrate 4s ease-in-out infinite;
+    }
+
+    .shop-img-fallback{
+      width:min(82%,430px);
+      aspect-ratio:1/1;
+      border-radius:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      color:#fff;
+      font-size:42px;
+      font-weight:900;
+      letter-spacing:.08em;
+      background:
+        radial-gradient(circle at 50% 35%, var(--accentGlow), transparent 45%),
+        linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.02));
+      border:1px solid var(--accentBorder);
+      box-shadow:0 34px 80px rgba(0,0,0,.38);
+    }
+
+    @keyframes floatCrate{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-12px)}
+    }
+
+    .shop-selector{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:14px;
+    }
+
+    .shop-select-card{
+      position:relative;
+      min-height:150px;
+      border-radius:24px;
+      padding:14px;
+      cursor:pointer;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.08), transparent 38%),
+        linear-gradient(135deg,rgba(15,23,42,.95),rgba(3,7,18,.98));
+      border:1px solid rgba(255,255,255,.08);
+      transition:.25s;
+    }
+
+    .shop-select-card:hover,
+    .shop-select-card.active{
+      transform:translateY(-6px);
+      border-color:var(--cardAccent);
+      box-shadow:0 22px 70px var(--cardShadow);
+    }
+
+    .shop-select-card img{
+      width:100%;
+      height:74px;
+      object-fit:contain;
+      display:block;
+      margin-bottom:10px;
+      filter:drop-shadow(0 16px 26px var(--cardShadow));
+    }
+
+    .thumb-fallback{
+      height:74px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:30px;
+      color:#fff;
+      border-radius:16px;
+      margin-bottom:10px;
+      background:rgba(255,255,255,.06);
+    }
+
+    .shop-select-card span{
+      display:block;
+      color:var(--cardAccent);
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .shop-select-card strong{
+      display:block;
+      margin-top:3px;
+      color:#fff;
+      font-size:18px;
+      line-height:1;
+    }
+
+    .shop-footer-grid{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .shop-panel{
+      border-radius:28px;
+      padding:24px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.09);
+    }
+
+    .shop-panel h2{
+      margin:0 0 14px;
+      font-size:26px;
+      text-transform:uppercase;
+    }
+
+    .shop-history-empty{
+      color:#8b949e;
+      padding:18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    @media(max-width:980px){
+      .shop-hero{
+        grid-template-columns:1fr;
+        padding:30px;
       }
 
-      .shop-balance-card {
-        align-items: flex-start;
-        flex-direction: column;
+      .shop-stage{
+        order:-1;
+        min-height:300px;
       }
 
-      .shop-item-bottom {
-        align-items: flex-start;
-        flex-direction: column;
+      .shop-selector{
+        grid-template-columns:repeat(3,1fr);
       }
 
-      .shop-buy-btn {
-        width: 100%;
+      .shop-footer-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:650px){
+      .shop-client{padding:12px}
+      .shop-topnav{
+        height:auto;
+        align-items:flex-start;
+        flex-direction:column;
+        padding:18px;
+      }
+
+      .shop-nav{
+        width:100%;
+      }
+
+      .shop-nav a,
+      .shop-nav button{
+        flex:1;
+        text-align:center;
+      }
+
+      .shop-balance{
+        text-align:left;
+      }
+
+      .shop-meta{
+        grid-template-columns:1fr;
+      }
+
+      .shop-selector{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .shop-hero{
+        border-radius:24px;
+        padding:22px;
       }
     }
   </style>
 </head>
 
-<body class="account-body">
+<body>
 
-<div class="account-center-shell">
-  <div class="account-center">
+<div class="shop-client">
 
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>RG SHOP</h2>
-      </div>
+  <header class="shop-topnav">
+    <div class="shop-brand">
+      <p>RIVALS GAUNTLET</p>
+      <strong>RG SHOP</strong>
+    </div>
 
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="predictions.html">Predictions</a>
-        <a class="active" href="shop.html">RG Shop</a>
-        <a href="teams.html">Teams</a>
-        <a href="tournament.html">Bracket</a>
-        <a href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
-      </nav>
-    </aside>
+    <nav class="shop-nav">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="predictions.html">Predictions</a>
+      <a class="active" href="shop.html">Shop</a>
+      <a href="teams.html">Teams</a>
+      <a href="tournament.html">Bracket</a>
+      <button onclick="logoutUser()">Sign Out</button>
+    </nav>
 
-    <main class="account-main">
+    <div class="shop-balance">
+      <span>Your Balance</span>
+      <strong id="shopRgPoints">0 RP</strong>
+    </div>
+  </header>
 
-      <section class="shop-hero">
-        <span>Weekly Drop</span>
-        <h1>RG Shop</h1>
-        <p>
-          Mystery crates, seasonal drops, and limited-stock rewards.
-          New items rotate weekly. Spend RG Points and build your collection.
+  <main>
+
+    <section id="featuredShopHero" class="shop-hero">
+      <div class="shop-hero-info">
+        <span id="featuredRarity" class="shop-eyebrow">Epic</span>
+        <h1 id="featuredName">Elite Crate</h1>
+        <p id="featuredDescription">
+          High-value mystery crate with stronger odds for rare seasonal rewards.
         </p>
 
-        <div class="shop-balance-card">
+        <div class="shop-meta">
           <div>
-            <span>Your Balance</span>
-            <strong id="shopRgPoints">0 RP</strong>
+            <span>Cost</span>
+            <strong id="featuredPrice">2,000 RP</strong>
           </div>
 
           <div>
-            <span>Refresh</span>
-            <strong style="font-size:30px;">Weekly</strong>
+            <span>Type</span>
+            <strong id="featuredType">Mystery Crate</strong>
           </div>
+
+          <div>
+            <span>Status</span>
+            <strong id="featuredStock">Weekly Drop</strong>
+          </div>
+        </div>
+
+        <div class="shop-actions">
+          <button class="shop-primary" onclick="buySelectedItem()">Open / Redeem</button>
+          <button class="shop-secondary" onclick="previewSelectedItem()">Preview Odds</button>
+        </div>
+      </div>
+
+      <div class="shop-stage">
+        <img id="featuredImage" class="shop-crate-img" src="" alt="">
+        <div id="featuredFallback" class="shop-img-fallback" style="display:none;">ELITE<br>CRATE</div>
+      </div>
+    </section>
+
+    <div id="shopSelector" class="shop-selector"></div>
+
+    <div class="shop-footer-grid">
+      <section class="shop-panel">
+        <h2>Weekly Refresh</h2>
+        <div class="shop-history-empty">
+          New crates and limited-stock rewards rotate weekly. Seasonal crates appear during active events.
         </div>
       </section>
 
-      <div class="shop-section-title">
-        <h2>Featured Drop</h2>
-        <span>Limited seasonal crate</span>
-      </div>
-
-      <div class="shop-grid">
-        <div class="shop-item-card featured">
-          <span class="shop-rarity">Founders Edition</span>
-          <h3>Founders Crate</h3>
-          <p>
-            A premium mystery crate for early Rivals Gauntlet players.
-            Exclusive cosmetics, profile flex items, and rare collection rewards.
-          </p>
-
-          <div class="shop-item-bottom">
-            <div>
-              <div class="shop-price">2,500 RP</div>
-              <div class="shop-stock">Seasonal Drop</div>
-            </div>
-
-            <button class="shop-buy-btn" onclick="buyItem('founders_crate')">
-              Redeem Crate
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="shop-section-title">
-        <h2>Mystery Crates</h2>
-        <span>Rotating weekly</span>
-      </div>
-
-      <div class="shop-grid">
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Common</span>
-          <h3>Basic Crate</h3>
-          <p>Entry-level mystery crate with profile items and small RP bonuses.</p>
-
-          <div class="shop-item-bottom">
-            <div class="shop-price">500 RP</div>
-            <button class="shop-buy-btn" onclick="buyItem('basic_crate')">Redeem</button>
-          </div>
-        </div>
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Rare</span>
-          <h3>Rare Crate</h3>
-          <p>Better odds for premium profile rewards and higher-tier cosmetics.</p>
-
-          <div class="shop-item-bottom">
-            <div class="shop-price">1,200 RP</div>
-            <button class="shop-buy-btn" onclick="buyItem('rare_crate')">Redeem</button>
-          </div>
-        </div>
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Epic</span>
-          <h3>Elite Crate</h3>
-          <p>High-value crate with stronger odds for rare seasonal rewards.</p>
-
-          <div class="shop-item-bottom">
-            <div class="shop-price">2,000 RP</div>
-            <button class="shop-buy-btn" onclick="buyItem('elite_crate')">Redeem</button>
-          </div>
-        </div>
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Seasonal</span>
-          <h3>Event Crate</h3>
-          <p>Rotates with summer, Halloween, winter, and special RG events.</p>
-
-          <div class="shop-item-bottom">
-            <div class="shop-price">1,800 RP</div>
-            <button class="shop-buy-btn" onclick="buyItem('seasonal_crate')">Redeem</button>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="shop-section-title">
-        <h2>Limited Stock</h2>
-        <span>Manual weekly supply</span>
-      </div>
-
-      <div class="shop-grid">
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Limited</span>
-          <h3>$5 Steam Card</h3>
-          <p>Limited weekly reward. Stock controlled by Rivals Gauntlet staff.</p>
-
-          <div class="shop-item-bottom">
-            <div>
-              <div class="shop-price">5,000 RP</div>
-              <div class="shop-stock">3 Left</div>
-            </div>
-
-            <button class="shop-buy-btn" onclick="buyItem('steam_5')">Redeem</button>
-          </div>
-        </div>
-
-        <div class="shop-item-card">
-          <span class="shop-rarity">Limited</span>
-          <h3>$10 Steam Card</h3>
-          <p>Higher-value reward with very limited weekly availability.</p>
-
-          <div class="shop-item-bottom">
-            <div>
-              <div class="shop-price">9,500 RP</div>
-              <div class="shop-stock">1 Left</div>
-            </div>
-
-            <button class="shop-buy-btn" onclick="buyItem('steam_10')">Redeem</button>
-          </div>
-        </div>
-
-      </div>
-
-      <section class="account-panel full" style="margin-top:34px;">
+      <section class="shop-panel">
         <h2>Purchase History</h2>
-        <div id="purchaseHistory">
-          <div class="dashboard-activity-empty">
-            Your redeemed items will appear here.
-          </div>
+        <div id="purchaseHistory" class="shop-history-empty">
+          Your redeemed items will appear here.
         </div>
       </section>
+    </div>
 
-    </main>
+  </main>
 
-  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -394,15 +527,104 @@
 <script>
 let currentUser = null;
 let currentPlayer = null;
+let selectedItemId = "elite_crate";
 
 const shopItems = {
-  founders_crate: { name: "Founders Crate", price: 2500 },
-  basic_crate: { name: "Basic Crate", price: 500 },
-  rare_crate: { name: "Rare Crate", price: 1200 },
-  elite_crate: { name: "Elite Crate", price: 2000 },
-  seasonal_crate: { name: "Event Crate", price: 1800 },
-  steam_5: { name: "$5 Steam Card", price: 5000 },
-  steam_10: { name: "$10 Steam Card", price: 9500 }
+  basic_crate: {
+    name: "Basic Crate",
+    rarity: "Common",
+    type: "Mystery Crate",
+    price: 500,
+    stock: "Weekly Drop",
+    description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards.",
+    image: "assets/shop/crates/basic-crate.png",
+    fallback: "BASIC\\nCRATE",
+    accent: "#9ca3af",
+    accentSoft: "rgba(156,163,175,.14)",
+    accentGlow: "rgba(156,163,175,.20)",
+    accentBorder: "rgba(156,163,175,.36)",
+    accentShadow: "rgba(156,163,175,.28)"
+  },
+
+  rare_crate: {
+    name: "Rare Crate",
+    rarity: "Rare",
+    type: "Mystery Crate",
+    price: 1200,
+    stock: "Weekly Drop",
+    description: "Better odds for premium profile rewards, upgraded banners, and stronger collection items.",
+    image: "assets/shop/crates/rare-crate.png",
+    fallback: "RARE\\nCRATE",
+    accent: "#3b82f6",
+    accentSoft: "rgba(59,130,246,.14)",
+    accentGlow: "rgba(59,130,246,.26)",
+    accentBorder: "rgba(59,130,246,.42)",
+    accentShadow: "rgba(59,130,246,.30)"
+  },
+
+  elite_crate: {
+    name: "Elite Crate",
+    rarity: "Epic",
+    type: "Mystery Crate",
+    price: 2000,
+    stock: "Weekly Drop",
+    description: "High-value crate with stronger odds for rare rewards, profile flex items, and premium drops.",
+    image: "assets/shop/crates/elite-crate.png",
+    fallback: "ELITE\\nCRATE",
+    accent: "#a855f7",
+    accentSoft: "rgba(168,85,247,.14)",
+    accentGlow: "rgba(168,85,247,.30)",
+    accentBorder: "rgba(168,85,247,.45)",
+    accentShadow: "rgba(168,85,247,.33)"
+  },
+
+  summer_crate: {
+    name: "Summer Crate",
+    rarity: "Seasonal",
+    type: "Seasonal Crate",
+    price: 1800,
+    stock: "Limited Season",
+    description: "A limited-time seasonal crate with summer-themed profile cosmetics and rare event rewards.",
+    image: "assets/shop/crates/summer-crate.png",
+    fallback: "SUMMER\\nCRATE",
+    accent: "#facc15",
+    accentSoft: "rgba(250,204,21,.14)",
+    accentGlow: "rgba(250,204,21,.25)",
+    accentBorder: "rgba(250,204,21,.42)",
+    accentShadow: "rgba(250,204,21,.30)"
+  },
+
+  steam_5: {
+    name: "$5 Steam Card",
+    rarity: "Limited",
+    type: "Gift Card",
+    price: 5000,
+    stock: "3 Left",
+    description: "Limited weekly reward. Redeem RG Points for a $5 Steam gift card while supplies last.",
+    image: "assets/shop/rewards/steam-card.png",
+    fallback: "$5\\nSTEAM",
+    accent: "#22c55e",
+    accentSoft: "rgba(34,197,94,.14)",
+    accentGlow: "rgba(34,197,94,.22)",
+    accentBorder: "rgba(34,197,94,.38)",
+    accentShadow: "rgba(34,197,94,.26)"
+  },
+
+  steam_10: {
+    name: "$10 Steam Card",
+    rarity: "Limited",
+    type: "Gift Card",
+    price: 9500,
+    stock: "1 Left",
+    description: "Higher-value weekly reward with extremely limited availability.",
+    image: "assets/shop/rewards/steam-card.png",
+    fallback: "$10\\nSTEAM",
+    accent: "#22c55e",
+    accentSoft: "rgba(34,197,94,.14)",
+    accentGlow: "rgba(34,197,94,.22)",
+    accentBorder: "rgba(34,197,94,.38)",
+    accentShadow: "rgba(34,197,94,.26)"
+  }
 };
 
 function renderShopBalance() {
@@ -410,10 +632,70 @@ function renderShopBalance() {
     `${Number(currentPlayer?.rgPoints || 0).toLocaleString()} RP`;
 }
 
-function buyItem(itemId) {
+function setSelectedItem(itemId) {
+  selectedItemId = itemId;
+  const item = shopItems[itemId];
+  if (!item) return;
+
+  const hero = document.getElementById("featuredShopHero");
+
+  hero.style.setProperty("--accent", item.accent);
+  hero.style.setProperty("--accentSoft", item.accentSoft);
+  hero.style.setProperty("--accentGlow", item.accentGlow);
+  hero.style.setProperty("--accentBorder", item.accentBorder);
+  hero.style.setProperty("--accentShadow", item.accentShadow);
+
+  document.getElementById("featuredRarity").innerText = item.rarity;
+  document.getElementById("featuredName").innerText = item.name;
+  document.getElementById("featuredDescription").innerText = item.description;
+  document.getElementById("featuredPrice").innerText = `${item.price.toLocaleString()} RP`;
+  document.getElementById("featuredType").innerText = item.type;
+  document.getElementById("featuredStock").innerText = item.stock;
+
+  const img = document.getElementById("featuredImage");
+  const fallback = document.getElementById("featuredFallback");
+
+  img.src = item.image;
+  img.alt = item.name;
+  img.style.display = "block";
+  fallback.style.display = "none";
+  fallback.innerText = item.fallback.replace("\\n", "\n");
+
+  img.onerror = () => {
+    img.style.display = "none";
+    fallback.style.display = "flex";
+  };
+
+  renderSelector();
+}
+
+function renderSelector() {
+  const selector = document.getElementById("shopSelector");
+
+  selector.innerHTML = Object.keys(shopItems).map(id => {
+    const item = shopItems[id];
+    const active = id === selectedItemId ? "active" : "";
+
+    return `
+      <button
+        class="shop-select-card ${active}"
+        onclick="setSelectedItem('${id}')"
+        style="--cardAccent:${item.accent};--cardShadow:${item.accentShadow};">
+
+        <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="thumb-fallback" style="display:none;">${item.fallback.replace("\\n", "<br>")}</div>
+
+        <span>${item.rarity}</span>
+        <strong>${item.name}</strong>
+      </button>
+    `;
+  }).join("");
+}
+
+function buySelectedItem() {
   if (!currentUser || !currentPlayer) return;
 
-  const item = shopItems[itemId];
+  const item = shopItems[selectedItemId];
   if (!item) return;
 
   const currentRp = Number(currentPlayer.rgPoints || 0);
@@ -423,7 +705,12 @@ function buyItem(itemId) {
     return;
   }
 
-  alert(`${item.name} purchase logic coming next.`);
+  alert(`${item.name} opening/purchase logic comes next.`);
+}
+
+function previewSelectedItem() {
+  const item = shopItems[selectedItemId];
+  alert(`${item.name} odds preview comes next.`);
 }
 
 auth.onAuthStateChanged(user => {
@@ -438,6 +725,8 @@ auth.onAuthStateChanged(user => {
     currentPlayer = snapshot.val() || {};
     renderShopBalance();
   });
+
+  setSelectedItem(selectedItemId);
 });
 
 function logoutUser() {

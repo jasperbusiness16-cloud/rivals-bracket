@@ -161,6 +161,24 @@
   <h2 style="color:#ef4444;">🔴 Your Match Is Live</h2>
   <div id="myMatchLiveAlertContent"></div>
 </section>
+
+<section class="account-panel full">
+  <h2>RG Rewards</h2>
+  <p>Claim your starter bonus and begin earning RG Points.</p>
+
+  <div class="dashboard-next-step">
+    <span>Starter Bonus</span>
+    <strong>+100 RG Points</strong>
+  </div>
+
+  <div class="account-actions">
+    <button id="starterBonusBtn" class="account-primary" onclick="claimStarterRgBonus()">
+      Claim Starter Bonus
+    </button>
+  </div>
+
+  <p id="rgRewardStatus" class="account-status"></p>
+</section>
         
         <section class="account-panel full">
 
@@ -1001,6 +1019,83 @@ ${renderTeamReadiness(myTeam)}
 
   description.innerText = "Checking tournament status...";
   actions.innerHTML = "";
+}
+
+function awardRgPoints(uid, amount, reason, source = "system") {
+  const playerRef = database.ref(`players/${uid}`);
+
+  return playerRef.transaction(player => {
+    if (!player) return player;
+
+    const currentPoints = Number(player.rgPoints || 0);
+    const lifetimePoints = Number(player.lifetimeRgPoints || 0);
+    const nextPoints = currentPoints + amount;
+
+    if (nextPoints < 0) return;
+
+    player.rgPoints = nextPoints;
+
+    if (amount > 0) {
+      player.lifetimeRgPoints = lifetimePoints + amount;
+    }
+
+    player.updatedAt = Date.now();
+
+    return player;
+  }).then(result => {
+    if (!result.committed) {
+      throw new Error("RG Points update failed.");
+    }
+
+    return database.ref(`rgPointHistory/${uid}`).push({
+      amount,
+      reason,
+      source,
+      tournamentId,
+      createdAt: Date.now()
+    });
+  });
+}
+
+function claimStarterRgBonus() {
+  if (!currentUser) return;
+
+  const status = document.getElementById("rgRewardStatus");
+  const button = document.getElementById("starterBonusBtn");
+
+  database.ref(`players/${currentUser.uid}/starterRgBonusClaimed`).once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        status.innerText = "You already claimed your starter bonus.";
+        status.style.color = "#facc15";
+        return null;
+      }
+
+      return awardRgPoints(currentUser.uid, 100, "Starter Bonus", "starter_bonus");
+    })
+    .then(result => {
+      if (result === null) return;
+
+      return database.ref(`players/${currentUser.uid}`).update({
+        starterRgBonusClaimed: true
+      });
+    })
+    .then(result => {
+      if (result === null) return;
+
+      status.innerText = "✓ Starter bonus claimed. +100 RG Points!";
+      status.style.color = "#22c55e";
+
+      if (button) {
+        button.innerText = "Claimed";
+        button.disabled = true;
+        button.style.opacity = ".5";
+      }
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
 }
   
 auth.onAuthStateChanged((user) => {

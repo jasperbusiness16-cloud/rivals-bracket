@@ -253,6 +253,7 @@ let currentPlayer = null;
 let currentTournament = {};
 let currentTeams = {};
 let siteData = {};
+let nextMatchData = {};
 let championPredictions = {};
 let matchPredictions = {};
 let lockedPredictions = {};
@@ -270,6 +271,28 @@ function getPredictionType(matchId) {
     .replaceAll("•", "")
     .replaceAll("-", "_")}`;
 }
+
+function matchesFromLabel(label) {
+  const matchMap = {
+    "R16-1": "R16-1 • Bo3",
+    "R16-2": "R16-2 • Bo3",
+    "R16-3": "R16-3 • Bo3",
+    "R16-4": "R16-4 • Bo3",
+    "R16-5": "R16-5 • Bo3",
+    "R16-6": "R16-6 • Bo3",
+    "R16-7": "R16-7 • Bo3",
+    "R16-8": "R16-8 • Bo3",
+    "QF1": "QF1 • Bo3",
+    "QF2": "QF2 • Bo3",
+    "QF3": "QF3 • Bo3",
+    "QF4": "QF4 • Bo3",
+    "SF1": "SF1 • Bo3",
+    "SF2": "SF2 • Bo3",
+    "Grand Finals": "Grand Finals • Bo5"
+  };
+
+  return matchMap[label] || "";
+}
   
 function getTeamsArray() {
   const teamsObj = currentTeams.teams || {};
@@ -281,7 +304,7 @@ function getTeamsArray() {
 }
 
 function getCurrentMatchText() {
-  return clean(siteData.currentMatch, "");
+  return clean(nextMatchData.fullMatchId, "");
 }
 
 function getCurrentMatchTeams() {
@@ -698,6 +721,19 @@ auth.onAuthStateChanged(user => {
       renderPredictionsPage();
     });
 
+   database.ref("broadcastCountdown/upNext").on("value", snapshot => {
+  const next = snapshot.val() || {};
+
+  const fullMatchId = matchesFromLabel(next.label);
+
+  nextMatchData = {
+    ...next,
+    fullMatchId
+  };
+
+  renderPredictionsPage();
+});
+    
     database.ref(`predictions/${tournamentId}/champion`).on("value", snapshot => {
       championPredictions = snapshot.val() || {};
       renderPredictionsPage();

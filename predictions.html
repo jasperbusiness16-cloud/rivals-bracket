@@ -43,10 +43,31 @@
 
       <div class="account-panel-grid">
 
-        <section class="account-panel full">
-          <h2 id="predictionEventTitle">Loading Event...</h2>
-          <p id="predictionEventDescription">Checking active tournament...</p>
-        </section>
+      <section class="account-panel full">
+
+  <span class="next-match-eyebrow">NEXT PREDICTION</span>
+
+  <h2 id="predictionMatchTitle">
+    Loading Match...
+  </h2>
+
+  <div class="next-match-versus" id="predictionHeroVs">
+    Loading...
+  </div>
+
+  <div class="dashboard-next-step" style="margin-top:24px;">
+
+    <span id="predictionStatus">
+      🟢 Predictions Open
+    </span>
+
+    <strong>
+      Predictions close when the match begins.
+    </strong>
+
+  </div>
+
+</section>
 
 <section class="account-panel full prediction-rank-panel">
   <h2>Prediction Profile</h2>
@@ -677,12 +698,23 @@ function renderPredictionCareer() {
 }
   
 function renderPredictionsPage() {
-  document.getElementById("predictionEventTitle").innerText =
-    currentTournament.name || "Rivals Gauntlet Tournament";
+  document.getElementById("predictionMatchTitle").innerText =
+  nextMatchData.label || "Loading Match...";
 
-  document.getElementById("predictionEventDescription").innerText =
-    `Active Tournament: ${tournamentId}`;
+if (nextMatchData.teamA && nextMatchData.teamB) {
 
+  document.getElementById("predictionHeroVs").innerHTML = `
+    <strong>${nextMatchData.teamA}</strong>
+    <span>VS</span>
+    <strong>${nextMatchData.teamB}</strong>
+  `;
+
+} else {
+
+  document.getElementById("predictionHeroVs").innerHTML =
+    "Waiting for next match...";
+
+}
   renderPredictionProfile();
 renderChampionPrediction();
 renderMatchPrediction();

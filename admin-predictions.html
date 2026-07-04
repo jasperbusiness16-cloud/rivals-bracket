@@ -1,1 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Predictions | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=5">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ADMIN CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="admin-applications.html">Applications</a>
+        <a href="team-builder.html">Team Builder</a>
+        <a href="admin-checkin.html">Check-In</a>
+        <a class="active" href="admin-predictions.html">Predictions</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+
+      <div class="account-topbar">
+        <div>
+          <p>PREDICTION CONTROL</p>
+          <h1>Prediction Admin</h1>
+          <span>Resolve predictions and award RG Points to correct picks.</span>
+        </div>
+      </div>
+
+      <section class="account-panel full">
+        <h2 id="tournamentTitle">Loading Tournament...</h2>
+        <p><strong>Active Tournament:</strong> <span id="activeTournamentLabel">Loading...</span></p>
+        <p><strong>Champion Predictions:</strong> <span id="championPredictionCount">0</span></p>
+        <p><strong>Champion Payout:</strong> <span>+500 RG Points</span></p>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Resolve Champion Prediction</h2>
+        <p>Select the tournament champion, then pay all users who correctly predicted that team.</p>
+
+        <div class="account-form-grid">
+          <div class="account-field">
+            <label>Winning Team</label>
+            <select id="championWinnerSelect">
+              <option value="">Loading teams...</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="account-actions">
+          <button class="account-primary" onclick="payChampionPredictions()">
+            Pay Champion Predictions
+          </button>
+        </div>
+
+        <p id="championPayoutStatus" class="account-status"></p>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Champion Vote Results</h2>
+        <div id="championVoteResults">
+          Loading vote results...
+        </div>
+      </section>
+
+      <section class="account-panel full">
+        <h2>Prediction Entries</h2>
+        <div id="championPredictionList">
+          Loading predictions...
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+let tournamentId = "open1";
+let currentTournament = {};
+let teamsData = {};
+let championPredictions = {};
+let currentUserRole = "";
+
+const CHAMPION_PAYOUT = 500;
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getTeamsArray() {
+  const teamsObj = teamsData.teams || {};
+
+  return Object.keys(teamsObj).map(teamKey => ({
+    teamKey,
+    teamName: teamKey.replace("team", "Team "),
+    players: teamsObj[teamKey] || []
+  }));
+}
+
+function getTeamName(teamKey) {
+  const team = getTeamsArray().find(team => team.teamKey === teamKey);
+  return team ? team.teamName : teamKey;
+}
+
+function awardRgPoints(uid, amount, reason, source = "prediction") {
+  const playerRef = database.ref(`players/${uid}`);
+
+  return playerRef.transaction(player => {
+    if (!player) return player;
+
+    const currentPoints = Number(player.rgPoints || 0);
+    const lifetimePoints = Number(player.lifetimeRgPoints || 0);
+
+    player.rgPoints = currentPoints + amount;
+
+    if (amount > 0) {
+      player.lifetimeRgPoints = lifetimePoints + amount;
+    }
+
+    player.updatedAt = Date.now();
+
+    return player;
+  }).then(result => {
+    if (!result.committed) {
+      throw new Error("RG Points update failed.");
+    }
+
+    return database.ref(`rgPointHistory/${uid}`).push({
+      amount,
+      reason,
+      source,
+      tournamentId,
+      createdAt: Date.now()
+    });
+  });
+}
+
+function renderTeamSelect() {
+  const select = document.getElementById("championWinnerSelect");
+  const teams = getTeamsArray();
+
+  if (!teams.length) {
+    select.innerHTML = `<option value="">No teams published</option>`;
+    return;
+  }
+
+  select.innerHTML = `
+    <option value="">Select Champion</option>
+    ${teams.map(team => `
+      <option value="${team.teamKey}">
+        ${team.teamName}
+      </option>
+    `).join("")}
+  `;
+}
+
+function getChampionStats() {
+  const predictions = Object.values(championPredictions || {});
+  const teams = getTeamsArray();
+  const total = predictions.length;
+
+  return teams.map(team => {
+    const count = predictions.filter(prediction => prediction.pick === team.teamKey).length;
+    const percent = total ? Math.round((count / total) * 100) : 0;
+
+    return {
+      teamKey: team.teamKey,
+      teamName: team.teamName,
+      count,
+      percent,
+      total
+    };
+  });
+}
+
+function renderChampionVoteResults() {
+  const container = document.getElementById("championVoteResults");
+  const stats = getChampionStats();
+
+  if (!stats.length) {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        No teams available yet.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = stats.map(stat => `
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <strong>${stat.teamName}</strong>
+        <span style="color:#8b949e;">${stat.percent}% • ${stat.count} votes</span>
+      </div>
+
+      <div style="
+        height:10px;
+        background:rgba(255,255,255,.08);
+        border-radius:999px;
+        overflow:hidden;
+      ">
+        <div style="
+          width:${stat.percent}%;
+          height:100%;
+          background:#ef4444;
+          border-radius:999px;
+        "></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderChampionPredictionList() {
+  const container = document.getElementById("championPredictionList");
+  const predictions = Object.values(championPredictions || {})
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  document.getElementById("championPredictionCount").innerText = predictions.length;
+
+  if (!predictions.length) {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        No champion predictions submitted yet.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = predictions.map(prediction => `
+    <div class="dashboard-activity-item">
+      <div class="dashboard-activity-icon">🔮</div>
+
+      <div>
+        <strong>${prediction.displayName || "Player"}</strong>
+        <span>Picked ${prediction.pickName || getTeamName(prediction.pick)}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderPage() {
+  document.getElementById("tournamentTitle").innerText =
+    currentTournament.name || "Rivals Gauntlet Tournament";
+
+  document.getElementById("activeTournamentLabel").innerText = tournamentId;
+
+  renderTeamSelect();
+  renderChampionVoteResults();
+  renderChampionPredictionList();
+}
+
+function payChampionPredictions() {
+  const status = document.getElementById("championPayoutStatus");
+  const winningTeam = clean(document.getElementById("championWinnerSelect").value);
+
+  if (!winningTeam) {
+    status.innerText = "Please select the winning team.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  const payoutKey = `champion_${winningTeam}`;
+
+  database.ref(`predictionPayouts/${tournamentId}/${payoutKey}`).once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        status.innerText = "Champion predictions were already paid for this winner.";
+        status.style.color = "#facc15";
+        return null;
+      }
+
+      const predictions = Object.values(championPredictions || {});
+      const winners = predictions.filter(prediction => prediction.pick === winningTeam);
+
+      if (!winners.length) {
+        status.innerText = "No users predicted this champion.";
+        status.style.color = "#facc15";
+
+        return database.ref(`predictionPayouts/${tournamentId}/${payoutKey}`).set({
+          type: "champion",
+          winningTeam,
+          winningTeamName: getTeamName(winningTeam),
+          payout: CHAMPION_PAYOUT,
+          winnersPaid: 0,
+          paidAt: Date.now()
+        });
+      }
+
+      status.innerText = `Paying ${winners.length} correct predictions...`;
+      status.style.color = "#facc15";
+
+      return Promise.all(
+        winners.map(prediction =>
+          awardRgPoints(
+            prediction.uid,
+            CHAMPION_PAYOUT,
+            `Correct Champion Prediction: ${getTeamName(winningTeam)}`,
+            "champion_prediction"
+          )
+        )
+      ).then(() => {
+        return database.ref(`predictionPayouts/${tournamentId}/${payoutKey}`).set({
+          type: "champion",
+          winningTeam,
+          winningTeamName: getTeamName(winningTeam),
+          payout: CHAMPION_PAYOUT,
+          winnersPaid: winners.length,
+          paidAt: Date.now()
+        });
+      }).then(() => winners.length);
+    })
+    .then(result => {
+      if (result === null) return;
+
+      if (typeof result === "number") {
+        status.innerText = `✓ Paid ${result} users +${CHAMPION_PAYOUT} RG Points.`;
+      } else {
+        status.innerText = "✓ Prediction payout saved.";
+      }
+
+      status.style.color = "#22c55e";
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  database.ref(`users/${user.uid}`).once("value").then(snapshot => {
+    const userData = snapshot.val() || {};
+
+    if (userData.role !== "admin" && userData.role !== "owner") {
+      document.body.innerHTML =
+        "<h1 style='color:white;text-align:center;margin-top:100px;'>Access Denied</h1>";
+      return;
+    }
+
+    currentUserRole = userData.role;
+
+    return database.ref("site/currentTournament").once("value");
+  }).then(activeTournament => {
+    if (!activeTournament) return;
+
+    tournamentId = activeTournament.val() || "open1";
+
+    database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+      currentTournament = snapshot.val() || {};
+      renderPage();
+    });
+
+    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+      teamsData = snapshot.val() || {};
+      renderPage();
+    });
+
+    database.ref(`predictions/${tournamentId}/champion`).on("value", snapshot => {
+      championPredictions = snapshot.val() || {};
+      renderPage();
+    });
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

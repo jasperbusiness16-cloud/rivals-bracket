@@ -50,7 +50,12 @@
 
         <section class="account-panel full">
           <h2>Champion Prediction</h2>
-          <p>Pick which team you think will win the entire tournament.</p>
+<p>Pick the team you think will win the entire tournament.</p>
+
+<div class="dashboard-next-step">
+  <span>Reward</span>
+  <strong>+500 RG Points</strong>
+</div>
 
           <div id="championPredictionArea">
             Loading champion prediction...
@@ -61,15 +66,24 @@
 
         <section class="account-panel full">
           <h2>Current Match Prediction</h2>
-          <p>Predict the winner of the currently selected live match.</p>
+<p>Predict the winner of the currently selected live match.</p>
 
+<div class="dashboard-next-step">
+  <span>Reward</span>
+  <strong>+100 RG Points</strong>
+</div>
           <div id="matchPredictionArea">
             Loading match prediction...
           </div>
 
           <p id="matchPredictionStatus" class="account-status"></p>
         </section>
-
+<section class="account-panel full">
+  <h2>Your Prediction History</h2>
+  <div id="predictionHistory">
+    Loading prediction history...
+  </div>
+</section>
       </div>
 
     </main>
@@ -91,7 +105,9 @@ let currentTeams = {};
 let siteData = {};
 let championPredictions = {};
 let matchPredictions = {};
-
+const CHAMPION_REWARD = 500;
+const MATCH_REWARD = 100;
+  
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
@@ -345,6 +361,59 @@ function renderMatchPrediction() {
   `;
 }
 
+function renderPredictionHistory() {
+  const container = document.getElementById("predictionHistory");
+  if (!container || !currentUser) return;
+
+  const items = [];
+
+  const championPick = championPredictions[currentUser.uid];
+
+  if (championPick) {
+    items.push({
+      icon: "🏆",
+      title: "Champion Prediction",
+      detail: `You picked ${championPick.pickName}`,
+      reward: `Potential +${CHAMPION_REWARD} RP`
+    });
+  }
+
+  Object.keys(matchPredictions || {}).forEach(type => {
+    if (type === "champion") return;
+
+    const prediction = matchPredictions[type]?.[currentUser.uid];
+
+    if (prediction) {
+      items.push({
+        icon: "⚔️",
+        title: "Match Prediction",
+        detail: `You picked ${prediction.pickName}`,
+        reward: `Potential +${MATCH_REWARD} RP`
+      });
+    }
+  });
+
+  if (!items.length) {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        Your submitted predictions will appear here.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="dashboard-activity-item">
+      <div class="dashboard-activity-icon">${item.icon}</div>
+
+      <div>
+        <strong>${item.title}</strong>
+        <span>${item.detail} • ${item.reward}</span>
+      </div>
+    </div>
+  `).join("");
+}
+  
 function renderPredictionsPage() {
   document.getElementById("predictionEventTitle").innerText =
     currentTournament.name || "Rivals Gauntlet Tournament";
@@ -354,6 +423,7 @@ function renderPredictionsPage() {
 
   renderChampionPrediction();
   renderMatchPrediction();
+  renderPredictionHistory();
 }
 
 auth.onAuthStateChanged(user => {

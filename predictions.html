@@ -33,42 +33,7 @@
 
     <main class="account-main">
 
-      <div class="account-topbar">
-        <div>
-          <p>RG PREDICTIONS</p>
-          <h1>Prediction Center</h1>
-          <span>Predict winners, earn RG Points, and follow the community vote.</span>
-        </div>
-      </div>
-
-      <div class="account-panel-grid">
-
-      <section class="account-panel full">
-
-  <span class="next-match-eyebrow">NEXT PREDICTION</span>
-
-  <h2 id="predictionMatchTitle">
-    Loading Match...
-  </h2>
-
-  <div class="next-match-versus" id="predictionHeroVs">
-    Loading...
-  </div>
-
-  <div class="dashboard-next-step" style="margin-top:24px;">
-
-    <span id="predictionStatus">
-      🟢 Predictions Open
-    </span>
-
-    <strong>
-      Predictions close when the match begins.
-    </strong>
-
-  </div>
-
-</section>
-
+      
 <div class="prediction-rank-card prediction-rank-card-standalone">
   <div>
     <span class="prediction-label">Predictor Rank</span>
@@ -706,23 +671,7 @@ function renderPredictionCareer() {
 }
   
 function renderPredictionsPage() {
-  document.getElementById("predictionMatchTitle").innerText =
-  nextMatchData.label || "Loading Match...";
-
-if (nextMatchData.teamA && nextMatchData.teamB) {
-
-  document.getElementById("predictionHeroVs").innerHTML = `
-    <strong>${nextMatchData.teamA}</strong>
-    <span>VS</span>
-    <strong>${nextMatchData.teamB}</strong>
-  `;
-
-} else {
-
-  document.getElementById("predictionHeroVs").innerHTML =
-    "Waiting for next match...";
-
-}
+  
   renderPredictionProfile();
 renderChampionPrediction();
 renderMatchPrediction();

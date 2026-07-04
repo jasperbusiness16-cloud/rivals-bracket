@@ -219,6 +219,13 @@
   </div>
 </section>
 
+<section class="account-panel full">
+  <h2>Recent RG Points</h2>
+  <div id="rgPointsHistory">
+    <p>Loading RG Points history...</p>
+  </div>
+</section>
+
       </div>
 
       <p id="dashboardStatus" class="account-status"></p>
@@ -1097,6 +1104,49 @@ function claimStarterRgBonus() {
       status.style.color = "#ef4444";
     });
 }
+
+function renderRgPointHistory() {
+  const container = document.getElementById("rgPointsHistory");
+  if (!container || !currentUser) return;
+
+  database.ref(`rgPointHistory/${currentUser.uid}`)
+    .orderByChild("createdAt")
+    .limitToLast(5)
+    .once("value")
+    .then(snapshot => {
+      const data = snapshot.val() || {};
+      const entries = Object.values(data).sort((a, b) => {
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      if (!entries.length) {
+        container.innerHTML = `
+          <div class="dashboard-activity-empty">
+            No RG Points activity yet.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = entries.map(entry => {
+        const amount = Number(entry.amount || 0);
+        const sign = amount >= 0 ? "+" : "";
+
+        return `
+          <div class="dashboard-activity-item">
+            <div class="dashboard-activity-icon">
+              ${amount >= 0 ? "＋" : "−"}
+            </div>
+
+            <div>
+              <strong>${sign}${amount.toLocaleString()} RG Points</strong>
+              <span>${entry.reason || "RG Points Update"}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    });
+}
   
 auth.onAuthStateChanged((user) => {
   if (!user) {
@@ -1163,6 +1213,7 @@ auth.onAuthStateChanged((user) => {
 
     renderSidebar(player, user);
     renderCurrentEvent();
+    renderRgPointHistory();
 
     document.getElementById("welcomeName").innerText =
       `Welcome Back, ${player.displayName || "Player"}`;

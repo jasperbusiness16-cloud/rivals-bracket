@@ -2055,3 +2055,19 @@
     color:#8b949e;
     line-height:1.6;
 }
+
+.reward-list div {
+  padding: 14px 18px;
+  gap: 14px;
+}
+
+.reward-list span {
+  font-size: 15px;
+  letter-spacing: 3px;
+  line-height: 1.2;
+}
+
+.reward-list strong {
+  font-size: 18px;
+  white-space: nowrap;
+}

@@ -255,6 +255,8 @@ let currentTeams = {};
 let siteData = {};
 let championPredictions = {};
 let matchPredictions = {};
+let lockedPredictions = {};
+
 const CHAMPION_REWARD = 500;
 const MATCH_REWARD = 100;
   
@@ -262,6 +264,13 @@ function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
 
+function getPredictionType(matchId) {
+  return `match_${String(matchId || "")
+    .replaceAll(" ", "_")
+    .replaceAll("•", "")
+    .replaceAll("-", "_")}`;
+}
+  
 function getTeamsArray() {
   const teamsObj = currentTeams.teams || {};
   return Object.keys(teamsObj).map(teamKey => ({
@@ -462,11 +471,34 @@ function renderMatchPrediction() {
     return;
   }
 
-  const predictionType = `match_${matchId.replaceAll(" ", "_").replaceAll("•", "").replaceAll("-", "_")}`;
+  const predictionType = getPredictionType(matchId);
+const isLocked = lockedPredictions[predictionType];
   const predictionsForMatch = matchPredictions[predictionType] || {};
   const myPick = predictionsForMatch[currentUser?.uid];
   const stats = getVoteStats(predictionsForMatch, teamKeys);
 
+if (isLocked) {
+  container.innerHTML = `
+    <div class="next-match-card">
+      <span class="next-match-eyebrow">Prediction Closed</span>
+      <h4>${matchId}</h4>
+
+      <div class="next-match-versus">
+        <strong>${getTeamName(teamKeys[0])}</strong>
+        <span>VS</span>
+        <strong>${getTeamName(teamKeys[1])}</strong>
+      </div>
+
+      <p style="color:#8b949e;margin-top:14px;">
+        This match has started. Predictions are locked.
+      </p>
+
+      ${renderVoteBars(stats)}
+    </div>
+  `;
+  return;
+}
+  
   if (myPick) {
     container.innerHTML = `
       <div class="next-match-card">
@@ -671,6 +703,11 @@ auth.onAuthStateChanged(user => {
       renderPredictionsPage();
     });
 
+database.ref(`predictionLocks/${tournamentId}`).on("value", snapshot => {
+  lockedPredictions = snapshot.val() || {};
+  renderPredictionsPage();
+});
+    
     database.ref(`predictions/${tournamentId}`).on("value", snapshot => {
       matchPredictions = snapshot.val() || {};
       renderPredictionsPage();

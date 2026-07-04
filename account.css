@@ -1667,3 +1667,161 @@
     margin-top: 4px;
   }
 }
+
+.prediction-feature-card {
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at top left, rgba(239,68,68,.16), transparent 36%),
+    linear-gradient(135deg, rgba(15,23,42,.96), rgba(3,7,18,.98));
+  box-shadow: 0 18px 55px rgba(0,0,0,.28);
+}
+
+.prediction-feature-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.prediction-feature-eyebrow,
+.prediction-feature-votes > span,
+.prediction-feature-pick span {
+  display: block;
+  color: #ef4444;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.prediction-feature-top h3 {
+  margin: 8px 0 0;
+  color: #fff;
+  font-size: clamp(30px, 7vw, 48px);
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.prediction-feature-reward {
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  color: #22c55e;
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.prediction-feature-matchup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding: 22px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  text-align: center;
+}
+
+.prediction-feature-matchup strong {
+  color: #fff;
+  font-size: clamp(24px, 6vw, 38px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.prediction-feature-matchup span {
+  color: #ef4444;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.prediction-feature-status {
+  width: fit-content;
+  margin-top: 18px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.prediction-feature-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.prediction-feature-actions button {
+  min-height: 54px;
+  border: 1px solid rgba(239,68,68,.7);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(239,68,68,.2), rgba(239,68,68,.05));
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.prediction-feature-pick {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(34,197,94,.08);
+  border: 1px solid rgba(34,197,94,.2);
+}
+
+.prediction-feature-pick strong {
+  display: block;
+  margin-top: 6px;
+  color: #fff;
+  font-size: 32px;
+  text-transform: uppercase;
+}
+
+.prediction-feature-note {
+  margin-top: 18px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.prediction-feature-votes {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.prediction-feature-empty {
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+@media (max-width: 600px) {
+  .prediction-feature-top {
+    flex-direction: column;
+  }
+
+  .prediction-feature-reward {
+    width: fit-content;
+  }
+
+  .prediction-feature-matchup {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-feature-actions {
+    grid-template-columns: 1fr;
+  }
+}

@@ -107,7 +107,7 @@
 <script src="firebase.js?v=2"></script>
 
 <script>
-const tournamentId = "open1";
+let tournamentId = "open1";
 
 let teamsData = {};
 let checkIns = {};
@@ -571,9 +571,15 @@ auth.onAuthStateChanged((user) => {
     }
 
     if (userData.role === "owner") {
-  document.getElementById("ownerTools").style.display = "block";
-}
-    
+      document.getElementById("ownerTools").style.display = "block";
+    }
+
+    return database.ref("site/currentTournament").once("value");
+  }).then(activeTournament => {
+    if (!activeTournament) return;
+
+    tournamentId = activeTournament.val() || "open1";
+
     database.ref(`teams/${tournamentId}`).on("value", snapshot => {
       teamsData = snapshot.val() || {};
       renderAll();
@@ -585,18 +591,17 @@ auth.onAuthStateChanged((user) => {
     });
 
     database.ref(`availability/${tournamentId}`).on("value", snapshot => {
-  availability = snapshot.val() || {};
-  renderAll();
-});
-    
+      availability = snapshot.val() || {};
+      renderAll();
+    });
+
     database.ref(`applications/${tournamentId}`).on("value", snapshot => {
-  const data = snapshot.val() || {};
-  applications = Object.values(data);
-  renderAll();
-});
+      const data = snapshot.val() || {};
+      applications = Object.values(data);
+      renderAll();
+    });
   });
 });
-
 function checkInAllTestSubs() {
 
   const updates = {};

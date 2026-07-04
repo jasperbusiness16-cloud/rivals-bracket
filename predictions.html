@@ -63,16 +63,40 @@
     </div>
   </div>
 </div>
+<section class="account-panel full">
+  <div class="prediction-section-header">
+    <span>⚔️</span>
+    <h2>Match Prediction</h2>
+  </div>
+
+  <div id="matchPredictionArea">
+    Loading match prediction...
+  </div>
+
+  <p id="matchPredictionStatus" class="account-status"></p>
+</section>
+
+
+<section class="account-panel full">
+  <div class="prediction-section-header">
+    <span>🏆</span>
+    <h2>Champion Prediction</h2>
+  </div>
+
+  <div id="championPredictionArea">
+    Loading champion prediction...
+  </div>
+
+  <p id="championPredictionStatus" class="account-status"></p>
+</section>
+
+
 <section class="account-panel full reward-panel">
 
   <div class="reward-hero">
-
     <span>TOP REWARD</span>
-
     <strong>+2000 RP</strong>
-
     <p>PERFECT BRACKET</p>
-
   </div>
 
   <div class="reward-list">
@@ -110,39 +134,47 @@
   </p>
 
 </section>
-        
-        <section class="account-panel full">
-          <div class="prediction-section-header">
-  <span>🏆</span>
-  <h2>Champion Prediction</h2>
-</div>
-<p>Pick the team you think will win the entire tournament.</p>
 
 
+<section class="account-panel full">
 
-          <div id="championPredictionArea">
-            Loading champion prediction...
-          </div>
+  <h2>Prediction Career</h2>
 
-          <p id="championPredictionStatus" class="account-status"></p>
-        </section>
+  <div class="prediction-career-card">
 
+    <div class="career-main-stat">
 
-        
-        <section class="account-panel full">
-          <div class="prediction-section-header">
-  <span>⚔️</span>
-  <h2>Match Prediction</h2>
-</div>
-<p>Predict the winner of the currently selected live match.</p>
+      <span>RP Earned From Predictions</span>
 
+      <strong id="careerRpEarned">
+        0
+      </strong>
 
-          <div id="matchPredictionArea">
-            Loading match prediction...
-          </div>
+      <small class="career-record-line">
+        <span id="careerCorrect">0</span> Correct Picks
+        <b>•</b>
+        <span id="careerTotal">0</span> Total Picks
+      </small>
 
-          <p id="matchPredictionStatus" class="account-status"></p>
-        </section>
+    </div>
+
+    <div class="career-stat-row">
+
+      <div class="career-stat-box">
+        <span>Champion Predictions Correct</span>
+        <strong id="careerChampionCorrect">0</strong>
+      </div>
+
+      <div class="career-stat-box">
+        <span>Match Predictions Correct</span>
+        <strong id="careerMatchCorrect">0</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 <section class="account-panel full">
 
   <h2>Prediction Career</h2>

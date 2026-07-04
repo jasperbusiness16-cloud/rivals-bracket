@@ -250,7 +250,22 @@ function saveNextMatch() {
   });
 }
 
+function finishTournament() {
+  nextMatch = {
+    label: "NO MATCH",
+    teamA: "",
+    teamB: ""
+  };
 
+  document.getElementById("nextLabel").textContent = "NO MATCH";
+  document.getElementById("nextTeams").textContent = "No upcoming match";
+
+  countdownRef.update({
+    upNext: nextMatch
+  }).then(() => {
+    showToast("✓ Tournament Complete");
+  });
+}
 
 function startHubTimer(minutes) {
   const durationMs = minutes * 60 * 1000;

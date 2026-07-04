@@ -32,12 +32,33 @@
 
     <main class="account-main">
       <div class="account-topbar">
-        <div>
-          <p>ADMIN APPLICATIONS</p>
-          <h1>Application Review</h1>
-          <span>Review applicants, update statuses, and manage internal notes.</span>
-        </div>
-      </div>
+  <div>
+    <p>ADMIN APPLICATIONS</p>
+    <h1>Application Review</h1>
+    <span>Review applicants, update statuses, and manage internal notes.</span>
+  </div>
+</div>
+
+<section class="account-panel full">
+  <h2>Active Tournament</h2>
+
+  <div class="account-form-grid">
+    <div class="account-field">
+      <label>Current Tournament</label>
+      <select id="activeTournamentSelect">
+        <option value="">Loading tournaments...</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="account-actions">
+    <button class="account-primary" onclick="saveActiveTournament()">
+      Save Active Tournament
+    </button>
+  </div>
+
+  <p id="activeTournamentStatus" class="account-status"></p>
+</section>
 
       <section class="account-panel full">
   <h2 id="tournamentName">Loading Tournament...</h2>
@@ -390,6 +411,55 @@ function saveAdminNote(uid) {
   });
 }
 
+function loadTournamentSwitcher() {
+  const select = document.getElementById("activeTournamentSelect");
+  if (!select) return;
+
+  database.ref("tournaments").once("value").then(snapshot => {
+    const tournaments = snapshot.val() || {};
+
+    select.innerHTML = Object.keys(tournaments).map(id => {
+      const tournament = tournaments[id] || {};
+      const name = tournament.name || id;
+
+      return `
+        <option value="${id}">
+          ${name} (${id})
+        </option>
+      `;
+    }).join("");
+
+    select.value = tournamentId;
+  });
+}
+
+function saveActiveTournament() {
+  const select = document.getElementById("activeTournamentSelect");
+  const status = document.getElementById("activeTournamentStatus");
+
+  const newTournamentId = select.value;
+
+  if (!newTournamentId) {
+    status.innerText = "Please select a tournament.";
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  database.ref("site/currentTournament").set(newTournamentId)
+    .then(() => {
+      status.innerText = `✓ Active tournament switched to ${newTournamentId}. Refreshing...`;
+      status.style.color = "#22c55e";
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 900);
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
+}
+  
 auth.onAuthStateChanged((user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -409,8 +479,9 @@ auth.onAuthStateChanged((user) => {
     if (!activeTournament) return;
 
     tournamentId = activeTournament.val() || "open1";
+loadTournamentSwitcher();
 
-    database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
       tournamentData = snapshot.val() || {};
       renderApplications();
     });

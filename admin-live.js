@@ -148,6 +148,77 @@ function changeScore(side, amount) {
   document.getElementById("winnerPreview").textContent = getWinner(config) || "Not decided";
 }
 
+function getMatchReward(matchId) {
+  if (matchId.includes("Grand Finals")) return 250;
+  if (matchId.includes("SF")) return 150;
+  return 100;
+}
+
+async function payMatchPredictions(matchId, winnerName) {
+  const tournamentId = siteData.currentTournament || "open1";
+  const predictionType = getPredictionType(matchId);
+  const reward = getMatchReward(matchId);
+
+  const payoutRef = database.ref(`predictionPayouts/${tournamentId}/${predictionType}`);
+
+  const payoutResult = await payoutRef.transaction(current => {
+    if (current && current.paid) return current;
+
+    return {
+      paid: true,
+      matchId,
+      winnerName,
+      reward,
+      paidAt: Date.now()
+    };
+  });
+
+  if (!payoutResult.committed) return;
+
+  const snapshot = await database
+    .ref(`predictions/${tournamentId}/${predictionType}`)
+    .once("value");
+
+  const predictions = snapshot.val() || {};
+
+  const jobs = Object.values(predictions).map(prediction => {
+    const uid = prediction.uid;
+    if (!uid) return Promise.resolve();
+
+    const correct =
+      clean(prediction.pickName).toLowerCase() === clean(winnerName).toLowerCase();
+
+    const earned = correct ? reward : 0;
+
+    return database.ref(`players/${uid}`).transaction(player => {
+      if (!player) return player;
+
+      const stats = player.predictionStats || {};
+
+      const currentStreak = correct
+        ? Number(stats.currentStreak || 0) + 1
+        : 0;
+
+      player.rgPoints = Number(player.rgPoints || 0) + earned;
+      player.lifetimeRgPoints = Number(player.lifetimeRgPoints || 0) + earned;
+
+      player.predictionStats = {
+        ...stats,
+        total: Number(stats.total || 0) + 1,
+        correct: Number(stats.correct || 0) + (correct ? 1 : 0),
+        matchCorrect: Number(stats.matchCorrect || 0) + (correct ? 1 : 0),
+        currentStreak,
+        bestStreak: Math.max(Number(stats.bestStreak || 0), currentStreak),
+        rpEarned: Number(stats.rpEarned || 0) + earned
+      };
+
+      return player;
+    });
+  });
+
+  await Promise.all(jobs);
+}
+
 function saveCurrentResult() {
   const config = getMatchConfig();
   if (!config) return;
@@ -161,10 +232,14 @@ function saveCurrentResult() {
   };
 
   if (winner) {
-    updates[config.winner] = winner;
-  }
+  updates[config.winner] = winner;
+}
 
   siteRef.update(updates).then(() => {
+  if (winner) {
+    return payMatchPredictions(currentMatchId, winner);
+  }
+}).then(() => {
   const next = getAutoNextMatch();
 
   nextMatch = next;

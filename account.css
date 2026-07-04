@@ -1874,3 +1874,85 @@
   letter-spacing: .03em;
   text-transform: none;
 }
+
+.rewards-panel-clean {
+  padding-bottom: 28px;
+}
+
+.rewards-feature-card {
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at top left, rgba(239,68,68,.14), transparent 36%),
+    linear-gradient(135deg, rgba(15,23,42,.9), rgba(3,7,18,.98));
+}
+
+.reward-primary {
+  padding: 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(239,68,68,.25);
+  background: rgba(239,68,68,.09);
+}
+
+.reward-primary span,
+.reward-list span {
+  display: block;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.reward-primary strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: clamp(44px, 10vw, 72px);
+  line-height: .9;
+}
+
+.reward-primary small {
+  display: block;
+  margin-top: 10px;
+  color: #ef4444;
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.reward-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.reward-list div {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+}
+
+.reward-list strong {
+  display: block;
+  color: #fff;
+  font-size: 24px;
+}
+
+.reward-note {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  color: #9ca3af;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .reward-list {
+    grid-template-columns: 1fr;
+  }
+}

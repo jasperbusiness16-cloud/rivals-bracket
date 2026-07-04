@@ -232,13 +232,13 @@ async function payMatchPredictions(matchId, winnerName) {
 }
 
 function saveCurrentResult() {
-  alert("Save Result function is running");
+  
   
   const config = getMatchConfig();
   if (!config) return;
 
   const winner = getWinner(config);
-alert(`Winner detected: ${winner || "NO WINNER"}`);
+
   
   const updates = {
     currentMatch: currentMatchId,

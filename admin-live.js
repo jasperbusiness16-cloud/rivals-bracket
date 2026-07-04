@@ -343,6 +343,14 @@ function saveNextMatch() {
   });
 }
 
+function saveStatus() {
+  siteRef.update({
+    status: document.getElementById("statusSelect").value
+  }).then(() => {
+    showToast("✓ Status Saved");
+  });
+}
+
 function finishTournament() {
   nextMatch = {
     label: "NO MATCH",

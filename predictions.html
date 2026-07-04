@@ -197,6 +197,43 @@
           <p id="matchPredictionStatus" class="account-status"></p>
         </section>
 <section class="account-panel full">
+  <h2>Prediction Career</h2>
+
+  <div class="application-summary-grid">
+
+    <div class="application-summary-box">
+      <strong id="careerCorrect">0</strong>
+      <span>Correct Picks</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="careerTotal">0</strong>
+      <span>Total Picks</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="careerAccuracy">0%</strong>
+      <span>Career Accuracy</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="careerChampionCorrect">0</strong>
+      <span>Champion Wins</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="careerMatchCorrect">0</strong>
+      <span>Match Wins</span>
+    </div>
+
+    <div class="application-summary-box">
+      <strong id="careerRpEarned">0</strong>
+      <span>Prediction RP</span>
+    </div>
+
+  </div>
+</section>
+        <section class="account-panel full">
   <h2>Your Prediction History</h2>
   <div id="predictionHistory">
     Loading prediction history...
@@ -570,6 +607,24 @@ function renderPredictionProfile() {
   document.getElementById("predictionRpEarned").innerText = rpEarned.toLocaleString();
   document.getElementById("predictionRank").innerText = rank;
 }
+
+function renderPredictionCareer() {
+  if (!currentPlayer) return;
+
+  const stats = currentPlayer.predictionStats || {};
+
+  const correct = Number(stats.correct || 0);
+  const total = Number(stats.total || 0);
+  const accuracy = total ? Math.round((correct / total) * 100) : 0;
+
+  document.getElementById("careerCorrect").innerText = correct;
+  document.getElementById("careerTotal").innerText = total;
+  document.getElementById("careerAccuracy").innerText = `${accuracy}%`;
+  document.getElementById("careerChampionCorrect").innerText = stats.championCorrect || 0;
+  document.getElementById("careerMatchCorrect").innerText = stats.matchCorrect || 0;
+  document.getElementById("careerRpEarned").innerText =
+    Number(stats.rpEarned || 0).toLocaleString();
+}
   
 function renderPredictionsPage() {
   document.getElementById("predictionEventTitle").innerText =
@@ -581,6 +636,7 @@ function renderPredictionsPage() {
   renderPredictionProfile();
 renderChampionPrediction();
 renderMatchPrediction();
+renderPredictionCareer();
 renderPredictionHistory();
 }
 

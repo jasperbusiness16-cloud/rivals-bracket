@@ -609,6 +609,141 @@
     transform:translateX(120%);
   }
 }
+
+.crate-opening-stage{
+  position:relative;
+  width:min(760px,100%);
+  min-height:620px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.opening-label{
+  position:absolute;
+  top:20px;
+  color:#c084fc;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+}
+
+.opening-crate-img{
+  width:min(520px,90%);
+  max-height:430px;
+  object-fit:contain;
+  filter:drop-shadow(0 40px 80px rgba(168,85,247,.55));
+  animation:crateCharge 1.8s ease forwards;
+}
+
+.opening-fallback{
+  display:none;
+  width:min(420px,85%);
+  aspect-ratio:1/1;
+  align-items:center;
+  justify-content:center;
+  border-radius:34px;
+  font-size:44px;
+  font-weight:900;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(168,85,247,.45);
+  animation:crateCharge 1.8s ease forwards;
+}
+
+.opening-energy{
+  position:absolute;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(168,85,247,.35), transparent 65%);
+  filter:blur(20px);
+  animation:energyPulse 1.8s ease forwards;
+  pointer-events:none;
+}
+
+.crate-reveal-card{
+  display:none;
+}
+
+.crate-reveal-card.revealed{
+  display:block;
+  animation:rewardReveal .45s ease forwards;
+}
+
+.crate-reveal-overlay.opening .crate-reveal-card{
+  display:none;
+}
+
+.crate-reveal-overlay.reward .opening-crate-img,
+.crate-reveal-overlay.reward .opening-fallback,
+.crate-reveal-overlay.reward .opening-energy,
+.crate-reveal-overlay.reward .opening-label{
+  display:none;
+}
+
+@keyframes crateCharge{
+  0%{
+    transform:scale(.84) translateY(30px);
+    opacity:0;
+    filter:blur(8px) drop-shadow(0 0 0 rgba(168,85,247,0));
+  }
+
+  20%{
+    opacity:1;
+    filter:blur(0) drop-shadow(0 30px 70px rgba(168,85,247,.35));
+  }
+
+  55%{
+    transform:scale(1.02) translateY(0);
+  }
+
+  70%{
+    transform:scale(1.04) translateX(-8px);
+  }
+
+  78%{
+    transform:scale(1.04) translateX(8px);
+  }
+
+  86%{
+    transform:scale(1.06) translateX(-5px);
+  }
+
+  100%{
+    transform:scale(1.18);
+    opacity:0;
+    filter:blur(12px) drop-shadow(0 0 90px rgba(168,85,247,.9));
+  }
+}
+
+@keyframes energyPulse{
+  0%{
+    transform:scale(.5);
+    opacity:0;
+  }
+
+  40%{
+    opacity:.9;
+  }
+
+  100%{
+    transform:scale(1.8);
+    opacity:0;
+  }
+}
+
+@keyframes rewardReveal{
+  from{
+    opacity:0;
+    transform:scale(.9) translateY(34px);
+  }
+
+  to{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+}
     
   </style>
 </head>
@@ -712,18 +847,30 @@
 </div>
 
 <div id="crateRevealOverlay" class="crate-reveal-overlay">
-  <div class="crate-reveal-card">
-    <span>CRATE OPENED</span>
-    <h2 id="revealCrateName">Elite Crate</h2>
+  <div id="crateOpeningStage" class="crate-opening-stage">
 
-    <div class="reveal-reward-box">
-      <small>You Received</small>
-      <strong id="revealRewardName">Mystery Reward</strong>
+    <span id="openingLabel" class="opening-label">OPENING CRATE</span>
+
+    <img id="openingCrateImage" class="opening-crate-img" src="" alt="Opening Crate">
+
+    <div id="openingFallback" class="opening-fallback">CRATE</div>
+
+    <div class="opening-energy"></div>
+
+    <div id="rewardRevealCard" class="crate-reveal-card">
+      <span>YOU RECEIVED</span>
+      <h2 id="revealCrateName">Elite Crate</h2>
+
+      <div class="reveal-reward-box">
+        <small>Reward Unlocked</small>
+        <strong id="revealRewardName">Mystery Reward</strong>
+      </div>
+
+      <button class="shop-primary" onclick="closeCrateReveal()">
+        Continue
+      </button>
     </div>
 
-    <button class="shop-primary" onclick="closeCrateReveal()">
-      Continue
-    </button>
   </div>
 </div>
   
@@ -953,10 +1100,35 @@ function renderOwnedCrates() {
   }).join("");
 }
 
-function showCrateReveal(crateName, rewardName) {
+function showCrateReveal(crateName, rewardName, itemId) {
+  const item = shopItems[itemId] || shopItems[selectedItemId];
+
+  const overlay = document.getElementById("crateRevealOverlay");
+  const crateImg = document.getElementById("openingCrateImage");
+  const fallback = document.getElementById("openingFallback");
+  const rewardCard = document.getElementById("rewardRevealCard");
+
   document.getElementById("revealCrateName").innerText = crateName;
   document.getElementById("revealRewardName").innerText = rewardName;
-  document.getElementById("crateRevealOverlay").classList.add("show");
+
+  crateImg.src = item.image;
+  crateImg.alt = item.name;
+  crateImg.style.display = "block";
+  fallback.style.display = "none";
+  fallback.innerText = item.fallback.replace("\\n", "\n");
+
+  crateImg.onerror = () => {
+    crateImg.style.display = "none";
+    fallback.style.display = "flex";
+  };
+
+  overlay.className = "crate-reveal-overlay show opening";
+  rewardCard.classList.remove("revealed");
+
+  setTimeout(() => {
+    overlay.className = "crate-reveal-overlay show reward";
+    rewardCard.classList.add("revealed");
+  }, 1900);
 }
 
 function closeCrateReveal() {
@@ -1085,7 +1257,7 @@ function openCrate(itemId) {
     };
 
     return database.ref().update(updates).then(() => {
-  showCrateReveal(item.name, reward);
+  showCrateReveal(item.name, reward, itemId);
 });
   }).catch(error => {
     alert(error.message);

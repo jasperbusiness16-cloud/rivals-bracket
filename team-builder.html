@@ -66,6 +66,9 @@
     <button class="account-secondary" onclick="deleteTestPlayers()">
       Delete Test Players
     </button>
+ <button class="account-secondary" onclick="resetTournamentPredictions()">
+  Reset Tournament Predictions
+</button>
   </div>
 </div>
         <div id="balancePanel" class="balance-panel">
@@ -552,6 +555,32 @@ function deleteTestPlayers() {
     status.innerText = error.message;
     status.style.color = "#ef4444";
   });
+}
+
+function resetTournamentPredictions() {
+  if (currentUserRole !== "owner") return;
+
+  const status = document.getElementById("builderStatus");
+
+  if (!confirm(`Reset all predictions for ${tournamentId}? This deletes picks, locks, and payout records.`)) {
+    return;
+  }
+
+  const updates = {};
+
+  updates[`predictions/${tournamentId}`] = null;
+  updates[`predictionLocks/${tournamentId}`] = null;
+  updates[`predictionPayouts/${tournamentId}`] = null;
+
+  database.ref().update(updates)
+    .then(() => {
+      status.innerText = "✓ Tournament predictions reset.";
+      status.style.color = "#22c55e";
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    });
 }
   
 function saveTeams() {

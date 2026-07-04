@@ -500,8 +500,10 @@ function renderMatchPrediction() {
 
   if (!matchId || matchId === "No Match Live") {
     container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        No current match selected yet.
+      <div class="prediction-feature-card">
+        <div class="prediction-feature-empty">
+          No prediction match is selected yet.
+        </div>
       </div>
     `;
     return;
@@ -511,82 +513,81 @@ function renderMatchPrediction() {
 
   if (teamKeys.length < 2) {
     container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Current match teams are not ready yet.
+      <div class="prediction-feature-card">
+        <div class="prediction-feature-empty">
+          Match teams are not ready yet.
+        </div>
       </div>
     `;
     return;
   }
 
   const predictionType = getPredictionType(matchId);
-const isLocked = lockedPredictions[predictionType];
+  const isLocked = lockedPredictions[predictionType];
   const predictionsForMatch = matchPredictions[predictionType] || {};
   const myPick = predictionsForMatch[currentUser?.uid];
   const stats = getVoteStats(predictionsForMatch, teamKeys);
 
-if (isLocked) {
+  const teamA = getTeamName(teamKeys[0]);
+  const teamB = getTeamName(teamKeys[1]);
+
+  const statusText = isLocked
+    ? "🔒 Prediction Closed"
+    : myPick
+      ? "✅ Prediction Submitted"
+      : "🟢 Predictions Open";
+
+  const actionArea = isLocked
+    ? `<p class="prediction-feature-note">This match has started. Predictions are locked.</p>`
+    : myPick
+      ? `
+        <div class="prediction-feature-pick">
+          <span>Your Pick</span>
+          <strong>${myPick.pickName}</strong>
+        </div>
+      `
+      : `
+        <div class="prediction-feature-actions">
+          ${teamKeys.map(teamKey => `
+            <button
+              onclick="makePrediction('${predictionType}', '${teamKey}', '${getTeamName(teamKey)}', 'matchPredictionStatus')">
+              Pick ${getTeamName(teamKey)}
+            </button>
+          `).join("")}
+        </div>
+      `;
+
   container.innerHTML = `
-    <div class="next-match-card">
-      <span class="next-match-eyebrow">Prediction Closed</span>
-      <h4>${matchId}</h4>
+    <div class="prediction-feature-card">
 
-      <div class="next-match-versus">
-        <strong>${getTeamName(teamKeys[0])}</strong>
-        <span>VS</span>
-        <strong>${getTeamName(teamKeys[1])}</strong>
-      </div>
-
-      <p style="color:#8b949e;margin-top:14px;">
-        This match has started. Predictions are locked.
-      </p>
-
-      ${renderVoteBars(stats)}
-    </div>
-  `;
-  return;
-}
-  
-  if (myPick) {
-    container.innerHTML = `
-      <div class="next-match-card">
-        <span class="next-match-eyebrow">Your Match Pick</span>
-        <h4>${myPick.pickName}</h4>
-
-        <div class="next-match-versus">
-          <strong>${getTeamName(teamKeys[0])}</strong>
-          <span>VS</span>
-          <strong>${getTeamName(teamKeys[1])}</strong>
+      <div class="prediction-feature-top">
+        <div>
+          <span class="prediction-feature-eyebrow">Match Prediction</span>
+          <h3>${matchId}</h3>
         </div>
 
-        <p style="color:#8b949e;margin-top:14px;">Your pick is locked for this match.</p>
+        <div class="prediction-feature-reward">
+          +${MATCH_REWARD} RP
+        </div>
+      </div>
 
+      <div class="prediction-feature-matchup">
+        <strong>${teamA}</strong>
+        <span>VS</span>
+        <strong>${teamB}</strong>
+      </div>
+
+      <div class="prediction-feature-status">
+        ${statusText}
+      </div>
+
+      ${actionArea}
+
+      <div class="prediction-feature-votes">
+        <span>Community Prediction</span>
         ${renderVoteBars(stats)}
       </div>
-    `;
-    return;
-  }
 
-  container.innerHTML = `
-    <div class="next-match-card">
-      <span class="next-match-eyebrow">Live Match</span>
-      <h4>${matchId}</h4>
-
-      <div class="next-match-versus">
-        <strong>${getTeamName(teamKeys[0])}</strong>
-        <span>VS</span>
-        <strong>${getTeamName(teamKeys[1])}</strong>
-      </div>
-
-      <div class="account-actions" style="margin-top:18px;">
-        ${teamKeys.map(teamKey => `
-          <button class="account-primary"
-            onclick="makePrediction('${predictionType}', '${teamKey}', '${getTeamName(teamKey)}', 'matchPredictionStatus')">
-            Pick ${getTeamName(teamKey)}
-          </button>
-        `).join("")}
-      </div>
-
-      ${renderVoteBars(stats)}
     </div>
   `;
 }

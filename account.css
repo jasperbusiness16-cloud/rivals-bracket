@@ -1981,3 +1981,77 @@
 .prediction-rank-card-standalone {
   margin: 0 0 28px;
 }
+
+.reward-panel{
+    padding-top:10px;
+    padding-bottom:26px;
+}
+
+.reward-hero{
+    padding:22px 24px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#351922,#171c34);
+    border:1px solid rgba(239,68,68,.25);
+    margin-bottom:24px;
+}
+
+.reward-hero span{
+    display:block;
+    color:#9ca3af;
+    font-size:13px;
+    letter-spacing:5px;
+    text-transform:uppercase;
+}
+
+.reward-hero strong{
+    display:block;
+    margin-top:8px;
+    font-size:46px;
+    font-weight:900;
+    color:#fff;
+    line-height:1;
+}
+
+.reward-hero p{
+    margin-top:4px;
+    color:#ef4444;
+    font-size:22px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    font-weight:800;
+}
+
+.reward-list{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.reward-list div{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+}
+
+.reward-list div:last-child{
+    border-bottom:none;
+}
+
+.reward-list span{
+    color:#cfd6df;
+    font-size:18px;
+    font-weight:600;
+}
+
+.reward-list strong{
+    color:#fff;
+    font-size:20px;
+    font-weight:800;
+}
+
+.reward-note{
+    margin-top:24px;
+    color:#8b949e;
+    line-height:1.6;
+}

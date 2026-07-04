@@ -167,14 +167,7 @@
           <p id="championPredictionStatus" class="account-status"></p>
         </section>
 
-<section class="account-panel full">
-  <h2>Community Consensus</h2>
-  <p>See who the Rivals Gauntlet community thinks will win the tournament.</p>
 
-  <div id="communityConsensus">
-    Loading community predictions...
-  </div>
-</section>
         
         <section class="account-panel full">
           <h2>Current Match Prediction</h2>
@@ -366,92 +359,6 @@ function makePrediction(type, pick, pickName, statusId) {
   });
 }
 
-function renderCommunityConsensus() {
-  const container = document.getElementById("communityConsensus");
-  if (!container) return;
-
-  const teams = getTeamsArray();
-
-  if (!currentTeams.published || !teams.length) {
-    container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Community consensus will appear once teams are published.
-      </div>
-    `;
-    return;
-  }
-
-  const stats = getVoteStats(
-    championPredictions,
-    teams.map(team => team.teamKey)
-  ).sort((a, b) => b.percent - a.percent || b.count - a.count);
-
-  const totalVotes = stats[0]?.total || 0;
-
-  if (!totalVotes) {
-    container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        No champion predictions submitted yet.
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="next-match-card">
-      <span class="next-match-eyebrow">Community Favorite</span>
-
-      <h4>${stats[0].teamName}</h4>
-
-      <div style="
-        font-size:42px;
-        font-weight:900;
-        color:#ef4444;
-        margin:10px 0 4px;
-      ">
-        ${stats[0].percent}%
-      </div>
-
-      <p style="color:#8b949e;margin-top:0;">
-        ${totalVotes} total champion predictions
-      </p>
-
-      <div style="margin-top:22px;">
-        ${stats.map((stat, index) => {
-          const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`;
-
-          return `
-            <div style="margin-bottom:16px;">
-              <div style="
-                display:flex;
-                justify-content:space-between;
-                gap:12px;
-                margin-bottom:6px;
-              ">
-                <strong>${medal} ${stat.teamName}</strong>
-                <span style="color:#8b949e;">${stat.percent}% • ${stat.count}</span>
-              </div>
-
-              <div style="
-                height:10px;
-                background:rgba(255,255,255,.08);
-                border-radius:999px;
-                overflow:hidden;
-              ">
-                <div style="
-                  width:${stat.percent}%;
-                  height:100%;
-                  background:#ef4444;
-                  border-radius:999px;
-                "></div>
-              </div>
-            </div>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
 
 function renderChampionPrediction() {
   const container = document.getElementById("championPredictionArea");
@@ -673,7 +580,6 @@ function renderPredictionsPage() {
 
   renderPredictionProfile();
 renderChampionPrediction();
-renderCommunityConsensus();
 renderMatchPrediction();
 renderPredictionHistory();
 }

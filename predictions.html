@@ -1,1 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predictions | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=5">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>PREDICTION CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="predictions.html">Predictions</a>
+        <a href="teams.html">Teams</a>
+        <a href="tournament.html">Bracket</a>
+        <a href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+
+      <div class="account-topbar">
+        <div>
+          <p>RG PREDICTIONS</p>
+          <h1>Prediction Center</h1>
+          <span>Predict winners, earn RG Points, and follow the community vote.</span>
+        </div>
+      </div>
+
+      <div class="account-panel-grid">
+
+        <section class="account-panel full">
+          <h2 id="predictionEventTitle">Loading Event...</h2>
+          <p id="predictionEventDescription">Checking active tournament...</p>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Champion Prediction</h2>
+          <p>Pick which team you think will win the entire tournament.</p>
+
+          <div id="championPredictionArea">
+            Loading champion prediction...
+          </div>
+
+          <p id="championPredictionStatus" class="account-status"></p>
+        </section>
+
+        <section class="account-panel full">
+          <h2>Current Match Prediction</h2>
+          <p>Predict the winner of the currently selected live match.</p>
+
+          <div id="matchPredictionArea">
+            Loading match prediction...
+          </div>
+
+          <p id="matchPredictionStatus" class="account-status"></p>
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+let tournamentId = "open1";
+let currentUser = null;
+let currentPlayer = null;
+let currentTournament = {};
+let currentTeams = {};
+let siteData = {};
+let championPredictions = {};
+let matchPredictions = {};
+
+function clean(value, fallback = "") {
+  return String(value || fallback).trim();
+}
+
+function getTeamsArray() {
+  const teamsObj = currentTeams.teams || {};
+  return Object.keys(teamsObj).map(teamKey => ({
+    teamKey,
+    teamName: teamKey.replace("team", "Team "),
+    players: teamsObj[teamKey] || []
+  }));
+}
+
+function getCurrentMatchText() {
+  return clean(siteData.currentMatch, "");
+}
+
+function getCurrentMatchTeams() {
+  const match = getCurrentMatchText().toLowerCase();
+
+  if (match.includes("qf1")) return ["team1", "team2"];
+  if (match.includes("qf2")) return ["team3", "team4"];
+  if (match.includes("qf3")) return ["team5", "team6"];
+  if (match.includes("qf4")) return ["team7", "team8"];
+
+  if (match.includes("sf1")) {
+    return [
+      findTeamKeyByName(siteData.qf1Winner),
+      findTeamKeyByName(siteData.qf2Winner)
+    ];
+  }
+
+  if (match.includes("sf2")) {
+    return [
+      findTeamKeyByName(siteData.qf3Winner),
+      findTeamKeyByName(siteData.qf4Winner)
+    ];
+  }
+
+  if (match.includes("grand")) {
+    return [
+      findTeamKeyByName(siteData.sf1Winner),
+      findTeamKeyByName(siteData.sf2Winner)
+    ];
+  }
+
+  return [];
+}
+
+function findTeamKeyByName(teamName) {
+  const teams = getTeamsArray();
+  const found = teams.find(team => clean(team.teamName).toLowerCase() === clean(teamName).toLowerCase());
+  return found ? found.teamKey : "";
+}
+
+function getTeamName(teamKey) {
+  const teams = getTeamsArray();
+  const found = teams.find(team => team.teamKey === teamKey);
+  return found ? found.teamName : "TBD";
+}
+
+function getVoteStats(predictionObj, validTeamKeys) {
+  const votes = Object.values(predictionObj || {});
+  const total = votes.length;
+
+  return validTeamKeys.map(teamKey => {
+    const count = votes.filter(vote => vote.pick === teamKey).length;
+    const percent = total ? Math.round((count / total) * 100) : 0;
+
+    return {
+      teamKey,
+      teamName: getTeamName(teamKey),
+      count,
+      percent,
+      total
+    };
+  });
+}
+
+function renderVoteBars(stats) {
+  if (!stats.length) return "";
+
+  return `
+    <div style="margin-top:18px;">
+      ${stats.map(stat => `
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+            <strong>${stat.teamName}</strong>
+            <span style="color:#8b949e;">${stat.percent}% • ${stat.count} votes</span>
+          </div>
+
+          <div style="
+            height:10px;
+            background:rgba(255,255,255,.08);
+            border-radius:999px;
+            overflow:hidden;
+          ">
+            <div style="
+              width:${stat.percent}%;
+              height:100%;
+              background:#ef4444;
+              border-radius:999px;
+            "></div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function makePrediction(type, pick, pickName, statusId) {
+  if (!currentUser || !currentPlayer) return;
+
+  const status = document.getElementById(statusId);
+
+  database.ref(`predictions/${tournamentId}/${type}/${currentUser.uid}`).set({
+    uid: currentUser.uid,
+    rgId: currentPlayer.rgId || "",
+    displayName: currentPlayer.displayName || "",
+    profileImage: currentPlayer.profileImage || "",
+    pick,
+    pickName,
+    tournamentId,
+    createdAt: Date.now()
+  }).then(() => {
+    status.innerText = `✓ Prediction saved: ${pickName}`;
+    status.style.color = "#22c55e";
+  }).catch(error => {
+    status.innerText = error.message;
+    status.style.color = "#ef4444";
+  });
+}
+
+function renderChampionPrediction() {
+  const container = document.getElementById("championPredictionArea");
+  if (!container) return;
+
+  const teams = getTeamsArray();
+
+  if (!currentTeams.published || !teams.length) {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        Champion predictions will open once teams are published.
+      </div>
+    `;
+    return;
+  }
+
+  const myPick = championPredictions[currentUser?.uid];
+  const stats = getVoteStats(championPredictions, teams.map(team => team.teamKey));
+
+  if (myPick) {
+    container.innerHTML = `
+      <div class="next-match-card">
+        <span class="next-match-eyebrow">Your Champion Pick</span>
+        <h4>${myPick.pickName}</h4>
+        <p style="color:#8b949e;">Your pick is locked for this tournament.</p>
+        ${renderVoteBars(stats)}
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="account-form-grid">
+      ${teams.map(team => `
+        <button class="account-secondary"
+          onclick="makePrediction('champion', '${team.teamKey}', '${team.teamName}', 'championPredictionStatus')">
+          ${team.teamName}
+        </button>
+      `).join("")}
+    </div>
+
+    ${renderVoteBars(stats)}
+  `;
+}
+
+function renderMatchPrediction() {
+  const container = document.getElementById("matchPredictionArea");
+  if (!container) return;
+
+  const matchId = getCurrentMatchText();
+
+  if (!matchId || matchId === "No Match Live") {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        No current match selected yet.
+      </div>
+    `;
+    return;
+  }
+
+  const teamKeys = getCurrentMatchTeams().filter(Boolean);
+
+  if (teamKeys.length < 2) {
+    container.innerHTML = `
+      <div class="dashboard-activity-empty">
+        Current match teams are not ready yet.
+      </div>
+    `;
+    return;
+  }
+
+  const predictionType = `match_${matchId.replaceAll(" ", "_").replaceAll("•", "").replaceAll("-", "_")}`;
+  const predictionsForMatch = matchPredictions[predictionType] || {};
+  const myPick = predictionsForMatch[currentUser?.uid];
+  const stats = getVoteStats(predictionsForMatch, teamKeys);
+
+  if (myPick) {
+    container.innerHTML = `
+      <div class="next-match-card">
+        <span class="next-match-eyebrow">Your Match Pick</span>
+        <h4>${myPick.pickName}</h4>
+
+        <div class="next-match-versus">
+          <strong>${getTeamName(teamKeys[0])}</strong>
+          <span>VS</span>
+          <strong>${getTeamName(teamKeys[1])}</strong>
+        </div>
+
+        <p style="color:#8b949e;margin-top:14px;">Your pick is locked for this match.</p>
+
+        ${renderVoteBars(stats)}
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="next-match-card">
+      <span class="next-match-eyebrow">Live Match</span>
+      <h4>${matchId}</h4>
+
+      <div class="next-match-versus">
+        <strong>${getTeamName(teamKeys[0])}</strong>
+        <span>VS</span>
+        <strong>${getTeamName(teamKeys[1])}</strong>
+      </div>
+
+      <div class="account-actions" style="margin-top:18px;">
+        ${teamKeys.map(teamKey => `
+          <button class="account-primary"
+            onclick="makePrediction('${predictionType}', '${teamKey}', '${getTeamName(teamKey)}', 'matchPredictionStatus')">
+            Pick ${getTeamName(teamKey)}
+          </button>
+        `).join("")}
+      </div>
+
+      ${renderVoteBars(stats)}
+    </div>
+  `;
+}
+
+function renderPredictionsPage() {
+  document.getElementById("predictionEventTitle").innerText =
+    currentTournament.name || "Rivals Gauntlet Tournament";
+
+  document.getElementById("predictionEventDescription").innerText =
+    `Active Tournament: ${tournamentId}`;
+
+  renderChampionPrediction();
+  renderMatchPrediction();
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  database.ref("site/currentTournament").once("value").then(activeTournament => {
+    tournamentId = activeTournament.val() || "open1";
+
+    database.ref(`players/${user.uid}`).on("value", snapshot => {
+      currentPlayer = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+
+    database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
+      currentTournament = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+
+    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
+      currentTeams = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+
+    database.ref("site").on("value", snapshot => {
+      siteData = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+
+    database.ref(`predictions/${tournamentId}/champion`).on("value", snapshot => {
+      championPredictions = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+
+    database.ref(`predictions/${tournamentId}`).on("value", snapshot => {
+      matchPredictions = snapshot.val() || {};
+      renderPredictionsPage();
+    });
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

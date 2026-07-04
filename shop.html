@@ -1,1 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RG Shop | Rivals Gauntlet</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=20">
+
+  <style>
+    .shop-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(239,68,68,.32), transparent 34%),
+        linear-gradient(135deg, rgba(20,25,40,.98), rgba(5,8,15,.98));
+      border: 1px solid rgba(239,68,68,.28);
+      box-shadow: 0 30px 90px rgba(0,0,0,.4);
+    }
+
+    .shop-hero span {
+      color: #ef4444;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+    }
+
+    .shop-hero h1 {
+      margin: 10px 0 0;
+      color: #fff;
+      font-size: clamp(44px, 12vw, 86px);
+      line-height: .9;
+      text-transform: uppercase;
+    }
+
+    .shop-hero p {
+      max-width: 620px;
+      color: #9ca3af;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .shop-balance-card {
+      margin-top: 22px;
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .shop-balance-card span {
+      color: #9ca3af;
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .shop-balance-card strong {
+      display: block;
+      color: #fff;
+      font-size: 42px;
+      line-height: 1;
+    }
+
+    .shop-section-title {
+      margin: 34px 0 16px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .shop-section-title h2 {
+      margin: 0;
+      color: #fff;
+      font-size: 28px;
+      text-transform: uppercase;
+    }
+
+    .shop-section-title span {
+      color: #8b949e;
+      font-weight: 700;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .shop-item-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 250px;
+      border-radius: 28px;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(239,68,68,.18), transparent 34%),
+        linear-gradient(135deg, rgba(15,23,42,.97), rgba(3,7,18,.98));
+      border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 22px 60px rgba(0,0,0,.26);
+    }
+
+    .shop-item-card.featured {
+      min-height: 330px;
+      grid-column: 1 / -1;
+      border-color: rgba(239,68,68,.42);
+      background:
+        radial-gradient(circle at top right, rgba(239,68,68,.38), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(255,255,255,.10), transparent 32%),
+        linear-gradient(135deg, rgba(35,13,24,.98), rgba(3,7,18,.99));
+    }
+
+    .shop-rarity {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(239,68,68,.13);
+      border: 1px solid rgba(239,68,68,.32);
+      color: #ef4444;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .shop-item-card h3 {
+      margin: 18px 0 8px;
+      color: #fff;
+      font-size: 36px;
+      line-height: .95;
+      text-transform: uppercase;
+    }
+
+    .shop-item-card p {
+      color: #9ca3af;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .shop-item-bottom {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .shop-price {
+      color: #fff;
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .shop-stock {
+      color: #facc15;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .shop-buy-btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      background: #ef4444;
+      color: #fff;
+      font-family: Rajdhani, sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .shop-buy-btn:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 760px) {
+      .shop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .shop-balance-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .shop-item-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .shop-buy-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>RG SHOP</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="predictions.html">Predictions</a>
+        <a class="active" href="shop.html">RG Shop</a>
+        <a href="teams.html">Teams</a>
+        <a href="tournament.html">Bracket</a>
+        <a href="settings.html">Settings</a>
+        <button onclick="logoutUser()">Sign Out</button>
+      </nav>
+    </aside>
+
+    <main class="account-main">
+
+      <section class="shop-hero">
+        <span>Weekly Drop</span>
+        <h1>RG Shop</h1>
+        <p>
+          Mystery crates, seasonal drops, and limited-stock rewards.
+          New items rotate weekly. Spend RG Points and build your collection.
+        </p>
+
+        <div class="shop-balance-card">
+          <div>
+            <span>Your Balance</span>
+            <strong id="shopRgPoints">0 RP</strong>
+          </div>
+
+          <div>
+            <span>Refresh</span>
+            <strong style="font-size:30px;">Weekly</strong>
+          </div>
+        </div>
+      </section>
+
+      <div class="shop-section-title">
+        <h2>Featured Drop</h2>
+        <span>Limited seasonal crate</span>
+      </div>
+
+      <div class="shop-grid">
+        <div class="shop-item-card featured">
+          <span class="shop-rarity">Founders Edition</span>
+          <h3>Founders Crate</h3>
+          <p>
+            A premium mystery crate for early Rivals Gauntlet players.
+            Exclusive cosmetics, profile flex items, and rare collection rewards.
+          </p>
+
+          <div class="shop-item-bottom">
+            <div>
+              <div class="shop-price">2,500 RP</div>
+              <div class="shop-stock">Seasonal Drop</div>
+            </div>
+
+            <button class="shop-buy-btn" onclick="buyItem('founders_crate')">
+              Redeem Crate
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="shop-section-title">
+        <h2>Mystery Crates</h2>
+        <span>Rotating weekly</span>
+      </div>
+
+      <div class="shop-grid">
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Common</span>
+          <h3>Basic Crate</h3>
+          <p>Entry-level mystery crate with profile items and small RP bonuses.</p>
+
+          <div class="shop-item-bottom">
+            <div class="shop-price">500 RP</div>
+            <button class="shop-buy-btn" onclick="buyItem('basic_crate')">Redeem</button>
+          </div>
+        </div>
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Rare</span>
+          <h3>Rare Crate</h3>
+          <p>Better odds for premium profile rewards and higher-tier cosmetics.</p>
+
+          <div class="shop-item-bottom">
+            <div class="shop-price">1,200 RP</div>
+            <button class="shop-buy-btn" onclick="buyItem('rare_crate')">Redeem</button>
+          </div>
+        </div>
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Epic</span>
+          <h3>Elite Crate</h3>
+          <p>High-value crate with stronger odds for rare seasonal rewards.</p>
+
+          <div class="shop-item-bottom">
+            <div class="shop-price">2,000 RP</div>
+            <button class="shop-buy-btn" onclick="buyItem('elite_crate')">Redeem</button>
+          </div>
+        </div>
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Seasonal</span>
+          <h3>Event Crate</h3>
+          <p>Rotates with summer, Halloween, winter, and special RG events.</p>
+
+          <div class="shop-item-bottom">
+            <div class="shop-price">1,800 RP</div>
+            <button class="shop-buy-btn" onclick="buyItem('seasonal_crate')">Redeem</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="shop-section-title">
+        <h2>Limited Stock</h2>
+        <span>Manual weekly supply</span>
+      </div>
+
+      <div class="shop-grid">
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Limited</span>
+          <h3>$5 Steam Card</h3>
+          <p>Limited weekly reward. Stock controlled by Rivals Gauntlet staff.</p>
+
+          <div class="shop-item-bottom">
+            <div>
+              <div class="shop-price">5,000 RP</div>
+              <div class="shop-stock">3 Left</div>
+            </div>
+
+            <button class="shop-buy-btn" onclick="buyItem('steam_5')">Redeem</button>
+          </div>
+        </div>
+
+        <div class="shop-item-card">
+          <span class="shop-rarity">Limited</span>
+          <h3>$10 Steam Card</h3>
+          <p>Higher-value reward with very limited weekly availability.</p>
+
+          <div class="shop-item-bottom">
+            <div>
+              <div class="shop-price">9,500 RP</div>
+              <div class="shop-stock">1 Left</div>
+            </div>
+
+            <button class="shop-buy-btn" onclick="buyItem('steam_10')">Redeem</button>
+          </div>
+        </div>
+
+      </div>
+
+      <section class="account-panel full" style="margin-top:34px;">
+        <h2>Purchase History</h2>
+        <div id="purchaseHistory">
+          <div class="dashboard-activity-empty">
+            Your redeemed items will appear here.
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+
+<script>
+let currentUser = null;
+let currentPlayer = null;
+
+const shopItems = {
+  founders_crate: { name: "Founders Crate", price: 2500 },
+  basic_crate: { name: "Basic Crate", price: 500 },
+  rare_crate: { name: "Rare Crate", price: 1200 },
+  elite_crate: { name: "Elite Crate", price: 2000 },
+  seasonal_crate: { name: "Event Crate", price: 1800 },
+  steam_5: { name: "$5 Steam Card", price: 5000 },
+  steam_10: { name: "$10 Steam Card", price: 9500 }
+};
+
+function renderShopBalance() {
+  document.getElementById("shopRgPoints").innerText =
+    `${Number(currentPlayer?.rgPoints || 0).toLocaleString()} RP`;
+}
+
+function buyItem(itemId) {
+  if (!currentUser || !currentPlayer) return;
+
+  const item = shopItems[itemId];
+  if (!item) return;
+
+  const currentRp = Number(currentPlayer.rgPoints || 0);
+
+  if (currentRp < item.price) {
+    alert("Not enough RG Points.");
+    return;
+  }
+
+  alert(`${item.name} purchase logic coming next.`);
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  database.ref(`players/${user.uid}`).on("value", snapshot => {
+    currentPlayer = snapshot.val() || {};
+    renderShopBalance();
+  });
+});
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+</script>
+
+</body>
+</html>

@@ -556,6 +556,13 @@
 
     <div id="shopSelector" class="shop-selector"></div>
 
+    <section class="shop-panel" style="margin-top:24px;">
+  <h2>Owned Crates</h2>
+  <div id="ownedCrates" class="shop-history-empty">
+    Loading inventory...
+  </div>
+</section>
+    
     <div class="shop-footer-grid">
       <section class="shop-panel">
         <h2>Weekly Refresh</h2>
@@ -585,7 +592,8 @@
 let currentUser = null;
 let currentPlayer = null;
 let selectedItemId = "elite_crate";
-
+let userInventory = {};
+  
 const shopItems = {
   basic_crate: {
     name: "Basic Crate",
@@ -765,6 +773,42 @@ function renderSelector() {
   }).join("");
 }
 
+function renderOwnedCrates() {
+  const container = document.getElementById("ownedCrates");
+  if (!container) return;
+
+  const crates = userInventory.crates || {};
+  const owned = Object.keys(crates).filter(itemId => Number(crates[itemId] || 0) > 0);
+
+  if (!owned.length) {
+    container.innerHTML = "No crates owned yet. Redeem crates from the shop to build your inventory.";
+    return;
+  }
+
+  container.innerHTML = owned.map(itemId => {
+    const item = shopItems[itemId];
+    const count = Number(crates[itemId] || 0);
+
+    if (!item) return "";
+
+    return `
+      <div class="dashboard-activity-item" style="margin-bottom:12px;">
+        <div class="dashboard-activity-icon">▣</div>
+
+        <div>
+          <strong>${item.name}</strong>
+          <span>Owned: ${count}</span>
+        </div>
+
+        <button class="shop-primary" style="margin-left:auto;padding:10px 16px;font-size:14px;"
+          onclick="openCrate('${itemId}')">
+          Open
+        </button>
+      </div>
+    `;
+  }).join("");
+}
+  
 function buySelectedItem() {
   if (!currentUser || !currentPlayer) return;
 
@@ -839,6 +883,61 @@ function buySelectedItem() {
   });
 }
 
+function openCrate(itemId) {
+  if (!currentUser) return;
+
+  const item = shopItems[itemId];
+  if (!item) return;
+
+  const crateRef = database.ref(`inventory/${currentUser.uid}/crates/${itemId}`);
+
+  crateRef.transaction(count => {
+    count = Number(count || 0);
+
+    if (count <= 0) {
+      return;
+    }
+
+    return count - 1;
+  }).then(result => {
+    if (!result.committed) {
+      alert("You do not own this crate.");
+      return null;
+    }
+
+    const rewards = item.rewards || ["Mystery Reward"];
+    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+
+    const rewardData = {
+      sourceCrate: itemId,
+      sourceCrateName: item.name,
+      rewardName: reward,
+      rarity: item.rarity,
+      createdAt: Date.now()
+    };
+
+    const rewardRef = database.ref(`inventory/${currentUser.uid}/rewards`).push();
+    const updates = {};
+
+    updates[`inventory/${currentUser.uid}/rewards/${rewardRef.key}`] = rewardData;
+
+    updates[`activities/${currentUser.uid}/${rewardRef.key}`] = {
+      type: "crate_opened",
+      title: "Crate Opened",
+      message: `You opened ${item.name} and received ${reward}.`,
+      itemId,
+      rewardName: reward,
+      createdAt: Date.now()
+    };
+
+    return database.ref().update(updates).then(() => {
+      alert(`You opened ${item.name} and received: ${reward}`);
+    });
+  }).catch(error => {
+    alert(error.message);
+  });
+}
+  
 function previewSelectedItem() {
   const item = shopItems[selectedItemId];
   alert(`${item.name} odds preview comes next.`);
@@ -852,6 +951,11 @@ auth.onAuthStateChanged(user => {
 
   currentUser = user;
 
+   database.ref(`inventory/${user.uid}`).on("value", snapshot => {
+  userInventory = snapshot.val() || {};
+  renderOwnedCrates();
+});
+  
   database.ref(`players/${user.uid}`).on("value", snapshot => {
     currentPlayer = snapshot.val() || {};
     renderShopBalance();

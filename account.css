@@ -1527,3 +1527,69 @@
     grid-template-columns: 1fr;
   }
 }
+
+.prediction-career-card {
+  padding: 26px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(239,68,68,.14), transparent 45%),
+    rgba(15,23,42,.55);
+}
+
+.career-main-stat {
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.career-main-stat span,
+.career-stat-row span {
+  display: block;
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.career-main-stat strong {
+  display: block;
+  margin-top: 10px;
+  color: #fff;
+  font-size: clamp(52px, 11vw, 82px);
+  line-height: .9;
+}
+
+.career-main-stat small {
+  display: block;
+  margin-top: 12px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.career-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.career-stat-row div {
+  padding: 18px 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+}
+
+.career-stat-row strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 34px;
+}
+
+@media (max-width: 700px) {
+  .career-stat-row {
+    grid-template-columns: 1fr;
+  }
+}

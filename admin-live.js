@@ -213,6 +213,18 @@ async function payMatchPredictions(matchId, winnerName) {
       };
 
       return player;
+    }).then(() => {
+      return database.ref(`activities/${uid}`).push({
+        type: correct ? "prediction_correct" : "prediction_wrong",
+        title: correct ? "Prediction Correct" : "Prediction Missed",
+        message: correct
+          ? `You earned +${earned} RP for correctly predicting ${winnerName}.`
+          : `Your prediction for ${prediction.pickName} missed. ${winnerName} won.`,
+        rpChange: earned,
+        matchId,
+        tournamentId,
+        createdAt: Date.now()
+      });
     });
   });
 

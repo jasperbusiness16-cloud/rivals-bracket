@@ -771,14 +771,72 @@ function buySelectedItem() {
   const item = shopItems[selectedItemId];
   if (!item) return;
 
-  const currentRp = Number(currentPlayer.rgPoints || 0);
-
-  if (currentRp < item.price) {
-    alert("Not enough RG Points.");
+  if (!confirm(`Open/Redeem ${item.name} for ${item.price.toLocaleString()} RP?`)) {
     return;
   }
 
-  alert(`${item.name} opening/purchase logic comes next.`);
+  const playerRef = database.ref(`players/${currentUser.uid}`);
+
+  playerRef.transaction(player => {
+    if (!player) return player;
+
+    const currentRp = Number(player.rgPoints || 0);
+
+    if (currentRp < item.price) {
+      return;
+    }
+
+    player.rgPoints = currentRp - item.price;
+    player.updatedAt = Date.now();
+
+    return player;
+  }).then(result => {
+    if (!result.committed) {
+      alert("Not enough RG Points.");
+      return null;
+    }
+
+    const purchaseData = {
+      itemId: selectedItemId,
+      itemName: item.name,
+      type: item.type,
+      rarity: item.rarity,
+      price: item.price,
+      createdAt: Date.now()
+    };
+
+    const updates = {};
+
+    const purchaseRef = database.ref(`shopPurchases/${currentUser.uid}`).push();
+    updates[`shopPurchases/${currentUser.uid}/${purchaseRef.key}`] = purchaseData;
+
+    updates[`inventory/${currentUser.uid}/crates/${selectedItemId}`] =
+      firebase.database.ServerValue.increment(1);
+
+    updates[`rgPointHistory/${currentUser.uid}/${purchaseRef.key}`] = {
+      amount: -item.price,
+      reason: `${item.name} Redeemed`,
+      source: "rg_shop",
+      createdAt: Date.now()
+    };
+
+    updates[`activities/${currentUser.uid}/${purchaseRef.key}`] = {
+      type: "shop_purchase",
+      title: "Shop Item Redeemed",
+      message: `You redeemed ${item.name} for ${item.price.toLocaleString()} RP.`,
+      rpChange: -item.price,
+      itemId: selectedItemId,
+      createdAt: Date.now()
+    };
+
+    return database.ref().update(updates);
+  }).then(result => {
+    if (result === null) return;
+
+    alert(`${item.name} added to your inventory.`);
+  }).catch(error => {
+    alert(error.message);
+  });
 }
 
 function previewSelectedItem() {

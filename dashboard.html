@@ -45,6 +45,22 @@
         </div>
 
       <div class="creator-card-stats">
+
+  <div class="creator-stat-row">
+    <span>RG Points</span>
+    <strong id="sidebarRgPoints">0</strong>
+  </div>
+
+  <div class="creator-stat-row">
+    <span>Lifetime RP</span>
+    <strong id="sidebarLifetimeRp">0</strong>
+  </div>
+
+  <div class="creator-stat-row">
+    <span>Prestige</span>
+    <strong id="sidebarPrestige">0</strong>
+  </div>
+
   <div class="creator-stat-row">
     <span>Events Played</span>
     <strong id="sidebarEvents">0</strong>
@@ -249,7 +265,16 @@ function renderSidebar(player, user) {
   document.getElementById("sidebarId").innerText =
     player.rgId || "RG ACCOUNT";
 
-  document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
+  document.getElementById("sidebarRgPoints").innerText =
+  Number(player.rgPoints || 0).toLocaleString();
+
+document.getElementById("sidebarLifetimeRp").innerText =
+  Number(player.lifetimeRgPoints || 0).toLocaleString();
+
+document.getElementById("sidebarPrestige").innerText =
+  `★ ${player.prestige || 0}`;
+
+document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
 document.getElementById("sidebarChamps").innerText = player.championships || 0;
 document.getElementById("sidebarBestFinish").innerText = player.bestFinish || "--";
 

@@ -570,7 +570,7 @@ function renderPredictionHistory() {
     return;
   }
 
-  container.innerHTML = items.map(item => `
+  container.innerHTML = items.reverse().map(item => `
     <div class="prediction-log-item">
 
       <div class="prediction-log-icon">

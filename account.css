@@ -1977,3 +1977,7 @@
   color: #ef4444;
   font-weight: 900;
 }
+
+.prediction-rank-card-standalone {
+  margin: 0 0 28px;
+}

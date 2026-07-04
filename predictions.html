@@ -34,34 +34,33 @@
     <main class="account-main">
 
       
-<div class="prediction-rank-card prediction-rank-card-standalone">
-  <div>
-    <span class="prediction-label">Predictor Rank</span>
-    <h3 id="predictionRank">Rookie</h3>
-    <strong id="predictionRating">★☆☆☆☆</strong>
-  </div>
+<div class="prediction-rank-card prediction-rank-card-standalone predictor-profile-clean">
 
-  <div class="prediction-rank-stats">
+  <span class="prediction-label">Predictor Rank</span>
+
+  <h3 id="predictionRank">Rookie</h3>
+
+  <strong id="predictionRating">★☆☆☆☆</strong>
+
+  <div class="predictor-profile-stats">
+
     <div>
       <span>Accuracy</span>
       <strong id="predictionAccuracy">0%</strong>
     </div>
 
     <div>
-      <span>Current Streak</span>
-      <strong id="predictionStreak">0</strong>
+      <span>Correct Picks</span>
+      <strong id="predictionCorrect">0</strong>
     </div>
 
     <div>
-      <span>Best Streak</span>
-      <strong id="predictionBestStreak">0</strong>
+      <span>Total Picks</span>
+      <strong id="predictionTotal">0</strong>
     </div>
 
-    <div>
-      <span>RP Earned</span>
-      <strong id="predictionRpEarned">0</strong>
-    </div>
   </div>
+
 </div>
 <div id="matchPredictionArea">
   Loading match prediction...
@@ -622,11 +621,10 @@ function renderPredictionProfile() {
   }
 
   document.getElementById("predictionRating").innerText = rating;
-  document.getElementById("predictionAccuracy").innerText = `${accuracy}%`;
-  document.getElementById("predictionStreak").innerText = streak;
-  document.getElementById("predictionBestStreak").innerText = bestStreak;
-  document.getElementById("predictionRpEarned").innerText = rpEarned.toLocaleString();
-  document.getElementById("predictionRank").innerText = rank;
+document.getElementById("predictionAccuracy").innerText = `${accuracy}%`;
+document.getElementById("predictionCorrect").innerText = correct;
+document.getElementById("predictionTotal").innerText = total;
+document.getElementById("predictionRank").innerText = rank;
 }
 
 function renderPredictionCareer() {

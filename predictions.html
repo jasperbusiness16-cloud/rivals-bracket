@@ -440,8 +440,10 @@ function renderChampionPrediction() {
 
   if (!currentTeams.published || !teams.length) {
     container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Champion predictions will open once teams are published.
+      <div class="prediction-feature-card">
+        <div class="prediction-feature-empty">
+          Champion predictions will open once teams are published.
+        </div>
       </div>
     `;
     return;
@@ -450,29 +452,54 @@ function renderChampionPrediction() {
   const myPick = championPredictions[currentUser?.uid];
   const stats = getVoteStats(championPredictions, teams.map(team => team.teamKey));
 
-  if (myPick) {
-    container.innerHTML = `
-      <div class="next-match-card">
-        <span class="next-match-eyebrow">Your Champion Pick</span>
-        <h4>${myPick.pickName}</h4>
-        <p style="color:#8b949e;">Your pick is locked for this tournament.</p>
-        ${renderVoteBars(stats)}
+  const statusText = myPick
+    ? "🔒 Champion Pick Locked"
+    : "🟢 Champion Predictions Open";
+
+  const actionArea = myPick
+    ? `
+      <div class="prediction-feature-pick">
+        <span>Your Champion Pick</span>
+        <strong>${myPick.pickName}</strong>
+      </div>
+    `
+    : `
+      <div class="champion-pick-grid">
+        ${teams.map(team => `
+          <button
+            onclick="makePrediction('champion', '${team.teamKey}', '${team.teamName}', 'championPredictionStatus')">
+            ${team.teamName}
+          </button>
+        `).join("")}
       </div>
     `;
-    return;
-  }
 
   container.innerHTML = `
-    <div class="account-form-grid">
-      ${teams.map(team => `
-        <button class="account-secondary"
-          onclick="makePrediction('champion', '${team.teamKey}', '${team.teamName}', 'championPredictionStatus')">
-          ${team.teamName}
-        </button>
-      `).join("")}
-    </div>
+    <div class="prediction-feature-card">
 
-    ${renderVoteBars(stats)}
+      <div class="prediction-feature-top">
+        <div>
+          <span class="prediction-feature-eyebrow">Champion Prediction</span>
+          <h3>Tournament Winner</h3>
+        </div>
+
+        <div class="prediction-feature-reward">
+          🏆 +${CHAMPION_REWARD} RP
+        </div>
+      </div>
+
+      <div class="prediction-feature-status">
+        ${statusText}
+      </div>
+
+      ${actionArea}
+
+      <div class="prediction-feature-votes">
+        <span>Community Champion Pick</span>
+        ${renderVoteBars(stats)}
+      </div>
+
+    </div>
   `;
 }
 

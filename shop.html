@@ -255,6 +255,47 @@
       animation:floatCrate 4s ease-in-out infinite;
     }
 
+.shop-stage.switching .shop-crate-img,
+.shop-stage.switching .shop-img-fallback{
+  opacity:.25;
+  transform:translateY(18px) scale(.96);
+}
+
+.shop-crate-img,
+.shop-img-fallback{
+  transition:.28s ease;
+}
+
+.reward-preview{
+  margin-top:26px;
+}
+
+.reward-preview span{
+  display:block;
+  color:#8b949e;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.reward-chip-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.reward-chip{
+  padding:9px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:#fff;
+  font-size:13px;
+  font-weight:800;
+}
+    
     .shop-img-fallback{
       width:min(82%,430px);
       aspect-ratio:1/1;
@@ -496,6 +537,11 @@
           </div>
         </div>
 
+          <div class="reward-preview">
+  <span>Possible Rewards</span>
+  <div id="rewardPreview" class="reward-chip-row"></div>
+</div>
+        
         <div class="shop-actions">
           <button class="shop-primary" onclick="buySelectedItem()">Open / Redeem</button>
           <button class="shop-secondary" onclick="previewSelectedItem()">Preview Odds</button>
@@ -548,6 +594,7 @@ const shopItems = {
     price: 500,
     stock: "Weekly Drop",
     description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards.",
+    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
     image: "assets/shop/crates/basic-crate.png",
     fallback: "BASIC\\nCRATE",
     accent: "#9ca3af",
@@ -564,6 +611,7 @@ const shopItems = {
     price: 1200,
     stock: "Weekly Drop",
     description: "Better odds for premium profile rewards, upgraded banners, and stronger collection items.",
+    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
     image: "assets/shop/crates/rare-crate.png",
     fallback: "RARE\\nCRATE",
     accent: "#3b82f6",
@@ -580,6 +628,7 @@ const shopItems = {
     price: 2000,
     stock: "Weekly Drop",
     description: "High-value crate with stronger odds for rare rewards, profile flex items, and premium drops.",
+    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
     image: "assets/shop/crates/elite-crate.png",
     fallback: "ELITE\\nCRATE",
     accent: "#a855f7",
@@ -596,6 +645,7 @@ const shopItems = {
     price: 1800,
     stock: "Limited Season",
     description: "A limited-time seasonal crate with summer-themed profile cosmetics and rare event rewards.",
+    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
     image: "assets/shop/crates/summer-crate.png",
     fallback: "SUMMER\\nCRATE",
     accent: "#facc15",
@@ -648,6 +698,13 @@ function setSelectedItem(itemId) {
   const item = shopItems[itemId];
   if (!item) return;
 
+  const stage = document.querySelector(".shop-stage");
+stage.classList.add("switching");
+
+setTimeout(() => {
+  stage.classList.remove("switching");
+}, 280);
+  
   const hero = document.getElementById("featuredShopHero");
 
   hero.style.setProperty("--accent", item.accent);
@@ -662,7 +719,12 @@ function setSelectedItem(itemId) {
   document.getElementById("featuredPrice").innerText = `${item.price.toLocaleString()} RP`;
   document.getElementById("featuredType").innerText = item.type;
   document.getElementById("featuredStock").innerText = item.stock;
+  document.getElementById("rewardPreview").innerHTML =
+  (item.rewards || []).map(reward => `
+    <div class="reward-chip">${reward}</div>
+  `).join("");
 
+  
   const img = document.getElementById("featuredImage");
   const fallback = document.getElementById("featuredFallback");
 

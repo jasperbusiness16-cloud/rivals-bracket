@@ -614,6 +614,46 @@
   min-width:190px;
 }
 
+.reward-common{
+  --impact:1;
+}
+
+.reward-rare{
+  --impact:1.08;
+}
+
+.reward-epic{
+  --impact:1.18;
+}
+
+.reward-legendary{
+  --impact:1.35;
+}
+
+.reward-rare .crate-reveal-card{
+  animation:rewardRevealRare .55s ease forwards;
+}
+
+.reward-epic .crate-reveal-card{
+  animation:rewardRevealEpic .65s cubic-bezier(.18,.9,.2,1.15) forwards;
+}
+
+.reward-legendary .crate-reveal-card{
+  animation:rewardRevealLegendary .8s cubic-bezier(.12,.95,.2,1.2) forwards;
+}
+
+.reward-epic .crate-reveal-card{
+  box-shadow:
+    0 0 130px var(--rewardShadow),
+    0 55px 160px rgba(0,0,0,.78);
+}
+
+.reward-legendary .crate-reveal-card{
+  box-shadow:
+    0 0 170px var(--rewardShadow),
+    0 65px 190px rgba(0,0,0,.82);
+}
+
 @keyframes revealPop{
   from{
     opacity:0;
@@ -834,6 +874,60 @@
   }
 }
 
+@keyframes rewardRevealRare{
+  from{
+    opacity:0;
+    transform:translate(-50%,-45%) scale(.86);
+    filter:blur(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.03);
+    filter:blur(0);
+  }
+}
+
+@keyframes rewardRevealEpic{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-43%) scale(.78);
+    filter:blur(12px);
+  }
+
+  70%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.08);
+    filter:blur(0);
+  }
+
+  100%{
+    transform:translate(-50%,-50%) scale(1);
+  }
+}
+
+@keyframes rewardRevealLegendary{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-42%) scale(.7);
+    filter:blur(16px);
+  }
+
+  55%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.16);
+    filter:blur(0);
+  }
+
+  78%{
+    transform:translate(-50%,-50%) scale(.98);
+  }
+
+  100%{
+    transform:translate(-50%,-50%) scale(1.04);
+  }
+}
+    
 .opening-particles{
   position:absolute;
   inset:0;
@@ -1342,6 +1436,16 @@ function showCrateReveal(crateName, rewardName, itemId, rewardRarity = "Common")
   const rewardCard = document.getElementById("rewardRevealCard");
   const rewardTheme = getRarityTheme(rewardRarity);
 
+  overlay.classList.remove(
+  "reward-common",
+  "reward-rare",
+  "reward-epic",
+  "reward-legendary"
+);
+
+overlay.classList.add(
+  `reward-${rewardRarity.toLowerCase()}`
+);
   
   document.getElementById("revealCrateName").innerText = crateName;
   document.getElementById("revealRewardName").innerText = rewardName;

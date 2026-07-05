@@ -1103,25 +1103,26 @@ let userInventory = {};
   
 const shopItems = {
   basic_crate: {
-    name: "Basic Crate",
-    rarity: "Common",
-    type: "Mystery Crate",
-    price: 500,
-    stock: "Weekly Drop",
-    description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards: [
-  { name: "Profile Banner", rarity: "Rare" },
-  { name: "Avatar", rarity: "Common" },
-  { name: "Title", rarity: "Epic" },
-  { name: "RP Bonus", rarity: "Common" }
-],
-    image: "assets/shop/crates/basic-crate.PNG",
-    fallback: "BASIC\\nCRATE",
-    accent: "#9ca3af",
-    accentSoft: "rgba(156,163,175,.14)",
-    accentGlow: "rgba(156,163,175,.20)",
-    accentBorder: "rgba(156,163,175,.36)",
-    accentShadow: "rgba(156,163,175,.28)"
-  },
+  name: "Basic Crate",
+  rarity: "Common",
+  type: "Mystery Crate",
+  price: 500,
+  stock: "Weekly Drop",
+  description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards.",
+  rewards: [
+    { name: "Profile Banner", rarity: "Rare" },
+    { name: "Avatar", rarity: "Common" },
+    { name: "Title", rarity: "Epic" },
+    { name: "RP Bonus", rarity: "Common" }
+  ],
+  image: "assets/shop/crates/basic-crate.PNG",
+  fallback: "BASIC\\nCRATE",
+  accent: "#9ca3af",
+  accentSoft: "rgba(156,163,175,.14)",
+  accentGlow: "rgba(156,163,175,.20)",
+  accentBorder: "rgba(156,163,175,.36)",
+  accentShadow: "rgba(156,163,175,.28)"
+},
 
   rare_crate: {
     name: "Rare Crate",
@@ -1254,9 +1255,9 @@ setTimeout(() => {
   document.getElementById("featuredType").innerText = item.type;
   document.getElementById("featuredStock").innerText = item.stock;
   document.getElementById("rewardPreview").innerHTML =
-  (item.rewards || []).map(reward => `
-    <div class="reward-chip">${reward}</div>
-  `).join("");
+(item.rewards || []).map(reward => `
+  <div class="reward-chip">${typeof reward === "string" ? reward : reward.name}</div>
+`).join("");
 
   
   const img = document.getElementById("featuredImage");

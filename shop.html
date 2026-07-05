@@ -560,16 +560,6 @@
 .crate-reveal-card span{
   position:relative;
   z-index:2;
-  display:inline-flex;
-  padding:8px 14px;
-  border-radius:999px;
-  color:#c084fc;
-  background:rgba(168,85,247,.14);
-  border:1px solid rgba(168,85,247,.4);
-  font-size:12px;
-  font-weight:900;
-  letter-spacing:.24em;
-  text-transform:uppercase;
 }
 
 .crate-reveal-card h2{
@@ -579,6 +569,8 @@
   font-size:clamp(40px,10vw,68px);
   line-height:.86;
   text-transform:uppercase;
+  color:var(--rewardAccent, #fff);
+  text-shadow:0 0 24px var(--rewardShadow);
 }
 
 .reveal-reward-box{

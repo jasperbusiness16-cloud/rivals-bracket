@@ -758,9 +758,9 @@
 
 .crate-reveal-card.revealed{
   display:block;
-  animation:rewardReveal .45s ease forwards;
+  animation:rewardReveal .55s ease forwards;
 }
-
+    
 .crate-reveal-overlay.opening .crate-reveal-card{
   display:none;
 }
@@ -1476,7 +1476,7 @@ overlay.style.setProperty("--revealShadow", item.accentShadow);
   setTimeout(() => {
     overlay.className = "crate-reveal-overlay show reward";
     rewardCard.classList.add("revealed");
-  }, 2800);
+  }, 3150);
 }
 
 function closeCrateReveal() {

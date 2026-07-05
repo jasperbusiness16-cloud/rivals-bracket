@@ -495,6 +495,7 @@
   radial-gradient(circle at center, var(--revealGlow), transparent 34%),
   radial-gradient(circle at top, rgba(239,68,68,.14), transparent 42%),
   rgba(0,0,0,.9);
+  box-shadow: inset 0 0 180px var(--revealShadow);
   backdrop-filter:blur(18px);
 }
 
@@ -816,6 +817,28 @@
   animation:particleBurst 2.7s ease forwards;
 }
 
+.crate-reveal-overlay.opening .crate-opening-stage{
+  animation:openingCamera 2.7s ease forwards;
+}
+
+@keyframes openingCamera{
+  0%{
+    transform:scale(.96);
+  }
+
+  45%{
+    transform:scale(1);
+  }
+
+  78%{
+    transform:scale(1.045);
+  }
+
+  100%{
+    transform:scale(1.08);
+  }
+}
+    
 .opening-particles i:nth-child(1){left:20%;top:55%;animation-delay:.25s}
 .opening-particles i:nth-child(2){left:32%;top:35%;animation-delay:.45s}
 .opening-particles i:nth-child(3){left:48%;top:22%;animation-delay:.6s}

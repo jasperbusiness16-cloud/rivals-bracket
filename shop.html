@@ -503,6 +503,27 @@
   display:flex;
 }
 
+.reward-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 18px;
+  margin-bottom:18px;
+
+  border-radius:999px;
+
+  color:var(--rewardAccent);
+  background:var(--rewardGlow);
+  border:1px solid var(--rewardBorder);
+
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+
+  box-shadow:0 0 18px var(--rewardShadow);
+}
+    
 .crate-reveal-card{
   position:absolute;
   left:50%;
@@ -514,13 +535,13 @@
   text-align:center;
   padding:46px 34px;
   border-radius:34px;
-  border:1px solid var(--revealBorder);
+  border:1px solid var(--rewardBorder);
   background:
     linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent),
     radial-gradient(circle at top, rgba(168,85,247,.30), transparent 44%),
     linear-gradient(135deg, rgba(15,23,42,.98), rgba(3,7,18,.98));
   box-shadow:
-  0 0 80px var(--revealShadow),
+  0 0 90px var(--rewardShadow),
   0 45px 140px rgba(0,0,0,.72);
   animation:revealPop .42s ease;
 }
@@ -567,7 +588,7 @@
   padding:34px 24px;
   border-radius:26px;
   background:
-    radial-gradient(circle at center, rgba(168,85,247,.22), transparent 58%),
+    radial-gradient(circle at center, var(--rewardGlow), transparent 58%),
     rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.14);
 }
@@ -1053,7 +1074,7 @@
     <div class="opening-flash"></div>
     
     <div id="rewardRevealCard" class="crate-reveal-card">
-      <span>YOU RECEIVED</span>
+      <span class="reward-pill">YOU RECEIVED</span>
       <h2 id="revealCrateName">Elite Crate</h2>
 
       <div class="reveal-reward-box">
@@ -1087,8 +1108,12 @@ const shopItems = {
     type: "Mystery Crate",
     price: 500,
     stock: "Weekly Drop",
-    description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards.",
-    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
+    description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards: [
+  { name: "Profile Banner", rarity: "Rare" },
+  { name: "Avatar", rarity: "Common" },
+  { name: "Title", rarity: "Epic" },
+  { name: "RP Bonus", rarity: "Common" }
+],
     image: "assets/shop/crates/basic-crate.PNG",
     fallback: "BASIC\\nCRATE",
     accent: "#9ca3af",
@@ -1105,7 +1130,12 @@ const shopItems = {
     price: 1200,
     stock: "Weekly Drop",
     description: "Better odds for premium profile rewards, upgraded banners, and stronger collection items.",
-    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
+    rewards: [
+  { name: "Profile Banner", rarity: "Rare" },
+  { name: "Avatar", rarity: "Common" },
+  { name: "Title", rarity: "Epic" },
+  { name: "RP Bonus", rarity: "Common" }
+],
     image: "assets/shop/crates/rare-crate.PNG",
     fallback: "RARE\\nCRATE",
     accent: "#3b82f6",
@@ -1122,7 +1152,12 @@ const shopItems = {
     price: 2000,
     stock: "Weekly Drop",
     description: "High-value crate with stronger odds for rare rewards, profile flex items, and premium drops.",
-    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
+    rewards: [
+  { name: "Profile Banner", rarity: "Rare" },
+  { name: "Avatar", rarity: "Common" },
+  { name: "Title", rarity: "Epic" },
+  { name: "RP Bonus", rarity: "Common" }
+],
     image: "assets/shop/crates/elite-crate.PNG",
     fallback: "ELITE\\nCRATE",
     accent: "#a855f7",
@@ -1139,7 +1174,12 @@ const shopItems = {
     price: 1800,
     stock: "Limited Season",
     description: "A limited-time seasonal crate with summer-themed profile cosmetics and rare event rewards.",
-    rewards: ["Profile Banner", "Avatar", "Title", "RP Bonus"],
+    rewards: [
+  { name: "Profile Banner", rarity: "Rare" },
+  { name: "Avatar", rarity: "Common" },
+  { name: "Title", rarity: "Epic" },
+  { name: "RP Bonus", rarity: "Common" }
+],
     image: "assets/shop/crates/summer-crate.PNG",
     fallback: "SUMMER\\nCRATE",
     accent: "#facc15",
@@ -1295,17 +1335,24 @@ function renderOwnedCrates() {
   }).join("");
 }
 
-function showCrateReveal(crateName, rewardName, itemId) {
+function showCrateReveal(crateName, rewardName, itemId, rewardRarity = "Common") {
   const item = shopItems[itemId] || shopItems[selectedItemId];
 
   const overlay = document.getElementById("crateRevealOverlay");
   const crateImg = document.getElementById("openingCrateImage");
   const fallback = document.getElementById("openingFallback");
   const rewardCard = document.getElementById("rewardRevealCard");
+  const rewardTheme = getRarityTheme(rewardRarity);
 
+  
   document.getElementById("revealCrateName").innerText = crateName;
   document.getElementById("revealRewardName").innerText = rewardName;
 
+  overlay.style.setProperty("--rewardAccent", rewardTheme.accent);
+overlay.style.setProperty("--rewardGlow", rewardTheme.glow);
+overlay.style.setProperty("--rewardBorder", rewardTheme.border);
+overlay.style.setProperty("--rewardShadow", rewardTheme.shadow);
+  
   crateImg.src = item.image;
   crateImg.alt = item.name;
   crateImg.style.display = "block";
@@ -1407,6 +1454,43 @@ function buySelectedItem() {
   });
 }
 
+function getRarityTheme(rarity = "Common") {
+  const themes = {
+    Common: {
+      accent: "#9ca3af",
+      glow: "rgba(156,163,175,.24)",
+      border: "rgba(156,163,175,.42)",
+      shadow: "rgba(156,163,175,.30)"
+    },
+    Rare: {
+      accent: "#3b82f6",
+      glow: "rgba(59,130,246,.28)",
+      border: "rgba(59,130,246,.48)",
+      shadow: "rgba(59,130,246,.36)"
+    },
+    Epic: {
+      accent: "#a855f7",
+      glow: "rgba(168,85,247,.32)",
+      border: "rgba(168,85,247,.52)",
+      shadow: "rgba(168,85,247,.42)"
+    },
+    Legendary: {
+      accent: "#facc15",
+      glow: "rgba(250,204,21,.34)",
+      border: "rgba(250,204,21,.55)",
+      shadow: "rgba(250,204,21,.42)"
+    },
+    Seasonal: {
+      accent: "#f97316",
+      glow: "rgba(249,115,22,.32)",
+      border: "rgba(249,115,22,.52)",
+      shadow: "rgba(249,115,22,.38)"
+    }
+  };
+
+  return themes[rarity] || themes.Common;
+}
+  
 function openCrate(itemId) {
   if (!currentUser) return;
 
@@ -1429,13 +1513,23 @@ function openCrate(itemId) {
       return null;
     }
 
-    const rewards = item.rewards || ["Mystery Reward"];
-    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+    const rewards = item.rewards || [{ name: "Mystery Reward", rarity: "Common" }];
+const rewardPull = rewards[Math.floor(Math.random() * rewards.length)];
 
+const reward =
+  typeof rewardPull === "string"
+    ? rewardPull
+    : rewardPull.name;
+
+const rewardRarity =
+  typeof rewardPull === "string"
+    ? "Common"
+    : rewardPull.rarity || "Common";
     const rewardData = {
       sourceCrate: itemId,
       sourceCrateName: item.name,
       rewardName: reward,
+      rewardRarity,
       rarity: item.rarity,
       createdAt: Date.now()
     };
@@ -1455,7 +1549,7 @@ function openCrate(itemId) {
     };
 
     return database.ref().update(updates).then(() => {
-  showCrateReveal(item.name, reward, itemId);
+  showCrateReveal(item.name, reward, itemId, rewardRarity);
 });
   }).catch(error => {
     alert(error.message);

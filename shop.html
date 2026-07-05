@@ -503,7 +503,11 @@
 }
 
 .crate-reveal-card{
-  position:relative;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+
   width:min(620px,100%);
   overflow:hidden;
   text-align:center;
@@ -612,8 +616,12 @@
 
 .crate-opening-stage{
   position:relative;
-  width:min(760px,100%);
+  width:100%;
+  max-width:760px;
   min-height:620px;
+
+  margin:0 auto;
+
   display:flex;
   align-items:center;
   justify-content:center;
@@ -736,12 +744,12 @@
 @keyframes rewardReveal{
   from{
     opacity:0;
-    transform:scale(.9) translateY(34px);
+    transform:translate(-50%,-46%) scale(.9);
   }
 
   to{
     opacity:1;
-    transform:scale(1) translateY(0);
+    transform:translate(-50%,-50%) scale(1);
   }
 }
     

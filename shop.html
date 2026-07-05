@@ -794,6 +794,65 @@
     transform:translate(-50%,-50%) scale(1);
   }
 }
+
+.opening-particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:3;
+}
+
+.opening-particles i{
+  position:absolute;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--revealAccent);
+  box-shadow:0 0 18px var(--revealAccent);
+  opacity:0;
+}
+
+.crate-reveal-overlay.opening .opening-particles i{
+  animation:particleBurst 2.7s ease forwards;
+}
+
+.opening-particles i:nth-child(1){left:20%;top:55%;animation-delay:.25s}
+.opening-particles i:nth-child(2){left:32%;top:35%;animation-delay:.45s}
+.opening-particles i:nth-child(3){left:48%;top:22%;animation-delay:.6s}
+.opening-particles i:nth-child(4){left:65%;top:30%;animation-delay:.4s}
+.opening-particles i:nth-child(5){left:78%;top:54%;animation-delay:.3s}
+.opening-particles i:nth-child(6){left:58%;top:72%;animation-delay:.5s}
+.opening-particles i:nth-child(7){left:38%;top:74%;animation-delay:.65s}
+.opening-particles i:nth-child(8){left:24%;top:40%;animation-delay:.8s}
+.opening-particles i:nth-child(9){left:72%;top:42%;animation-delay:.75s}
+.opening-particles i:nth-child(10){left:44%;top:60%;animation-delay:.95s}
+.opening-particles i:nth-child(11){left:54%;top:48%;animation-delay:1.05s}
+.opening-particles i:nth-child(12){left:50%;top:50%;animation-delay:1.25s}
+
+@keyframes particleBurst{
+  0%{
+    opacity:0;
+    transform:translateY(20px) scale(.4);
+  }
+
+  25%{
+    opacity:.9;
+  }
+
+  80%{
+    opacity:1;
+    transform:translateY(-90px) scale(1);
+  }
+
+  100%{
+    opacity:0;
+    transform:translateY(-150px) scale(.2);
+  }
+}
+
+.crate-reveal-overlay.reward .opening-particles{
+  display:none;
+}
     
   </style>
 </head>
@@ -906,6 +965,10 @@
     <div id="openingFallback" class="opening-fallback">CRATE</div>
 
     <div class="opening-energy"></div>
+    <div class="opening-particles">
+  <i></i><i></i><i></i><i></i><i></i><i></i>
+  <i></i><i></i><i></i><i></i><i></i><i></i>
+</div>
     <div class="opening-flash"></div>
     
     <div id="rewardRevealCard" class="crate-reveal-card">

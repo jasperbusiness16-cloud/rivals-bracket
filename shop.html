@@ -1681,7 +1681,9 @@ function showCrateReveal(
   rewardRarity = "Common",
   isNewReward = false,
   ownedQuantity = 0,
-  isRpReward = false
+  isRpReward = false,
+  rewardImage = "",
+  rewardCategory = "Reward"
 ) {
   const item = shopItems[itemId] || shopItems[selectedItemId];
 
@@ -1690,6 +1692,9 @@ function showCrateReveal(
   const fallback = document.getElementById("openingFallback");
   const rewardCard = document.getElementById("rewardRevealCard");
   const rewardTheme = getRarityTheme(rewardRarity);
+  const rewardImg = document.getElementById("revealRewardImage");
+const rewardFallback = document.getElementById("revealRewardFallback");
+
 
   overlay.classList.remove(
   "reward-common",
@@ -1705,6 +1710,42 @@ overlay.classList.add(
   document.getElementById("revealCrateName").innerText = crateName;
   document.getElementById("revealRewardName").innerText = rewardName;
   document.getElementById("revealRewardRarity").innerText = rewardRarity.toUpperCase();
+rewardRarity.toUpperCase();
+
+
+  rewardImg.onload = () => {
+  rewardImg.style.display = "block";
+  rewardFallback.style.display = "none";
+};
+
+rewardImg.onerror = () => {
+  rewardImg.style.display = "none";
+  rewardFallback.style.display = "flex";
+};
+
+if (rewardImage) {
+  rewardImg.src = rewardImage;
+  rewardImg.alt = rewardName;
+  rewardImg.style.display = "block";
+  rewardFallback.style.display = "none";
+} else {
+  rewardImg.removeAttribute("src");
+  rewardImg.style.display = "none";
+  rewardFallback.style.display = "flex";
+
+  const fallbackLabels = {
+    Avatar: "AV",
+    Banner: "BN",
+    Title: "TT",
+    Border: "BR",
+    Background: "BG",
+    "RG Points": "RP",
+    Reward: "RG"
+  };
+
+  rewardFallback.innerText =
+    fallbackLabels[rewardCategory] || "RG";
+}
 
   const ownershipStatus =
   document.getElementById("revealOwnershipStatus");
@@ -2095,7 +2136,9 @@ return rewardJob.then(result => {
   rewardRarity,
   isNewReward,
   ownedQuantity,
-  isRpReward
+  isRpReward,
+  rewardImage,
+  rewardCategory
 );
 });
   }).catch(error => {

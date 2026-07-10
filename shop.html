@@ -608,6 +608,16 @@
   text-shadow:0 0 28px var(--rewardShadow);
 }
 
+.reveal-ownership-status{
+  margin-top:18px;
+  color:var(--rewardAccent);
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  text-shadow:0 0 18px var(--rewardShadow);
+}
+    
 .crate-reveal-card .shop-primary{
   position:relative;
   z-index:2;
@@ -1169,9 +1179,10 @@
       <h2 id="revealCrateName">Elite Crate</h2>
 
       <div class="reveal-reward-box">
-        <small id="revealRewardRarity">Common</small>
-        <strong id="revealRewardName">Mystery Reward</strong>
-      </div>
+  <small id="revealRewardRarity">Common</small>
+  <strong id="revealRewardName">Mystery Reward</strong>
+  <div id="revealOwnershipStatus" class="reveal-ownership-status"></div>
+</div>
 
       <button class="shop-primary" onclick="closeCrateReveal()">
         Continue
@@ -1512,7 +1523,15 @@ function renderOwnedCrates() {
   }).join("");
 }
 
-function showCrateReveal(crateName, rewardName, itemId, rewardRarity = "Common") {
+function showCrateReveal(
+  crateName,
+  rewardName,
+  itemId,
+  rewardRarity = "Common",
+  isNewReward = false,
+  ownedQuantity = 0,
+  isRpReward = false
+) {
   const item = shopItems[itemId] || shopItems[selectedItemId];
 
   const overlay = document.getElementById("crateRevealOverlay");
@@ -1535,6 +1554,17 @@ overlay.classList.add(
   document.getElementById("revealCrateName").innerText = crateName;
   document.getElementById("revealRewardName").innerText = rewardName;
   document.getElementById("revealRewardRarity").innerText = rewardRarity.toUpperCase();
+
+  const ownershipStatus =
+  document.getElementById("revealOwnershipStatus");
+
+if (isRpReward) {
+  ownershipStatus.innerText = "Added to your RP balance";
+} else if (isNewReward) {
+  ownershipStatus.innerText = "★ New Item";
+} else {
+  ownershipStatus.innerText = `Duplicate · Owned x${ownedQuantity}`;
+}
   
   overlay.style.setProperty("--rewardAccent", rewardTheme.accent);
 overlay.style.setProperty("--rewardGlow", rewardTheme.glow);
@@ -1800,7 +1830,10 @@ const isRpReward =
 const rewardAmount = Number(rewardPull?.amount || 0);
 
 let rewardJob;
+let isNewReward = false;
+let ownedQuantity = 0;
 
+    
 /* RG POINT REWARD */
 if (isRpReward) {
   rewardJob = database.ref(`players/${currentUser.uid}`)
@@ -1837,6 +1870,16 @@ if (isRpReward) {
         sourceCrate: itemId,
         sourceCrateName: item.name
       };
+    })
+    .then(result => {
+      if (result.committed) {
+        const savedCollectible = result.snapshot.val() || {};
+
+        ownedQuantity = Number(savedCollectible.quantity || 1);
+        isNewReward = ownedQuantity === 1;
+      }
+
+      return result;
     });
 }
 return rewardJob.then(result => {
@@ -1895,11 +1938,14 @@ return rewardJob.then(result => {
   return database.ref().update(updates);
 }).then(() => {
   showCrateReveal(
-    item.name,
-    reward,
-    itemId,
-    rewardRarity
-  );
+  item.name,
+  reward,
+  itemId,
+  rewardRarity,
+  isNewReward,
+  ownedQuantity,
+  isRpReward
+);
 });
   }).catch(error => {
     alert(error.message);

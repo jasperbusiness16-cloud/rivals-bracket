@@ -1820,13 +1820,8 @@ if (isRpReward) {
 
 /* COLLECTIBLE REWARD */
 } else {
-  const collectiblePath =
-    `inventory/${currentUser.uid}/collectibles/${rewardId}`;
-
-  alert(`Saving collectible to:\n${collectiblePath}`);
-
   rewardJob = database
-    .ref(collectiblePath)
+    .ref(`inventory/${currentUser.uid}/collectibles/${rewardId}`)
     .transaction(current => {
       const existing = current || {};
 
@@ -1842,15 +1837,6 @@ if (isRpReward) {
         sourceCrate: itemId,
         sourceCrateName: item.name
       };
-    })
-    .then(result => {
-      alert(
-        result.committed
-          ? `Collectible saved successfully: ${rewardId}`
-          : `Collectible transaction did not commit: ${rewardId}`
-      );
-
-      return result;
     });
 }
 return rewardJob.then(result => {

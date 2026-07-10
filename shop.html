@@ -1786,22 +1786,121 @@ const rewardImage =
   createdAt: Date.now()
 };
 
-    const rewardRef = database.ref(`inventory/${currentUser.uid}/rewards`).push();
-    const updates = {};
+    const now = Date.now();
+const rewardEventRef = database
+  .ref(`crateRewardHistory/${currentUser.uid}`)
+  .push();
 
-    updates[`inventory/${currentUser.uid}/rewards/${rewardRef.key}`] = rewardData;
+const rewardEventId = rewardEventRef.key;
 
-    updates[`activities/${currentUser.uid}/${rewardRef.key}`] = {
-      type: "crate_opened",
-      title: "Crate Opened",
-      message: `You opened ${item.name} and received ${reward}.`,
-      itemId,
-      rewardName: reward,
-      createdAt: Date.now()
+const isRpReward =
+  rewardCategory === "RG Points" ||
+  Number(rewardPull?.amount || 0) > 0;
+
+const rewardAmount = Number(rewardPull?.amount || 0);
+
+let rewardJob;
+
+/* RG POINT REWARD */
+if (isRpReward) {
+  rewardJob = database.ref(`players/${currentUser.uid}`)
+    .transaction(player => {
+      if (!player) return player;
+
+      player.rgPoints =
+        Number(player.rgPoints || 0) + rewardAmount;
+
+      player.lifetimeRgPoints =
+        Number(player.lifetimeRgPoints || 0) + rewardAmount;
+
+      player.updatedAt = now;
+
+      return player;
+    });
+
+/* COLLECTIBLE REWARD */
+} else {
+  rewardJob = database
+    .ref(`inventory/${currentUser.uid}/collectibles/${rewardId}`)
+    .transaction(current => {
+      const existing = current || {};
+
+      return {
+        rewardId,
+        name: reward,
+        category: rewardCategory,
+        rarity: rewardRarity,
+        image: rewardImage,
+        quantity: Number(existing.quantity || 0) + 1,
+        firstUnlockedAt: existing.firstUnlockedAt || now,
+        lastUnlockedAt: now,
+        sourceCrate: itemId,
+        sourceCrateName: item.name
+      };
+    });
+}
+
+return rewardJob.then(result => {
+  if (!result.committed) {
+    throw new Error("Reward could not be added.");
+  }
+
+  const updates = {};
+
+  /* PERMANENT CRATE REWARD HISTORY */
+  updates[
+    `crateRewardHistory/${currentUser.uid}/${rewardEventId}`
+  ] = {
+    ...rewardData,
+    rewardAmount,
+    createdAt: now
+  };
+
+  /* DASHBOARD ACTIVITY */
+  updates[
+    `activities/${currentUser.uid}/${rewardEventId}`
+  ] = {
+    type: isRpReward
+      ? "crate_rp_reward"
+      : "crate_collectible_reward",
+
+    title: isRpReward
+      ? "RG Points Unlocked"
+      : "New Crate Reward",
+
+    message: isRpReward
+      ? `You opened ${item.name} and received +${rewardAmount} RP.`
+      : `You opened ${item.name} and received ${reward}.`,
+
+    itemId,
+    rewardId,
+    rewardName: reward,
+    rewardRarity,
+    rewardCategory,
+    rpChange: isRpReward ? rewardAmount : 0,
+    createdAt: now
+  };
+
+  /* RG POINT HISTORY */
+  if (isRpReward) {
+    updates[
+      `rgPointHistory/${currentUser.uid}/${rewardEventId}`
+    ] = {
+      amount: rewardAmount,
+      reason: `${reward} from ${item.name}`,
+      source: "crate_reward",
+      createdAt: now
     };
+  }
 
-    return database.ref().update(updates).then(() => {
-  showCrateReveal(item.name, reward, itemId, rewardRarity);
+  return database.ref().update(updates);
+}).then(() => {
+  showCrateReveal(
+    item.name,
+    reward,
+    itemId,
+    rewardRarity
+  );
 });
   }).catch(error => {
     alert(error.message);

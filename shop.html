@@ -491,11 +491,16 @@
   align-items:center;
   justify-content:center;
   padding:24px;
+
+  overflow-y:auto;
+  overscroll-behavior:contain;
+
   background:
-  radial-gradient(circle at center, var(--revealGlow), transparent 34%),
-  radial-gradient(circle at top, rgba(239,68,68,.14), transparent 42%),
-  rgba(0,0,0,.9);
-  box-shadow: inset 0 0 180px var(--revealShadow);
+    radial-gradient(circle at center, var(--revealGlow), transparent 34%),
+    radial-gradient(circle at top, rgba(239,68,68,.14), transparent 42%),
+    rgba(0,0,0,.9);
+
+  box-shadow:inset 0 0 180px var(--revealShadow);
   backdrop-filter:blur(18px);
 }
 
@@ -1097,6 +1102,78 @@
 
 .crate-reveal-overlay.reward .opening-particles{
   display:none;
+}
+    
+    @media(max-width:650px){
+
+  .crate-reveal-overlay{
+    align-items:flex-start;
+    padding:
+      max(18px, env(safe-area-inset-top))
+      14px
+      max(28px, env(safe-area-inset-bottom));
+  }
+
+  .crate-opening-stage{
+    min-height:100%;
+    width:100%;
+    padding:24px 0;
+  }
+
+  .crate-reveal-card{
+    position:relative;
+    left:auto;
+    top:auto;
+    transform:none;
+
+    width:100%;
+    max-width:620px;
+    margin:auto;
+
+    padding:32px 18px;
+    border-radius:28px;
+  }
+
+  .crate-reveal-card.revealed{
+    animation:rewardRevealMobile .55s ease forwards;
+  }
+
+  .reveal-reward-box{
+    padding:26px 16px;
+    margin-bottom:24px;
+  }
+
+  .reveal-reward-visual{
+    height:130px;
+    margin:14px auto 18px;
+  }
+
+  .reveal-reward-fallback{
+    width:104px;
+    height:104px;
+    font-size:34px;
+  }
+
+  .crate-reveal-card h2{
+    margin:14px 0 22px;
+    font-size:clamp(34px,10vw,50px);
+  }
+
+  .reveal-reward-box strong{
+    font-size:clamp(30px,8vw,44px);
+  }
+}
+
+@keyframes rewardRevealMobile{
+  from{
+    opacity:0;
+    transform:translateY(28px) scale(.94);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
 }
     
   </style>

@@ -1820,8 +1820,13 @@ if (isRpReward) {
 
 /* COLLECTIBLE REWARD */
 } else {
+  const collectiblePath =
+    `inventory/${currentUser.uid}/collectibles/${rewardId}`;
+
+  alert(`Saving collectible to:\n${collectiblePath}`);
+
   rewardJob = database
-    .ref(`inventory/${currentUser.uid}/collectibles/${rewardId}`)
+    .ref(collectiblePath)
     .transaction(current => {
       const existing = current || {};
 
@@ -1837,9 +1842,17 @@ if (isRpReward) {
         sourceCrate: itemId,
         sourceCrateName: item.name
       };
+    })
+    .then(result => {
+      alert(
+        result.committed
+          ? `Collectible saved successfully: ${rewardId}`
+          : `Collectible transaction did not commit: ${rewardId}`
+      );
+
+      return result;
     });
 }
-
 return rewardJob.then(result => {
   if (!result.committed) {
     throw new Error("Reward could not be added.");
@@ -1919,23 +1932,6 @@ auth.onAuthStateChanged(user => {
   }
 
   currentUser = user;
-
-
-
-database.ref(`inventory/${user.uid}/collectibles/test_item`).set({
-  rewardId: "test_item",
-  name: "Test Collectible",
-  category: "Test",
-  rarity: "Common",
-  quantity: 1,
-  createdAt: Date.now()
-})
-.then(() => {
-  alert("TEST COLLECTIBLE SAVED");
-})
-.catch(error => {
-  alert(`TEST FAILED: ${error.message}`);
-});
 
 
   

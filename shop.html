@@ -1191,6 +1191,74 @@ let currentUser = null;
 let currentPlayer = null;
 let selectedItemId = "elite_crate";
 let userInventory = {};
+
+const rewardCatalog = {
+  avatar_rg_core: {
+    id: "avatar_rg_core",
+    name: "RG Core Avatar",
+    category: "Avatar",
+    rarity: "Common",
+    image: ""
+  },
+
+  avatar_blue_signal: {
+    id: "avatar_blue_signal",
+    name: "Blue Signal Avatar",
+    category: "Avatar",
+    rarity: "Rare",
+    image: ""
+  },
+
+  banner_rivals_standard: {
+    id: "banner_rivals_standard",
+    name: "Rivals Standard Banner",
+    category: "Banner",
+    rarity: "Common",
+    image: ""
+  },
+
+  banner_blue_voltage: {
+    id: "banner_blue_voltage",
+    name: "Blue Voltage Banner",
+    category: "Banner",
+    rarity: "Rare",
+    image: ""
+  },
+
+  title_contender: {
+    id: "title_contender",
+    name: "Contender",
+    category: "Title",
+    rarity: "Common",
+    image: ""
+  },
+
+  title_gauntlet_elite: {
+    id: "title_gauntlet_elite",
+    name: "Gauntlet Elite",
+    category: "Title",
+    rarity: "Epic",
+    image: ""
+  },
+
+  rp_bonus_100: {
+    id: "rp_bonus_100",
+    name: "100 RP Bonus",
+    category: "RG Points",
+    rarity: "Common",
+    amount: 100,
+    image: ""
+  },
+
+  summer_sunset_banner: {
+    id: "summer_sunset_banner",
+    name: "Summer Sunset Banner",
+    category: "Banner",
+    rarity: "Epic",
+    collection: "summer_2026",
+    image: ""
+  }
+};
   
 const shopItems = {
   basic_crate: {

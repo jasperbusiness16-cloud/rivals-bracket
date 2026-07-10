@@ -1256,7 +1256,6 @@ function openCrate(itemId) {
     const rewardRef = database.ref(`inventory/${currentUser.uid}/rewards`).push();
     const updates = {};
 
-    updates[`inventory/${currentUser.uid}/rewards/${rewardRef.key}`] = rewardData;
 
     updates[`activities/${currentUser.uid}/${rewardRef.key}`] = {
       type: "crate_opened",

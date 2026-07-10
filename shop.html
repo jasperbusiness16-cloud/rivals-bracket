@@ -1920,6 +1920,25 @@ auth.onAuthStateChanged(user => {
 
   currentUser = user;
 
+
+
+database.ref(`inventory/${user.uid}/collectibles/test_item`).set({
+  rewardId: "test_item",
+  name: "Test Collectible",
+  category: "Test",
+  rarity: "Common",
+  quantity: 1,
+  createdAt: Date.now()
+})
+.then(() => {
+  alert("TEST COLLECTIBLE SAVED");
+})
+.catch(error => {
+  alert(`TEST FAILED: ${error.message}`);
+});
+
+
+  
    database.ref(`inventory/${user.uid}`).on("value", snapshot => {
   userInventory = snapshot.val() || {};
   renderOwnedCrates();

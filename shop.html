@@ -1104,75 +1104,100 @@
   display:none;
 }
     
-    @media(max-width:650px){
+   @media(max-width:650px){
 
   .crate-reveal-overlay{
-    align-items:flex-start;
     padding:
-      max(18px, env(safe-area-inset-top))
-      14px
-      max(28px, env(safe-area-inset-bottom));
+      max(14px, env(safe-area-inset-top))
+      12px
+      max(18px, env(safe-area-inset-bottom));
+
+    overflow-y:auto;
+    overflow-x:hidden;
   }
 
   .crate-opening-stage{
-    min-height:100%;
     width:100%;
-    padding:24px 0;
+    max-width:100%;
+    min-height:100dvh;
+    overflow:visible;
   }
 
   .crate-reveal-card{
-    position:relative;
-    left:auto;
-    top:auto;
-    transform:none;
+    position:absolute;
+    left:50%;
+    top:50%;
 
-    width:100%;
+    width:calc(100vw - 24px);
     max-width:620px;
-    margin:auto;
+    max-height:calc(100dvh - 28px);
 
-    padding:32px 18px;
-    border-radius:28px;
-  }
+    padding:28px 16px;
+    border-radius:26px;
 
-  .crate-reveal-card.revealed{
-    animation:rewardRevealMobile .55s ease forwards;
-  }
+    overflow-x:hidden;
+    overflow-y:auto;
 
-  .reveal-reward-box{
-    padding:26px 16px;
-    margin-bottom:24px;
-  }
-
-  .reveal-reward-visual{
-    height:130px;
-    margin:14px auto 18px;
-  }
-
-  .reveal-reward-fallback{
-    width:104px;
-    height:104px;
-    font-size:34px;
+    transform:translate(-50%,-50%);
   }
 
   .crate-reveal-card h2{
-    margin:14px 0 22px;
-    font-size:clamp(34px,10vw,50px);
+    margin:12px 0 18px;
+    font-size:clamp(32px,9vw,46px);
+  }
+
+  .reveal-reward-box{
+    margin-bottom:20px;
+    padding:22px 14px;
+  }
+
+  .reveal-reward-visual{
+    width:min(220px,80%);
+    height:110px;
+    margin:12px auto 16px;
+  }
+
+  .reveal-reward-fallback{
+    width:92px;
+    height:92px;
+    border-radius:22px;
+    font-size:30px;
   }
 
   .reveal-reward-box strong{
-    font-size:clamp(30px,8vw,44px);
+    font-size:clamp(28px,8vw,40px);
+  }
+
+  .reveal-ownership-status{
+    margin-top:14px;
+    font-size:12px;
+  }
+
+  .crate-reveal-card .shop-primary{
+    padding:13px 22px;
+    min-width:160px;
+  }
+}
+    
+    @media(max-width:650px){
+
+  .reward-rare .crate-reveal-card,
+  .reward-epic .crate-reveal-card,
+  .reward-legendary .crate-reveal-card,
+  .crate-reveal-card.revealed{
+    animation:rewardRevealMobileSafe .55s ease forwards;
   }
 }
 
-@keyframes rewardRevealMobile{
+@keyframes rewardRevealMobileSafe{
   from{
     opacity:0;
-    transform:translateY(28px) scale(.94);
+    transform:translate(-50%,-46%) scale(.94);
   }
 
   to{
     opacity:1;
-    transform:translateY(0) scale(1);
+    transform:translate(-50%,-50%) scale(1);
   }
 }
     

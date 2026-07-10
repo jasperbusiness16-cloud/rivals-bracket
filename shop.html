@@ -598,6 +598,48 @@
   text-shadow:0 0 18px var(--rewardShadow);
 }
 
+.reveal-reward-visual{
+  position:relative;
+  width:min(260px,80%);
+  height:180px;
+  margin:20px auto 22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.reveal-reward-visual img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:none;
+  filter:drop-shadow(0 20px 38px var(--rewardShadow));
+}
+
+.reveal-reward-fallback{
+  width:130px;
+  height:130px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:28px;
+
+  color:var(--rewardAccent);
+  background:
+    radial-gradient(circle at center, var(--rewardGlow), transparent 70%),
+    rgba(255,255,255,.05);
+
+  border:1px solid var(--rewardBorder);
+
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:.08em;
+
+  box-shadow:
+    inset 0 0 30px var(--rewardGlow),
+    0 0 40px var(--rewardShadow);
+}
+
 .reveal-reward-box strong{
   display:block;
   margin-top:12px;

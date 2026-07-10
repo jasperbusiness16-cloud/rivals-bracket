@@ -1268,12 +1268,15 @@ const shopItems = {
   price: 500,
   stock: "Weekly Drop",
   description: "Entry-level mystery crate with profile items, small RP bonuses, and collection rewards.",
-  rewards: [
-    { name: "Profile Banner", rarity: "Rare" },
-    { name: "Avatar", rarity: "Common" },
-    { name: "Title", rarity: "Epic" },
-    { name: "RP Bonus", rarity: "Common" }
-  ],
+  rewardPool: [
+  { rewardId: "avatar_rg_core", weight: 30 },
+  { rewardId: "avatar_blue_signal", weight: 15 },
+  { rewardId: "banner_rivals_standard", weight: 25 },
+  { rewardId: "banner_blue_voltage", weight: 12 },
+  { rewardId: "title_contender", weight: 10 },
+  { rewardId: "title_gauntlet_elite", weight: 3 },
+  { rewardId: "rp_bonus_100", weight: 5 }
+],
   image: "assets/shop/crates/basic-crate.PNG",
   fallback: "BASIC\\nCRATE",
   accent: "#9ca3af",
@@ -1387,6 +1390,16 @@ function renderShopBalance() {
     `${Number(currentPlayer?.rgPoints || 0).toLocaleString()} RP`;
 }
 
+function getItemRewards(item) {
+  if (Array.isArray(item.rewardPool)) {
+    return item.rewardPool
+      .map(entry => rewardCatalog[entry.rewardId])
+      .filter(Boolean);
+  }
+
+  return item.rewards || [];
+}
+  
 function setSelectedItem(itemId) {
   selectedItemId = itemId;
   const item = shopItems[itemId];
@@ -1413,10 +1426,14 @@ setTimeout(() => {
   document.getElementById("featuredPrice").innerText = `${item.price.toLocaleString()} RP`;
   document.getElementById("featuredType").innerText = item.type;
   document.getElementById("featuredStock").innerText = item.stock;
-  document.getElementById("rewardPreview").innerHTML =
-(item.rewards || []).map(reward => `
-  <div class="reward-chip">${typeof reward === "string" ? reward : reward.name}</div>
-`).join("");
+  const previewRewards = getItemRewards(item);
+
+document.getElementById("rewardPreview").innerHTML =
+  previewRewards.map(reward => `
+    <div class="reward-chip">
+      ${typeof reward === "string" ? reward : reward.name}
+    </div>
+  `).join("");
 
   
   const img = document.getElementById("featuredImage");
@@ -1661,6 +1678,53 @@ function getRarityTheme(rarity = "Common") {
 
   return themes[rarity] || themes.Common;
 }
+
+function pickWeightedReward(item) {
+  const pool = Array.isArray(item.rewardPool) ? item.rewardPool : [];
+
+  if (!pool.length) {
+    const fallbackRewards = item.rewards || [
+      { name: "Mystery Reward", rarity: "Common" }
+    ];
+
+    return fallbackRewards[
+      Math.floor(Math.random() * fallbackRewards.length)
+    ];
+  }
+
+  const validEntries = pool.filter(entry =>
+    entry &&
+    rewardCatalog[entry.rewardId] &&
+    Number(entry.weight) > 0
+  );
+
+  if (!validEntries.length) {
+    return {
+      id: "mystery_reward",
+      name: "Mystery Reward",
+      category: "Reward",
+      rarity: "Common",
+      image: ""
+    };
+  }
+
+  const totalWeight = validEntries.reduce(
+    (total, entry) => total + Number(entry.weight),
+    0
+  );
+
+  let roll = Math.random() * totalWeight;
+
+  for (const entry of validEntries) {
+    roll -= Number(entry.weight);
+
+    if (roll < 0) {
+      return rewardCatalog[entry.rewardId];
+    }
+  }
+
+  return rewardCatalog[validEntries[validEntries.length - 1].rewardId];
+}
   
 function openCrate(itemId) {
   if (!currentUser) return;
@@ -1684,8 +1748,7 @@ function openCrate(itemId) {
       return null;
     }
 
-    const rewards = item.rewards || [{ name: "Mystery Reward", rarity: "Common" }];
-const rewardPull = rewards[Math.floor(Math.random() * rewards.length)];
+    const rewardPull = pickWeightedReward(item);
 
 const reward =
   typeof rewardPull === "string"
@@ -1696,14 +1759,32 @@ const rewardRarity =
   typeof rewardPull === "string"
     ? "Common"
     : rewardPull.rarity || "Common";
+
+const rewardId =
+  typeof rewardPull === "string"
+    ? reward.toLowerCase().replaceAll(" ", "_")
+    : rewardPull.id;
+
+const rewardCategory =
+  typeof rewardPull === "string"
+    ? "Reward"
+    : rewardPull.category || "Reward";
+
+const rewardImage =
+  typeof rewardPull === "string"
+    ? ""
+    : rewardPull.image || "";
     const rewardData = {
-      sourceCrate: itemId,
-      sourceCrateName: item.name,
-      rewardName: reward,
-      rewardRarity,
-      rarity: item.rarity,
-      createdAt: Date.now()
-    };
+  rewardId,
+  rewardName: reward,
+  rewardCategory,
+  rewardRarity,
+  rewardImage,
+  sourceCrate: itemId,
+  sourceCrateName: item.name,
+  sourceCrateRarity: item.rarity,
+  createdAt: Date.now()
+};
 
     const rewardRef = database.ref(`inventory/${currentUser.uid}/rewards`).push();
     const updates = {};

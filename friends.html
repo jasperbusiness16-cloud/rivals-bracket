@@ -264,6 +264,18 @@ document
     });
   });
 
+document
+  .getElementById("friendSearchButton")
+  ?.addEventListener("click", searchPlayers);
+
+document
+  .getElementById("friendSearchInput")
+  ?.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      searchPlayers();
+    }
+  });
+  
 let friendsMap = {};
 let incomingRequestMap = {};
 let outgoingRequestMap = {};
@@ -600,6 +612,311 @@ function handleCancelRequest(requestId) {
   });
 }
 
+function escapeFriendHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getFriendRelationshipState(targetUid) {
+  if (!currentUser || !targetUid) {
+    return {
+      type: "none",
+      requestId: ""
+    };
+  }
+
+  if (targetUid === currentUser.uid) {
+    return {
+      type: "self",
+      requestId: ""
+    };
+  }
+
+  if (friendsMap[targetUid]) {
+    return {
+      type: "friends",
+      requestId: ""
+    };
+  }
+
+  const outgoingRequestId = Object.keys(
+    outgoingRequestMap || {}
+  ).find(requestId => {
+    const parts = requestId.split("_");
+    return parts[parts.length - 1] === targetUid;
+  });
+
+  if (outgoingRequestId) {
+    return {
+      type: "outgoing",
+      requestId: outgoingRequestId
+    };
+  }
+
+  const incomingRequestId = Object.keys(
+    incomingRequestMap || {}
+  ).find(requestId => {
+    const parts = requestId.split("_");
+    return parts[0] === targetUid;
+  });
+
+  if (incomingRequestId) {
+    return {
+      type: "incoming",
+      requestId: incomingRequestId
+    };
+  }
+
+  return {
+    type: "none",
+    requestId: ""
+  };
+}
+
+function getSearchActionHtml(player) {
+  const relationship = getFriendRelationshipState(
+    player.uid
+  );
+
+  if (relationship.type === "self") {
+    return `
+      <button
+        class="friend-action-button"
+        type="button"
+        disabled
+      >
+        Your Profile
+      </button>
+    `;
+  }
+
+  if (relationship.type === "friends") {
+    return `
+      <button
+        class="friend-action-button"
+        type="button"
+        disabled
+      >
+        ✓ Friends
+      </button>
+    `;
+  }
+
+  if (relationship.type === "outgoing") {
+    return `
+      <button
+        class="friend-action-button"
+        type="button"
+        disabled
+      >
+        Request Sent
+      </button>
+    `;
+  }
+
+  if (relationship.type === "incoming") {
+    return `
+      <button
+        class="friend-action-button primary"
+        type="button"
+        onclick="handleAcceptRequest('${relationship.requestId}')"
+      >
+        Accept Request
+      </button>
+    `;
+  }
+
+  return `
+    <button
+      class="friend-action-button primary"
+      type="button"
+      onclick="handleSendFriendRequest('${player.uid}')"
+    >
+      Add Friend
+    </button>
+  `;
+}
+
+function renderFriendSearchResults(players) {
+  const container = document.getElementById(
+    "friendSearchResults"
+  );
+
+  if (!container) return;
+
+  if (!players.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No matching players were found.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = players.map(player => `
+    <article class="friend-search-card">
+
+      ${getFriendAvatarHtml(player)}
+
+      <div class="friend-main">
+        <strong>
+          ${escapeFriendHtml(
+            player.displayName || "Player"
+          )}
+        </strong>
+
+        <span>
+          ${escapeFriendHtml(
+            player.rgId || "RG Player"
+          )}
+          ${
+            player.equippedTitle
+              ? ` • ${escapeFriendHtml(
+                  player.equippedTitle
+                )}`
+              : ""
+          }
+        </span>
+      </div>
+
+      <div class="friend-actions">
+
+        <a
+          class="friend-action-button"
+          href="player.html?id=${encodeURIComponent(player.uid)}"
+        >
+          Profile
+        </a>
+
+        ${getSearchActionHtml(player)}
+
+      </div>
+
+    </article>
+  `).join("");
+}
+
+function searchPlayers() {
+  const input = document.getElementById(
+    "friendSearchInput"
+  );
+
+  const container = document.getElementById(
+    "friendSearchResults"
+  );
+
+  if (!input || !container) return;
+
+  const query = input.value.trim().toLowerCase();
+
+  if (query.length < 2) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        Enter at least two characters.
+      </div>
+    `;
+    return;
+  }
+
+  setFriendsStatus("Searching players...");
+
+  container.innerHTML = `
+    <div class="friends-empty">
+      Searching...
+    </div>
+  `;
+
+  database
+    .ref("players")
+    .once("value")
+    .then(snapshot => {
+      const data = snapshot.val() || {};
+
+      const players = Object.entries(data)
+        .map(([uid, player]) => ({
+          uid,
+          ...(player || {})
+        }))
+        .filter(player => {
+          const displayName = String(
+            player.displayName || ""
+          ).toLowerCase();
+
+          const rgId = String(
+            player.rgId || ""
+          ).toLowerCase();
+
+          const rivalsIgn = String(
+            player.rivalsIgn || ""
+          ).toLowerCase();
+
+          return (
+            displayName.includes(query) ||
+            rgId.includes(query) ||
+            rivalsIgn.includes(query)
+          );
+        })
+        .slice(0, 20);
+
+      renderFriendSearchResults(players);
+      setFriendsStatus("");
+    })
+    .catch(error => {
+      container.innerHTML = `
+        <div class="friends-empty">
+          Player search failed.
+        </div>
+      `;
+
+      setFriendsStatus(
+        error.message,
+        "#ef4444"
+      );
+    });
+}
+
+function handleSendFriendRequest(targetUid) {
+  if (!currentUser || !currentPlayer) return;
+
+  setFriendsStatus("Sending friend request...");
+
+  RGFriends.getPlayer(targetUid)
+    .then(targetPlayer => {
+      if (!targetPlayer) {
+        throw new Error("Player account not found.");
+      }
+
+      return RGFriends.sendFriendRequest(
+        {
+          uid: currentUser.uid,
+          displayName:
+            currentPlayer.displayName ||
+            currentUser.displayName ||
+            "Player"
+        },
+        targetPlayer
+      );
+    })
+    .then(() => {
+      setFriendsStatus(
+        "✓ Friend request sent.",
+        "#22c55e"
+      );
+
+      searchPlayers();
+    })
+    .catch(error => {
+      setFriendsStatus(
+        error.message,
+        "#ef4444"
+      );
+    });
+}
+  
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";

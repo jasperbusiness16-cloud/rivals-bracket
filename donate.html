@@ -108,12 +108,20 @@
   </p>
 </section>
 
-<section class="event-card">
-  <h2>CURRENT PRIZE POOL</h2>
+<section class="event-card prize-pool-section">
+  <div class="prize-pool-heading">
+    <div>
+      <p class="eyebrow">CURRENT TOURNAMENT PAYOUTS</p>
+      <h2>CURRENT PRIZE POOL</h2>
+      <p>
+        Prize payouts update automatically whenever the tournament prize pool changes.
+      </p>
+    </div>
 
-  <div class="prize-card">
-    <p>PRIZE POOL</p>
-    <strong data-prize-pool>$60</strong>
+    <div class="prize-card prize-card-large">
+      <p>TOTAL PRIZE POOL</p>
+      <strong data-prize-pool>$60</strong>
+    </div>
   </div>
 
   <div class="donation-breakdown">
@@ -135,8 +143,68 @@
 
   </div>
 
-  <p>
-    
+  <div class="prize-split-bar" aria-label="Prize-pool distribution">
+    <div id="firstPlaceSplitBar" class="prize-split-first">
+      <span>1ST • 80%</span>
+    </div>
+
+    <div id="secondPlaceSplitBar" class="prize-split-second">
+      <span>2ND • 20%</span>
+    </div>
+  </div>
+
+  <div class="prize-payout-grid">
+
+    <article class="prize-payout-card first-place">
+      <div class="prize-placement">
+        <span>1</span>
+
+        <div>
+          <p>FIRST PLACE</p>
+          <strong id="firstPlacePercent">80%</strong>
+        </div>
+      </div>
+
+      <div class="prize-payout-details">
+        <div>
+          <span>Team Payout</span>
+          <strong id="firstPlaceTeamPayout">$48.00</strong>
+        </div>
+
+        <div>
+          <span>Per Player</span>
+          <strong id="firstPlacePlayerPayout">$8.00</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="prize-payout-card second-place">
+      <div class="prize-placement">
+        <span>2</span>
+
+        <div>
+          <p>RUNNER-UP</p>
+          <strong id="secondPlacePercent">20%</strong>
+        </div>
+      </div>
+
+      <div class="prize-payout-details">
+        <div>
+          <span>Team Payout</span>
+          <strong id="secondPlaceTeamPayout">$12.00</strong>
+        </div>
+
+        <div>
+          <span>Per Player</span>
+          <strong id="secondPlacePlayerPayout">$2.00</strong>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <p id="prizePoolCalculationNote" class="prize-pool-note">
+    Payout estimates are based on six players per team.
   </p>
 </section>
 <section class="event-card">

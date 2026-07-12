@@ -124,6 +124,46 @@
 
         <div class="dashboard-top-actions">
 
+<div class="notification-center">
+
+  <button
+    id="notificationBell"
+    class="notification-bell"
+    type="button"
+    onclick="toggleNotificationPanel()"
+    aria-label="Open notifications"
+  >
+    <span class="notification-bell-icon">🔔</span>
+    <span id="notificationUnreadBadge" class="notification-unread-badge">0</span>
+  </button>
+
+  <div id="notificationPanel" class="notification-panel">
+
+    <div class="notification-panel-header">
+      <div>
+        <span>RIVALS GAUNTLET</span>
+        <h3>Notifications</h3>
+      </div>
+
+      <button
+        class="notification-mark-all"
+        type="button"
+        onclick="handleMarkAllNotificationsRead()"
+      >
+        Mark all as read
+      </button>
+    </div>
+
+    <div id="notificationList" class="notification-list">
+      <div class="notification-empty">
+        Loading notifications...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+          
   <a id="topProfileBtn" class="account-secondary" href="#">
     View Public Profile
   </a>

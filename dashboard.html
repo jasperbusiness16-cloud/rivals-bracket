@@ -322,6 +322,11 @@ let currentTournament = {};
 let currentSubstitution = null;
 let siteData = {};
 let userActivities = {};
+  let dailyCheckInState = {};
+let dailyCheckInStatus = null;
+let dailyCheckInStopListener = null;
+let dailyCountdownTimer = null;
+  
   
 function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -1225,7 +1230,132 @@ function renderRgPointHistory() {
     });
 }
 
+function getDailyRewardIcon(reward) {
+  if (!reward) return "★";
 
+  if (reward.type === "crate") {
+    return "📦";
+  }
+
+  return "RP";
+}
+
+function renderDailyRewardTrack() {
+  const track = document.getElementById("dailyRewardTrack");
+  if (!track || !dailyCheckInStatus) return;
+
+  const claimedCycleDay = Number(dailyCheckInStatus.cycleDay || 0);
+  const nextCycleDay = Number(dailyCheckInStatus.nextCycleDay || 1);
+
+  track.innerHTML = RGDailyCheckIn.rewardTrack.map(reward => {
+    const completed =
+      claimedCycleDay > 0 &&
+      reward.day <= claimedCycleDay &&
+      !(claimedCycleDay === 7 && nextCycleDay === 1);
+
+    const current =
+      reward.day === nextCycleDay;
+
+    return `
+      <div class="
+        daily-reward-day
+        ${completed ? "completed" : ""}
+        ${current ? "current" : ""}
+        ${reward.day === 7 ? "final" : ""}
+      ">
+        <span class="daily-reward-day-number">
+          Day ${reward.day}
+        </span>
+
+        <div class="daily-reward-day-icon">
+          ${getDailyRewardIcon(reward)}
+        </div>
+
+        <strong>${reward.label}</strong>
+      </div>
+    `;
+  }).join("");
+}
+
+function updateDailyCountdown() {
+  const countdown = document.getElementById("dailyCountdown");
+  const button = document.getElementById("dailyClaimButton");
+
+  if (!countdown || !button || !dailyCheckInStatus) return;
+
+  if (dailyCheckInStatus.canClaim) {
+    countdown.innerText = "Reward available now";
+    button.innerText = "Claim Reward";
+    button.disabled = false;
+    return;
+  }
+
+  const timer = RGDailyCheckIn.getCountdown(
+    dailyCheckInStatus.nextResetAt
+  );
+
+  if (timer.complete) {
+    RGDailyCheckIn.load(currentUser.uid)
+      .then(result => {
+        dailyCheckInState = result.state;
+        dailyCheckInStatus = result.status;
+        renderDailyCheckIn();
+      })
+      .catch(error => {
+        console.error("Daily check-in refresh error:", error);
+      });
+
+    return;
+  }
+
+  countdown.innerText =
+    `Next claim in ${timer.formatted}`;
+
+  button.innerText = "Claimed Today";
+  button.disabled = true;
+}
+
+function startDailyCountdown() {
+  if (dailyCountdownTimer) {
+    clearInterval(dailyCountdownTimer);
+  }
+
+  updateDailyCountdown();
+
+  dailyCountdownTimer = setInterval(() => {
+    updateDailyCountdown();
+  }, 1000);
+}
+
+function renderDailyCheckIn() {
+  if (!dailyCheckInStatus) return;
+
+  const streak = document.getElementById("dailyCurrentStreak");
+  const reward = document.getElementById("dailyNextReward");
+  const statusLabel = document.getElementById(
+    "dailyRewardStatusLabel"
+  );
+
+  if (!streak || !reward || !statusLabel) return;
+
+  const streakValue = Number(
+    dailyCheckInStatus.currentStreak || 0
+  );
+
+  streak.innerText =
+    `${streakValue} ${streakValue === 1 ? "Day" : "Days"}`;
+
+  reward.innerText =
+    dailyCheckInStatus.nextReward?.label || "Reward";
+
+  statusLabel.innerText =
+    dailyCheckInStatus.canClaim
+      ? `DAY ${dailyCheckInStatus.nextCycleDay} REWARD`
+      : "NEXT REWARD";
+
+  renderDailyRewardTrack();
+  startDailyCountdown();
+}
   
 auth.onAuthStateChanged((user) => {
   if (!user) {
@@ -1234,6 +1364,15 @@ auth.onAuthStateChanged((user) => {
   }
 
   currentUser = user;
+  
+  dailyCheckInStopListener = RGDailyCheckIn.listen(
+  user.uid,
+  result => {
+    dailyCheckInState = result.state;
+    dailyCheckInStatus = result.status;
+    renderDailyCheckIn();
+  }
+);
   
   RGNotificationCenter.init(
   user.uid,

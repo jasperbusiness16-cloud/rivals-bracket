@@ -345,9 +345,45 @@ document
     }
   });
   
+  document
+  .getElementById("dailyGiftInfoButton")
+  ?.addEventListener(
+    "click",
+    openDailyGiftOddsModal
+  );
+
+document
+  .getElementById("dailyGiftOddsClose")
+  ?.addEventListener(
+    "click",
+    closeDailyGiftOddsModal
+  );
+
+document
+  .querySelector(".daily-gift-modal-backdrop")
+  ?.addEventListener(
+    "click",
+    closeDailyGiftOddsModal
+  );
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeDailyGiftOddsModal();
+  }
+});
+  
 let friendsMap = {};
 let incomingRequestMap = {};
 let outgoingRequestMap = {};
+
+let dailyGiftStats = {
+  sentCount: 0,
+  receivedCount: 0,
+  receivedLimit: 5,
+  sentTo: {}
+};
+
+let dailyGiftInbox = [];
 
 function getPlayerInitials(name) {
   return String(name || "RG")
@@ -986,11 +1022,95 @@ function handleSendFriendRequest(targetUid) {
     });
 }
   
+  function renderDailyGiftCounters() {
+  const received = document.getElementById(
+    "giftsReceivedCount"
+  );
+
+  const sent = document.getElementById(
+    "giftsSentCount"
+  );
+
+  if (!received || !sent) return;
+
+  const receivedCount = Number(
+    dailyGiftStats.receivedCount || 0
+  );
+
+  const receivedLimit = Number(
+    dailyGiftStats.receivedLimit ||
+    RGDailyGifts.MAX_RECEIVED_PER_DAY
+  );
+
+  const sentCount = Number(
+    dailyGiftStats.sentCount || 0
+  );
+
+  received.innerText =
+    `${receivedCount}/${receivedLimit}`;
+
+  sent.innerText =
+    `Gifts Sent Today: ${sentCount}`;
+}
+
+function renderDailyGiftOdds() {
+  const list = document.getElementById(
+    "dailyGiftOddsList"
+  );
+
+  if (!list) return;
+
+  list.innerHTML = RGDailyGifts.rewardOdds
+    .map(reward => `
+      <div class="
+        daily-gift-odds-item
+        ${reward.jackpot ? "jackpot" : ""}
+      ">
+        <div class="daily-gift-odds-icon">
+          ${RGDailyGifts.getRewardIcon(reward)}
+        </div>
+
+        <strong>
+          ${reward.label}
+          ${reward.jackpot ? " • JACKPOT" : ""}
+        </strong>
+
+        <span>${reward.chance}%</span>
+      </div>
+    `)
+    .join("");
+}
+
+function openDailyGiftOddsModal() {
+  const modal = document.getElementById(
+    "dailyGiftOddsModal"
+  );
+
+  if (!modal) return;
+
+  modal.classList.add("show");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeDailyGiftOddsModal() {
+  const modal = document.getElementById(
+    "dailyGiftOddsModal"
+  );
+
+  if (!modal) return;
+
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden", "true");
+}
+  
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
   });
 }
+
+renderDailyGiftOdds();
+renderDailyGiftCounters();
 
 auth.onAuthStateChanged(user => {
   if (!user) {
@@ -999,6 +1119,22 @@ auth.onAuthStateChanged(user => {
   }
 
   currentUser = user;
+
+RGDailyGifts.listenToDailyStats(
+  user.uid,
+  stats => {
+    dailyGiftStats = stats;
+    renderDailyGiftCounters();
+    renderFriendsList();
+  }
+);
+
+RGDailyGifts.listenToGiftInbox(
+  user.uid,
+  gifts => {
+    dailyGiftInbox = gifts;
+  }
+);
 
 RGFriends.listenToFriends(
   user.uid,

@@ -90,12 +90,29 @@
     <main class="account-main">
 
       <div class="account-topbar">
-        <div>
-          <p>PUBLIC CREATOR PROFILE</p>
-          <h1 id="profileName">Loading Player</h1>
-          <span id="profileBio">Public Rivals Gauntlet profile and tournament history.</span>
-        </div>
-      </div>
+  <div>
+    <p>PUBLIC CREATOR PROFILE</p>
+    <h1 id="profileName">Loading Player</h1>
+    <span id="profileBio">
+      Public Rivals Gauntlet profile and tournament history.
+    </span>
+  </div>
+
+  <div class="dashboard-top-actions">
+
+    <div id="profileNotificationMount"></div>
+
+    <button
+      id="profileFriendButton"
+      class="account-primary"
+      type="button"
+      style="display:none;"
+    >
+      Add Friend
+    </button>
+
+  </div>
+</div>
 
       <div class="account-panel-grid">
 
@@ -153,11 +170,25 @@
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
 
 <script>
-function clean(value, fallback = "") {
+
+  let currentUser = null;
+let currentPlayer = null;
+let viewedPlayer = null;
+
+let profileFriendsMap = {};
+let profileIncomingRequestMap = {};
+let profileOutgoingRequestMap = {};
+  
+  function clean(value, fallback = "") {
   return String(value || fallback).trim();
 }
 
@@ -281,24 +312,261 @@ function renderProfile(player) {
     player.championships || 0;
 }
 
+function getProfileRequestId(requestMap, targetUid, direction) {
+  return Object.keys(requestMap || {}).find(requestId => {
+    const parts = requestId.split("_");
+
+    if (direction === "incoming") {
+      return parts[0] === targetUid;
+    }
+
+    return parts[parts.length - 1] === targetUid;
+  }) || "";
+}
+
+function getProfileFriendState() {
+  if (!currentUser || !playerId) {
+    return {
+      type: "signed_out",
+      requestId: ""
+    };
+  }
+
+  if (currentUser.uid === playerId) {
+    return {
+      type: "self",
+      requestId: ""
+    };
+  }
+
+  if (profileFriendsMap[playerId]) {
+    return {
+      type: "friends",
+      requestId: ""
+    };
+  }
+
+  const outgoingRequestId = getProfileRequestId(
+    profileOutgoingRequestMap,
+    playerId,
+    "outgoing"
+  );
+
+  if (outgoingRequestId) {
+    return {
+      type: "outgoing",
+      requestId: outgoingRequestId
+    };
+  }
+
+  const incomingRequestId = getProfileRequestId(
+    profileIncomingRequestMap,
+    playerId,
+    "incoming"
+  );
+
+  if (incomingRequestId) {
+    return {
+      type: "incoming",
+      requestId: incomingRequestId
+    };
+  }
+
+  return {
+    type: "none",
+    requestId: ""
+  };
+}
+
+function renderProfileFriendButton() {
+  const button = document.getElementById(
+    "profileFriendButton"
+  );
+
+  if (!button || !playerId) return;
+
+  if (!currentUser) {
+    button.style.display = "none";
+    return;
+  }
+
+  const state = getProfileFriendState();
+
+  button.style.display = "inline-flex";
+  button.disabled = false;
+  button.classList.remove("account-secondary");
+  button.classList.add("account-primary");
+
+  if (state.type === "self") {
+    button.style.display = "none";
+    return;
+  }
+
+  if (state.type === "friends") {
+    button.innerText = "✓ Friends";
+    button.disabled = true;
+    button.classList.remove("account-primary");
+    button.classList.add("account-secondary");
+    return;
+  }
+
+  if (state.type === "outgoing") {
+    button.innerText = "Request Sent";
+    button.disabled = true;
+    button.classList.remove("account-primary");
+    button.classList.add("account-secondary");
+    return;
+  }
+
+  if (state.type === "incoming") {
+    button.innerText = "Accept Friend Request";
+    button.dataset.action = "accept";
+    button.dataset.requestId = state.requestId;
+    return;
+  }
+
+  button.innerText = "Add Friend";
+  button.dataset.action = "send";
+  button.dataset.requestId = "";
+}
+
+function handleProfileFriendAction() {
+  const button = document.getElementById(
+    "profileFriendButton"
+  );
+
+  if (
+    !button ||
+    !currentUser ||
+    !currentPlayer ||
+    !viewedPlayer
+  ) {
+    return;
+  }
+
+  button.disabled = true;
+  button.innerText = "Working...";
+
+  if (button.dataset.action === "accept") {
+    RGFriends.acceptFriendRequest(
+      currentUser.uid,
+      button.dataset.requestId
+    )
+    .catch(error => {
+      alert(error.message);
+      renderProfileFriendButton();
+    });
+
+    return;
+  }
+
+  RGFriends.sendFriendRequest(
+    {
+      uid: currentUser.uid,
+      displayName:
+        currentPlayer.displayName ||
+        currentUser.displayName ||
+        "Player"
+    },
+    viewedPlayer
+  )
+  .catch(error => {
+    alert(error.message);
+    renderProfileFriendButton();
+  });
+}
+
+document
+  .getElementById("profileFriendButton")
+  ?.addEventListener(
+    "click",
+    handleProfileFriendAction
+  );
+  
 const playerId = getPlayerId();
 
 if (!playerId) {
   document.getElementById("profileName").innerText = "PLAYER NOT FOUND";
   document.getElementById("profileBio").innerText = "No player ID was provided.";
 } else {
-  database.ref(`players/${playerId}`).once("value").then(snapshot => {
+  database
+  .ref(`players/${playerId}`)
+  .once("value")
+  .then(snapshot => {
     const player = snapshot.val();
 
     if (!player) {
-      document.getElementById("profileName").innerText = "PLAYER NOT FOUND";
-      document.getElementById("profileBio").innerText = "This profile does not exist.";
+      document.getElementById(
+        "profileName"
+      ).innerText = "PLAYER NOT FOUND";
+
+      document.getElementById(
+        "profileBio"
+      ).innerText = "This profile does not exist.";
+
       return;
     }
 
+    viewedPlayer = {
+      uid: playerId,
+      ...player
+    };
+
     renderProfile(player);
+    renderProfileFriendButton();
   });
 }
+
+auth.onAuthStateChanged(user => {
+  currentUser = user || null;
+
+  if (!user) {
+    renderProfileFriendButton();
+    return;
+  }
+
+  RGNotificationCenter.init(
+    user.uid,
+    "#profileNotificationMount"
+  );
+
+  database
+    .ref(`players/${user.uid}`)
+    .once("value")
+    .then(snapshot => {
+      currentPlayer = {
+        uid: user.uid,
+        ...(snapshot.val() || {})
+      };
+
+      renderProfileFriendButton();
+    });
+
+  RGFriends.listenToFriends(
+    user.uid,
+    data => {
+      profileFriendsMap = data;
+      renderProfileFriendButton();
+    }
+  );
+
+  RGFriends.listenToIncomingRequests(
+    user.uid,
+    data => {
+      profileIncomingRequestMap = data;
+      renderProfileFriendButton();
+    }
+  );
+
+  RGFriends.listenToOutgoingRequests(
+    user.uid,
+    data => {
+      profileOutgoingRequestMap = data;
+      renderProfileFriendButton();
+    }
+  );
+});
+
 </script>
 
 </body>

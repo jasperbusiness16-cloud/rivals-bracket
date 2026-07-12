@@ -1357,6 +1357,12 @@ function renderDailyCheckIn() {
   startDailyCountdown();
 }
   
+  document
+  .getElementById("dailyClaimButton")
+  ?.addEventListener("click", () => {
+    claimDailyReward();
+  });
+  
 auth.onAuthStateChanged((user) => {
   if (!user) {
     window.location.href = "login.html";

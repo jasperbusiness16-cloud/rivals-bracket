@@ -1339,6 +1339,18 @@ auth.onAuthStateChanged((user) => {
 
   currentUser = user;
   listenToNotifications(user.uid, renderNotificationCenter);
+
+
+database.ref(`notifications/${user.uid}/test_notification`).set({
+  type: "general",
+  title: "Notification System Online",
+  message: "Your Rivals Gauntlet notification center is working.",
+  link: "",
+  read: false,
+  createdAt: firebase.database.ServerValue.TIMESTAMP
+});
+
+  
   
 database.ref(`activities/${user.uid}`).on("value", snapshot => {
   userActivities = snapshot.val() || {};

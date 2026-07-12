@@ -1937,3 +1937,257 @@ nav .mobile-join{
     max-height:calc(100dvh - 96px);
   }
 }
+
+/* ================================
+   DAILY CHECK-IN
+================================ */
+
+.daily-checkin-card{
+  margin-top:24px;
+  padding:26px;
+  border-radius:24px;
+  border:1px solid rgba(168,85,247,.25);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(168,85,247,.14),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(15,23,42,.98),
+      rgba(3,7,18,.98)
+    );
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.32);
+}
+
+.daily-checkin-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+}
+
+.daily-checkin-eyebrow{
+  display:block;
+  margin-bottom:5px;
+  color:#a855f7;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.18em;
+}
+
+.daily-checkin-header h2{
+  margin:0;
+  color:#fff;
+  font-size:30px;
+  text-transform:uppercase;
+}
+
+.daily-checkin-header p{
+  margin:7px 0 0;
+  color:#8b949e;
+}
+
+.daily-checkin-streak{
+  min-width:140px;
+  padding:14px 18px;
+  border-radius:16px;
+  border:1px solid rgba(168,85,247,.22);
+  background:rgba(168,85,247,.08);
+  text-align:right;
+}
+
+.daily-checkin-streak span{
+  display:block;
+  color:#8b949e;
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.daily-checkin-streak strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:22px;
+}
+
+
+.daily-reward-track{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:10px;
+  margin-top:24px;
+}
+
+
+.daily-reward-day{
+  position:relative;
+  min-height:112px;
+  padding:14px 8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.035);
+  text-align:center;
+}
+
+.daily-reward-day-number{
+  color:#667085;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+.daily-reward-day-icon{
+  margin:10px 0 7px;
+  font-size:23px;
+}
+
+.daily-reward-day strong{
+  color:#d7deea;
+  font-size:14px;
+}
+
+
+.daily-reward-day.completed{
+  border-color:rgba(34,197,94,.25);
+  background:rgba(34,197,94,.07);
+}
+
+.daily-reward-day.completed::after{
+  content:"✓";
+  position:absolute;
+  top:7px;
+  right:9px;
+  color:#4ade80;
+  font-weight:900;
+}
+
+
+.daily-reward-day.current{
+  transform:translateY(-3px);
+  border-color:rgba(168,85,247,.65);
+  background:rgba(168,85,247,.13);
+  box-shadow:
+    0 14px 35px rgba(168,85,247,.16);
+}
+
+
+.daily-reward-day.final{
+  border-color:rgba(245,158,11,.3);
+  background:rgba(245,158,11,.07);
+}
+
+
+.daily-checkin-footer{
+  margin-top:22px;
+  padding-top:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+
+.daily-next-reward span{
+  display:block;
+  color:#8b949e;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.14em;
+}
+
+.daily-next-reward strong{
+  display:block;
+  margin-top:3px;
+  color:#fff;
+  font-size:21px;
+}
+
+.daily-next-reward small{
+  display:block;
+  margin-top:5px;
+  color:#a855f7;
+  font-size:13px;
+  font-weight:800;
+}
+
+
+.daily-claim-button{
+  min-width:170px;
+  min-height:48px;
+  padding:0 22px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(
+    135deg,
+    #9333ea,
+    #a855f7
+  );
+  color:#fff;
+  font-family:Rajdhani,Arial,sans-serif;
+  font-size:15px;
+  font-weight:900;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.daily-claim-button:hover:not(:disabled){
+  transform:translateY(-2px);
+  box-shadow:
+    0 15px 35px rgba(168,85,247,.3);
+}
+
+.daily-claim-button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+
+@media(max-width:800px){
+
+  .daily-checkin-header{
+    flex-direction:column;
+  }
+
+  .daily-checkin-streak{
+    width:100%;
+    text-align:left;
+  }
+
+  .daily-reward-track{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+
+}
+
+
+@media(max-width:520px){
+
+  .daily-checkin-card{
+    padding:18px;
+  }
+
+  .daily-reward-track{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .daily-checkin-footer{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .daily-claim-button{
+    width:100%;
+  }
+
+}

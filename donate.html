@@ -275,6 +275,100 @@
 function toggleMenu() {
   document.getElementById("mobileNav").classList.toggle("active");
 }
+
+  const PRIZE_TEAM_SIZE = 6;
+const DEFAULT_FIRST_PLACE_PERCENT = 80;
+const DEFAULT_SECOND_PLACE_PERCENT = 20;
+
+function parseCurrencyValue(value) {
+  return Number(
+    String(value || "")
+      .replace(/[^0-9.-]/g, "")
+  ) || 0;
+}
+
+function formatPrizeCurrency(value) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number(value || 0));
+}
+
+function renderPrizePoolPayouts(
+  totalPrizePool,
+  firstPlacePercent = DEFAULT_FIRST_PLACE_PERCENT,
+  secondPlacePercent = DEFAULT_SECOND_PLACE_PERCENT,
+  teamSize = PRIZE_TEAM_SIZE
+) {
+  const total = Math.max(0, Number(totalPrizePool || 0));
+  const firstPercent = Math.max(0, Number(firstPlacePercent || 0));
+  const secondPercent = Math.max(0, Number(secondPlacePercent || 0));
+  const safeTeamSize = Math.max(1, Number(teamSize || 1));
+
+  const firstTeamPayout = total * (firstPercent / 100);
+  const secondTeamPayout = total * (secondPercent / 100);
+
+  document.getElementById("firstPlacePercent").innerText =
+    `${firstPercent}%`;
+
+  document.getElementById("secondPlacePercent").innerText =
+    `${secondPercent}%`;
+
+  document.getElementById("firstPlaceTeamPayout").innerText =
+    formatPrizeCurrency(firstTeamPayout);
+
+  document.getElementById("secondPlaceTeamPayout").innerText =
+    formatPrizeCurrency(secondTeamPayout);
+
+  document.getElementById("firstPlacePlayerPayout").innerText =
+    formatPrizeCurrency(firstTeamPayout / safeTeamSize);
+
+  document.getElementById("secondPlacePlayerPayout").innerText =
+    formatPrizeCurrency(secondTeamPayout / safeTeamSize);
+
+  document.getElementById("firstPlaceSplitBar").style.width =
+    `${firstPercent}%`;
+
+  document.getElementById("secondPlaceSplitBar").style.width =
+    `${secondPercent}%`;
+
+  document.querySelector(
+    "#firstPlaceSplitBar span"
+  ).innerText = `1ST • ${firstPercent}%`;
+
+  document.querySelector(
+    "#secondPlaceSplitBar span"
+  ).innerText = `2ND • ${secondPercent}%`;
+
+  document.getElementById("prizePoolCalculationNote").innerText =
+    `Payout estimates are based on ${safeTeamSize} players per team.`;
+}
+
+function refreshPrizePoolBreakdownFromPage() {
+  const prizePoolElement = document.querySelector("[data-prize-pool]");
+
+  if (!prizePoolElement) return;
+
+  renderPrizePoolPayouts(
+    parseCurrencyValue(prizePoolElement.textContent)
+  );
+}
+
+const prizePoolObserver = new MutationObserver(() => {
+  refreshPrizePoolBreakdownFromPage();
+});
+
+document.querySelectorAll("[data-prize-pool]").forEach(element => {
+  prizePoolObserver.observe(element, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+});
+
+refreshPrizePoolBreakdownFromPage();
 </script>
 
 </body>

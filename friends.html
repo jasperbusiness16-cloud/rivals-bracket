@@ -264,6 +264,342 @@ document
     });
   });
 
+let friendsMap = {};
+let incomingRequestMap = {};
+let outgoingRequestMap = {};
+
+function getPlayerInitials(name) {
+  return String(name || "RG")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function getFriendAvatarHtml(player) {
+  if (player.profileImage) {
+    return `
+      <img
+        class="friend-avatar"
+        src="${player.profileImage}"
+        alt="${player.displayName || "Player"}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+      >
+
+      <div class="friend-avatar-fallback" style="display:none;">
+        ${getPlayerInitials(player.displayName)}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="friend-avatar-fallback">
+      ${getPlayerInitials(player.displayName)}
+    </div>
+  `;
+}
+
+function renderFriendsList() {
+  const container = document.getElementById("friendsList");
+  const count = document.getElementById("friendsCount");
+
+  if (!container || !count) return;
+
+  const friendUids = Object.keys(friendsMap || {});
+  count.innerText = friendUids.length;
+
+  if (!friendUids.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        You have no friends yet. Use Find Players to send a request.
+      </div>
+    `;
+    return;
+  }
+
+  Promise.all(
+    friendUids.map(uid => RGFriends.getPlayer(uid))
+  )
+  .then(players => {
+    const validPlayers = players
+      .filter(Boolean)
+      .sort((a, b) =>
+        String(a.displayName || "").localeCompare(
+          String(b.displayName || "")
+        )
+      );
+
+    container.innerHTML = validPlayers.map(player => `
+      <article class="friend-card">
+
+        ${getFriendAvatarHtml(player)}
+
+        <div class="friend-main">
+          <strong>${player.displayName || "Player"}</strong>
+
+          <span>
+            ${player.rgId || "RG Player"}
+            ${player.equippedTitle ? ` • ${player.equippedTitle}` : ""}
+          </span>
+        </div>
+
+        <div class="friend-actions">
+
+          <a
+            class="friend-action-button"
+            href="player.html?id=${player.uid}"
+          >
+            Profile
+          </a>
+
+          <button
+            class="friend-action-button primary"
+            type="button"
+            disabled
+            title="Daily Gifts are coming next"
+          >
+            Gift Soon
+          </button>
+
+        </div>
+
+      </article>
+    `).join("");
+  })
+  .catch(error => {
+    container.innerHTML = `
+      <div class="friends-empty">
+        ${error.message}
+      </div>
+    `;
+  });
+}
+
+function loadRequestPlayers(requestMap, direction) {
+  const requestIds = Object.keys(requestMap || {});
+
+  return Promise.all(
+    requestIds.map(requestId =>
+      RGFriends.getRequest(requestId)
+        .then(request => {
+          if (!request) return null;
+
+          const playerUid =
+            direction === "incoming"
+              ? request.senderUid
+              : request.receiverUid;
+
+          return RGFriends.getPlayer(playerUid)
+            .then(player => ({
+              requestId,
+              request,
+              player
+            }));
+        })
+    )
+  )
+  .then(items => items.filter(item => item?.player));
+}
+
+function renderIncomingRequests() {
+  const container = document.getElementById(
+    "incomingRequestsList"
+  );
+
+  const count = document.getElementById(
+    "incomingRequestCount"
+  );
+
+  if (!container || !count) return;
+
+  const requestIds = Object.keys(
+    incomingRequestMap || {}
+  );
+
+  count.innerText = requestIds.length;
+
+  if (!requestIds.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No incoming friend requests.
+      </div>
+    `;
+    return;
+  }
+
+  loadRequestPlayers(incomingRequestMap, "incoming")
+    .then(items => {
+      container.innerHTML = items.map(item => `
+        <article class="friend-request-card">
+
+          ${getFriendAvatarHtml(item.player)}
+
+          <div class="friend-main">
+            <strong>
+              ${item.player.displayName || "Player"}
+            </strong>
+
+            <span>
+              ${item.player.rgId || "RG Player"}
+            </span>
+          </div>
+
+          <div class="friend-actions">
+
+            <button
+              class="friend-action-button primary"
+              type="button"
+              onclick="handleAcceptRequest('${item.requestId}')"
+            >
+              Accept
+            </button>
+
+            <button
+              class="friend-action-button danger"
+              type="button"
+              onclick="handleDeclineRequest('${item.requestId}')"
+            >
+              Decline
+            </button>
+
+          </div>
+
+        </article>
+      `).join("");
+    })
+    .catch(error => {
+      container.innerHTML = `
+        <div class="friends-empty">
+          ${error.message}
+        </div>
+      `;
+    });
+}
+
+function renderOutgoingRequests() {
+  const container = document.getElementById(
+    "outgoingRequestsList"
+  );
+
+  if (!container) return;
+
+  const requestIds = Object.keys(
+    outgoingRequestMap || {}
+  );
+
+  if (!requestIds.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No outgoing friend requests.
+      </div>
+    `;
+    return;
+  }
+
+  loadRequestPlayers(outgoingRequestMap, "outgoing")
+    .then(items => {
+      container.innerHTML = items.map(item => `
+        <article class="friend-request-card">
+
+          ${getFriendAvatarHtml(item.player)}
+
+          <div class="friend-main">
+            <strong>
+              ${item.player.displayName || "Player"}
+            </strong>
+
+            <span>
+              Request pending
+            </span>
+          </div>
+
+          <div class="friend-actions">
+
+            <button
+              class="friend-action-button danger"
+              type="button"
+              onclick="handleCancelRequest('${item.requestId}')"
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </article>
+      `).join("");
+    })
+    .catch(error => {
+      container.innerHTML = `
+        <div class="friends-empty">
+          ${error.message}
+        </div>
+      `;
+    });
+}
+
+function handleAcceptRequest(requestId) {
+  if (!currentUser) return;
+
+  setFriendsStatus("Accepting request...");
+
+  RGFriends.acceptFriendRequest(
+    currentUser.uid,
+    requestId
+  )
+  .then(() => {
+    setFriendsStatus(
+      "✓ Friend request accepted.",
+      "#22c55e"
+    );
+  })
+  .catch(error => {
+    setFriendsStatus(error.message, "#ef4444");
+  });
+}
+
+function handleDeclineRequest(requestId) {
+  if (!currentUser) return;
+
+  setFriendsStatus("Declining request...");
+
+  RGFriends.declineFriendRequest(
+    currentUser.uid,
+    requestId
+  )
+  .then(() => {
+    setFriendsStatus(
+      "Friend request declined.",
+      "#facc15"
+    );
+  })
+  .catch(error => {
+    setFriendsStatus(error.message, "#ef4444");
+  });
+}
+
+function handleCancelRequest(requestId) {
+  if (!currentUser) return;
+
+  setFriendsStatus("Canceling request...");
+
+  RGFriends.cancelFriendRequest(
+    currentUser.uid,
+    requestId
+  )
+  .then(() => {
+    setFriendsStatus(
+      "Outgoing request canceled.",
+      "#facc15"
+    );
+  })
+  .catch(error => {
+    setFriendsStatus(error.message, "#ef4444");
+  });
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -278,6 +614,30 @@ auth.onAuthStateChanged(user => {
 
   currentUser = user;
 
+RGFriends.listenToFriends(
+  user.uid,
+  data => {
+    friendsMap = data;
+    renderFriendsList();
+  }
+);
+
+RGFriends.listenToIncomingRequests(
+  user.uid,
+  data => {
+    incomingRequestMap = data;
+    renderIncomingRequests();
+  }
+);
+
+RGFriends.listenToOutgoingRequests(
+  user.uid,
+  data => {
+    outgoingRequestMap = data;
+    renderOutgoingRequests();
+  }
+);
+  
   RGNotificationCenter.init(
     user.uid,
     "#friendsNotificationMount"

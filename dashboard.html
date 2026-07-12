@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+in<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -124,45 +124,7 @@
 
         <div class="dashboard-top-actions">
 
-<div class="notification-center">
-
-  <button
-    id="notificationBell"
-    class="notification-bell"
-    type="button"
-    onclick="toggleNotificationPanel()"
-    aria-label="Open notifications"
-  >
-    <span class="notification-bell-icon">🔔</span>
-    <span id="notificationUnreadBadge" class="notification-unread-badge">0</span>
-  </button>
-
-  <div id="notificationPanel" class="notification-panel">
-
-    <div class="notification-panel-header">
-      <div>
-        <span>RIVALS GAUNTLET</span>
-        <h3>Notifications</h3>
-      </div>
-
-      <button
-        class="notification-mark-all"
-        type="button"
-        onclick="handleMarkAllNotificationsRead()"
-      >
-        Mark all as read
-      </button>
-    </div>
-
-    <div id="notificationList" class="notification-list">
-      <div class="notification-empty">
-        Loading notifications...
-      </div>
-    </div>
-
-  </div>
-
-</div>
+<div id="dashboardNotificationMount"></div>
           
   <a id="topProfileBtn" class="account-secondary" href="#">
     View Public Profile
@@ -1200,138 +1162,7 @@ function renderRgPointHistory() {
     });
 }
 
-let dashboardNotifications = [];
 
-function toggleNotificationPanel() {
-  document
-    .getElementById("notificationPanel")
-    ?.classList.toggle("show");
-}
-
-function getNotificationIcon(type) {
-  const icons = {
-    friend_request: "👥",
-    friend_accepted: "✓",
-    gift_received: "🎁",
-    daily_check_in: "📅",
-    commendation: "★",
-    comment: "💬",
-    tournament: "🏆",
-    prediction_reward: "🎯",
-    crate_reward: "📦",
-    substitution: "🚨",
-    general: "🔔"
-  };
-
-  return icons[type] || icons.general;
-}
-
-function formatNotificationTime(timestamp) {
-  const value = Number(timestamp || 0);
-  if (!value) return "";
-
-  const diff = Date.now() - value;
-  const minutes = Math.floor(diff / 60000);
-
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-
-  return new Date(value).toLocaleDateString();
-}
-
-function renderNotificationCenter(notifications) {
-  dashboardNotifications = notifications || [];
-
-  const badge = document.getElementById("notificationUnreadBadge");
-  const list = document.getElementById("notificationList");
-
-  if (!badge || !list) return;
-
-  const unreadCount = dashboardNotifications.filter(
-    notification => !notification.read
-  ).length;
-
-  badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
-  badge.style.display = unreadCount > 0 ? "flex" : "none";
-
-  if (!dashboardNotifications.length) {
-    list.innerHTML = `
-      <div class="notification-empty">
-        You have no notifications yet.
-      </div>
-    `;
-    return;
-  }
-
-  list.innerHTML = dashboardNotifications.map(notification => `
-    <div
-      class="notification-item ${notification.read ? "" : "unread"}"
-      onclick="openNotification('${notification.id}')"
-    >
-      <div class="notification-item-icon">
-        ${getNotificationIcon(notification.type)}
-      </div>
-
-      <div class="notification-item-content">
-        <strong>${notification.title || "Rivals Gauntlet"}</strong>
-        <p>${notification.message || ""}</p>
-        <time>${formatNotificationTime(notification.createdAt)}</time>
-      </div>
-
-      ${
-        notification.read
-          ? ""
-          : `<div class="notification-unread-dot"></div>`
-      }
-    </div>
-  `).join("");
-}
-
-function openNotification(notificationId) {
-  if (!currentUser) return;
-
-  const notification = dashboardNotifications.find(
-    item => item.id === notificationId
-  );
-
-  markNotificationRead(currentUser.uid, notificationId)
-    .then(() => {
-      if (notification?.link) {
-        window.location.href = notification.link;
-      }
-    })
-    .catch(error => {
-      console.error("Notification read error:", error);
-    });
-}
-
-function handleMarkAllNotificationsRead() {
-  if (!currentUser) return;
-
-  markAllNotificationsRead(currentUser.uid)
-    .catch(error => {
-      console.error("Mark all read error:", error);
-    });
-}
-
-document.addEventListener("click", event => {
-  const center = document.querySelector(".notification-center");
-  const panel = document.getElementById("notificationPanel");
-
-  if (
-    center &&
-    panel &&
-    !center.contains(event.target)
-  ) {
-    panel.classList.remove("show");
-  }
-});
   
 auth.onAuthStateChanged((user) => {
   if (!user) {
@@ -1340,7 +1171,11 @@ auth.onAuthStateChanged((user) => {
   }
 
   currentUser = user;
-  listenToNotifications(user.uid, renderNotificationCenter);
+  
+  RGNotificationCenter.init(
+  user.uid,
+  "#dashboardNotificationMount"
+);
   
   
 database.ref(`activities/${user.uid}`).on("value", snapshot => {

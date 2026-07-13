@@ -1199,6 +1199,78 @@ function closeDailyGiftOddsModal() {
   });
 }
   
+  function renderDailyGiftInbox() {
+  const container = document.getElementById(
+    "dailyGiftInboxList"
+  );
+
+  const unopenedCount = document.getElementById(
+    "unopenedGiftsCount"
+  );
+
+  if (!container || !unopenedCount) return;
+
+  const unopenedGifts = (dailyGiftInbox || [])
+    .filter(gift => !gift.opened);
+
+  unopenedCount.innerText = unopenedGifts.length;
+
+  if (!unopenedGifts.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        You have no unopened Daily Gifts.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = unopenedGifts.map(gift => `
+    <article class="daily-gift-inbox-card">
+
+      <div class="daily-gift-inbox-icon">
+        🎁
+      </div>
+
+      <div class="friend-main">
+        <strong>Daily Gift</strong>
+
+        <span>
+          From ${escapeFriendHtml(
+            gift.senderName || "Friend"
+          )}
+        </span>
+      </div>
+
+      <div class="friend-actions">
+        <button
+          class="friend-action-button primary"
+          type="button"
+          onclick="handleOpenDailyGift('${gift.id}')"
+        >
+          Open Gift
+        </button>
+      </div>
+
+    </article>
+  `).join("");
+}
+
+function handleOpenDailyGift(giftId) {
+  if (!currentUser || !giftId) return;
+
+  setFriendsStatus(
+    "Gift opening will be enabled after the secure backend is deployed.",
+    "#facc15"
+  );
+
+  RGDailyGifts.openGiftSecurely(
+    currentUser.uid,
+    giftId
+  ).catch(error => {
+    console.log(error.message);
+  });
+}
+  
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -1229,6 +1301,7 @@ RGDailyGifts.listenToGiftInbox(
   user.uid,
   gifts => {
     dailyGiftInbox = gifts;
+    renderDailyGiftInbox();
   }
 );
 

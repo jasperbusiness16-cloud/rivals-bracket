@@ -111,6 +111,15 @@
       Add Friend
     </button>
 
+<button
+  id="profileGiftButton"
+  class="account-secondary"
+  type="button"
+  style="display:none;"
+>
+  🎁 Send Gift
+</button>
+
   </div>
 </div>
 
@@ -177,6 +186,8 @@
 <script src="notifications.js?v=1"></script>
 <script src="notification-center.js?v=1"></script>
 <script src="friends.js?v=1"></script>
+<script src="daily-gifts.js?v=1"></script>
+
 
 <script>
 
@@ -187,6 +198,13 @@ let viewedPlayer = null;
 let profileFriendsMap = {};
 let profileIncomingRequestMap = {};
 let profileOutgoingRequestMap = {};
+  
+  let profileDailyGiftStats = {
+  sentCount: 0,
+  receivedCount: 0,
+  receivedLimit: 5,
+  sentTo: {}
+};
   
   function clean(value, fallback = "") {
   return String(value || fallback).trim();
@@ -378,6 +396,39 @@ function getProfileFriendState() {
   };
 }
 
+function renderProfileGiftButton() {
+  const button = document.getElementById(
+    "profileGiftButton"
+  );
+
+  if (!button || !currentUser || !playerId) return;
+
+  const isFriend = Boolean(
+    profileFriendsMap[playerId]
+  );
+
+  if (
+    currentUser.uid === playerId ||
+    !isFriend
+  ) {
+    button.style.display = "none";
+    return;
+  }
+
+  const giftState =
+    RGDailyGifts.getGiftButtonState(
+      profileDailyGiftStats,
+      playerId
+    );
+
+  button.style.display = "inline-flex";
+  button.disabled = giftState.disabled;
+  button.innerText = `🎁 ${giftState.label}`;
+  button.title =
+    giftState.reason ||
+    "Send this friend their Daily Gift";
+}
+
 function renderProfileFriendButton() {
   const button = document.getElementById(
     "profileFriendButton"
@@ -428,6 +479,8 @@ function renderProfileFriendButton() {
   button.innerText = "Add Friend";
   button.dataset.action = "send";
   button.dataset.requestId = "";
+
+renderProfileGiftButton();
 }
 
 function handleProfileFriendAction() {
@@ -483,6 +536,33 @@ document
     handleProfileFriendAction
   );
   
+  document
+  .getElementById("profileGiftButton")
+  ?.addEventListener("click", () => {
+    if (!currentUser || !playerId) return;
+
+    const giftState =
+      RGDailyGifts.getGiftButtonState(
+        profileDailyGiftStats,
+        playerId
+      );
+
+    if (giftState.disabled) {
+      alert(
+        giftState.reason ||
+        "Daily Gift unavailable."
+      );
+      return;
+    }
+
+    RGDailyGifts.sendGiftSecurely(
+      currentUser.uid,
+      playerId
+    ).catch(error => {
+      alert(error.message);
+    });
+  });
+  
 const playerId = getPlayerId();
 
 if (!playerId) {
@@ -530,6 +610,14 @@ auth.onAuthStateChanged(user => {
     "#profileNotificationMount"
   );
 
+RGDailyGifts.listenToDailyStats(
+  user.uid,
+  stats => {
+    profileDailyGiftStats = stats;
+    renderProfileGiftButton();
+  }
+);
+
   database
     .ref(`players/${user.uid}`)
     .once("value")
@@ -547,6 +635,7 @@ auth.onAuthStateChanged(user => {
     data => {
       profileFriendsMap = data;
       renderProfileFriendButton();
+      renderProfileGiftButton();
     }
   );
 

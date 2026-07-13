@@ -490,6 +490,27 @@ document
   );
 
 document
+  .getElementById("dailyGiftOpenClose")
+  ?.addEventListener(
+    "click",
+    closeDailyGiftOpenModal
+  );
+
+document
+  .getElementById("dailyGiftContinueButton")
+  ?.addEventListener(
+    "click",
+    closeDailyGiftOpenModal
+  );
+
+document
+  .querySelector(".daily-gift-open-backdrop")
+  ?.addEventListener(
+    "click",
+    closeDailyGiftOpenModal
+  );
+
+document
   .getElementById("dailyGiftOddsClose")
   ?.addEventListener(
     "click",
@@ -506,6 +527,7 @@ document
 document.addEventListener("keydown", event => {
   if (event.key === "Escape") {
     closeDailyGiftOddsModal();
+    closeDailyGiftOpenModal();
   }
 });
   
@@ -1337,20 +1359,76 @@ function closeDailyGiftOddsModal() {
   `).join("");
 }
 
+let selectedDailyGiftId = "";
+
 function handleOpenDailyGift(giftId) {
   if (!currentUser || !giftId) return;
 
-  setFriendsStatus(
-    "Gift opening will be enabled after the secure backend is deployed.",
-    "#facc15"
+  const gift = (dailyGiftInbox || []).find(
+    item => item.id === giftId
   );
 
-  RGDailyGifts.openGiftSecurely(
-    currentUser.uid,
-    giftId
-  ).catch(error => {
-    console.log(error.message);
-  });
+  if (!gift) {
+    setFriendsStatus(
+      "This gift could not be found.",
+      "#ef4444"
+    );
+    return;
+  }
+
+  selectedDailyGiftId = giftId;
+
+  document.getElementById(
+    "dailyGiftOpenTitle"
+  ).innerText = `Gift From ${
+    gift.senderName || "Friend"
+  }`;
+
+  document.getElementById(
+    "dailyGiftSenderText"
+  ).innerText = `${
+    gift.senderName || "A friend"
+  } sent you a surprise reward.`;
+
+  const modal = document.getElementById(
+    "dailyGiftOpenModal"
+  );
+
+  const card = document.querySelector(
+    ".daily-gift-open-card"
+  );
+
+  const openingStage = document.getElementById(
+    "dailyGiftOpeningStage"
+  );
+
+  const rewardStage = document.getElementById(
+    "dailyGiftRewardStage"
+  );
+
+  card?.classList.remove("opening", "revealed");
+
+  if (openingStage) {
+    openingStage.style.display = "flex";
+  }
+
+  if (rewardStage) {
+    rewardStage.style.display = "none";
+  }
+
+  modal?.classList.add("show");
+  modal?.setAttribute("aria-hidden", "false");
+}
+
+function closeDailyGiftOpenModal() {
+  const modal = document.getElementById(
+    "dailyGiftOpenModal"
+  );
+
+  modal?.classList.remove("show");
+  modal?.setAttribute("aria-hidden", "true");
+
+  selectedDailyGiftId = "";
 }
   
 function logoutUser() {

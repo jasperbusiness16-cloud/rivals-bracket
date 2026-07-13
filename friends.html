@@ -419,6 +419,25 @@ function getFriendAvatarHtml(player) {
   `;
 }
 
+function getDailyGiftButtonHtml(friendUid) {
+  const giftState = RGDailyGifts.getGiftButtonState(
+    dailyGiftStats,
+    friendUid
+  );
+
+  return `
+    <button
+      class="friend-action-button primary"
+      type="button"
+      ${giftState.disabled ? "disabled" : ""}
+      title="${giftState.reason || "Send this friend their Daily Gift"}"
+      onclick="handleSendDailyGift('${friendUid}')"
+    >
+      🎁 ${giftState.label}
+    </button>
+  `;
+}
+
 function renderFriendsList() {
   const container = document.getElementById("friendsList");
   const count = document.getElementById("friendsCount");
@@ -472,14 +491,7 @@ function renderFriendsList() {
             Profile
           </a>
 
-          <button
-            class="friend-action-button primary"
-            type="button"
-            disabled
-            title="Daily Gifts are coming next"
-          >
-            Gift Soon
-          </button>
+        ${getDailyGiftButtonHtml(player.uid)}
 
         </div>
 
@@ -1101,6 +1113,35 @@ function closeDailyGiftOddsModal() {
 
   modal.classList.remove("show");
   modal.setAttribute("aria-hidden", "true");
+}
+  
+  function handleSendDailyGift(friendUid) {
+  if (!currentUser || !friendUid) return;
+
+  const giftState = RGDailyGifts.getGiftButtonState(
+    dailyGiftStats,
+    friendUid
+  );
+
+  if (giftState.disabled) {
+    setFriendsStatus(
+      giftState.reason || "Gift unavailable.",
+      "#facc15"
+    );
+    return;
+  }
+
+  setFriendsStatus(
+    "Daily Gift sending will be enabled after the secure backend is deployed.",
+    "#facc15"
+  );
+
+  RGDailyGifts.sendGiftSecurely(
+    currentUser.uid,
+    friendUid
+  ).catch(error => {
+    console.log(error.message);
+  });
 }
   
 function logoutUser() {

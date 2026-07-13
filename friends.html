@@ -101,6 +101,11 @@
   </small>
 </div>
 
+<div class="friends-overview-card">
+  <span>Unopened Gifts</span>
+  <strong id="unopenedGiftsCount">0</strong>
+</div>
+
       </section>
 
 
@@ -115,6 +120,14 @@
           >
             Friends
           </button>
+
+<button
+  class="friends-tab"
+  type="button"
+  data-friends-tab="gifts"
+>
+  Daily Gifts
+</button>
 
           <button
             class="friends-tab"
@@ -148,6 +161,40 @@
 
         </div>
 
+<div
+  id="giftsTabContent"
+  class="friends-tab-content"
+>
+
+  <div class="daily-gift-inbox-header">
+
+    <div>
+      <h2>Daily Gifts</h2>
+
+      <p>
+        Open gifts sent by your friends and reveal your rewards.
+      </p>
+    </div>
+
+    <button
+      id="giftOddsSecondaryButton"
+      class="friend-action-button"
+      type="button"
+    >
+      ⓘ Reward Odds
+    </button>
+
+  </div>
+
+  <div id="dailyGiftInboxList">
+
+    <div class="friends-empty">
+      You have no unopened Daily Gifts.
+    </div>
+
+  </div>
+
+</div>
 
         <div
           id="requestsTabContent"
@@ -315,10 +362,11 @@ function setFriendsTab(tabName) {
     });
 
   const tabMap = {
-    friends: "friendsTabContent",
-    requests: "requestsTabContent",
-    find: "findTabContent"
-  };
+  friends: "friendsTabContent",
+  gifts: "giftsTabContent",
+  requests: "requestsTabContent",
+  find: "findTabContent"
+};
 
   document
     .getElementById(tabMap[tabName])
@@ -347,6 +395,13 @@ document
   
   document
   .getElementById("dailyGiftInfoButton")
+  ?.addEventListener(
+    "click",
+    openDailyGiftOddsModal
+  );
+
+document
+  .getElementById("giftOddsSecondaryButton")
   ?.addEventListener(
     "click",
     openDailyGiftOddsModal

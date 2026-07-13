@@ -224,6 +224,100 @@ function setPostsStatus(
   postsStatus.style.color = color;
 }
 
+function escapePostHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderOfficialPosts() {
+  const container = document.getElementById(
+    "officialPostsList"
+  );
+
+  const filter = document.getElementById(
+    "postCategoryFilter"
+  )?.value || "all";
+
+  if (!container) return;
+
+  const visiblePosts = officialPosts.filter(post =>
+    filter === "all" || post.category === filter
+  );
+
+  if (!visiblePosts.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No official posts are available in this category yet.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = visiblePosts.map(post => `
+    <article
+      class="official-post-card ${post.pinned ? "pinned" : ""}"
+    >
+      <div class="official-post-meta">
+        <span class="official-post-category">
+          ${escapePostHtml(
+            RGPosts.getPostCategoryLabel(post.category)
+          )}
+        </span>
+
+        <time class="official-post-date">
+          ${escapePostHtml(
+            RGPosts.formatPostDate(post.createdAt)
+          )}
+        </time>
+      </div>
+
+      <h3>${escapePostHtml(post.title || "Official Update")}</h3>
+
+      <p>${escapePostHtml(post.body || "")}</p>
+
+      ${
+        post.image
+          ? `
+            <img
+              class="official-post-image"
+              src="${escapePostHtml(post.image)}"
+              alt="${escapePostHtml(post.title || "Official Post")}"
+            >
+          `
+          : ""
+      }
+
+      <div class="official-post-footer">
+        <span class="official-post-author">
+          ${post.pinned ? "📌 Pinned • " : ""}
+          Posted by ${escapePostHtml(
+            post.authorName || "Rivals Gauntlet"
+          )}
+        </span>
+
+        <button
+          class="official-post-discussion-button"
+          type="button"
+          onclick="openPostDiscussion('${post.id}')"
+        >
+          💬 ${Number(post.commentCount || 0)} Comments
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+document
+  .getElementById("postCategoryFilter")
+  ?.addEventListener(
+    "change",
+    renderOfficialPosts
+  );
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -256,6 +350,12 @@ auth.onAuthStateChanged(user => {
         ...(snapshot.val() || {})
       };
     });
+
+RGPosts.listenToPosts(posts => {
+  officialPosts = posts;
+  renderOfficialPosts();
+});
+
 });
 </script>
 

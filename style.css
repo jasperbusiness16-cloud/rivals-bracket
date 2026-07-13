@@ -2839,3 +2839,75 @@ nav .mobile-join{
   color:#9ca3af;
   line-height:1.6;
 }
+
+/* ================================
+   DAILY GIFT INBOX
+================================ */
+
+.daily-gift-inbox-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:20px;
+}
+
+.daily-gift-inbox-header h2{
+  margin:0;
+  color:#fff;
+  font-size:24px;
+  text-transform:uppercase;
+}
+
+.daily-gift-inbox-header p{
+  margin:5px 0 0;
+  color:#8b949e;
+}
+
+#dailyGiftInboxList{
+  display:grid;
+  gap:12px;
+}
+
+.daily-gift-inbox-card{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  border-radius:18px;
+  border:1px solid rgba(168,85,247,.18);
+  background:
+    radial-gradient(
+      circle at right,
+      rgba(168,85,247,.09),
+      transparent 38%
+    ),
+    rgba(255,255,255,.035);
+}
+
+.daily-gift-inbox-icon{
+  width:52px;
+  height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  background:rgba(168,85,247,.13);
+  font-size:24px;
+}
+
+@media(max-width:650px){
+  .daily-gift-inbox-header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .daily-gift-inbox-card{
+    grid-template-columns:auto 1fr;
+  }
+
+  .daily-gift-inbox-card .friend-actions{
+    grid-column:1 / -1;
+  }
+}

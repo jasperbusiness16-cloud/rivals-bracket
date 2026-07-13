@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Community Updates | Rivals Gauntlet</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=6">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>COMMUNITY FEED</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="predictions.html">Predictions</a>
+        <a href="shop.html">Shop</a>
+        <a href="friends.html">Friends</a>
+        <a class="active" href="posts.html">Updates</a>
+        <a href="settings.html">Settings</a>
+
+        <button onclick="logoutUser()">
+          Sign Out
+        </button>
+      </nav>
+
+    </aside>
+
+    <main class="account-main">
+
+      <div class="account-topbar">
+
+        <div>
+          <p>OFFICIAL RIVALS GAUNTLET POSTS</p>
+
+          <h1>Community Updates</h1>
+
+          <span>
+            Tournament announcements, registrations, results, shop updates, and community discussion.
+          </span>
+        </div>
+
+        <div class="dashboard-top-actions">
+
+          <div id="postsNotificationMount"></div>
+
+          <a
+            id="postsPublicProfileBtn"
+            class="account-secondary"
+            href="#"
+          >
+            View Public Profile
+          </a>
+
+        </div>
+
+      </div>
+
+      <section class="official-posts-layout">
+
+        <div class="official-posts-feed">
+
+          <div class="official-posts-feed-header">
+            <div>
+              <span>OFFICIAL FEED</span>
+              <h2>Latest Posts</h2>
+            </div>
+
+            <select id="postCategoryFilter">
+              <option value="all">All Updates</option>
+              <option value="announcement">Announcements</option>
+              <option value="tournament">Tournaments</option>
+              <option value="registration">Registration</option>
+              <option value="results">Results</option>
+              <option value="shop">Shop Updates</option>
+              <option value="prediction">Predictions</option>
+              <option value="community">Community</option>
+              <option value="prize_pool">Prize Pool</option>
+            </select>
+          </div>
+
+          <div id="officialPostsList">
+            <div class="friends-empty">
+              Loading official posts...
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="official-posts-sidebar">
+
+          <section class="official-posts-info-card">
+            <span>ABOUT THIS FEED</span>
+
+            <h2>Official Discussions</h2>
+
+            <p>
+              Rivals Gauntlet staff publish every post. Signed-in players may comment underneath official updates.
+            </p>
+          </section>
+
+          <section class="official-posts-info-card">
+            <span>COMING SOON</span>
+
+            <h2>Community Features</h2>
+
+            <p>
+              Pinned posts, comment replies, reactions, polls, and event reminders can be added later.
+            </p>
+          </section>
+
+        </aside>
+
+      </section>
+
+      <p id="postsStatus" class="account-status"></p>
+
+    </main>
+
+  </div>
+</div>
+
+
+<div
+  id="postDiscussionModal"
+  class="post-discussion-modal"
+  aria-hidden="true"
+>
+  <div class="post-discussion-backdrop"></div>
+
+  <div class="post-discussion-card">
+
+    <button
+      id="postDiscussionClose"
+      class="post-discussion-close"
+      type="button"
+      aria-label="Close discussion"
+    >
+      ×
+    </button>
+
+    <article id="selectedPostContent"></article>
+
+    <section class="post-comments-section">
+
+      <div class="post-comments-header">
+        <h2>Discussion</h2>
+        <span id="selectedPostCommentCount">0 Comments</span>
+      </div>
+
+      <form id="postCommentForm" class="post-comment-form">
+
+        <textarea
+          id="postCommentInput"
+          maxlength="500"
+          placeholder="Join the discussion..."
+        ></textarea>
+
+        <div class="post-comment-form-footer">
+          <span id="postCommentCharacterCount">0/500</span>
+
+          <button
+            id="postCommentSubmit"
+            class="account-primary"
+            type="submit"
+          >
+            Post Comment
+          </button>
+        </div>
+
+      </form>
+
+      <div id="postCommentsList">
+        <div class="friends-empty">
+          Select a post to view comments.
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="posts.js?v=1"></script>
+
+<script>
+let currentUser = null;
+let currentPlayer = null;
+
+let officialPosts = [];
+let selectedPost = null;
+let selectedPostComments = [];
+let stopSelectedPostComments = null;
+
+const postsStatus =
+  document.getElementById("postsStatus");
+
+function setPostsStatus(
+  message,
+  color = "#c9d1d9"
+) {
+  postsStatus.innerText = message || "";
+  postsStatus.style.color = color;
+}
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  RGNotificationCenter.init(
+    user.uid,
+    "#postsNotificationMount"
+  );
+
+  document.getElementById(
+    "postsPublicProfileBtn"
+  ).href = `player.html?id=${user.uid}`;
+
+  database
+    .ref(`players/${user.uid}`)
+    .once("value")
+    .then(snapshot => {
+      currentPlayer = {
+        uid: user.uid,
+        ...(snapshot.val() || {})
+      };
+    });
+});
+</script>
+
+</body>
+</html>

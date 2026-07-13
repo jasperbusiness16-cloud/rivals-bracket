@@ -504,6 +504,10 @@ document
   );
 
 document
+  .getElementById("dailyGiftRevealButton")
+  ?.addEventListener("click", previewDailyGiftReveal);
+
+document
   .querySelector(".daily-gift-open-backdrop")
   ?.addEventListener(
     "click",
@@ -1429,6 +1433,80 @@ function closeDailyGiftOpenModal() {
   modal?.setAttribute("aria-hidden", "true");
 
   selectedDailyGiftId = "";
+}
+  
+  function previewDailyGiftReveal() {
+  if (!selectedDailyGiftId) return;
+
+  const card = document.querySelector(
+    ".daily-gift-open-card"
+  );
+
+  const openingStage = document.getElementById(
+    "dailyGiftOpeningStage"
+  );
+
+  const rewardStage = document.getElementById(
+    "dailyGiftRewardStage"
+  );
+
+  const rewardIcon = document.getElementById(
+    "dailyGiftRewardIcon"
+  );
+
+  const rewardName = document.getElementById(
+    "dailyGiftRewardName"
+  );
+
+  const rewardRarity = document.getElementById(
+    "dailyGiftRewardRarity"
+  );
+
+  const rewardMessage = document.getElementById(
+    "dailyGiftRewardMessage"
+  );
+
+  card?.classList.remove("revealed");
+  card?.classList.add("opening");
+
+  const previewReward =
+    RGDailyGifts.rewardOdds.find(
+      reward => reward.id === "rp_40"
+    ) || RGDailyGifts.rewardOdds[0];
+
+  setTimeout(() => {
+    card?.classList.remove("opening");
+    card?.classList.add("revealed");
+
+    if (openingStage) {
+      openingStage.style.display = "none";
+    }
+
+    if (rewardStage) {
+      rewardStage.style.display = "flex";
+    }
+
+    if (rewardIcon) {
+      rewardIcon.innerText =
+        RGDailyGifts.getRewardIcon(previewReward);
+    }
+
+    if (rewardName) {
+      rewardName.innerText = previewReward.label;
+    }
+
+    if (rewardRarity) {
+      rewardRarity.innerText =
+        previewReward.jackpot
+          ? "JACKPOT"
+          : "DAILY GIFT REWARD";
+    }
+
+    if (rewardMessage) {
+      rewardMessage.innerText =
+        "Preview only — no reward has been added yet.";
+    }
+  }, 1150);
 }
   
 function logoutUser() {

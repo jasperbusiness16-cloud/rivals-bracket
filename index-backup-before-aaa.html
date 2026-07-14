@@ -1,1 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rivals Gauntlet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <span>RIVALS GAUNTLET</span>
+  </a>
+
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+  <nav id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="tournament.html">Tournament</a>
+  <a href="teams.html">Teams</a>
+  <a href="champions.html">Champions</a>
+  <a href="watch.html">Watch Live</a>
+  <a href="donate.html">Donations</a>
+  <a href="about.html">About</a>
+
+  <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+    JOIN THE ACTION
+  </a>
+</nav>
+
+  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
+    JOIN THE ACTION
+  </a>
+</header>
+
+<section class="hero">
+  
+
+  <img src="clean logo.PNG"
+       alt="Rivals Gauntlet"
+       class="hero-logo">
+
+  <h2>COMPETE. WATCH. DOMINATE.</h2>
+
+  <p>
+    Competitive Marvel Rivals tournaments with live broadcasts, prize pools, and community competition.
+  </p>
+
+  <div class="hero-buttons">
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank" class="primary">
+      JOIN THE ACTION
+    </a>
+
+    <a href="tournament.html" class="secondary">
+      VIEW TOURNAMENT
+    </a>
+
+    <a href="watch.html" class="secondary">
+      WATCH LIVE
+    </a>
+  </div>
+</section>
+
+<section class="features-section">
+  <div class="section-heading">
+    <p class="eyebrow">WHY RIVALS GAUNTLET?</p>
+    <h2>Where Competitive Players Get Seen.</h2>
+  </div>
+
+  <div class="features-grid">
+<div class="feature-card">
+  <div class="feature-icon">
+    <img src="mic-icon.PNG" alt="Commentary">
+  </div>
+
+  <h3>Fully Casted Broadcasts</h3>
+  <p>Showcase your skills on stream with live commentary and professional tournament coverage.</p>
+</div>
+
+<div class="feature-card">
+  <div class="feature-icon">
+    <img src="trophy-icon.PNG" alt="Competition">
+  </div>
+
+  <h3>Competitive Yet Accessible</h3>
+  <p>Events are designed for players of all ranks and experience levels.</p>
+</div>
+
+<div class="feature-card">
+  <div class="feature-icon">
+    <img src="broadcast-icon.PNG" alt="Featured">
+  </div>
+
+  <h3>Get Featured</h3>
+  <p>Standout performances, clutch plays, and tournament highlights can be showcased to the community.</p>
+</div>
+
+<div class="feature-card">
+  <div class="feature-icon">
+    <img src="growth-icon.PNG" alt="Growth">
+  </div>
+
+  <h3>Build Reputation</h3>
+  <p>Gain recognition through tournament performances, featured broadcasts, and community exposure.</p>
+</div>
+</div>
+</section>
+
+<section class="home-latest-post-section">
+
+  <div class="section-heading">
+    <p class="eyebrow">LATEST COMMUNITY UPDATE</p>
+    <h2>What’s New at Rivals Gauntlet</h2>
+  </div>
+
+  <div id="homeLatestPost" class="home-latest-post-card">
+
+    <div class="home-latest-post-empty">
+      Loading latest update...
+    </div>
+
+  </div>
+
+</section>
+
+<section class="casters-section">
+  <div class="section-heading">
+    <p class="eyebrow">MEET THE CASTERS</p>
+    <h2>The Brothers Behind Rivals Gauntlet.</h2>
+  </div>
+
+  <div class="casters-grid">
+
+    <div class="caster-card">
+      <img src="jasper-caster.JPG" alt="Jasper">
+
+      <h3>Jasper (atrophy)</h3>
+      <p class="caster-role">Founder & Caster</p>
+
+      <div class="caster-socials">
+  <a href="https://twitch.tv/atrophylive" target="_blank">
+    <i class="fab fa-twitch"></i>
+  </a>
+</div>
+      
+      <p>
+        Founder of Rivals Gauntlet and tournament caster focused on creating
+        competitive, entertaining broadcasts while helping build a strong
+        Marvel Rivals community.
+      </p>
+    </div>
+
+    <div class="caster-card">
+      <img src="brother-caster.PNG" alt="Jamison">
+
+      <h3>Jamison</h3>
+      <p class="caster-role">Caster</p>
+
+<div class="caster-socials">
+  <a href="https://twitch.tv/jamisonapex" target="_blank">
+    <i class="fab fa-twitch"></i>
+  </a>
+</div>
+      
+      <p>
+        A passionate Marvel Rivals caster focused on delivering engaging
+        commentary and helping bring tournament matches to life for viewers.
+      </p>
+    </div>
+
+  </div>
+</section>
+<section class="event-dashboard">
+  <div class="dashboard-card">
+    <h2>CURRENT EVENT</h2>
+
+    <h1 data-event-name>Rivals Gauntlet Open #1</h1>
+
+    <p data-format>8 Teams • Single Elimination</p>
+
+<p>
+  <strong>Registration:</strong>
+  <span class="status-badge" data-registration-status>OPEN</span>
+</p>
+
+<div class="prize-card">
+  <p>PRIZE POOL</p>
+  <strong data-prize-pool>$60</strong>
+</div>
+
+<div class="countdown-card">
+  <p>NEXT EVENT STARTS IN</p>
+  <strong data-countdown>Loading...</strong>
+</div>
+    
+<p>Bo3 Quarterfinals • Bo3 Semifinals • Bo5 Grand Finals</p>
+
+    <a href="tournament.html" class="event-btn">
+      View Bracket
+    </a>
+  </div>
+
+  <div class="dashboard-card">
+    <h2>LIVE STATUS</h2>
+
+    <h3 data-status>● OFFLINE</h3>
+
+    <p>Next Event:</p>
+    <p data-next-event-date>Loading event date...</p>
+
+    <a href="watch.html" class="event-btn">
+      Watch Live
+    </a>
+  </div>
+</section>
+
+<section class="stats-section">
+  <h2>RIVALS GAUNTLET STATS</h2>
+
+  <div class="stats-grid">
+    
+
+    <div class="stat-box">
+      <strong data-total-payout>$0</strong>
+      <span>Total Prize Money Awarded</span>
+    </div>
+
+    <div class="stat-box">
+      <strong data-events-hosted>1</strong>
+      <span>Events Hosted</span>
+    </div>
+  </div>
+</section>
+<section class="event-card">
+  <h2>JOIN THE COMMUNITY</h2>
+
+  <h3>Compete. Watch. Connect.</h3>
+
+  <p>
+    Sign up for future tournaments, find teammates,
+    watch broadcasts, and stay updated on upcoming events.
+  </p>
+
+  <a href="https://discord.gg/82HPpfkhQN" target="_blank" class="join-btn">
+    JOIN THE ACTION
+  </a>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">RIVALS GAUNTLET</div>
+
+  <div class="footer-links">
+  <a href="index.html">Home</a>
+  <a href="tournament.html">Tournament</a>
+  <a href="teams.html">Teams</a>
+  <a href="champions.html">Champions</a>
+  <a href="watch.html">Watch Live</a>
+  <a href="donate.html">Donations</a>
+  <a href="about.html">About</a>
+</div>
+
+  <div class="footer-socials">
+    <a href="https://www.twitch.tv/atrophylive" target="_blank">
+      <i class="fab fa-twitch"></i>
+    </a>
+
+    <a href="https://discord.gg/82HPpfkhQN" target="_blank">
+      <i class="fab fa-discord"></i>
+    </a>
+  </div>
+
+  <p>© 2026 Rivals Gauntlet</p>
+
+<p style="
+  margin-top:12px;
+  font-size:12px;
+  color:#666;
+  max-width:800px;
+  margin-left:auto;
+  margin-right:auto;
+">
+  Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
+</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js"></script>
+<script src="site.js"></script>
+<script src="posts.js?v=1"></script>
+
+<script>
+function toggleMenu() {
+  document.getElementById("mobileNav").classList.toggle("active");
+}
+
+function escapeHomePostHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderHomeLatestPost(post) {
+  const container = document.getElementById(
+    "homeLatestPost"
+  );
+
+  if (!container) return;
+
+  if (!post) {
+    container.innerHTML = `
+      <div class="home-latest-post-empty">
+        No official updates have been published yet.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <article class="home-latest-post-content">
+
+      <div class="home-latest-post-meta">
+        <span>
+          ${escapeHomePostHtml(
+            RGPosts.getPostCategoryLabel(post.category)
+          )}
+        </span>
+
+        <time>
+          ${escapeHomePostHtml(
+            RGPosts.formatPostDate(post.createdAt)
+          )}
+        </time>
+      </div>
+
+      <h3>
+        ${escapeHomePostHtml(
+          post.title || "Official Update"
+        )}
+      </h3>
+
+      <p>
+        ${escapeHomePostHtml(post.body || "")}
+      </p>
+
+      ${
+        post.image
+          ? `
+            <img
+              class="home-latest-post-image"
+              src="${escapeHomePostHtml(post.image)}"
+              alt="${escapeHomePostHtml(
+                post.title || "Official Update"
+              )}"
+            >
+          `
+          : ""
+      }
+
+      <div class="home-latest-post-footer">
+
+        <span>
+          Posted by ${escapeHomePostHtml(
+            post.authorName || "Rivals Gauntlet"
+          )}
+        </span>
+
+        <a
+          class="event-btn"
+          href="posts.html?post=${encodeURIComponent(post.id)}"
+        >
+          View Discussion • ${Number(post.commentCount || 0)}
+        </a>
+
+      </div>
+
+    </article>
+  `;
+}
+
+RGPosts.loadLatestPost()
+  .then(renderHomeLatestPost)
+  .catch(error => {
+    console.error("Latest post error:", error);
+
+    const container = document.getElementById(
+      "homeLatestPost"
+    );
+
+    if (container) {
+      container.innerHTML = `
+        <div class="home-latest-post-empty">
+          The latest update could not be loaded.
+        </div>
+      `;
+    }
+  });
+
+</script>
+
+</body>
+</html>

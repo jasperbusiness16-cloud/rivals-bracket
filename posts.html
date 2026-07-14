@@ -318,6 +318,368 @@ document
     renderOfficialPosts
   );
 
+document
+  .getElementById("postDiscussionClose")
+  ?.addEventListener(
+    "click",
+    closePostDiscussion
+  );
+
+document
+  .querySelector(".post-discussion-backdrop")
+  ?.addEventListener(
+    "click",
+    closePostDiscussion
+  );
+
+document
+  .getElementById("postCommentForm")
+  ?.addEventListener(
+    "submit",
+    handlePostCommentSubmit
+  );
+
+document
+  .getElementById("postCommentInput")
+  ?.addEventListener("input", event => {
+    document.getElementById(
+      "postCommentCharacterCount"
+    ).innerText =
+      `${event.target.value.length}/500`;
+  });
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closePostDiscussion();
+  }
+});
+
+function getCommentInitials(name) {
+  return String(name || "RG")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0])
+    .join("")
+    .toUpperCase();
+}
+
+function getCommentAvatarHtml(comment) {
+  if (comment.profileImage) {
+    return `
+      <img
+        class="post-comment-avatar"
+        src="${escapePostHtml(comment.profileImage)}"
+        alt="${escapePostHtml(comment.displayName || "Player")}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+      >
+
+      <div
+        class="post-comment-avatar-fallback"
+        style="display:none;"
+      >
+        ${getCommentInitials(comment.displayName)}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="post-comment-avatar-fallback">
+      ${getCommentInitials(comment.displayName)}
+    </div>
+  `;
+}
+
+function renderSelectedPost() {
+  const container = document.getElementById(
+    "selectedPostContent"
+  );
+
+  if (!container || !selectedPost) return;
+
+  container.innerHTML = `
+    <div class="official-post-meta">
+      <span class="official-post-category">
+        ${escapePostHtml(
+          RGPosts.getPostCategoryLabel(
+            selectedPost.category
+          )
+        )}
+      </span>
+
+      <time class="official-post-date">
+        ${escapePostHtml(
+          RGPosts.formatPostDate(
+            selectedPost.createdAt
+          )
+        )}
+      </time>
+    </div>
+
+    <h2>
+      ${escapePostHtml(
+        selectedPost.title || "Official Update"
+      )}
+    </h2>
+
+    <p>
+      ${escapePostHtml(selectedPost.body || "")}
+    </p>
+
+    ${
+      selectedPost.image
+        ? `
+          <img
+            class="official-post-image"
+            src="${escapePostHtml(selectedPost.image)}"
+            alt="${escapePostHtml(
+              selectedPost.title || "Official Post"
+            )}"
+          >
+        `
+        : ""
+    }
+
+    <div class="official-post-footer">
+      <span class="official-post-author">
+        Posted by ${escapePostHtml(
+          selectedPost.authorName ||
+          "Rivals Gauntlet"
+        )}
+      </span>
+    </div>
+  `;
+}
+
+function renderPostComments() {
+  const container = document.getElementById(
+    "postCommentsList"
+  );
+
+  const count = document.getElementById(
+    "selectedPostCommentCount"
+  );
+
+  if (!container || !count) return;
+
+  const commentCount =
+    selectedPostComments.length;
+
+  count.innerText =
+    `${commentCount} ${
+      commentCount === 1
+        ? "Comment"
+        : "Comments"
+    }`;
+
+  if (!selectedPostComments.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No comments yet. Be the first to join the discussion.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = selectedPostComments
+    .map(comment => `
+      <article class="post-comment-card">
+
+        ${getCommentAvatarHtml(comment)}
+
+        <div class="post-comment-main">
+          <strong>
+            ${escapePostHtml(
+              comment.displayName || "Player"
+            )}
+          </strong>
+
+          <small>
+            ${
+              comment.rgId
+                ? `${escapePostHtml(comment.rgId)} • `
+                : ""
+            }
+            ${escapePostHtml(
+              RGPosts.formatPostDate(
+                comment.createdAt
+              )
+            )}
+          </small>
+
+          <p>
+            ${escapePostHtml(comment.message || "")}
+          </p>
+        </div>
+
+        ${
+          currentUser &&
+          comment.userId === currentUser.uid
+            ? `
+              <button
+                class="post-comment-delete"
+                type="button"
+                onclick="handleDeleteComment('${comment.id}')"
+              >
+                Delete
+              </button>
+            `
+            : ""
+        }
+
+      </article>
+    `)
+    .join("");
+}
+
+function openPostDiscussion(postId) {
+  const post = officialPosts.find(
+    item => item.id === postId
+  );
+
+  if (!post) {
+    setPostsStatus(
+      "This post could not be found.",
+      "#ef4444"
+    );
+    return;
+  }
+
+  selectedPost = post;
+  selectedPostComments = [];
+
+  renderSelectedPost();
+  renderPostComments();
+
+  const modal = document.getElementById(
+    "postDiscussionModal"
+  );
+
+  modal?.classList.add("show");
+  modal?.setAttribute("aria-hidden", "false");
+
+  if (stopSelectedPostComments) {
+    stopSelectedPostComments();
+  }
+
+  stopSelectedPostComments =
+    RGPosts.listenToComments(
+      postId,
+      comments => {
+        selectedPostComments = comments;
+        renderPostComments();
+      }
+    );
+}
+
+function closePostDiscussion() {
+  const modal = document.getElementById(
+    "postDiscussionModal"
+  );
+
+  modal?.classList.remove("show");
+  modal?.setAttribute("aria-hidden", "true");
+
+  if (stopSelectedPostComments) {
+    stopSelectedPostComments();
+    stopSelectedPostComments = null;
+  }
+
+  selectedPost = null;
+  selectedPostComments = [];
+
+  document.getElementById(
+    "postCommentInput"
+  ).value = "";
+
+  document.getElementById(
+    "postCommentCharacterCount"
+  ).innerText = "0/500";
+}
+
+function handlePostCommentSubmit(event) {
+  event.preventDefault();
+
+  if (
+    !currentUser ||
+    !currentPlayer ||
+    !selectedPost
+  ) {
+    return;
+  }
+
+  const input = document.getElementById(
+    "postCommentInput"
+  );
+
+  const button = document.getElementById(
+    "postCommentSubmit"
+  );
+
+  const message = input.value.trim();
+
+  button.disabled = true;
+  button.innerText = "Posting...";
+
+  RGPosts.addComment(
+    selectedPost.id,
+    currentUser,
+    currentPlayer,
+    message
+  )
+  .then(() => {
+    input.value = "";
+
+    document.getElementById(
+      "postCommentCharacterCount"
+    ).innerText = "0/500";
+
+    setPostsStatus(
+      "✓ Comment posted.",
+      "#22c55e"
+    );
+  })
+  .catch(error => {
+    setPostsStatus(
+      error.message,
+      "#ef4444"
+    );
+  })
+  .finally(() => {
+    button.disabled = false;
+    button.innerText = "Post Comment";
+  });
+}
+
+function handleDeleteComment(commentId) {
+  if (
+    !currentUser ||
+    !selectedPost ||
+    !commentId
+  ) {
+    return;
+  }
+
+  RGPosts.deleteOwnComment(
+    selectedPost.id,
+    commentId,
+    currentUser.uid
+  )
+  .then(() => {
+    setPostsStatus(
+      "Comment deleted.",
+      "#facc15"
+    );
+  })
+  .catch(error => {
+    setPostsStatus(
+      error.message,
+      "#ef4444"
+    );
+  });
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";

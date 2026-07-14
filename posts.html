@@ -716,6 +716,31 @@ auth.onAuthStateChanged(user => {
 RGPosts.listenToPosts(posts => {
   officialPosts = posts;
   renderOfficialPosts();
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedPostId = params.get("post");
+
+  if (
+    requestedPostId &&
+    officialPosts.some(post => post.id === requestedPostId)
+  ) {
+    openPostDiscussion(requestedPostId);
+
+    params.delete("post");
+
+    const cleanUrl =
+      `${window.location.pathname}${
+        params.toString()
+          ? `?${params.toString()}`
+          : ""
+      }`;
+
+    window.history.replaceState(
+      {},
+      "",
+      cleanUrl
+    );
+  }
 });
 
 });

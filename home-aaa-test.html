@@ -1,1 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rivals Gauntlet</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #08080d;
+      --panel: #12111b;
+      --panel-2: #181624;
+      --text: #f7f4ff;
+      --muted: #aaa4b9;
+      --dim: #746e82;
+      --border: rgba(255,255,255,.09);
+      --purple: #a855f7;
+      --purple-2: #c084fc;
+      --purple-3: #6d28d9;
+      --green: #3ddc97;
+      --red: #ff4d64;
+      --warning: #f7c948;
+      --shadow: 0 24px 70px rgba(0,0,0,.42);
+      --max: 1500px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 74% 6%, rgba(117,48,185,.16), transparent 30%),
+        linear-gradient(180deg, #09090f, #07070b);
+      font-family: "Rajdhani", sans-serif;
+    }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; }
+    img { display: block; max-width: 100%; }
+    .shell { width: min(calc(100% - 48px), var(--max)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,13,.88);
+      backdrop-filter: blur(20px);
+    }
+    .header-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(192,132,252,.5);
+      background: linear-gradient(135deg, rgba(168,85,247,.22), rgba(109,40,217,.05));
+      clip-path: polygon(18% 0,82% 0,100% 18%,100% 82%,82% 100%,18% 100%,0 82%,0 18%);
+      font-weight: 800;
+    }
+    .brand-copy { line-height: .88; }
+    .brand-copy strong { display: block; font-size: 16px; letter-spacing: 1.2px; }
+    .brand-copy span {
+      display: block;
+      margin-top: 6px;
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+    }
+
+    nav {
+      min-height: 78px;
+      display: flex;
+      align-items: stretch;
+      gap: 4px;
+      flex: 1;
+    }
+    nav a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .65px;
+      text-transform: uppercase;
+    }
+    nav a:hover,
+    nav a.active { color: #fff; }
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: -1px;
+      height: 3px;
+      border-radius: 99px 99px 0 0;
+      background: linear-gradient(90deg, var(--purple), var(--purple-2));
+      box-shadow: 0 0 18px rgba(168,85,247,.7);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mobile-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+    }
+
+    .points {
+      height: 46px;
+      min-width: 132px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+    }
+    .points-icon {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      transform: rotate(45deg);
+      border: 1px solid rgba(192,132,252,.48);
+      background: rgba(168,85,247,.12);
+      color: var(--purple-2);
+      font-weight: 800;
+    }
+    .points-icon span { transform: rotate(-45deg); }
+    .points-copy { line-height: 1; }
+    .points-copy span {
+      display: block;
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+    }
+    .points-copy strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 17px;
+    }
+
+    .account { position: relative; }
+    .account-btn {
+      height: 46px;
+      min-width: 165px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+      text-align: left;
+    }
+    .avatar,
+    .avatar-fallback {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      object-fit: cover;
+      border: 1px solid rgba(192,132,252,.45);
+      background: #20182e;
+    }
+    .avatar-fallback {
+      display: grid;
+      place-items: center;
+      color: var(--purple-2);
+      font-weight: 800;
+    }
+    .account-copy {
+      min-width: 0;
+      flex: 1;
+      line-height: 1;
+    }
+    .account-copy span {
+      display: block;
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+    .account-copy strong {
+      display: block;
+      max-width: 90px;
+      margin-top: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: 58px;
+      width: 240px;
+      padding: 9px;
+      border: 1px solid rgba(168,85,247,.35);
+      border-radius: 14px;
+      background: rgba(15,14,23,.98);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: .18s;
+    }
+    .account-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+    .account-menu a,
+    .account-menu button {
+      width: 100%;
+      display: block;
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 9px;
+      background: none;
+      text-align: left;
+      color: var(--muted);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .account-menu a:hover,
+    .account-menu button:hover {
+      color: #fff;
+      background: rgba(168,85,247,.1);
+    }
+
+    .auth-links {
+      display: none;
+      gap: 8px;
+    }
+    .auth-links.show { display: flex; }
+    .auth-links a {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .auth-links a:last-child {
+      border-color: rgba(168,85,247,.45);
+      background: rgba(168,85,247,.12);
+    }
+
+    .live-strip {
+      display: none;
+      border-bottom: 1px solid rgba(255,77,100,.25);
+      background: rgba(75,9,23,.34);
+    }
+    .live-strip.show { display: block; }
+    .live-inner {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 16px rgba(255,77,100,.9);
+    }
+    .live-inner strong {
+      font-size: 12px;
+      letter-spacing: 1.4px;
+    }
+    .live-inner span {
+      flex: 1;
+      overflow: hidden;
+      color: #e6dce1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .live-inner a {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      isolation: isolate;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background:
+        linear-gradient(90deg, rgba(8,8,13,.98), rgba(8,8,13,.84) 43%, rgba(8,8,13,.18) 73%, rgba(8,8,13,.62)),
+        radial-gradient(circle at 75% 48%, rgba(168,85,247,.26), transparent 28%),
+        linear-gradient(135deg, #0c0b13, #151020 55%, #08080d);
+    }
+    .shape {
+      position: absolute;
+      z-index: -2;
+      border: 1px solid rgba(192,132,252,.16);
+      background: rgba(168,85,247,.045);
+      transform: rotate(45deg);
+    }
+    .shape.one { width: 360px; height: 360px; right: 8%; top: 72px; }
+    .shape.two { width: 260px; height: 260px; right: -2%; top: 245px; }
+    .shape.three { width: 350px; height: 350px; right: 28%; bottom: -185px; opacity: .5; }
+
+    .hero-inner {
+      min-height: 620px;
+      display: grid;
+      grid-template-columns: .94fr 1.06fr;
+      align-items: center;
+      gap: 50px;
+      padding: 68px 0;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--purple-2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2.3px;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--purple), transparent);
+    }
+    .hero h1 {
+      margin: 22px 0 18px;
+      font-size: clamp(54px,6.2vw,100px);
+      line-height: .88;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+    }
+    .hero h1 span {
+      display: block;
+      color: transparent;
+      background: linear-gradient(90deg,#fff,#d6bef4 65%,#8b5cf6);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .hero p {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.55;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 30px;
+    }
+    .btn {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255,255,255,.035);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: .18s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(192,132,252,.45);
+    }
+    .btn.primary {
+      border-color: rgba(192,132,252,.55);
+      background: linear-gradient(135deg,var(--purple-3),var(--purple));
+      box-shadow: 0 14px 36px rgba(109,40,217,.28);
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 440px;
+      display: grid;
+      place-items: center;
+    }
+    .emblem {
+      position: relative;
+      width: min(72%,470px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+    }
+    .emblem::before,
+    .emblem::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(192,132,252,.25);
+      background:
+        linear-gradient(135deg,rgba(168,85,247,.17),rgba(168,85,247,.02)),
+        rgba(14,12,22,.8);
+      transform: rotate(45deg);
+      box-shadow: 0 0 60px rgba(109,40,217,.13);
+    }
+    .emblem::after {
+      inset: 13%;
+      border-color: rgba(255,255,255,.07);
+      background: rgba(8,8,13,.78);
+    }
+    .emblem-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .emblem-content strong {
+      display: block;
+      font-size: clamp(80px,9vw,135px);
+      line-height: .8;
+      letter-spacing: -8px;
+    }
+    .emblem-content span {
+      display: block;
+      margin-top: 20px;
+      color: var(--purple-2);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 5px;
+    }
+    .hero-chip {
+      position: absolute;
+      right: 1%;
+      bottom: 15%;
+      width: 235px;
+      padding: 16px 18px;
+      border: 1px solid rgba(168,85,247,.35);
+      border-radius: 13px;
+      background: rgba(12,11,18,.88);
+      box-shadow: var(--shadow);
+    }
+    .hero-chip span {
+      display: block;
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+    }
+    .hero-chip strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 17px;
+    }
+
+    main { padding: 72px 0 90px; }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+    .section-head h2 {
+      margin: 8px 0 0;
+      font-size: clamp(31px,3.3vw,48px);
+      line-height: .95;
+      text-transform: uppercase;
+    }
+    .section-head p {
+      max-width: 540px;
+      margin: 0;
+      color: var(--dim);
+      line-height: 1.5;
+    }
+
+    .event-grid {
+      display: grid;
+      grid-template-columns: minmax(0,3fr) minmax(280px,1fr);
+      gap: 18px;
+    }
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.025),transparent),
+        rgba(18,17,27,.86);
+      box-shadow: 0 18px 58px rgba(0,0,0,.25);
+    }
+    .tournament-card {
+      min-height: 390px;
+      display: grid;
+      grid-template-columns: 1.35fr .65fr;
+      gap: 26px;
+      padding: 34px;
+    }
+    .tournament-card::after {
+      content: "";
+      position: absolute;
+      right: -140px;
+      top: -230px;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(192,132,252,.15);
+      background: rgba(168,85,247,.05);
+      transform: rotate(45deg);
+    }
+    .tournament-copy {
+      position: relative;
+      z-index: 1;
+    }
+    .status-pill {
+      display: inline-flex;
+      padding: 7px 10px;
+      border: 1px solid rgba(61,220,151,.32);
+      border-radius: 999px;
+      background: rgba(61,220,151,.08);
+      color: #91efc7;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+    }
+    .status-pill.closed {
+      border-color: rgba(247,201,72,.32);
+      background: rgba(247,201,72,.08);
+      color: #f7d97a;
+    }
+    .status-pill.live {
+      border-color: rgba(255,77,100,.34);
+      background: rgba(255,77,100,.08);
+      color: #ff96a5;
+    }
+    .tournament-card h3 {
+      margin: 24px 0 12px;
+      font-size: clamp(35px,4vw,60px);
+      line-height: .92;
+      letter-spacing: -1.7px;
+      text-transform: uppercase;
+    }
+    .format {
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 25px;
+    }
+    .meta-box {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255,255,255,.025);
+    }
+    .meta-box span {
+      display: block;
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+    .meta-box strong {
+      display: block;
+      margin-top: 4px;
+    }
+
+    .count-panel {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px;
+      border-left: 1px solid var(--border);
+    }
+    .count-panel > span {
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+    }
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .unit {
+      padding: 16px 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(8,8,13,.5);
+      text-align: center;
+    }
+    .unit strong {
+      display: block;
+      font-size: 28px;
+    }
+    .unit span {
+      display: block;
+      margin-top: 7px;
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+    }
+    .event-date {
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .prize-card {
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+      padding: 28px;
+    }
+    .prize-icon {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(168,85,247,.35);
+      border-radius: 14px;
+      background: rgba(168,85,247,.1);
+      color: var(--purple-2);
+      font-weight: 800;
+    }
+    .prize-card h3 {
+      margin: 25px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 1.7px;
+    }
+    .prize-total {
+      margin-top: 8px;
+      font-size: clamp(44px,5vw,66px);
+      font-weight: 800;
+      line-height: .95;
+      letter-spacing: -2px;
+    }
+    .prize-source {
+      margin-top: 10px;
+      color: var(--dim);
+    }
+    .goal {
+      margin-top: auto;
+      padding-top: 28px;
+    }
+    .goal-head {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .goal-track {
+      height: 9px;
+      margin-top: 11px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+    }
+    .goal-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg,var(--purple-3),var(--purple-2));
+      box-shadow: 0 0 20px rgba(168,85,247,.5);
+      transition: width .4s;
+    }
+    .prize-card .btn {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .news-section { margin-top: 72px; }
+    .news-card {
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: .86fr 1.14fr;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(18,17,27,.86);
+      box-shadow: 0 20px 70px rgba(0,0,0,.32);
+    }
+    .news-visual {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 60% 40%,rgba(168,85,247,.28),transparent 30%),
+        linear-gradient(135deg,#161222,#0c0b12 62%);
+    }
+    .news-visual::before,
+    .news-visual::after {
+      content: "";
+      position: absolute;
+      width: 330px;
+      height: 330px;
+      border: 1px solid rgba(192,132,252,.18);
+      background: rgba(168,85,247,.055);
+      transform: rotate(45deg);
+    }
+    .news-visual::before { top: 10%; left: 19%; }
+    .news-visual::after { right: -25%; bottom: -35%; }
+    .news-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .news-badge {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      max-width: calc(100% - 48px);
+      padding: 13px 15px;
+      border: 1px solid rgba(168,85,247,.35);
+      border-radius: 11px;
+      background: rgba(9,8,14,.82);
+    }
+    .news-badge span {
+      display: block;
+      color: var(--purple-2);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+    .news-badge strong {
+      display: block;
+      margin-top: 5px;
+    }
+    .news-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px,5vw,68px);
+    }
+    .news-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--dim);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .news-meta .category { color: var(--purple-2); }
+    .news-content h3 {
+      margin: 18px 0 15px;
+      font-size: clamp(34px,4.2vw,64px);
+      line-height: .96;
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
+    }
+    .news-content p {
+      display: -webkit-box;
+      margin: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+    }
+    .news-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .news-author {
+      color: var(--dim);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: #08080c;
+    }
+    .footer-inner {
+      min-height: 145px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 28px 0;
+    }
+    .footer-copy strong {
+      display: block;
+      font-size: 17px;
+      letter-spacing: 1.2px;
+    }
+    .footer-copy span {
+      display: block;
+      margin-top: 7px;
+      color: var(--dim);
+      font-size: 12px;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .disclaimer {
+      width: min(calc(100% - 48px), var(--max));
+      margin: 0 auto;
+      padding: 0 0 24px;
+      color: #5f596c;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* Notification center */
+    #homeNotificationMount { position: relative; }
+    .notification-center { position: relative; }
+    .notification-bell {
+      position: relative;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,.03);
+      cursor: pointer;
+    }
+    .notification-bell-icon { font-size: 17px; filter: grayscale(1); }
+    .notification-unread-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 20px;
+      height: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      border: 2px solid #08080d;
+      border-radius: 999px;
+      background: var(--purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .notification-panel {
+      position: absolute;
+      top: 58px;
+      right: 0;
+      width: min(390px, calc(100vw - 28px));
+      overflow: hidden;
+      border: 1px solid rgba(168,85,247,.35);
+      border-radius: 16px;
+      background: rgba(15,14,23,.99);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: .18s;
+    }
+    .notification-panel.show {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+    .notification-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .notification-panel-header span {
+      color: var(--purple-2);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+    .notification-panel-header h3 { margin: 3px 0 0; font-size: 20px; }
+    .notification-mark-all {
+      border: 0;
+      background: transparent;
+      color: var(--purple-2);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .notification-list {
+      max-height: 430px;
+      overflow-y: auto;
+    }
+    .notification-item {
+      position: relative;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      gap: 12px;
+      padding: 15px 18px;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    .notification-item.unread { background: rgba(168,85,247,.07); }
+    .notification-item-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      background: rgba(168,85,247,.1);
+    }
+    .notification-item-content strong { display: block; font-size: 14px; }
+    .notification-item-content p {
+      margin: 4px 0 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .notification-item-content time { color: var(--dim); font-size: 10px; }
+    .notification-unread-dot {
+      width: 7px;
+      height: 7px;
+      margin-top: 8px;
+      border-radius: 50%;
+      background: var(--purple-2);
+      box-shadow: 0 0 10px rgba(192,132,252,.8);
+    }
+    .notification-empty {
+      padding: 28px 18px;
+      color: var(--dim);
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .brand-copy { display: none; }
+      nav a { padding: 0 9px; font-size: 13px; }
+      .account-btn { min-width: 138px; }
+      .hero-inner { grid-template-columns: 1fr .9fr; }
+    }
+
+    @media (max-width: 980px) {
+      .mobile-toggle { display: block; }
+      nav {
+        position: fixed;
+        inset: 78px 0 auto 0;
+        height: calc(100vh - 78px);
+        min-height: 0;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 22px 24px;
+        background: rgba(8,8,13,.98);
+        overflow-y: auto;
+      }
+      nav.show { display: flex; }
+      nav a {
+        min-height: 58px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 18px;
+      }
+      nav a.active::after {
+        left: 0;
+        right: auto;
+        top: 15px;
+        bottom: 15px;
+        width: 3px;
+        height: auto;
+      }
+      .hero-inner {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 72px 0;
+      }
+      .hero-art { min-height: 360px; }
+      .event-grid { grid-template-columns: 1fr; }
+      .prize-card { min-height: 330px; }
+      .news-card { grid-template-columns: 1fr; }
+      .news-visual { min-height: 360px; }
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(calc(100% - 28px), var(--max)); }
+      .header-inner { min-height: 68px; gap: 10px; }
+      nav { inset: 68px 0 auto 0; height: calc(100vh - 68px); }
+      .brand-mark { width: 34px; height: 34px; }
+      .points { min-width: auto; width: 46px; justify-content: center; padding: 0; }
+      .points-copy { display: none; }
+      .account-btn { min-width: auto; width: 46px; padding: 0 6px; justify-content: center; }
+      .account-copy,
+      .account-btn > span:last-child { display: none; }
+      .auth-links a:first-child { display: none; }
+      .auth-links a:last-child { padding: 0 11px; }
+      .hero { min-height: auto; }
+      .hero-inner { padding: 58px 0; }
+      .hero h1 { font-size: clamp(46px,16vw,72px); letter-spacing: -2px; }
+      .hero p { font-size: 17px; }
+      .hero-art { min-height: 300px; }
+      .emblem { width: 72%; }
+      .hero-chip { right: 0; bottom: 7%; width: 205px; }
+      main { padding: 54px 0 70px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .tournament-card {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        padding: 25px;
+      }
+      .count-panel {
+        padding: 24px 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--border);
+      }
+      .news-section { margin-top: 54px; }
+      .news-content { padding: 28px; }
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .footer-links { justify-content: flex-start; }
+      .live-inner span { display: none; }
+    }
+
+    @media (max-width: 470px) {
+      .header-actions { gap: 6px; }
+      #homeNotificationMount .notification-bell,
+      .points,
+      .account-btn,
+      .mobile-toggle { width: 42px; height: 42px; }
+      .auth-links a:last-child { height: 40px; font-size: 11px; }
+      .hero h1 { font-size: 48px; }
+      .hero-art { min-height: 255px; }
+      .hero-chip { position: relative; right: auto; bottom: auto; width: 100%; margin-top: 34px; }
+      .actions .btn { width: 100%; }
+      .countdown { grid-template-columns: repeat(3,1fr); }
+      .unit strong { font-size: 23px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="shell header-inner">
+      <a href="index.html" class="brand" aria-label="Rivals Gauntlet home">
+        <div class="brand-mark">RG</div>
+        <div class="brand-copy">
+          <strong>RIVALS GAUNTLET</strong>
+          <span>COMPETE • PREDICT • EARN</span>
+        </div>
+      </a>
+
+      <button id="mobileToggle" class="mobile-toggle" type="button" aria-label="Open navigation">☰</button>
+
+      <nav id="mainNav">
+        <a class="active" href="index.html">Home</a>
+        <a href="tournament.html">Tournament</a>
+        <a href="predictions.html">Predictions</a>
+        <a href="shop.html">Shop</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="about.html">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <div id="homeNotificationMount" style="display:none;"></div>
+
+        <div id="pointsBox" class="points" style="display:none;">
+          <div class="points-icon"><span>RG</span></div>
+          <div class="points-copy">
+            <span>RG Points</span>
+            <strong id="headerRgPoints">0</strong>
+          </div>
+        </div>
+
+        <div id="accountBox" class="account" style="display:none;">
+          <button id="accountButton" class="account-btn" type="button" aria-expanded="false">
+            <img id="headerAvatar" class="avatar" src="" alt="Profile" style="display:none;">
+            <div id="headerFallback" class="avatar-fallback">RG</div>
+            <div class="account-copy">
+              <span>Player Account</span>
+              <strong id="headerName">Player</strong>
+            </div>
+            <span>⌄</span>
+          </button>
+
+          <div id="accountMenu" class="account-menu">
+            <a href="dashboard.html">Dashboard</a>
+            <a id="publicProfileLink" href="#">Public Profile</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="friends.html">Friends</a>
+            <a href="dashboard.html">Notifications</a>
+            <a href="settings.html">Settings</a>
+            <button id="signOutButton" type="button">Sign Out</button>
+          </div>
+        </div>
+
+        <div id="authLinks" class="auth-links">
+          <a href="login.html">Sign In</a>
+          <a href="register.html">Create Account</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="liveStrip" class="live-strip">
+    <div class="shell live-inner">
+      <div class="live-dot"></div>
+      <strong>LIVE NOW</strong>
+      <span id="liveMatchText">Rivals Gauntlet broadcast is live.</span>
+      <a href="watch.html">Watch Live →</a>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="shape one"></div>
+    <div class="shape two"></div>
+    <div class="shape three"></div>
+
+    <div class="shell hero-inner">
+      <div>
+        <div class="eyebrow">The Rivals Gauntlet Platform</div>
+        <h1>
+          Compete.
+          <span>Predict. Earn.</span>
+        </h1>
+        <p>
+          Enter competitive Marvel Rivals tournaments, make predictions,
+          earn RG Points, unlock rewards, and build your reputation.
+        </p>
+
+        <div class="actions">
+          <a href="apply.html" class="btn primary">Apply for the Next Event</a>
+          <a href="tournament.html" class="btn">Explore Tournament</a>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <div class="emblem">
+          <div class="emblem-content">
+            <strong>RG</strong>
+            <span>RIVALS GAUNTLET</span>
+          </div>
+        </div>
+
+        <div class="hero-chip">
+          <span>Platform Status</span>
+          <strong id="heroStatus">Preparing the next competition</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main>
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">What’s Next</div>
+          <h2>Upcoming Tournament</h2>
+        </div>
+        <p>
+          Apply for the next Rivals Gauntlet event and help grow the community-funded prize pool.
+        </p>
+      </div>
+
+      <div class="event-grid">
+        <section class="card tournament-card">
+          <div class="tournament-copy">
+            <span id="registrationPill" class="status-pill">APPLICATIONS OPEN</span>
+
+            <h3 id="eventName">Rivals Gauntlet Open #1</h3>
+            <div id="eventFormat" class="format">8 Teams • Single Elimination</div>
+
+            <div class="meta">
+              <div class="meta-box">
+                <span>Game</span>
+                <strong>Marvel Rivals</strong>
+              </div>
+              <div class="meta-box">
+                <span>Rounds</span>
+                <strong>QF Bo3 • SF Bo3 • GF Bo5</strong>
+              </div>
+              <div class="meta-box">
+                <span>Registration</span>
+                <strong id="registrationText">Open</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a id="applyButton" href="apply.html" class="btn primary">Apply Now</a>
+              <a href="tournament.html" class="btn">View Tournament</a>
+            </div>
+          </div>
+
+          <div class="count-panel">
+            <span id="countdownLabel">Tournament Begins In</span>
+
+            <div class="countdown">
+              <div class="unit">
+                <strong id="countDays">00</strong>
+                <span>Days</span>
+              </div>
+              <div class="unit">
+                <strong id="countHours">00</strong>
+                <span>Hours</span>
+              </div>
+              <div class="unit">
+                <strong id="countMinutes">00</strong>
+                <span>Minutes</span>
+              </div>
+            </div>
+
+            <div id="eventDate" class="event-date">Loading event date...</div>
+          </div>
+        </section>
+
+        <aside class="card prize-card">
+          <div class="prize-icon">$</div>
+          <h3>Current Prize Pool</h3>
+          <div id="prizePool" class="prize-total">$0</div>
+          <div id="communityDonations" class="prize-source">+$0 from community donations</div>
+
+          <div class="goal">
+            <div class="goal-head">
+              <span>Community Goal</span>
+              <span id="goalText">$0 / $250</span>
+            </div>
+
+            <div class="goal-track">
+              <div id="goalFill" class="goal-fill"></div>
+            </div>
+
+            <a href="donate.html" class="btn primary">Add to Prize Pool</a>
+          </div>
+        </aside>
+      </div>
+
+      <section class="news-section">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Official Feed</div>
+            <h2>Latest From Rivals Gauntlet</h2>
+          </div>
+          <p>The newest official announcement is featured here automatically.</p>
+        </div>
+
+        <div id="latestNews" class="news-card">
+          <div class="news-visual">
+            <div class="news-badge">
+              <span>Loading Latest Update</span>
+              <strong>Rivals Gauntlet</strong>
+            </div>
+          </div>
+
+          <div class="news-content">
+            <div class="news-meta">
+              <span class="category">Official Update</span>
+            </div>
+            <h3>Loading latest news...</h3>
+            <p>Please wait while the newest Rivals Gauntlet update is loaded.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div class="footer-copy">
+        <strong>RIVALS GAUNTLET</strong>
+        <span>Compete. Predict. Earn Rewards.</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://discord.gg/82HPpfkhQN" target="_blank">Discord</a>
+        <a href="https://www.twitch.tv/atrophylive" target="_blank">Twitch</a>
+        <a href="donate.html">Support</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      © 2026 Rivals Gauntlet. Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
+    </p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="posts.js?v=1"></script>
+
+  <script>
+    let siteData = {};
+    let donations = [];
+    let countdownTimer = null;
+
+    const mobileToggle = document.getElementById("mobileToggle");
+    const mainNav = document.getElementById("mainNav");
+    const accountButton = document.getElementById("accountButton");
+    const accountMenu = document.getElementById("accountMenu");
+
+    mobileToggle.addEventListener("click", () => {
+      const open = mainNav.classList.toggle("show");
+      document.body.classList.toggle("menu-open", open);
+      mobileToggle.textContent = open ? "×" : "☰";
+    });
+
+    accountButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const open = accountMenu.classList.toggle("show");
+      accountButton.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".account")) {
+        accountMenu.classList.remove("show");
+        accountButton.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.getElementById("signOutButton").addEventListener("click", () => {
+      auth.signOut();
+    });
+
+    function clean(value, fallback = "") {
+      return String(value || fallback).trim();
+    }
+
+    function initials(name) {
+      return clean(name, "RG")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0])
+        .join("")
+        .toUpperCase();
+    }
+
+    function moneyNumber(value) {
+      return Number(String(value || "0").replace(/[^0-9.]/g, "")) || 0;
+    }
+
+    function money(value) {
+      return `$${Number(value || 0).toLocaleString("en-US")}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderSite() {
+      const name = siteData.eventName || "Rivals Gauntlet Open #1";
+      const format = siteData.format || "8 Teams • Single Elimination";
+      const registration = clean(siteData.registrationStatus, "Open");
+      const status = clean(siteData.status, "Offline");
+      const isLive = status.toLowerCase().includes("live");
+      const registrationOpen = registration.toLowerCase().includes("open");
+
+      document.getElementById("eventName").textContent = name;
+      document.getElementById("eventFormat").textContent = format;
+      document.getElementById("registrationText").textContent = registration;
+      document.getElementById("heroStatus").textContent = isLive
+        ? `${name} is live now`
+        : registrationOpen
+          ? `${name} applications are open`
+          : `${name} is approaching`;
+
+      const pill = document.getElementById("registrationPill");
+      pill.className = "status-pill";
+      pill.textContent = isLive ? "TOURNAMENT LIVE" : registrationOpen ? "APPLICATIONS OPEN" : "APPLICATIONS CLOSED";
+
+      if (isLive) pill.classList.add("live");
+      if (!isLive && !registrationOpen) pill.classList.add("closed");
+
+      const applyButton = document.getElementById("applyButton");
+      applyButton.textContent = registrationOpen ? "Apply Now" : "View Tournament";
+      applyButton.href = registrationOpen ? "apply.html" : "tournament.html";
+
+      const liveStrip = document.getElementById("liveStrip");
+      liveStrip.classList.toggle("show", isLive);
+
+      document.getElementById("liveMatchText").textContent =
+        siteData.currentMatch || `${name} broadcast is live.`;
+
+      if (siteData.countdownDate) {
+        startCountdown(siteData.countdownDate);
+      } else {
+        document.getElementById("eventDate").textContent = "Event date coming soon";
+      }
+
+      updatePrizePool();
+    }
+
+    function startCountdown(targetDate) {
+      if (countdownTimer) clearInterval(countdownTimer);
+
+      const target = new Date(targetDate).getTime();
+
+      const update = () => {
+        const distance = target - Date.now();
+
+        if (distance <= 0) {
+          document.getElementById("countDays").textContent = "00";
+          document.getElementById("countHours").textContent = "00";
+          document.getElementById("countMinutes").textContent = "00";
+          document.getElementById("countdownLabel").textContent = "Tournament Status";
+          document.getElementById("eventDate").textContent = "Event is live or awaiting update";
+          return;
+        }
+
+        const days = Math.floor(distance / 86400000);
+        const hours = Math.floor((distance / 3600000) % 24);
+        const minutes = Math.floor((distance / 60000) % 60);
+
+        document.getElementById("countDays").textContent = String(days).padStart(2, "0");
+        document.getElementById("countHours").textContent = String(hours).padStart(2, "0");
+        document.getElementById("countMinutes").textContent = String(minutes).padStart(2, "0");
+
+        const eventDate = new Date(targetDate);
+        document.getElementById("eventDate").textContent = eventDate.toLocaleString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short"
+        });
+      };
+
+      update();
+      countdownTimer = setInterval(update, 1000);
+    }
+
+    function updatePrizePool() {
+      const totalDonations = donations.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const starting = moneyNumber(siteData.startingPrizePool || "$0");
+      const current = starting + totalDonations;
+      const goal = moneyNumber(siteData.donationGoal || "$250");
+      const percent = goal > 0 ? Math.min((current / goal) * 100, 100) : 0;
+
+      document.getElementById("prizePool").textContent = money(current);
+      document.getElementById("communityDonations").textContent =
+        `+${money(totalDonations)} from community donations`;
+      document.getElementById("goalText").textContent = `${money(current)} / ${money(goal)}`;
+      document.getElementById("goalFill").style.width = `${percent}%`;
+    }
+
+    database.ref("site").on("value", snapshot => {
+      siteData = snapshot.val() || {};
+      renderSite();
+    });
+
+    database.ref("donations").on("value", snapshot => {
+      const data = snapshot.val() || {};
+
+      donations = Object.values(data)
+        .filter(item => item && item.amount)
+        .map(item => ({
+          amount: Number(item.amount) || 0
+        }));
+
+      updatePrizePool();
+    });
+
+    auth.onAuthStateChanged(user => {
+      const notificationMount = document.getElementById("homeNotificationMount");
+      const pointsBox = document.getElementById("pointsBox");
+      const accountBox = document.getElementById("accountBox");
+      const authLinks = document.getElementById("authLinks");
+
+      if (!user) {
+        notificationMount.style.display = "none";
+        pointsBox.style.display = "none";
+        accountBox.style.display = "none";
+        authLinks.classList.add("show");
+
+        if (typeof RGNotificationCenter !== "undefined") {
+          RGNotificationCenter.destroy();
+        }
+
+        return;
+      }
+
+      notificationMount.style.display = "block";
+      pointsBox.style.display = "flex";
+      accountBox.style.display = "block";
+      authLinks.classList.remove("show");
+
+      RGNotificationCenter.init(user.uid, "#homeNotificationMount");
+
+      database.ref(`players/${user.uid}`).on("value", snapshot => {
+        const player = snapshot.val() || {};
+        const displayName = player.displayName || user.displayName || "Player";
+
+        document.getElementById("headerName").textContent = displayName;
+        document.getElementById("headerRgPoints").textContent =
+          Number(player.rgPoints || 0).toLocaleString();
+        document.getElementById("headerFallback").textContent = initials(displayName);
+        document.getElementById("publicProfileLink").href = `player.html?id=${user.uid}`;
+
+        const avatar = document.getElementById("headerAvatar");
+        const fallback = document.getElementById("headerFallback");
+
+        if (player.profileImage) {
+          avatar.src = player.profileImage;
+          avatar.style.display = "block";
+          fallback.style.display = "none";
+        } else {
+          avatar.style.display = "none";
+          fallback.style.display = "grid";
+        }
+      });
+    });
+
+    function renderLatestPost(post) {
+      const container = document.getElementById("latestNews");
+
+      if (!post) {
+        container.innerHTML = `
+          <div class="news-visual">
+            <div class="news-badge">
+              <span>Official Feed</span>
+              <strong>No updates published yet</strong>
+            </div>
+          </div>
+          <div class="news-content">
+            <div class="news-meta"><span class="category">Rivals Gauntlet</span></div>
+            <h3>News is coming soon</h3>
+            <p>The newest official announcement will appear here automatically once it is published.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const category = RGPosts.getPostCategoryLabel(post.category);
+      const date = RGPosts.formatPostDate(post.createdAt);
+      const image = post.image
+        ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title || "Official update")}">`
+        : "";
+
+      container.innerHTML = `
+        <div class="news-visual">
+          ${image}
+          <div class="news-badge">
+            <span>${escapeHtml(category)}</span>
+            <strong>Latest Official Update</strong>
+          </div>
+        </div>
+
+        <div class="news-content">
+          <div class="news-meta">
+            <span class="category">${escapeHtml(category)}</span>
+            <span>${escapeHtml(date)}</span>
+          </div>
+
+          <h3>${escapeHtml(post.title || "Official Update")}</h3>
+          <p>${escapeHtml(post.body || "")}</p>
+
+          <div class="news-footer">
+            <span class="news-author">
+              Posted by ${escapeHtml(post.authorName || "Rivals Gauntlet")}
+            </span>
+
+            <a class="btn primary" href="posts.html?post=${encodeURIComponent(post.id)}">
+              Read More • ${Number(post.commentCount || 0)} Comments
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    RGPosts.loadLatestPost()
+      .then(renderLatestPost)
+      .catch(error => {
+        console.error("Latest post error:", error);
+        renderLatestPost(null);
+      });
+  </script>
+</body>
+</html>

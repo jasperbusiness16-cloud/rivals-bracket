@@ -1551,7 +1551,26 @@
       .notification-list {
         max-height: calc(100vh - 190px);
       }
-    }
+   
+    .account-menu {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  right: 14px;
+  width: auto;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+
+.account-menu a,
+.account-menu button {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+}
+    
+     }
 
     @media (max-width: 470px) {
       .header-actions { gap: 6px; }

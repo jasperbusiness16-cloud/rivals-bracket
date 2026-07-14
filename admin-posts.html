@@ -805,15 +805,35 @@ auth.onAuthStateChanged(user => {
 
   currentUser = user;
 
-RGPosts.listenToPosts(posts => {
-  adminPosts = posts;
-  renderAdminPostsList();
-});
+database
+  .ref(`users/${user.uid}/role`)
+  .once("value")
+  .then(snapshot => {
+    const role = snapshot.val();
 
-  RGNotificationCenter.init(
-    user.uid,
-    "#adminPostsNotificationMount"
-  );
+    if (
+      role !== "owner" &&
+      role !== "admin"
+    ) {
+      window.location.href = "dashboard.html";
+      return;
+    }
+
+    RGNotificationCenter.init(
+      user.uid,
+      "#adminPostsNotificationMount"
+    );
+
+    startAdminPostsPage(user);
+  })
+  .catch(error => {
+    console.error(
+      "Admin access check failed:",
+      error
+    );
+
+    window.location.href = "dashboard.html";
+  });
 
   database
     .ref(`players/${user.uid}`)

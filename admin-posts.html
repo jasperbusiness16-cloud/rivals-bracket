@@ -244,11 +244,133 @@ let currentUser = null;
 let currentAdminPlayer = null;
 let adminPosts = [];
 
+function escapeAdminPostHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderAdminPostPreview() {
+  const container = document.getElementById(
+    "adminPostPreviewCard"
+  );
+
+  const title = document.getElementById(
+    "adminPostTitle"
+  ).value.trim();
+
+  const body = document.getElementById(
+    "adminPostBody"
+  ).value.trim();
+
+  const category = document.getElementById(
+    "adminPostCategory"
+  ).value;
+
+  const image = document.getElementById(
+    "adminPostImage"
+  ).value.trim();
+
+  const published = document.getElementById(
+    "adminPostPublished"
+  ).checked;
+
+  const pinned = document.getElementById(
+    "adminPostPinned"
+  ).checked;
+
+  container.innerHTML = `
+    <div class="official-post-meta">
+
+      <span class="official-post-category">
+        ${escapeAdminPostHtml(
+          RGPosts.getPostCategoryLabel(category)
+        )}
+      </span>
+
+      <span class="official-post-date">
+        ${published ? "PUBLISHED" : "DRAFT"}
+      </span>
+
+    </div>
+
+    <h3>
+      ${escapeAdminPostHtml(
+        title || "Your Post Title"
+      )}
+    </h3>
+
+    <p>
+      ${escapeAdminPostHtml(
+        body || "Your official post content will appear here."
+      )}
+    </p>
+
+    ${
+      image
+        ? `
+          <img
+            class="official-post-image"
+            src="${escapeAdminPostHtml(image)}"
+            alt="Post Preview"
+          >
+        `
+        : ""
+    }
+
+    <div class="official-post-footer">
+
+      <span class="official-post-author">
+        ${pinned ? "📌 Pinned • " : ""}
+        Posted by Rivals Gauntlet
+      </span>
+
+      <span class="official-post-discussion-button">
+        💬 0 Comments
+      </span>
+
+    </div>
+  `;
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
   });
 }
+
+[
+  "adminPostTitle",
+  "adminPostBody",
+  "adminPostCategory",
+  "adminPostImage",
+  "adminPostPublished",
+  "adminPostPinned"
+].forEach(id => {
+  const element = document.getElementById(id);
+
+  element?.addEventListener(
+    "input",
+    renderAdminPostPreview
+  );
+
+  element?.addEventListener(
+    "change",
+    renderAdminPostPreview
+  );
+});
+
+document
+  .getElementById("adminPostPreviewButton")
+  ?.addEventListener(
+    "click",
+    renderAdminPostPreview
+  );
+
+renderAdminPostPreview();
 
 auth.onAuthStateChanged(user => {
   if (!user) {

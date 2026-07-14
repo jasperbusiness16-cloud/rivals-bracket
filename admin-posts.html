@@ -740,6 +740,23 @@ function deleteAdminPost(postId) {
     });
 }
 
+function startAdminPostsPage(user) {
+  RGPosts.listenToPosts(posts => {
+    adminPosts = posts;
+    renderAdminPostsList();
+  });
+
+  database
+    .ref(`players/${user.uid}`)
+    .once("value")
+    .then(snapshot => {
+      currentAdminPlayer = {
+        uid: user.uid,
+        ...(snapshot.val() || {})
+      };
+    });
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -835,15 +852,7 @@ database
     window.location.href = "dashboard.html";
   });
 
-  database
-    .ref(`players/${user.uid}`)
-    .once("value")
-    .then(snapshot => {
-      currentAdminPlayer = {
-        uid: user.uid,
-        ...(snapshot.val() || {})
-      };
-    });
+  
 });
 </script>
 

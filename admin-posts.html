@@ -476,6 +476,270 @@ function renderAdminPostsList() {
   `).join("");
 }
 
+function resetAdminPostForm() {
+  document.getElementById("adminPostForm").reset();
+
+  document.getElementById("adminPostId").value = "";
+  document.getElementById("adminPostPublished").checked = true;
+  document.getElementById("adminPostPinned").checked = false;
+
+  document.getElementById(
+    "adminPostEditorTitle"
+  ).innerText = "Create New Post";
+
+  document.getElementById(
+    "adminPostSaveButton"
+  ).innerText = "Publish Post";
+
+  document.getElementById(
+    "adminPostStatus"
+  ).innerText = "";
+
+  renderAdminPostPreview();
+}
+
+function editAdminPost(postId) {
+  const post = adminPosts.find(
+    item => item.id === postId
+  );
+
+  if (!post) {
+    alert("This post could not be found.");
+    return;
+  }
+
+  document.getElementById(
+    "adminPostId"
+  ).value = post.id;
+
+  document.getElementById(
+    "adminPostTitle"
+  ).value = post.title || "";
+
+  document.getElementById(
+    "adminPostCategory"
+  ).value = post.category || "announcement";
+
+  document.getElementById(
+    "adminPostBody"
+  ).value = post.body || "";
+
+  document.getElementById(
+    "adminPostImage"
+  ).value = post.image || "";
+
+  document.getElementById(
+    "adminPostPublished"
+  ).checked = post.published !== false;
+
+  document.getElementById(
+    "adminPostPinned"
+  ).checked = Boolean(post.pinned);
+
+  document.getElementById(
+    "adminPostEditorTitle"
+  ).innerText = "Edit Post";
+
+  document.getElementById(
+    "adminPostSaveButton"
+  ).innerText = "Save Changes";
+
+  renderAdminPostPreview();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+function saveAdminPost(event) {
+  event.preventDefault();
+
+  if (!currentUser || !currentAdminPlayer) {
+    return;
+  }
+
+  const postId = document.getElementById(
+    "adminPostId"
+  ).value.trim();
+
+  const title = document.getElementById(
+    "adminPostTitle"
+  ).value.trim();
+
+  const body = document.getElementById(
+    "adminPostBody"
+  ).value.trim();
+
+  const category = document.getElementById(
+    "adminPostCategory"
+  ).value;
+
+  const image = document.getElementById(
+    "adminPostImage"
+  ).value.trim();
+
+  const published = document.getElementById(
+    "adminPostPublished"
+  ).checked;
+
+  const pinned = document.getElementById(
+    "adminPostPinned"
+  ).checked;
+
+  const status = document.getElementById(
+    "adminPostStatus"
+  );
+
+  const saveButton = document.getElementById(
+    "adminPostSaveButton"
+  );
+
+  if (!title || !body) {
+    status.innerText =
+      "Enter both a title and post body.";
+
+    status.style.color = "#ef4444";
+    return;
+  }
+
+  saveButton.disabled = true;
+  saveButton.innerText = "Saving...";
+
+  const isEditing = Boolean(postId);
+
+  const ref = isEditing
+    ? database.ref(`officialPosts/${postId}`)
+    : database.ref("officialPosts").push();
+
+  const existingPost = isEditing
+    ? adminPosts.find(post => post.id === postId)
+    : null;
+
+  const postData = {
+    title,
+    body,
+    category,
+    image,
+    published,
+    pinned,
+
+    authorId: currentUser.uid,
+
+    authorName:
+      currentAdminPlayer.displayName ||
+      "Rivals Gauntlet",
+
+    commentCount: Number(
+      existingPost?.commentCount || 0
+    ),
+
+    createdAt:
+      existingPost?.createdAt ||
+      firebase.database.ServerValue.TIMESTAMP,
+
+    updatedAt:
+      firebase.database.ServerValue.TIMESTAMP
+  };
+
+  ref.set(postData)
+    .then(() => {
+      status.innerText =
+        isEditing
+          ? "✓ Post updated."
+          : "✓ Post created.";
+
+      status.style.color = "#22c55e";
+
+      resetAdminPostForm();
+    })
+    .catch(error => {
+      status.innerText = error.message;
+      status.style.color = "#ef4444";
+    })
+    .finally(() => {
+      saveButton.disabled = false;
+      saveButton.innerText = "Publish Post";
+    });
+}
+
+function toggleAdminPostPublished(postId) {
+  const post = adminPosts.find(
+    item => item.id === postId
+  );
+
+  if (!post) return;
+
+  database
+    .ref(`officialPosts/${postId}`)
+    .update({
+      published: post.published === false,
+      updatedAt:
+        firebase.database.ServerValue.TIMESTAMP
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+}
+
+function toggleAdminPostPinned(postId) {
+  const post = adminPosts.find(
+    item => item.id === postId
+  );
+
+  if (!post) return;
+
+  database
+    .ref(`officialPosts/${postId}`)
+    .update({
+      pinned: !post.pinned,
+      updatedAt:
+        firebase.database.ServerValue.TIMESTAMP
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+}
+
+function deleteAdminPost(postId) {
+  const post = adminPosts.find(
+    item => item.id === postId
+  );
+
+  if (!post) return;
+
+  const confirmed = confirm(
+    `Delete "${post.title || "this post"}"?`
+  );
+
+  if (!confirmed) return;
+
+  const updates = {};
+
+  updates[
+    `officialPosts/${postId}`
+  ] = null;
+
+  updates[
+    `postComments/${postId}`
+  ] = null;
+
+  database.ref().update(updates)
+    .then(() => {
+      const activePostId =
+        document.getElementById(
+          "adminPostId"
+        ).value;
+
+      if (activePostId === postId) {
+        resetAdminPostForm();
+      }
+    })
+    .catch(error => {
+      alert(error.message);
+    });
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -517,6 +781,20 @@ document
   ?.addEventListener(
     "change",
     renderAdminPostsList
+  );
+
+document
+  .getElementById("adminPostForm")
+  ?.addEventListener(
+    "submit",
+    saveAdminPost
+  );
+
+document
+  .getElementById("adminPostResetButton")
+  ?.addEventListener(
+    "click",
+    resetAdminPostForm
   );
 
 auth.onAuthStateChanged(user => {

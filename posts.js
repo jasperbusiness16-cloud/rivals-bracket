@@ -217,15 +217,19 @@ const RGPosts = (() => {
 
         const updates = {};
 
-        updates[
-          `postComments/${postId}/${commentId}/deleted`
-        ] = true;
+updates[
+  `postComments/${postId}/${commentId}/deleted`
+] = true;
 
-        updates[
-          `postComments/${postId}/${commentId}/deletedAt`
-        ] = firebase.database.ServerValue.TIMESTAMP;
+updates[
+  `postComments/${postId}/${commentId}/deletedAt`
+] = firebase.database.ServerValue.TIMESTAMP;
 
-        return database.ref().update(updates);
+updates[
+  `officialPosts/${postId}/commentCount`
+] = firebase.database.ServerValue.increment(-1);
+
+return database.ref().update(updates);
       });
   }
 

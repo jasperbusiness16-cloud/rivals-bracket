@@ -1,1 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Admin Posts | Rivals Gauntlet</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="account.css?v=6">
+</head>
+
+<body class="account-body">
+
+<div class="account-center-shell">
+  <div class="account-center">
+
+    <aside class="account-sidebar">
+
+      <div class="account-brand">
+        <p>RIVALS GAUNTLET</p>
+        <h2>ADMIN CENTER</h2>
+      </div>
+
+      <nav class="account-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="posts.html">Public Feed</a>
+        <a class="active" href="admin-posts.html">Manage Posts</a>
+        <a href="settings.html">Settings</a>
+
+        <button onclick="logoutUser()">
+          Sign Out
+        </button>
+      </nav>
+
+    </aside>
+
+    <main class="account-main">
+
+      <div class="account-topbar">
+
+        <div>
+          <p>OFFICIAL CONTENT MANAGEMENT</p>
+          <h1>Manage Posts</h1>
+
+          <span>
+            Create, edit, publish, pin, and remove official Rivals Gauntlet updates.
+          </span>
+        </div>
+
+        <div class="dashboard-top-actions">
+          <div id="adminPostsNotificationMount"></div>
+
+          <a class="account-secondary" href="posts.html">
+            View Public Feed
+          </a>
+        </div>
+
+      </div>
+
+      <section class="admin-posts-layout">
+
+        <div class="admin-post-editor">
+
+          <div class="admin-post-editor-header">
+            <div>
+              <span>POST EDITOR</span>
+              <h2 id="adminPostEditorTitle">Create New Post</h2>
+            </div>
+
+            <button
+              id="adminPostResetButton"
+              class="account-secondary"
+              type="button"
+            >
+              New Post
+            </button>
+          </div>
+
+          <form id="adminPostForm">
+
+            <input
+              id="adminPostId"
+              type="hidden"
+            >
+
+            <label class="admin-post-field">
+              <span>Title</span>
+
+              <input
+                id="adminPostTitle"
+                type="text"
+                maxlength="120"
+                placeholder="Post title"
+                required
+              >
+            </label>
+
+            <label class="admin-post-field">
+              <span>Category</span>
+
+              <select id="adminPostCategory">
+                <option value="announcement">Announcement</option>
+                <option value="tournament">Tournament</option>
+                <option value="registration">Registration</option>
+                <option value="results">Results</option>
+                <option value="shop">Shop Update</option>
+                <option value="prediction">Predictions</option>
+                <option value="community">Community</option>
+                <option value="prize_pool">Prize Pool</option>
+              </select>
+            </label>
+
+            <label class="admin-post-field">
+              <span>Body</span>
+
+              <textarea
+                id="adminPostBody"
+                maxlength="5000"
+                placeholder="Write the official update..."
+                required
+              ></textarea>
+            </label>
+
+            <label class="admin-post-field">
+              <span>Image URL</span>
+
+              <input
+                id="adminPostImage"
+                type="url"
+                placeholder="https://..."
+              >
+            </label>
+
+            <div class="admin-post-toggle-grid">
+
+              <label class="admin-post-toggle">
+                <input
+                  id="adminPostPublished"
+                  type="checkbox"
+                  checked
+                >
+
+                <span>Published</span>
+              </label>
+
+              <label class="admin-post-toggle">
+                <input
+                  id="adminPostPinned"
+                  type="checkbox"
+                >
+
+                <span>Pinned</span>
+              </label>
+
+            </div>
+
+            <div class="account-actions">
+
+              <button
+                id="adminPostSaveButton"
+                class="account-primary"
+                type="submit"
+              >
+                Publish Post
+              </button>
+
+              <button
+                id="adminPostPreviewButton"
+                class="account-secondary"
+                type="button"
+              >
+                Preview
+              </button>
+
+            </div>
+
+          </form>
+
+          <p id="adminPostStatus" class="account-status"></p>
+
+        </div>
+
+        <aside class="admin-post-preview">
+
+          <span>LIVE PREVIEW</span>
+
+          <article
+            id="adminPostPreviewCard"
+            class="official-post-card"
+          >
+            <div class="friends-empty">
+              Start writing to preview the post.
+            </div>
+          </article>
+
+        </aside>
+
+      </section>
+
+      <section class="admin-post-list-panel">
+
+        <div class="admin-post-list-header">
+          <div>
+            <span>CONTENT LIBRARY</span>
+            <h2>Existing Posts</h2>
+          </div>
+
+          <select id="adminPostListFilter">
+            <option value="all">All Posts</option>
+            <option value="published">Published</option>
+            <option value="draft">Drafts</option>
+            <option value="pinned">Pinned</option>
+          </select>
+        </div>
+
+        <div id="adminPostsList">
+          <div class="friends-empty">
+            Loading posts...
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="posts.js?v=1"></script>
+
+<script>
+let currentUser = null;
+let currentAdminPlayer = null;
+let adminPosts = [];
+
+function logoutUser() {
+  auth.signOut().then(() => {
+    window.location.href = "login.html";
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  RGNotificationCenter.init(
+    user.uid,
+    "#adminPostsNotificationMount"
+  );
+
+  database
+    .ref(`players/${user.uid}`)
+    .once("value")
+    .then(snapshot => {
+      currentAdminPlayer = {
+        uid: user.uid,
+        ...(snapshot.val() || {})
+      };
+    });
+});
+</script>
+
+</body>
+</html>

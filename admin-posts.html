@@ -336,6 +336,146 @@ function renderAdminPostPreview() {
   `;
 }
 
+function renderAdminPostsList() {
+  const container = document.getElementById(
+    "adminPostsList"
+  );
+
+  const filter = document.getElementById(
+    "adminPostListFilter"
+  )?.value || "all";
+
+  if (!container) return;
+
+  const visiblePosts = adminPosts.filter(post => {
+    if (filter === "published") {
+      return post.published !== false;
+    }
+
+    if (filter === "draft") {
+      return post.published === false;
+    }
+
+    if (filter === "pinned") {
+      return post.pinned === true;
+    }
+
+    return true;
+  });
+
+  if (!visiblePosts.length) {
+    container.innerHTML = `
+      <div class="friends-empty">
+        No posts are available in this category.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = visiblePosts.map(post => `
+    <article class="admin-post-list-item">
+
+      <div class="admin-post-list-main">
+
+        <div class="admin-post-list-meta">
+
+          <span class="official-post-category">
+            ${escapeAdminPostHtml(
+              RGPosts.getPostCategoryLabel(post.category)
+            )}
+          </span>
+
+          <span class="admin-post-state ${
+            post.published !== false
+              ? "published"
+              : "draft"
+          }">
+            ${
+              post.published !== false
+                ? "Published"
+                : "Draft"
+            }
+          </span>
+
+          ${
+            post.pinned
+              ? `
+                <span class="admin-post-state pinned">
+                  Pinned
+                </span>
+              `
+              : ""
+          }
+
+        </div>
+
+        <h3>
+          ${escapeAdminPostHtml(
+            post.title || "Untitled Post"
+          )}
+        </h3>
+
+        <p>
+          ${escapeAdminPostHtml(
+            String(post.body || "").slice(0, 180)
+          )}
+          ${String(post.body || "").length > 180 ? "..." : ""}
+        </p>
+
+        <small>
+          ${escapeAdminPostHtml(
+            RGPosts.formatPostDate(post.createdAt)
+          )}
+          •
+          ${Number(post.commentCount || 0)} Comments
+        </small>
+
+      </div>
+
+      <div class="admin-post-list-actions">
+
+        <button
+          class="admin-post-action primary"
+          type="button"
+          onclick="editAdminPost('${post.id}')"
+        >
+          Edit
+        </button>
+
+        <button
+          class="admin-post-action"
+          type="button"
+          onclick="toggleAdminPostPublished('${post.id}')"
+        >
+          ${
+            post.published !== false
+              ? "Unpublish"
+              : "Publish"
+          }
+        </button>
+
+        <button
+          class="admin-post-action"
+          type="button"
+          onclick="toggleAdminPostPinned('${post.id}')"
+        >
+          ${post.pinned ? "Unpin" : "Pin"}
+        </button>
+
+        <button
+          class="admin-post-action danger"
+          type="button"
+          onclick="deleteAdminPost('${post.id}')"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    </article>
+  `).join("");
+}
+
 function logoutUser() {
   auth.signOut().then(() => {
     window.location.href = "login.html";
@@ -372,6 +512,13 @@ document
 
 renderAdminPostPreview();
 
+document
+  .getElementById("adminPostListFilter")
+  ?.addEventListener(
+    "change",
+    renderAdminPostsList
+  );
+
 auth.onAuthStateChanged(user => {
   if (!user) {
     window.location.href = "login.html";
@@ -379,6 +526,11 @@ auth.onAuthStateChanged(user => {
   }
 
   currentUser = user;
+
+RGPosts.listenToPosts(posts => {
+  adminPosts = posts;
+  renderAdminPostsList();
+});
 
   RGNotificationCenter.init(
     user.uid,

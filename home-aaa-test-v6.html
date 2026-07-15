@@ -912,8 +912,8 @@
       background: rgba(255,255,255,.03); cursor: pointer;
     }
  .friends-button-icon{
-    width:42px;
-    height:42px;
+    width:48px;
+    height:48px;
     display:block;
     object-fit:contain;
 }
@@ -1798,12 +1798,14 @@
       .header-inner { min-height: 68px; gap: 10px; }
       nav { inset: 68px 0 auto 0; height: calc(100vh - 68px); }
       .brand-mark { width: 34px; height: 34px; }
-      .points {
-        min-width: 78px;
-        width: auto;
-        justify-content: flex-start;
-        padding: 0 10px;
-      }
+     .points {
+  min-width: 138px;
+  width: 138px;
+  justify-content: flex-start;
+  padding: 0 10px;
+  gap: 8px;
+  flex-shrink: 0;
+}
       .points-copy span { display: none; }
       .points-copy strong {
         margin-top: 0;
@@ -1906,10 +1908,18 @@
       #friendsButtonWrap { order: 3; }
       #homeNotificationMount { order: 4; }
       #authLinks { order: 1; }
-      #homeNotificationMount .notification-bell,
-      .friends-button,
-      .points,
-      .mobile-toggle { width: 42px; height: 42px; }
+     #homeNotificationMount .notification-bell,
+.friends-button,
+.mobile-toggle {
+  width: 42px;
+  height: 42px;
+}
+
+.points {
+  width: 138px;
+  min-width: 138px;
+  height: 42px;
+}
 
       .account-btn {
         width: 42px;

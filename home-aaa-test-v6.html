@@ -1967,86 +1967,8 @@
   </style>
 </head>
 
-<body>
-  <header>
-    <div class="shell header-inner">
-      <a href="index.html" class="brand" aria-label="Rivals Gauntlet home">
-        <div class="brand-mark">RG</div>
-        <div class="brand-copy">
-          <strong>RIVALS GAUNTLET</strong>
-          <span>COMPETE • PREDICT • EARN</span>
-        </div>
-      </a>
-
-      <button id="mobileToggle" class="mobile-toggle" type="button" aria-label="Open navigation">☰</button>
-
-      <nav id="mainNav">
-        <a class="active" href="index.html">Home</a>
-        <a href="tournament.html">Tournament</a>
-        <a href="predictions.html">Predictions</a>
-        <a href="shop.html">Shop</a>
-        <a href="leaderboard.html">Leaderboard</a>
-        <a href="about.html">About</a>
-      </nav>
-
-      <div class="header-actions">
-        <div id="pointsBox" class="points" style="display:none;">
-          <div class="points-icon">
-            <img
-              id="rgPointsImage"
-              class="header-icon-image"
-              src="rg-points-icon.PNG"
-              alt=""
-              onerror="this.classList.add('icon-fallback-hidden'); document.getElementById('rgPointsFallback').classList.remove('icon-fallback-hidden');"
-            >
-            <span id="rgPointsFallback" class="icon-fallback-hidden">RG</span>
-          </div>
-          <div class="points-copy">
-            <span>RG Points</span>
-            <strong id="headerRgPoints">0</strong>
-          </div>
-        </div>
-
-
-        <div id="friendsButtonWrap" class="friends-button-wrap">
-          <button id="friendsButton" class="friends-button" type="button" aria-label="Open friends" aria-expanded="false">
-            <img id="friendsButtonImage" class="friends-button-icon" src="friends-icon.PNG" alt=""
-              onerror="this.classList.add('icon-fallback-hidden'); document.getElementById('friendsFallback').classList.remove('icon-fallback-hidden');">
-            <span id="friendsFallback" class="friends-fallback icon-fallback-hidden">👥</span>
-            <span id="friendsRequestBadge" class="friends-request-badge">0</span>
-          </button>
-        </div>
-
-        <div id="homeNotificationMount" style="display:none;"></div>
-
-        <div id="accountBox" class="account" style="display:none;">
-          <button id="accountButton" class="account-btn" type="button" aria-expanded="false">
-            <img id="headerAvatar" class="avatar" src="" alt="Profile" style="display:none;">
-            <div id="headerFallback" class="avatar-fallback">RG</div>
-            <div class="account-copy">
-              <span>Player Account</span>
-              <strong id="headerName">Player</strong>
-            </div>
-            <span class="account-chevron">⌄</span>
-          </button>
-
-          <div id="accountMenu" class="account-menu">
-            <a href="dashboard.html">Dashboard</a>
-            <a id="publicProfileLink" href="#">Public Profile</a>
-            <a href="inventory.html">Inventory</a>
-            <a href="dashboard.html">Notifications</a>
-            <a href="settings.html">Settings</a>
-            <button id="signOutButton" type="button">Sign Out</button>
-          </div>
-        </div>
-
-        <div id="authLinks" class="auth-links">
-          <a href="login.html">Sign In</a>
-          <a href="register.html">Create Account</a>
-        </div>
-      </div>
-    </div>
-  </header>
+  <body>
+  <div id="globalHeader"></div>
 
   <div id="liveStrip" class="live-strip">
     <div class="shell live-inner">
@@ -2205,66 +2127,7 @@
 
 
 
-  <div id="friendsBackdrop" class="friends-backdrop"></div>
-
-  <aside id="friendsDrawer" class="friends-drawer" aria-hidden="true" aria-labelledby="friendsDrawerTitle">
-    <div class="friends-drawer-header">
-      <div>
-        <span>Rivals Gauntlet Social</span>
-        <h2 id="friendsDrawerTitle">Friends</h2>
-      </div>
-      <button id="friendsClose" class="friends-close" type="button" aria-label="Close friends">×</button>
-    </div>
-
-    <div class="friends-tabs">
-      <button class="friends-tab active" type="button" data-friends-tab="friends">Friends</button>
-      <button class="friends-tab" type="button" data-friends-tab="requests">Requests</button>
-    </div>
-
-
-    <div class="friends-search-wrap">
-      <div class="friends-search-box">
-        <input
-          id="friendsSearchInput"
-          type="search"
-          placeholder="Search players by name or RG ID..."
-          autocomplete="off"
-          maxlength="50"
-        >
-        <span class="friends-search-icon">⌕</span>
-      </div>
-
-      <div id="friendsSearchStatus" class="friends-search-status"></div>
-    </div>
-
-    <section id="friendsSearchResults" class="friends-search-results">
-      <h3>Player Search</h3>
-      <div id="friendsSearchList" class="search-player-list"></div>
-    </section>
-
-    <div class="friends-drawer-body">
-      <section id="friendsTabPanel" class="friends-section active">
-        <div class="friends-section-heading">
-          <h3>Your Friends</h3>
-          <span id="friendsCountLabel">0 Friends</span>
-        </div>
-        <div id="friendsList" class="friend-list">
-          <div class="friends-loading">Loading friends...</div>
-        </div>
-      </section>
-
-      <section id="requestsTabPanel" class="friends-section">
-        <div class="friends-section-heading">
-          <h3>Friend Requests</h3>
-          <span id="requestsCountLabel">0 Requests</span>
-        </div>
-        <div id="requestsList" class="request-list">
-          <div class="friends-loading">Loading requests...</div>
-        </div>
-      </section>
-    </div>
-  </aside>
-
+  
   <div
     id="postModalBackdrop"
     class="post-modal-backdrop"
@@ -2337,72 +2200,25 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <script src="firebase.js?v=2"></script>
-  <script src="notifications.js?v=1"></script>
-  <script src="notification-center.js?v=1"></script>
-  <script src="friends.js?v=1"></script>
-  <script src="posts.js?v=1"></script>
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
+<script src="global-header.js?v=2"></script>
+<script src="posts.js?v=1"></script>
 
   <script>
     let siteData = {};
-    let donations = [];
-    let countdownTimer = null;
-    let currentRgPoints = 0;
-    let currentUser = null;
-    let currentPlayer = null;
-    let activeModalPost = null;
-    let stopModalComments = null;
-    let stopFriendsListener = null;
-    let stopIncomingRequestsListener = null;
-    let stopOutgoingRequestsListener = null;
-    let currentFriends = [];
-    let currentIncomingRequests = [];
-    let currentOutgoingRequests = [];
-    let allSearchablePlayers = null;
-    let friendsSearchTimer = null;
-    const commentPlayerCache = new Map();
+let donations = [];
+let countdownTimer = null;
+let currentUser = null;
+let currentPlayer = null;
+let currentPlayerRef = null;
+let activeModalPost = null;
+let stopModalComments = null;
 
-    const mobileToggle = document.getElementById("mobileToggle");
-    const mainNav = document.getElementById("mainNav");
-    const accountButton = document.getElementById("accountButton");
-    const accountMenu = document.getElementById("accountMenu");
-    const friendsButtonWrap = document.getElementById("friendsButtonWrap");
-    const friendsButton = document.getElementById("friendsButton");
-    const friendsRequestBadge = document.getElementById("friendsRequestBadge");
-    const friendsBackdrop = document.getElementById("friendsBackdrop");
-    const friendsDrawer = document.getElementById("friendsDrawer");
-    const friendsClose = document.getElementById("friendsClose");
-    const friendsList = document.getElementById("friendsList");
-    const requestsList = document.getElementById("requestsList");
-    const friendsCountLabel = document.getElementById("friendsCountLabel");
-    const requestsCountLabel = document.getElementById("requestsCountLabel");
-    const friendsSearchInput = document.getElementById("friendsSearchInput");
-    const friendsSearchStatus = document.getElementById("friendsSearchStatus");
-    const friendsSearchResults = document.getElementById("friendsSearchResults");
-    const friendsSearchList = document.getElementById("friendsSearchList");
-
-    mobileToggle.addEventListener("click", () => {
-      const open = mainNav.classList.toggle("show");
-      document.body.classList.toggle("menu-open", open);
-      mobileToggle.textContent = open ? "×" : "☰";
-    });
-
-    accountButton.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const open = accountMenu.classList.toggle("show");
-      accountButton.setAttribute("aria-expanded", String(open));
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!event.target.closest(".account")) {
-        accountMenu.classList.remove("show");
-        accountButton.setAttribute("aria-expanded", "false");
-      }
-    });
-
-    document.getElementById("signOutButton").addEventListener("click", () => {
-      auth.signOut();
-    });
+const commentPlayerCache = new Map();
+    
 
     function clean(value, fallback = "") {
       return String(value || fallback).trim();

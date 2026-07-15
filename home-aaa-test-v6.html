@@ -134,17 +134,19 @@
       cursor: pointer;
     }
 
-  .points {
+ .points {
   height: 46px;
-  min-width: 130px;
+  min-width: 0;
+  width: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(255,255,255,.03);
-    }
+  gap: 9px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
    .points-icon {
     width: 36px;
     height: 36px;
@@ -1808,12 +1810,12 @@
       .header-inner { min-height: 68px; gap: 10px; }
       nav { inset: 68px 0 auto 0; height: calc(100vh - 68px); }
       .brand-mark { width: 34px; height: 34px; }
-     .points {
-  min-width: 138px;
-  width: 138px;
+    .points {
+  min-width: 0;
+  width: auto;
   justify-content: flex-start;
-  padding: 0 10px;
-  gap: 8px;
+  padding: 0 3px;
+  gap: 7px;
   flex-shrink: 0;
 }
       .points-copy span { display: none; }
@@ -1925,11 +1927,7 @@
   height: 42px;
 }
 
-.points {
-  width: 138px;
-  min-width: 138px;
-  height: 42px;
-}
+
 
       .account-btn {
         width: 42px;

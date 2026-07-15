@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#08080d;
+      --panel:#12111b;
+      --panel2:#181624;
+      --text:#f7f4ff;
+      --muted:#aaa4b9;
+      --dim:#746e82;
+      --border:rgba(255,255,255,.09);
+      --purple:#a855f7;
+      --purple2:#c084fc;
+      --purple3:#6d28d9;
+      --green:#3ddc97;
+      --red:#ff4d64;
+      --gold:#f3c969;
+      --shadow:0 24px 70px rgba(0,0,0,.42);
+      --max:1500px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 74% 5%,rgba(117,48,185,.16),transparent 30%),
+        linear-gradient(180deg,#09090f,#07070b);
+      font-family:"Rajdhani",sans-serif;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;color:inherit}
+    img{display:block;max-width:100%}
+    .shell{width:min(calc(100% - 48px),var(--max));margin:0 auto}
+
+    /* HERO */
+    .tournament-hero{
+      position:relative;
+      overflow:hidden;
+      border-bottom:1px solid var(--border);
+      isolation:isolate;
+    }
+
+    .tournament-hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-3;
+      background:
+        linear-gradient(90deg,rgba(8,8,13,.98),rgba(8,8,13,.83) 48%,rgba(8,8,13,.42)),
+        radial-gradient(circle at 76% 40%,rgba(168,85,247,.28),transparent 30%),
+        linear-gradient(135deg,#0c0b13,#151020 58%,#08080d);
+    }
+
+    .hero-shape{
+      position:absolute;
+      z-index:-2;
+      border:1px solid rgba(192,132,252,.15);
+      background:rgba(168,85,247,.035);
+      transform:rotate(45deg);
+    }
+
+    .hero-shape.one{width:390px;height:390px;right:8%;top:40px}
+    .hero-shape.two{width:260px;height:260px;right:-3%;bottom:-75px}
+
+    .tournament-hero-inner{
+      min-height:470px;
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);
+      align-items:center;
+      gap:48px;
+      padding:64px 0;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      color:var(--purple2);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:2.3px;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:34px;
+      height:2px;
+      background:linear-gradient(90deg,var(--purple),transparent);
+    }
+
+    .tournament-title{
+      margin:20px 0 13px;
+      font-size:clamp(50px,6vw,88px);
+      line-height:.9;
+      letter-spacing:-2.5px;
+      text-transform:uppercase;
+    }
+
+    .hero-format{
+      margin:0;
+      color:var(--muted);
+      font-size:18px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+
+    .hero-status-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:24px;
+    }
+
+    .status-pill,
+    .live-pill{
+      display:inline-flex;
+      align-items:center;
+      min-height:31px;
+      padding:0 11px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+    }
+
+    .status-pill{
+      border:1px solid rgba(61,220,151,.32);
+      background:rgba(61,220,151,.08);
+      color:#91efc7;
+    }
+
+    .live-pill{
+      border:1px solid rgba(255,77,100,.32);
+      background:rgba(255,77,100,.08);
+      color:#ff9cab;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:11px;
+      margin-top:29px;
+    }
+
+    .btn{
+      min-height:48px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 20px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      background:rgba(255,255,255,.035);
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      transition:.18s;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(192,132,252,.45);
+    }
+
+    .btn.primary{
+      border-color:rgba(192,132,252,.55);
+      background:linear-gradient(135deg,var(--purple3),var(--purple));
+      box-shadow:0 14px 36px rgba(109,40,217,.28);
+    }
+
+    .hero-dashboard{
+      padding:24px;
+      border:1px solid rgba(168,85,247,.28);
+      border-radius:18px;
+      background:
+        radial-gradient(circle at top right,rgba(168,85,247,.14),transparent 38%),
+        rgba(12,11,18,.86);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-dashboard-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .hero-dashboard-label{
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+    }
+
+    .hero-card-live{
+      display:none;
+      align-items:center;
+      gap:7px;
+      color:#ff7286;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.3px;
+      text-transform:uppercase;
+    }
+
+    .hero-card-live.show{display:inline-flex}
+
+    .hero-card-live-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#ff435d;
+      box-shadow:0 0 12px rgba(255,67,93,.75);
+      animation:heroLivePulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes heroLivePulse{
+      0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:.45;transform:scale(.82)}
+    }
+
+    .hero-countdown{
+      display:block;
+      margin-top:7px;
+      font-size:clamp(35px,5vw,54px);
+      line-height:1;
+    }
+
+    .hero-event-date{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .hero-live-match{
+      margin-top:22px;
+      padding-top:20px;
+      border-top:1px solid var(--border);
+    }
+
+    .hero-live-match span{
+      display:block;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+    }
+
+    .hero-live-match strong{
+      display:block;
+      margin-top:7px;
+      font-size:17px;
+      line-height:1.25;
+    }
+
+    /* BRACKET */
+    main{padding:66px 0 90px}
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:26px;
+      margin-bottom:24px;
+    }
+
+    .section-head h2{
+      margin:8px 0 0;
+      font-size:clamp(34px,4vw,52px);
+      line-height:.95;
+      text-transform:uppercase;
+    }
+
+    .section-head p{
+      max-width:520px;
+      margin:0;
+      color:var(--dim);
+      line-height:1.5;
+    }
+
+    .bracket-shell{
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:rgba(12,11,18,.95);
+      box-shadow:0 22px 75px rgba(0,0,0,.34);
+    }
+
+    .bracket-toolbar{
+      min-height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:0 22px;
+      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,.018);
+    }
+
+    .bracket-toolbar strong{
+      font-size:15px;
+      text-transform:uppercase;
+    }
+
+    .bracket-toolbar span{
+      color:var(--dim);
+      font-size:11px;
+    }
+
+    .bracket-scroll{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:28px;
+    }
+
+    .pro-bracket{
+      min-width:max-content;
+      display:flex;
+      flex-wrap:nowrap;
+      align-items:flex-start;
+      gap:34px;
+    }
+
+    .pro-round{
+      width:300px;
+      flex:0 0 300px;
+    }
+
+    .pro-round h3{
+      margin:0 0 18px;
+      color:var(--purple2);
+      font-size:15px;
+      letter-spacing:2px;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .pro-match{
+      position:relative;
+      overflow:hidden;
+      margin-bottom:20px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      background:#12111a;
+      box-shadow:0 13px 35px rgba(0,0,0,.24);
+    }
+
+    .pro-match::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:3px;
+      background:rgba(168,85,247,.42);
+    }
+
+    .match-label{
+      padding:10px 14px;
+      border-bottom:1px solid var(--border);
+      background:#0c0b12;
+      color:var(--dim);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:1.1px;
+      text-transform:uppercase;
+    }
+
+    .team-row{
+      min-height:51px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:0 13px 0 16px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .team-row:last-child{border-bottom:0}
+
+    .team-row span{
+      min-width:0;
+      overflow:hidden;
+      font-weight:700;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .team-row strong{
+      min-width:34px;
+      height:30px;
+      display:grid;
+      place-items:center;
+      flex:0 0 34px;
+      border:1px solid var(--border);
+      border-radius:7px;
+      background:#09080e;
+    }
+
+    .team-link{
+      display:block;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .team-link:hover{
+      color:var(--purple2);
+      text-shadow:0 0 10px rgba(192,132,252,.5);
+    }
+
+    .team-row.winner-row{
+      border-left:3px solid rgba(61,220,151,.82);
+      background:rgba(61,220,151,.075);
+    }
+
+    .team-row.winner-row span,
+    .team-row.winner-row strong{
+      color:#f4fff9;
+      font-weight:800;
+    }
+
+    .team-row.loser-row{
+      border-left:3px solid rgba(255,77,100,.42);
+      background:rgba(255,77,100,.04);
+      opacity:.58;
+    }
+
+    .pro-match.live-match{
+      border-color:rgba(192,132,252,.78);
+      box-shadow:
+        0 0 0 1px rgba(168,85,247,.36),
+        0 0 36px rgba(168,85,247,.28);
+    }
+
+    .pro-match.live-match::before{
+      background:linear-gradient(180deg,var(--purple2),var(--purple));
+    }
+
+    .pro-match.live-match .match-label{
+      color:#fff;
+      background:rgba(168,85,247,.1);
+    }
+
+    .pro-match.live-match .match-label::after{
+      content:" • LIVE";
+      color:#e4c4ff;
+    }
+
+    .semi-spacer{margin-top:78px}
+    .grand-spacer{margin-top:170px}
+
+    .grand-match{
+      border-color:rgba(243,201,105,.48);
+      box-shadow:0 0 28px rgba(243,201,105,.11);
+    }
+
+    .grand-match::before{background:var(--gold)}
+
+    .champion-banner{
+      margin-top:20px;
+      padding:25px 18px;
+      border:1px solid rgba(243,201,105,.46);
+      border-radius:15px;
+      background:rgba(243,201,105,.05);
+      text-align:center;
+    }
+
+    .champion-title{
+      color:var(--gold);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.7px;
+      text-transform:uppercase;
+    }
+
+    .champion-name{
+      margin-top:7px;
+      font-size:28px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .event-card{
+      padding:35px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:rgba(255,255,255,.025);
+      text-align:center;
+    }
+
+    /* FORMAT + PRIZE */
+    .tournament-format-strip{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:16px;
+      padding:15px 20px;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .tournament-format-strip span{
+      display:inline-flex;
+      align-items:center;
+      white-space:nowrap;
+    }
+
+    .tournament-format-strip span:not(:last-child)::after{
+      content:"";
+      width:4px;
+      height:4px;
+      margin:0 15px;
+      border-radius:50%;
+      background:var(--purple);
+      box-shadow:0 0 9px rgba(168,85,247,.65);
+    }
+
+    .prize-section{margin-top:26px}
+
+    .dynamic-prize-card{
+      padding:30px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:
+        radial-gradient(circle at 84% 10%,rgba(168,85,247,.13),transparent 33%),
+        linear-gradient(145deg,rgba(255,255,255,.025),transparent),
+        rgba(13,12,19,.94);
+      box-shadow:0 18px 55px rgba(0,0,0,.22);
+    }
+
+    .dynamic-prize-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:28px;
+    }
+
+    .info-card-label{
+      color:var(--purple2);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+    }
+
+    .dynamic-prize-head h3{
+      margin:9px 0 0;
+      font-size:30px;
+      text-transform:uppercase;
+    }
+
+    .prize-total{
+      margin-top:8px;
+      font-size:clamp(48px,5vw,68px);
+      font-weight:800;
+      line-height:.92;
+      letter-spacing:-2px;
+    }
+
+    .prize-sub{margin-top:9px;color:var(--dim)}
+
+    .prize-split-bar{
+      display:flex;
+      width:100%;
+      height:46px;
+      margin-top:28px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;
+      background:#09080f;
+    }
+
+    .prize-split-first,
+    .prize-split-second{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:0;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+
+    .prize-split-first{
+      width:80%;
+      background:linear-gradient(90deg,var(--purple3),var(--purple));
+    }
+
+    .prize-split-second{
+      width:20%;
+      background:linear-gradient(90deg,#303041,#55516a);
+    }
+
+    .prize-payout-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      margin-top:18px;
+    }
+
+    .prize-payout-card{
+      padding:22px;
+      border:1px solid var(--border);
+      border-radius:16px;
+      background:rgba(255,255,255,.025);
+    }
+
+    .prize-payout-card.first-place{
+      border-color:rgba(168,85,247,.3);
+      background:
+        radial-gradient(circle at top right,rgba(168,85,247,.12),transparent 40%),
+        rgba(255,255,255,.025);
+    }
+
+    .prize-placement{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .prize-placement-badge{
+      width:46px;
+      height:46px;
+      display:grid;
+      place-items:center;
+      flex:0 0 46px;
+      border-radius:13px;
+      background:linear-gradient(135deg,var(--purple3),var(--purple));
+      font-size:21px;
+      font-weight:800;
+    }
+
+    .second-place .prize-placement-badge{background:#414052}
+
+    .prize-placement span{
+      display:block;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+    }
+
+    .prize-placement strong{
+      display:block;
+      margin-top:3px;
+      font-size:25px;
+    }
+
+    .prize-payout-details{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .prize-payout-details div{
+      padding:13px;
+      border:1px solid var(--border);
+      border-radius:11px;
+      background:rgba(0,0,0,.16);
+    }
+
+    .prize-payout-details span{
+      display:block;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
+
+    .prize-payout-details strong{
+      display:block;
+      margin-top:5px;
+      font-size:20px;
+    }
+
+    .prize-card-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:16px;
+      margin-top:22px;
+      padding-top:20px;
+      border-top:1px solid var(--border);
+    }
+
+    .prize-card-note{color:var(--dim);font-size:12px}
+
+    /* FOOTER */
+    footer{
+      border-top:1px solid var(--border);
+      background:#08080c;
+    }
+
+    .footer-inner{
+      min-height:145px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:28px;
+      padding:28px 0;
+    }
+
+    .footer-copy strong{
+      display:block;
+      font-size:17px;
+      letter-spacing:1.2px;
+    }
+
+    .footer-copy span{
+      display:block;
+      margin-top:7px;
+      color:var(--dim);
+      font-size:12px;
+    }
+
+    .footer-links{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:16px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .disclaimer{
+      width:min(calc(100% - 48px),var(--max));
+      margin:0 auto;
+      padding:0 0 24px;
+      color:#5f596c;
+      font-size:11px;
+      line-height:1.5;
+    }
+
+    @media(max-width:980px){
+      .tournament-hero-inner{
+        grid-template-columns:1fr;
+        min-height:auto;
+        padding:46px 0 54px;
+      }
+    }
+
+    @media(max-width:720px){
+      .shell{width:min(calc(100% - 28px),var(--max))}
+
+      .tournament-hero-inner{
+        padding:34px 0 42px;
+        gap:28px;
+      }
+
+      .tournament-title{
+        margin-top:14px;
+        font-size:43px;
+      }
+
+      .hero-format{font-size:16px}
+      .hero-status-row{margin-top:18px}
+      .hero-actions{margin-top:22px}
+      .hero-dashboard{padding:20px}
+      .hero-actions .btn{flex:1;min-width:150px}
+
+      main{padding:52px 0 70px}
+
+      .section-head{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .bracket-scroll{padding:20px 16px 24px}
+      .pro-round{width:280px;flex-basis:280px}
+      .semi-spacer,
+      .grand-spacer{margin-top:0}
+
+      .prize-payout-grid{grid-template-columns:1fr}
+
+      .tournament-format-strip{
+        justify-content:flex-start;
+        padding:14px 4px;
+        text-align:left;
+      }
+
+      .tournament-format-strip span{margin:4px 0}
+
+      .footer-inner{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .footer-links{justify-content:flex-start}
+    }
+
+    @media(max-width:470px){
+      .hero-countdown{font-size:37px}
+
+      .bracket-toolbar{
+        align-items:flex-start;
+        flex-direction:column;
+        padding:16px;
+      }
+
+      .dynamic-prize-card{padding:22px 16px}
+      .prize-payout-details{grid-template-columns:1fr}
+      .prize-split-bar{height:42px}
+
+      .prize-split-first,
+      .prize-split-second{
+        font-size:9px;
+        letter-spacing:.4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="globalHeader"></div>
+
+  <section class="tournament-hero">
+    <div class="hero-shape one"></div>
+    <div class="hero-shape two"></div>
+
+    <div class="shell tournament-hero-inner">
+      <div>
+        <div class="eyebrow">Current Tournament</div>
+
+        <h1 class="tournament-title" data-event-name>
+          Rivals Gauntlet Open #1
+        </h1>
+
+        <p class="hero-format" data-format>
+          8 Teams • Single Elimination
+        </p>
+
+        <div class="hero-status-row">
+          <span class="status-pill" data-registration-status>OPEN</span>
+          <span id="heroLivePill" class="live-pill" style="display:none;">Tournament Live</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="teams.html" class="btn primary">View Teams</a>
+          <a href="watch.html" class="btn">Watch Live</a>
+        </div>
+      </div>
+
+      <aside class="hero-dashboard">
+        <div class="hero-dashboard-top">
+          <span class="hero-dashboard-label">Event Status</span>
+
+          <span id="heroCardLive" class="hero-card-live">
+            <span class="hero-card-live-dot"></span>
+            Live
+          </span>
+        </div>
+
+        <strong class="hero-countdown" data-countdown>Loading...</strong>
+        <p class="hero-event-date" data-next-event-date>Loading event date...</p>
+
+        <div class="hero-live-match">
+          <span>Current Match</span>
+          <strong data-current-match>Awaiting tournament update</strong>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main>
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Live Tournament Data</div>
+          <h2>Bracket</h2>
+        </div>
+
+        <p>Scores, advancing teams, live-match status, and the champion update automatically.</p>
+      </div>
+
+      <section class="bracket-shell">
+        <div class="bracket-toolbar">
+          <strong>Dynamic Tournament Bracket</strong>
+          <span>Swipe horizontally on mobile to view every round.</span>
+        </div>
+
+        <div class="bracket-scroll">
+          <div id="dynamicBracket">
+            <div class="event-card">
+              <h2>Loading bracket...</h2>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tournament-format-strip" aria-label="Tournament format">
+        <span>8 Teams</span>
+        <span>Single Elimination</span>
+        <span>Quarterfinals Bo3</span>
+        <span>Semifinals Bo3</span>
+        <span>Grand Finals Bo5</span>
+      </div>
+
+      <section class="prize-section">
+        <article class="dynamic-prize-card">
+          <div class="dynamic-prize-head">
+            <div>
+              <span class="info-card-label">Community Funded</span>
+              <h3>Prize Pool Breakdown</h3>
+
+              <div class="prize-total" data-prize-pool>$0</div>
+
+              <div class="prize-sub">
+                <span data-community-donations>+$0</span> from community donations
+              </div>
+            </div>
+          </div>
+
+          <div class="prize-split-bar" aria-label="Prize pool payout split">
+            <div class="prize-split-first">80% First Place</div>
+            <div class="prize-split-second">20% Second Place</div>
+          </div>
+
+          <div class="prize-payout-grid">
+            <section class="prize-payout-card first-place">
+              <div class="prize-placement">
+                <div class="prize-placement-badge">1</div>
+
+                <div>
+                  <span>First Place</span>
+                  <strong id="firstPlaceTotal">$0</strong>
+                </div>
+              </div>
+
+              <div class="prize-payout-details">
+                <div>
+                  <span>Team Share</span>
+                  <strong>80%</strong>
+                </div>
+
+                <div>
+                  <span>Per Player</span>
+                  <strong id="firstPlacePerPlayer">$0</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="prize-payout-card second-place">
+              <div class="prize-placement">
+                <div class="prize-placement-badge">2</div>
+
+                <div>
+                  <span>Second Place</span>
+                  <strong id="secondPlaceTotal">$0</strong>
+                </div>
+              </div>
+
+              <div class="prize-payout-details">
+                <div>
+                  <span>Team Share</span>
+                  <strong>20%</strong>
+                </div>
+
+                <div>
+                  <span>Per Player</span>
+                  <strong id="secondPlacePerPlayer">$0</strong>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="prize-card-actions">
+            <span class="prize-card-note">
+              Calculated for six-player Marvel Rivals teams.
+            </span>
+
+            <a href="donate.html" class="btn primary">
+              Add to Prize Pool
+            </a>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div class="footer-copy">
+        <strong>RIVALS GAUNTLET</strong>
+        <span>Compete. Predict. Earn Rewards.</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://discord.gg/82HPpfkhQN" target="_blank" rel="noopener">Discord</a>
+        <a href="https://www.twitch.tv/atrophylive" target="_blank" rel="noopener">Twitch</a>
+        <a href="donate.html">Support</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      © 2026 Rivals Gauntlet. Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
+    </p>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="friends.js?v=1"></script>
+  <script src="global-header.js?v=2"></script>
+  <script src="site.js?v=2"></script>
+  <script src="tournament.js?v=29"></script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      function moneyNumber(value) {
+        return Number(String(value || "0").replace(/[^0-9.]/g, "")) || 0;
+      }
+
+      function formatPayout(value) {
+        const amount = Number(value || 0);
+
+        return `$${amount.toLocaleString("en-US", {
+          minimumFractionDigits: amount % 1 ? 2 : 0,
+          maximumFractionDigits: 2
+        })}`;
+      }
+
+      function updatePrizePayouts(total) {
+        const firstTotal = total * 0.8;
+        const secondTotal = total * 0.2;
+
+        document.getElementById("firstPlaceTotal").textContent =
+          formatPayout(firstTotal);
+
+        document.getElementById("secondPlaceTotal").textContent =
+          formatPayout(secondTotal);
+
+        document.getElementById("firstPlacePerPlayer").textContent =
+          formatPayout(firstTotal / 6);
+
+        document.getElementById("secondPlacePerPlayer").textContent =
+          formatPayout(secondTotal / 6);
+      }
+
+      function syncPrizePayouts() {
+        const prizeElement = document.querySelector("[data-prize-pool]");
+        const total = moneyNumber(prizeElement?.textContent || "$0");
+        updatePrizePayouts(total);
+      }
+
+      function setLiveState(live) {
+        const livePill = document.getElementById("heroLivePill");
+        const liveIndicator = document.getElementById("heroCardLive");
+
+        if (livePill) {
+          livePill.style.display = live ? "inline-flex" : "none";
+        }
+
+        liveIndicator?.classList.toggle("show", live);
+      }
+
+      if (typeof database !== "undefined") {
+        database.ref("site/status").on("value", snapshot => {
+          const status = String(snapshot.val() || "").trim().toLowerCase();
+          setLiveState(status.includes("live"));
+        });
+
+        database.ref("site").on("value", () => {
+          setTimeout(syncPrizePayouts, 80);
+        });
+
+        database.ref("donations").on("value", () => {
+          setTimeout(syncPrizePayouts, 120);
+        });
+      }
+
+      const prizeElement = document.querySelector("[data-prize-pool]");
+
+      if (prizeElement && "MutationObserver" in window) {
+        const observer = new MutationObserver(syncPrizePayouts);
+
+        observer.observe(prizeElement, {
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
+
+      window.addEventListener("load", () => {
+        setTimeout(syncPrizePayouts, 250);
+      });
+    })();
+  </script>
+</body>
+</html>

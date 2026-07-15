@@ -2681,3 +2681,326 @@
         );
     }
   }
+
+   /* =========================================================
+     AUTHENTICATION + PLAYER HEADER DATA
+  ========================================================= */
+
+  if (typeof auth === "undefined") {
+    console.error(
+      "firebase-auth.js and firebase.js must load before global-header.js"
+    );
+  } else {
+    auth.onAuthStateChanged(user => {
+      currentUser = user || null;
+
+      const notificationMount =
+        document.getElementById("globalNotificationMount");
+
+      const pointsBox =
+        document.getElementById("pointsBox");
+
+      const friendsButtonWrap =
+        document.getElementById("friendsButtonWrap");
+
+      const accountBox =
+        document.getElementById("accountBox");
+
+      const authLinks =
+        document.getElementById("authLinks");
+
+      if (!user) {
+        currentPlayer = null;
+
+        notificationMount.style.display = "none";
+        pointsBox.style.display = "none";
+        friendsButtonWrap.style.display = "none";
+        accountBox.style.display = "none";
+
+        authLinks.classList.add("show");
+
+        accountMenu.classList.remove("show");
+
+        accountButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        if (
+          typeof RGNotificationCenter !==
+          "undefined"
+        ) {
+          RGNotificationCenter.destroy();
+        }
+
+        stopFriendsSystem();
+
+        return;
+      }
+
+      notificationMount.style.display = "block";
+      pointsBox.style.display = "flex";
+      friendsButtonWrap.style.display = "block";
+      accountBox.style.display = "block";
+
+      authLinks.classList.remove("show");
+
+      /* -----------------------------------------
+         NOTIFICATION CENTER
+      ----------------------------------------- */
+
+      if (
+        typeof RGNotificationCenter !==
+        "undefined"
+      ) {
+        RGNotificationCenter.init(
+          user.uid,
+          "#globalNotificationMount"
+        );
+
+        setTimeout(() => {
+          const bellIcon =
+            document.querySelector(
+              "#globalHeader .notification-bell-icon"
+            );
+
+          if (bellIcon) {
+            bellIcon.innerHTML = `
+              <img
+                src="notification-bell.PNG"
+                alt=""
+              >
+            `;
+          }
+        }, 0);
+      } else {
+        console.warn(
+          "notification-center.js must load before global-header.js"
+        );
+      }
+
+      /* -----------------------------------------
+         PLAYER PROFILE + RG POINTS
+      ----------------------------------------- */
+
+      if (typeof database === "undefined") {
+        console.error(
+          "firebase-database.js and firebase.js must load before global-header.js"
+        );
+
+        return;
+      }
+
+      database
+        .ref(`players/${user.uid}`)
+        .on("value", snapshot => {
+          const player =
+            snapshot.val() || {};
+
+          currentPlayer = player;
+
+          const displayName =
+            player.displayName ||
+            user.displayName ||
+            "Player";
+
+          const headerName =
+            document.getElementById(
+              "headerName"
+            );
+
+          const headerFallback =
+            document.getElementById(
+              "headerFallback"
+            );
+
+          const publicProfileLink =
+            document.getElementById(
+              "publicProfileLink"
+            );
+
+          const headerAvatar =
+            document.getElementById(
+              "headerAvatar"
+            );
+
+          headerName.textContent =
+            displayName;
+
+          headerFallback.textContent =
+            initials(displayName);
+
+          publicProfileLink.href =
+            `player.html?id=${encodeURIComponent(
+              user.uid
+            )}`;
+
+          accountButton.title =
+            `Open account menu for ${displayName}`;
+
+          renderRgPoints(
+            Number(player.rgPoints || 0)
+          );
+
+          if (player.profileImage) {
+            headerAvatar.src =
+              player.profileImage;
+
+            headerAvatar.style.display =
+              "block";
+
+            headerFallback.style.display =
+              "none";
+          } else {
+            headerAvatar.removeAttribute(
+              "src"
+            );
+
+            headerAvatar.style.display =
+              "none";
+
+            headerFallback.style.display =
+              "grid";
+          }
+        });
+
+      initializeFriendsSystem(user.uid);
+    });
+  }
+
+  /* =========================================================
+     RESPONSIVE POINTS UPDATE
+  ========================================================= */
+
+  window.addEventListener(
+    "resize",
+    () => {
+      const pointsTarget =
+        document.getElementById(
+          "headerRgPoints"
+        );
+
+      if (!pointsTarget) return;
+
+      renderRgPoints(
+        Number(
+          pointsTarget.dataset.rawPoints ||
+          0
+        )
+      );
+
+      if (
+        window.innerWidth > 980 &&
+        mainNav.classList.contains("show")
+      ) {
+        mainNav.classList.remove("show");
+
+        mobileToggle.textContent = "☰";
+
+        mobileToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        mobileToggle.setAttribute(
+          "aria-label",
+          "Open navigation"
+        );
+
+        document.body.classList.remove(
+          "global-menu-open"
+        );
+      }
+    }
+  );
+
+  /* =========================================================
+     ESCAPE KEY BEHAVIOR
+  ========================================================= */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+      if (event.key !== "Escape") return;
+
+      if (
+        friendsDrawer.classList.contains(
+          "show"
+        )
+      ) {
+        closeFriendsDrawer();
+        return;
+      }
+
+      if (
+        accountMenu.classList.contains(
+          "show"
+        )
+      ) {
+        accountMenu.classList.remove(
+          "show"
+        );
+
+        accountButton.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        return;
+      }
+
+      if (
+        mainNav.classList.contains(
+          "show"
+        )
+      ) {
+        mainNav.classList.remove("show");
+
+        mobileToggle.textContent = "☰";
+
+        mobileToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        mobileToggle.setAttribute(
+          "aria-label",
+          "Open navigation"
+        );
+
+        document.body.classList.remove(
+          "global-menu-open"
+        );
+      }
+    }
+  );
+
+  /* =========================================================
+     OPTIONAL EXTERNAL CONTROLS
+  ========================================================= */
+
+  window.RGGlobalHeader = {
+    openFriends: openFriendsDrawer,
+    closeFriends: closeFriendsDrawer,
+
+    updatePoints(value) {
+      renderRgPoints(value);
+    },
+
+    closeNavigation() {
+      mainNav.classList.remove("show");
+
+      mobileToggle.textContent = "☰";
+
+      mobileToggle.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      document.body.classList.remove(
+        "global-menu-open"
+      );
+    }
+  };
+
+})();

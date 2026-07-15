@@ -250,19 +250,26 @@
     }
 
     #globalHeader .header-square-button,
-    #globalHeader .notification-bell {
-      position: relative;
-      width: 46px;
-      height: 46px;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      overflow: hidden;
-      border: 1px solid var(--gh-border);
-      border-radius: 12px;
-      background: rgba(255,255,255,.03);
-      cursor: pointer;
-    }
+#globalHeader .notification-bell{
+    position:relative;
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    overflow:hidden;
+
+    border:none;
+    background:transparent;
+    border-radius:12px;
+
+    cursor:pointer;
+}
+
+#globalHeader .header-square-button:hover,
+#globalHeader .notification-bell:hover{
+    background:rgba(255,255,255,.04);
+}
 
     #globalHeader .header-square-button img,
     #globalHeader .notification-bell-icon img {
@@ -301,8 +308,8 @@
     }
 
     #globalHeader .account-btn {
-      height: 46px;
-      min-width: 180px;
+      height: 52px;
+      min-width:205px;
       max-width: 240px;
       display: flex;
       align-items: center;
@@ -321,10 +328,10 @@
 
     #globalHeader .avatar,
     #globalHeader .avatar-fallback {
-      width: 36px;
-      height: 36px;
-      flex: 0 0 36px;
-      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 12px;
       object-fit: cover;
       border: 0;
       background: #20182e;
@@ -757,6 +764,19 @@
    /* =========================================================
      MOBILE HEADER CSS
   ========================================================= */
+
+/* Desktop only - remove RG square logo */
+@media (min-width:721px){
+
+  #globalHeader .brand-mark{
+    display:none;
+  }
+
+  #globalHeader .brand{
+    gap:0;
+  }
+
+}
 
   styles.textContent += `
     @media (max-width: 1180px) {

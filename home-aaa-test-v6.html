@@ -2992,17 +2992,12 @@ const commentPlayerCache = new Map();
     });
 
     document.addEventListener("keydown", event => {
-      if (event.key !== "Escape") return;
+  if (event.key !== "Escape") return;
 
-      if (postModalBackdrop.classList.contains("show")) {
-        closePostModal();
-        return;
-      }
-
-      if (friendsDrawer.classList.contains("show")) {
-        closeFriendsDrawer();
-      }
-    });
+  if (postModalBackdrop.classList.contains("show")) {
+    closePostModal();
+  }
+});
 
     window.addEventListener("popstate", () => {
       const postId = new URL(window.location.href).searchParams.get("post");
@@ -3022,9 +3017,7 @@ const commentPlayerCache = new Map();
     }
 
 
-    window.addEventListener("resize", () => {
-      renderRgPoints(currentRgPoints);
-    });
+    
 
     RGPosts.loadLatestPost()
       .then(renderLatestPost)

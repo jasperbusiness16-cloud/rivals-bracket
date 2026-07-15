@@ -1805,9 +1805,12 @@
     @media (max-width: 720px) {
       .shell { width: min(calc(100% - 28px), var(--max)); }
       #accountBox { order: 1; }
-      #pointsBox { order: 2; }
-      #friendsButtonWrap { order: 3; }
-      #homeNotificationMount { order: 4; }
+#friendsButtonWrap { order: 2; }
+#homeNotificationMount { order: 3; }
+#pointsBox {
+  order: 4;
+  margin-left: auto;
+}
       #authLinks { order: 1; }
       .header-inner { min-height: 68px; gap: 10px; }
       nav { inset: 68px 0 auto 0; height: calc(100vh - 68px); }

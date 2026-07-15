@@ -906,16 +906,26 @@
 
     /* Friends header button + drawer */
     .friends-button-wrap { position: relative; display: none; }
-    .friends-button {
-      position: relative; width: 46px; height: 46px; display: grid; place-items: center;
-      border: 1px solid var(--border); border-radius: 12px;
-      background: rgba(255,255,255,.03); cursor: pointer;
-    }
- .friends-button-icon{
-    width:48px;
-    height:48px;
-    display:block;
-    object-fit:contain;
+   .friends-button {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  cursor: pointer;
+}
+.friends-button-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+  object-fit: contain;
+  transform: translateX(1px);
 }
     .friends-fallback { font-size: 17px; line-height: 1; filter: grayscale(1); }
     .friends-request-badge {

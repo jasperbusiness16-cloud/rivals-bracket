@@ -2,14 +2,17 @@
   "use strict";
 
   if (window.RG_GLOBAL_HEADER_LOADED) return;
-  window.RG_GLOBAL_HEADER_LOADED = true;
 
   const mount = document.getElementById("globalHeader");
 
   if (!mount) {
-    console.error('Missing <div id="globalHeader"></div>');
+    console.error(
+      'Global header could not load because <div id="globalHeader"></div> was not found.'
+    );
     return;
   }
+
+  window.RG_GLOBAL_HEADER_LOADED = true;
 
   const currentFile =
     window.location.pathname.split("/").pop().toLowerCase() ||

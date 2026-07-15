@@ -145,29 +145,24 @@
       border-radius: 12px;
       background: rgba(255,255,255,.03);
     }
-    .points-icon {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: transparent;
-  overflow: visible;
+   .points-icon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
 }
 
-.header-icon-image {
-  display: block;
-  object-fit: contain;
-}
-
-#rgPointsImage{
-    width:34px;
-    height:34px;
+.header-icon-image{
+    width:36px;
+    height:36px;
+    display:block;
     object-fit:contain;
-    transform:rotate(30deg);
 }
+
+
 
 .points-icon span {
   transform: none;
@@ -917,9 +912,10 @@
       background: rgba(255,255,255,.03); cursor: pointer;
     }
   .friends-button-icon{
-    width:40px;
-    height:40px;
+    width:36px;
+    height:36px;
     object-fit:contain;
+    display:block;
 }
     .friends-fallback { font-size: 17px; line-height: 1; filter: grayscale(1); }
     .friends-request-badge {
@@ -1189,11 +1185,16 @@
       background: rgba(255,255,255,.03);
       cursor: pointer;
     }
-    .notification-bell-icon {
-  display: grid;
-  place-items: center;
-  font-size: 17px;
-  filter: none;
+   .notification-bell-icon{
+    display:grid;
+    place-items:center;
+}
+
+.notification-bell-icon img{
+    width:36px;
+    height:36px;
+    display:block;
+    object-fit:contain;
 }
 
 #notificationBellImage {

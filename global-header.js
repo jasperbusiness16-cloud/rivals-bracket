@@ -761,24 +761,21 @@
     </header>
   `;
 
-   /* =========================================================
-     MOBILE HEADER CSS
+     /* =========================================================
+     RESPONSIVE HEADER CSS
   ========================================================= */
 
-/* Desktop only - remove RG square logo */
-@media (min-width:721px){
-
-  #globalHeader .brand-mark{
-    display:none;
-  }
-
-  #globalHeader .brand{
-    gap:0;
-  }
-
-}
-
   styles.textContent += `
+    @media (min-width: 721px) {
+      #globalHeader .brand-mark {
+        display: none;
+      }
+
+      #globalHeader .brand {
+        gap: 0;
+      }
+    }
+
     @media (max-width: 1180px) {
       #globalHeader .brand-copy {
         display: none;

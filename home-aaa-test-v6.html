@@ -2214,6 +2214,7 @@ let countdownTimer = null;
 let currentUser = null;
 let currentPlayer = null;
 let currentPlayerRef = null;
+let currentPlayerCallback = null;
 let activeModalPost = null;
 let stopModalComments = null;
 
@@ -2394,10 +2395,12 @@ const commentPlayerCache = new Map();
     auth.onAuthStateChanged(user => {
   currentUser = user || null;
 
-  if (currentPlayerRef) {
-    currentPlayerRef.off();
-    currentPlayerRef = null;
+  if (currentPlayerRef && currentPlayerCallback) {
+    currentPlayerRef.off("value", currentPlayerCallback);
   }
+
+  currentPlayerRef = null;
+  currentPlayerCallback = null;
 
   if (!user) {
     currentPlayer = null;
@@ -2407,11 +2410,13 @@ const commentPlayerCache = new Map();
 
   currentPlayerRef = database.ref(`players/${user.uid}`);
 
-  currentPlayerRef.on("value", snapshot => {
+  currentPlayerCallback = snapshot => {
     currentPlayer = snapshot.val() || {};
     commentPlayerCache.set(user.uid, currentPlayer);
     renderCommentComposer();
-  });
+  };
+
+  currentPlayerRef.on("value", currentPlayerCallback);
 });
     function renderLatestPost(post) {
       const container = document.getElementById("latestNews");

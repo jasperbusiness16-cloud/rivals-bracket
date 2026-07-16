@@ -3020,6 +3020,54 @@ img{display:block;max-width:100%}
   50%{filter:blur(11px) brightness(1.3)}
 }
 
+/* Subtle crate motion while reward cards are spinning */
+@keyframes crateRitualResonance{
+  0%{
+    transform:translateY(-16px) rotate(-.22deg) scale(1.025);
+    filter:
+      brightness(1.22)
+      drop-shadow(0 42px 60px rgba(0,0,0,.58))
+      drop-shadow(0 0 48px rgba(255,143,199,.66));
+  }
+
+  25%{
+    transform:translateY(-18px) rotate(.12deg) scale(1.028);
+    filter:
+      brightness(1.26)
+      drop-shadow(0 43px 61px rgba(0,0,0,.57))
+      drop-shadow(0 0 54px rgba(255,143,199,.72));
+  }
+
+  50%{
+    transform:translateY(-20px) rotate(.28deg) scale(1.031);
+    filter:
+      brightness(1.3)
+      drop-shadow(0 44px 62px rgba(0,0,0,.56))
+      drop-shadow(0 0 60px rgba(255,143,199,.78));
+  }
+
+  75%{
+    transform:translateY(-18px) rotate(0deg) scale(1.028);
+    filter:
+      brightness(1.26)
+      drop-shadow(0 43px 61px rgba(0,0,0,.57))
+      drop-shadow(0 0 54px rgba(255,143,199,.72));
+  }
+
+  100%{
+    transform:translateY(-16px) rotate(-.22deg) scale(1.025);
+    filter:
+      brightness(1.22)
+      drop-shadow(0 42px 60px rgba(0,0,0,.58))
+      drop-shadow(0 0 48px rgba(255,143,199,.66));
+  }
+}
+
+.vault.ritual-active .featured-crate.crate-resonating{
+  animation:crateRitualResonance 3.8s ease-in-out infinite!important;
+  transform-origin:50% 78%;
+}
+
 @keyframes winnerTileSettle{
   from{opacity:0;transform:translate(-50%,-50%) scale(.7)}
   72%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}
@@ -3993,6 +4041,7 @@ body.ritual-page-active .vault[data-scene="bloom"] .platform{
     winner.className = "ritual-winner";
     winner.setAttribute("aria-hidden","true");
 
+crate.classList.remove("crate-resonating");
     crate.getAnimations().forEach(animation => animation.cancel());
     crate.style.removeProperty("transform");
     crate.style.removeProperty("filter");
@@ -4018,6 +4067,8 @@ body.ritual-page-active .vault[data-scene="bloom"] .platform{
   async function showWinner(winner){
     const overlay = $("ritualOverlay");
     const ritualWinner = $("ritualWinner");
+
+  crate.classList.remove("crate-resonating");
 
   vault.classList.add("ritual-winner-active");
 
@@ -4118,6 +4169,9 @@ $("ritualSubtitle").textContent = "The shrine is revealing what lies within.";
   Start the reward cards immediately when
   "Reward Energy Released" appears.
 */
+
+crate.classList.add("crate-resonating");
+
 const rewardSelection = runRitualRewardSelection(winner);
 
 /*

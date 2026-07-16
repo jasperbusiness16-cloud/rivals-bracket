@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediction Center | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#08080d;
+      --panel:#11101a;
+      --panel2:#171522;
+      --text:#f7f4ff;
+      --muted:#aaa4b9;
+      --dim:#746e82;
+      --border:rgba(255,255,255,.09);
+      --purple:#a855f7;
+      --purple2:#c084fc;
+      --purple3:#6d28d9;
+      --green:#3ddc97;
+      --red:#ff4d64;
+      --gold:#f7c948;
+      --shadow:0 24px 70px rgba(0,0,0,.42);
+      --max:1700px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"Rajdhani",sans-serif}
+    body{
+      color:var(--text);
+      background:
+        radial-gradient(circle at 78% 0%,rgba(117,48,185,.18),transparent 30%),
+        linear-gradient(180deg,#09090f,#07070b);
+      overflow-x:hidden;
+    }
+    body.modal-open{overflow:hidden}
+    button,a{font:inherit;color:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none}
+    .shell{width:min(calc(100% - 40px),var(--max));margin:0 auto}
+
+    /* Page chrome only. No #globalHeader selectors in this file. */
+    .prediction-console{
+      padding:18px 0 24px;
+    }
+
+    .console-top{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:22px;
+      align-items:end;
+      padding:6px 2px 14px;
+      border-bottom:1px solid var(--border);
+    }
+    .console-eyebrow{
+      color:var(--purple2);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:2.2px;
+      text-transform:uppercase;
+    }
+    .console-top h1{
+      margin:6px 0 0;
+      font-size:clamp(34px,4vw,64px);
+      line-height:.9;
+      letter-spacing:-1.7px;
+      text-transform:uppercase;
+    }
+    .console-sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .top-actions{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+    .button{
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 15px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:rgba(255,255,255,.03);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      transition:.18s;
+    }
+    .button:hover{transform:translateY(-1px);border-color:rgba(192,132,252,.45)}
+    .button.primary{
+      border-color:rgba(192,132,252,.55);
+      background:linear-gradient(135deg,var(--purple3),var(--purple));
+      box-shadow:0 12px 30px rgba(109,40,217,.24);
+    }
+    .button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    .status{
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:0 13px;
+      border:1px solid rgba(61,220,151,.3);
+      border-radius:10px;
+      background:rgba(61,220,151,.07);
+      color:#9af0cd;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+    }
+    .status.locked{
+      border-color:rgba(255,77,100,.3);
+      background:rgba(255,77,100,.07);
+      color:#ff9eab;
+    }
+
+    /* Broadcast-style live prediction strip */
+    .live-strip{
+      position:relative;
+      overflow:hidden;
+      margin-top:14px;
+      border-top:1px solid rgba(192,132,252,.28);
+      border-bottom:1px solid rgba(192,132,252,.28);
+      background:
+        linear-gradient(90deg,rgba(109,40,217,.14),rgba(168,85,247,.04) 52%,rgba(109,40,217,.14)),
+        rgba(12,11,18,.94);
+    }
+    .live-strip::before{
+      content:"";
+      position:absolute;
+      inset:0 auto 0 0;
+      width:4px;
+      background:linear-gradient(180deg,var(--purple2),var(--purple3));
+      box-shadow:0 0 20px rgba(168,85,247,.8);
+    }
+    .live-strip-inner{
+      min-height:116px;
+      display:grid;
+      grid-template-columns:280px minmax(0,1fr);
+      gap:18px;
+      align-items:center;
+      padding:14px 18px 14px 22px;
+    }
+    .live-copy h2{
+      margin:5px 0 0;
+      font-size:clamp(25px,2.4vw,38px);
+      line-height:.94;
+      text-transform:uppercase;
+    }
+    .live-copy p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .live-empty{
+      min-height:74px;
+      display:grid;
+      place-items:center;
+      color:var(--dim);
+      text-align:center;
+      font-size:13px;
+    }
+    .live-active{
+      display:grid;
+      grid-template-columns:220px minmax(0,1fr);
+      gap:14px;
+      align-items:center;
+    }
+    .versus{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:9px;
+      align-items:center;
+      text-align:center;
+    }
+    .versus strong{font-size:15px;text-transform:uppercase}
+    .versus span{color:var(--purple2);font-size:10px;font-weight:800}
+    .questions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .question{
+      padding:10px 11px;
+      border-left:1px solid var(--border);
+    }
+    .question-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .question-head strong{font-size:12px}
+    .reward{color:#91efc7;font-size:10px;font-weight:800}
+    .answers{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:6px;
+      margin-top:8px;
+    }
+    .answer{
+      position:relative;
+      min-height:34px;
+      padding:0 9px;
+      border:1px solid var(--border);
+      border-radius:8px;
+      background:rgba(255,255,255,.025);
+      color:var(--muted);
+      font-size:10px;
+      font-weight:800;
+      transition:.16s;
+    }
+    .answer:hover:not(:disabled){color:#fff;border-color:rgba(192,132,252,.42)}
+    .answer.selected{
+      padding-right:28px;
+      color:#fff;
+      border-color:rgba(192,132,252,.62);
+      background:linear-gradient(135deg,rgba(109,40,217,.34),rgba(168,85,247,.14));
+    }
+    .answer.selected::after{
+      content:"✓";
+      position:absolute;
+      right:9px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#d8b4fe;
+      font-weight:800;
+    }
+    .answer.saving{opacity:.7}
+    .answer.saving::after{
+      content:"";
+      width:10px;height:10px;
+      border:2px solid rgba(255,255,255,.25);
+      border-top-color:#fff;
+      border-radius:50%;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+
+    /* Unified tournament workspace */
+    .workspace{
+      position:relative;
+      margin-top:14px;
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.018),transparent 18%),
+        rgba(11,10,16,.86);
+    }
+    .workspace-head{
+      min-height:54px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:0 4px;
+      border-bottom:1px solid var(--border);
+    }
+    .workspace-head h2{
+      margin:0;
+      font-size:20px;
+      text-transform:uppercase;
+    }
+    .workspace-head span{
+      color:var(--dim);
+      font-size:11px;
+    }
+    .progress{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+    }
+    .progress-track{
+      width:120px;height:7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+    }
+    .progress-fill{
+      width:0;height:100%;
+      background:linear-gradient(90deg,var(--purple3),var(--purple2));
+      box-shadow:0 0 14px rgba(168,85,247,.5);
+      transition:width .22s;
+    }
+
+    .workspace-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 260px;
+      min-height:530px;
+    }
+    .bracket-scroll{
+      min-width:0;
+      overflow:auto;
+      padding:14px 12px 16px 0;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(168,85,247,.35) transparent;
+    }
+    .bracket{
+      min-width:920px;
+      min-height:500px;
+      display:grid;
+      grid-template-columns:1.15fr .95fr .82fr .65fr;
+      gap:18px;
+    }
+    .round{
+      display:grid;
+      grid-template-rows:auto 1fr;
+      min-height:0;
+    }
+    .round-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:0 4px 9px;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+    }
+    .stack{
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-around;
+      gap:10px;
+    }
+    .match{
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:12px;
+      background:rgba(255,255,255,.018);
+    }
+    .match-label{
+      min-height:25px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:0 10px;
+      border-bottom:1px solid var(--border);
+      color:var(--dim);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.1px;
+      text-transform:uppercase;
+    }
+    .team{
+      width:100%;
+      min-height:42px;
+      display:grid;
+      grid-template-columns:27px minmax(0,1fr) auto;
+      align-items:center;
+      gap:8px;
+      padding:0 10px;
+      border:0;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:transparent;
+      color:var(--muted);
+      text-align:left;
+      transition:.16s;
+    }
+    .team:last-child{border-bottom:0}
+    .team:hover:not(:disabled){color:#fff;background:rgba(168,85,247,.06)}
+    .team.selected{
+      color:#fff;
+      background:linear-gradient(90deg,rgba(109,40,217,.22),rgba(168,85,247,.06));
+      box-shadow:inset 3px 0 var(--purple2);
+    }
+    .team.correct{box-shadow:inset 3px 0 var(--green)}
+    .team.incorrect{opacity:.55;box-shadow:inset 3px 0 var(--red)}
+    .seed{
+      width:24px;height:24px;
+      display:grid;place-items:center;
+      border:1px solid var(--border);
+      border-radius:7px;
+      font-size:9px;
+      font-weight:800;
+    }
+    .team-name{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:13px;
+      font-weight:800;
+    }
+    .pick{color:var(--purple2)}
+    .champion{
+      min-height:180px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:18px;
+      border-left:1px solid rgba(247,201,72,.24);
+      background:radial-gradient(circle at 50% 38%,rgba(247,201,72,.09),transparent 32%);
+      text-align:center;
+    }
+    .champion-icon{
+      width:52px;height:52px;
+      display:grid;place-items:center;
+      border:1px solid rgba(247,201,72,.35);
+      border-radius:14px;
+      color:var(--gold);
+      background:rgba(247,201,72,.06);
+      font-size:23px;
+    }
+    .champion span{
+      margin-top:12px;
+      color:var(--dim);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+    }
+    .champion strong{
+      margin-top:6px;
+      font-size:20px;
+      text-transform:uppercase;
+    }
+
+    /* Clean status rail, no boxed card */
+    .perfect-rail{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding:22px;
+      border-left:1px solid var(--border);
+      background:
+        radial-gradient(circle at 60% 24%,rgba(247,201,72,.09),transparent 30%),
+        rgba(255,255,255,.008);
+    }
+    .perfect-rail::before{
+      content:"";
+      position:absolute;
+      left:-1px;top:20%;bottom:20%;
+      width:1px;
+      background:linear-gradient(180deg,transparent,rgba(247,201,72,.4),transparent);
+    }
+    .perfect-label{
+      color:var(--gold);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+    }
+    .perfect-number{
+      margin-top:12px;
+      font-size:clamp(58px,6vw,92px);
+      line-height:.78;
+      font-weight:800;
+      letter-spacing:-3px;
+    }
+    .perfect-caption{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+    .my-status{
+      margin-top:20px;
+      padding-top:16px;
+      border-top:1px solid var(--border);
+    }
+    .my-status span{
+      display:block;
+      color:var(--dim);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+    }
+    .my-status strong{
+      display:block;
+      margin-top:5px;
+      font-size:13px;
+      text-transform:uppercase;
+    }
+    .alive{color:#91efc7}.eliminated{color:#ff9eab}.pending{color:#f7d97a}
+
+    /* Integrated command dock */
+    .command-dock{
+      min-height:70px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:18px;
+      margin-top:0;
+      padding:10px 2px;
+      border-bottom:1px solid var(--border);
+      background:linear-gradient(90deg,rgba(109,40,217,.04),transparent 45%);
+    }
+    .command-main{
+      display:flex;
+      align-items:center;
+      gap:13px;
+      min-width:0;
+    }
+    .command-glyph{
+      width:38px;height:38px;
+      display:grid;place-items:center;
+      flex:0 0 38px;
+      color:var(--purple2);
+      border-left:2px solid var(--purple2);
+    }
+    .command-copy{min-width:0}
+    .command-copy strong{
+      display:block;
+      font-size:13px;
+      text-transform:uppercase;
+    }
+    .command-copy span{
+      display:block;
+      margin-top:3px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--dim);
+      font-size:11px;
+    }
+    .command-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    /* Modals */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:4000;
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding:20px;
+      background:rgba(3,3,7,.78);
+      backdrop-filter:blur(10px);
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:min(1040px,100%);
+      max-height:calc(100dvh - 40px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:hidden;
+      border:1px solid rgba(168,85,247,.34);
+      border-radius:18px;
+      background:#0e0d15;
+      box-shadow:0 36px 110px rgba(0,0,0,.7);
+    }
+    .modal-header{
+      position:sticky;
+      top:0;
+      z-index:2;
+      min-height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      padding:0 20px;
+      border-bottom:1px solid var(--border);
+      background:#0f0e17;
+    }
+    .modal-header span{
+      display:block;
+      color:var(--purple2);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.6px;
+      text-transform:uppercase;
+    }
+    .modal-header h2{margin:4px 0 0;font-size:22px}
+    .modal-close{
+      width:38px;height:38px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:24px;
+    }
+    .modal-body{
+      overflow:auto;
+      padding:22px;
+      overscroll-behavior:contain;
+    }
+    .teams-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:11px;
+    }
+    .team-card{
+      padding:13px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.02);
+    }
+    .team-card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .team-card-head h3{margin:0;font-size:16px;text-transform:uppercase}
+    .team-card-head span{color:var(--dim);font-size:9px;font-weight:800}
+    .roster{display:grid;gap:6px;margin-top:10px}
+    .player{
+      display:grid;
+      grid-template-columns:22px minmax(0,1fr);
+      gap:7px;
+      align-items:center;
+      padding:7px;
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:8px;
+    }
+    .player-index{
+      width:22px;height:22px;
+      display:grid;place-items:center;
+      border-radius:7px;
+      background:rgba(168,85,247,.08);
+      color:var(--purple2);
+      font-size:9px;
+      font-weight:800;
+    }
+    .player strong{
+      display:block;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:11px;
+    }
+    .player small{
+      display:block;
+      margin-top:2px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--dim);
+      font-size:8px;
+    }
+
+    .rules{
+      max-width:760px;
+      margin:0 auto;
+      display:grid;
+      gap:20px;
+      padding:4px 0 12px;
+    }
+    .rule{
+      display:grid;
+      grid-template-columns:42px minmax(0,1fr);
+      gap:14px;
+      align-items:start;
+      padding-bottom:18px;
+      border-bottom:1px solid var(--border);
+    }
+    .rule:last-child{border-bottom:0}
+    .rule-number{
+      width:42px;height:42px;
+      display:grid;place-items:center;
+      border:1px solid rgba(192,132,252,.34);
+      border-radius:11px;
+      color:var(--purple2);
+      font-weight:800;
+    }
+    .rule h3{margin:0;font-size:18px;text-transform:uppercase}
+    .rule p{margin:7px 0 0;color:var(--muted);line-height:1.5}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      z-index:5000;
+      max-width:min(520px,calc(100vw - 30px));
+      padding:12px 16px;
+      border:1px solid rgba(168,85,247,.4);
+      border-radius:10px;
+      background:rgba(15,14,23,.98);
+      box-shadow:var(--shadow);
+      opacity:0;
+      visibility:hidden;
+      transform:translate(-50%,10px);
+      transition:.18s;
+      font-size:12px;
+      font-weight:800;
+      text-align:center;
+    }
+    .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+    @media(max-width:1180px){
+      .console-top{grid-template-columns:1fr}
+      .top-actions{justify-content:flex-start}
+      .live-strip-inner{grid-template-columns:1fr}
+      .live-active{grid-template-columns:1fr}
+      .workspace-grid{grid-template-columns:1fr}
+      .perfect-rail{
+        border-left:0;
+        border-top:1px solid var(--border);
+        display:grid;
+        grid-template-columns:auto minmax(0,1fr) auto;
+        align-items:center;
+        gap:18px;
+        padding:16px 4px;
+      }
+      .perfect-rail::before{display:none}
+      .perfect-number{margin-top:0;font-size:62px}
+      .perfect-caption{margin-top:0}
+      .my-status{margin-top:0;padding-top:0;border-top:0;text-align:right}
+      .teams-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media(max-width:720px){
+      .shell{width:min(calc(100% - 20px),var(--max))}
+      .prediction-console{padding-top:12px}
+      .console-top h1{font-size:38px}
+      .live-strip-inner{padding:14px}
+      .questions{grid-template-columns:1fr}
+      .workspace-head{
+        align-items:flex-start;
+        flex-direction:column;
+        padding:12px 0;
+      }
+      .bracket-scroll{padding-right:0}
+      .perfect-rail{
+        grid-template-columns:1fr 1fr;
+      }
+      .perfect-label{grid-column:1 / -1}
+      .perfect-caption{grid-column:1 / -1}
+      .my-status{text-align:left}
+      .command-dock{
+        grid-template-columns:1fr;
+        padding:12px 0;
+      }
+      .command-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+      .command-actions .button{width:100%}
+      .teams-grid{grid-template-columns:1fr}
+      .modal-backdrop{
+        padding:max(10px,env(safe-area-inset-top)) 0 0;
+      }
+      .modal{
+        width:100%;
+        max-height:calc(100dvh - max(10px,env(safe-area-inset-top)));
+        border-radius:16px 16px 0 0;
+      }
+      .modal-body{
+        padding:18px 16px calc(24px + env(safe-area-inset-bottom));
+      }
+      .rules{
+        padding-top:0;
+      }
+      .rule{
+        grid-template-columns:36px minmax(0,1fr);
+        gap:11px;
+      }
+      .rule-number{width:36px;height:36px}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="globalHeader"></div>
+
+  <main class="shell prediction-console">
+    <section class="console-top">
+      <div>
+        <div class="console-eyebrow">Tournament Pick’em</div>
+        <h1 id="tournamentName">Rivals Gauntlet Open #1</h1>
+        <p id="tournamentSub">Fill out the complete tournament path before QF1 becomes currentMatch.</p>
+      </div>
+
+      <div class="top-actions">
+        <div id="lockStatus" class="status">● Pick’em Open</div>
+        <button id="viewTeamsButton" class="button" type="button">View Teams</button>
+        <button id="howItWorksButton" class="button" type="button">How It Works</button>
+      </div>
+    </section>
+
+    <section class="live-strip">
+      <div class="live-strip-inner">
+        <div class="live-copy">
+          <div class="console-eyebrow">Live Prediction Window</div>
+          <h2 id="liveTitle">No Live Predictions Open</h2>
+          <p id="liveText">When a matchup becomes nextMatch, automatic questions will appear here.</p>
+        </div>
+
+        <div id="liveMount" class="live-empty">
+          Check back before the next matchup.
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="workspace-head">
+        <div>
+          <h2>My Tournament Bracket</h2>
+          <span id="bracketHelper">Select a winner in every matchup.</span>
+        </div>
+
+        <div class="progress">
+          <span id="completionText">0 / 7</span>
+          <div class="progress-track">
+            <div id="completionFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workspace-grid">
+        <div class="bracket-scroll">
+          <div class="bracket">
+            <section class="round">
+              <div class="round-title"><span>Quarterfinals</span><span>4 Picks</span></div>
+              <div id="qfMount" class="stack"></div>
+            </section>
+
+            <section class="round">
+              <div class="round-title"><span>Semifinals</span><span>2 Picks</span></div>
+              <div id="sfMount" class="stack"></div>
+            </section>
+
+            <section class="round">
+              <div class="round-title"><span>Grand Final</span><span>1 Pick</span></div>
+              <div id="finalMount" class="stack"></div>
+            </section>
+
+            <section class="round">
+              <div class="round-title"><span>Champion</span><span>+500 RP</span></div>
+              <div id="championMount" class="stack"></div>
+            </section>
+          </div>
+        </div>
+
+        <aside class="perfect-rail">
+          <div class="perfect-label">Perfect Brackets Remaining</div>
+          <div id="perfectCount" class="perfect-number">0</div>
+          <div id="perfectCaption" class="perfect-caption">Waiting for bracket submissions.</div>
+
+          <div class="my-status">
+            <span>Your Bracket</span>
+            <strong id="myPerfectStatus" class="pending">Not Submitted</strong>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="command-dock">
+      <div class="command-main">
+        <div class="command-glyph">◆</div>
+        <div class="command-copy">
+          <strong id="commandTitle">Complete Your Bracket</strong>
+          <span id="commandText">Your draft is saved locally as you make selections.</span>
+        </div>
+      </div>
+
+      <div class="command-actions">
+        <button id="saveDraftButton" class="button" type="button">Save Draft</button>
+        <button id="submitBracketButton" class="button primary" type="button" disabled>Submit Bracket</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="teamsModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="teamsTitle">
+      <div class="modal-header">
+        <div>
+          <span>Rivals Gauntlet Open</span>
+          <h2 id="teamsTitle">Tournament Teams</h2>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="teamsModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="teamsGrid" class="teams-grid"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="rulesModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-header">
+        <div>
+          <span>Tournament Pick’em</span>
+          <h2 id="rulesTitle">How It Works</h2>
+        </div>
+        <button class="modal-close" type="button" data-close-modal="rulesModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="rules">
+          <div class="rule">
+            <div class="rule-number">1</div>
+            <div>
+              <h3>Fill the entire bracket</h3>
+              <p>Quarterfinal picks populate the semifinals. Semifinal picks populate the Grand Final.</p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="rule-number">2</div>
+            <div>
+              <h3>Submit before the tournament</h3>
+              <p>The bracket locks when QF1 becomes currentMatch. Late bracket entries are not accepted.</p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="rule-number">3</div>
+            <div>
+              <h3>Chase a perfect bracket</h3>
+              <p>Every matchup must be correct. The remaining counter only moves down as official results are finalized.</p>
+            </div>
+          </div>
+
+          <div class="rule">
+            <div class="rule-number">4</div>
+            <div>
+              <h3>Keep predicting live</h3>
+              <p>Separate automatic questions open for nextMatch and lock when that matchup becomes currentMatch.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="friends.js?v=1"></script>
+  <script src="global-header.js?v=2"></script>
+
+  <script>
+    let tournamentId = "open1";
+    let currentUser = null;
+    let currentPlayer = {};
+    let siteData = {};
+    let teamData = {};
+    let submittedBrackets = {};
+    let myBracketRecord = null;
+    let nextMatchData = {};
+    let currentMatchLabel = "";
+
+    let myLiveAnswers = {};
+    let liveAnswerListenerRef = null;
+    let liveAnswerListenerCallback = null;
+    let savingLiveAnswerKey = "";
+
+    const picks = {QF1:"",QF2:"",QF3:"",QF4:"",SF1:"",SF2:"",GRAND:""};
+    const resolvedWinners = {QF1:"",QF2:"",QF3:"",QF4:"",SF1:"",SF2:"",GRAND:""};
+    const MATCH_ORDER = ["QF1","QF2","QF3","QF4","SF1","SF2","GRAND"];
+
+    function clean(value,fallback=""){return String(value||fallback).trim()}
+    function escapeHtml(value){
+      return String(value||"")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function showToast(message){
+      const toast=document.getElementById("toast");
+      toast.textContent=message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer=setTimeout(()=>toast.classList.remove("show"),2500);
+    }
+
+    function getTeamsArray(){
+      const teams=teamData.teams||{};
+      return Object.keys(teams)
+        .sort((a,b)=>Number(a.replace(/\D/g,""))-Number(b.replace(/\D/g,"")))
+        .map((teamKey,index)=>({
+          teamKey,
+          seed:index+1,
+          teamName:teamData.teamNames?.[teamKey]||`Team ${teamKey.replace("team","")}`,
+          players:Array.isArray(teams[teamKey])?teams[teamKey]:[]
+        }));
+    }
+    function getTeam(teamKey){return getTeamsArray().find(t=>t.teamKey===teamKey)||null}
+    function getTeamName(teamKey){return getTeam(teamKey)?.teamName||"TBD"}
+
+    function matchupTeams(matchId){
+      const teams=getTeamsArray();
+      return {
+        QF1:[teams[0]?.teamKey||"",teams[1]?.teamKey||""],
+        QF2:[teams[2]?.teamKey||"",teams[3]?.teamKey||""],
+        QF3:[teams[4]?.teamKey||"",teams[5]?.teamKey||""],
+        QF4:[teams[6]?.teamKey||"",teams[7]?.teamKey||""],
+        SF1:[picks.QF1,picks.QF2],
+        SF2:[picks.QF3,picks.QF4],
+        GRAND:[picks.SF1,picks.SF2]
+      }[matchId]||["",""];
+    }
+
+    function tournamentHasStarted(){
+      const current=clean(currentMatchLabel||siteData.currentMatch).toLowerCase();
+      return Boolean(current&&current!=="no match live"&&current!=="no match"&&current!=="offline");
+    }
+    function bracketLocked(){return tournamentHasStarted()||Boolean(myBracketRecord?.locked)}
+
+    function renderTeamButton(matchId,teamKey){
+      const team=getTeam(teamKey);
+      const selected=picks[matchId]===teamKey;
+      const winner=resolvedWinners[matchId];
+      const resultClass=winner?(selected&&winner===teamKey?"correct":selected?"incorrect":""):"";
+
+      return `
+        <button class="team ${selected?"selected":""} ${resultClass}"
+          type="button"
+          data-pick-match="${matchId}"
+          data-pick-team="${escapeHtml(teamKey)}"
+          ${bracketLocked()?"disabled":""}>
+          <span class="seed">${team?.seed||"-"}</span>
+          <span class="team-name">${escapeHtml(team?.teamName||"TBD")}</span>
+          <span class="pick">${selected?"◆":""}</span>
+        </button>
+      `;
+    }
+
+    function renderMatch(matchId,label){
+      const [a,b]=matchupTeams(matchId);
+      const empty=`<button class="team" disabled><span class="seed">-</span><span class="team-name">TBD</span><span></span></button>`;
+      return `
+        <article class="match">
+          <div class="match-label">
+            <span>${escapeHtml(label)}</span>
+            <span>${resolvedWinners[matchId]?"Final":"Pick Winner"}</span>
+          </div>
+          ${a?renderTeamButton(matchId,a):empty}
+          ${b?renderTeamButton(matchId,b):empty}
+        </article>
+      `;
+    }
+
+    function renderBracket(){
+      document.getElementById("qfMount").innerHTML=[
+        renderMatch("QF1","Quarterfinal 1"),
+        renderMatch("QF2","Quarterfinal 2"),
+        renderMatch("QF3","Quarterfinal 3"),
+        renderMatch("QF4","Quarterfinal 4")
+      ].join("");
+
+      document.getElementById("sfMount").innerHTML=[
+        renderMatch("SF1","Semifinal 1"),
+        renderMatch("SF2","Semifinal 2")
+      ].join("");
+
+      document.getElementById("finalMount").innerHTML=renderMatch("GRAND","Grand Finals");
+
+      document.getElementById("championMount").innerHTML=`
+        <div class="champion">
+          <div class="champion-icon">♛</div>
+          <span>Predicted Champion</span>
+          <strong>${escapeHtml(picks.GRAND?getTeamName(picks.GRAND):"Awaiting Final Pick")}</strong>
+        </div>
+      `;
+
+      updateCompletion();
+    }
+
+    function updateCompletion(){
+      const complete=MATCH_ORDER.filter(id=>Boolean(picks[id])).length;
+      const percent=Math.round((complete/MATCH_ORDER.length)*100);
+
+      document.getElementById("completionText").textContent=`${complete} / 7`;
+      document.getElementById("completionFill").style.width=`${percent}%`;
+
+      const submit=document.getElementById("submitBracketButton");
+      submit.disabled=complete!==7||bracketLocked()||Boolean(myBracketRecord?.submitted);
+
+      if(myBracketRecord?.submitted){
+        document.getElementById("commandTitle").textContent=bracketLocked()?"Bracket Locked":"Bracket Submitted";
+        document.getElementById("commandText").textContent=bracketLocked()
+          ?"Your tournament path is final. Watch the perfect counter as results are finalized."
+          :"You may edit and resubmit until the tournament begins.";
+        submit.textContent="Submitted";
+      }else if(bracketLocked()){
+        document.getElementById("commandTitle").textContent="Pick’em Closed";
+        document.getElementById("commandText").textContent="The tournament has started. New bracket entries are no longer accepted.";
+      }else if(complete===7){
+        document.getElementById("commandTitle").textContent="Ready to Submit";
+        document.getElementById("commandText").textContent="All seven matchup winners are selected.";
+      }else{
+        document.getElementById("commandTitle").textContent="Complete Your Bracket";
+        document.getElementById("commandText").textContent=`${7-complete} picks remaining before submission.`;
+      }
+
+      document.getElementById("saveDraftButton").disabled=bracketLocked();
+    }
+
+    function selectPick(matchId,teamKey){
+      if(bracketLocked())return;
+      picks[matchId]=teamKey;
+
+      if(matchId==="QF1"||matchId==="QF2"){
+        if(picks.SF1&&!matchupTeams("SF1").includes(picks.SF1)){picks.SF1="";picks.GRAND=""}
+      }
+      if(matchId==="QF3"||matchId==="QF4"){
+        if(picks.SF2&&!matchupTeams("SF2").includes(picks.SF2)){picks.SF2="";picks.GRAND=""}
+      }
+      if(matchId==="SF1"||matchId==="SF2"){
+        if(picks.GRAND&&!matchupTeams("GRAND").includes(picks.GRAND)){picks.GRAND=""}
+      }
+
+      localStorage.setItem(`rgPredictionDraft_${tournamentId}`,JSON.stringify(picks));
+      renderBracket();
+    }
+
+    async function saveDraft(){
+      if(!currentUser){showToast("Sign in to save your bracket draft.");return}
+      if(bracketLocked())return;
+
+      await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).set({
+        uid:currentUser.uid,
+        displayName:currentPlayer.displayName||currentUser.displayName||"",
+        picks,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      });
+
+      showToast("Bracket draft saved.");
+    }
+
+    async function submitBracket(){
+      if(!currentUser){showToast("Sign in to submit your bracket.");return}
+      if(bracketLocked()){showToast("Pick’em is already locked.");return}
+      if(!MATCH_ORDER.every(id=>Boolean(picks[id]))){showToast("Complete all seven picks first.");return}
+
+      const payload={
+        uid:currentUser.uid,
+        rgId:currentPlayer.rgId||"",
+        displayName:currentPlayer.displayName||currentUser.displayName||"",
+        profileImage:currentPlayer.profileImage||"",
+        picks:{...picks},
+        championPick:picks.GRAND,
+        submitted:true,
+        perfectEligible:true,
+        submittedAt:firebase.database.ServerValue.TIMESTAMP,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      };
+
+      await database.ref(`predictions/${tournamentId}/brackets/${currentUser.uid}`).set(payload);
+      await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).remove();
+
+      myBracketRecord={...payload,submittedAt:Date.now()};
+      showToast("Bracket submitted. Perfect Bracket eligibility secured.");
+      renderAll();
+    }
+
+    function mapResolvedWinners(){
+      resolvedWinners.QF1=clean(siteData.qf1Winner);
+      resolvedWinners.QF2=clean(siteData.qf2Winner);
+      resolvedWinners.QF3=clean(siteData.qf3Winner);
+      resolvedWinners.QF4=clean(siteData.qf4Winner);
+      resolvedWinners.SF1=clean(siteData.sf1Winner);
+      resolvedWinners.SF2=clean(siteData.sf2Winner);
+      resolvedWinners.GRAND=clean(siteData.grandWinner||siteData.champion);
+
+      Object.keys(resolvedWinners).forEach(id=>{
+        const value=resolvedWinners[id];
+        if(!value)return;
+        if(getTeam(value))return;
+        const found=getTeamsArray().find(t=>clean(t.teamName).toLowerCase()===value.toLowerCase());
+        resolvedWinners[id]=found?.teamKey||value;
+      });
+    }
+
+    function countPerfectBrackets(){
+      const entries=Object.values(submittedBrackets||{}).filter(x=>x?.submitted&&x?.perfectEligible);
+      const finalized=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id]));
+      if(!entries.length)return 0;
+      if(!finalized.length)return entries.length;
+      return entries.filter(entry=>finalized.every(id=>entry.picks?.[id]===resolvedWinners[id])).length;
+    }
+
+    function renderPerfect(){
+      const entries=Object.values(submittedBrackets||{}).filter(x=>x?.submitted&&x?.perfectEligible);
+      const remaining=countPerfectBrackets();
+      const finalized=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id])).length;
+
+      document.getElementById("perfectCount").textContent=remaining.toLocaleString();
+      document.getElementById("perfectCaption").textContent=entries.length
+        ? finalized?`${remaining} of ${entries.length} still perfect.`:`${entries.length} brackets submitted.`
+        :"Waiting for bracket submissions.";
+
+      const status=document.getElementById("myPerfectStatus");
+      if(!myBracketRecord?.submitted){
+        status.textContent="Not Submitted";
+        status.className="pending";
+      }else{
+        const alive=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id]))
+          .every(id=>myBracketRecord.picks?.[id]===resolvedWinners[id]);
+        status.textContent=alive?(finalized?"Still Alive":"Eligible"):"Eliminated";
+        status.className=alive?"alive":"eliminated";
+      }
+    }
+
+    function renderTeams(){
+      const grid=document.getElementById("teamsGrid");
+      const teams=getTeamsArray();
+
+      if(!teamData.published||!teams.length){
+        grid.innerHTML=`<div class="team-card"><h3>Teams Not Published</h3><p style="color:var(--muted)">Rosters will appear once staff publish them.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML=teams.map(team=>`
+        <article class="team-card">
+          <div class="team-card-head">
+            <h3>${escapeHtml(team.teamName)}</h3>
+            <span>${team.players.length} Players</span>
+          </div>
+          <div class="roster">
+            ${team.players.length?team.players.map((player,index)=>`
+              <a class="player" href="player.html?id=${encodeURIComponent(player.uid||"")}">
+                <span class="player-index">${index+1}</span>
+                <span>
+                  <strong>${escapeHtml(player.displayName||"Player")}</strong>
+                  <small>${escapeHtml(player.peakRank||"No Rank")} • ${escapeHtml(player.mainRole||"No Role")}</small>
+                </span>
+              </a>
+            `).join(""):`<div class="player"><span class="player-index">-</span><span><strong>No players assigned</strong></span></div>`}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function normalizeMatchLabel(value){
+      return clean(value)
+        .replace("Grand Finals","GRAND")
+        .replace("Grand Final","GRAND")
+        .split("•")[0]
+        .trim()
+        .toUpperCase();
+    }
+
+    function getNextMatchTeams(){
+      const label=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(label==="QF1")return matchupTeams("QF1");
+      if(label==="QF2")return matchupTeams("QF2");
+      if(label==="QF3")return matchupTeams("QF3");
+      if(label==="QF4")return matchupTeams("QF4");
+      if(label==="SF1")return [resolvedWinners.QF1,resolvedWinners.QF2].filter(Boolean);
+      if(label==="SF2")return [resolvedWinners.QF3,resolvedWinners.QF4].filter(Boolean);
+      if(label==="GRAND")return [resolvedWinners.SF1,resolvedWinners.SF2].filter(Boolean);
+      return [];
+    }
+
+    function liveWindowLocked(){
+      const next=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      const current=normalizeMatchLabel(currentMatchLabel||siteData.currentMatch);
+      return Boolean(next&&current&&next===current);
+    }
+
+    function detachLiveListener(){
+      if(liveAnswerListenerRef&&liveAnswerListenerCallback){
+        liveAnswerListenerRef.off("value",liveAnswerListenerCallback);
+      }
+      liveAnswerListenerRef=null;
+      liveAnswerListenerCallback=null;
+      myLiveAnswers={};
+    }
+
+    function attachLiveListener(){
+      detachLiveListener();
+      if(!currentUser){renderLive();return}
+
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(!matchKey){renderLive();return}
+
+      liveAnswerListenerRef=database.ref(`predictions/${tournamentId}/live/${matchKey}`);
+      liveAnswerListenerCallback=snapshot=>{
+        const data=snapshot.val()||{};
+        myLiveAnswers={
+          map1Winner:data.map1Winner?.[currentUser.uid]?.answer||"",
+          exactScore:data.exactScore?.[currentUser.uid]?.answer||""
+        };
+        renderLive();
+      };
+      liveAnswerListenerRef.on("value",liveAnswerListenerCallback);
+    }
+
+    async function saveLiveAnswer(questionId,answer){
+      if(!currentUser){showToast("Sign in to make live predictions.");return}
+      if(liveWindowLocked()){showToast("This live prediction window is locked.");return}
+
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(!matchKey)return;
+
+      const previous=myLiveAnswers[questionId]||"";
+      myLiveAnswers={...myLiveAnswers,[questionId]:answer};
+      savingLiveAnswerKey=`${questionId}:${answer}`;
+      renderLive();
+
+      try{
+        await database.ref(`predictions/${tournamentId}/live/${matchKey}/${questionId}/${currentUser.uid}`).set({
+          uid:currentUser.uid,
+          rgId:currentPlayer.rgId||"",
+          displayName:currentPlayer.displayName||currentUser.displayName||"",
+          answer,
+          tournamentId,
+          matchId:matchKey,
+          questionId,
+          updatedAt:firebase.database.ServerValue.TIMESTAMP,
+          createdAt:firebase.database.ServerValue.TIMESTAMP
+        });
+        savingLiveAnswerKey="";
+        renderLive();
+        showToast("Live prediction saved.");
+      }catch(error){
+        console.error("Live prediction save failed:",error);
+        myLiveAnswers={...myLiveAnswers,[questionId]:previous};
+        savingLiveAnswerKey="";
+        renderLive();
+        showToast(error?.code==="PERMISSION_DENIED"
+          ?"Firebase rules blocked this prediction."
+          :"Prediction could not be saved.");
+      }
+    }
+
+    function renderLive(){
+      const mount=document.getElementById("liveMount");
+      const title=document.getElementById("liveTitle");
+      const text=document.getElementById("liveText");
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      const teams=getNextMatchTeams().filter(Boolean);
+
+      if(!matchKey||teams.length<2){
+        title.textContent="No Live Predictions Open";
+        text.textContent="When a matchup becomes nextMatch, automatic questions will appear here.";
+        mount.className="live-empty";
+        mount.innerHTML="Check back before the next matchup.";
+        return;
+      }
+
+      const locked=liveWindowLocked();
+      const isBo5=matchKey==="GRAND";
+      const scores=isBo5?["3-0","3-1","3-2","0-3","1-3","2-3"]:["2-0","2-1","0-2","1-2"];
+
+      title.textContent=`${matchKey} Live Predictions`;
+      text.textContent=locked
+        ?"This matchup is currentMatch, so all live answers are locked."
+        :"Make your picks now. Answers lock when this matchup becomes currentMatch.";
+
+      mount.className="";
+      mount.innerHTML=`
+        <div class="live-active">
+          <div class="versus">
+            <strong>${escapeHtml(getTeamName(teams[0]))}</strong>
+            <span>VS</span>
+            <strong>${escapeHtml(getTeamName(teams[1]))}</strong>
+          </div>
+
+          <div class="questions">
+            <div class="question">
+              <div class="question-head">
+                <strong>Who wins Map 1?</strong>
+                <span class="reward">+50 RP</span>
+              </div>
+              <div class="answers">
+                ${teams.map(teamKey=>`
+                  <button class="answer ${myLiveAnswers.map1Winner===teamKey?"selected":""} ${savingLiveAnswerKey===`map1Winner:${teamKey}`?"saving":""}"
+                    type="button"
+                    data-live-question="map1Winner"
+                    data-live-answer="${escapeHtml(teamKey)}"
+                    ${locked||Boolean(savingLiveAnswerKey)?"disabled":""}>
+                    ${escapeHtml(getTeamName(teamKey))}
+                  </button>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="question">
+              <div class="question-head">
+                <strong>Exact Series Score</strong>
+                <span class="reward">+${isBo5?150:100} RP</span>
+              </div>
+              <div class="answers">
+                ${scores.map(score=>`
+                  <button class="answer ${myLiveAnswers.exactScore===score?"selected":""} ${savingLiveAnswerKey===`exactScore:${score}`?"saving":""}"
+                    type="button"
+                    data-live-question="exactScore"
+                    data-live-answer="${score}"
+                    ${locked||Boolean(savingLiveAnswerKey)?"disabled":""}>
+                    ${score}
+                  </button>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLockState(){
+      const status=document.getElementById("lockStatus");
+      const locked=tournamentHasStarted();
+
+      status.textContent=locked?"● Pick’em Locked":"● Pick’em Open";
+      status.classList.toggle("locked",locked);
+      document.getElementById("bracketHelper").textContent=locked
+        ?"The tournament has started. Submitted brackets are final."
+        :"Select a winner in every matchup before QF1 becomes currentMatch.";
+    }
+
+    function renderAll(){
+      mapResolvedWinners();
+
+      if(myBracketRecord?.picks){
+        MATCH_ORDER.forEach(id=>{picks[id]=myBracketRecord.picks[id]||picks[id]||""});
+      }
+
+      document.getElementById("tournamentName").textContent=siteData.eventName||"Rivals Gauntlet Open #1";
+      renderLockState();
+      renderBracket();
+      renderPerfect();
+      renderTeams();
+      renderLive();
+    }
+
+    function openModal(id){
+      document.getElementById(id)?.classList.add("show");
+      document.getElementById(id)?.setAttribute("aria-hidden","false");
+      document.body.classList.add("modal-open");
+    }
+    function closeModal(id){
+      document.getElementById(id)?.classList.remove("show");
+      document.getElementById(id)?.setAttribute("aria-hidden","true");
+      if(!document.querySelector(".modal-backdrop.show"))document.body.classList.remove("modal-open");
+    }
+
+    document.addEventListener("click",event=>{
+      const pick=event.target.closest("[data-pick-match]");
+      if(pick){selectPick(pick.dataset.pickMatch,pick.dataset.pickTeam);return}
+
+      const live=event.target.closest("[data-live-question]");
+      if(live){saveLiveAnswer(live.dataset.liveQuestion,live.dataset.liveAnswer);return}
+
+      const close=event.target.closest("[data-close-modal]");
+      if(close)closeModal(close.dataset.closeModal);
+    });
+
+    document.getElementById("viewTeamsButton").addEventListener("click",()=>openModal("teamsModal"));
+    document.getElementById("howItWorksButton").addEventListener("click",()=>openModal("rulesModal"));
+    document.getElementById("saveDraftButton").addEventListener("click",saveDraft);
+    document.getElementById("submitBracketButton").addEventListener("click",submitBracket);
+
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop=>{
+      backdrop.addEventListener("click",event=>{
+        if(event.target===backdrop)closeModal(backdrop.id);
+      });
+    });
+
+    document.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){
+        document.querySelectorAll(".modal-backdrop.show").forEach(modal=>closeModal(modal.id));
+      }
+    });
+
+    auth.onAuthStateChanged(user=>{
+      currentUser=user||null;
+      currentPlayer={};
+      detachLiveListener();
+
+      if(!user){
+        myBracketRecord=null;
+        renderAll();
+        return;
+      }
+
+      database.ref(`players/${user.uid}`).on("value",snapshot=>{
+        currentPlayer=snapshot.val()||{};
+      });
+
+      database.ref(`predictions/${tournamentId}/brackets/${user.uid}`).on("value",snapshot=>{
+        myBracketRecord=snapshot.val()||null;
+        renderAll();
+      });
+
+      database.ref(`predictions/${tournamentId}/bracketDrafts/${user.uid}`).once("value").then(snapshot=>{
+        if(!myBracketRecord?.submitted&&snapshot.exists()){
+          const draft=snapshot.val()?.picks||{};
+          MATCH_ORDER.forEach(id=>{if(draft[id])picks[id]=draft[id]});
+          renderAll();
+        }
+      });
+
+      attachLiveListener();
+    });
+
+    database.ref("site/currentTournament").once("value").then(snapshot=>{
+      tournamentId=snapshot.val()||"open1";
+
+      try{
+        const draft=JSON.parse(localStorage.getItem(`rgPredictionDraft_${tournamentId}`)||"{}");
+        MATCH_ORDER.forEach(id=>{if(draft[id])picks[id]=draft[id]});
+      }catch{}
+
+      database.ref("site").on("value",snap=>{
+        siteData=snap.val()||{};
+        currentMatchLabel=siteData.currentMatch||"";
+        renderAll();
+      });
+
+      database.ref(`teams/${tournamentId}`).on("value",snap=>{
+        teamData=snap.val()||{};
+        renderAll();
+      });
+
+      database.ref(`predictions/${tournamentId}/brackets`).on("value",snap=>{
+        submittedBrackets=snap.val()||{};
+        renderAll();
+      });
+
+      database.ref("broadcastCountdown/upNext").on("value",snap=>{
+        nextMatchData=snap.val()||{};
+        attachLiveListener();
+        renderAll();
+      });
+    });
+  </script>
+</body>
+</html>

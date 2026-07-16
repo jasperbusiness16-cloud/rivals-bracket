@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RG Shop | Rivals Gauntlet</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#06060a;
+  --text:#f7f4ff;
+  --muted:#aaa4b9;
+  --dim:#746e82;
+  --border:rgba(255,255,255,.09);
+  --purple:#a855f7;
+  --purple2:#c084fc;
+  --purple3:#6d28d9;
+  --max:1500px;
+  --shadow:0 32px 110px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--text);
+  font-family:"Rajdhani",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%,rgba(109,40,217,.24),transparent 31%),
+    radial-gradient(circle at 0 70%,rgba(88,28,135,.13),transparent 27%),
+    linear-gradient(180deg,#050509,#090812 46%,#050509);
+}
+body.shop-modal-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+.shell{width:min(calc(100% - 48px),var(--max));margin:auto}
+
+.shop-page{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+}
+.shop-page::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-20;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px),
+    linear-gradient(rgba(255,255,255,.01) 1px,transparent 1px);
+  background-size:88px 88px;
+  mask-image:linear-gradient(#000,transparent 86%);
+}
+
+/* =========================================================
+   FEATURED HERO
+========================================================= */
+.shop-hero{
+  --accent:#a855f7;
+  --accentSoft:rgba(168,85,247,.16);
+  --accentGlow:rgba(168,85,247,.34);
+  --accentBorder:rgba(168,85,247,.52);
+  --accentShadow:rgba(168,85,247,.42);
+
+  position:relative;
+  min-height:760px;
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 30% 50%,var(--accentGlow),transparent 30%),
+    linear-gradient(115deg,#050508 0%,#0a0711 48%,#050509 100%);
+  transition:background .55s ease;
+}
+.shop-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-14;
+  background:
+    linear-gradient(90deg,rgba(5,5,9,.98),rgba(7,6,12,.76) 47%,rgba(5,5,9,.4) 73%,rgba(5,5,9,.95)),
+    radial-gradient(circle at 30% 52%,var(--accentGlow),transparent 34%);
+}
+.shop-hero::after{
+  content:"RG";
+  position:absolute;
+  left:26%;
+  top:52%;
+  z-index:-13;
+  transform:translate(-50%,-50%) skewX(-9deg);
+  color:rgba(255,255,255,.022);
+  font-size:min(35vw,520px);
+  font-weight:800;
+  line-height:.72;
+  letter-spacing:-.12em;
+  pointer-events:none;
+}
+
+.atmosphere,
+.atmosphere > *,
+.hero-flash{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.atmosphere{z-index:-4;overflow:hidden}
+.hero-grid{
+  opacity:.16;
+  background:
+    linear-gradient(90deg,var(--accentBorder) 1px,transparent 1px),
+    linear-gradient(var(--accentBorder) 1px,transparent 1px);
+  background-size:88px 88px;
+  mask-image:radial-gradient(circle at 30% 52%,#000,transparent 68%);
+  animation:gridMove 16s linear infinite;
+}
+.hero-fog{
+  inset:-20%;
+  opacity:.6;
+  filter:blur(38px);
+  background:
+    radial-gradient(ellipse at 25% 65%,var(--accentGlow),transparent 42%),
+    radial-gradient(ellipse at 55% 32%,var(--accentSoft),transparent 38%);
+  animation:fogDrift 10s ease-in-out infinite alternate;
+}
+.hero-vignette{
+  box-shadow:
+    inset 0 0 190px rgba(0,0,0,.76),
+    inset 0 -120px 130px rgba(0,0,0,.55);
+}
+.hero-flash{
+  z-index:30;
+  opacity:0;
+  background:linear-gradient(100deg,transparent 25%,rgba(255,255,255,.9) 49%,transparent 72%);
+  transform:translateX(-125%) skewX(-14deg);
+}
+.shop-hero.hero-switch .hero-flash{animation:heroSweep .78s cubic-bezier(.18,.9,.2,1)}
+
+@keyframes gridMove{to{background-position:88px 88px}}
+@keyframes fogDrift{
+  to{transform:translate3d(7%,-4%,0) scale(1.12);opacity:.86}
+}
+@keyframes heroSweep{
+  0%{opacity:0;transform:translateX(-125%) skewX(-14deg)}
+  22%{opacity:.35}
+  55%{opacity:.92}
+  100%{opacity:0;transform:translateX(125%) skewX(-14deg)}
+}
+
+/* Atmospheric layers */
+.fx-rain,
+.fx-data-rain{
+  overflow:hidden;
+  opacity:0;
+  transition:opacity .45s ease;
+}
+.fx-rain i,
+.fx-data-rain i{
+  position:absolute;
+  top:-18%;
+  display:block;
+}
+.fx-rain i{
+  width:1px;
+  height:120px;
+  background:linear-gradient(transparent,rgba(255,255,255,.7),transparent);
+  transform:rotate(12deg);
+  animation:rainFall var(--speed,1.6s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+.fx-data-rain i{
+  width:1px;
+  height:95px;
+  background:linear-gradient(transparent,var(--accent),transparent);
+  box-shadow:0 0 10px var(--accent);
+  animation:dataFall var(--speed,2.6s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+.fx-lightning{
+  opacity:0;
+  transition:opacity .45s ease;
+}
+.lightning-bolt{
+  position:absolute;
+  width:3px;
+  height:260px;
+  left:var(--x,25%);
+  top:var(--y,10%);
+  opacity:0;
+  background:linear-gradient(#fff,var(--accent),transparent);
+  box-shadow:0 0 12px #fff,0 0 28px var(--accent);
+  clip-path:polygon(45% 0,100% 0,62% 44%,100% 44%,10% 100%,38% 56%,0 56%);
+  transform:rotate(var(--r,-12deg));
+  animation:lightningFlash var(--speed,5.4s) steps(1,end) infinite;
+  animation-delay:var(--delay,0s);
+}
+.fx-embers{
+  opacity:0;
+  transition:opacity .45s ease;
+}
+.fx-embers i{
+  position:absolute;
+  width:5px;
+  height:5px;
+  left:var(--x,50%);
+  bottom:-10px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--accent),0 0 24px var(--accent);
+  animation:emberRise var(--speed,5s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+.fx-sunrays{
+  inset:-35%;
+  opacity:0;
+  background:repeating-conic-gradient(from 0deg,transparent 0 8deg,var(--accentSoft) 8deg 12deg,transparent 12deg 23deg);
+  mask-image:radial-gradient(circle,transparent 0 24%,#000 42%,transparent 69%);
+  animation:sunRotate 24s linear infinite;
+  transition:opacity .45s ease;
+}
+.fx-hud{
+  inset:8%;
+  opacity:0;
+  border:1px solid var(--accentBorder);
+  background:
+    linear-gradient(var(--accent),var(--accent)) left top/58px 2px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) left top/2px 58px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) right top/58px 2px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) right top/2px 58px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) left bottom/58px 2px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) left bottom/2px 58px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) right bottom/58px 2px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) right bottom/2px 58px no-repeat;
+  filter:drop-shadow(0 0 8px var(--accent));
+  animation:hudPulse 2.8s ease-in-out infinite;
+  transition:opacity .45s ease;
+}
+.fx-scan{
+  z-index:8;
+  left:7%;
+  right:7%;
+  width:auto;
+  height:3px;
+  top:10%;
+  opacity:0;
+  background:linear-gradient(90deg,transparent,var(--accent),#fff,var(--accent),transparent);
+  box-shadow:0 0 22px var(--accentShadow);
+  animation:heroScan 3.3s linear infinite;
+  transition:opacity .45s ease;
+}
+.fx-shockwaves{
+  display:grid;
+  place-items:center;
+}
+.fx-shockwaves i{
+  position:absolute;
+  width:260px;
+  height:260px;
+  border:2px solid var(--accentBorder);
+  border-radius:50%;
+  opacity:0;
+  animation:shockwave 3.8s ease-out infinite;
+}
+.fx-shockwaves i:nth-child(2){animation-delay:1.25s}
+.fx-shockwaves i:nth-child(3){animation-delay:2.5s}
+
+@keyframes rainFall{to{transform:translate3d(60px,125vh,0) rotate(12deg)}}
+@keyframes dataFall{to{transform:translateY(125vh)}}
+@keyframes lightningFlash{
+  0%,87%,91%,100%{opacity:0}
+  88%{opacity:1}
+  89%{opacity:.18}
+  90%{opacity:.9}
+}
+@keyframes emberRise{
+  0%{opacity:0;transform:translateY(0) scale(.4)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translateY(-720px) translateX(var(--drift,35px)) scale(1.4)}
+}
+@keyframes sunRotate{to{transform:rotate(360deg)}}
+@keyframes hudPulse{50%{opacity:.72;filter:drop-shadow(0 0 18px var(--accent))}}
+@keyframes heroScan{
+  0%{transform:translateY(0);opacity:0}
+  12%{opacity:.9}
+  88%{opacity:.9}
+  100%{transform:translateY(620px);opacity:0}
+}
+@keyframes shockwave{
+  0%{opacity:.75;transform:scale(.35)}
+  100%{opacity:0;transform:scale(2.4)}
+}
+
+/* Hero atmosphere per item */
+.shop-hero[data-item="basic_crate"] .fx-rain,
+.shop-hero[data-item="rare_crate"] .fx-rain,
+.shop-hero[data-item="elite_crate"] .fx-rain{opacity:.28}
+.shop-hero[data-item="rare_crate"] .fx-lightning,
+.shop-hero[data-item="elite_crate"] .fx-lightning{opacity:1}
+.shop-hero[data-item="elite_crate"] .fx-shockwaves{opacity:1}
+
+.shop-hero[data-item="summer_crate"] .fx-sunrays{opacity:.74}
+.shop-hero[data-item="summer_crate"] .hero-fog{opacity:.34;filter:blur(26px)}
+.shop-hero[data-item="halloween_crate"] .fx-embers{opacity:1}
+.shop-hero[data-item="halloween_crate"] .fx-rain{opacity:.18}
+.shop-hero[data-item="halloween_crate"] .fx-lightning{opacity:.65}
+
+.shop-hero[data-group="limited"] .fx-data-rain{opacity:.42}
+.shop-hero[data-group="limited"] .fx-hud{opacity:.46}
+.shop-hero[data-group="limited"] .fx-scan{opacity:1}
+
+/* Hero structure */
+.shop-hero-inner{
+  min-height:760px;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr);
+  align-items:center;
+  gap:42px;
+  padding:42px 0 56px;
+}
+.stage-column{position:relative}
+
+.refresh-card{
+  position:absolute;
+  top:16px;
+  left:0;
+  z-index:20;
+  width:318px;
+  padding:17px 19px;
+  border:1px solid var(--accentBorder);
+  border-left:3px solid var(--accent);
+  background:linear-gradient(90deg,var(--accentSoft),rgba(8,8,13,.52));
+  box-shadow:0 20px 55px rgba(0,0,0,.28);
+  backdrop-filter:blur(12px);
+}
+.refresh-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.refresh-top strong{font-size:21px;text-transform:uppercase}
+.refresh-badge{
+  padding:5px 9px;
+  background:var(--accentSoft);
+  color:var(--accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+.refresh-time{margin-top:11px;font-size:34px;font-weight:800}
+.refresh-card p{margin:8px 0 0;color:var(--muted);font-size:12px}
+
+/* Crate stage */
+.featured-stage{
+  position:relative;
+  min-height:640px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  isolation:isolate;
+  perspective:1200px;
+}
+.stage-glow{
+  position:absolute;
+  width:520px;
+  height:520px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle,var(--accentGlow),transparent 62%),
+    conic-gradient(from 0deg,transparent,var(--accentSoft),transparent,var(--accentSoft),transparent);
+  filter:blur(12px);
+  opacity:.78;
+  animation:glowBreathe 3.8s ease-in-out infinite;
+}
+.stage-core{
+  position:absolute;
+  width:min(72%,560px);
+  aspect-ratio:1;
+  border:2px solid var(--accentBorder);
+  border-radius:50%;
+  box-shadow:0 0 45px var(--accentShadow),inset 0 0 44px var(--accentGlow);
+  opacity:.34;
+  animation:coreRotate 14s linear infinite;
+}
+.stage-core::before,
+.stage-core::after{
+  content:"";
+  position:absolute;
+  border:1px solid var(--accentBorder);
+}
+.stage-core::before{
+  inset:12%;
+  border-radius:50%;
+  border-style:dashed;
+  animation:coreRotate 8s linear infinite reverse;
+}
+.stage-core::after{
+  inset:28%;
+  transform:rotate(45deg);
+  box-shadow:0 0 22px var(--accentShadow);
+}
+.stage-floor{
+  position:absolute;
+  bottom:66px;
+  width:min(86%,650px);
+  height:132px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,var(--accentGlow),transparent 68%);
+  filter:blur(9px);
+  transform:rotateX(72deg);
+  animation:floorPulse 2.8s ease-in-out infinite;
+}
+.stage-pedestal{
+  position:absolute;
+  bottom:82px;
+  width:min(46%,350px);
+  height:36px;
+  border:1px solid var(--accentBorder);
+  background:linear-gradient(90deg,transparent,var(--accentSoft),transparent);
+  transform:perspective(420px) rotateX(70deg);
+  box-shadow:0 0 42px var(--accentShadow),inset 0 0 24px var(--accentGlow);
+  animation:pedestalPulse 2.3s ease-in-out infinite;
+}
+.stage-debris{position:absolute;inset:0;pointer-events:none}
+.stage-debris i{
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:var(--s,4px);
+  height:var(--s,4px);
+  background:var(--accent);
+  box-shadow:0 0 13px var(--accent);
+  opacity:.1;
+  transform:rotate(var(--r,0deg));
+  animation:debrisOrbit var(--speed,6s) ease-in-out infinite;
+  animation-delay:var(--delay,0s);
+}
+.featured-image{
+  position:relative;
+  z-index:10;
+  width:min(95%,760px);
+  max-height:555px;
+  object-fit:contain;
+  filter:drop-shadow(0 54px 82px var(--accentShadow));
+  animation:crateHover 4.1s ease-in-out infinite;
+  transition:opacity .24s ease,transform .24s ease,filter .24s ease;
+  backface-visibility:hidden;
+}
+.featured-fallback{
+  position:relative;
+  z-index:10;
+  width:min(78%,520px);
+  aspect-ratio:1.65;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--accentBorder);
+  background:radial-gradient(circle,var(--accentGlow),transparent 60%),rgba(255,255,255,.035);
+  color:var(--accent);
+  box-shadow:0 0 70px var(--accentShadow);
+  font-size:48px;
+  font-weight:800;
+  text-align:center;
+  white-space:pre-line;
+}
+.featured-stage.switching .featured-image,
+.featured-stage.switching .featured-fallback{
+  opacity:.03;
+  transform:translateY(18px) scale(.92);
+}
+.featured-stage.materialize .featured-image{
+  animation:materialize .82s cubic-bezier(.13,.9,.2,1.15),crateHover 4.1s ease-in-out .84s infinite;
+}
+
+.shop-hero[data-group="limited"] .stage-core{
+  border-radius:18px;
+  transform:rotate(45deg);
+  animation:hudFrame 3.5s ease-in-out infinite;
+}
+.shop-hero[data-group="limited"] .stage-core::before,
+.shop-hero[data-group="limited"] .stage-core::after{border-radius:10px}
+
+.shop-hero[data-item="summer_crate"] .stage-core{
+  border-style:dashed;
+  animation-duration:24s;
+}
+.shop-hero[data-item="halloween_crate"] .stage-core{
+  opacity:.25;
+  filter:blur(.2px);
+  animation-duration:20s;
+}
+
+@keyframes glowBreathe{50%{transform:scale(1.13);opacity:1}}
+@keyframes coreRotate{to{transform:rotate(360deg)}}
+@keyframes floorPulse{50%{opacity:1;transform:rotateX(72deg) scale(1.08)}}
+@keyframes pedestalPulse{50%{transform:perspective(420px) rotateX(70deg) scaleX(1.12);opacity:1}}
+@keyframes crateHover{50%{transform:translateY(-18px) rotate(.8deg) scale(1.01)}}
+@keyframes debrisOrbit{
+  0%,100%{opacity:.1;transform:translate(0,0) rotate(0)}
+  50%{opacity:.9;transform:translate(var(--dx,24px),var(--dy,-40px)) rotate(180deg)}
+}
+@keyframes materialize{
+  0%{opacity:0;transform:translateY(42px) scale(.62);filter:brightness(2.8) blur(6px)}
+  48%{opacity:1;transform:translateY(-10px) scale(1.09);filter:brightness(1.8) drop-shadow(0 0 110px var(--accentShadow))}
+  100%{opacity:1;transform:none;filter:drop-shadow(0 54px 82px var(--accentShadow))}
+}
+@keyframes hudFrame{
+  0%,100%{opacity:.22;transform:rotate(45deg) scale(.93)}
+  50%{opacity:.64;transform:rotate(45deg) scale(1.03)}
+}
+
+/* Copy */
+.featured-copy{position:relative;z-index:12;padding:40px 0 40px 8px}
+.featured-rarity{
+  display:inline-flex;
+  min-height:31px;
+  align-items:center;
+  padding:0 15px;
+  background:var(--accentSoft);
+  color:var(--accent);
+  box-shadow:0 0 24px var(--accentShadow);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.9px;
+  text-transform:uppercase;
+}
+.rarity-line{
+  width:210px;
+  height:2px;
+  margin-top:13px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+  box-shadow:0 0 16px var(--accentShadow);
+  animation:linePulse 2.4s ease-in-out infinite;
+}
+.featured-copy h1{
+  margin:20px 0 0;
+  font-size:clamp(62px,6.4vw,102px);
+  line-height:.84;
+  letter-spacing:-2.5px;
+  text-transform:uppercase;
+}
+.featured-tagline{
+  margin:20px 0 0;
+  color:var(--accent);
+  font-size:21px;
+  font-weight:800;
+  text-transform:uppercase;
+  text-shadow:0 0 24px var(--accentShadow);
+}
+.featured-description{
+  max-width:610px;
+  margin:20px 0 0;
+  color:#b7b0c2;
+  font-size:18px;
+  line-height:1.5;
+}
+.featured-actions{display:flex;gap:10px;margin-top:31px}
+.price-box{
+  min-width:166px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 18px;
+  border:1px solid var(--accentBorder);
+  background:rgba(8,8,13,.72);
+}
+.rg-icon{width:30px;height:30px;object-fit:contain;filter:drop-shadow(0 0 12px var(--accentShadow))}
+.price-box strong{font-size:26px}
+.purchase-btn,.preview-btn{
+  min-height:58px;
+  border:0;
+  padding:0 26px;
+  cursor:pointer;
+  font-weight:800;
+  text-transform:uppercase;
+}
+.purchase-btn{
+  flex:1;
+  min-width:220px;
+  background:linear-gradient(135deg,var(--purple3),var(--purple));
+  box-shadow:0 16px 44px rgba(109,40,217,.28);
+}
+.purchase-btn:disabled{cursor:not-allowed;opacity:.58}
+.preview-btn{
+  min-width:150px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.035);
+  transition:.2s;
+}
+.preview-btn:hover{border-color:var(--accentBorder);background:var(--accentSoft)}
+.balance-note{margin:13px 0 0;color:var(--muted)}
+.balance-note strong{color:var(--purple2)}
+@keyframes linePulse{50%{width:290px;opacity:.68}}
+
+/* =========================================================
+   CATALOG
+========================================================= */
+.shop-main{padding:38px 0 90px}
+.catalog-group{margin-top:48px}
+.catalog-group:first-child{margin-top:0}
+.catalog-heading{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:17px;
+}
+.catalog-heading::before{
+  content:"";
+  width:4px;
+  height:25px;
+  background:var(--purple);
+  box-shadow:0 0 14px rgba(168,85,247,.7);
+}
+.catalog-heading h2{margin:0;font-size:26px;text-transform:uppercase}
+.catalog-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.68),transparent)}
+
+.item-grid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:14px;
+}
+.item-card{
+  --cardAccent:#a855f7;
+  --cardGlow:rgba(168,85,247,.3);
+  --cardShadow:rgba(168,85,247,.32);
+
+  position:relative;
+  min-width:0;
+  overflow:hidden;
+  padding:0;
+  border:1px solid var(--border);
+  background:
+    radial-gradient(circle at 50% 26%,var(--cardGlow),transparent 42%),
+    linear-gradient(180deg,#12101b,#07070d);
+  cursor:pointer;
+  text-align:left;
+  isolation:isolate;
+  transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease;
+}
+.item-card:hover,
+.item-card.active{
+  transform:translateY(-9px) scale(1.02);
+  border-color:var(--cardAccent);
+  box-shadow:0 25px 68px var(--cardShadow),0 0 0 1px var(--cardAccent);
+}
+.item-card.active{
+  background:
+    radial-gradient(circle at 50% 28%,var(--cardGlow),transparent 49%),
+    linear-gradient(180deg,#181422,#090810);
+}
+.item-card::before{
+  content:"";
+  position:absolute;
+  inset:-60%;
+  z-index:0;
+  opacity:.32;
+  background:conic-gradient(from 0deg,transparent 0 18%,var(--cardGlow) 25%,transparent 34% 55%,var(--cardGlow) 63%,transparent 72%);
+  animation:cardAura 8s linear infinite;
+}
+.item-card::after{
+  content:"";
+  position:absolute;
+  inset:-15% -55%;
+  z-index:10;
+  opacity:0;
+  background:linear-gradient(105deg,transparent 37%,rgba(255,255,255,.75) 50%,transparent 63%);
+  transform:translateX(-90%) skewX(-15deg);
+  pointer-events:none;
+}
+.item-card.selection-hit::after{animation:cardSweep .72s cubic-bezier(.2,.85,.2,1)}
+
+.card-scene{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  overflow:hidden;
+  pointer-events:none;
+}
+.card-scene span{position:absolute;display:block}
+.card-backglow{
+  left:50%;
+  top:39%;
+  width:74%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,var(--cardGlow),transparent 66%);
+  filter:blur(8px);
+  animation:cardBreathe 3.2s ease-in-out infinite;
+}
+.card-ring{
+  left:50%;
+  top:39%;
+  width:68%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border:1px solid var(--cardAccent);
+  border-radius:50%;
+  box-shadow:0 0 22px var(--cardShadow),inset 0 0 18px var(--cardGlow);
+  opacity:.28;
+  animation:cardRing 7s linear infinite;
+}
+.card-ring.two{
+  width:48%;
+  border-style:dashed;
+  animation-duration:4.8s;
+  animation-direction:reverse;
+}
+.card-pulse{
+  left:50%;
+  top:39%;
+  width:18%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border:2px solid var(--cardAccent);
+  border-radius:50%;
+  opacity:0;
+  animation:cardShock 3s ease-out infinite;
+}
+.card-floor{
+  left:50%;
+  bottom:68px;
+  width:66%;
+  height:28px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse,var(--cardGlow),transparent 70%);
+  filter:blur(5px);
+}
+.card-particles{
+  inset:0;
+}
+.card-particles i{
+  position:absolute;
+  width:4px;
+  height:4px;
+  left:var(--x);
+  top:var(--y);
+  border-radius:50%;
+  background:var(--cardAccent);
+  box-shadow:0 0 10px var(--cardAccent);
+  animation:cardParticle var(--speed,4s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+.card-hud{
+  inset:9px;
+  opacity:0;
+  border:1px solid var(--cardAccent);
+  background:
+    linear-gradient(var(--cardAccent),var(--cardAccent)) left top/25px 2px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) left top/2px 25px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) right top/25px 2px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) right top/2px 25px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) left bottom/25px 2px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) left bottom/2px 25px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) right bottom/25px 2px no-repeat,
+    linear-gradient(var(--cardAccent),var(--cardAccent)) right bottom/2px 25px no-repeat;
+}
+.card-scan{
+  left:8%;
+  right:8%;
+  top:14%;
+  height:2px;
+  opacity:0;
+  background:linear-gradient(90deg,transparent,var(--cardAccent),#fff,var(--cardAccent),transparent);
+  box-shadow:0 0 15px var(--cardShadow);
+}
+.card-rays{
+  inset:-38%;
+  opacity:0;
+  background:repeating-conic-gradient(from 0deg,transparent 0 10deg,var(--cardGlow) 10deg 15deg,transparent 15deg 29deg);
+  animation:cardRays 14s linear infinite;
+}
+.card-embers{inset:0;opacity:0}
+.card-embers i{
+  position:absolute;
+  width:4px;
+  height:4px;
+  left:var(--x);
+  bottom:-8px;
+  border-radius:50%;
+  background:var(--cardAccent);
+  box-shadow:0 0 9px var(--cardAccent);
+  animation:miniEmber var(--speed,4s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+
+/* Group behavior */
+.item-card[data-group="mystery"] .card-ring,
+.item-card[data-group="mystery"] .card-pulse{opacity:.34}
+.item-card[data-group="mystery"] .card-particles{opacity:1}
+.item-card[data-group="seasonal"] .card-rays{opacity:.4}
+.item-card[data-group="seasonal"] .card-ring{border-style:dashed;animation-duration:15s}
+.item-card[data-group="limited"] .card-ring,
+.item-card[data-group="limited"] .card-pulse,
+.item-card[data-group="limited"] .card-particles{opacity:0}
+.item-card[data-group="limited"] .card-hud{opacity:.52}
+.item-card[data-group="limited"] .card-scan{opacity:1;animation:miniScan 2.6s linear infinite}
+
+/* Per-item card atmosphere */
+.item-card[data-item="basic_crate"] .card-ring{animation-duration:10s;opacity:.2}
+.item-card[data-item="rare_crate"] .card-ring{border-width:2px;box-shadow:0 0 28px var(--cardShadow)}
+.item-card[data-item="rare_crate"] .card-pulse{animation-duration:2.3s}
+.item-card[data-item="elite_crate"] .card-ring{border-width:2px;animation-duration:4.5s}
+.item-card[data-item="elite_crate"] .card-ring.two{transform:translate(-50%,-50%) rotate(45deg);border-radius:0}
+.item-card[data-item="elite_crate"] .card-backglow{animation-duration:2.4s}
+
+.item-card[data-item="summer_crate"] .card-rays{opacity:.58}
+.item-card[data-item="summer_crate"] .card-backglow{background:radial-gradient(circle,rgba(255,255,255,.18),var(--cardGlow),transparent 68%)}
+.item-card[data-item="halloween_crate"] .card-rays{opacity:.18;filter:blur(3px)}
+.item-card[data-item="halloween_crate"] .card-embers{opacity:1}
+
+.item-card[data-item="steam_10"] .item-image{animation:steamGlitch 5.2s steps(1,end) infinite}
+
+.item-image-wrap{
+  position:relative;
+  z-index:5;
+  height:225px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:17px 13px 8px;
+  overflow:hidden;
+}
+.item-image{
+  position:relative;
+  z-index:6;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 24px 38px var(--cardShadow));
+  transition:transform .22s ease,filter .22s ease;
+  backface-visibility:hidden;
+}
+.item-card:hover .item-image{transform:translateY(-7px) scale(1.05);filter:drop-shadow(0 32px 50px var(--cardShadow))}
+.item-card.active .item-image{animation:selectedFloat 2.8s ease-in-out infinite}
+.item-fallback{
+  width:82%;
+  aspect-ratio:1.5;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--cardAccent);
+  color:var(--cardAccent);
+  text-align:center;
+  white-space:pre-line;
+}
+.item-card-content{
+  position:relative;
+  z-index:20;
+  padding:13px 14px 15px;
+  border-top:1px solid var(--border);
+  background:rgba(6,6,11,.92);
+}
+.item-card-content>span{
+  display:block;
+  color:var(--cardAccent);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.item-card-content h3{
+  margin:5px 0 12px;
+  font-size:19px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.item-price{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800}
+.item-rg-icon{width:22px;height:22px;object-fit:contain}
+.limited-ribbon{
+  position:absolute;
+  top:15px;
+  right:-39px;
+  z-index:30;
+  width:145px;
+  padding:6px 0;
+  background:linear-gradient(90deg,var(--purple3),var(--purple));
+  font-size:9px;
+  font-weight:800;
+  text-align:center;
+  text-transform:uppercase;
+  transform:rotate(42deg);
+}
+
+@keyframes cardAura{to{transform:rotate(360deg)}}
+@keyframes cardBreathe{50%{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
+@keyframes cardRing{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes cardShock{
+  0%{opacity:.75;transform:translate(-50%,-50%) scale(.2)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(4.2)}
+}
+@keyframes cardParticle{
+  0%{opacity:0;transform:translateY(20px) scale(.4)}
+  20%{opacity:1}
+  100%{opacity:0;transform:translateY(-170px) translateX(var(--drift,18px)) scale(1.2)}
+}
+@keyframes cardRays{to{transform:rotate(360deg)}}
+@keyframes miniScan{
+  0%{transform:translateY(0);opacity:0}
+  12%{opacity:1}
+  88%{opacity:1}
+  100%{transform:translateY(168px);opacity:0}
+}
+@keyframes miniEmber{
+  0%{opacity:0;transform:translateY(0)}
+  18%{opacity:1}
+  100%{opacity:0;transform:translateY(-190px) translateX(var(--drift,20px))}
+}
+@keyframes cardSweep{
+  0%{opacity:0;transform:translateX(-90%) skewX(-15deg)}
+  20%{opacity:.35}
+  55%{opacity:.95}
+  100%{opacity:0;transform:translateX(90%) skewX(-15deg)}
+}
+@keyframes selectedFloat{50%{transform:translateY(-9px) scale(1.045)}}
+@keyframes steamGlitch{
+  0%,84%,100%{transform:none;filter:drop-shadow(0 24px 38px var(--cardShadow))}
+  86%{transform:translateX(3px);filter:hue-rotate(14deg) drop-shadow(0 24px 38px var(--cardShadow))}
+  87%{transform:translateX(-4px)}
+  88%{transform:none}
+  92%{transform:translateY(-3px)}
+  93%{transform:none}
+}
+
+/* =========================================================
+   ODDS MODAL
+========================================================= */
+.odds-modal{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:rgba(2,2,5,.84);
+  backdrop-filter:blur(15px);
+}
+.odds-modal.show{display:flex}
+.odds-card{
+  width:min(620px,100%);
+  max-height:calc(100dvh - 44px);
+  overflow:auto;
+  border:1px solid rgba(168,85,247,.4);
+  background:#0d0c14;
+  box-shadow:var(--shadow);
+}
+.odds-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+}
+.odds-head span{color:var(--purple2);font-size:10px;font-weight:800;text-transform:uppercase}
+.odds-head h2{margin:3px 0 0}
+.odds-close{
+  width:40px;
+  height:40px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  font-size:23px;
+  cursor:pointer;
+}
+.odds-body{padding:20px}
+.odds-note{color:var(--muted)}
+.odds-list{display:grid;gap:9px}
+.odds-row{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  padding:13px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+}
+.odds-row small{display:block;margin-top:3px;color:var(--dim)}
+.odds-row span{color:var(--purple2);font-weight:800}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media(max-width:1240px){
+  .item-grid{grid-template-columns:repeat(3,1fr)}
+  .shop-hero-inner{grid-template-columns:1fr .8fr}
+  .featured-copy h1{font-size:72px}
+}
+@media(max-width:980px){
+  .shop-hero-inner{grid-template-columns:1fr;padding:28px 0 44px}
+  .featured-stage{min-height:470px}
+  .featured-copy{padding-top:8px}
+}
+@media(max-width:720px){
+  .shell{width:min(calc(100% - 28px),var(--max))}
+  .shop-hero{min-height:auto}
+  .shop-hero-inner{min-height:auto;padding:16px 0 34px}
+  .refresh-card{position:relative;top:auto;width:100%;padding:13px}
+  .refresh-card p{display:none}
+  .refresh-time{font-size:28px}
+  .featured-stage{min-height:350px}
+  .featured-image{width:min(97%,540px);max-height:315px}
+  .stage-glow{width:320px;height:320px}
+  .stage-core{width:290px}
+  .stage-floor{bottom:24px;height:90px}
+  .stage-pedestal{bottom:39px}
+  .fx-hud{inset:5%}
+  .featured-copy h1{font-size:50px}
+  .featured-tagline{font-size:16px}
+  .featured-description{font-size:16px}
+  .featured-actions{display:grid;grid-template-columns:1fr 1fr}
+  .price-box{grid-column:1/-1;min-height:52px}
+  .purchase-btn,.preview-btn{min-width:0;min-height:52px;padding:0 13px;font-size:12px}
+  .catalog-line{display:none}
+  .item-grid{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    gap:12px;
+    padding:5px 18px 22px 0;
+    scrollbar-width:none;
+  }
+  .item-grid::-webkit-scrollbar{display:none}
+  .item-card{flex:0 0 min(74vw,285px);scroll-snap-align:start}
+  .item-image-wrap{height:185px}
+  .fx-rain i:nth-child(n+14),
+  .fx-data-rain i:nth-child(n+14),
+  .stage-debris i:nth-child(n+9){display:none}
+}
+@media(max-width:430px){
+  .featured-copy h1{font-size:43px}
+  .featured-actions{gap:8px}
+  .purchase-btn,.preview-btn{font-size:11px}
+  .catalog-heading h2{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<div id="globalHeader"></div>
+
+<div class="shop-page">
+  <section id="shopHero" class="shop-hero" data-group="mystery" data-item="elite_crate">
+    <div class="atmosphere">
+      <div class="hero-grid"></div>
+      <div class="hero-fog"></div>
+
+      <div id="rainLayer" class="fx-rain"></div>
+      <div id="dataRainLayer" class="fx-data-rain"></div>
+
+      <div class="fx-lightning">
+        <i class="lightning-bolt" style="--x:13%;--y:7%;--r:-10deg;--delay:.4s;--speed:5.8s"></i>
+        <i class="lightning-bolt" style="--x:35%;--y:0%;--r:8deg;--delay:2.3s;--speed:7.1s"></i>
+        <i class="lightning-bolt" style="--x:55%;--y:14%;--r:-17deg;--delay:4.1s;--speed:6.3s"></i>
+      </div>
+
+      <div id="emberLayer" class="fx-embers"></div>
+      <div class="fx-sunrays"></div>
+      <div class="fx-hud"></div>
+      <div class="fx-scan"></div>
+
+      <div class="fx-shockwaves">
+        <i></i><i></i><i></i>
+      </div>
+
+      <div class="hero-vignette"></div>
+    </div>
+
+    <div class="hero-flash"></div>
+
+    <div class="shell shop-hero-inner">
+      <div class="stage-column">
+        <div class="refresh-card">
+          <div class="refresh-top">
+            <strong>Weekly Rotation</strong>
+            <span class="refresh-badge">Refreshes In</span>
+          </div>
+          <div id="shopRefreshTime" class="refresh-time">6D 23H 59M</div>
+          <p>New crates and limited rewards rotate every Monday.</p>
+        </div>
+
+        <div id="featuredStage" class="featured-stage">
+          <div class="stage-glow"></div>
+          <div class="stage-core"></div>
+          <div class="stage-floor"></div>
+          <div class="stage-pedestal"></div>
+
+          <div id="stageDebris" class="stage-debris"></div>
+
+          <img id="featuredImage" class="featured-image" src="" alt="">
+          <div id="featuredFallback" class="featured-fallback">ELITE
+CRATE</div>
+        </div>
+      </div>
+
+      <div class="featured-copy">
+        <span id="featuredRarity" class="featured-rarity">Epic</span>
+        <div class="rarity-line"></div>
+
+        <h1 id="featuredName">Elite Crate</h1>
+        <p id="featuredTagline" class="featured-tagline">High tier rewards. Elite only.</p>
+        <p id="featuredDescription" class="featured-description">
+          Contains premium cosmetic rewards and stronger chances at high-rarity drops.
+        </p>
+
+        <div class="featured-actions">
+          <div class="price-box">
+            <img class="rg-icon" src="rg-points-icon.PNG" alt="">
+            <strong id="featuredPrice">2,000</strong>
+          </div>
+
+          <button class="purchase-btn" type="button" disabled>
+            Temporarily Unavailable
+          </button>
+
+          <button id="previewButton" class="preview-btn" type="button">
+            Preview Odds
+          </button>
+        </div>
+
+        <p class="balance-note">
+          Your balance: <strong id="shopBalance">0 RG Points</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <main class="shop-main">
+    <div class="shell">
+      <section class="catalog-group">
+        <div class="catalog-heading">
+          <h2>Mystery Crates</h2>
+          <div class="catalog-line"></div>
+        </div>
+        <div id="mysteryGrid" class="item-grid"></div>
+      </section>
+
+      <section class="catalog-group">
+        <div class="catalog-heading">
+          <h2>Seasonal Crates</h2>
+          <div class="catalog-line"></div>
+        </div>
+        <div id="seasonalGrid" class="item-grid"></div>
+      </section>
+
+      <section class="catalog-group">
+        <div class="catalog-heading">
+          <h2>Limited Supply</h2>
+          <div class="catalog-line"></div>
+        </div>
+        <div id="limitedGrid" class="item-grid"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="oddsModal" class="odds-modal" aria-hidden="true">
+  <section class="odds-card" role="dialog" aria-modal="true" aria-labelledby="oddsTitle">
+    <div class="odds-head">
+      <div>
+        <span>Reward Preview</span>
+        <h2 id="oddsTitle">Elite Crate Odds</h2>
+      </div>
+      <button id="oddsClose" class="odds-close" type="button" aria-label="Close odds">×</button>
+    </div>
+
+    <div class="odds-body">
+      <p class="odds-note">
+        Display odds from the current shop configuration. Final secure reward rolls will be handled server-side.
+      </p>
+      <div id="oddsList" class="odds-list"></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
+<script src="global-header.js?v=2"></script>
+
+<script>
+(() => {
+  "use strict";
+
+  let currentPlayer = null;
+  let selectedItemId = "elite_crate";
+  let playerRef = null;
+  let selectionTimer = null;
+
+  const rewardCatalog = {
+    avatar_rg_core:{name:"RG Core Avatar",rarity:"Common"},
+    avatar_blue_signal:{name:"Blue Signal Avatar",rarity:"Rare"},
+    banner_rivals_standard:{name:"Rivals Standard Banner",rarity:"Common"},
+    banner_blue_voltage:{name:"Blue Voltage Banner",rarity:"Rare"},
+    title_contender:{name:"Contender Title",rarity:"Common"},
+    title_gauntlet_elite:{name:"Gauntlet Elite Title",rarity:"Epic"},
+    rp_bonus_100:{name:"100 RG Points",rarity:"Common"},
+    summer_sunset_banner:{name:"Summer Sunset Banner",rarity:"Seasonal"}
+  };
+
+  const shopItems = {
+    basic_crate:{
+      group:"mystery",
+      name:"Basic Crate",
+      rarity:"Common",
+      tagline:"Reliable entry-tier rewards.",
+      price:500,
+      description:"An entry-level mystery crate with profile cosmetics, RG Point bonuses, and collection rewards.",
+      image:"assets/shop/crates/basic-crate.PNG",
+      fallback:"BASIC\\nCRATE",
+      accent:"#9ca3af",
+      accentSoft:"rgba(156,163,175,.14)",
+      accentGlow:"rgba(156,163,175,.22)",
+      accentBorder:"rgba(156,163,175,.42)",
+      accentShadow:"rgba(156,163,175,.30)",
+      rewardPool:[
+        ["avatar_rg_core",30],["banner_rivals_standard",25],["avatar_blue_signal",15],
+        ["banner_blue_voltage",12],["title_contender",10],["rp_bonus_100",5],
+        ["title_gauntlet_elite",3]
+      ]
+    },
+    rare_crate:{
+      group:"mystery",
+      name:"Rare Crate",
+      rarity:"Rare",
+      tagline:"Better odds. Sharper rewards.",
+      price:1200,
+      description:"A stronger mystery crate with improved chances for upgraded avatars, banners, titles, and profile cosmetics.",
+      image:"assets/shop/crates/rare-crate.PNG",
+      fallback:"RARE\\nCRATE",
+      accent:"#3b82f6",
+      accentSoft:"rgba(59,130,246,.14)",
+      accentGlow:"rgba(59,130,246,.28)",
+      accentBorder:"rgba(59,130,246,.48)",
+      accentShadow:"rgba(59,130,246,.34)",
+      rewardPool:[
+        ["avatar_rg_core",18],["banner_rivals_standard",18],["avatar_blue_signal",24],
+        ["banner_blue_voltage",22],["title_contender",8],["rp_bonus_100",5],
+        ["title_gauntlet_elite",5]
+      ]
+    },
+    elite_crate:{
+      group:"mystery",
+      name:"Elite Crate",
+      rarity:"Epic",
+      tagline:"High tier rewards. Elite only.",
+      price:2000,
+      description:"Contains premium cosmetic rewards and stronger chances at high-rarity drops.",
+      image:"assets/shop/crates/elite-crate.PNG",
+      fallback:"ELITE\\nCRATE",
+      accent:"#a855f7",
+      accentSoft:"rgba(168,85,247,.16)",
+      accentGlow:"rgba(168,85,247,.34)",
+      accentBorder:"rgba(168,85,247,.52)",
+      accentShadow:"rgba(168,85,247,.42)",
+      rewardPool:[
+        ["avatar_rg_core",10],["banner_rivals_standard",10],["avatar_blue_signal",22],
+        ["banner_blue_voltage",22],["title_contender",8],["rp_bonus_100",8],
+        ["title_gauntlet_elite",20]
+      ]
+    },
+    summer_crate:{
+      group:"seasonal",
+      name:"Summer Crate",
+      rarity:"Seasonal",
+      tagline:"Limited summer collection.",
+      price:1800,
+      description:"A limited-time seasonal crate featuring summer-themed profile cosmetics and event rewards.",
+      image:"assets/shop/crates/summer-crate.PNG",
+      fallback:"SUMMER\\nCRATE",
+      accent:"#facc15",
+      accentSoft:"rgba(250,204,21,.14)",
+      accentGlow:"rgba(250,204,21,.27)",
+      accentBorder:"rgba(250,204,21,.46)",
+      accentShadow:"rgba(250,204,21,.32)",
+      rewardPool:[
+        ["summer_sunset_banner",30],["avatar_blue_signal",20],["banner_blue_voltage",20],
+        ["title_gauntlet_elite",15],["rp_bonus_100",15]
+      ]
+    },
+    halloween_crate:{
+      group:"seasonal",
+      name:"Halloween Crate",
+      rarity:"Seasonal",
+      tagline:"Returns during Halloween.",
+      price:2000,
+      description:"A future seasonal crate reserved for Halloween-themed profile cosmetics.",
+      image:"assets/shop/crates/halloween-crate.PNG",
+      fallback:"HALLOWEEN\\nCRATE",
+      accent:"#f97316",
+      accentSoft:"rgba(249,115,22,.14)",
+      accentGlow:"rgba(249,115,22,.26)",
+      accentBorder:"rgba(249,115,22,.45)",
+      accentShadow:"rgba(249,115,22,.32)",
+      rewardPool:[]
+    },
+    steam_5:{
+      group:"limited",
+      name:"$5 Steam Card",
+      rarity:"Limited",
+      tagline:"Limited weekly supply.",
+      price:5000,
+      description:"Redeem RG Points for a $5 Steam gift card while weekly supplies last.",
+      image:"assets/shop/rewards/steam-card.png",
+      fallback:"$5\\nSTEAM",
+      accent:"#22c55e",
+      accentSoft:"rgba(34,197,94,.14)",
+      accentGlow:"rgba(34,197,94,.24)",
+      accentBorder:"rgba(34,197,94,.42)",
+      accentShadow:"rgba(34,197,94,.28)",
+      rewardPool:[]
+    },
+    steam_10:{
+      group:"limited",
+      name:"$10 Steam Card",
+      rarity:"Limited",
+      tagline:"Extremely limited supply.",
+      price:9500,
+      description:"A higher-value Steam reward with extremely limited weekly availability.",
+      image:"assets/shop/rewards/steam-card.png",
+      fallback:"$10\\nSTEAM",
+      accent:"#22c55e",
+      accentSoft:"rgba(34,197,94,.14)",
+      accentGlow:"rgba(34,197,94,.24)",
+      accentBorder:"rgba(34,197,94,.42)",
+      accentShadow:"rgba(34,197,94,.28)",
+      rewardPool:[]
+    }
+  };
+
+  const hero = document.getElementById("shopHero");
+  const stage = document.getElementById("featuredStage");
+  const image = document.getElementById("featuredImage");
+  const fallback = document.getElementById("featuredFallback");
+  const modal = document.getElementById("oddsModal");
+
+  const escapeHtml = value => String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+  const formatNumber = value =>
+    Number(value || 0).toLocaleString("en-US");
+
+  function seedAtmosphere(){
+    const rain = document.getElementById("rainLayer");
+    const dataRain = document.getElementById("dataRainLayer");
+    const embers = document.getElementById("emberLayer");
+    const debris = document.getElementById("stageDebris");
+
+    rain.innerHTML = Array.from({length:26},(_,index) => `
+      <i style="
+        left:${(index * 4.1) % 104}%;
+        --speed:${1.15 + (index % 6) * .18}s;
+        --delay:-${(index % 10) * .27}s;
+        opacity:${.12 + (index % 5) * .08};
+      "></i>
+    `).join("");
+
+    dataRain.innerHTML = Array.from({length:25},(_,index) => `
+      <i style="
+        left:${(index * 4.4) % 104}%;
+        --speed:${1.8 + (index % 7) * .22}s;
+        --delay:-${(index % 11) * .31}s;
+        opacity:${.16 + (index % 4) * .09};
+      "></i>
+    `).join("");
+
+    embers.innerHTML = Array.from({length:22},(_,index) => `
+      <i style="
+        --x:${(index * 9.7) % 100}%;
+        --speed:${3.7 + (index % 7) * .48}s;
+        --delay:-${(index % 9) * .42}s;
+        --drift:${-42 + (index % 8) * 12}px;
+      "></i>
+    `).join("");
+
+    debris.innerHTML = Array.from({length:16},(_,index) => `
+      <i style="
+        --x:${12 + (index * 5.4) % 76}%;
+        --y:${22 + (index * 8.7) % 58}%;
+        --s:${2 + (index % 4)}px;
+        --speed:${3.8 + (index % 6) * .72}s;
+        --delay:-${(index % 7) * .55}s;
+        --dx:${-32 + (index % 8) * 9}px;
+        --dy:${-28 - (index % 5) * 11}px;
+        --r:${index * 23}deg;
+      "></i>
+    `).join("");
+  }
+
+  function setTheme(item,itemId){
+    hero.dataset.group = item.group;
+    hero.dataset.item = itemId;
+    hero.style.setProperty("--accent",item.accent);
+    hero.style.setProperty("--accentSoft",item.accentSoft);
+    hero.style.setProperty("--accentGlow",item.accentGlow);
+    hero.style.setProperty("--accentBorder",item.accentBorder);
+    hero.style.setProperty("--accentShadow",item.accentShadow);
+  }
+
+  function animateSelectedCard(itemId){
+    const selectedCard = document.querySelector(`[data-shop-item="${CSS.escape(itemId)}"]`);
+    if(!selectedCard) return;
+
+    selectedCard.classList.remove("selection-hit");
+    void selectedCard.offsetWidth;
+    selectedCard.classList.add("selection-hit");
+
+    window.setTimeout(() => {
+      selectedCard.classList.remove("selection-hit");
+    },780);
+  }
+
+  function selectItem(itemId,animate = true){
+    const item = shopItems[itemId];
+    if(!item) return;
+
+    selectedItemId = itemId;
+    clearTimeout(selectionTimer);
+
+    if(animate){
+      hero.classList.remove("hero-switch");
+      void hero.offsetWidth;
+      hero.classList.add("hero-switch");
+      stage.classList.add("switching");
+    }
+
+    selectionTimer = window.setTimeout(() => {
+      setTheme(item,itemId);
+
+      document.getElementById("featuredRarity").textContent = item.rarity;
+      document.getElementById("featuredName").textContent = item.name;
+      document.getElementById("featuredTagline").textContent = item.tagline;
+      document.getElementById("featuredDescription").textContent = item.description;
+      document.getElementById("featuredPrice").textContent = formatNumber(item.price);
+
+      image.src = item.image;
+      image.alt = item.name;
+      image.style.display = "block";
+      fallback.style.display = "none";
+      fallback.textContent = item.fallback.replace("\\n","\n");
+
+      image.onerror = () => {
+        image.style.display = "none";
+        fallback.style.display = "flex";
+      };
+
+      stage.classList.remove("switching");
+      stage.classList.remove("materialize");
+      void stage.offsetWidth;
+      stage.classList.add("materialize");
+
+      renderCatalogs();
+
+      requestAnimationFrame(() => animateSelectedCard(itemId));
+
+      window.setTimeout(() => {
+        hero.classList.remove("hero-switch");
+        stage.classList.remove("materialize");
+      },950);
+    },animate ? 290 : 0);
+  }
+
+  function particleMarkup(){
+    return Array.from({length:9},(_,index) => `
+      <i style="
+        --x:${14 + (index * 11.5) % 74}%;
+        --y:${38 + (index * 8.2) % 44}%;
+        --speed:${3.1 + (index % 5) * .55}s;
+        --delay:-${(index % 6) * .5}s;
+        --drift:${-18 + (index % 5) * 9}px;
+      "></i>
+    `).join("");
+  }
+
+  function emberMarkup(){
+    return Array.from({length:8},(_,index) => `
+      <i style="
+        --x:${13 + (index * 12.5) % 78}%;
+        --speed:${2.8 + (index % 5) * .55}s;
+        --delay:-${(index % 6) * .47}s;
+        --drift:${-18 + (index % 5) * 9}px;
+      "></i>
+    `).join("");
+  }
+
+  function cardMarkup(itemId,item){
+    const active = itemId === selectedItemId ? "active" : "";
+    const ribbon = item.group === "limited"
+      ? '<div class="limited-ribbon">Limited</div>'
+      : "";
+
+    return `
+      <button
+        class="item-card ${active}"
+        type="button"
+        data-shop-item="${escapeHtml(itemId)}"
+        data-group="${escapeHtml(item.group)}"
+        data-item="${escapeHtml(itemId)}"
+        style="
+          --cardAccent:${item.accent};
+          --cardGlow:${item.accentGlow};
+          --cardShadow:${item.accentShadow};
+        "
+      >
+        ${ribbon}
+
+        <span class="card-scene">
+          <span class="card-backglow"></span>
+          <span class="card-ring"></span>
+          <span class="card-ring two"></span>
+          <span class="card-pulse"></span>
+          <span class="card-floor"></span>
+          <span class="card-rays"></span>
+          <span class="card-hud"></span>
+          <span class="card-scan"></span>
+          <span class="card-particles">${particleMarkup()}</span>
+          <span class="card-embers">${emberMarkup()}</span>
+        </span>
+
+        <div class="item-image-wrap">
+          <img
+            class="item-image"
+            src="${escapeHtml(item.image)}"
+            alt="${escapeHtml(item.name)}"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          >
+          <div class="item-fallback">${escapeHtml(item.fallback.replace("\\n","\n"))}</div>
+        </div>
+
+        <div class="item-card-content">
+          <span>${escapeHtml(item.rarity)}</span>
+          <h3>${escapeHtml(item.name)}</h3>
+
+          <div class="item-price">
+            <img class="item-rg-icon" src="rg-points-icon.PNG" alt="">
+            ${formatNumber(item.price)}
+          </div>
+        </div>
+      </button>
+    `;
+  }
+
+  function renderCatalogs(){
+    ["mystery","seasonal","limited"].forEach(group => {
+      document.getElementById(`${group}Grid`).innerHTML =
+        Object.entries(shopItems)
+          .filter(([,item]) => item.group === group)
+          .map(([itemId,item]) => cardMarkup(itemId,item))
+          .join("");
+    });
+  }
+
+  function renderBalance(){
+    document.getElementById("shopBalance").textContent =
+      `${formatNumber(currentPlayer?.rgPoints || 0)} RG Points`;
+  }
+
+  function openOdds(){
+    const item = shopItems[selectedItemId];
+    if(!item) return;
+
+    document.getElementById("oddsTitle").textContent = `${item.name} Odds`;
+    const oddsList = document.getElementById("oddsList");
+
+    if(!item.rewardPool.length){
+      oddsList.innerHTML =
+        '<div class="odds-row"><div><strong>Fixed digital reward</strong><small>No random reward pool</small></div><span>—</span></div>';
+    }else{
+      const totalWeight = item.rewardPool.reduce(
+        (sum,[,weight]) => sum + weight,
+        0
+      );
+
+      oddsList.innerHTML = item.rewardPool.map(([rewardId,weight]) => {
+        const reward = rewardCatalog[rewardId] || {
+          name:"Unknown Reward",
+          rarity:"Common"
+        };
+
+        return `
+          <div class="odds-row">
+            <div>
+              <strong>${escapeHtml(reward.name)}</strong>
+              <small>${escapeHtml(reward.rarity)}</small>
+            </div>
+            <span>${((weight / totalWeight) * 100).toFixed(1)}%</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    document.body.classList.add("shop-modal-open");
+  }
+
+  function closeOdds(){
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+    document.body.classList.remove("shop-modal-open");
+  }
+
+  function updateCountdown(){
+    const now = new Date();
+    const target = new Date(now);
+    const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+
+    target.setDate(now.getDate() + daysUntilMonday);
+    target.setHours(0,0,0,0);
+
+    const remaining = Math.max(0,target.getTime() - now.getTime());
+    const days = Math.floor(remaining / 86400000);
+    const hours = Math.floor((remaining / 3600000) % 24);
+    const minutes = Math.floor((remaining / 60000) % 60);
+
+    document.getElementById("shopRefreshTime").textContent =
+      `${days}D ${String(hours).padStart(2,"0")}H ${String(minutes).padStart(2,"0")}M`;
+  }
+
+  document.addEventListener("click",event => {
+    const itemButton = event.target.closest("[data-shop-item]");
+
+    if(itemButton && itemButton.dataset.shopItem !== selectedItemId){
+      selectItem(itemButton.dataset.shopItem,true);
+    }else if(itemButton){
+      animateSelectedCard(itemButton.dataset.shopItem);
+    }
+  });
+
+  document.getElementById("previewButton").addEventListener("click",openOdds);
+  document.getElementById("oddsClose").addEventListener("click",closeOdds);
+
+  modal.addEventListener("click",event => {
+    if(event.target === modal){
+      closeOdds();
+    }
+  });
+
+  document.addEventListener("keydown",event => {
+    if(event.key === "Escape"){
+      closeOdds();
+    }
+  });
+
+  auth.onAuthStateChanged(user => {
+    if(!user){
+      window.location.href = "login.html";
+      return;
+    }
+
+    if(playerRef){
+      playerRef.off();
+    }
+
+    playerRef = database.ref(`players/${user.uid}`);
+
+    playerRef.on("value",snapshot => {
+      currentPlayer = snapshot.val() || {};
+      renderBalance();
+    });
+  });
+
+  seedAtmosphere();
+  renderCatalogs();
+  selectItem(selectedItemId,false);
+  updateCountdown();
+  setInterval(updateCountdown,30000);
+})();
+</script>
+</body>
+</html>

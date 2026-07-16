@@ -3064,6 +3064,85 @@ img{display:block;max-width:100%}
   }
 }
 
+/* =========================================================
+   SHRINE RITUAL POLISH
+   Fullscreen scene, hidden header, winner blur and higher text
+   ========================================================= */
+
+/* Smoothly hide the global header during the ritual. */
+#globalHeader{
+  transition:
+    opacity .38s ease,
+    transform .38s ease;
+}
+
+body.ritual-page-active #globalHeader{
+  opacity:0!important;
+  transform:translateY(-18px)!important;
+  pointer-events:none!important;
+}
+
+/* Make the vault fill the entire browser during the opening.
+   This fixes the iPad scene not extending across the screen. */
+body.ritual-page-active .vault{
+  position:fixed!important;
+  inset:0!important;
+  z-index:8990!important;
+
+  width:100vw!important;
+  max-width:none!important;
+  height:100dvh!important;
+  min-height:100dvh!important;
+
+  margin:0!important;
+  transform:none!important;
+}
+
+/* Ensure the environment itself fills the fullscreen vault. */
+body.ritual-page-active .vault .scene{
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+}
+
+/* Override the normal Bloom sizing while the ritual is active. */
+body.ritual-page-active .vault[data-scene="bloom"] .background,
+body.ritual-page-active .vault[data-scene="bloom"] .midground{
+  background-size:cover!important;
+  background-position:center center!important;
+}
+
+body.ritual-page-active .vault[data-scene="bloom"] .platform{
+  background-size:cover!important;
+  background-position:center bottom!important;
+}
+
+/* Slight cinematic blur only after the winning reward appears.
+   The reward overlay and existing crate remain sharp. */
+.vault.ritual-winner-active .scene{
+  filter:
+    blur(2.5px)
+    brightness(.86)
+    saturate(.94)!important;
+
+  transform:scale(1.012);
+  transition:
+    filter .55s ease,
+    transform .65s ease!important;
+}
+
+/* Move final reward information higher on desktop and iPad. */
+.winner-copy{
+  top:70%!important;
+}
+
+/* Keep the reward presentation higher on phones as well. */
+@media(max-width:680px){
+  .winner-copy{
+    top:67%!important;
+  }
+}
+
 </style>
 </head>
 
@@ -3868,7 +3947,8 @@ img{display:block;max-width:100%}
   }
 
   async function awakenRitualWorld(){
-    vault.classList.add("ritual-active");
+  document.body.classList.add("ritual-page-active");
+  vault.classList.add("ritual-active");
 
     if(cameraFrame){
       cancelAnimationFrame(cameraFrame);
@@ -3920,7 +4000,12 @@ img{display:block;max-width:100%}
   }
 
   function restoreRitualWorld(){
-    vault.classList.remove("ritual-active");
+  document.body.classList.remove("ritual-page-active");
+
+  vault.classList.remove(
+    "ritual-active",
+    "ritual-winner-active"
+  );
 
     layers.forEach(element => {
       element.style.transition = "";
@@ -3933,6 +4018,8 @@ img{display:block;max-width:100%}
   async function showWinner(winner){
     const overlay = $("ritualOverlay");
     const ritualWinner = $("ritualWinner");
+
+  vault.classList.add("ritual-winner-active");
 
     overlay.classList.remove("phase-orbit");
     overlay.classList.add("phase-winner",`rarity-${winner.rarity.toLowerCase()}`);

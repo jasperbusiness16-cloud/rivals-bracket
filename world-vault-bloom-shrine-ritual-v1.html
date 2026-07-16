@@ -4062,9 +4062,9 @@ body.ritual-page-active .vault[data-scene="bloom"] .platform{
     const targetX = crateRect.left+crateRect.width/2;
     const targetY = crateRect.top-crateRect.height*.05;
 
-    cards.forEach(card => {
-      if(card !== winnerCard) card.classList.add("loser");
-    });
+    cards.forEach((card,index) => {
+  setTimeout(() => card.classList.add("visible"),index*22);
+});
 
     await sleep(90);
 
@@ -4109,16 +4109,28 @@ body.ritual-page-active .vault[data-scene="bloom"] .platform{
     positionRitualToCrate();
 
     overlay.classList.remove("phase-charge");
-    overlay.classList.add("phase-beam","phase-impact");
-    $("ritualTitle").textContent = "Reward Energy Released";
-    $("ritualSubtitle").textContent = "The shrine is revealing what lies within.";
+overlay.classList.add("phase-impact","phase-orbit");
 
-    await sleep(920);
+$("ritualTitle").textContent = "Reward Energy Released";
+$("ritualSubtitle").textContent = "The shrine is revealing what lies within.";
 
-    overlay.classList.remove("show-status","phase-beam","phase-impact");
-    overlay.classList.add("phase-orbit");
+/*
+  Start the reward cards immediately when
+  "Reward Energy Released" appears.
+*/
+const rewardSelection = runRitualRewardSelection(winner);
 
-    await runRitualRewardSelection(winner);
+/*
+  Keep the status text briefly visible while the cards emerge,
+  then fade it away without delaying the reward animation.
+*/
+await sleep(700);
+overlay.classList.remove("show-status","phase-impact");
+
+/*
+  Wait for the already-running reward selection to finish.
+*/
+await rewardSelection;
   }
 
   async function runTestRitual(){

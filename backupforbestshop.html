@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>World Vault | Rivals Gauntlet</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --header:78px;
+  --hud-height:230px;
+  --text:#f8f5ff;
+  --muted:#b1aabd;
+  --dim:#777180;
+  --border:rgba(255,255,255,.11);
+  --accent:#9a7cff;
+  --accent-rgb:154,124,255;
+  --dark:#080713;
+  --mid:#211944;
+  --max:1800px;
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#050508;
+  color:var(--text);
+  font-family:Rajdhani,Arial,sans-serif;
+}
+body{overflow:hidden}
+button{font:inherit;color:inherit}
+img{display:block;max-width:100%}
+
+.vault{
+  position:relative;
+  height:calc(100dvh - var(--header));
+  min-height:620px;
+  overflow:hidden;
+  isolation:isolate;
+  background:#050508;
+}
+
+.scene,.layer,.weather,.particles,.flash,.vignette,.transition{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.scene{z-index:-1;overflow:hidden;background:var(--dark)}
+.layer{
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  will-change:transform;
+}
+.sky{
+  z-index:0;
+  background:
+    radial-gradient(circle at 52% 36%,rgba(var(--accent-rgb),.3),transparent 31%),
+    linear-gradient(180deg,var(--mid),var(--dark) 74%);
+  animation:skyBreath 9s ease-in-out infinite;
+}
+.background{z-index:1}
+.midground{z-index:2}
+.platform{z-index:3;background-size:contain;background-position:center bottom}
+.foreground{z-index:8}
+.lighting{
+  z-index:9;
+  mix-blend-mode:screen;
+  opacity:.7;
+  background:
+    radial-gradient(circle at 52% 46%,rgba(var(--accent-rgb),.22),transparent 30%),
+    linear-gradient(100deg,transparent 25%,rgba(var(--accent-rgb),.08),transparent 70%);
+}
+.weather{z-index:5;overflow:hidden}
+.particles{z-index:7;overflow:hidden}
+.vignette{
+  z-index:10;
+  box-shadow:
+    inset 0 0 180px rgba(0,0,0,.72),
+    inset 0 -150px 150px rgba(0,0,0,.62);
+}
+.flash{z-index:11;opacity:0;background:rgba(255,255,255,.72);mix-blend-mode:screen}
+.transition{
+  z-index:12;
+  opacity:0;
+  background:
+    radial-gradient(circle at 52% 46%,rgba(255,255,255,.9),rgba(var(--accent-rgb),.48) 18%,transparent 55%);
+  transform:scale(.5);
+}
+.vault.switching .transition{animation:worldTransition .88s cubic-bezier(.2,.85,.2,1)}
+.vault.switching .featured-crate{animation:crateSwap .88s cubic-bezier(.2,.85,.2,1)}
+
+.world-zone{
+  position:absolute;
+  inset:0 0 var(--hud-height);
+  z-index:5;
+  overflow:hidden;
+}
+
+.world-zone::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(4,4,8,.08),transparent 18%,transparent 72%,rgba(4,4,8,.7)),
+    linear-gradient(90deg,rgba(4,4,8,.34),transparent 20%,transparent 80%,rgba(4,4,8,.3));
+  pointer-events:none;
+  z-index:3;
+}
+
+.world-title{
+  position:absolute;
+  left:clamp(22px,3vw,54px);
+  top:clamp(22px,4vh,52px);
+  z-index:6;
+  max-width:min(42vw,620px);
+}
+.world-title-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.category,.badge,.scene-hud,.hud-label,.tabs button{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.category{color:var(--accent)}
+.badge{
+  padding:6px 9px;
+  border:1px solid rgba(var(--accent-rgb),.4);
+  background:rgba(var(--accent-rgb),.08);
+}
+.world-title h1{
+  margin:14px 0 0;
+  font-size:clamp(44px,5.3vw,92px);
+  line-height:.8;
+  letter-spacing:-2.7px;
+  text-transform:uppercase;
+  text-shadow:0 12px 32px rgba(0,0,0,.45);
+}
+.tagline{
+  margin:16px 0 0;
+  color:var(--accent);
+  font-size:clamp(15px,1.45vw,22px);
+  font-weight:800;
+  text-transform:uppercase;
+}
+.description{
+  max-width:560px;
+  margin:14px 0 0;
+  color:#c3bdca;
+  font-size:clamp(13px,1.05vw,17px);
+  line-height:1.45;
+  text-shadow:0 4px 16px rgba(0,0,0,.55);
+}
+
+.crate-stage{
+  position:absolute;
+  inset:0;
+  z-index:4;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1200px;
+}
+.featured-crate{
+  position:relative;
+  z-index:6;
+  width:min(54vw,900px);
+  max-height:calc(100% - 46px);
+  object-fit:contain;
+  filter:
+    drop-shadow(0 54px 74px rgba(0,0,0,.72))
+    drop-shadow(0 0 28px rgba(var(--accent-rgb),.22));
+  animation:crateIdle 5.8s ease-in-out infinite;
+  transform-origin:50% 75%;
+}
+.fallback{
+  z-index:6;
+  width:min(44vw,620px);
+  aspect-ratio:1.55;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(var(--accent-rgb),.48);
+  background:rgba(6,6,10,.58);
+  color:var(--accent);
+  font-size:clamp(34px,5vw,72px);
+  font-weight:800;
+  text-align:center;
+  line-height:.78;
+  box-shadow:0 0 70px rgba(var(--accent-rgb),.22);
+}
+.crate-shadow{
+  position:absolute;
+  left:50%;
+  bottom:7%;
+  width:min(48vw,760px);
+  height:12%;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.92),transparent 67%);
+  filter:blur(9px);
+}
+.aura{
+  position:absolute;
+  width:min(58vw,900px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(var(--accent-rgb),.2),transparent 66%);
+  filter:blur(22px);
+  animation:auraBreath 4.8s ease-in-out infinite;
+}
+
+.scene-hud{
+  position:absolute;
+  right:clamp(22px,3vw,54px);
+  top:clamp(24px,4vh,54px);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:rgba(255,255,255,.55);
+}
+.hud-line{
+  width:34px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
+
+.corner-price{
+  position:absolute;
+  right:clamp(22px,3vw,54px);
+  bottom:clamp(22px,3vh,42px);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.price-chip,.refresh-chip{
+  min-width:150px;
+  padding:12px 14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(6,6,10,.48);
+  backdrop-filter:blur(12px);
+}
+.price-chip span,.refresh-chip span{
+  display:block;
+  color:var(--dim);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.1px;
+  text-transform:uppercase;
+}
+.price-chip strong,.refresh-chip strong{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:4px;
+  font-size:20px;
+}
+.price-chip img{width:24px;height:24px;object-fit:contain}
+
+.hud{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:20;
+  height:var(--hud-height);
+  border-top:1px solid var(--border);
+  background:
+    linear-gradient(180deg,rgba(10,9,15,.82),rgba(5,5,8,.97)),
+    radial-gradient(circle at 50% 0,rgba(var(--accent-rgb),.11),transparent 40%);
+  backdrop-filter:blur(18px);
+  box-shadow:0 -28px 70px rgba(0,0,0,.38);
+}
+.hud-inner{
+  width:min(calc(100% - 32px),var(--max));
+  height:100%;
+  margin:auto;
+  display:grid;
+  grid-template-columns:minmax(280px,.8fr) minmax(380px,1.35fr) minmax(270px,.8fr);
+  gap:16px;
+  padding:14px 0;
+}
+
+.hud-left,.hud-center,.hud-right{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.hud-label{color:var(--dim)}
+
+.tabs{
+  display:flex;
+  gap:7px;
+  margin-top:9px;
+}
+.tabs button{
+  min-height:38px;
+  padding:0 14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  cursor:pointer;
+}
+.tabs button.active{
+  border-color:rgba(var(--accent-rgb),.56);
+  background:rgba(var(--accent-rgb),.12);
+  color:#fff;
+}
+.balance{
+  margin:12px 0 0;
+  color:var(--dim);
+  font-size:12px;
+}
+.balance strong{margin-left:7px;color:#ddd2ed}
+
+.actions{
+  display:grid;
+  grid-template-columns:1.35fr 1fr;
+  gap:9px;
+}
+.primary,.secondary{
+  min-height:48px;
+  border:0;
+  cursor:pointer;
+  font-weight:800;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+.primary{
+  background:linear-gradient(135deg,#6d28d9,var(--accent));
+  box-shadow:0 16px 40px rgba(var(--accent-rgb),.23);
+}
+.primary:disabled{cursor:not-allowed;opacity:.52;filter:saturate(.45)}
+.secondary{
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.035);
+}
+.secondary:hover{
+  border-color:rgba(var(--accent-rgb),.55);
+  background:rgba(var(--accent-rgb),.1);
+}
+
+.selector-wrap{
+  position:relative;
+  min-width:0;
+}
+.selector{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:5px 9px 8px;
+  scroll-padding-left:9px;
+  scrollbar-width:none;
+}
+.selector::-webkit-scrollbar{display:none}
+
+.card{
+  --card-rgb:139,92,246;
+  position:relative;
+  flex:0 0 220px;
+  min-width:0;
+  height:132px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:88px minmax(0,1fr);
+  align-items:center;
+  gap:8px;
+  padding:9px;
+  border:1px solid var(--border);
+  background:
+    linear-gradient(100deg,rgba(255,255,255,.03),rgba(0,0,0,.24));
+  cursor:pointer;
+  text-align:left;
+  transition:.2s ease;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 19% 50%,rgba(var(--card-rgb),.18),transparent 38%);
+}
+.card:hover,.card.active{
+  transform:translateY(-2px);
+  border-color:rgba(var(--card-rgb),.72);
+  box-shadow:
+    0 12px 36px rgba(var(--card-rgb),.16),
+    inset 0 0 24px rgba(var(--card-rgb),.06);
+}
+.card.active::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:1px solid rgb(var(--card-rgb));
+  pointer-events:none;
+}
+.thumb-wrap{
+  position:relative;
+  z-index:2;
+  height:96px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.thumb{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 15px 18px rgba(0,0,0,.58));
+}
+.thumb-fallback{
+  display:none;
+  color:rgb(var(--card-rgb));
+  font-weight:800;
+  text-align:center;
+}
+.card-copy{position:relative;z-index:2;min-width:0}
+.card-copy span{
+  display:block;
+  color:rgb(var(--card-rgb));
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.1px;
+  text-transform:uppercase;
+}
+.card-copy strong{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  font-size:18px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.card-price{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  font-size:15px;
+  font-weight:800;
+}
+.card-price img{width:18px;height:18px}
+
+.drop,.particle{
+  position:absolute;
+  top:-15%;
+  will-change:transform,opacity;
+}
+.drop{
+  width:1px;
+  height:68px;
+  background:linear-gradient(transparent,rgba(220,230,255,.42));
+  transform:rotate(12deg);
+  animation:rainDrop var(--speed,1.2s) linear infinite;
+}
+.particle{
+  width:var(--size,7px);
+  height:var(--size,7px);
+  border-radius:50%;
+  background:var(--particle-color,#fff);
+  box-shadow:0 0 10px var(--particle-glow,transparent);
+  animation:particleFall var(--speed,8s) linear infinite;
+}
+.particle.leaf,.particle.petal{
+  border-radius:80% 20% 80% 20%;
+  transform:rotate(35deg);
+}
+.particle.bubble{
+  background:transparent;
+  border:1px solid rgba(190,235,255,.6);
+}
+.particle.ember{animation-name:particleRise}
+.particle.firefly{animation-name:fireflyDrift}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:5000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(2,2,5,.82);
+  backdrop-filter:blur(14px);
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(610px,100%);
+  max-height:calc(100dvh - 40px);
+  overflow:auto;
+  border:1px solid rgba(var(--accent-rgb),.42);
+  background:#0d0c14;
+  box-shadow:0 35px 110px rgba(0,0,0,.66);
+}
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:18px 20px;
+  border-bottom:1px solid var(--border);
+}
+.modal-head span{
+  color:var(--accent);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.4px;
+}
+.modal-head h2{
+  margin:3px 0 0;
+  font-size:25px;
+  text-transform:uppercase;
+}
+.close{
+  width:40px;
+  height:40px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  cursor:pointer;
+  font-size:23px;
+}
+.modal-body{padding:20px}
+.modal-desc{margin:0 0 15px;color:var(--muted);line-height:1.45}
+.reward-list{display:grid;gap:8px}
+.reward{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:13px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.025);
+}
+.reward small{display:block;margin-top:2px;color:var(--dim)}
+.reward>span{color:var(--accent);font-weight:800}
+
+@keyframes skyBreath{50%{filter:brightness(1.08) saturate(1.08)}}
+@keyframes crateIdle{
+  0%,100%{transform:translateY(5px) rotate(-.35deg)}
+  50%{transform:translateY(-10px) rotate(.45deg)}
+}
+@keyframes auraBreath{50%{transform:scale(1.12);opacity:.7}}
+@keyframes worldTransition{
+  0%{opacity:0;transform:scale(.5)}
+  42%{opacity:1;transform:scale(1.35)}
+  100%{opacity:0;transform:scale(2.15)}
+}
+@keyframes crateSwap{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  35%{opacity:0;transform:translateY(25px) scale(.8)}
+  62%{opacity:0;transform:translateY(-18px) scale(.78)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes rainDrop{to{transform:translate(120px,125vh) rotate(12deg)}}
+@keyframes particleFall{
+  to{transform:translate(var(--drift,60px),120vh) rotate(540deg);opacity:0}
+}
+@keyframes particleRise{
+  from{transform:translateY(110vh);opacity:0}
+  20%{opacity:1}
+  to{transform:translate(var(--drift,40px),-20vh);opacity:0}
+}
+@keyframes fireflyDrift{
+  0%,100%{transform:translate(0,0);opacity:.15}
+  30%{transform:translate(35px,-20px);opacity:1}
+  65%{transform:translate(-22px,28px);opacity:.6}
+}
+
+/* Landscape tablets / shorter screens */
+@media(max-width:1180px){
+  :root{
+    --header:72px;
+    --hud-height:214px;
+  }
+  .world-title{max-width:46vw}
+  .world-title h1{font-size:clamp(42px,5vw,72px)}
+  .featured-crate{width:min(56vw,760px)}
+  .hud-inner{
+    grid-template-columns:250px minmax(340px,1fr) 250px;
+    gap:10px;
+  }
+  .card{
+    flex-basis:200px;
+    height:120px;
+    grid-template-columns:78px 1fr;
+  }
+  .thumb-wrap{height:84px}
+}
+
+/* Portrait tablet */
+@media(max-width:900px){
+  :root{
+    --header:72px;
+    --hud-height:250px;
+  }
+
+  .world-title{
+    left:22px;
+    top:22px;
+    max-width:52vw;
+  }
+  .world-title h1{font-size:clamp(38px,6.2vw,62px)}
+  .description{display:none}
+  .scene-hud{right:22px;top:24px}
+  .corner-price{right:20px;bottom:20px}
+  .featured-crate{
+    width:min(70vw,690px);
+    max-height:calc(100% - 24px);
+  }
+
+  .hud-inner{
+    width:min(calc(100% - 20px),var(--max));
+    grid-template-columns:180px minmax(0,1fr);
+    grid-template-rows:1fr 66px;
+    gap:8px 10px;
+    padding:10px 0;
+  }
+
+  .hud-left{
+    grid-column:1;
+    grid-row:1/-1;
+  }
+
+  .hud-center{
+    grid-column:2;
+    grid-row:2;
+  }
+
+  .hud-right{
+    grid-column:2;
+    grid-row:1;
+    min-width:0;
+  }
+
+  .tabs{
+    flex-direction:column;
+    margin-top:8px;
+  }
+
+  .tabs button{
+    min-height:36px;
+    padding:0 10px;
+  }
+
+  .actions{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .primary,.secondary{
+    min-height:48px;
+  }
+
+  .selector{
+    padding:4px 7px 8px;
+    scroll-padding-left:7px;
+  }
+
+  .card{
+    flex-basis:205px;
+    height:130px;
+  }
+}
+
+/* Mobile */
+@media(max-width:680px){
+  :root{
+    --header:68px;
+    --hud-height:260px;
+  }
+
+  .vault{min-height:620px}
+
+  .world-title{
+    left:18px;
+    right:18px;
+    top:16px;
+    max-width:none;
+    text-align:left;
+  }
+
+  .world-title-top{gap:8px}
+  .category,.badge{font-size:8px}
+  .badge{padding:5px 7px}
+  .world-title h1{
+    margin-top:10px;
+    font-size:clamp(34px,11vw,48px);
+    line-height:.82;
+  }
+  .tagline{
+    margin-top:8px;
+    font-size:13px;
+  }
+
+  .scene-hud{
+    top:auto;
+    right:auto;
+    left:50%;
+    bottom:8px;
+    transform:translateX(-50%);
+    font-size:8px;
+  }
+
+  .corner-price{
+    display:none;
+  }
+
+  .featured-crate{
+    width:min(92vw,520px);
+    max-height:calc(100% - 108px);
+    margin-top:52px;
+  }
+  .fallback{
+    width:min(84vw,470px);
+    margin-top:52px;
+  }
+  .crate-shadow{bottom:4%;width:78vw}
+  .aura{width:88vw}
+
+  .hud-inner{
+    width:100%;
+    grid-template-columns:78px minmax(0,1fr);
+    grid-template-rows:132px 110px;
+    gap:8px;
+    padding:8px 10px 10px;
+  }
+
+  .hud-left{
+    grid-column:1;
+    grid-row:1/-1;
+  }
+
+  .hud-right{
+    grid-column:2;
+    grid-row:1;
+  }
+
+  .hud-center{
+    grid-column:2;
+    grid-row:2;
+  }
+
+  .hud-label,.balance{display:none}
+
+  .tabs{
+    margin:0;
+    gap:7px;
+  }
+  .tabs button{
+    min-height:36px;
+    padding:0 6px;
+    font-size:9px;
+  }
+
+  .selector{
+    height:100%;
+    padding:3px 8px 6px;
+    scroll-padding-left:8px;
+  }
+
+  .card{
+    flex-basis:176px;
+    height:118px;
+    grid-template-columns:70px 1fr;
+    padding:8px;
+  }
+  .card:hover,.card.active{transform:none}
+  .thumb-wrap{height:72px}
+  .card-copy strong{font-size:15px}
+  .card-price{font-size:14px}
+
+  .actions{
+    height:100%;
+    grid-template-columns:1fr 1fr;
+  }
+  .primary,.secondary{
+    min-height:44px;
+    font-size:10px;
+    padding:0 7px;
+  }
+}
+
+/* Small phones / short browser viewport */
+@media(max-width:430px){
+  :root{--hud-height:250px}
+  .world-title h1{font-size:32px}
+  .tagline{font-size:11px}
+  .featured-crate{max-height:calc(100% - 100px)}
+  .hud-inner{grid-template-rows:126px 106px}
+  .card{
+    flex-basis:166px;
+    height:112px;
+  }
+}
+
+@media(max-height:690px) and (min-width:681px){
+  :root{--hud-height:200px}
+  .world-title{top:18px}
+  .world-title h1{font-size:46px}
+  .description{display:none}
+  .featured-crate{max-height:calc(100% - 24px)}
+  .hud-inner{padding:8px 0}
+  .card{height:108px}
+  .thumb-wrap{height:74px}
+}
+
+
+/* =========================
+   LANDSCAPE TABLET HUD
+   Unified controls, larger world focal point
+========================= */
+@media (min-width:681px) and (max-width:1400px) and (orientation:landscape){
+  :root{
+    --hud-height:246px;
+  }
+
+  .world-title{
+    left:24px;
+    top:20px;
+    max-width:31vw;
+  }
+
+  .world-title-top{
+    gap:8px;
+  }
+
+  .category,
+  .badge{
+    font-size:8px;
+    letter-spacing:1.15px;
+  }
+
+  .badge{
+    padding:5px 7px;
+  }
+
+  .world-title h1{
+    margin-top:11px;
+    font-size:clamp(34px,3.7vw,52px);
+    line-height:.84;
+    letter-spacing:-1.7px;
+  }
+
+  .tagline{
+    margin-top:11px;
+    font-size:13px;
+  }
+
+  .description{
+    display:none;
+  }
+
+  .scene-hud{
+    top:22px;
+    right:24px;
+    font-size:8px;
+  }
+
+  .featured-crate{
+    width:min(62vw,850px);
+    max-height:calc(100% - 24px);
+  }
+
+  .fallback{
+    width:min(52vw,650px);
+  }
+
+  .aura{
+    width:min(66vw,900px);
+  }
+
+  .crate-shadow{
+    width:min(52vw,730px);
+    bottom:5%;
+  }
+
+  .corner-price{
+    right:22px;
+    bottom:18px;
+    gap:8px;
+  }
+
+  .price-chip,
+  .refresh-chip{
+    min-width:132px;
+    padding:9px 11px;
+  }
+
+  .price-chip strong,
+  .refresh-chip strong{
+    font-size:17px;
+  }
+
+  .price-chip img{
+    width:21px;
+    height:21px;
+  }
+
+  .hud-inner{
+    width:min(calc(100% - 24px),var(--max));
+    grid-template-columns:1fr;
+    grid-template-rows:40px minmax(0,1fr) 46px;
+    grid-template-areas:
+      "browse"
+      "selector"
+      "actions";
+    gap:8px;
+    padding:10px 0;
+  }
+
+.hud-left{
+  grid-area:browse;
+  min-width:0;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:16px;
+}
+
+  .hud-label{
+    display:none;
+  }
+
+  .tabs{
+    margin:0;
+    display:flex;
+    flex-direction:row;
+    gap:7px;
+  }
+
+.hud-left .tabs{
+  grid-column:2;
+  justify-self:center;
+}
+
+  .tabs button{
+    min-height:36px;
+    padding:0 18px;
+  }
+
+ .balance{
+  grid-column:3;
+  justify-self:end;
+  margin:0;
+  white-space:nowrap;
+}
+
+  .hud-right{
+    grid-area:selector;
+    min-width:0;
+    display:block;
+  }
+
+  .selector-wrap{
+    height:100%;
+  }
+
+  .selector{
+    height:100%;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:4px 8px 7px;
+    scroll-padding-inline:8px;
+  }
+
+  .card{
+    flex:1 1 0;
+    max-width:360px;
+    min-width:0;
+    height:100%;
+    min-height:0;
+    grid-template-columns:76px minmax(0,1fr);
+    padding:7px 10px;
+  }
+
+  .thumb-wrap{
+    height:68px;
+  }
+
+  .card-copy strong{
+    font-size:16px;
+  }
+
+  .card-price{
+    margin-top:6px;
+    font-size:14px;
+  }
+
+  .hud-center{
+    grid-area:actions;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .actions{
+    width:min(560px,100%);
+    grid-template-columns:1.35fr 1fr;
+    gap:8px;
+  }
+
+  .primary,
+  .secondary{
+    min-height:42px;
+    font-size:11px;
+  }
+}
+
+/* Short landscape tablets */
+@media (min-width:681px) and (max-width:1400px) and (orientation:landscape) and (max-height:760px){
+  :root{
+    --hud-height:224px;
+  }
+
+  .world-title{
+    top:15px;
+  }
+
+  .world-title h1{
+    font-size:clamp(31px,3.35vw,45px);
+  }
+
+  .featured-crate{
+    width:min(59vw,800px);
+  }
+
+  .hud-inner{
+    grid-template-rows:36px minmax(0,1fr) 42px;
+    padding:8px 0;
+  }
+
+  .tabs button{
+    min-height:32px;
+  }
+
+  .card{
+    grid-template-columns:68px minmax(0,1fr);
+  }
+
+  .thumb-wrap{
+    height:58px;
+  }
+
+  .primary,
+  .secondary{
+    min-height:38px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="globalHeader"></div>
+
+<main id="vault" class="vault" data-scene="storm">
+  <div id="scene" class="scene" aria-hidden="true">
+    <div class="layer sky" data-layer="sky"></div>
+    <div class="layer background" data-layer="background"></div>
+    <div class="layer midground" data-layer="midground"></div>
+    <div class="layer platform" data-layer="platform"></div>
+    <div class="layer foreground" data-layer="foreground"></div>
+    <div class="layer lighting" data-layer="lighting"></div>
+    <div id="weather" class="weather"></div>
+    <div id="particles" class="particles"></div>
+    <div id="flash" class="flash"></div>
+    <div class="vignette"></div>
+    <div class="transition"></div>
+  </div>
+
+  <section class="world-zone">
+    <div class="world-title">
+      <div class="world-title-top">
+        <span id="category" class="category">CORE WORLD</span>
+        <span class="badge">WEEKLY ROTATION</span>
+      </div>
+
+      <h1 id="name">Storm Crate</h1>
+      <p id="tagline" class="tagline">Enter the eye of the storm.</p>
+      <p id="description" class="description">
+        A cinematic collection forged from thunder, rain, and electric skies.
+      </p>
+    </div>
+
+    <div class="scene-hud">
+      <span>SCENE ONLINE</span>
+      <span class="hud-line"></span>
+      <span id="sceneNumber">WORLD 04 / 09</span>
+    </div>
+
+    <div class="crate-stage">
+      <div class="crate-shadow"></div>
+      <div class="aura"></div>
+      <img id="crate" class="featured-crate" src="" alt="">
+      <div id="fallback" class="fallback">STORM<br>CRATE</div>
+    </div>
+
+    <div class="corner-price">
+      <div class="price-chip">
+        <span>Price</span>
+        <strong>
+          <img src="assets/shop/ui/RG-POINTS-ICON.PNG" alt="">
+          <b id="price">2,000</b>
+        </strong>
+      </div>
+
+      <div class="refresh-chip">
+        <span>Refresh</span>
+        <strong id="countdown">6D 23H</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="hud">
+    <div class="hud-inner">
+      <div class="hud-left">
+        <span class="hud-label">Browse Vault</span>
+
+        <div class="tabs">
+          <button class="active" data-tab="core">Worlds</button>
+          <button data-tab="seasonal">Seasonal</button>
+          <button data-tab="limited">Limited</button>
+        </div>
+
+        <p class="balance">
+          Balance <strong id="balance">0 RG Points</strong>
+        </p>
+      </div>
+
+      <div class="hud-center">
+        <div class="actions">
+          <button class="primary" disabled>Temporarily Unavailable</button>
+          <button id="preview" class="secondary">Preview Rewards</button>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="selector-wrap">
+          <div id="selector" class="selector"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="modal" class="modal" aria-hidden="true">
+  <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div>
+        <span>COLLECTION PREVIEW</span>
+        <h2 id="modalTitle">Storm Crate Rewards</h2>
+      </div>
+      <button id="close" class="close" type="button" aria-label="Close preview">×</button>
+    </div>
+
+    <div class="modal-body">
+      <p id="modalDesc" class="modal-desc"></p>
+      <div id="rewardList" class="reward-list"></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
+<script src="global-header.js?v=2"></script>
+
+<script>
+(() => {
+  "use strict";
+
+  const A = "assets/shop/";
+
+  const worlds = {
+    forest:{group:"core",name:"Forest Crate",category:"Core World",tagline:"Awaken the ancient wilds.",description:"A living collection shaped by moss-covered ruins, fireflies, deep woods, and forgotten guardians.",price:1800,accent:"#65d087",rgb:"101,208,135",dark:"#06100b",mid:"#10291b",crate:A+"crates/worlds/FOREST-CRATE.PNG",folder:"FOREST",weather:["leaves",24,"#7ddf8c",7,13,5,12],particles:["firefly",18,"#d6ff79",5,10,2,5],flash:false,rewards:["Forest profile backgrounds","Moss borders","Wildwood avatars","Ancient titles"]},
+    frozen:{group:"core",name:"Frozen Crate",category:"Core World",tagline:"Claim the heart of winter.",description:"A crystalline collection from frozen cliffs, aurora-lit skies, and the silence of an endless blizzard.",price:1900,accent:"#80d8ff",rgb:"128,216,255",dark:"#061019",mid:"#12314a",crate:A+"crates/worlds/FROZEN-CRATE.PNG",folder:"FROZEN",weather:["snow",42,"#e7f8ff",7,15,3,9],particles:["ice",16,"#8fe7ff",8,14,2,5],flash:[6500,12000,.18],rewards:["Frozen banners","Crystal borders","Frost avatars","Winter titles"]},
+    volcanic:{group:"core",name:"Volcanic Crate",category:"Core World",tagline:"Forge your collection in fire.",description:"A brutal collection born from lava rivers, falling ash, molten stone, and volcanic thunder.",price:2100,accent:"#ff6a35",rgb:"255,106,53",dark:"#120503",mid:"#3a1008",crate:A+"crates/worlds/VOLCANIC-CRATE.PNG",folder:"VOLCANIC",weather:["ash",36,"#c7afa5",8,17,2,7],particles:["ember",26,"#ff7a2f",4,9,2,6],flash:[4500,9000,.28],rewards:["Molten borders","Lava banners","Ember avatars","Inferno titles"]},
+    storm:{group:"core",name:"Storm Crate",category:"Core World",tagline:"Enter the eye of the storm.",description:"A cinematic collection forged from thunder, rain, electric skies, and winds strong enough to shake the arena.",price:2000,accent:"#9a7cff",rgb:"154,124,255",dark:"#080713",mid:"#211944",crate:A+"crates/worlds/STORM-CRATE.PNG",folder:"STORM",weather:["rain",28,"#cfd7ff",1.1,1.8,1,2],particles:["mist",10,"#8d84bd",8,15,22,54],flash:[2800,6800,.42],rewards:["Storm backgrounds","Lightning borders","Tempest avatars","Thunder titles"]},
+    desert:{group:"core",name:"Desert Crate",category:"Core World",tagline:"Cross the endless dunes.",description:"A sun-scorched collection hidden among sandstorms, lost ruins, heat haze, and ancient desert monuments.",price:1750,accent:"#e7b75c",rgb:"231,183,92",dark:"#140c04",mid:"#493017",crate:A+"crates/worlds/DESERT-CRATE.PNG",folder:"DESERT",weather:["dust",44,"#d7ad68",7,14,2,7],particles:["sand",18,"#e7bf78",5,10,2,5],flash:false,rewards:["Desert banners","Relic borders","Dune avatars","Wanderer titles"]},
+    underwater:{group:"core",name:"Underwater Crate",category:"Core World",tagline:"Descend beyond the surface.",description:"A deep-sea collection surrounded by coral kingdoms, drifting light, bubbles, and creatures in the blue.",price:1950,accent:"#40d7e8",rgb:"64,215,232",dark:"#031217",mid:"#063b4c",crate:A+"crates/worlds/UNDERWATER-CRATE.PNG",folder:"UNDERWATER",weather:["bubble",32,"#b9f5ff",7,14,4,13],particles:["plankton",24,"#72efff",7,15,1,4],flash:false,rewards:["Ocean backgrounds","Coral borders","Abyss avatars","Tidal titles"]},
+    cosmic:{group:"core",name:"Cosmic Crate",category:"Core World",tagline:"Leave the known world behind.",description:"A gravity-defying collection suspended among nebulae, planets, meteors, and endless cosmic light.",price:2200,accent:"#d46cff",rgb:"212,108,255",dark:"#07030f",mid:"#26103f",crate:A+"crates/worlds/COSMIC-CRATE.PNG",folder:"COSMIC",weather:["star",36,"#f0d6ff",9,18,1,4],particles:["cosmic",22,"#cf70ff",8,16,2,6],flash:[6500,12000,.17],rewards:["Nebula backgrounds","Orbit borders","Void avatars","Celestial titles"]},
+    bloom:{group:"core",name:"Bloom Crate",category:"Core World",tagline:"Step into an eternal spring.",description:"A dreamlike collection of blossom temples, warm skies, floating petals, and soft enchanted light.",price:1850,accent:"#ff8fc7",rgb:"255,143,199",dark:"#140910",mid:"#43203a",crate:A+"crates/worlds/BLOOM-CRATE.PNG",folder:"BLOOM",weather:["petal",32,"#ffb4d8",8,16,5,11],particles:["firefly",14,"#ffe29a",6,12,2,4],flash:false,rewards:["Bloom backgrounds","Petal borders","Spirit avatars","Harmony titles"]},
+    cyber:{group:"core",name:"Cyber Crate",category:"Core World",tagline:"Jack into the neon frontier.",description:"A high-voltage collection from holographic skylines, neon grids, digital rain, and futuristic arenas.",price:2050,accent:"#36f1d0",rgb:"54,241,208",dark:"#020d0d",mid:"#07312f",crate:A+"crates/worlds/CYBER-CRATE.PNG",folder:"CYBER",weather:["digital",30,"#36f1d0",2,5,1,3],particles:["glitch",16,"#8affed",4,9,2,6],flash:[5200,9800,.16],rewards:["Cyber backgrounds","Hologram borders","Signal avatars","Neon titles"]},
+    halloween:{group:"seasonal",name:"Halloween Crate",category:"Seasonal",tagline:"Something is waiting in the fog.",description:"A limited seasonal collection of haunted ruins, jack-o-lantern light, ghosts, embers, and midnight mist.",price:2000,accent:"#ff7b27",rgb:"255,123,39",dark:"#120803",mid:"#3b1708",crate:A+"crates/seasonal/HALLOWEEN-CRATE.PNG",folder:"HALLOWEEN",weather:["ash",24,"#bd967d",9,18,2,6],particles:["ember",22,"#ff7b27",5,10,2,5],flash:[7000,13000,.28],rewards:["Haunted backgrounds","Pumpkin borders","Specter avatars","Midnight titles"]},
+    christmas:{group:"seasonal",name:"Christmas Crate",category:"Seasonal",tagline:"Enter the winter celebration.",description:"A limited holiday collection filled with snow, warm lights, festive villages, and glowing winter magic.",price:2000,accent:"#ef4d67",rgb:"239,77,103",dark:"#07100d",mid:"#17302a",crate:A+"crates/seasonal/CHRISTMAS-CRATE.PNG",folder:"CHRISTMAS",weather:["snow",40,"#fff",8,16,3,9],particles:["firefly",16,"#ffd86b",6,11,2,5],flash:false,rewards:["Holiday backgrounds","Festive borders","Winter avatars","Celebration titles"]},
+    steam5:{group:"limited",name:"$5 Steam Card",category:"Limited Reward",tagline:"Limited weekly supply.",description:"Redeem RG Points for a five-dollar Steam gift card while weekly inventory remains available.",price:5000,accent:"#56d68b",rgb:"86,214,139",dark:"#04100a",mid:"#0d2a1b",crate:A+"rewards/STEAM-5.PNG",folder:"STEAM",weather:["digital",22,"#56d68b",2,5,1,3],particles:["glitch",12,"#a6ffca",4,8,2,5],flash:false,rewards:["One $5 Steam digital gift card"]},
+    steam10:{group:"limited",name:"$10 Steam Card",category:"Limited Reward",tagline:"Extremely limited supply.",description:"Redeem RG Points for a ten-dollar Steam gift card while the highest-value weekly stock remains.",price:9500,accent:"#56d68b",rgb:"86,214,139",dark:"#04100a",mid:"#0d2a1b",crate:A+"rewards/STEAM-10.PNG",folder:"STEAM",weather:["digital",28,"#56d68b",2,5,1,3],particles:["glitch",16,"#a6ffca",4,8,2,5],flash:[7000,12000,.11],rewards:["One $10 Steam digital gift card"]}
+  };
+
+  const core = ["forest","frozen","volcanic","storm","desert","underwater","cosmic","bloom","cyber"];
+  const seasonal = ["halloween","christmas"];
+  const limited = ["steam5","steam10"];
+
+  let active = "core";
+  let selected = "storm";
+  let playerRef = null;
+  let flashTimer = null;
+  let cameraFrame = null;
+
+  const $ = id => document.getElementById(id);
+  const vault = $("vault");
+  const crate = $("crate");
+  const fallback = $("fallback");
+  const selector = $("selector");
+  const modal = $("modal");
+  const weather = $("weather");
+  const particles = $("particles");
+  const flash = $("flash");
+  const layers = [...document.querySelectorAll("[data-layer]")];
+
+  const esc = value => String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+  const num = value => Number(value || 0).toLocaleString("en-US");
+
+  function week(){
+    const date = new Date();
+    const target = new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+    const day = target.getUTCDay() || 7;
+
+    target.setUTCDate(target.getUTCDate() + 4 - day);
+
+    const yearStart = new Date(Date.UTC(target.getUTCFullYear(),0,1));
+
+    return Math.ceil((((target - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function weekly(){
+    return [
+      ["forest","storm","cosmic"],
+      ["frozen","volcanic","cyber"],
+      ["desert","underwater","bloom"]
+    ][week() % 3];
+  }
+
+  function ids(){
+    if(active === "seasonal") return seasonal;
+    if(active === "limited") return limited;
+    return weekly();
+  }
+
+  function applyLayers(world){
+    const names = ["SKY","BACKGROUND","MIDGROUND","PLATFORM","FOREGROUND","LIGHTING"];
+
+    layers.forEach((element,index) => {
+      const source = `${A}worlds/${world.folder}/${names[index]}.PNG`;
+      const image = new Image();
+
+      image.onload = () => {
+        element.style.backgroundImage = `url("${source}")`;
+      };
+
+      image.onerror = () => {
+        element.style.backgroundImage = "";
+      };
+
+      image.src = source;
+    });
+  }
+
+  function build(container,config){
+    container.innerHTML = "";
+    if(!config) return;
+
+    const [type,count,color,speedMin,speedMax,sizeMin,sizeMax] = config;
+
+    for(let index = 0; index < count; index += 1){
+      const particle = document.createElement("i");
+      const isDrop = type === "rain" || type === "digital";
+
+      particle.className = isDrop ? "drop" : `particle ${type}`;
+      particle.style.left = `${Math.random() * 110 - 5}%`;
+      particle.style.top = isDrop ? "-15%" : `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${-Math.random() * 12}s`;
+      particle.style.setProperty("--speed",`${speedMin + Math.random() * (speedMax-speedMin)}s`);
+      particle.style.setProperty("--size",`${sizeMin + Math.random() * (sizeMax-sizeMin)}px`);
+      particle.style.setProperty("--particle-color",color);
+      particle.style.setProperty("--particle-glow",color);
+      particle.style.setProperty("--drift",`${Math.random() * 140 - 70}px`);
+      particle.style.opacity = .2 + Math.random() * .55;
+
+      if(isDrop){
+        particle.style.height = `${42 + Math.random() * 48}px`;
+        particle.style.opacity = .1 + Math.random() * .25;
+
+        if(type === "digital"){
+          particle.style.background = `linear-gradient(transparent,${color})`;
+        }
+      }
+
+      container.appendChild(particle);
+    }
+  }
+
+  function flashes(config){
+    clearTimeout(flashTimer);
+    if(!config) return;
+
+    const trigger = () => {
+      flash.animate(
+        [
+          {opacity:0},
+          {opacity:config[2],offset:.12},
+          {opacity:.04,offset:.23},
+          {opacity:config[2] * .7,offset:.34},
+          {opacity:0}
+        ],
+        {duration:420,easing:"steps(1,end)"}
+      );
+
+      flashTimer = setTimeout(
+        trigger,
+        config[0] + Math.random() * (config[1]-config[0])
+      );
+    };
+
+    flashTimer = setTimeout(
+      trigger,
+      config[0] + Math.random() * (config[1]-config[0])
+    );
+  }
+
+  function camera(){
+    if(cameraFrame) cancelAnimationFrame(cameraFrame);
+
+    const start = performance.now();
+
+    const move = now => {
+      const phase = ((now-start) % 14000) / 14000 * Math.PI * 2;
+      const x = Math.sin(phase) * 6;
+      const y = Math.cos(phase * .82) * 4;
+      const scale = 1.015 + Math.sin(phase * .6) * .01;
+
+      layers.forEach((element,index) => {
+        const depth = [.18,.28,.42,.1,.62,.08][index];
+        element.style.transform =
+          `translate3d(${x * depth}px,${y * depth}px,0) scale(${scale})`;
+      });
+
+      cameraFrame = requestAnimationFrame(move);
+    };
+
+    cameraFrame = requestAnimationFrame(move);
+  }
+
+  function load(id,animate=true){
+    const world = worlds[id];
+    if(!world) return;
+
+    selected = id;
+
+    if(animate){
+      vault.classList.remove("switching");
+      void vault.offsetWidth;
+      vault.classList.add("switching");
+      setTimeout(() => vault.classList.remove("switching"),920);
+    }
+
+    vault.style.setProperty("--accent",world.accent);
+    vault.style.setProperty("--accent-rgb",world.rgb);
+    vault.style.setProperty("--dark",world.dark);
+    vault.style.setProperty("--mid",world.mid);
+    vault.dataset.scene = id;
+
+    applyLayers(world);
+    build(weather,world.weather);
+    build(particles,world.particles);
+    flashes(world.flash);
+    camera();
+
+    $("category").textContent = world.category;
+    $("name").textContent = world.name;
+    $("tagline").textContent = world.tagline;
+    $("description").textContent = world.description;
+    $("price").textContent = num(world.price);
+
+    const position = core.indexOf(id);
+
+    $("sceneNumber").textContent =
+      position >= 0
+        ? `WORLD ${String(position + 1).padStart(2,"0")} / 09`
+        : world.category.toUpperCase();
+
+    crate.onload = () => {
+      crate.style.display = "block";
+      fallback.style.display = "none";
+    };
+
+    crate.onerror = () => {
+      crate.style.display = "none";
+      fallback.style.display = "flex";
+      fallback.innerHTML =
+        `${esc(world.name.replace(" Crate",""))}<br>${world.group === "limited" ? "REWARD" : "CRATE"}`;
+    };
+
+    crate.src = world.crate;
+    crate.alt = world.name;
+
+    render();
+  }
+
+  function card(id){
+    const world = worlds[id];
+
+    return `
+      <button
+        class="card ${id === selected ? "active" : ""}"
+        type="button"
+        data-id="${id}"
+        style="--card-rgb:${world.rgb}"
+      >
+        <div class="thumb-wrap">
+          <img
+            class="thumb"
+            src="${world.crate}"
+            alt=""
+            onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+          >
+          <div class="thumb-fallback">${esc(world.name.replace(" Crate",""))}</div>
+        </div>
+
+        <div class="card-copy">
+          <span>${esc(world.category)}</span>
+          <strong>${esc(world.name)}</strong>
+
+          <div class="card-price">
+            <img src="assets/shop/ui/RG-POINTS-ICON.PNG" alt="">
+            ${num(world.price)}
+          </div>
+        </div>
+      </button>
+    `;
+  }
+
+  function render(){
+    selector.innerHTML = ids().map(card).join("");
+  }
+
+  function setTab(tabName){
+    active = tabName;
+
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.classList.toggle("active",button.dataset.tab === tabName);
+    });
+
+    if(!ids().includes(selected)){
+      load(ids()[0],true);
+    }else{
+      render();
+    }
+  }
+
+  function preview(){
+    const world = worlds[selected];
+
+    $("modalTitle").textContent = `${world.name} Rewards`;
+    $("modalDesc").textContent = world.description;
+
+    $("rewardList").innerHTML = world.rewards.map((reward,index) => `
+      <div class="reward">
+        <div>
+          <strong>${esc(reward)}</strong>
+          <small>Theme collection reward</small>
+        </div>
+        <span>${String(index + 1).padStart(2,"0")}</span>
+      </div>
+    `).join("");
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+  }
+
+  function closeModal(){
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+  }
+
+  function count(){
+    const now = new Date();
+    const target = new Date(now);
+    const daysUntilMonday = (8-now.getDay()) % 7 || 7;
+
+    target.setDate(now.getDate() + daysUntilMonday);
+    target.setHours(0,0,0,0);
+
+    const difference = Math.max(0,target-now);
+    const days = Math.floor(difference/86400000);
+    const hours = Math.floor((difference/3600000)%24);
+    const minutes = Math.floor((difference/60000)%60);
+
+    $("countdown").textContent =
+      `${days}D ${String(hours).padStart(2,"0")}H ${String(minutes).padStart(2,"0")}M`;
+  }
+
+  document.addEventListener("click",event => {
+    const cardButton = event.target.closest("[data-id]");
+    const tabButton = event.target.closest("[data-tab]");
+
+    if(cardButton) load(cardButton.dataset.id,true);
+    if(tabButton) setTab(tabButton.dataset.tab);
+  });
+
+  $("preview").addEventListener("click",preview);
+  $("close").addEventListener("click",closeModal);
+
+  modal.addEventListener("click",event => {
+    if(event.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown",event => {
+    if(event.key === "Escape") closeModal();
+  });
+
+  if(typeof auth !== "undefined"){
+    auth.onAuthStateChanged(user => {
+      if(!user){
+        location.href = "login.html";
+        return;
+      }
+
+      if(playerRef) playerRef.off();
+
+      playerRef = database.ref(`players/${user.uid}`);
+
+      playerRef.on("value",snapshot => {
+        $("balance").textContent =
+          `${num((snapshot.val() || {}).rgPoints || 0)} RG Points`;
+      });
+    });
+  }
+
+  const firstRotation = weekly();
+  selected = firstRotation.includes("storm") ? "storm" : firstRotation[0];
+
+  render();
+  load(selected,false);
+  count();
+  setInterval(count,30000);
+})();
+</script>
+</body>
+</html>

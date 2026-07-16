@@ -68,6 +68,112 @@ img{display:block;max-width:100%}
 .midground{z-index:2}
 .platform{z-index:3;background-size:contain;background-position:center bottom}
 .foreground{z-index:8}
+.bloom-foregrounds{
+  position:absolute;
+  inset:0;
+  z-index:9;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .5s ease;
+}
+
+.vault[data-scene="bloom"] .bloom-foregrounds{
+  opacity:1;
+  visibility:visible;
+}
+
+.bloom-foreground{
+  position:absolute;
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:none;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  filter:
+    drop-shadow(0 18px 30px rgba(38,8,35,.25))
+    saturate(.92);
+}
+
+.vault[data-scene="bloom"] .background{
+  background-size:cover;
+  background-position:center center;
+}
+
+.vault[data-scene="bloom"] .midground{
+  background-size:cover;
+  background-position:center bottom;
+}
+
+.vault[data-scene="bloom"] .platform{
+  background-size:cover;
+  background-position:center bottom;
+}
+
+.vault[data-scene="bloom"] .lighting{
+  opacity:.48;
+}
+
+.bloom-top-left{
+  top:-1%;
+  left:-1%;
+  width:29%;
+  transform-origin:left top;
+}
+
+.bloom-top-right{
+  top:-1%;
+  right:-1%;
+  width:23%;
+  transform-origin:right top;
+}
+
+.bloom-bottom-left{
+  left:-2%;
+  bottom:-2%;
+  width:27%;
+  transform-origin:left bottom;
+}
+
+.bloom-bottom-right{
+  right:-2%;
+  bottom:-2%;
+  width:25%;
+  transform-origin:right bottom;
+}
+
+@media(max-width:900px){
+  .bloom-top-left{width:35%}
+  .bloom-top-right{width:28%}
+  .bloom-bottom-left{width:31%}
+  .bloom-bottom-right{width:29%}
+}
+
+@media(max-width:680px){
+  .bloom-top-left{
+    width:40%;
+    top:0;
+  }
+
+  .bloom-top-right{
+    width:31%;
+    top:0;
+  }
+
+  .bloom-bottom-left{
+    width:34%;
+    bottom:0;
+  }
+
+  .bloom-bottom-right{
+    width:32%;
+    bottom:0;
+  }
+}
+
 .lighting{
   z-index:9;
   mix-blend-mode:screen;
@@ -1079,8 +1185,35 @@ img{display:block;max-width:100%}
     <div class="layer background" data-layer="background"></div>
     <div class="layer midground" data-layer="midground"></div>
     <div class="layer platform" data-layer="platform"></div>
-    <div class="layer foreground" data-layer="foreground"></div>
-    <div class="layer lighting" data-layer="lighting"></div>
+  <div class="layer foreground" data-layer="foreground"></div>
+
+<div class="bloom-foregrounds" aria-hidden="true">
+  <img
+    class="bloom-foreground bloom-top-left"
+    src="assets/shop/worlds/BLOOM/FOREGROUND_TOP_LEFT.PNG"
+    alt=""
+  >
+
+  <img
+    class="bloom-foreground bloom-top-right"
+    src="assets/shop/worlds/BLOOM/FOREGROUND_TOP_RIGHT.PNG"
+    alt=""
+  >
+
+  <img
+    class="bloom-foreground bloom-bottom-left"
+    src="assets/shop/worlds/BLOOM/FOREGROUND_BOTTOM_LEFT.PNG"
+    alt=""
+  >
+
+  <img
+    class="bloom-foreground bloom-bottom-right"
+    src="assets/shop/worlds/BLOOM/FOREGROUND_BOTTOM_RIGHT.PNG"
+    alt=""
+  >
+</div>
+
+<div class="layer lighting" data-layer="lighting"></div>
     <div id="weather" class="weather"></div>
     <div id="particles" class="particles"></div>
     <div id="flash" class="flash"></div>
@@ -1203,7 +1336,7 @@ img{display:block;max-width:100%}
     desert:{group:"core",name:"Desert Crate",category:"Core World",tagline:"Cross the endless dunes.",description:"A sun-scorched collection hidden among sandstorms, lost ruins, heat haze, and ancient desert monuments.",price:1750,accent:"#e7b75c",rgb:"231,183,92",dark:"#140c04",mid:"#493017",crate:A+"crates/worlds/DESERT-CRATE.PNG",folder:"DESERT",weather:["dust",44,"#d7ad68",7,14,2,7],particles:["sand",18,"#e7bf78",5,10,2,5],flash:false,rewards:["Desert banners","Relic borders","Dune avatars","Wanderer titles"]},
     underwater:{group:"core",name:"Underwater Crate",category:"Core World",tagline:"Descend beyond the surface.",description:"A deep-sea collection surrounded by coral kingdoms, drifting light, bubbles, and creatures in the blue.",price:1950,accent:"#40d7e8",rgb:"64,215,232",dark:"#031217",mid:"#063b4c",crate:A+"crates/worlds/UNDERWATER-CRATE.PNG",folder:"UNDERWATER",weather:["bubble",32,"#b9f5ff",7,14,4,13],particles:["plankton",24,"#72efff",7,15,1,4],flash:false,rewards:["Ocean backgrounds","Coral borders","Abyss avatars","Tidal titles"]},
     cosmic:{group:"core",name:"Cosmic Crate",category:"Core World",tagline:"Leave the known world behind.",description:"A gravity-defying collection suspended among nebulae, planets, meteors, and endless cosmic light.",price:2200,accent:"#d46cff",rgb:"212,108,255",dark:"#07030f",mid:"#26103f",crate:A+"crates/worlds/COSMIC-CRATE.PNG",folder:"COSMIC",weather:["star",36,"#f0d6ff",9,18,1,4],particles:["cosmic",22,"#cf70ff",8,16,2,6],flash:[6500,12000,.17],rewards:["Nebula backgrounds","Orbit borders","Void avatars","Celestial titles"]},
-    bloom:{group:"core",name:"Bloom Crate",category:"Core World",tagline:"Step into an eternal spring.",description:"A dreamlike collection of blossom temples, warm skies, floating petals, and soft enchanted light.",price:1850,accent:"#ff8fc7",rgb:"255,143,199",dark:"#140910",mid:"#43203a",crate:A+"crates/worlds/BLOOM-CRATE.PNG",folder:"BLOOM",weather:["petal",32,"#ffb4d8",8,16,5,11],particles:["firefly",14,"#ffe29a",6,12,2,4],flash:false,rewards:["Bloom backgrounds","Petal borders","Spirit avatars","Harmony titles"]},
+    bloom:{group:"core",name:"Bloom Crate",category:"Core World",tagline:"Step into an eternal spring.",description:"A dreamlike collection of blossom temples, warm skies, floating petals, and soft enchanted light.",price:1850,accent:"#ff8fc7",rgb:"255,143,199",dark:"#140910",mid:"#43203a",crate:A+"worlds/BLOOM/BLOOM_CRATE.PNG",folder:"BLOOM",weather:["petal",32,"#ffb4d8",8,16,5,11],particles:["firefly",14,"#ffe29a",6,12,2,4],flash:false,rewards:["Bloom backgrounds","Petal borders","Spirit avatars","Harmony titles"]},
     cyber:{group:"core",name:"Cyber Crate",category:"Core World",tagline:"Jack into the neon frontier.",description:"A high-voltage collection from holographic skylines, neon grids, digital rain, and futuristic arenas.",price:2050,accent:"#36f1d0",rgb:"54,241,208",dark:"#020d0d",mid:"#07312f",crate:A+"crates/worlds/CYBER-CRATE.PNG",folder:"CYBER",weather:["digital",30,"#36f1d0",2,5,1,3],particles:["glitch",16,"#8affed",4,9,2,6],flash:[5200,9800,.16],rewards:["Cyber backgrounds","Hologram borders","Signal avatars","Neon titles"]},
     halloween:{group:"seasonal",name:"Halloween Crate",category:"Seasonal",tagline:"Something is waiting in the fog.",description:"A limited seasonal collection of haunted ruins, jack-o-lantern light, ghosts, embers, and midnight mist.",price:2000,accent:"#ff7b27",rgb:"255,123,39",dark:"#120803",mid:"#3b1708",crate:A+"crates/seasonal/HALLOWEEN-CRATE.PNG",folder:"HALLOWEEN",weather:["ash",24,"#bd967d",9,18,2,6],particles:["ember",22,"#ff7b27",5,10,2,5],flash:[7000,13000,.28],rewards:["Haunted backgrounds","Pumpkin borders","Specter avatars","Midnight titles"]},
     christmas:{group:"seasonal",name:"Christmas Crate",category:"Seasonal",tagline:"Enter the winter celebration.",description:"A limited holiday collection filled with snow, warm lights, festive villages, and glowing winter magic.",price:2000,accent:"#ef4d67",rgb:"239,77,103",dark:"#07100d",mid:"#17302a",crate:A+"crates/seasonal/CHRISTMAS-CRATE.PNG",folder:"CHRISTMAS",weather:["snow",40,"#fff",8,16,3,9],particles:["firefly",16,"#ffd86b",6,11,2,5],flash:false,rewards:["Holiday backgrounds","Festive borders","Winter avatars","Celebration titles"]},
@@ -1267,24 +1400,52 @@ img{display:block;max-width:100%}
     return weekly();
   }
 
-  function applyLayers(world){
-    const names = ["SKY","BACKGROUND","MIDGROUND","PLATFORM","FOREGROUND","LIGHTING"];
+function applyLayers(world){
+  const layerSources = {
+    sky:
+      world.folder === "BLOOM"
+        ? ""
+        : `${A}worlds/${world.folder}/SKY.PNG`,
 
-    layers.forEach((element,index) => {
-      const source = `${A}worlds/${world.folder}/${names[index]}.PNG`;
-      const image = new Image();
+    background:
+      `${A}worlds/${world.folder}/BACKGROUND.PNG`,
 
-      image.onload = () => {
-        element.style.backgroundImage = `url("${source}")`;
-      };
+    midground:
+      `${A}worlds/${world.folder}/MIDGROUND.PNG`,
 
-      image.onerror = () => {
-        element.style.backgroundImage = "";
-      };
+    platform:
+      `${A}worlds/${world.folder}/PLATFORM.PNG`,
 
-      image.src = source;
-    });
-  }
+    foreground:
+      world.folder === "BLOOM"
+        ? ""
+        : `${A}worlds/${world.folder}/FOREGROUND.PNG`,
+
+    lighting:
+      `${A}worlds/${world.folder}/LIGHTING.PNG`
+  };
+
+  layers.forEach(element => {
+    const layerName = element.dataset.layer;
+    const source = layerSources[layerName];
+
+    element.style.backgroundImage = "";
+
+    if(!source) return;
+
+    const image = new Image();
+
+    image.onload = () => {
+      element.style.backgroundImage = `url("${source}")`;
+    };
+
+    image.onerror = () => {
+      element.style.backgroundImage = "";
+    };
+
+    image.src = source;
+  });
+}
 
   function build(container,config){
     container.innerHTML = "";

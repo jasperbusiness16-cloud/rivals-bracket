@@ -2795,3 +2795,1246 @@
 
             this.refreshNotificationsFromAdapter();
         }
+
+                // =====================================================================
+        // DRAWER SYSTEM
+        // =====================================================================
+
+        openDrawer(name) {
+            this.closeProfileMenu();
+            this.closeMobileMenu();
+            this.closeModal(false);
+
+            const drawer =
+                this.dom.mount.querySelector(
+                    `[data-rg-drawer="${CSS.escape(
+                        name
+                    )}"]`
+                );
+
+            if (!drawer) {
+                this.warn(
+                    `Drawer "${name}" was not found.`
+                );
+
+                return;
+            }
+
+            if (
+                this.state.activeDrawer &&
+                this.state.activeDrawer !== name
+            ) {
+                this.closeDrawer(false);
+            }
+
+            this.state.lastFocusedElement =
+                document.activeElement;
+
+            this.state.activeDrawer =
+                name;
+
+            this.state.activeOverlay =
+                "drawer";
+
+            drawer.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+            drawer.classList.add(
+                "is-open"
+            );
+
+            this.showBackdrop();
+            this.lockScroll();
+
+            const focusTarget =
+                drawer.querySelector(
+                    [
+                        "input:not([disabled])",
+                        "button:not([disabled])",
+                        "a[href]",
+                        "[tabindex]:not([tabindex='-1'])"
+                    ].join(",")
+                );
+
+            window.setTimeout(() => {
+                focusTarget?.focus();
+            }, 180);
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:draweropen",
+                    {
+                        detail: {
+                            name
+                        }
+                    }
+                )
+            );
+        }
+
+        closeDrawer(
+            restoreFocus = true
+        ) {
+            if (!this.state.activeDrawer) {
+                return;
+            }
+
+            const drawerName =
+                this.state.activeDrawer;
+
+            const drawer =
+                this.dom.mount.querySelector(
+                    `[data-rg-drawer="${CSS.escape(
+                        drawerName
+                    )}"]`
+                );
+
+            drawer?.classList.remove(
+                "is-open"
+            );
+
+            drawer?.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            this.state.activeDrawer =
+                null;
+
+            this.state.activeOverlay =
+                null;
+
+            this.hideBackdrop();
+            this.unlockScroll();
+
+            if (restoreFocus) {
+                this.restoreFocus();
+            }
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:drawerclose",
+                    {
+                        detail: {
+                            name: drawerName
+                        }
+                    }
+                )
+            );
+        }
+
+        // =====================================================================
+        // MODAL SYSTEM
+        // =====================================================================
+
+        openModal(name) {
+            this.closeProfileMenu();
+            this.closeMobileMenu();
+            this.closeDrawer(false);
+
+            const modal =
+                this.dom.mount.querySelector(
+                    `[data-rg-modal="${CSS.escape(
+                        name
+                    )}"]`
+                );
+
+            if (!modal) {
+                this.warn(
+                    `Modal "${name}" was not found.`
+                );
+
+                return;
+            }
+
+            this.state.lastFocusedElement =
+                document.activeElement;
+
+            this.state.activeModal =
+                name;
+
+            this.state.activeOverlay =
+                "modal";
+
+            modal.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+            modal.classList.add(
+                "is-open"
+            );
+
+            this.showBackdrop();
+            this.lockScroll();
+
+            window.setTimeout(() => {
+                modal
+                    .querySelector(
+                        [
+                            "button:not([disabled])",
+                            "a[href]",
+                            "input:not([disabled])",
+                            "[tabindex]:not([tabindex='-1'])"
+                        ].join(",")
+                    )
+                    ?.focus();
+            }, 100);
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:modalopen",
+                    {
+                        detail: {
+                            name
+                        }
+                    }
+                )
+            );
+        }
+
+        closeModal(
+            restoreFocus = true
+        ) {
+            if (!this.state.activeModal) {
+                return;
+            }
+
+            const modalName =
+                this.state.activeModal;
+
+            const modal =
+                this.dom.mount.querySelector(
+                    `[data-rg-modal="${CSS.escape(
+                        modalName
+                    )}"]`
+                );
+
+            modal?.classList.remove(
+                "is-open"
+            );
+
+            modal?.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            this.state.activeModal =
+                null;
+
+            this.state.activeOverlay =
+                null;
+
+            this.hideBackdrop();
+            this.unlockScroll();
+
+            if (restoreFocus) {
+                this.restoreFocus();
+            }
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:modalclose",
+                    {
+                        detail: {
+                            name: modalName
+                        }
+                    }
+                )
+            );
+        }
+
+        // =====================================================================
+        // CLOSE ALL HEADER UI
+        // =====================================================================
+
+        closeAll() {
+            this.closeProfileMenu();
+            this.closeMobileMenu();
+
+            if (this.state.activeDrawer) {
+                this.closeDrawer();
+                return;
+            }
+
+            if (this.state.activeModal) {
+                this.closeModal();
+                return;
+            }
+
+            this.hideBackdrop();
+            this.unlockScroll();
+        }
+
+        // =====================================================================
+        // BACKDROP
+        // =====================================================================
+
+        showBackdrop() {
+            if (!this.dom.backdrop) {
+                return;
+            }
+
+            this.dom.backdrop.hidden =
+                false;
+
+            requestAnimationFrame(() => {
+                this.dom.backdrop.classList.add(
+                    "is-visible"
+                );
+            });
+        }
+
+        hideBackdrop() {
+            if (!this.dom.backdrop) {
+                return;
+            }
+
+            this.dom.backdrop.classList.remove(
+                "is-visible"
+            );
+
+            window.setTimeout(() => {
+                if (
+                    !this.state.activeDrawer &&
+                    !this.state.activeModal
+                ) {
+                    this.dom.backdrop.hidden =
+                        true;
+                }
+            }, 220);
+        }
+
+        // =====================================================================
+        // PAGE SCROLL LOCK
+        // =====================================================================
+
+        lockScroll() {
+            document.documentElement.classList.add(
+                "rg-overlay-open"
+            );
+
+            document.body?.classList.add(
+                "rg-overlay-open"
+            );
+        }
+
+        unlockScroll() {
+            if (
+                this.state.activeDrawer ||
+                this.state.activeModal
+            ) {
+                return;
+            }
+
+            document.documentElement.classList.remove(
+                "rg-overlay-open"
+            );
+
+            document.body?.classList.remove(
+                "rg-overlay-open"
+            );
+        }
+
+        // =====================================================================
+        // FOCUS MANAGEMENT
+        // =====================================================================
+
+        restoreFocus() {
+            const element =
+                this.state.lastFocusedElement;
+
+            this.state.lastFocusedElement =
+                null;
+
+            if (
+                element &&
+                typeof element.focus ===
+                    "function" &&
+                document.contains(element)
+            ) {
+                window.setTimeout(() => {
+                    element.focus();
+                }, 0);
+            }
+        }
+
+        trapFocus(event) {
+            const container =
+                this.state.activeDrawer
+                    ? this.dom.mount.querySelector(
+                          `[data-rg-drawer="${CSS.escape(
+                              this.state
+                                  .activeDrawer
+                          )}"]`
+                      )
+                    : this.dom.mount.querySelector(
+                          `[data-rg-modal="${CSS.escape(
+                              this.state
+                                  .activeModal
+                          )}"]`
+                      );
+
+            if (!container) {
+                return;
+            }
+
+            const focusable =
+                Array.from(
+                    container.querySelectorAll(
+                        [
+                            "a[href]",
+                            "button:not([disabled])",
+                            "input:not([disabled])",
+                            "select:not([disabled])",
+                            "textarea:not([disabled])",
+                            "[tabindex]:not([tabindex='-1'])"
+                        ].join(",")
+                    )
+                ).filter((element) => {
+                    const style =
+                        window.getComputedStyle(
+                            element
+                        );
+
+                    return (
+                        style.visibility !==
+                            "hidden" &&
+                        style.display !==
+                            "none"
+                    );
+                });
+
+            if (!focusable.length) {
+                event.preventDefault();
+                return;
+            }
+
+            const first =
+                focusable[0];
+
+            const last =
+                focusable[
+                    focusable.length - 1
+                ];
+
+            if (
+                event.shiftKey &&
+                document.activeElement === first
+            ) {
+                event.preventDefault();
+                last.focus();
+                return;
+            }
+
+            if (
+                !event.shiftKey &&
+                document.activeElement === last
+            ) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+
+        // =====================================================================
+        // FRIENDS TABS
+        // =====================================================================
+
+        setFriendsTab(name) {
+            this.dom.mount
+                .querySelectorAll(
+                    "[data-rg-friends-tab]"
+                )
+                .forEach((tab) => {
+                    const active =
+                        tab.dataset
+                            .rgFriendsTab ===
+                        name;
+
+                    tab.classList.toggle(
+                        "is-active",
+                        active
+                    );
+
+                    tab.setAttribute(
+                        "aria-selected",
+                        String(active)
+                    );
+                });
+
+            this.dom.mount
+                .querySelectorAll(
+                    "[data-rg-friends-panel]"
+                )
+                .forEach((panel) => {
+                    panel.hidden =
+                        panel.dataset
+                            .rgFriendsPanel !==
+                        name;
+                });
+
+            if (
+                name === "friends" &&
+                this.dom.friendSearch
+            ) {
+                window.setTimeout(() => {
+                    this.dom.friendSearch.focus();
+                }, 60);
+            }
+        }
+
+        // =====================================================================
+        // FRIENDS LIST RENDERING
+        // =====================================================================
+
+        renderFriends(
+            friends = this.state.friends
+        ) {
+            if (!this.dom.friendsList) {
+                return;
+            }
+
+            if (this.dom.friendsLoading) {
+                this.dom.friendsLoading.hidden =
+                    true;
+            }
+
+            if (this.dom.friendsCount) {
+                this.dom.friendsCount.textContent =
+                    String(friends.length);
+            }
+
+            if (!friends.length) {
+                this.dom.friendsList.innerHTML =
+                    this.emptyState(
+                        "No friends yet",
+                        "Search for players or accept a request to start building your squad.",
+                        "friend"
+                    );
+
+                return;
+            }
+
+            this.dom.friendsList.innerHTML =
+                friends
+                    .map((friend) => {
+                        const initial =
+                            friend.name
+                                .charAt(0)
+                                .toUpperCase();
+
+                        const avatarMarkup =
+                            friend.avatar
+                                ? `
+                                    <img
+                                        src="${this.escapeAttribute(
+                                            friend.avatar
+                                        )}"
+                                        alt=""
+                                        loading="lazy"
+                                    >
+                                `
+                                : `
+                                    <span>
+                                        ${this.escapeHTML(
+                                            initial
+                                        )}
+                                    </span>
+                                `;
+
+                        const inviteLabel =
+                            friend.online
+                                ? "Invite"
+                                : "Offline";
+
+                        return `
+                            <article
+                                class="rg-friend-card"
+                                data-rg-friend-id="${this.escapeAttribute(
+                                    friend.id
+                                )}"
+                            >
+                                <div
+                                    class="rg-friend-card__avatar ${
+                                        friend.online
+                                            ? "is-online"
+                                            : ""
+                                    }"
+                                >
+                                    ${avatarMarkup}
+
+                                    <i
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+
+                                <div
+                                    class="rg-friend-card__copy"
+                                >
+                                    <strong>
+                                        ${this.escapeHTML(
+                                            friend.name
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        ${this.escapeHTML(
+                                            friend.statusText
+                                        )}
+                                    </span>
+                                </div>
+
+                                <button
+                                    class="rg-friend-card__action"
+                                    type="button"
+                                    data-rg-friend-action="invite"
+                                    data-rg-friend-id="${this.escapeAttribute(
+                                        friend.id
+                                    )}"
+                                    ${
+                                        friend.canInvite
+                                            ? ""
+                                            : "disabled"
+                                    }
+                                >
+                                    ${inviteLabel}
+                                </button>
+                            </article>
+                        `;
+                    })
+                    .join("");
+        }
+
+        // =====================================================================
+        // FRIEND REQUEST RENDERING
+        // =====================================================================
+
+        renderFriendRequests(
+            requests =
+                this.state.friendRequests
+        ) {
+            if (!this.dom.requestsList) {
+                return;
+            }
+
+            const pending =
+                requests.filter((item) => {
+                    return (
+                        item.status ===
+                        "pending"
+                    );
+                });
+
+            if (this.dom.requestsCount) {
+                this.dom.requestsCount.textContent =
+                    String(pending.length);
+            }
+
+            if (!pending.length) {
+                this.dom.requestsList.innerHTML =
+                    this.emptyState(
+                        "No pending requests",
+                        "New friend requests will appear here.",
+                        "friend"
+                    );
+
+                return;
+            }
+
+            this.dom.requestsList.innerHTML =
+                pending
+                    .map((request) => {
+                        const initial =
+                            request.name
+                                .charAt(0)
+                                .toUpperCase();
+
+                        const avatarMarkup =
+                            request.avatar
+                                ? `
+                                    <img
+                                        src="${this.escapeAttribute(
+                                            request.avatar
+                                        )}"
+                                        alt=""
+                                        loading="lazy"
+                                    >
+                                `
+                                : `
+                                    <span>
+                                        ${this.escapeHTML(
+                                            initial
+                                        )}
+                                    </span>
+                                `;
+
+                        return `
+                            <article
+                                class="rg-request-card"
+                                data-rg-request-id="${this.escapeAttribute(
+                                    request.id
+                                )}"
+                            >
+                                <div
+                                    class="rg-request-card__avatar"
+                                >
+                                    ${avatarMarkup}
+                                </div>
+
+                                <div
+                                    class="rg-request-card__copy"
+                                >
+                                    <strong>
+                                        ${this.escapeHTML(
+                                            request.name
+                                        )}
+                                    </strong>
+
+                                    <span>
+                                        Wants to join your friends list
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="rg-request-card__actions"
+                                >
+                                    <button
+                                        type="button"
+                                        data-rg-request-action="accept"
+                                        data-rg-request-id="${this.escapeAttribute(
+                                            request.id
+                                        )}"
+                                    >
+                                        Accept
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        data-rg-request-action="decline"
+                                        data-rg-request-id="${this.escapeAttribute(
+                                            request.id
+                                        )}"
+                                        aria-label="Decline request"
+                                    >
+                                        ${ICONS.close}
+                                    </button>
+                                </div>
+                            </article>
+                        `;
+                    })
+                    .join("");
+        }
+
+        // =====================================================================
+        // FRIEND SEARCH
+        // =====================================================================
+
+        filterFriends(query) {
+            const normalized =
+                String(query || "")
+                    .trim()
+                    .toLowerCase();
+
+            if (!normalized) {
+                this.renderFriends(
+                    this.state.friends
+                );
+
+                return;
+            }
+
+            const localResults =
+                this.state.friends.filter(
+                    (friend) => {
+                        return (
+                            friend.name
+                                .toLowerCase()
+                                .includes(
+                                    normalized
+                                ) ||
+                            friend.statusText
+                                .toLowerCase()
+                                .includes(
+                                    normalized
+                                )
+                        );
+                    }
+                );
+
+            this.renderFriends(
+                localResults
+            );
+
+            if (
+                normalized.length >= 3
+            ) {
+                this.searchPlayersFromAdapter(
+                    normalized
+                );
+            }
+        }
+
+        // =====================================================================
+        // FRIEND ACTIONS
+        // =====================================================================
+
+        async handleFriendAction(
+            element
+        ) {
+            const action =
+                element.dataset
+                    .rgFriendAction;
+
+            const id =
+                element.dataset
+                    .rgFriendId;
+
+            if (!action || !id) {
+                return;
+            }
+
+            if (action === "invite") {
+                element.disabled = true;
+
+                const result =
+                    await this.callAdapterMethod(
+                        [
+                            "RGFriends",
+                            "Friends"
+                        ],
+
+                        [
+                            "invite",
+                            "inviteFriend",
+                            "sendInvite"
+                        ],
+
+                        id
+                    );
+
+                if (
+                    result.called &&
+                    result.value !== false
+                ) {
+                    this.showToast(
+                        "Invite sent.",
+                        "success"
+                    );
+                } else if (
+                    !result.called
+                ) {
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "rgheader:friendinvite",
+                            {
+                                detail: {
+                                    friendId: id
+                                }
+                            }
+                        )
+                    );
+
+                    this.showToast(
+                        "Invite request sent to the page.",
+                        "info"
+                    );
+                } else {
+                    this.showToast(
+                        "Invite could not be sent.",
+                        "error"
+                    );
+                }
+
+                element.disabled = false;
+            }
+        }
+
+        // =====================================================================
+        // FRIEND REQUEST ACTIONS
+        // =====================================================================
+
+        async handleRequestAction(
+            element
+        ) {
+            const action =
+                element.dataset
+                    .rgRequestAction;
+
+            const requestId =
+                element.dataset
+                    .rgRequestId;
+
+            if (
+                !action ||
+                !requestId
+            ) {
+                return;
+            }
+
+            element.disabled = true;
+
+            const methodNames =
+                action === "accept"
+                    ? [
+                          "acceptRequest",
+                          "acceptFriendRequest"
+                      ]
+                    : [
+                          "declineRequest",
+                          "declineFriendRequest",
+                          "rejectRequest"
+                      ];
+
+            const result =
+                await this.callAdapterMethod(
+                    [
+                        "RGFriends",
+                        "Friends"
+                    ],
+
+                    methodNames,
+
+                    requestId
+                );
+
+            if (
+                result.called &&
+                result.value !== false
+            ) {
+                this.showToast(
+                    action === "accept"
+                        ? "Friend request accepted."
+                        : "Friend request declined.",
+
+                    action === "accept"
+                        ? "success"
+                        : "info"
+                );
+            } else if (
+                !result.called
+            ) {
+                window.dispatchEvent(
+                    new CustomEvent(
+                        "rgheader:friendrequestaction",
+                        {
+                            detail: {
+                                action,
+                                requestId
+                            }
+                        }
+                    )
+                );
+
+                this.showToast(
+                    "Request sent to the friends system.",
+                    "info"
+                );
+            } else {
+                this.showToast(
+                    "That request could not be updated.",
+                    "error"
+                );
+            }
+
+            element.disabled = false;
+        }
+
+        // =====================================================================
+        // REFRESH FRIENDS THROUGH OPTIONAL FRIENDS.JS ADAPTER
+        // =====================================================================
+
+        async refreshFriendsFromAdapter() {
+            const result =
+                await this.callAdapterMethod(
+                    [
+                        "RGFriends",
+                        "Friends"
+                    ],
+
+                    [
+                        "refresh",
+                        "refreshFriends",
+                        "loadFriends"
+                    ]
+                );
+
+            if (
+                result.called &&
+                Array.isArray(
+                    result.value
+                )
+            ) {
+                this.state.friends =
+                    result.value
+                        .map(
+                            (
+                                value,
+                                index
+                            ) => {
+                                return this.normalizeFriend(
+                                    {
+                                        id:
+                                            value.id ||
+                                            value.uid ||
+                                            index,
+
+                                        value
+                                    }
+                                );
+                            }
+                        )
+                        .filter(Boolean);
+
+                this.renderFriends();
+            }
+        }
+
+        // =====================================================================
+        // SEARCH PLAYERS THROUGH OPTIONAL FRIENDS.JS ADAPTER
+        // =====================================================================
+
+        async searchPlayersFromAdapter(
+            query
+        ) {
+            const result =
+                await this.callAdapterMethod(
+                    [
+                        "RGFriends",
+                        "Friends"
+                    ],
+
+                    [
+                        "searchPlayers",
+                        "searchUsers",
+                        "search"
+                    ],
+
+                    query
+                );
+
+            if (
+                !result.called ||
+                !Array.isArray(
+                    result.value
+                )
+            ) {
+                return;
+            }
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:playersearchresults",
+                    {
+                        detail: {
+                            query,
+                            results:
+                                result.value
+                        }
+                    }
+                )
+            );
+        }
+
+        // =====================================================================
+        // NORMALIZE FRIEND DATA
+        // =====================================================================
+
+        normalizeFriend(item) {
+            if (!item) {
+                return null;
+            }
+
+            const value =
+                item.value &&
+                typeof item.value ===
+                    "object"
+                    ? item.value
+                    : item;
+
+            const id =
+                String(
+                    item.id ||
+                    value.uid ||
+                    value.userId ||
+                    value.friendUid ||
+                    value.id ||
+                    ""
+                );
+
+            if (!id) {
+                return null;
+            }
+
+            const name =
+                String(
+                    value.displayName ||
+                    value.username ||
+                    value.name ||
+                    value.gamerTag ||
+                    value.gamertag ||
+                    "Player"
+                );
+
+            const online =
+                Boolean(
+                    value.online ||
+                    value.isOnline ||
+                    value.status ===
+                        "online" ||
+                    value.presence ===
+                        "online"
+                );
+
+            const statusText =
+                online
+                    ? String(
+                          value.activity ||
+                          value.statusText ||
+                          value.gameStatus ||
+                          "Online"
+                      )
+                    : String(
+                          value.lastSeenText ||
+                          value.statusText ||
+                          "Offline"
+                      );
+
+            return {
+                id,
+                name,
+
+                avatar:
+                    String(
+                        value.avatarUrl ||
+                        value.photoURL ||
+                        value.profileImage ||
+                        value.avatar ||
+                        ""
+                    ),
+
+                online,
+
+                canInvite:
+                    value.canInvite !==
+                        false &&
+                    online,
+
+                statusText,
+
+                raw: value
+            };
+        }
+
+        // =====================================================================
+        // NORMALIZE FRIEND REQUEST DATA
+        // =====================================================================
+
+        normalizeFriendRequest(item) {
+            if (!item) {
+                return null;
+            }
+
+            const value =
+                item.value &&
+                typeof item.value ===
+                    "object"
+                    ? item.value
+                    : item;
+
+            const id =
+                String(
+                    item.id ||
+                    value.id ||
+                    value.requestId ||
+                    value.fromUid ||
+                    value.senderUid ||
+                    ""
+                );
+
+            if (!id) {
+                return null;
+            }
+
+            return {
+                id,
+
+                fromUid:
+                    String(
+                        value.fromUid ||
+                        value.senderUid ||
+                        value.uid ||
+                        id
+                    ),
+
+                name:
+                    String(
+                        value.fromName ||
+                        value.displayName ||
+                        value.username ||
+                        value.name ||
+                        "Player"
+                    ),
+
+                avatar:
+                    String(
+                        value.avatarUrl ||
+                        value.photoURL ||
+                        value.profileImage ||
+                        value.avatar ||
+                        ""
+                    ),
+
+                status:
+                    String(
+                        value.status ||
+                        "pending"
+                    ).toLowerCase(),
+
+                timestamp:
+                    this.normalizeTimestamp(
+                        value.timestamp ||
+                        value.createdAt ||
+                        value.time
+                    ),
+
+                raw: value
+            };
+        }
+
+        // =====================================================================
+        // EMPTY STATE HTML
+        // =====================================================================
+
+        emptyState(
+            title,
+            message,
+            icon = "empty"
+        ) {
+            return `
+                <div class="rg-empty-state">
+                    <span
+                        class="rg-empty-state__icon"
+                    >
+                        ${
+                            ICONS[icon] ||
+                            ICONS.empty
+                        }
+                    </span>
+
+                    <strong>
+                        ${this.escapeHTML(
+                            title
+                        )}
+                    </strong>
+
+                    <p>
+                        ${this.escapeHTML(
+                            message
+                        )}
+                    </p>
+                </div>
+            `;
+        }
+   

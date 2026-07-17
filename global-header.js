@@ -755,7 +755,7 @@
             </div>
           </div>
 
-          <div id="authLinks" class="auth-links">
+          <div id="authLinks" class="auth-links show">
             <a href="login.html">Sign In</a>
             <a href="register.html">Create Account</a>
           </div>
@@ -2843,187 +2843,220 @@ styles.textContent += `
      AUTHENTICATION + PLAYER HEADER DATA
   ========================================================= */
 
-  if (typeof auth === "undefined") {
-    console.error(
-      "firebase-auth.js and firebase.js must load before global-header.js"
+ /* =========================================================
+   AUTHENTICATION + PLAYER HEADER DATA
+========================================================= */
+
+let headerAuthInitialized = false;
+let headerPlayerRef = null;
+let headerPlayerCallback = null;
+
+function initializeHeaderAuthentication() {
+  if (headerAuthInitialized) return;
+
+  if (
+    typeof window.auth === "undefined" ||
+    typeof window.database === "undefined"
+  ) {
+    console.warn(
+      "Global header is waiting for Firebase Auth and Database..."
     );
-  } else {
-    auth.onAuthStateChanged(user => {
-      currentUser = user || null;
 
-      const notificationMount =
-        document.getElementById("globalNotificationMount");
+    setTimeout(initializeHeaderAuthentication, 150);
+    return;
+  }
 
-      const pointsBox =
-        document.getElementById("pointsBox");
+  headerAuthInitialized = true;
 
-      const friendsButtonWrap =
-        document.getElementById("friendsButtonWrap");
+  window.auth.onAuthStateChanged(user => {
+    currentUser = user || null;
 
-      const accountBox =
-        document.getElementById("accountBox");
+    const notificationMount =
+      document.getElementById("globalNotificationMount");
 
-      const authLinks =
-        document.getElementById("authLinks");
+    const pointsBox =
+      document.getElementById("pointsBox");
 
-      if (!user) {
-        currentPlayer = null;
+    const friendsButtonWrap =
+      document.getElementById("friendsButtonWrap");
 
-        notificationMount.style.display = "none";
-        pointsBox.style.display = "none";
-        friendsButtonWrap.style.display = "none";
-        accountBox.style.display = "none";
+    const accountBox =
+      document.getElementById("accountBox");
 
-        authLinks.classList.add("show");
+    const authLinks =
+      document.getElementById("authLinks");
 
-        accountMenu.classList.remove("show");
+    if (
+      headerPlayerRef &&
+      headerPlayerCallback
+    ) {
+      headerPlayerRef.off(
+        "value",
+        headerPlayerCallback
+      );
+    }
 
-        accountButton.setAttribute(
-          "aria-expanded",
-          "false"
-        );
+    headerPlayerRef = null;
+    headerPlayerCallback = null;
 
-        if (
-          typeof RGNotificationCenter !==
-          "undefined"
-        ) {
-          RGNotificationCenter.destroy();
-        }
+    if (!user) {
+      currentPlayer = null;
 
-        stopFriendsSystem();
+      notificationMount.style.display = "none";
+      pointsBox.style.display = "none";
+      friendsButtonWrap.style.display = "none";
+      accountBox.style.display = "none";
 
-        return;
-      }
+      authLinks.classList.add("show");
 
-      notificationMount.style.display = "block";
-      pointsBox.style.display = "flex";
-      friendsButtonWrap.style.display = "block";
-      accountBox.style.display = "block";
+      accountMenu.classList.remove("show");
 
-      authLinks.classList.remove("show");
-
-      /* -----------------------------------------
-         NOTIFICATION CENTER
-      ----------------------------------------- */
+      accountButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
 
       if (
-        typeof RGNotificationCenter !==
+        typeof window.RGNotificationCenter !==
         "undefined"
       ) {
-        RGNotificationCenter.init(
-          user.uid,
-          "#globalNotificationMount"
-        );
-
-        setTimeout(() => {
-          const bellIcon =
-            document.querySelector(
-              "#globalHeader .notification-bell-icon"
-            );
-
-          if (bellIcon) {
-            bellIcon.innerHTML = `
-              <img
-                src="notification-bell.PNG"
-                alt=""
-              >
-            `;
-          }
-        }, 0);
-      } else {
-        console.warn(
-          "notification-center.js must load before global-header.js"
-        );
+        window.RGNotificationCenter.destroy();
       }
 
-      /* -----------------------------------------
-         PLAYER PROFILE + RG POINTS
-      ----------------------------------------- */
+      stopFriendsSystem();
+      return;
+    }
 
-      if (typeof database === "undefined") {
-        console.error(
-          "firebase-database.js and firebase.js must load before global-header.js"
-        );
+    authLinks.classList.remove("show");
 
-        return;
-      }
+    notificationMount.style.display = "block";
+    pointsBox.style.display = "flex";
+    friendsButtonWrap.style.display = "block";
+    accountBox.style.display = "block";
 
-      database
-        .ref(`players/${user.uid}`)
-        .on("value", snapshot => {
-          const player =
-            snapshot.val() || {};
+    /* Notification center */
 
-          currentPlayer = player;
+    if (
+      typeof window.RGNotificationCenter !==
+      "undefined"
+    ) {
+      window.RGNotificationCenter.init(
+        user.uid,
+        "#globalNotificationMount"
+      );
 
-          const displayName =
-            player.displayName ||
-            user.displayName ||
-            "Player";
-
-          const headerName =
-            document.getElementById(
-              "headerName"
-            );
-
-          const headerFallback =
-            document.getElementById(
-              "headerFallback"
-            );
-
-          const publicProfileLink =
-            document.getElementById(
-              "publicProfileLink"
-            );
-
-          const headerAvatar =
-            document.getElementById(
-              "headerAvatar"
-            );
-
-          headerName.textContent =
-            displayName;
-
-          headerFallback.textContent =
-            initials(displayName);
-
-          publicProfileLink.href =
-            `player.html?id=${encodeURIComponent(
-              user.uid
-            )}`;
-
-          accountButton.title =
-            `Open account menu for ${displayName}`;
-
-          renderRgPoints(
-            Number(player.rgPoints || 0)
+      setTimeout(() => {
+        const bellIcon =
+          document.querySelector(
+            "#globalHeader .notification-bell-icon"
           );
 
-          if (player.profileImage) {
-            headerAvatar.src =
-              player.profileImage;
+        if (bellIcon) {
+          bellIcon.innerHTML = `
+            <img
+              src="notification-bell.PNG"
+              alt=""
+            >
+          `;
+        }
+      }, 0);
+    } else {
+      console.warn(
+        "notification-center.js was not available when the header loaded."
+      );
+    }
 
-            headerAvatar.style.display =
-              "block";
+    /* Player account data */
 
-            headerFallback.style.display =
-              "none";
-          } else {
-            headerAvatar.removeAttribute(
-              "src"
-            );
+    headerPlayerRef =
+      window.database.ref(
+        `players/${user.uid}`
+      );
 
-            headerAvatar.style.display =
-              "none";
+    headerPlayerCallback = snapshot => {
+      const player =
+        snapshot.val() || {};
 
-            headerFallback.style.display =
-              "grid";
-          }
-        });
+      currentPlayer = player;
 
-      initializeFriendsSystem(user.uid);
-    });
-  }
+      const displayName =
+        player.displayName ||
+        user.displayName ||
+        "Player";
+
+      const headerName =
+        document.getElementById("headerName");
+
+      const headerFallback =
+        document.getElementById("headerFallback");
+
+      const publicProfileLink =
+        document.getElementById(
+          "publicProfileLink"
+        );
+
+      const headerAvatar =
+        document.getElementById("headerAvatar");
+
+      headerName.textContent =
+        displayName;
+
+      headerFallback.textContent =
+        initials(displayName);
+
+      publicProfileLink.href =
+        `player.html?id=${encodeURIComponent(
+          user.uid
+        )}`;
+
+      accountButton.title =
+        `Open account menu for ${displayName}`;
+
+      renderRgPoints(
+        Number(player.rgPoints || 0)
+      );
+
+      if (player.profileImage) {
+        headerAvatar.src =
+          player.profileImage;
+
+        headerAvatar.style.display =
+          "block";
+
+        headerFallback.style.display =
+          "none";
+      } else {
+        headerAvatar.removeAttribute("src");
+
+        headerAvatar.style.display =
+          "none";
+
+        headerFallback.style.display =
+          "grid";
+      }
+    };
+
+    headerPlayerRef.on(
+      "value",
+      headerPlayerCallback,
+      error => {
+        console.error(
+          "Header player data could not load:",
+          error
+        );
+
+        document.getElementById(
+          "headerName"
+        ).textContent =
+          user.displayName || "Player";
+      }
+    );
+
+    initializeFriendsSystem(user.uid);
+  });
+}
+
+initializeHeaderAuthentication();
 
   /* =========================================================
      RESPONSIVE POINTS UPDATE

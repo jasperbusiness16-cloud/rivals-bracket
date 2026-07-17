@@ -60,7 +60,9 @@ window.RGNotificationCenter = (() => {
           aria-label="Open notifications"
           aria-expanded="false"
         >
-          <span class="notification-bell-icon">🔔</span>
+        <span class="notification-bell-icon">
+  <img src="notification-bell.PNG" alt="">
+</span>
 
           <span
             id="notificationUnreadBadge"

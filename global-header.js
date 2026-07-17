@@ -3058,68 +3058,51 @@ function initializeHeaderAuthentication() {
 
 initializeHeaderAuthentication();
 
-  /* =========================================================
-     RESPONSIVE POINTS UPDATE
-  ========================================================= */
+/* =========================================================
+   RESPONSIVE POINTS UPDATE
+========================================================= */
 
-  window.addEventListener(
-    "resize",
-    () => {
-      const pointsTarget =
-        document.getElementById(
-          "headerRgPoints"
-        );
-
-      if (!pointsTarget) return;
-
-      renderRgPoints(
-        Number(
-          pointsTarget.dataset.rawPoints ||
-          0
-        )
+window.addEventListener(
+  "resize",
+  () => {
+    const pointsTarget =
+      document.getElementById(
+        "headerRgPoints"
       );
 
-      if (
-  window.innerWidth > 900 &&
-  mainNav.classList.contains("show")
-) {
-  mainNav.classList.remove("show");
+    if (!pointsTarget) return;
 
-  mobileToggle.textContent = "☰";
+    renderRgPoints(
+      Number(
+        pointsTarget.dataset.rawPoints ||
+        0
+      )
+    );
 
-  mobileToggle.setAttribute(
-    "aria-expanded",
-    "false"
-  );
+    if (
+      window.innerWidth > 900 &&
+      mainNav.classList.contains("show")
+    ) {
+      mainNav.classList.remove("show");
 
-  mobileToggle.setAttribute(
-    "aria-label",
-    "Open navigation"
-  );
+      mobileToggle.textContent = "☰";
 
-  document.body.classList.remove(
-    "global-menu-open"
-  );
-}
+      mobileToggle.setAttribute(
+        "aria-expanded",
+        "false"
+      );
 
-        mobileToggle.textContent = "☰";
+      mobileToggle.setAttribute(
+        "aria-label",
+        "Open navigation"
+      );
 
-        mobileToggle.setAttribute(
-          "aria-expanded",
-          "false"
-        );
-
-        mobileToggle.setAttribute(
-          "aria-label",
-          "Open navigation"
-        );
-
-        document.body.classList.remove(
-          "global-menu-open"
-        );
-      }
+      document.body.classList.remove(
+        "global-menu-open"
+      );
     }
-  );
+  }
+);
 
   /* =========================================================
      ESCAPE KEY BEHAVIOR

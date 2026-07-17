@@ -3082,8 +3082,25 @@ initializeHeaderAuthentication();
       if (
   window.innerWidth > 900 &&
   mainNav.classList.contains("show")
-)
-        mainNav.classList.remove("show");
+) {
+  mainNav.classList.remove("show");
+
+  mobileToggle.textContent = "☰";
+
+  mobileToggle.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+
+  mobileToggle.setAttribute(
+    "aria-label",
+    "Open navigation"
+  );
+
+  document.body.classList.remove(
+    "global-menu-open"
+  );
+}
 
         mobileToggle.textContent = "☰";
 

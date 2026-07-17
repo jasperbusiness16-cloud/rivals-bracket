@@ -755,7 +755,7 @@
             </div>
           </div>
 
-          <div id="authLinks" class="auth-links show">
+       <div id="authLinks" class="auth-links">
             <a href="login.html">Sign In</a>
             <a href="register.html">Create Account</a>
           </div>

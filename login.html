@@ -660,32 +660,34 @@
       setBusy(true);
 
       try {
-        const credential = await auth.signInWithEmailAndPassword(email, password);
-        const user = credential.user;
+        const timeout = new Promise((_, reject) => {
+          window.setTimeout(() => {
+            const error = new Error("Firebase did not respond in time.");
+            error.code = "auth/request-timeout";
+            reject(error);
+          }, 12000);
+        });
 
-        // Authentication has already succeeded at this point. A Realtime
-        // Database rules error must not trap the user on the login screen.
-        try {
-          await database.ref(`users/${user.uid}`).update({
-            emailVerified: user.emailVerified,
-            lastLogin: firebase.database.ServerValue.TIMESTAMP
-          });
-        } catch (metadataError) {
-          console.warn(
-            "Sign in succeeded, but the users profile metadata update was blocked:",
-            metadataError
-          );
-        }
+        await Promise.race([
+          auth.signInWithEmailAndPassword(email, password),
+          timeout
+        ]);
 
+        // Do not perform any Realtime Database write here. Authentication
+        // must remain independent from database rules and profile metadata.
         setStatus("Access granted. Opening your account center...", "success");
         loginButtonText.textContent = "Access Granted";
 
         window.setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 650);
+          window.location.replace("dashboard.html");
+        }, 300);
       } catch (error) {
         console.error("Sign in failed:", error);
-        setStatus(friendlyAuthError(error), "error");
+        if (error?.code === "auth/request-timeout") {
+          setStatus("Firebase authentication did not respond. Refresh the page and check your connection or Firebase configuration.", "error");
+        } else {
+          setStatus(friendlyAuthError(error), "error");
+        }
         setBusy(false);
       }
     }
@@ -731,6 +733,12 @@
         if (event.key === "Enter") loginUser();
       });
     });
-  </script>
+      auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.replace("dashboard.html");
+      }
+    });
+
+</script>
 </body>
 </html>

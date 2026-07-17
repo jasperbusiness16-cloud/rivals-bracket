@@ -769,7 +769,7 @@
 ========================================================= */
 
 styles.textContent += `
-  @media (min-width: 721px) {
+@media (min-width: 901px) {
     #globalHeader .brand-mark {
       display: none;
     }
@@ -784,7 +784,7 @@ styles.textContent += `
      Full navigation remains visible on iPads
   ========================================================= */
 
-  @media (max-width: 1180px) and (min-width: 721px) {
+@media (max-width: 1180px) and (min-width: 901px) {
     #globalHeader .global-shell {
       width: min(calc(100% - 24px), var(--gh-max));
     }
@@ -1502,7 +1502,7 @@ styles.textContent += `
       text-align: center;
     }
 
-    @media (max-width: 720px) {
+   @media (max-width: 900px) {
       #globalFriendsRoot .friends-drawer {
         width: 100%;
         border-left: 0;
@@ -3080,9 +3080,9 @@ initializeHeaderAuthentication();
       );
 
       if (
-  window.innerWidth > 720 &&
+  window.innerWidth > 900 &&
   mainNav.classList.contains("show")
-) {
+)
         mainNav.classList.remove("show");
 
         mobileToggle.textContent = "☰";

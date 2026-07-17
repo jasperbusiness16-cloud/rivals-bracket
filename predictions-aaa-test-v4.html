@@ -948,7 +948,34 @@
 <script src="notifications.js?v=2"></script>
 <script src="notification-center.js?v=2"></script>
 <script src="friends.js?v=2"></script>
-<script src="global-header.js?v=3"></script>
+<script
+  src="global-header.js?v=4"
+  onload="document.body.setAttribute('data-header-file','loaded')"
+  onerror="alert('global-header.js failed to load')"
+></script>
+
+<script>
+  setTimeout(() => {
+    const mount = document.getElementById("globalHeader");
+
+    if (!mount) {
+      alert("The globalHeader div is missing.");
+      return;
+    }
+
+    if (!document.body.hasAttribute("data-header-file")) {
+      alert("global-header.js did not finish loading.");
+      return;
+    }
+
+    if (!mount.innerHTML.trim()) {
+      alert("global-header.js loaded, but stopped before building the header.");
+      return;
+    }
+
+    alert("The header loaded into the page.");
+  }, 1500);
+</script>
 
   <script>
     let tournamentId = "open1";

@@ -941,50 +941,29 @@
 
   <div id="toast" class="toast"></div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script src="firebase.js?v=3"></script>
+
 <script src="notification-center.js?v=2"></script>
+
 <script src="friends.js?v=2"></script>
-<script>
-  window.addEventListener("error", function (event) {
-    const fileName = event.filename
-      ? event.filename.split("/").pop()
-      : "unknown file";
 
-    alert(
-      "JAVASCRIPT ERROR\n\n" +
-      "Message: " + event.message + "\n\n" +
-      "File: " + fileName + "\n" +
-      "Line: " + event.lineno + "\n" +
-      "Column: " + event.colno
-    );
-  });
-</script>
-
-<script
-  src="global-header.js?v=7"
-  onerror="alert('global-header.js could not be downloaded')"
-></script>
+<script src="global-header.js?v=7"></script>
 
 <script>
-  setTimeout(function () {
-    const mount = document.getElementById("globalHeader");
 
-    if (mount && !mount.innerHTML.trim()) {
-      alert(
-        "The header is still empty. Take a screenshot of any JAVASCRIPT ERROR alert that appeared first."
-      );
-    }
-  }, 1800);
-</script>
-    
+let tournamentId = "open1";
 
-    let tournamentId = "open1";
-    let currentUser = null;
-    let currentPlayer = {};
-    let siteData = {};
+let currentUser = null;
+
+let currentPlayer = {};
+
+let siteData = {};
     let teamData = {};
     let submittedBrackets = {};
     let myBracketRecord = null;

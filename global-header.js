@@ -428,7 +428,18 @@
 
                 this.dom.mount = mount;
 
-                this.render();
+
+
+
+                try {
+    this.render();
+} catch (e) {
+    alert(e.message);
+}
+                
+                
+                
+                
                 this.cacheDOM();
                 this.bindEvents();
                 this.applyActiveNavigation();

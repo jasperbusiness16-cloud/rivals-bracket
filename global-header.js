@@ -4367,33 +4367,33 @@
                     .replace(/[\s_]+/g, "-");
 
             const aliases = {
-                points: "reward",
-                rp: "reward",
-                gift: "reward",
-                crate: "reward",
-                inventory: "reward",
+    points: "reward",
+    rp: "reward",
+    gift: "reward",
+    crate: "reward",
+    inventory: "reward",
 
-                predictions: "prediction",
-                pick: "prediction",
-                bracket: "prediction",
+    predictions: "prediction",
+    pick: "prediction",
+    bracket: "prediction",
 
-                tournament-update: "tournament",
-                match: "tournament",
-                match-live: "tournament",
-                event: "tournament",
+    "tournament-update": "tournament",
+    match: "tournament",
+    "match-live": "tournament",
+    event: "tournament",
 
-                friends: "social",
-                friend: "social",
-                friend-request: "social",
-                comment: "social",
+    friends: "social",
+    friend: "social",
+    "friend-request": "social",
+    comment: "social",
 
-                warning: "warning",
-                error: "warning",
+    warning: "warning",
+    error: "warning",
 
-                system: "general",
-                announcement: "general",
-                news: "general"
-            };
+    system: "general",
+    announcement: "general",
+    news: "general"
+};
 
             return (
                 aliases[value] ||

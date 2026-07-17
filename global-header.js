@@ -4037,4 +4037,1332 @@
                 </div>
             `;
         }
-   
+
+           // =====================================================================
+        // NOTIFICATION LIST RENDERING
+        // =====================================================================
+
+        renderNotifications(
+            notifications = this.state.notifications
+        ) {
+            if (!this.dom.notificationList) {
+                return;
+            }
+
+            if (this.dom.notificationsLoading) {
+                this.dom.notificationsLoading.hidden = true;
+            }
+
+            const unreadCount = notifications.filter(
+                (notification) => !notification.read
+            ).length;
+
+            if (this.dom.notificationSummary) {
+                this.dom.notificationSummary.textContent =
+                    unreadCount > 0
+                        ? `${unreadCount} unread ${
+                              unreadCount === 1
+                                  ? "notification"
+                                  : "notifications"
+                          }`
+                        : "You're all caught up";
+            }
+
+            if (this.dom.notificationSubsummary) {
+                this.dom.notificationSubsummary.textContent =
+                    notifications.length > 0
+                        ? unreadCount > 0
+                            ? "Review your latest Rivals Gauntlet activity."
+                            : "You have no unread notifications."
+                        : "New activity will appear here.";
+            }
+
+            const markAllButton =
+                this.dom.mount.querySelector(
+                    "[data-rg-mark-all-read]"
+                );
+
+            if (markAllButton) {
+                markAllButton.disabled =
+                    unreadCount === 0;
+            }
+
+            if (!notifications.length) {
+                this.dom.notificationList.innerHTML =
+                    this.emptyState(
+                        "No notifications",
+                        "Tournament updates, rewards, predictions, and social activity will appear here.",
+                        "bell"
+                    );
+
+                return;
+            }
+
+            this.dom.notificationList.innerHTML =
+                notifications
+                    .map((notification) => {
+                        return this.notificationCard(
+                            notification
+                        );
+                    })
+                    .join("");
+        }
+
+        notificationCard(notification) {
+            const icon =
+                ICONS[
+                    notification.icon
+                ] ||
+                ICONS.info;
+
+            const category =
+                notification.category ||
+                "GENERAL";
+
+            const actionMarkup =
+                notification.actionLabel
+                    ? `
+                        <button
+                            class="rg-notification-card__action"
+                            type="button"
+                            data-rg-notification-action="open"
+                            data-rg-notification-id="${this.escapeAttribute(
+                                notification.id
+                            )}"
+                        >
+                            ${this.escapeHTML(
+                                notification.actionLabel
+                            )}
+                        </button>
+                    `
+                    : "";
+
+            return `
+                <article
+                    class="rg-notification-card ${
+                        notification.read
+                            ? "is-read"
+                            : "is-unread"
+                    }"
+                    data-rg-notification-id="${this.escapeAttribute(
+                        notification.id
+                    )}"
+                >
+                    <button
+                        class="rg-notification-card__main"
+                        type="button"
+                        data-rg-notification-action="open"
+                        data-rg-notification-id="${this.escapeAttribute(
+                            notification.id
+                        )}"
+                    >
+                        <span
+                            class="rg-notification-card__icon rg-notification-card__icon--${this.escapeAttribute(
+                                notification.type
+                            )}"
+                        >
+                            ${icon}
+                        </span>
+
+                        <span
+                            class="rg-notification-card__content"
+                        >
+                            <span
+                                class="rg-notification-card__meta"
+                            >
+                                <span
+                                    class="rg-notification-card__category"
+                                >
+                                    ${this.escapeHTML(
+                                        category
+                                    )}
+                                </span>
+
+                                <time
+                                    datetime="${this.escapeAttribute(
+                                        notification.isoTime
+                                    )}"
+                                >
+                                    ${this.escapeHTML(
+                                        notification.timeAgo
+                                    )}
+                                </time>
+                            </span>
+
+                            <strong>
+                                ${this.escapeHTML(
+                                    notification.title
+                                )}
+                            </strong>
+
+                            <span
+                                class="rg-notification-card__message"
+                            >
+                                ${this.escapeHTML(
+                                    notification.message
+                                )}
+                            </span>
+                        </span>
+
+                        ${
+                            notification.read
+                                ? ""
+                                : `
+                                    <span
+                                        class="rg-notification-card__unread"
+                                        aria-label="Unread"
+                                    ></span>
+                                `
+                        }
+                    </button>
+
+                    ${
+                        actionMarkup
+                            ? `
+                                <div
+                                    class="rg-notification-card__footer"
+                                >
+                                    ${actionMarkup}
+                                </div>
+                            `
+                            : ""
+                    }
+                </article>
+            `;
+        }
+
+        // =====================================================================
+        // NORMALIZE NOTIFICATION DATA
+        // =====================================================================
+
+        normalizeNotification(item) {
+            if (!item) {
+                return null;
+            }
+
+            const value =
+                item.value &&
+                typeof item.value === "object"
+                    ? item.value
+                    : item;
+
+            const id =
+                String(
+                    item.id ||
+                    value.id ||
+                    value.notificationId ||
+                    ""
+                );
+
+            if (!id) {
+                return null;
+            }
+
+            const type =
+                this.normalizeNotificationType(
+                    value.type ||
+                    value.category ||
+                    value.kind ||
+                    "general"
+                );
+
+            const timestamp =
+                this.normalizeTimestamp(
+                    value.timestamp ||
+                    value.createdAt ||
+                    value.date ||
+                    value.time
+                );
+
+            const title =
+                String(
+                    value.title ||
+                    value.heading ||
+                    value.subject ||
+                    this.defaultNotificationTitle(
+                        type
+                    )
+                );
+
+            const message =
+                String(
+                    value.message ||
+                    value.body ||
+                    value.description ||
+                    value.text ||
+                    ""
+                );
+
+            const actionUrl =
+                String(
+                    value.actionUrl ||
+                    value.url ||
+                    value.href ||
+                    value.link ||
+                    ""
+                );
+
+            const actionLabel =
+                String(
+                    value.actionLabel ||
+                    value.buttonLabel ||
+                    value.cta ||
+                    (
+                        actionUrl
+                            ? "View"
+                            : ""
+                    )
+                );
+
+            const read =
+                value.read === true ||
+                value.isRead === true ||
+                value.status === "read";
+
+            return {
+                id,
+                type,
+                category:
+                    this.notificationCategory(
+                        type
+                    ),
+                icon:
+                    this.notificationIcon(
+                        type
+                    ),
+                title,
+                message,
+                timestamp,
+                isoTime:
+                    new Date(
+                        timestamp
+                    ).toISOString(),
+                timeAgo:
+                    this.formatRelativeTime(
+                        timestamp
+                    ),
+                actionUrl,
+                actionLabel,
+                read,
+                raw: value
+            };
+        }
+
+        normalizeNotificationType(type) {
+            const value =
+                String(type || "general")
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[\s_]+/g, "-");
+
+            const aliases = {
+                points: "reward",
+                rp: "reward",
+                gift: "reward",
+                crate: "reward",
+                inventory: "reward",
+
+                predictions: "prediction",
+                pick: "prediction",
+                bracket: "prediction",
+
+                tournament-update: "tournament",
+                match: "tournament",
+                match-live: "tournament",
+                event: "tournament",
+
+                friends: "social",
+                friend: "social",
+                friend-request: "social",
+                comment: "social",
+
+                warning: "warning",
+                error: "warning",
+
+                system: "general",
+                announcement: "general",
+                news: "general"
+            };
+
+            return (
+                aliases[value] ||
+                value
+            );
+        }
+
+        notificationCategory(type) {
+            const categories = {
+                reward: "REWARD",
+                prediction: "PREDICTION",
+                tournament: "TOURNAMENT",
+                social: "SOCIAL",
+                warning: "ALERT",
+                general: "UPDATE"
+            };
+
+            return (
+                categories[type] ||
+                "UPDATE"
+            );
+        }
+
+        notificationIcon(type) {
+            const icons = {
+                reward: "reward",
+                prediction: "prediction",
+                tournament: "tournament",
+                social: "friend",
+                warning: "warning",
+                general: "bell"
+            };
+
+            return (
+                icons[type] ||
+                "info"
+            );
+        }
+
+        defaultNotificationTitle(type) {
+            const titles = {
+                reward: "Reward Received",
+                prediction:
+                    "Prediction Update",
+                tournament:
+                    "Tournament Update",
+                social:
+                    "Community Activity",
+                warning:
+                    "Important Alert",
+                general:
+                    "Rivals Gauntlet Update"
+            };
+
+            return (
+                titles[type] ||
+                "New Notification"
+            );
+        }
+
+        // =====================================================================
+        // NOTIFICATION CLICK ACTION
+        // =====================================================================
+
+        async handleNotificationAction(
+            element
+        ) {
+            const notificationId =
+                element.dataset
+                    .rgNotificationId;
+
+            if (!notificationId) {
+                return;
+            }
+
+            const notification =
+                this.state.notifications.find(
+                    (item) => {
+                        return (
+                            item.id ===
+                            notificationId
+                        );
+                    }
+                );
+
+            if (!notification) {
+                return;
+            }
+
+            await this.markNotificationRead(
+                notification
+            );
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:notificationopen",
+                    {
+                        detail: {
+                            notification
+                        }
+                    }
+                )
+            );
+
+            if (
+                notification.actionUrl &&
+                this.isSafeNavigationURL(
+                    notification.actionUrl
+                )
+            ) {
+                window.location.href =
+                    notification.actionUrl;
+            }
+        }
+
+        // =====================================================================
+        // MARK ONE NOTIFICATION READ
+        // =====================================================================
+
+        async markNotificationRead(
+            notification
+        ) {
+            if (
+                !notification ||
+                notification.read
+            ) {
+                return true;
+            }
+
+            const adapterResult =
+                await this.callAdapterMethod(
+                    [
+                        "RGNotifications",
+                        "Notifications"
+                    ],
+
+                    [
+                        "markRead",
+                        "markNotificationRead"
+                    ],
+
+                    notification.id
+                );
+
+            if (
+                adapterResult.called &&
+                adapterResult.value !== false
+            ) {
+                this.applyLocalNotificationRead(
+                    notification.id
+                );
+
+                return true;
+            }
+
+            if (!this.state.user) {
+                return false;
+            }
+
+            const success =
+                await this.updateNotificationReadInFirebase(
+                    notification.id,
+                    true
+                );
+
+            if (success) {
+                this.applyLocalNotificationRead(
+                    notification.id
+                );
+            }
+
+            return success;
+        }
+
+        applyLocalNotificationRead(
+            notificationId
+        ) {
+            let changed = false;
+
+            this.state.notifications =
+                this.state.notifications.map(
+                    (notification) => {
+                        if (
+                            notification.id !==
+                                notificationId ||
+                            notification.read
+                        ) {
+                            return notification;
+                        }
+
+                        changed = true;
+
+                        return {
+                            ...notification,
+                            read: true
+                        };
+                    }
+                );
+
+            if (!changed) {
+                return;
+            }
+
+            this.state.notificationUnread =
+                this.state.notifications.filter(
+                    (notification) => {
+                        return !notification.read;
+                    }
+                ).length;
+
+            this.updateNotificationBadge();
+            this.renderNotifications();
+        }
+
+        // =====================================================================
+        // MARK ALL NOTIFICATIONS READ
+        // =====================================================================
+
+        async markAllNotificationsRead() {
+            const unread =
+                this.state.notifications.filter(
+                    (notification) => {
+                        return !notification.read;
+                    }
+                );
+
+            if (!unread.length) {
+                this.showToast(
+                    "You're already caught up.",
+                    "info"
+                );
+
+                return;
+            }
+
+            const button =
+                this.dom.mount.querySelector(
+                    "[data-rg-mark-all-read]"
+                );
+
+            if (button) {
+                button.disabled = true;
+            }
+
+            const adapterResult =
+                await this.callAdapterMethod(
+                    [
+                        "RGNotifications",
+                        "Notifications"
+                    ],
+
+                    [
+                        "markAllRead",
+                        "markAllNotificationsRead"
+                    ]
+                );
+
+            let success = false;
+
+            if (
+                adapterResult.called &&
+                adapterResult.value !== false
+            ) {
+                success = true;
+            } else if (
+                this.state.user
+            ) {
+                success =
+                    await this.markAllNotificationsReadInFirebase(
+                        unread
+                    );
+            }
+
+            if (success) {
+                this.state.notifications =
+                    this.state.notifications.map(
+                        (notification) => {
+                            return {
+                                ...notification,
+                                read: true
+                            };
+                        }
+                    );
+
+                this.state.notificationUnread =
+                    0;
+
+                this.updateNotificationBadge();
+                this.renderNotifications();
+
+                this.showToast(
+                    "All notifications marked as read.",
+                    "success"
+                );
+            } else {
+                this.showToast(
+                    "Notifications could not be updated.",
+                    "error"
+                );
+            }
+
+            if (button) {
+                button.disabled = false;
+            }
+        }
+
+        // =====================================================================
+        // FIREBASE NOTIFICATION WRITES
+        // =====================================================================
+
+        async updateNotificationReadInFirebase(
+            notificationId,
+            read
+        ) {
+            if (
+                !this.database ||
+                !this.state.user
+            ) {
+                return false;
+            }
+
+            const uid =
+                this.state.user.uid;
+
+            for (
+                const pathTemplate of
+                this.config.notificationPaths
+            ) {
+                const basePath =
+                    this.interpolate(
+                        pathTemplate,
+                        {
+                            uid
+                        }
+                    );
+
+                try {
+                    await this.database
+                        .ref(
+                            `${basePath}/${notificationId}/read`
+                        )
+                        .set(read);
+
+                    return true;
+                } catch (error) {
+                    this.log(
+                        "Notification read update failed:",
+                        basePath,
+                        error
+                    );
+                }
+            }
+
+            return false;
+        }
+
+        async markAllNotificationsReadInFirebase(
+            unread
+        ) {
+            if (
+                !this.database ||
+                !this.state.user
+            ) {
+                return false;
+            }
+
+            const uid =
+                this.state.user.uid;
+
+            for (
+                const pathTemplate of
+                this.config.notificationPaths
+            ) {
+                const basePath =
+                    this.interpolate(
+                        pathTemplate,
+                        {
+                            uid
+                        }
+                    );
+
+                const updates = {};
+
+                unread.forEach(
+                    (notification) => {
+                        updates[
+                            `${notification.id}/read`
+                        ] = true;
+                    }
+                );
+
+                try {
+                    await this.database
+                        .ref(basePath)
+                        .update(updates);
+
+                    return true;
+                } catch (error) {
+                    this.log(
+                        "Mark-all notification update failed:",
+                        basePath,
+                        error
+                    );
+                }
+            }
+
+            return false;
+        }
+
+        // =====================================================================
+        // REFRESH THROUGH OPTIONAL NOTIFICATIONS.JS ADAPTER
+        // =====================================================================
+
+        async refreshNotificationsFromAdapter() {
+            const result =
+                await this.callAdapterMethod(
+                    [
+                        "RGNotifications",
+                        "Notifications"
+                    ],
+
+                    [
+                        "refresh",
+                        "refreshNotifications",
+                        "loadNotifications"
+                    ]
+                );
+
+            if (
+                result.called &&
+                Array.isArray(
+                    result.value
+                )
+            ) {
+                const notifications =
+                    result.value
+                        .map(
+                            (
+                                value,
+                                index
+                            ) => {
+                                return this.normalizeNotification(
+                                    {
+                                        id:
+                                            value.id ||
+                                            value.notificationId ||
+                                            index,
+
+                                        value
+                                    }
+                                );
+                            }
+                        )
+                        .filter(Boolean)
+                        .sort((a, b) => {
+                            return (
+                                b.timestamp -
+                                a.timestamp
+                            );
+                        });
+
+                this.state.notifications =
+                    notifications;
+
+                this.state.notificationUnread =
+                    notifications.filter(
+                        (notification) => {
+                            return !notification.read;
+                        }
+                    ).length;
+
+                this.updateNotificationBadge();
+                this.renderNotifications();
+            }
+        }
+
+        // =====================================================================
+        // AUTHENTICATION HELPERS
+        // =====================================================================
+
+        requireAuth(message) {
+            if (this.state.user) {
+                return true;
+            }
+
+            this.showToast(
+                message ||
+                    "Sign in to continue.",
+                "warning"
+            );
+
+            return false;
+        }
+
+        async signOut() {
+            if (
+                !this.auth ||
+                typeof this.auth.signOut !==
+                    "function"
+            ) {
+                this.showToast(
+                    "Sign out is currently unavailable.",
+                    "error"
+                );
+
+                return;
+            }
+
+            try {
+                await this.auth.signOut();
+
+                this.closeAll();
+
+                this.showToast(
+                    "You have been signed out.",
+                    "success"
+                );
+            } catch (error) {
+                this.warn(
+                    "Sign out failed:",
+                    error
+                );
+
+                this.showToast(
+                    "Could not sign you out.",
+                    "error"
+                );
+            }
+        }
+
+        // =====================================================================
+        // OPTIONAL EXTERNAL ADAPTER SUPPORT
+        // =====================================================================
+
+        async callAdapterMethod(
+            globalNames,
+            methodNames,
+            ...args
+        ) {
+            for (
+                const globalName of globalNames
+            ) {
+                const adapter =
+                    window[globalName];
+
+                if (!adapter) {
+                    continue;
+                }
+
+                for (
+                    const methodName of methodNames
+                ) {
+                    const method =
+                        adapter[methodName];
+
+                    if (
+                        typeof method !==
+                        "function"
+                    ) {
+                        continue;
+                    }
+
+                    try {
+                        const value =
+                            await method.apply(
+                                adapter,
+                                args
+                            );
+
+                        return {
+                            called: true,
+                            value
+                        };
+                    } catch (error) {
+                        this.warn(
+                            `${globalName}.${methodName} failed:`,
+                            error
+                        );
+
+                        return {
+                            called: true,
+                            value: false,
+                            error
+                        };
+                    }
+                }
+            }
+
+            return {
+                called: false,
+                value: undefined
+            };
+        }
+
+        // =====================================================================
+        // TOAST SYSTEM
+        // =====================================================================
+
+        showToast(
+            message,
+            type = "info",
+            options = {}
+        ) {
+            if (
+                !this.dom.toastRegion ||
+                !message
+            ) {
+                return null;
+            }
+
+            const validTypes = [
+                "info",
+                "success",
+                "warning",
+                "error"
+            ];
+
+            const toastType =
+                validTypes.includes(type)
+                    ? type
+                    : "info";
+
+            const duration =
+                Number.isFinite(
+                    options.duration
+                )
+                    ? options.duration
+                    : this.config.toastDuration;
+
+            const toast =
+                document.createElement(
+                    "div"
+                );
+
+            toast.className =
+                `rg-toast rg-toast--${toastType}`;
+
+            toast.setAttribute(
+                "role",
+                toastType === "error"
+                    ? "alert"
+                    : "status"
+            );
+
+            toast.innerHTML = `
+                <span class="rg-toast__icon">
+                    ${
+                        ICONS[toastType] ||
+                        ICONS.info
+                    }
+                </span>
+
+                <span class="rg-toast__message">
+                    ${this.escapeHTML(
+                        String(message)
+                    )}
+                </span>
+
+                <button
+                    class="rg-toast__close"
+                    type="button"
+                    aria-label="Dismiss notification"
+                >
+                    ${ICONS.close}
+                </button>
+            `;
+
+            const remove = () => {
+                if (
+                    toast.classList.contains(
+                        "is-leaving"
+                    )
+                ) {
+                    return;
+                }
+
+                toast.classList.add(
+                    "is-leaving"
+                );
+
+                window.setTimeout(() => {
+                    toast.remove();
+                }, 220);
+            };
+
+            toast
+                .querySelector(
+                    ".rg-toast__close"
+                )
+                ?.addEventListener(
+                    "click",
+                    remove,
+                    {
+                        once: true
+                    }
+                );
+
+            this.dom.toastRegion.append(
+                toast
+            );
+
+            requestAnimationFrame(() => {
+                toast.classList.add(
+                    "is-visible"
+                );
+            });
+
+            if (duration > 0) {
+                window.setTimeout(
+                    remove,
+                    duration
+                );
+            }
+
+            return {
+                element: toast,
+                close: remove
+            };
+        }
+
+        // =====================================================================
+        // COLLECTION NORMALIZATION
+        // =====================================================================
+
+        normalizeCollection(value) {
+            if (!value) {
+                return [];
+            }
+
+            if (Array.isArray(value)) {
+                return value
+                    .map(
+                        (
+                            item,
+                            index
+                        ) => {
+                            if (
+                                item === null ||
+                                item === undefined
+                            ) {
+                                return null;
+                            }
+
+                            return {
+                                id:
+                                    String(
+                                        item.id ||
+                                        index
+                                    ),
+                                value: item
+                            };
+                        }
+                    )
+                    .filter(Boolean);
+            }
+
+            if (
+                typeof value === "object"
+            ) {
+                return Object.entries(
+                    value
+                ).map(
+                    ([id, item]) => {
+                        return {
+                            id,
+                            value: item
+                        };
+                    }
+                );
+            }
+
+            return [];
+        }
+
+        // =====================================================================
+        // TIME HELPERS
+        // =====================================================================
+
+        normalizeTimestamp(value) {
+            if (
+                value &&
+                typeof value.toMillis ===
+                    "function"
+            ) {
+                return value.toMillis();
+            }
+
+            if (
+                typeof value === "number"
+            ) {
+                if (
+                    value > 0 &&
+                    value < 100000000000
+                ) {
+                    return value * 1000;
+                }
+
+                return (
+                    Number.isFinite(value)
+                        ? value
+                        : Date.now()
+                );
+            }
+
+            if (
+                typeof value === "string"
+            ) {
+                const numeric =
+                    Number(value);
+
+                if (
+                    Number.isFinite(
+                        numeric
+                    ) &&
+                    numeric > 0
+                ) {
+                    return this.normalizeTimestamp(
+                        numeric
+                    );
+                }
+
+                const parsed =
+                    Date.parse(value);
+
+                if (
+                    Number.isFinite(parsed)
+                ) {
+                    return parsed;
+                }
+            }
+
+            return Date.now();
+        }
+
+        formatRelativeTime(timestamp) {
+            const difference =
+                Date.now() - timestamp;
+
+            const future =
+                difference < 0;
+
+            const absolute =
+                Math.abs(difference);
+
+            const units = [
+                {
+                    size:
+                        365 * 24 * 60 * 60 * 1000,
+                    label: "year"
+                },
+                {
+                    size:
+                        30 * 24 * 60 * 60 * 1000,
+                    label: "month"
+                },
+                {
+                    size:
+                        7 * 24 * 60 * 60 * 1000,
+                    label: "week"
+                },
+                {
+                    size:
+                        24 * 60 * 60 * 1000,
+                    label: "day"
+                },
+                {
+                    size:
+                        60 * 60 * 1000,
+                    label: "hour"
+                },
+                {
+                    size:
+                        60 * 1000,
+                    label: "minute"
+                }
+            ];
+
+            if (absolute < 45000) {
+                return "Just now";
+            }
+
+            for (
+                const unit of units
+            ) {
+                if (
+                    absolute >= unit.size
+                ) {
+                    const amount =
+                        Math.floor(
+                            absolute /
+                                unit.size
+                        );
+
+                    const label =
+                        amount === 1
+                            ? unit.label
+                            : `${unit.label}s`;
+
+                    return future
+                        ? `In ${amount} ${label}`
+                        : `${amount} ${label} ago`;
+                }
+            }
+
+            return "Just now";
+        }
+
+        // =====================================================================
+        // NUMBER FORMATTING
+        // =====================================================================
+
+        normalizeNumber(value) {
+            if (
+                typeof value === "number"
+            ) {
+                return Number.isFinite(value)
+                    ? Math.round(value)
+                    : 0;
+            }
+
+            if (
+                typeof value === "string"
+            ) {
+                const cleaned =
+                    value.replace(
+                        /[^0-9.-]/g,
+                        ""
+                    );
+
+                const numeric =
+                    Number(cleaned);
+
+                return Number.isFinite(
+                    numeric
+                )
+                    ? Math.round(numeric)
+                    : 0;
+            }
+
+            return 0;
+        }
+
+        formatCompact(value) {
+            const number =
+                this.normalizeNumber(value);
+
+            try {
+                return new Intl.NumberFormat(
+                    "en-US",
+                    {
+                        notation: "compact",
+                        maximumFractionDigits:
+                            number >= 1000000
+                                ? 1
+                                : 0
+                    }
+                ).format(number);
+            } catch {
+                if (
+                    number >= 1000000
+                ) {
+                    return `${(
+                        number / 1000000
+                    ).toFixed(1)}M`;
+                }
+
+                if (
+                    number >= 1000
+                ) {
+                    return `${Math.round(
+                        number / 1000
+                    )}K`;
+                }
+
+                return String(number);
+            }
+        }
+
+        formatFull(value) {
+            return this.normalizeNumber(
+                value
+            ).toLocaleString("en-US");
+        }

@@ -386,6 +386,7 @@
             this.database = null;
 
             this.initPromise = null;
+            this.authUnsubscribe = null;
         }
 
         // =====================================================================
@@ -1768,13 +1769,12 @@
                 );
 
             if (
-                typeof unsubscribe ===
-                "function"
-            ) {
-                this.state.firebaseListeners.push(
-                    unsubscribe
-                );
-            }
+    typeof unsubscribe ===
+    "function"
+) {
+    this.authUnsubscribe =
+        unsubscribe;
+}
         }
 
         async onAuthStateChanged(user) {
@@ -5366,3 +5366,603 @@
                 value
             ).toLocaleString("en-US");
         }
+
+        // =====================================================================
+        // OBJECT VALUE HELPERS
+        // =====================================================================
+
+        pick(source, keys = []) {
+            if (
+                !source ||
+                typeof source !== "object"
+            ) {
+                return undefined;
+            }
+
+            for (const key of keys) {
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        source,
+                        key
+                    )
+                ) {
+                    const value =
+                        source[key];
+
+                    if (
+                        value !== undefined &&
+                        value !== null &&
+                        value !== ""
+                    ) {
+                        return value;
+                    }
+                }
+            }
+
+            return undefined;
+        }
+
+        interpolate(
+            template,
+            values = {}
+        ) {
+            return String(
+                template || ""
+            ).replace(
+                /\{([^{}]+)\}/g,
+                (
+                    match,
+                    key
+                ) => {
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            values,
+                            key
+                        )
+                    ) {
+                        return encodeURIComponent(
+                            String(
+                                values[key]
+                            )
+                        );
+                    }
+
+                    return match;
+                }
+            );
+        }
+
+        // =====================================================================
+        // USER NAME HELPERS
+        // =====================================================================
+
+        nameFromEmail(email) {
+            const value =
+                String(email || "")
+                    .trim();
+
+            if (!value.includes("@")) {
+                return "";
+            }
+
+            const localPart =
+                value.split("@")[0] || "";
+
+            return localPart
+                .replace(
+                    /[._-]+/g,
+                    " "
+                )
+                .replace(
+                    /\b\w/g,
+                    (character) => {
+                        return character.toUpperCase();
+                    }
+                )
+                .trim();
+        }
+
+        // =====================================================================
+        // HTML ESCAPING
+        // =====================================================================
+
+        escapeHTML(value) {
+            return String(
+                value ?? ""
+            )
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+        }
+
+        escapeAttribute(value) {
+            return this.escapeHTML(
+                value
+            )
+                .replace(
+                    /`/g,
+                    "&#096;"
+                )
+                .replace(
+                    /\r?\n/g,
+                    " "
+                );
+        }
+
+        // =====================================================================
+        // URL SAFETY
+        // =====================================================================
+
+        isSafeNavigationURL(value) {
+            const url =
+                String(value || "")
+                    .trim();
+
+            if (!url) {
+                return false;
+            }
+
+            if (
+                url.startsWith("#") ||
+                url.startsWith("/") ||
+                url.startsWith("./") ||
+                url.startsWith("../")
+            ) {
+                return true;
+            }
+
+            try {
+                const parsed =
+                    new URL(
+                        url,
+                        window.location.href
+                    );
+
+                return (
+                    parsed.protocol === "http:" ||
+                    parsed.protocol === "https:"
+                );
+            } catch {
+                return false;
+            }
+        }
+
+        // =====================================================================
+        // ASSET FALLBACKS
+        // =====================================================================
+
+        replaceBrokenAsset(image) {
+            if (!image) {
+                return;
+            }
+
+            const fallbackName =
+                image.dataset
+                    .rgAssetFallback ||
+                "empty";
+
+            const icon =
+                ICONS[fallbackName] ||
+                ICONS.empty;
+
+            const wrapper =
+                document.createElement(
+                    "span"
+                );
+
+            wrapper.className =
+                "rg-asset-fallback";
+
+            wrapper.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            wrapper.innerHTML =
+                icon;
+
+            image.replaceWith(
+                wrapper
+            );
+        }
+
+        // =====================================================================
+        // FUNCTION HELPERS
+        // =====================================================================
+
+        debounce(
+            callback,
+            delay = 100
+        ) {
+            let timeoutId = null;
+
+            const debounced = (
+                ...args
+            ) => {
+                if (timeoutId !== null) {
+                    window.clearTimeout(
+                        timeoutId
+                    );
+                }
+
+                timeoutId =
+                    window.setTimeout(
+                        () => {
+                            timeoutId = null;
+
+                            callback.apply(
+                                this,
+                                args
+                            );
+                        },
+                        delay
+                    );
+            };
+
+            debounced.cancel = () => {
+                if (timeoutId !== null) {
+                    window.clearTimeout(
+                        timeoutId
+                    );
+
+                    timeoutId = null;
+                }
+            };
+
+            return debounced;
+        }
+
+        // =====================================================================
+        // PUBLIC REFRESH METHODS
+        // =====================================================================
+
+        refreshPlayer() {
+            const user =
+                this.state.user;
+
+            if (
+                !user ||
+                !user.uid
+            ) {
+                return false;
+            }
+
+            this.attachPlayerListener(
+                user.uid
+            );
+
+            return true;
+        }
+
+        refreshNotifications() {
+            if (!this.state.user) {
+                return false;
+            }
+
+            this.refreshNotificationsFromAdapter();
+
+            return true;
+        }
+
+        refreshFriends() {
+            if (!this.state.user) {
+                return false;
+            }
+
+            this.refreshFriendsFromAdapter();
+
+            return true;
+        }
+
+        // =====================================================================
+        // PUBLIC COMPATIBILITY API
+        // =====================================================================
+
+        installPublicCompatibility() {
+            const controller =
+                this;
+
+            const publicAPI = {
+                version: VERSION,
+
+                get controller() {
+                    return controller;
+                },
+
+                get initialized() {
+                    return controller.state
+                        .initialized;
+                },
+
+                get user() {
+                    return controller.state.user;
+                },
+
+                get player() {
+                    return controller.state.player;
+                },
+
+                get points() {
+                    return controller.state.points;
+                },
+
+                get notifications() {
+                    return [
+                        ...controller.state
+                            .notifications
+                    ];
+                },
+
+                get friends() {
+                    return [
+                        ...controller.state
+                            .friends
+                    ];
+                },
+
+                get friendRequests() {
+                    return [
+                        ...controller.state
+                            .friendRequests
+                    ];
+                },
+
+                openPoints() {
+                    return controller.openPoints();
+                },
+
+                openFriends() {
+                    return controller.openFriends();
+                },
+
+                openNotifications() {
+                    return controller.openNotifications();
+                },
+
+                openDrawer(name) {
+                    return controller.openDrawer(
+                        name
+                    );
+                },
+
+                openModal(name) {
+                    return controller.openModal(
+                        name
+                    );
+                },
+
+                close() {
+                    return controller.closeAll();
+                },
+
+                closeAll() {
+                    return controller.closeAll();
+                },
+
+                showToast(
+                    message,
+                    type,
+                    options
+                ) {
+                    return controller.showToast(
+                        message,
+                        type,
+                        options
+                    );
+                },
+
+                setPoints(value) {
+                    return controller.updatePoints(
+                        value
+                    );
+                },
+
+                refreshPlayer() {
+                    return controller.refreshPlayer();
+                },
+
+                refreshNotifications() {
+                    return controller.refreshNotifications();
+                },
+
+                refreshFriends() {
+                    return controller.refreshFriends();
+                },
+
+                markAllNotificationsRead() {
+                    return controller.markAllNotificationsRead();
+                },
+
+                applyActiveNavigation() {
+                    return controller.applyActiveNavigation();
+                },
+
+                destroy() {
+                    return controller.destroy();
+                }
+            };
+
+            /*
+             * Keep the controller instance as the main global, while exposing
+             * a stable public API under .api for pages that should not access
+             * internal controller state directly.
+             */
+            controller.api =
+                publicAPI;
+
+            window.RGHeaderAPI =
+                publicAPI;
+
+            window.openRGFriends = () => {
+                controller.openFriends();
+            };
+
+            window.openRGNotifications = () => {
+                controller.openNotifications();
+            };
+
+            window.openRGPoints = () => {
+                controller.openPoints();
+            };
+
+            window.closeRGHeaderPanels = () => {
+                controller.closeAll();
+            };
+
+            window.showRGToast = (
+                message,
+                type = "info",
+                options = {}
+            ) => {
+                return controller.showToast(
+                    message,
+                    type,
+                    options
+                );
+            };
+        }
+
+        // =====================================================================
+        // DESTROY
+        // =====================================================================
+
+        destroy() {
+            if (this.state.destroyed) {
+                return;
+            }
+
+            this.state.destroyed =
+                true;
+
+            this.closeAll();
+
+            this.detachUserListeners();
+
+            if (
+                typeof this.authUnsubscribe ===
+                "function"
+            ) {
+                try {
+                    this.authUnsubscribe();
+                } catch (error) {
+                    this.log(
+                        "Auth listener cleanup failed:",
+                        error
+                    );
+                }
+            }
+
+            this.authUnsubscribe =
+                null;
+
+            this.state.listeners
+                .splice(0)
+                .forEach(
+                    (removeListener) => {
+                        try {
+                            removeListener();
+                        } catch (error) {
+                            this.log(
+                                "DOM listener cleanup failed:",
+                                error
+                            );
+                        }
+                    }
+                );
+
+            if (this.dom.mount) {
+                this.dom.mount.innerHTML =
+                    "";
+            }
+
+            document.documentElement.classList.remove(
+                "rg-header-ready",
+                "rg-authenticated",
+                "rg-signed-out",
+                "rg-overlay-open"
+            );
+
+            document.body?.classList.remove(
+                "rg-overlay-open"
+            );
+
+            delete document.documentElement
+                .dataset.rgViewport;
+
+            if (
+                window.RGHeaderAPI ===
+                this.api
+            ) {
+                delete window.RGHeaderAPI;
+            }
+
+            delete window.openRGFriends;
+            delete window.openRGNotifications;
+            delete window.openRGPoints;
+            delete window.closeRGHeaderPanels;
+            delete window.showRGToast;
+
+            if (
+                window.RGHeader ===
+                this
+            ) {
+                delete window.RGHeader;
+            }
+
+            window.__RG_GLOBAL_HEADER_LOADED__ =
+                false;
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:destroyed",
+                    {
+                        detail: {
+                            version: VERSION
+                        }
+                    }
+                )
+            );
+        }
+    }
+
+    // =========================================================================
+    // CREATE AND INITIALIZE GLOBAL HEADER
+    // =========================================================================
+
+    const header =
+        new RGHeaderController();
+
+    window.RGHeader =
+        header;
+
+    header.init().catch(
+        (error) => {
+            console.error(
+                "[RG Header] Initialization failed:",
+                error
+            );
+
+            header.showToast(
+                "The site header could not be loaded.",
+                "error"
+            );
+        }
+    );
+})();

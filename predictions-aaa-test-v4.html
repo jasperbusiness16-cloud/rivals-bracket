@@ -955,7 +955,41 @@
 
 <script src="friends.js?v=2"></script>
 
-<script src="global-header.js?v=9"></script>
+
+
+
+
+
+<script>
+  document.getElementById("globalHeader").innerHTML =
+    '<div style="padding:16px;background:#5b21b6;color:white;font-weight:bold;">Header test: before script</div>';
+</script>
+
+<script src="global-header.js?v=10"></script>
+
+<script>
+  window.setTimeout(() => {
+    const mount = document.getElementById("globalHeader");
+
+    if (window.RGHeader) {
+      mount.insertAdjacentHTML(
+        "beforeend",
+        '<div style="padding:16px;background:#166534;color:white;font-weight:bold;">global-header.js executed successfully</div>'
+      );
+    } else {
+      mount.insertAdjacentHTML(
+        "beforeend",
+        '<div style="padding:16px;background:#991b1b;color:white;font-weight:bold;">global-header.js did not execute — likely a syntax error or wrong loaded path</div>'
+      );
+    }
+  }, 1500);
+
+
+
+
+
+
+</script>
 
 <script>
 

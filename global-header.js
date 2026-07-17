@@ -5957,14 +5957,18 @@
     // CREATE AND INITIALIZE GLOBAL HEADER
     // =========================================================================
 
-    const header =
-        new RGHeaderController();
+    alert("global-header loaded");
 
-    window.RGHeader =
-        header;
+const header = new RGHeaderController();
 
-    header.init().catch(
-        (error) => {
+window.RGHeader = header;
+
+alert("calling init");
+
+header.init().catch((error) => {
+    alert(error.message);
+    console.error(error);
+});
             console.error(
                 "[RG Header] Initialization failed:",
                 error

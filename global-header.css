@@ -81,6 +81,29 @@ body.rg-overlay-open { overflow: hidden; }
   isolation: isolate;
 }
 
+.rg-header::before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -140px;
+  width: 140px;
+  height: 2px;
+  pointer-events: none;
+  z-index: 3;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(157,130,255,0.08) 14%,
+    rgba(231,225,255,0.98) 48%,
+    rgba(157,130,255,0.75) 72%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 10px rgba(157,130,255,.55),
+    0 0 18px rgba(127,92,255,.32);
+  animation: rgHeaderBottomBeam 14s ease-in-out infinite alternate;
+}
+
 .rg-header::after {
   content: "";
   position: absolute;
@@ -146,6 +169,20 @@ body.rg-overlay-open { overflow: hidden; }
 .rg-header:hover .rg-header__energy::after { animation-duration: 7s; }
 
 @keyframes rgHeaderEnergy { to { transform: rotate(360deg); } }
+
+@keyframes rgHeaderBottomBeam {
+  0% {
+    transform: translateX(0);
+    opacity: .55;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100vw + 160px));
+    opacity: .55;
+  }
+}
 
 .rg-header__inner {
   position: relative;
@@ -376,6 +413,19 @@ body.rg-overlay-open { overflow: hidden; }
   max-height: 23px !important;
   object-fit: contain;
   filter: drop-shadow(0 0 7px rgba(157,130,255,.28));
+}
+
+[data-rg-friends-toggle] .rg-utility__icon {
+  width: 26px;
+  height: 26px;
+  flex-basis: 26px;
+}
+
+[data-rg-friends-toggle] .rg-utility__icon img {
+  width: 25px !important;
+  height: 25px !important;
+  max-width: 25px !important;
+  max-height: 25px !important;
 }
 
 .rg-utility__copy { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
@@ -683,15 +733,39 @@ body.rg-overlay-open { overflow: hidden; }
   .rg-header__brand-copy small { display: none; }
   .rg-header__brand-copy strong { max-width: 105px; font-size: 12px; }
   .rg-header__nav-link { padding: 0 6px; font-size: 9px; letter-spacing: .045em; }
-  .rg-utility--points { min-width: 43px; width: 43px; padding: 0; justify-content: center; }
-  .rg-utility__copy { display: none; }
+ .rg-utility--points {
+  width: auto;
+  min-width: 78px;
+  padding: 0 10px 0 8px;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.rg-utility__copy { display: none; }
+
+.rg-utility--points .rg-utility__copy {
+  display: flex;
+}
+
+.rg-utility--points .rg-utility__copy strong {
+  max-width: none;
+  font-size: 12px;
+}
+
+.rg-utility--points .rg-utility__copy small {
+  display: none;
+}
 }
 
 /* PHONE */
 @media (max-width: 760px) {
   :root { --rg-header-height: 68px; }
   .rg-header__inner { display: flex; align-items: center; min-height: var(--rg-header-height); padding: 0 max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left)); }
-  .rg-header__brand { flex: 1 1 auto; padding-right: 6px; }
+ .rg-header__brand {
+  flex: 1 1 auto;
+  padding-right: 6px;
+  margin-left: 10px;
+}
   .rg-header__brand::after,.rg-header__nav { display: none; }
   .rg-header__brand-mark { flex-basis: 37px; width: 37px; height: 37px; border-radius: 10px; }
   .rg-header__brand-copy strong { max-width: 145px; font-size: 13px; }
@@ -702,7 +776,41 @@ body.rg-overlay-open { overflow: hidden; }
   .rg-utility { width: 39px; min-width: 39px; height: 39px; }
   .rg-utility__icon { width: 21px; height: 21px; flex-basis: 21px; }
   .rg-utility__icon img { width: 20px !important; height: 20px !important; max-width: 20px !important; max-height: 20px !important; }
-  .rg-profile__toggle {
+  
+  [data-rg-friends-toggle] .rg-utility__icon {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+}
+
+[data-rg-friends-toggle] .rg-utility__icon img {
+  width: 23px !important;
+  height: 23px !important;
+  max-width: 23px !important;
+  max-height: 23px !important;
+}
+  
+  .rg-utility--points {
+  width: auto;
+  min-width: 72px;
+  padding: 0 8px 0 7px;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.rg-utility--points .rg-utility__copy {
+  display: flex;
+}
+
+.rg-utility--points .rg-utility__copy strong {
+  max-width: 34px;
+  font-size: 11px;
+}
+
+.rg-utility--points .rg-utility__copy small {
+  display: none;
+}
+   .rg-profile__toggle {
   width: 39px;
   min-width: 39px;
   max-width: 39px;
@@ -728,7 +836,16 @@ body.rg-overlay-open { overflow: hidden; }
   .rg-header__brand-copy strong { max-width: 118px; font-size: 12px; }
   .rg-header__brand-copy small { max-width: 118px; }
   .rg-header__auth--in { gap: 4px; }
-  .rg-utility--points { display: none; }
+
+  .rg-utility--points {
+    min-width: 68px;
+    padding: 0 7px 0 6px;
+  }
+
+  .rg-utility--points .rg-utility__copy strong {
+    max-width: 30px;
+    font-size: 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

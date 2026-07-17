@@ -574,20 +574,25 @@
                         aria-hidden="true"
                     ></div>
 
-                    <div class="rg-header__inner">
-                        <a
-                            class="rg-header__brand"
-                            href="index.html"
-                            aria-label="Rivals Gauntlet home"
-                        >
-                            <span
-                                class="rg-header__brand-mark"
-                                aria-hidden="true"
-                            >
-                                RG
-                            </span>
+                   <div class="rg-header__inner">
+    <button
+        class="rg-header__mobile-toggle"
+        type="button"
+        data-rg-mobile-toggle
+        aria-label="Open menu"
+        aria-expanded="false"
+    >
+        <span data-rg-mobile-icon>
+            ${ICONS.menu}
+        </span>
+    </button>
 
-                            <span class="rg-header__brand-copy">
+    <a
+        class="rg-header__brand"
+        href="index.html"
+        aria-label="Rivals Gauntlet home"
+    >
+        <span class="rg-header__brand-copy">
                                 <strong>RIVALS GAUNTLET</strong>
                                 <small>COMPETE • PREDICT • EARN</small>
                             </span>
@@ -797,17 +802,7 @@
                                 </div>
                             </div>
 
-                            <button
-                                class="rg-header__mobile-toggle"
-                                type="button"
-                                data-rg-mobile-toggle
-                                aria-label="Open menu"
-                                aria-expanded="false"
-                            >
-                                <span data-rg-mobile-icon>
-                                    ${ICONS.menu}
-                                </span>
-                            </button>
+                         
                         </div>
                     </div>
 
@@ -1949,43 +1944,7 @@
                 return;
             }
 
-            this.dom.mobileAuth.innerHTML = `
-                <a
-                    class="rg-mobile-panel__account"
-                    href="dashboard.html"
-                >
-                    Dashboard
-                </a>
-
-                <a
-                    class="rg-mobile-panel__account"
-                    href="profile.html"
-                >
-                    Public Profile
-                </a>
-
-                <a
-                    class="rg-mobile-panel__account"
-                    href="inventory.html"
-                >
-                    Inventory
-                </a>
-
-                <a
-                    class="rg-mobile-panel__account"
-                    href="settings.html"
-                >
-                    Settings
-                </a>
-
-                <button
-                    class="rg-mobile-panel__sign-out"
-                    type="button"
-                    data-rg-sign-out
-                >
-                    Sign Out
-                </button>
-            `;
+            this.dom.mobileAuth.innerHTML = "";
         }
 
         // =====================================================================
@@ -5333,40 +5292,44 @@
         }
 
         formatCompact(value) {
-            const number =
-                this.normalizeNumber(value);
+    const number = Math.max(
+        0,
+        this.normalizeNumber(value)
+    );
 
-            try {
-                return new Intl.NumberFormat(
-                    "en-US",
-                    {
-                        notation: "compact",
-                        maximumFractionDigits:
-                            number >= 1000000
-                                ? 1
-                                : 0
-                    }
-                ).format(number);
-            } catch {
-                if (
-                    number >= 1000000
-                ) {
-                    return `${(
-                        number / 1000000
-                    ).toFixed(1)}M`;
-                }
-
-                if (
-                    number >= 1000
-                ) {
-                    return `${Math.round(
-                        number / 1000
-                    )}K`;
-                }
-
-                return String(number);
+    try {
+        return new Intl.NumberFormat(
+            "en-US",
+            {
+                notation: "compact",
+                compactDisplay: "short",
+                maximumFractionDigits: 1
             }
+        )
+            .format(number)
+            .toLowerCase();
+    } catch {
+        if (number >= 1000000000) {
+            return `${(number / 1000000000)
+                .toFixed(1)
+                .replace(/\.0$/, "")}b`;
         }
+
+        if (number >= 1000000) {
+            return `${(number / 1000000)
+                .toFixed(1)
+                .replace(/\.0$/, "")}m`;
+        }
+
+        if (number >= 1000) {
+            return `${(number / 1000)
+                .toFixed(1)
+                .replace(/\.0$/, "")}k`;
+        }
+
+        return String(number);
+    }
+}
 
         formatFull(value) {
             return this.normalizeNumber(

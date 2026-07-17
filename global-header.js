@@ -5963,21 +5963,14 @@ const header = new RGHeaderController();
 
 window.RGHeader = header;
 
-alert("calling init");
-
 header.init().catch((error) => {
-    alert(error.message);
-    console.error(error);
-});
-            console.error(
-                "[RG Header] Initialization failed:",
-                error
-            );
+  alert(error?.message || "Header initialization failed.");
+  console.error("[RG Header] Initialization failed:", error);
 
-            header.showToast(
-                "The site header could not be loaded.",
-                "error"
-            );
-        }
-    );
+  header.showToast(
+    "The site header could not load.",
+    "error"
+  );
+});
+
 })();

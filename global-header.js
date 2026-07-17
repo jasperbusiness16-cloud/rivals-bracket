@@ -2186,7 +2186,7 @@ styles.textContent += `
             try {
               return [
                 request.id,
-                await RGFriends.getPlayer(
+                await window.RGFriends.getPlayer(
                   request.senderUid
                 )
               ];
@@ -2577,7 +2577,7 @@ styles.textContent += `
       if (
         !addButton ||
         !currentUser ||
-        typeof RGFriends === "undefined"
+        typeof window.RGFriends === "undefined"
       ) {
         return;
       }
@@ -2587,7 +2587,7 @@ styles.textContent += `
 
       try {
         const targetPlayer =
-          await RGFriends.getPlayer(
+          await window.RGFriends.getPlayer(
             addButton.dataset.addFriend
           );
 
@@ -2597,7 +2597,7 @@ styles.textContent += `
           );
         }
 
-        await RGFriends.sendFriendRequest(
+        await window.RGFriends.sendFriendRequest(
           {
             uid: currentUser.uid,
 
@@ -2639,7 +2639,7 @@ styles.textContent += `
 
       if (
         !currentUser ||
-        typeof RGFriends === "undefined"
+        typeof window.RGFriends === "undefined"
       ) {
         return;
       }
@@ -2648,7 +2648,7 @@ styles.textContent += `
         if (acceptButton) {
           acceptButton.disabled = true;
 
-          await RGFriends.acceptFriendRequest(
+          await window.RGFriends.acceptFriendRequest(
             currentUser.uid,
             acceptButton.dataset.acceptRequest
           );
@@ -2659,7 +2659,7 @@ styles.textContent += `
         if (declineButton) {
           declineButton.disabled = true;
 
-          await RGFriends.declineFriendRequest(
+          await window.RGFriends.declineFriendRequest(
             currentUser.uid,
             declineButton.dataset.declineRequest
           );
@@ -2705,8 +2705,8 @@ styles.textContent += `
 
   function initializeFriendsSystem(uid) {
     if (
-      typeof RGFriends === "undefined"
-    ) {
+  typeof window.RGFriends === "undefined"
+) {
       console.warn(
         "friends.js must load before global-header.js"
       );
@@ -2736,10 +2736,10 @@ styles.textContent += `
     }
 
     stopFriendsListener =
-      RGFriends.listenToFriends(
+      window.RGFriends.listenToFriends(
         uid,
         () => {
-          RGFriends.getFriends(uid)
+          window.RGFriends.getFriends(uid)
             .then(renderFriendsList)
             .catch(error => {
               console.error(
@@ -2757,7 +2757,7 @@ styles.textContent += `
       );
 
     stopIncomingRequestsListener =
-      RGFriends.listenToIncomingRequests(
+      window.RGFriends.listenToIncomingRequests(
         uid,
         requestMap => {
           const requestIds =
@@ -2766,9 +2766,9 @@ styles.textContent += `
             );
 
           Promise.all(
-            requestIds.map(requestId =>
-              RGFriends
-                .getRequest(requestId)
+  requestIds.map(requestId =>
+    window.RGFriends
+      .getRequest(requestId)
                 .then(request =>
                   request
                     ? {
@@ -2796,12 +2796,12 @@ styles.textContent += `
       );
 
     if (
-      typeof RGFriends
+      typeof window.RGFriends
         .listenToOutgoingRequests ===
       "function"
     ) {
       stopOutgoingRequestsListener =
-        RGFriends.listenToOutgoingRequests(
+        window.RGFriends.listenToOutgoingRequests(
           uid,
           requestMap => {
             const requestIds =
@@ -2810,9 +2810,9 @@ styles.textContent += `
               );
 
             Promise.all(
-              requestIds.map(requestId =>
-                RGFriends
-                  .getRequest(requestId)
+  requestIds.map(requestId =>
+    window.RGFriends
+      .getRequest(requestId)
                   .then(request =>
                     request
                       ? {

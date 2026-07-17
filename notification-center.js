@@ -1,4 +1,4 @@
-const RGNotificationCenter = (() => {
+window.RGNotificationCenter = (() => {
   let currentUid = "";
   let notifications = [];
   let initialized = false;

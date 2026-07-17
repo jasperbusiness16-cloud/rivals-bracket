@@ -765,283 +765,420 @@
   `;
 
      /* =========================================================
-     RESPONSIVE HEADER CSS
+   RESPONSIVE HEADER CSS
+========================================================= */
+
+styles.textContent += `
+  @media (min-width: 721px) {
+    #globalHeader .brand-mark {
+      display: none;
+    }
+
+    #globalHeader .brand {
+      gap: 0;
+    }
+  }
+
+  /* =========================================================
+     TABLET / COMPACT DESKTOP
+     Full navigation remains visible on iPads
   ========================================================= */
 
-  styles.textContent += `
-    @media (min-width: 721px) {
-      #globalHeader .brand-mark {
-        display: none;
-      }
-
-      #globalHeader .brand {
-        gap: 0;
-      }
+  @media (max-width: 1180px) and (min-width: 721px) {
+    #globalHeader .global-shell {
+      width: min(calc(100% - 24px), var(--gh-max));
     }
 
-    @media (max-width: 1180px) {
-      #globalHeader .brand-copy {
-        display: none;
-      }
-
-      #globalHeader nav a {
-        padding: 0 9px;
-        font-size: 13px;
-      }
-
-      #globalHeader .account-btn {
-        min-width: 138px;
-      }
+    #globalHeader .header-inner {
+      min-height: 70px;
+      gap: 10px;
     }
 
-    @media (max-width: 980px) {
-      #globalHeader .mobile-toggle {
-        display: block;
-      }
+#globalHeader .brand {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 
-      #globalHeader nav {
-        position: fixed;
-        inset: 78px 0 auto 0;
-        height: calc(100vh - 78px);
-        min-height: 0;
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0;
-        padding: 22px 24px;
-        background: rgba(8,8,13,.98);
-        overflow-y: auto;
-      }
+#globalHeader .brand-mark {
+  display: none;
+}
 
-      #globalHeader nav.show {
-        display: flex;
-      }
+#globalHeader .brand-copy {
+  display: block;
+  line-height: 1;
+}
 
-      #globalHeader nav a {
-        min-height: 58px;
-        padding: 0 14px;
-        border-bottom: 1px solid var(--gh-border);
-        font-size: 18px;
-      }
+#globalHeader .brand-copy strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: .7px;
+  white-space: nowrap;
+}
 
-      #globalHeader nav a.active::after {
-        left: 0;
-        right: auto;
-        top: 15px;
-        bottom: 15px;
-        width: 3px;
-        height: auto;
-      }
+#globalHeader .brand-copy span {
+  display: block;
+  margin-top: 4px;
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+    #globalHeader .mobile-toggle {
+      display: none;
     }
 
-    @media (max-width: 720px) {
-      #globalHeader .global-shell {
-        width: min(calc(100% - 28px), var(--gh-max));
-      }
-
-      #globalHeader .brand {
-        display: none;
-      }
-
-      #globalHeader .header-inner {
-        min-height: 60px;
-        gap: 8px;
-      }
-
-      #globalHeader .mobile-toggle {
-        display: block;
-        order: -1;
-        width: 40px;
-        height: 40px;
-        flex: 0 0 40px;
-        padding: 0;
-        border: 0;
-        border-radius: 10px;
-        background: transparent;
-        font-size: 24px;
-      }
-
-      #globalHeader .header-actions {
-        order: 1;
-        flex: 1;
-        min-width: 0;
-        gap: 5px;
-      }
-
-      #globalHeader #pointsBox {
-        order: 1;
-        margin-right: auto;
-      }
-
-      #globalHeader #friendsButtonWrap {
-        order: 2;
-      }
-
-      #globalHeader #globalNotificationMount {
-        order: 3;
-      }
-
-      #globalHeader #accountBox {
-        order: 4;
-      }
-
-      #globalHeader .points {
-        height: 40px;
-        padding: 0;
-        gap: 6px;
-      }
-
-      #globalHeader .points-icon,
-      #globalHeader .points-icon img {
-        width: 31px;
-        height: 31px;
-      }
-
-      #globalHeader .points-icon {
-        flex-basis: 31px;
-      }
-
-      #globalHeader .points-copy span {
-        display: none;
-      }
-
-      #globalHeader .points-copy strong {
-        margin-top: 0;
-        font-size: 15px;
-      }
-
-      #globalHeader .header-square-button,
-      #globalHeader #globalNotificationMount .notification-bell {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        overflow: visible;
-        border: 0;
-        border-radius: 10px;
-        background: transparent;
-        box-shadow: none;
-      }
-
-      #globalHeader #friendsButton img {
-        width: 43px;
-        height: 43px;
-        max-width: none;
-        transform: translateX(1px);
-      }
-
-      #globalHeader
-      #globalNotificationMount
-      .notification-bell-icon img {
-        width: 33px;
-        height: 33px;
-      }
-
-      #globalHeader .account-btn {
-        width: 40px;
-        min-width: 40px;
-        max-width: 40px;
-        height: 40px;
-        flex: 0 0 40px;
-        padding: 0;
-        justify-content: center;
-      }
-
-      #globalHeader .avatar,
-      #globalHeader .avatar-fallback {
-        width: 38px;
-        height: 38px;
-        flex: 0 0 38px;
-        border-radius: 11px;
-      }
-
-      #globalHeader .account-copy,
-      #globalHeader .account-chevron {
-        display: none;
-      }
-
-      #globalHeader nav {
-        inset: 60px 0 auto 0;
-        height: calc(100vh - 60px);
-      }
-
-      #globalHeader .account-menu {
-        top: 68px;
-        left: auto;
-        right: 12px;
-      }
-
-      #globalHeader .notification-panel {
-        position: fixed;
-        top: 68px;
-        left: 14px;
-        right: 14px;
-        width: auto;
-        max-height: calc(100vh - 88px);
-      }
+    #globalHeader nav {
+      min-height: 70px;
+      display: flex;
+      position: static;
+      height: auto;
+      flex: 1;
+      align-items: stretch;
+      gap: 1px;
+      padding: 0;
+      overflow: visible;
+      background: transparent;
     }
 
-    @media (max-width: 470px) {
-      #globalHeader .header-actions {
-        gap: 4px;
-      }
-
-      #globalHeader .mobile-toggle,
-      #globalHeader .header-square-button,
-      #globalHeader #globalNotificationMount .notification-bell,
-      #globalHeader .account-btn {
-        width: 39px;
-        height: 39px;
-      }
-
-      #globalHeader .mobile-toggle {
-        flex-basis: 39px;
-      }
-
-      #globalHeader .account-btn {
-        min-width: 39px;
-        max-width: 39px;
-        flex-basis: 39px;
-      }
-
-      #globalHeader .avatar,
-      #globalHeader .avatar-fallback {
-        width: 37px;
-        height: 37px;
-        flex-basis: 37px;
-      }
-
-      #globalHeader #friendsButton img {
-        width: 42px;
-        height: 42px;
-      }
-
-      #globalHeader
-      #globalNotificationMount
-      .notification-bell-icon img {
-        width: 32px;
-        height: 32px;
-      }
-
-      #globalHeader .points-icon,
-      #globalHeader .points-icon img {
-        width: 29px;
-        height: 29px;
-      }
-
-      #globalHeader .points-icon {
-        flex-basis: 29px;
-      }
-
-      #globalHeader .points-copy strong {
-        font-size: 14px;
-      }
+    #globalHeader nav a {
+      min-height: 70px;
+      padding: 0 7px;
+      border-bottom: 0;
+      font-size: 11px;
+      letter-spacing: .3px;
     }
 
-    /* =========================================================
-       FRIENDS DRAWER
-    ========================================================= */
+    #globalHeader nav a.active::after {
+      left: 7px;
+      right: 7px;
+      top: auto;
+      bottom: -1px;
+      width: auto;
+      height: 3px;
+    }
 
-    #globalFriendsRoot {
+    #globalHeader .header-actions {
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    #globalHeader .points {
+      height: 42px;
+      gap: 5px;
+      padding: 0;
+    }
+
+    #globalHeader .points-icon,
+    #globalHeader .points-icon img {
+      width: 30px;
+      height: 30px;
+    }
+
+    #globalHeader .points-icon {
+      flex-basis: 30px;
+    }
+
+    #globalHeader .points-copy span {
+      display: none;
+    }
+
+    #globalHeader .points-copy strong {
+      margin-top: 0;
+      font-size: 14px;
+    }
+
+    #globalHeader .header-square-button,
+    #globalHeader .notification-bell {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      background: transparent;
+    }
+
+    #globalHeader #friendsButton img {
+      width: 40px;
+      height: 40px;
+    }
+
+    #globalHeader .notification-bell-icon img {
+      width: 31px;
+      height: 31px;
+    }
+
+    #globalHeader .account-btn {
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
+      height: 40px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    #globalHeader .avatar,
+    #globalHeader .avatar-fallback {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border-radius: 10px;
+    }
+
+    #globalHeader .account-copy,
+    #globalHeader .account-chevron {
+      display: none;
+    }
+
+    #globalHeader .account-menu {
+      top: 66px;
+      right: 12px;
+    }
+  }
+
+  /* =========================================================
+     PHONE HEADER
+  ========================================================= */
+
+  @media (max-width: 720px) {
+    #globalHeader .global-shell {
+      width: min(calc(100% - 28px), var(--gh-max));
+    }
+
+    #globalHeader .brand {
+      display: none;
+    }
+
+    #globalHeader .header-inner {
+      min-height: 60px;
+      gap: 8px;
+    }
+
+    #globalHeader .mobile-toggle {
+      display: block;
+      order: -1;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      font-size: 24px;
+    }
+
+    #globalHeader nav {
+      position: fixed;
+      inset: 60px 0 auto 0;
+      z-index: 2200;
+      width: 100%;
+      height: calc(100dvh - 60px);
+      min-height: 0;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 22px 24px;
+      background: rgba(8,8,13,.98);
+      overflow-y: auto;
+    }
+
+    #globalHeader nav.show {
+      display: flex;
+    }
+
+    #globalHeader nav a {
+      min-height: 58px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--gh-border);
+      font-size: 18px;
+    }
+
+    #globalHeader nav a.active::after {
+      left: 0;
+      right: auto;
+      top: 15px;
+      bottom: 15px;
+      width: 3px;
+      height: auto;
+    }
+
+    #globalHeader .header-actions {
+      order: 1;
+      flex: 1;
+      min-width: 0;
+      gap: 5px;
+    }
+
+    #globalHeader #pointsBox {
+      order: 1;
+      margin-right: auto;
+    }
+
+    #globalHeader #friendsButtonWrap {
+      order: 2;
+    }
+
+    #globalHeader #globalNotificationMount {
+      order: 3;
+    }
+
+    #globalHeader #accountBox {
+      order: 4;
+    }
+
+    #globalHeader .points {
+      height: 40px;
+      padding: 0;
+      gap: 6px;
+    }
+
+    #globalHeader .points-icon,
+    #globalHeader .points-icon img {
+      width: 31px;
+      height: 31px;
+    }
+
+    #globalHeader .points-icon {
+      flex-basis: 31px;
+    }
+
+    #globalHeader .points-copy span {
+      display: none;
+    }
+
+    #globalHeader .points-copy strong {
+      margin-top: 0;
+      font-size: 15px;
+    }
+
+    #globalHeader .header-square-button,
+    #globalHeader #globalNotificationMount .notification-bell {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      overflow: visible;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    #globalHeader #friendsButton img {
+      width: 43px;
+      height: 43px;
+      max-width: none;
+      transform: translateX(1px);
+    }
+
+    #globalHeader
+    #globalNotificationMount
+    .notification-bell-icon img {
+      width: 33px;
+      height: 33px;
+    }
+
+    #globalHeader .account-btn {
+      width: 40px;
+      min-width: 40px;
+      max-width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    #globalHeader .avatar,
+    #globalHeader .avatar-fallback {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border-radius: 11px;
+    }
+
+    #globalHeader .account-copy,
+    #globalHeader .account-chevron {
+      display: none;
+    }
+
+    #globalHeader .account-menu {
+      top: 68px;
+      left: auto;
+      right: 12px;
+    }
+
+    #globalHeader .notification-panel {
+      position: fixed;
+      top: 68px;
+      left: 14px;
+      right: 14px;
+      width: auto;
+      max-height: calc(100dvh - 88px);
+    }
+  }
+
+  @media (max-width: 470px) {
+    #globalHeader .header-actions {
+      gap: 4px;
+    }
+
+    #globalHeader .mobile-toggle,
+    #globalHeader .header-square-button,
+    #globalHeader #globalNotificationMount .notification-bell,
+    #globalHeader .account-btn {
+      width: 39px;
+      height: 39px;
+    }
+
+    #globalHeader .mobile-toggle {
+      flex-basis: 39px;
+    }
+
+    #globalHeader .account-btn {
+      min-width: 39px;
+      max-width: 39px;
+      flex-basis: 39px;
+    }
+
+    #globalHeader .avatar,
+    #globalHeader .avatar-fallback {
+      width: 37px;
+      height: 37px;
+      flex-basis: 37px;
+    }
+
+    #globalHeader #friendsButton img {
+      width: 42px;
+      height: 42px;
+    }
+
+    #globalHeader
+    #globalNotificationMount
+    .notification-bell-icon img {
+      width: 32px;
+      height: 32px;
+    }
+
+    #globalHeader .points-icon,
+    #globalHeader .points-icon img {
+      width: 29px;
+      height: 29px;
+    }
+
+    #globalHeader .points-icon {
+      flex-basis: 29px;
+    }
+
+    #globalHeader .points-copy strong {
+      font-size: 14px;
+    }
+    }
+
+  /* =========================================================
+     FRIENDS DRAWER
+  ========================================================= */
+
+  #globalFriendsRoot {
       position: relative;
       z-index: 3000;
     }
@@ -2910,9 +3047,9 @@
       );
 
       if (
-        window.innerWidth > 980 &&
-        mainNav.classList.contains("show")
-      ) {
+  window.innerWidth > 720 &&
+  mainNav.classList.contains("show")
+) {
         mainNav.classList.remove("show");
 
         mobileToggle.textContent = "☰";

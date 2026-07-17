@@ -8,10 +8,24 @@ const firebaseConfig = {
   appId: "1:248737838095:web:583b27b79021b8ac9c9f7a"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+
+  firebase.initializeApp(firebaseConfig);
+
+}
 
 window.database = firebase.database();
+
 window.auth = firebase.auth();
 
+/*
+
+  Keep these names available for your older page scripts
+
+  that use database and auth directly.
+
+*/
+
 const database = window.database;
+
 const auth = window.auth;

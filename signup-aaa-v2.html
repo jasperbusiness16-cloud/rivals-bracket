@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090810">
+  <title>Create Account | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#07070c;
+      --panel:#11101a;
+      --panel2:#171424;
+      --text:#f8f6ff;
+      --muted:#aaa4b8;
+      --dim:#746e82;
+      --border:rgba(255,255,255,.10);
+      --border-strong:rgba(192,132,252,.34);
+      --purple:#a855f7;
+      --purple2:#d0a3ff;
+      --purple3:#6d28d9;
+      --green:#3ddc97;
+      --red:#ff5b70;
+      --gold:#f7c948;
+      --shadow:0 32px 110px rgba(0,0,0,.58);
+    }
+
+    *{box-sizing:border-box}
+    html{
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+    input,textarea,select{
+      font-size:16px;
+    }
+    html,body{margin:0;min-height:100%;font-family:"Rajdhani",sans-serif;background:var(--bg);color:var(--text)}
+    html{overflow-x:hidden}
+    body{
+      min-height:100dvh;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 76% 9%,rgba(126,53,214,.22),transparent 30%),
+        radial-gradient(circle at 8% 86%,rgba(77,31,146,.16),transparent 31%),
+        linear-gradient(145deg,#06060a 0%,#0a0810 50%,#07070c 100%);
+    }
+    button,input,a{font:inherit}
+    button{color:inherit}
+    a{color:inherit;text-decoration:none}
+    [hidden]{display:none!important}
+
+    .auth-stage{position:relative;isolation:isolate;min-height:100dvh;width:100%;overflow:hidden}
+    .auth-stage::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-4;
+      opacity:.2;
+      background-image:
+        linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+      background-size:64px 64px;
+      mask-image:linear-gradient(110deg,#000,transparent 70%);
+      animation:gridDrift 24s linear infinite;
+    }
+    .auth-stage::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-3;
+      pointer-events:none;
+      background:linear-gradient(110deg,transparent 0 48%,rgba(192,132,252,.05) 49%,transparent 50% 100%);
+    }
+    .ambient-orb{
+      position:absolute;
+      z-index:-2;
+      width:560px;
+      aspect-ratio:1;
+      border-radius:50%;
+      filter:blur(76px);
+      opacity:.17;
+      background:var(--purple);
+      right:-250px;
+      top:-230px;
+      animation:orbFloat 12s ease-in-out infinite alternate;
+    }
+    .ambient-orb.second{width:420px;right:auto;top:auto;left:-210px;bottom:-250px;opacity:.11;animation-delay:-5s}
+
+    .auth-frame{
+      min-height:100dvh;
+      display:grid;
+      grid-template-columns:minmax(360px,1.04fr) minmax(500px,.96fr);
+      width:min(1580px,100%);
+      margin:0 auto;
+    }
+
+    .brand-side{
+      position:relative;
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:clamp(34px,5vw,82px);
+      overflow:hidden;
+      border-right:1px solid rgba(255,255,255,.08);
+    }
+    .brand-side::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      background:
+        linear-gradient(180deg,rgba(168,85,247,.08),transparent 38%),
+        radial-gradient(circle at 16% 45%,rgba(168,85,247,.11),transparent 28%);
+    }
+    .brand-top{display:flex;align-items:center;gap:13px;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .brand-mark{
+      position:relative;
+      width:42px;height:42px;display:grid;place-items:center;
+      border:1px solid rgba(208,163,255,.5);border-radius:11px;color:#fff;
+      background:linear-gradient(145deg,rgba(109,40,217,.72),rgba(168,85,247,.22));
+      box-shadow:0 0 28px rgba(168,85,247,.2),inset 0 1px rgba(255,255,255,.14);
+      font-size:16px;font-weight:800;letter-spacing:-1px;
+    }
+    .brand-mark::after{content:"";position:absolute;inset:-7px;border:1px solid rgba(168,85,247,.16);border-radius:15px;animation:markPulse 3s ease-in-out infinite}
+
+    .brand-copy{max-width:800px;margin:clamp(42px,8vh,110px) 0}
+    .eyebrow{color:var(--purple2);font-size:11px;font-weight:800;letter-spacing:2.8px;text-transform:uppercase}
+    .brand-copy h1{
+      max-width:860px;
+      margin:13px 0 0;
+      font-size:clamp(54px,6.6vw,106px);
+      line-height:.77;
+      letter-spacing:-4px;
+      text-transform:uppercase;
+      text-wrap:balance;
+    }
+    .brand-copy h1 span{display:block;color:transparent;-webkit-text-stroke:1px rgba(232,218,255,.68);text-shadow:0 0 32px rgba(168,85,247,.16)}
+    .brand-copy p{max-width:620px;margin:27px 0 0;color:var(--muted);font-size:clamp(15px,1.35vw,20px);line-height:1.55}
+
+    .journey{
+      max-width:720px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:0;
+      border:1px solid var(--border);
+      border-radius:15px;
+      background:rgba(8,7,13,.72);
+      overflow:hidden;
+    }
+    .journey-step{position:relative;min-width:0;padding:17px 14px;border-right:1px solid var(--border)}
+    .journey-step:last-child{border-right:0}
+    .journey-step::after{content:"";position:absolute;right:-4px;top:50%;width:7px;height:7px;transform:translateY(-50%) rotate(45deg);background:var(--purple3);z-index:2}
+    .journey-step:last-child::after{display:none}
+    .journey-step span{display:block;color:var(--purple2);font-size:9px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}
+    .journey-step strong{display:block;margin-top:4px;font-size:12px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    .form-side{
+      min-width:0;
+      display:grid;
+      place-items:center;
+      padding:clamp(22px,3.6vw,58px);
+      background:linear-gradient(180deg,rgba(255,255,255,.012),rgba(255,255,255,.004));
+    }
+    .auth-card{
+      position:relative;
+      width:min(610px,100%);
+      max-height:calc(100dvh - 44px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:hidden;
+      border:1px solid var(--border-strong);
+      border-radius:24px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 24%),rgba(15,13,23,.95);
+      box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.05);
+    }
+    .auth-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,transparent,var(--purple2),var(--purple),transparent);background-size:220% 100%;animation:shimmer 5s linear infinite;z-index:2}
+    .card-head{padding:27px 32px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(109,40,217,.12),transparent 55%)}
+    .card-head-row{display:flex;justify-content:space-between;gap:18px;align-items:end}
+    .card-head h2{margin:7px 0 0;font-size:clamp(34px,3.8vw,48px);line-height:.9;letter-spacing:-1.3px;text-transform:uppercase}
+    .card-head p{margin:10px 0 0;color:var(--muted);font-size:13px}
+    .completion{text-align:right;flex:0 0 auto}
+    .completion strong{display:block;color:var(--purple2);font-size:20px}
+    .completion span{display:block;margin-top:2px;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+    .completion-track{width:90px;height:5px;margin-top:7px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.08)}
+    .completion-fill{width:0;height:100%;background:linear-gradient(90deg,var(--purple3),var(--purple2));transition:width .22s}
+
+    .card-body{min-height:0;overflow:auto;padding:23px 32px 28px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.35) transparent}
+    .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px 13px}
+    .field{display:block;min-width:0}
+    .field.full{grid-column:1/-1}
+    .field-label{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:7px;color:#ddd7e8;font-size:9px;font-weight:800;letter-spacing:1.25px;text-transform:uppercase}
+    .field-label span:last-child{color:var(--dim);font-size:8px}
+    .input-shell{position:relative;min-width:0;display:flex;align-items:center;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,.025);transition:border-color .18s,box-shadow .18s,background .18s}
+    .input-shell:focus-within{border-color:rgba(192,132,252,.62);background:rgba(168,85,247,.045);box-shadow:0 0 0 3px rgba(168,85,247,.08),0 0 24px rgba(109,40,217,.08)}
+    .input-icon{flex:0 0 42px;display:grid;place-items:center;color:var(--purple2);font-size:13px}
+    .input-shell input{width:100%;min-width:0;height:47px;padding:0 12px 0 0;border:0;outline:0;color:var(--text);background:transparent;font-size:16px;font-weight:600}
+    .input-shell input::placeholder{color:#676170}
+    .password-toggle{flex:0 0 auto;height:32px;margin-right:7px;padding:0 9px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;cursor:pointer}
+    .password-toggle:hover{color:#fff;background:rgba(255,255,255,.04)}
+
+    .password-meter{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+    .password-meter span{height:4px;border-radius:999px;background:rgba(255,255,255,.07);transition:.18s}
+    .password-meter[data-strength="1"] span:nth-child(-n+1),
+    .password-meter[data-strength="2"] span:nth-child(-n+2),
+    .password-meter[data-strength="3"] span:nth-child(-n+3),
+    .password-meter[data-strength="4"] span:nth-child(-n+4){background:linear-gradient(90deg,var(--purple3),var(--purple2))}
+    .password-hint{margin:6px 0 0;color:var(--dim);font-size:9px}
+
+    .primary-button{
+      position:relative;width:100%;min-height:51px;display:flex;align-items:center;justify-content:center;gap:10px;
+      margin-top:20px;padding:0 18px;overflow:hidden;border:1px solid rgba(208,163,255,.56);border-radius:12px;
+      background:linear-gradient(135deg,var(--purple3),var(--purple));box-shadow:0 15px 34px rgba(109,40,217,.28),inset 0 1px rgba(255,255,255,.18);
+      color:#fff;font-size:13px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;transition:transform .18s,filter .18s,box-shadow .18s;
+    }
+    .primary-button::before{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(110deg,transparent,rgba(255,255,255,.18),transparent);transition:transform .55s}
+    .primary-button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 20px 44px rgba(109,40,217,.38)}
+    .primary-button:hover::before{transform:translateX(120%)}
+    .primary-button:disabled{opacity:.55;cursor:wait}
+    .button-spinner{width:14px;height:14px;display:none;border:2px solid rgba(255,255,255,.28);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    .primary-button.loading .button-spinner{display:block}
+
+    .status-message{min-height:0;margin:14px 0 0;padding:0;border:0 solid transparent;border-radius:10px;color:var(--muted);font-size:12px;font-weight:700;line-height:1.4;opacity:0;transform:translateY(-4px);transition:.18s}
+    .status-message.show{min-height:43px;display:flex;align-items:center;padding:10px 12px;border-width:1px;opacity:1;transform:none}
+    .status-message.error{color:#ffadb8;border-color:rgba(255,91,112,.28);background:rgba(255,91,112,.075)}
+    .status-message.success{color:#a7f3d0;border-color:rgba(61,220,151,.28);background:rgba(61,220,151,.075)}
+    .status-message.info{color:#d8b4fe;border-color:rgba(168,85,247,.28);background:rgba(168,85,247,.075)}
+
+    .account-switch{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:18px;color:var(--muted);font-size:12px}
+    .account-switch a{color:var(--purple2);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+    .account-switch a:hover{text-decoration:underline}
+    .legal-note{margin:14px auto 0;max-width:470px;color:var(--dim);font-size:9px;line-height:1.4;text-align:center}
+
+    .success-view{padding:34px 32px 38px;text-align:center}
+    .success-emblem{position:relative;width:86px;height:86px;display:grid;place-items:center;margin:0 auto;border:1px solid rgba(61,220,151,.42);border-radius:24px;background:radial-gradient(circle,rgba(61,220,151,.18),rgba(61,220,151,.05));color:#a7f3d0;font-size:34px;box-shadow:0 0 40px rgba(61,220,151,.14)}
+    .success-emblem::after{content:"";position:absolute;inset:-9px;border:1px solid rgba(61,220,151,.14);border-radius:29px;animation:markPulse 3s ease-in-out infinite}
+    .success-view h3{margin:25px 0 0;font-size:35px;line-height:.9;text-transform:uppercase}
+    .success-view p{max-width:430px;margin:13px auto 0;color:var(--muted);line-height:1.5}
+    .assigned-id{margin:22px auto 0;padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.025)}
+    .assigned-id span{display:block;color:var(--dim);font-size:9px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}
+    .assigned-id strong{display:block;margin-top:3px;color:var(--purple2);font-size:23px;letter-spacing:1px}
+    .success-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:21px}
+    .secondary-link{min-height:48px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,.025);color:var(--muted);font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase}
+    .secondary-link:hover{color:#fff;border-color:rgba(192,132,252,.4)}
+    .success-actions .primary-button{margin-top:0;min-height:48px}
+
+    @keyframes gridDrift{to{background-position:64px 64px}}
+    @keyframes orbFloat{to{transform:translate3d(-90px,70px,0) scale(1.12)}}
+    @keyframes markPulse{50%{opacity:.35;transform:scale(1.06)}}
+    @keyframes shimmer{to{background-position:-220% 0}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    @supports (-webkit-touch-callout:none){
+      input,textarea,select{font-size:16px !important}
+    }
+
+    @media(max-width:1080px){
+      .auth-frame{grid-template-columns:minmax(300px,.8fr) minmax(500px,1.2fr)}
+      .brand-copy h1{font-size:clamp(48px,7vw,76px);letter-spacing:-2.5px}
+      .journey{grid-template-columns:1fr 1fr}
+      .journey-step:nth-child(2){border-right:0}
+      .journey-step:nth-child(-n+2){border-bottom:1px solid var(--border)}
+      .journey-step:nth-child(2)::after{display:none}
+    }
+
+    @media(max-width:820px){
+      .auth-stage{overflow:visible}
+      .auth-frame{min-height:100dvh;display:block;width:100%}
+      .brand-side{min-height:auto;padding:24px 20px 27px;border-right:0;border-bottom:1px solid var(--border)}
+      .brand-top{font-size:9px}
+      .brand-mark{width:36px;height:36px;font-size:14px}
+      .brand-copy{margin:34px 0 0}
+      .brand-copy h1{font-size:clamp(43px,12.5vw,62px);line-height:.8;letter-spacing:-2px}
+      .brand-copy p{margin-top:16px;font-size:14px}
+      .journey{display:none}
+      .form-side{display:block;padding:22px 14px calc(28px + env(safe-area-inset-bottom))}
+      .auth-card{width:100%;max-height:none;border-radius:19px;display:block}
+      .card-head{padding:25px 22px 19px}
+      .card-head h2{font-size:39px}
+      .card-body{overflow:visible;padding:22px 22px 26px}
+    }
+
+    @media(max-width:580px){
+      .field-grid{grid-template-columns:1fr}
+      .field.full{grid-column:auto}
+      .card-head-row{align-items:flex-start}
+      .completion{padding-top:2px}
+      .completion-track{width:65px}
+    }
+
+    @media(max-width:390px){
+      .brand-side{padding-left:16px;padding-right:16px}
+      .brand-copy h1{font-size:41px}
+      .form-side{padding-left:10px;padding-right:10px}
+      .card-head,.card-body,.success-view{padding-left:18px;padding-right:18px}
+      .success-actions{grid-template-columns:1fr}
+      .account-switch{align-items:flex-start;flex-wrap:wrap;text-align:center}
+    }
+
+    @media(max-height:820px) and (min-width:821px){
+      .brand-side{padding-top:28px;padding-bottom:28px}
+      .brand-copy{margin:30px 0}
+      .brand-copy h1{font-size:clamp(48px,5.6vw,78px)}
+      .brand-copy p{margin-top:17px}
+      .journey-step{padding-top:11px;padding-bottom:11px}
+      .form-side{padding-top:18px;padding-bottom:18px}
+      .auth-card{max-height:calc(100dvh - 30px)}
+      .card-head{padding-top:21px;padding-bottom:15px}
+      .card-body{padding-top:18px;padding-bottom:21px}
+      .field-grid{gap:12px}
+      .input-shell input{height:43px}
+      .primary-button{margin-top:16px}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-stage">
+    <div class="ambient-orb" aria-hidden="true"></div>
+    <div class="ambient-orb second" aria-hidden="true"></div>
+
+    <div class="auth-frame">
+      <section class="brand-side" aria-label="Create a Rivals Gauntlet account">
+        <div class="brand-top">
+          <div class="brand-mark" aria-hidden="true">RG</div>
+          <span>Rivals Gauntlet // Competitor Registration</span>
+        </div>
+
+        <div class="brand-copy">
+          <div class="eyebrow">Begin Your Competitive Record</div>
+          <h1>Build Your<span>Legacy.</span></h1>
+          <p>Create your permanent Rivals Gauntlet identity, enter tournaments, grow your prediction career and build a public competitive history.</p>
+        </div>
+
+        <div class="journey" aria-label="Account progression path">
+          <div class="journey-step"><span>01</span><strong>Create Identity</strong></div>
+          <div class="journey-step"><span>02</span><strong>Join Events</strong></div>
+          <div class="journey-step"><span>03</span><strong>Earn Progression</strong></div>
+          <div class="journey-step"><span>04</span><strong>Build Legacy</strong></div>
+        </div>
+      </section>
+
+      <section class="form-side">
+        <div class="auth-card">
+          <header id="signupHeader" class="card-head">
+            <div class="card-head-row">
+              <div>
+                <div class="eyebrow">New Competitor Profile</div>
+                <h2>Create Account</h2>
+                <p>Establish your Rivals Gauntlet identity and tournament profile.</p>
+              </div>
+
+              <div class="completion" aria-label="Form completion">
+                <strong id="completionValue">0%</strong>
+                <span>Profile Ready</span>
+                <div class="completion-track"><div id="completionFill" class="completion-fill"></div></div>
+              </div>
+            </div>
+          </header>
+
+          <div id="signupForm" class="card-body">
+            <div class="field-grid">
+              <label class="field full" for="email">
+                <span class="field-label"><span>Email Address</span><span>Account Login</span></span>
+                <span class="input-shell">
+                  <span class="input-icon" aria-hidden="true">◆</span>
+                  <input id="email" data-required-field type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" maxlength="120">
+                </span>
+              </label>
+
+              <label class="field full" for="password">
+                <span class="field-label"><span>Password</span><span>6+ Characters</span></span>
+                <span class="input-shell">
+                  <span class="input-icon" aria-hidden="true">●</span>
+                  <input id="password" data-required-field type="password" autocomplete="new-password" placeholder="Create a secure password" maxlength="128">
+                  <button id="passwordToggle" class="password-toggle" type="button" aria-label="Show password">Show</button>
+                </span>
+                <span id="passwordMeter" class="password-meter" data-strength="0" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                <span id="passwordHint" class="password-hint">Use at least six characters.</span>
+              </label>
+
+              <label class="field" for="displayName">
+                <span class="field-label"><span>Display Name</span><span>Public Profile</span></span>
+                <span class="input-shell">
+                  <span class="input-icon" aria-hidden="true">◇</span>
+                  <input id="displayName" data-required-field autocomplete="nickname" placeholder="Atrophy" maxlength="32">
+                </span>
+              </label>
+
+              <label class="field" for="rivalsIgn">
+                <span class="field-label"><span>Marvel Rivals IGN</span><span>In-Game Name</span></span>
+                <span class="input-shell">
+                  <span class="input-icon" aria-hidden="true">✦</span>
+                  <input id="rivalsIgn" data-required-field autocomplete="off" placeholder="Your in-game name" maxlength="32">
+                </span>
+              </label>
+
+              <label class="field full" for="discordUsername">
+                <span class="field-label"><span>Discord Username</span><span>Team Contact</span></span>
+                <span class="input-shell">
+                  <span class="input-icon" aria-hidden="true">◈</span>
+                  <input id="discordUsername" data-required-field autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="yourname" maxlength="40">
+                </span>
+              </label>
+            </div>
+
+            <button id="signupButton" class="primary-button" type="button">
+              <span class="button-spinner" aria-hidden="true"></span>
+              <span id="signupButtonText">Create Competitor Account</span>
+            </button>
+
+            <p id="signupStatus" class="status-message" role="status" aria-live="polite"></p>
+
+            <div class="account-switch">
+              <span>Already registered?</span>
+              <a href="login.html">Sign In</a>
+            </div>
+
+            <p class="legal-note">By creating an account, you agree to follow Rivals Gauntlet tournament rules and community standards.</p>
+          </div>
+
+          <div id="successView" class="success-view" hidden>
+            <div class="success-emblem" aria-hidden="true">✓</div>
+            <div class="eyebrow" style="margin-top:23px">Registration Complete</div>
+            <h3>Welcome to the Gauntlet</h3>
+            <p>Your competitor profile is active. A verification message has been sent to your email address.</p>
+
+            <div class="assigned-id">
+              <span>Your Permanent RG ID</span>
+              <strong id="assignedRgId">RG000000</strong>
+            </div>
+
+            <div class="success-actions">
+              <a class="secondary-link" href="login.html">Return to Sign In</a>
+              <a class="primary-button" href="dashboard.html">Enter Account Center</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js?v=2"></script>
+
+  <script>
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const displayNameInput = document.getElementById("displayName");
+    const rivalsIgnInput = document.getElementById("rivalsIgn");
+    const discordInput = document.getElementById("discordUsername");
+    const requiredInputs = Array.from(document.querySelectorAll("[data-required-field]"));
+    const signupButton = document.getElementById("signupButton");
+    const signupButtonText = document.getElementById("signupButtonText");
+    const statusElement = document.getElementById("signupStatus");
+    const passwordToggle = document.getElementById("passwordToggle");
+    const passwordMeter = document.getElementById("passwordMeter");
+    const passwordHint = document.getElementById("passwordHint");
+    const completionValue = document.getElementById("completionValue");
+    const completionFill = document.getElementById("completionFill");
+    let isBusy = false;
+    let assignedRgId = "";
+
+    function clean(value) {
+      return String(value || "").trim();
+    }
+
+    function friendlyAuthError(error) {
+      const code = String(error?.code || "");
+      const messages = {
+        "auth/email-already-in-use": "A Rivals Gauntlet account already exists for that email.",
+        "auth/invalid-email": "Enter a valid email address.",
+        "auth/operation-not-allowed": "Account registration is temporarily unavailable.",
+        "auth/weak-password": "Your password must contain at least six characters.",
+        "auth/network-request-failed": "A network error interrupted registration. Check your connection and try again.",
+        "PERMISSION_DENIED": "Firebase security rules blocked part of the account setup."
+      };
+      return messages[code] || error?.message || "Account creation failed. Please try again.";
+    }
+
+    function setStatus(message, type = "info") {
+      statusElement.textContent = message;
+      statusElement.className = `status-message show ${type}`;
+    }
+
+    function clearStatus() {
+      statusElement.textContent = "";
+      statusElement.className = "status-message";
+    }
+
+    function setBusy(busy) {
+      isBusy = busy;
+      signupButton.disabled = busy;
+      signupButton.classList.toggle("loading", busy);
+      signupButtonText.textContent = busy ? "Establishing Profile" : "Create Competitor Account";
+      requiredInputs.forEach((input) => { input.disabled = busy; });
+      passwordToggle.disabled = busy;
+    }
+
+    function updateCompletion() {
+      const completed = requiredInputs.filter((input) => clean(input.value)).length;
+      const percent = Math.round((completed / requiredInputs.length) * 100);
+      completionValue.textContent = `${percent}%`;
+      completionFill.style.width = `${percent}%`;
+    }
+
+    function passwordStrength(value) {
+      if (!value) return 0;
+      let score = value.length >= 6 ? 1 : 0;
+      if (value.length >= 10) score += 1;
+      if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score += 1;
+      if (/\d/.test(value) || /[^A-Za-z0-9]/.test(value)) score += 1;
+      return Math.min(4, score);
+    }
+
+    function updatePasswordMeter() {
+      const strength = passwordStrength(passwordInput.value);
+      passwordMeter.dataset.strength = String(strength);
+      const hints = [
+        "Use at least six characters.",
+        "Meets Firebase's minimum requirement.",
+        "Good start. A longer password is safer.",
+        "Strong password.",
+        "Excellent password strength."
+      ];
+      passwordHint.textContent = hints[strength];
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    async function createAccount() {
+      if (isBusy) return;
+
+      const email = clean(emailInput.value);
+      const password = passwordInput.value;
+      const displayName = clean(displayNameInput.value);
+      const rivalsIgn = clean(rivalsIgnInput.value);
+      const discordUsername = clean(discordInput.value);
+
+      const values = [email, password, displayName, rivalsIgn, discordUsername];
+      const firstMissing = requiredInputs[values.findIndex((value) => !clean(value))];
+
+      if (firstMissing) {
+        setStatus("Complete every required identity field before continuing.", "error");
+        firstMissing.focus();
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        setStatus("Enter a valid email address.", "error");
+        emailInput.focus();
+        return;
+      }
+
+      if (password.length < 6) {
+        setStatus("Your password must contain at least six characters.", "error");
+        passwordInput.focus();
+        return;
+      }
+
+      clearStatus();
+      setBusy(true);
+
+      try {
+        const credential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = credential.user;
+        const now = Date.now();
+
+        if (typeof user.updateProfile === "function") {
+          await user.updateProfile({ displayName });
+        }
+
+        const transactionResult = await database.ref("counters/nextRgId").transaction((currentValue) => {
+          return (currentValue || 1) + 1;
+        });
+
+        if (!transactionResult.committed) {
+          throw new Error("RG ID assignment was not completed.");
+        }
+
+        const assignedNumber = transactionResult.snapshot.val() - 1;
+        assignedRgId = `RG${String(assignedNumber).padStart(6, "0")}`;
+
+        await user.sendEmailVerification();
+
+        const updates = {};
+        updates[`users/${user.uid}`] = {
+          email,
+          emailVerified: false,
+          role: "player",
+          rgId: assignedRgId,
+          createdAt: now,
+          lastLogin: now
+        };
+
+        updates[`players/${user.uid}`] = {
+          uid: user.uid,
+          rgId: assignedRgId,
+          displayName,
+          rivalsIgn,
+          discordUsername,
+          discordMember: false,
+          region: "",
+          platform: "",
+          bio: "",
+          profileImage: "",
+          socials: {
+            twitch: "",
+            youtube: "",
+            tiktok: "",
+            x: ""
+          },
+          eventsPlayed: 0,
+          championships: 0,
+          bestFinish: "--",
+          createdAt: now,
+          updatedAt: now
+        };
+
+        await database.ref().update(updates);
+
+        document.getElementById("assignedRgId").textContent = assignedRgId;
+        document.getElementById("signupHeader").hidden = true;
+        document.getElementById("signupForm").hidden = true;
+        document.getElementById("successView").hidden = false;
+      } catch (error) {
+        console.error("Account creation failed:", error);
+        setStatus(friendlyAuthError(error), "error");
+        setBusy(false);
+      }
+    }
+
+    passwordToggle.addEventListener("click", () => {
+      const showing = passwordInput.type === "text";
+      passwordInput.type = showing ? "password" : "text";
+      passwordToggle.textContent = showing ? "Show" : "Hide";
+      passwordToggle.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+      passwordInput.focus();
+    });
+
+    signupButton.addEventListener("click", createAccount);
+
+    requiredInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        clearStatus();
+        updateCompletion();
+        if (input === passwordInput) updatePasswordMeter();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") createAccount();
+      });
+    });
+
+    updateCompletion();
+    updatePasswordMeter();
+  </script>
+</body>
+</html>

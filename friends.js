@@ -1,4 +1,4 @@
-const RGFriends = (() => {
+window.RGFriends = (() => {
 
   function getFriendshipId(uidA, uidB) {
     return [uidA, uidB].sort().join("_");

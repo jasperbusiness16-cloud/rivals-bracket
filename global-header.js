@@ -431,11 +431,7 @@
 
 
 
-                try {
-    this.render();
-} catch (e) {
-    alert(e.message);
-}
+                this.render();
                 
                 
                 
@@ -5957,20 +5953,19 @@
     // CREATE AND INITIALIZE GLOBAL HEADER
     // =========================================================================
 
-    alert("global-header loaded");
-
-const header = new RGHeaderController();
+    const header = new RGHeaderController();
 
 window.RGHeader = header;
 
 header.init().catch((error) => {
-  alert(error?.message || "Header initialization failed.");
-  console.error("[RG Header] Initialization failed:", error);
+    console.error("[RG Header] Initialization failed:", error);
 
-  header.showToast(
-    "The site header could not load.",
-    "error"
-  );
+    if (header && typeof header.showToast === "function") {
+        header.showToast(
+            "The site header could not load.",
+            "error"
+        );
+    }
 });
 
 })();

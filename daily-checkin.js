@@ -343,8 +343,9 @@ const RGDailyCheckIn = (() => {
 
     if (!claimDailyRewardCallable) {
       claimDailyRewardCallable = firebase
-        .functions(FUNCTIONS_REGION)
-        .httpsCallable("claimDailyReward");
+  .app()
+  .functions(FUNCTIONS_REGION)
+  .httpsCallable("claimDailyReward");
     }
 
     return claimDailyRewardCallable;

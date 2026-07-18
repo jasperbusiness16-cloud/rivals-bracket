@@ -359,6 +359,7 @@ friendRequestPaths: [
                 notifications: [],
 friends: [],
 friendRequests: [],
+giftInbox: [],
 
 dailyGiftStats: {
     sentCount: 0,
@@ -875,39 +876,57 @@ dailyGiftStats: {
                         >
                     </div>
 
-                    <div
-                        class="rg-tabs"
-                        role="tablist"
-                        aria-label="Friends sections"
-                    >
-                        <button
-                            class="rg-tab is-active"
-                            type="button"
-                            role="tab"
-                            aria-selected="true"
-                            data-rg-friends-tab="friends"
-                        >
-                            Friends
+                 <div
+    class="rg-tabs"
+    role="tablist"
+    aria-label="Friends sections"
+    style="
+        grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    "
+>
+    <button
+        class="rg-tab is-active"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-rg-friends-tab="friends"
+    >
+        Friends
 
-                            <span data-rg-friends-count>
-                                0
-                            </span>
-                        </button>
+        <span data-rg-friends-count>
+            0
+        </span>
+    </button>
 
-                        <button
-                            class="rg-tab"
-                            type="button"
-                            role="tab"
-                            aria-selected="false"
-                            data-rg-friends-tab="requests"
-                        >
-                            Requests
+    <button
+        class="rg-tab"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-rg-friends-tab="gifts"
+    >
+        Gifts
 
-                            <span data-rg-requests-count>
-                                0
-                            </span>
-                        </button>
-                    </div>
+        <span data-rg-gifts-count>
+            0
+        </span>
+    </button>
+
+    <button
+        class="rg-tab"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-rg-friends-tab="requests"
+    >
+        Requests
+
+        <span data-rg-requests-count>
+            0
+        </span>
+    </button>
+</div>
 
                     <div class="rg-drawer__body">
                         <div data-rg-friends-panel="friends">
@@ -920,6 +939,13 @@ dailyGiftStats: {
 
                             <div data-rg-friends-list></div>
                         </div>
+
+<div
+    data-rg-friends-panel="gifts"
+    hidden
+>
+    <div data-rg-gifts-list></div>
+</div>
 
                         <div
                             data-rg-friends-panel="requests"
@@ -1231,6 +1257,14 @@ dailyGiftStats: {
             this.dom.requestsCount = root.querySelector(
                 "[data-rg-requests-count]"
             );
+
+this.dom.giftsList = root.querySelector(
+    "[data-rg-gifts-list]"
+);
+
+this.dom.giftsCount = root.querySelector(
+    "[data-rg-gifts-count]"
+);
 
             this.dom.friendSearch = root.querySelector(
                 "[data-rg-friend-search]"
@@ -1795,6 +1829,7 @@ dailyGiftStats: {
             this.state.notifications = [];
 this.state.friends = [];
 this.state.friendRequests = [];
+this.state.giftInbox = [];
 
 this.state.dailyGiftStats = {
     sentCount: 0,
@@ -1811,8 +1846,9 @@ this.state.dailyGiftStats = {
                 this.setSignedOutUI();
 
                 this.renderNotifications([]);
-                this.renderFriends([]);
-                this.renderFriendRequests([]);
+this.renderFriends([]);
+this.renderFriendRequests([]);
+this.renderGiftInbox([]);
 
                 window.dispatchEvent(
                     new CustomEvent(
@@ -2364,6 +2400,36 @@ if (
     ) {
         this.state.firebaseListeners.push(
             stopDailyGiftStats
+        );
+    }
+}
+
+if (
+    window.RGDailyGifts &&
+    typeof window.RGDailyGifts.listenToGiftInbox ===
+        "function"
+) {
+    const stopGiftInbox =
+        window.RGDailyGifts.listenToGiftInbox(
+            uid,
+            gifts => {
+                this.state.giftInbox =
+                    Array.isArray(gifts)
+                        ? gifts
+                        : [];
+
+                this.renderGiftInbox(
+                    this.state.giftInbox
+                );
+            }
+        );
+
+    if (
+        typeof stopGiftInbox ===
+        "function"
+    ) {
+        this.state.firebaseListeners.push(
+            stopGiftInbox
         );
     }
 }
@@ -3459,14 +3525,24 @@ if (
    <div
     style="display:flex;gap:8px;align-items:center;"
 >
-    <a
-        class="rg-friend-card__action"
-        href="player.html?id=${encodeURIComponent(
-            friend.id
-        )}"
-    >
-        Profile
-    </a>
+  <a
+    class="rg-friend-card__action"
+    href="player.html?id=${encodeURIComponent(
+        friend.id
+    )}"
+    style="
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        min-height:42px;
+        line-height:1;
+        text-decoration:none;
+        box-sizing:border-box;
+    "
+>
+    Profile
+</a>
 
     <button
         class="rg-friend-card__action"
@@ -3495,6 +3571,127 @@ if (
                     })
                     .join("");
         }
+
+// =====================================================================
+// DAILY GIFT INBOX RENDERING
+// =====================================================================
+
+renderGiftInbox(
+    gifts = this.state.giftInbox
+) {
+    if (!this.dom.giftsList) {
+        return;
+    }
+
+    const safeGifts =
+        Array.isArray(gifts)
+            ? gifts
+            : [];
+
+    const unopenedCount =
+        safeGifts.filter(gift => {
+            return gift?.opened !== true;
+        }).length;
+
+    if (this.dom.giftsCount) {
+        this.dom.giftsCount.textContent =
+            String(unopenedCount);
+    }
+
+    if (!safeGifts.length) {
+        this.dom.giftsList.innerHTML =
+            this.emptyState(
+                "No Daily Gifts",
+                "Daily Gifts sent by your friends will appear here.",
+                "reward"
+            );
+
+        return;
+    }
+
+    this.dom.giftsList.innerHTML =
+        safeGifts
+            .map(gift => {
+                const opened =
+                    gift.opened === true;
+
+                const senderName =
+                    String(
+                        gift.senderName ||
+                        gift.otherName ||
+                        "A friend"
+                    );
+
+                const rewardName =
+                    String(
+                        gift.reward?.name ||
+                        "Daily Gift"
+                    );
+
+                const statusText =
+                    opened
+                        ? `Opened • ${rewardName}`
+                        : "Ready to open";
+
+                const actionMarkup =
+                    opened
+                        ? `
+                            <button
+                                class="rg-friend-card__action"
+                                type="button"
+                                disabled
+                            >
+                                Opened ✓
+                            </button>
+                        `
+                        : `
+                            <button
+                                class="rg-friend-card__action"
+                                type="button"
+                                data-rg-friend-action="open-gift"
+                                data-rg-friend-id="${this.escapeAttribute(
+                                    gift.id
+                                )}"
+                            >
+                                Open Gift
+                            </button>
+                        `;
+
+                return `
+                    <article
+                        class="rg-friend-card"
+                        data-rg-gift-id="${this.escapeAttribute(
+                            gift.id
+                        )}"
+                    >
+                        <div
+                            class="rg-friend-card__avatar"
+                        >
+                            <span>🎁</span>
+                        </div>
+
+                        <div
+                            class="rg-friend-card__copy"
+                        >
+                            <strong>
+                                ${this.escapeHTML(
+                                    senderName
+                                )}
+                            </strong>
+
+                            <span>
+                                ${this.escapeHTML(
+                                    statusText
+                                )}
+                            </span>
+                        </div>
+
+                        ${actionMarkup}
+                    </article>
+                `;
+            })
+            .join("");
+}
 
         // =====================================================================
         // FRIEND REQUEST RENDERING
@@ -3683,6 +3880,87 @@ if (
             if (!action || !id) {
                 return;
             }
+
+if (action === "open-gift") {
+    if (
+        !window.RGDailyGifts ||
+        typeof window.RGDailyGifts.openGiftSecurely !==
+            "function"
+    ) {
+        this.showToast(
+            "Daily Gifts are not loaded on this page.",
+            "error"
+        );
+
+        return;
+    }
+
+    const originalText =
+        element.textContent;
+
+    element.disabled = true;
+    element.textContent = "Opening...";
+
+    try {
+        const result =
+            await window.RGDailyGifts
+                .openGiftSecurely(id);
+
+        const reward =
+            result?.reward || {};
+
+        const rewardName =
+            reward.name ||
+            "your Daily Gift reward";
+
+        this.state.giftInbox =
+            this.state.giftInbox.map(
+                gift => {
+                    if (gift.id !== id) {
+                        return gift;
+                    }
+
+                    return {
+                        ...gift,
+                        opened: true,
+                        openedAt:
+                            result?.openedAt ||
+                            Date.now(),
+                        reward
+                    };
+                }
+            );
+
+        this.renderGiftInbox(
+            this.state.giftInbox
+        );
+
+        this.showToast(
+            `You received ${rewardName}!`,
+            "success",
+            {
+                duration: 6500
+            }
+        );
+    } catch (error) {
+        element.disabled = false;
+
+        element.textContent =
+            originalText ||
+            "Open Gift";
+
+        this.showToast(
+            error?.message ||
+                "The Daily Gift could not be opened.",
+            "error",
+            {
+                duration: 6500
+            }
+        );
+    }
+
+    return;
+}
 
 if (action === "gift") {
     if (

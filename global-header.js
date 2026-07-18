@@ -82,14 +82,12 @@
         ],
 
         friendPaths: [
-            "friends/{uid}",
-            "friendships/{uid}"
-        ],
+    "userFriends/{uid}"
+],
 
-        friendRequestPaths: [
-            "friendRequests/{uid}",
-            "requests/{uid}"
-        ],
+friendRequestPaths: [
+    "userFriendRequests/{uid}/incoming"
+],
 
         navigation: [
             {
@@ -2150,139 +2148,188 @@
         // =====================================================================
 
         attachFriendListeners(uid) {
-            const friendPaths =
-                this.config.friendPaths.map(
-                    (path) => {
-                        return this.interpolate(
-                            path,
-                            {
-                                uid
-                            }
-                        );
+    if (
+        !uid ||
+        !this.database ||
+        typeof this.database.ref !== "function"
+    ) {
+        this.renderFriends([]);
+        this.renderFriendRequests([]);
+        return;
+    }
+
+    const userFriendsRef = this.database.ref(
+        `userFriends/${uid}`
+    );
+
+    let loadVersion = 0;
+
+    const handler = async (snapshot) => {
+        const currentLoad = ++loadVersion;
+        const entries = snapshot?.val?.() || {};
+
+        const friendUids = Object.keys(entries)
+            .filter((friendUid) => {
+                return friendUid && friendUid !== uid;
+            })
+            .slice(0, this.config.maxFriends);
+
+        if (!friendUids.length) {
+            this.state.friends = [];
+            this.renderFriends([]);
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:friendschange",
+                    {
+                        detail: {
+                            friends: []
+                        }
                     }
-                );
-
-            const requestPaths =
-                this.config.friendRequestPaths.map(
-                    (path) => {
-                        return this.interpolate(
-                            path,
-                            {
-                                uid
-                            }
-                        );
-                    }
-                );
-
-            this.attachFirstAvailablePath(
-                friendPaths,
-
-                (snapshot) => {
-                    const raw =
-                        snapshot?.val?.() ??
-                        {};
-
-                    const friends =
-                        this.normalizeCollection(
-                            raw
-                        )
-                            .map((item) => {
-                                return this.normalizeFriend(
-                                    item
-                                );
-                            })
-                            .filter(Boolean)
-                            .slice(
-                                0,
-                                this.config
-                                    .maxFriends
-                            );
-
-                    this.state.friends =
-                        friends;
-
-                    this.renderFriends(
-                        friends
-                    );
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "rgheader:friendschange",
-                            {
-                                detail: {
-                                    friends
-                                }
-                            }
-                        )
-                    );
-                },
-
-                "friends"
+                )
             );
 
-            this.attachFirstAvailablePath(
-                requestPaths,
-
-                (snapshot) => {
-                    const raw =
-                        snapshot?.val?.() ??
-                        {};
-
-                    const requests =
-                        this.normalizeCollection(
-                            raw
-                        )
-                            .map((item) => {
-                                return this.normalizeFriendRequest(
-                                    item
-                                );
-                            })
-                            .filter(Boolean)
-                            .sort((a, b) => {
-                                return (
-                                    b.timestamp -
-                                    a.timestamp
-                                );
-                            });
-
-                    this.state.friendRequests =
-                        requests;
-
-                    this.state.friendRequestCount =
-                        requests.filter(
-                            (item) => {
-                                return (
-                                    item.status ===
-                                    "pending"
-                                );
-                            }
-                        ).length;
-
-                    this.updateFriendsBadge();
-
-                    this.renderFriendRequests(
-                        requests
-                    );
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "rgheader:friendrequestschange",
-                            {
-                                detail: {
-                                    requests,
-
-                                    pending:
-                                        this.state
-                                            .friendRequestCount
-                                }
-                            }
-                        )
-                    );
-                },
-
-                "friendRequests"
-            );
+            return;
         }
+
+        try {
+            const friends = (
+                await Promise.all(
+                    friendUids.map(async (friendUid) => {
+                        const playerSnapshot =
+                            await this.database
+                                .ref(`players/${friendUid}`)
+                                .once("value");
+
+                        const player =
+                            playerSnapshot.val() || {};
+
+                        return {
+                            id: friendUid,
+
+                            name: String(
+                                player.displayName ||
+                                player.rivalsIgn ||
+                                player.rgId ||
+                                "Player"
+                            ),
+
+                            avatar: String(
+                                player.profileImage ||
+                                player.avatarUrl ||
+                                player.photoURL ||
+                                ""
+                            ),
+
+                            online: false,
+                            canInvite: false,
+
+                            statusText: String(
+                                player.rgId ||
+                                player.rivalsIgn ||
+                                "Rivals Gauntlet Player"
+                            ),
+
+                            raw: {
+                                uid: friendUid,
+                                ...player,
+                                friendship:
+                                    entries[friendUid] || {}
+                            }
+                        };
+                    })
+                )
+            )
+                .filter(Boolean)
+                .sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                });
+
+            if (
+                currentLoad !== loadVersion ||
+                this.state.user?.uid !== uid
+            ) {
+                return;
+            }
+
+            this.state.friends = friends;
+            this.renderFriends(friends);
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "rgheader:friendschange",
+                    {
+                        detail: {
+                            friends
+                        }
+                    }
+                )
+            );
+        } catch (error) {
+            this.warn(
+                "Could not load friend profiles:",
+                error
+            );
+
+            if (this.dom.friendsLoading) {
+                this.dom.friendsLoading.hidden = true;
+            }
+
+            if (this.dom.friendsList) {
+                this.dom.friendsList.innerHTML =
+                    this.emptyState(
+                        "Friends unavailable",
+                        "Your friend list could not be loaded. Refresh and try again.",
+                        "friend"
+                    );
+            }
+        }
+    };
+
+    const errorHandler = (error) => {
+        this.warn(
+            "userFriends listener failed:",
+            error
+        );
+
+        this.state.friends = [];
+
+        if (this.dom.friendsLoading) {
+            this.dom.friendsLoading.hidden = true;
+        }
+
+        if (this.dom.friendsList) {
+            this.dom.friendsList.innerHTML =
+                this.emptyState(
+                    "Friends unavailable",
+                    "Your account could not read its friend list.",
+                    "friend"
+                );
+        }
+    };
+
+    userFriendsRef.on(
+        "value",
+        handler,
+        errorHandler
+    );
+
+    this.state.firebaseListeners.push(() => {
+        userFriendsRef.off(
+            "value",
+            handler
+        );
+    });
+
+    /*
+      Friend requests will be reconnected after the
+      existing friends list is confirmed working.
+    */
+    this.state.friendRequests = [];
+    this.state.friendRequestCount = 0;
+    this.updateFriendsBadge();
+    this.renderFriendRequests([]);
+}
 
         // =====================================================================
         // GENERIC FIREBASE PATH FALLBACK LISTENER
@@ -3310,10 +3357,7 @@
                                     </span>
                                 `;
 
-                        const inviteLabel =
-                            friend.online
-                                ? "Invite"
-                                : "Offline";
+                        
 
                         return `
                             <article
@@ -3352,21 +3396,14 @@
                                     </span>
                                 </div>
 
-                                <button
-                                    class="rg-friend-card__action"
-                                    type="button"
-                                    data-rg-friend-action="invite"
-                                    data-rg-friend-id="${this.escapeAttribute(
-                                        friend.id
-                                    )}"
-                                    ${
-                                        friend.canInvite
-                                            ? ""
-                                            : "disabled"
-                                    }
-                                >
-                                    ${inviteLabel}
-                                </button>
+                             <a
+    class="rg-friend-card__action"
+    href="player.html?id=${encodeURIComponent(
+        friend.id
+    )}"
+>
+    Profile
+</a>
                             </article>
                         `;
                     })

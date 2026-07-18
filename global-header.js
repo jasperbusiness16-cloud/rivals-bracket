@@ -361,6 +361,9 @@ friends: [],
 friendRequests: [],
 giftInbox: [],
 
+playerSearchResults: [],
+playerSearchVersion: 0,
+
 dailyGiftStats: {
     sentCount: 0,
     receivedCount: 0,
@@ -1466,6 +1469,18 @@ this.dom.giftsCount = root.querySelector(
                 );
                 return;
             }
+
+const playerAction = target.closest(
+    "[data-rg-player-action]"
+);
+
+if (playerAction) {
+    this.handlePlayerSearchAction(
+        playerAction
+    );
+
+    return;
+}
 
             const friendAction = target.closest(
                 "[data-rg-friend-action]"
@@ -3974,50 +3989,462 @@ renderGiftInbox(
         // FRIEND SEARCH
         // =====================================================================
 
-        filterFriends(query) {
-            const normalized =
-                String(query || "")
-                    .trim()
-                    .toLowerCase();
+        async filterFriends(query) {
+    const normalized =
+        String(query || "")
+            .trim()
+            .toLowerCase();
 
-            if (!normalized) {
-                this.renderFriends(
-                    this.state.friends
-                );
+    const searchVersion =
+        ++this.state.playerSearchVersion;
 
-                return;
-            }
+    if (!normalized) {
+        this.state.playerSearchResults = [];
 
-            const localResults =
-                this.state.friends.filter(
-                    (friend) => {
-                        return (
-                            friend.name
-                                .toLowerCase()
-                                .includes(
-                                    normalized
-                                ) ||
-                            friend.statusText
-                                .toLowerCase()
-                                .includes(
-                                    normalized
-                                )
-                        );
-                    }
-                );
+        this.renderFriends(
+            this.state.friends
+        );
 
-            this.renderFriends(
-                localResults
+        return;
+    }
+
+    if (normalized.length < 3) {
+        this.state.playerSearchResults = [];
+
+        const localResults =
+            this.state.friends.filter(
+                friend => {
+                    return (
+                        friend.name
+                            .toLowerCase()
+                            .includes(normalized) ||
+                        friend.statusText
+                            .toLowerCase()
+                            .includes(normalized)
+                    );
+                }
             );
 
-            if (
-                normalized.length >= 3
-            ) {
-                this.searchPlayersFromAdapter(
-                    normalized
-                );
-            }
+        this.renderFriends(
+            localResults
+        );
+
+        return;
+    }
+
+    if (
+        !window.RGFriends ||
+        typeof window.RGFriends.searchPlayers !==
+            "function"
+    ) {
+        this.dom.friendsList.innerHTML =
+            this.emptyState(
+                "Search unavailable",
+                "The player search system could not be loaded.",
+                "friend"
+            );
+
+        return;
+    }
+
+    this.dom.friendsList.innerHTML =
+        this.emptyState(
+            "Searching players",
+            "Looking for registered Rivals Gauntlet players...",
+            "friend"
+        );
+
+    try {
+        const players =
+            await window.RGFriends.searchPlayers(
+                normalized
+            );
+
+        if (
+            searchVersion !==
+            this.state.playerSearchVersion
+        ) {
+            return;
         }
+
+        const results =
+            await Promise.all(
+                players.map(async player => {
+                    const relationship =
+                        await this.getPlayerRelationshipStatus(
+                            player.uid
+                        );
+
+                    return {
+                        ...player,
+                        relationship
+                    };
+                })
+            );
+
+        if (
+            searchVersion !==
+            this.state.playerSearchVersion
+        ) {
+            return;
+        }
+
+        this.state.playerSearchResults =
+            results;
+
+        this.renderPlayerSearchResults(
+            results
+        );
+    } catch (error) {
+        console.error(
+            "Player search failed:",
+            error
+        );
+
+        if (
+            searchVersion !==
+            this.state.playerSearchVersion
+        ) {
+            return;
+        }
+
+        this.dom.friendsList.innerHTML =
+            this.emptyState(
+                "Search failed",
+                "Players could not be searched. Please try again.",
+                "friend"
+            );
+    }
+}
+
+
+async getPlayerRelationshipStatus(uid) {
+    const currentUid =
+        this.state.user?.uid || "";
+
+    if (!currentUid || !uid) {
+        return "none";
+    }
+
+    if (
+        this.state.friends.some(
+            friend => friend.id === uid
+        )
+    ) {
+        return "friends";
+    }
+
+    if (
+        this.state.friendRequests.some(
+            request =>
+                request.fromUid === uid
+        )
+    ) {
+        return "incoming";
+    }
+
+    const outgoingRequestId =
+        `${currentUid}_${uid}`;
+
+    const incomingRequestId =
+        `${uid}_${currentUid}`;
+
+    try {
+        const snapshots =
+            await Promise.all([
+                this.database
+                    .ref(
+                        `friendRequests/${outgoingRequestId}`
+                    )
+                    .once("value"),
+
+                this.database
+                    .ref(
+                        `friendRequests/${incomingRequestId}`
+                    )
+                    .once("value")
+            ]);
+
+        const outgoing =
+            snapshots[0].val();
+
+        const incoming =
+            snapshots[1].val();
+
+        if (
+            outgoing?.status ===
+            "pending"
+        ) {
+            return "outgoing";
+        }
+
+        if (
+            incoming?.status ===
+            "pending"
+        ) {
+            return "incoming";
+        }
+    } catch (error) {
+        console.warn(
+            "Relationship status check failed:",
+            error
+        );
+    }
+
+    return "none";
+}
+
+
+renderPlayerSearchResults(players) {
+    if (!this.dom.friendsList) {
+        return;
+    }
+
+    if (!players.length) {
+        this.dom.friendsList.innerHTML =
+            this.emptyState(
+                "No players found",
+                "No registered players matched that search.",
+                "friend"
+            );
+
+        return;
+    }
+
+    this.dom.friendsList.innerHTML =
+        players.map(player => {
+            const displayName =
+                String(
+                    player.displayName ||
+                    player.rivalsIgn ||
+                    player.rgId ||
+                    "Player"
+                );
+
+            const playerStatus =
+                String(
+                    player.rgId ||
+                    player.rivalsIgn ||
+                    "Registered Player"
+                );
+
+            const initial =
+                displayName
+                    .charAt(0)
+                    .toUpperCase();
+
+            const avatarMarkup =
+                player.profileImage
+                    ? `
+                        <img
+                            src="${this.escapeAttribute(
+                                player.profileImage
+                            )}"
+                            alt=""
+                            loading="lazy"
+                        >
+                    `
+                    : `
+                        <span>
+                            ${this.escapeHTML(
+                                initial
+                            )}
+                        </span>
+                    `;
+
+            let actionMarkup = `
+                <button
+                    class="rg-friend-card__action"
+                    type="button"
+                    data-rg-player-action="add"
+                    data-rg-player-id="${this.escapeAttribute(
+                        player.uid
+                    )}"
+                >
+                    Add Friend
+                </button>
+            `;
+
+            if (
+                player.relationship ===
+                "friends"
+            ) {
+                actionMarkup = `
+                    <button
+                        class="rg-friend-card__action"
+                        type="button"
+                        disabled
+                    >
+                        Friends ✓
+                    </button>
+                `;
+            }
+
+            if (
+                player.relationship ===
+                "outgoing"
+            ) {
+                actionMarkup = `
+                    <button
+                        class="rg-friend-card__action"
+                        type="button"
+                        disabled
+                    >
+                        Request Sent
+                    </button>
+                `;
+            }
+
+            if (
+                player.relationship ===
+                "incoming"
+            ) {
+                actionMarkup = `
+                    <button
+                        class="rg-friend-card__action"
+                        type="button"
+                        data-rg-player-action="requests"
+                        data-rg-player-id="${this.escapeAttribute(
+                            player.uid
+                        )}"
+                    >
+                        Respond
+                    </button>
+                `;
+            }
+
+            return `
+                <article class="rg-friend-card">
+                    <div
+                        class="rg-friend-card__avatar"
+                    >
+                        ${avatarMarkup}
+                    </div>
+
+                    <div
+                        class="rg-friend-card__copy"
+                    >
+                        <a
+                            href="player.html?id=${encodeURIComponent(
+                                player.uid
+                            )}"
+                        >
+                            <strong>
+                                ${this.escapeHTML(
+                                    displayName
+                                )}
+                            </strong>
+                        </a>
+
+                        <span>
+                            ${this.escapeHTML(
+                                playerStatus
+                            )}
+                        </span>
+                    </div>
+
+                    ${actionMarkup}
+                </article>
+            `;
+        }).join("");
+}
+
+
+async handlePlayerSearchAction(element) {
+    const action =
+        element.dataset
+            .rgPlayerAction;
+
+    const uid =
+        element.dataset
+            .rgPlayerId;
+
+    if (action === "requests") {
+        if (this.dom.friendSearch) {
+            this.dom.friendSearch.value = "";
+        }
+
+        ++this.state.playerSearchVersion;
+
+        this.state.playerSearchResults = [];
+
+        this.renderFriends(
+            this.state.friends
+        );
+
+        this.setFriendsTab(
+            "requests"
+        );
+
+        return;
+    }
+
+    if (
+        action !== "add" ||
+        !uid ||
+        !this.state.user ||
+        !window.RGFriends
+    ) {
+        return;
+    }
+
+    const targetPlayer =
+        this.state.playerSearchResults.find(
+            player => player.uid === uid
+        );
+
+    if (!targetPlayer) {
+        this.showToast(
+            "That player could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+    element.disabled = true;
+    element.textContent = "Sending...";
+
+    const currentUser = {
+        uid: this.state.user.uid,
+
+        displayName:
+            this.state.player?.displayName ||
+            this.state.user.displayName ||
+            "Player"
+    };
+
+    try {
+        await window.RGFriends.sendFriendRequest(
+            currentUser,
+            targetPlayer
+        );
+
+        targetPlayer.relationship =
+            "outgoing";
+
+        element.textContent =
+            "Request Sent";
+
+        this.showToast(
+            `Friend request sent to ${
+                targetPlayer.displayName ||
+                "Player"
+            }.`,
+            "success"
+        );
+    } catch (error) {
+        element.disabled = false;
+        element.textContent =
+            "Add Friend";
+
+        this.showToast(
+            error?.message ||
+                "Friend request could not be sent.",
+            "error"
+        );
+    }
+}
 
         // =====================================================================
         // FRIEND ACTIONS

@@ -357,8 +357,15 @@ friendRequestPaths: [
                 points: 0,
 
                 notifications: [],
-                friends: [],
-                friendRequests: [],
+friends: [],
+friendRequests: [],
+
+dailyGiftStats: {
+    sentCount: 0,
+    receivedCount: 0,
+    receivedLimit: 5,
+    sentTo: {}
+},
 
                 activeOverlay: null,
                 activeDrawer: null,
@@ -1786,8 +1793,15 @@ friendRequestPaths: [
             this.state.points = 0;
 
             this.state.notifications = [];
-            this.state.friends = [];
-            this.state.friendRequests = [];
+this.state.friends = [];
+this.state.friendRequests = [];
+
+this.state.dailyGiftStats = {
+    sentCount: 0,
+    receivedCount: 0,
+    receivedLimit: 5,
+    sentTo: {}
+};
 
             this.state.notificationUnread = 0;
             this.state.friendRequestCount = 0;
@@ -2320,6 +2334,39 @@ friendRequestPaths: [
             handler
         );
     });
+
+if (
+    window.RGDailyGifts &&
+    typeof window.RGDailyGifts.listenToDailyStats ===
+        "function"
+) {
+    const stopDailyGiftStats =
+        window.RGDailyGifts.listenToDailyStats(
+            uid,
+            stats => {
+                this.state.dailyGiftStats =
+                    stats || {
+                        sentCount: 0,
+                        receivedCount: 0,
+                        receivedLimit: 5,
+                        sentTo: {}
+                    };
+
+                this.renderFriends(
+                    this.state.friends
+                );
+            }
+        );
+
+    if (
+        typeof stopDailyGiftStats ===
+        "function"
+    ) {
+        this.state.firebaseListeners.push(
+            stopDailyGiftStats
+        );
+    }
+}
 
     /*
       Friend requests will be reconnected after the
@@ -3357,7 +3404,20 @@ friendRequestPaths: [
                                     </span>
                                 `;
 
-                        
+                        const giftState =
+    window.RGDailyGifts &&
+    typeof window.RGDailyGifts.getGiftButtonState ===
+        "function"
+        ? window.RGDailyGifts.getGiftButtonState(
+              this.state.dailyGiftStats,
+              friend.id
+          )
+        : {
+              disabled: true,
+              label: "Gift unavailable",
+              reason:
+                  "Daily Gifts are not loaded on this page."
+          };
 
                         return `
                             <article
@@ -3396,14 +3456,40 @@ friendRequestPaths: [
                                     </span>
                                 </div>
 
-                             <a
-    class="rg-friend-card__action"
-    href="player.html?id=${encodeURIComponent(
-        friend.id
-    )}"
+   <div
+    style="display:flex;gap:8px;align-items:center;"
 >
-    Profile
-</a>
+    <a
+        class="rg-friend-card__action"
+        href="player.html?id=${encodeURIComponent(
+            friend.id
+        )}"
+    >
+        Profile
+    </a>
+
+    <button
+        class="rg-friend-card__action"
+        type="button"
+        data-rg-friend-action="gift"
+        data-rg-friend-id="${this.escapeAttribute(
+            friend.id
+        )}"
+        title="${this.escapeAttribute(
+            giftState.reason ||
+            "Send this friend a Daily Gift"
+        )}"
+        ${
+            giftState.disabled
+                ? "disabled"
+                : ""
+        }
+    >
+        ${this.escapeHTML(
+            giftState.label
+        )}
+    </button>
+</div>
                             </article>
                         `;
                     })
@@ -3597,6 +3683,74 @@ friendRequestPaths: [
             if (!action || !id) {
                 return;
             }
+
+if (action === "gift") {
+    if (
+        !window.RGDailyGifts ||
+        typeof window.RGDailyGifts.sendGiftSecurely !==
+            "function"
+    ) {
+        this.showToast(
+            "Daily Gifts are not loaded on this page.",
+            "error"
+        );
+
+        return;
+    }
+
+    const originalText =
+        element.textContent;
+
+    element.disabled = true;
+    element.textContent = "Sending...";
+
+    try {
+        await window.RGDailyGifts
+            .sendGiftSecurely(id);
+
+        const currentStats =
+            this.state.dailyGiftStats || {};
+
+        this.state.dailyGiftStats = {
+            ...currentStats,
+
+            sentCount:
+                Number(
+                    currentStats.sentCount || 0
+                ) + 1,
+
+            sentTo: {
+                ...(currentStats.sentTo || {}),
+                [id]: true
+            }
+        };
+
+        this.renderFriends(
+            this.state.friends
+        );
+
+        this.showToast(
+            "Daily Gift sent.",
+            "success"
+        );
+    } catch (error) {
+        element.disabled = false;
+
+        element.textContent =
+            originalText || "Send Gift";
+
+        this.showToast(
+            error?.message ||
+                "The Daily Gift could not be sent.",
+            "error",
+            {
+                duration: 6500
+            }
+        );
+    }
+
+    return;
+}
 
             if (action === "invite") {
                 element.disabled = true;

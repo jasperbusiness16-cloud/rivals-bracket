@@ -856,36 +856,26 @@ body.rg-overlay-open { overflow: hidden; }
 }
 
 /* =========================================================
-   MOBILE HAMBURGER MENU — COMPACT FIX
+   MOBILE MENU LAYOUT RESET
 ========================================================= */
 
 @media (max-width: 760px) {
   #globalHeader .rg-mobile-panel {
-    position: absolute !important;
-    top: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
+    position: relative !important;
 
-    z-index: 20 !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
 
     display: block;
+
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: calc(100dvh - 68px) !important;
 
     overflow-y: auto !important;
-
-    border-top: 1px solid rgba(177, 156, 255, 0.16) !important;
-
-    background:
-      linear-gradient(
-        180deg,
-        rgba(18, 15, 29, 0.995),
-        rgba(8, 8, 14, 0.998)
-      ) !important;
-
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.58) !important;
   }
 
   #globalHeader .rg-mobile-panel[hidden] {
@@ -894,15 +884,18 @@ body.rg-overlay-open { overflow: hidden; }
 
   #globalHeader .rg-mobile-panel__nav {
     display: grid !important;
-    grid-template-columns: 1fr !important;
-    grid-auto-rows: auto !important;
 
-    gap: 5px !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none !important;
+    grid-auto-rows: 45px !important;
+
+    align-content: start !important;
 
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
 
+    gap: 5px !important;
     padding: 10px 12px !important;
   }
 
@@ -918,37 +911,25 @@ body.rg-overlay-open { overflow: hidden; }
     margin: 0 !important;
     padding: 0 14px !important;
 
-    color: #c8c2d7 !important;
-    background: transparent !important;
-
-    font-size: 12px !important;
-    font-weight: 800 !important;
-    line-height: 1 !important;
-    letter-spacing: 0.07em !important;
-
     opacity: 1 !important;
     visibility: visible !important;
   }
 
-  #globalHeader .rg-mobile-panel__link.is-active {
-    color: #ffffff !important;
-    border-color: rgba(188, 168, 255, 0.26) !important;
-    background: rgba(127, 92, 255, 0.13) !important;
-  }
-
   #globalHeader .rg-mobile-panel__auth {
+    position: static !important;
+
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-
-    gap: 7px !important;
 
     width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
 
+    gap: 7px !important;
     padding: 10px 12px 14px !important;
 
-    border-top: 1px solid rgba(177, 156, 255, 0.12) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   #globalHeader .rg-mobile-panel__sign-in,
@@ -964,29 +945,7 @@ body.rg-overlay-open { overflow: hidden; }
     margin: 0 !important;
     padding: 0 10px !important;
 
-    color: #ffffff !important;
-
-    font-size: 11px !important;
-    font-weight: 800 !important;
-    line-height: 1 !important;
-    letter-spacing: 0.06em !important;
-
     opacity: 1 !important;
     visibility: visible !important;
-  }
-
-  #globalHeader .rg-mobile-panel__sign-in {
-    border: 1px solid rgba(177, 156, 255, 0.22) !important;
-    background: rgba(255, 255, 255, 0.035) !important;
-  }
-
-  #globalHeader .rg-mobile-panel__create {
-    border: 1px solid rgba(188, 168, 255, 0.4) !important;
-    background:
-      linear-gradient(
-        135deg,
-        #815dff,
-        #5836cf
-      ) !important;
   }
 }

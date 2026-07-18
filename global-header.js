@@ -2434,14 +2434,171 @@ if (
     }
 }
 
-    /*
-      Friend requests will be reconnected after the
-      existing friends list is confirmed working.
-    */
+    const incomingRequestsRef =
+    this.database.ref(
+        `userFriendRequests/${uid}/incoming`
+    );
+
+let requestLoadVersion = 0;
+
+const requestHandler = async snapshot => {
+    const currentLoad =
+        ++requestLoadVersion;
+
+    const requestIndex =
+        snapshot?.val?.() || {};
+
+    const requestIds =
+        Object.keys(requestIndex);
+
+    if (!requestIds.length) {
+        this.state.friendRequests = [];
+        this.state.friendRequestCount = 0;
+
+        this.updateFriendsBadge();
+        this.renderFriendRequests([]);
+
+        return;
+    }
+
+    try {
+        const requests = (
+            await Promise.all(
+                requestIds.map(
+                    async requestId => {
+                        const requestSnapshot =
+                            await this.database
+                                .ref(
+                                    `friendRequests/${requestId}`
+                                )
+                                .once("value");
+
+                        const request =
+                            requestSnapshot.val();
+
+                        if (
+                            !request ||
+                            request.receiverUid !== uid ||
+                            request.status !== "pending"
+                        ) {
+                            return null;
+                        }
+
+                        let sender = {};
+
+                        try {
+                            const senderSnapshot =
+                                await this.database
+                                    .ref(
+                                        `players/${request.senderUid}`
+                                    )
+                                    .once("value");
+
+                            sender =
+                                senderSnapshot.val() || {};
+                        } catch (error) {
+                            console.warn(
+                                "Friend request sender could not be loaded:",
+                                error
+                            );
+                        }
+
+                        return {
+                            id: requestId,
+
+                            fromUid: String(
+                                request.senderUid || ""
+                            ),
+
+                            name: String(
+                                sender.displayName ||
+                                request.senderName ||
+                                sender.rivalsIgn ||
+                                "Player"
+                            ),
+
+                            avatar: String(
+                                sender.profileImage || ""
+                            ),
+
+                            status: "pending",
+
+                            timestamp:
+                                this.normalizeTimestamp(
+                                    request.createdAt
+                                ),
+
+                            raw: request
+                        };
+                    }
+                )
+            )
+        )
+            .filter(Boolean)
+            .sort((requestA, requestB) => {
+                return (
+                    requestB.timestamp -
+                    requestA.timestamp
+                );
+            });
+
+        if (
+            currentLoad !== requestLoadVersion ||
+            this.state.user?.uid !== uid
+        ) {
+            return;
+        }
+
+        this.state.friendRequests =
+            requests;
+
+        this.state.friendRequestCount =
+            requests.length;
+
+        this.updateFriendsBadge();
+
+        this.renderFriendRequests(
+            requests
+        );
+    } catch (error) {
+        console.error(
+            "Friend requests could not be loaded:",
+            error
+        );
+
+        this.state.friendRequests = [];
+        this.state.friendRequestCount = 0;
+
+        this.updateFriendsBadge();
+        this.renderFriendRequests([]);
+    }
+};
+
+const requestErrorHandler = error => {
+    console.error(
+        "Incoming friend request listener failed:",
+        error
+    );
+
     this.state.friendRequests = [];
     this.state.friendRequestCount = 0;
+
     this.updateFriendsBadge();
     this.renderFriendRequests([]);
+};
+
+incomingRequestsRef.on(
+    "value",
+    requestHandler,
+    requestErrorHandler
+);
+
+this.state.firebaseListeners.push(() => {
+    incomingRequestsRef.off(
+        "value",
+        requestHandler
+    );
+});
 }
 
         // =====================================================================
@@ -4131,7 +4288,8 @@ if (action === "gift") {
 
                     methodNames,
 
-                    requestId
+this.state.user?.uid,
+requestId
                 );
 
             if (

@@ -669,62 +669,10 @@
   );
 }
 
-const controller = new AbortController();
-
-const requestTimeout = window.setTimeout(() => {
-  controller.abort();
-}, 15000);
-
-let response;
-
-try {
-  response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebase.app().options.apiKey}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        returnSecureToken: true
-      }),
-      signal: controller.signal
-    }
-  );
-} catch (error) {
-  window.clearTimeout(requestTimeout);
-
-  if (error.name === "AbortError") {
-    throw new Error(
-      "The direct Firebase login request timed out."
-    );
-  }
-
-  throw new Error(
-    `The direct Firebase request failed: ${error.message}`
-  );
-}
-
-window.clearTimeout(requestTimeout);
-
-const result = await response.json();
-
-if (!response.ok) {
-  throw new Error(
-    result?.error?.message ||
-    `Firebase returned HTTP ${response.status}.`
-  );
-}
-
-setStatus(
-  "Firebase accepted the email and password. The Firebase browser session is what is failing.",
-  "success"
+await auth.signInWithEmailAndPassword(
+  email,
+  password
 );
-
-setBusy(false);
-return;
 
         // Do not perform any Realtime Database write here. Authentication
         // must remain independent from database rules and profile metadata.

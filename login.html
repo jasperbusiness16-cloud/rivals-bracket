@@ -660,18 +660,19 @@
       setBusy(true);
 
       try {
-        const timeout = new Promise((_, reject) => {
-          window.setTimeout(() => {
-            const error = new Error("Firebase did not respond in time.");
-            error.code = "auth/request-timeout";
-            reject(error);
-          }, 12000);
-        });
+        if (
+  !window.auth ||
+  typeof auth.signInWithEmailAndPassword !== "function"
+) {
+  throw new Error(
+    "Firebase Authentication is not initialized."
+  );
+}
 
-        await Promise.race([
-          auth.signInWithEmailAndPassword(email, password),
-          timeout
-        ]);
+await auth.signInWithEmailAndPassword(
+  email,
+  password
+);
 
         // Do not perform any Realtime Database write here. Authentication
         // must remain independent from database rules and profile metadata.

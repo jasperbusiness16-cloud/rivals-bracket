@@ -435,6 +435,86 @@ window.RGFriends = (() => {
       .then(snapshot => snapshot.val());
   }
 
+function searchPlayers(query) {
+  const normalized = String(query || "")
+    .trim()
+    .toLowerCase();
+
+  if (normalized.length < 3) {
+    return Promise.resolve([]);
+  }
+
+  const currentUid =
+    window.auth?.currentUser?.uid || "";
+
+  return database
+    .ref("players")
+    .once("value")
+    .then(snapshot => {
+      const results = [];
+
+      snapshot.forEach(playerSnapshot => {
+        const uid = playerSnapshot.key;
+        const player =
+          playerSnapshot.val() || {};
+
+        if (!uid || uid === currentUid) {
+          return;
+        }
+
+        const displayName = String(
+          player.displayName ||
+          player.username ||
+          player.rivalsIgn ||
+          "Player"
+        ).trim();
+
+        const rgId = String(
+          player.rgId ||
+          player.rivalsId ||
+          ""
+        ).trim();
+
+        const searchText = [
+          displayName,
+          rgId,
+          player.rivalsIgn || ""
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        if (!searchText.includes(normalized)) {
+          return;
+        }
+
+        const equipped =
+          player.equippedCosmetics ||
+          player.equipped ||
+          {};
+
+        results.push({
+          uid,
+          displayName,
+          rgId,
+
+          profileImage: String(
+            equipped.avatar ||
+            equipped.profileImage ||
+            player.profileImage ||
+            ""
+          )
+        });
+      });
+
+      return results
+        .sort((playerA, playerB) => {
+          return playerA.displayName.localeCompare(
+            playerB.displayName
+          );
+        })
+        .slice(0, 10);
+    });
+}
 
   function getPlayer(uid) {
     return database
@@ -475,6 +555,7 @@ window.RGFriends = (() => {
 
   return {
     getFriendshipId,
+    searchPlayers,
     sendFriendRequest,
     acceptFriendRequest,
     declineFriendRequest,

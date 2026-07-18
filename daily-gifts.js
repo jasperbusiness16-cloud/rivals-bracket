@@ -1,7 +1,20 @@
 const RGDailyGifts = (() => {
   const TIME_ZONE = "America/Chicago";
+  const FUNCTIONS_REGION = "us-central1";
   const MAX_RECEIVED_PER_DAY = 5;
 
+  let sendDailyGiftCallable = null;
+  let openDailyGiftCallable = null;
+
+  const sendingTo = new Set();
+  const openingGifts = new Set();
+
+  /*
+    These odds are only for displaying reward chances.
+
+    The browser does not select rewards. The deployed
+    openDailyGift function performs the secure server roll.
+  */
   const rewardOdds = [
     {
       id: "rp_10",
@@ -77,8 +90,15 @@ const RGDailyGifts = (() => {
     ].join("-");
   }
 
-  function getDailyGiftPath(uid, dateKey = getZonedDateKey()) {
-    return `dailyGiftStats/${uid}/${dateKey}`;
+  /*
+    The secure backend stores the active daily counters at:
+
+    dailyGiftStats/{uid}
+
+    The record itself contains its Central Time dateKey.
+  */
+  function getDailyGiftPath(uid) {
+    return `dailyGiftStats/${uid}`;
   }
 
   function getGiftInboxPath(uid) {
@@ -89,32 +109,63 @@ const RGDailyGifts = (() => {
     return `dailyGiftHistory/${uid}`;
   }
 
+  function normalizeDailyStats(data = {}) {
+    const todayKey = getZonedDateKey();
+    const savedDateKey = String(data.dateKey || "");
+
+    /*
+      An old record from a previous day must display as zero
+      until the backend creates today's record.
+    */
+    const isCurrentDay = savedDateKey === todayKey;
+
+    return {
+      dateKey: todayKey,
+
+      sentCount: isCurrentDay
+        ? Math.max(0, Number(data.sentCount || 0))
+        : 0,
+
+      receivedCount: isCurrentDay
+        ? Math.max(0, Number(data.receivedCount || 0))
+        : 0,
+
+      receivedLimit: MAX_RECEIVED_PER_DAY,
+
+      sentTo:
+        isCurrentDay &&
+        data.sentTo &&
+        typeof data.sentTo === "object"
+          ? data.sentTo
+          : {},
+
+      lifetimeSent: Math.max(
+        0,
+        Number(data.lifetimeSent || 0)
+      ),
+
+      lifetimeReceived: Math.max(
+        0,
+        Number(data.lifetimeReceived || 0)
+      )
+    };
+  }
+
   function listenToDailyStats(uid, callback) {
     if (!uid || typeof callback !== "function") {
       return null;
     }
 
-    const dateKey = getZonedDateKey();
     const ref = database.ref(
-      getDailyGiftPath(uid, dateKey)
+      getDailyGiftPath(uid)
     );
 
     const handler = snapshot => {
-      const data = snapshot.val() || {};
-
-      callback({
-        dateKey,
-        sentCount: Math.max(
-          0,
-          Number(data.sentCount || 0)
-        ),
-        receivedCount: Math.max(
-          0,
-          Number(data.receivedCount || 0)
-        ),
-        receivedLimit: MAX_RECEIVED_PER_DAY,
-        sentTo: data.sentTo || {}
-      });
+      callback(
+        normalizeDailyStats(
+          snapshot.val() || {}
+        )
+      );
     };
 
     ref.on("value", handler);
@@ -161,7 +212,8 @@ const RGDailyGifts = (() => {
     friendUid
   ) {
     return Boolean(
-      stats?.sentTo &&
+      stats &&
+      stats.sentTo &&
       stats.sentTo[friendUid]
     );
   }
@@ -184,11 +236,25 @@ const RGDailyGifts = (() => {
       };
     }
 
-    if (hasSentToFriendToday(stats, friendUid)) {
+    if (sendingTo.has(friendUid)) {
+      return {
+        disabled: true,
+        label: "Sending...",
+        reason: "Your gift is being processed."
+      };
+    }
+
+    if (
+      hasSentToFriendToday(
+        stats,
+        friendUid
+      )
+    ) {
       return {
         disabled: true,
         label: "Gift Sent ✓",
-        reason: "You already sent this friend a gift today."
+        reason:
+          "You already sent this friend a gift today."
       };
     }
 
@@ -200,8 +266,14 @@ const RGDailyGifts = (() => {
   }
 
   function getRewardIcon(reward) {
-    if (!reward) return "🎁";
-    if (reward.type === "crate") return "📦";
+    if (!reward) {
+      return "🎁";
+    }
+
+    if (reward.type === "crate") {
+      return "📦";
+    }
+
     return "RP";
   }
 
@@ -213,46 +285,332 @@ const RGDailyGifts = (() => {
     );
   }
 
-  /*
-    This intentionally does not send or open gifts yet.
+  function requireFunctionsSdk() {
+    if (
+      typeof firebase === "undefined" ||
+      typeof firebase.app !== "function"
+    ) {
+      throw new Error(
+        "Firebase is not loaded on this page."
+      );
+    }
 
-    The final implementation must call a secure Firebase
-    Function so the browser cannot choose rewards, bypass
-    daily limits, or award itself RP/crates.
-  */
+    const app = firebase.app();
 
-  function sendGiftSecurely() {
-    return Promise.reject(
-      new Error(
-        "Daily Gift backend is not deployed yet."
-      )
+    if (
+      !app ||
+      typeof app.functions !== "function"
+    ) {
+      throw new Error(
+        "Firebase Functions is not loaded on this page."
+      );
+    }
+
+    return app.functions(FUNCTIONS_REGION);
+  }
+
+  function getSendCallable() {
+    if (!sendDailyGiftCallable) {
+      sendDailyGiftCallable = requireFunctionsSdk()
+        .httpsCallable("sendDailyGift");
+    }
+
+    return sendDailyGiftCallable;
+  }
+
+  function getOpenCallable() {
+    if (!openDailyGiftCallable) {
+      openDailyGiftCallable = requireFunctionsSdk()
+        .httpsCallable("openDailyGift");
+    }
+
+    return openDailyGiftCallable;
+  }
+
+  function normalizeReceiverUid(value) {
+    if (typeof value === "string") {
+      return value.trim();
+    }
+
+    if (
+      value &&
+      typeof value === "object"
+    ) {
+      return String(
+        value.receiverUid ||
+        value.recipientUid ||
+        value.friendUid ||
+        value.uid ||
+        ""
+      ).trim();
+    }
+
+    return "";
+  }
+
+  function normalizeGiftId(value) {
+    if (typeof value === "string") {
+      return value.trim();
+    }
+
+    if (
+      value &&
+      typeof value === "object"
+    ) {
+      return String(
+        value.giftId ||
+        value.id ||
+        ""
+      ).trim();
+    }
+
+    return "";
+  }
+
+  function getFriendlyError(error) {
+    const code = String(
+      error?.code || ""
+    );
+
+    const message = String(
+      error?.message || ""
+    );
+
+    if (
+      code.includes("unauthenticated")
+    ) {
+      return "Please sign in again before using Daily Gifts.";
+    }
+
+    if (
+      code.includes("invalid-argument")
+    ) {
+      return message ||
+        "The Daily Gift request was invalid.";
+    }
+
+    if (
+      code.includes("permission-denied")
+    ) {
+      return message ||
+        "Daily Gifts can only be sent to confirmed friends.";
+    }
+
+    if (
+      code.includes("already-exists")
+    ) {
+      return message ||
+        "That Daily Gift action was already completed.";
+    }
+
+    if (
+      code.includes("resource-exhausted")
+    ) {
+      return message ||
+        "The Daily Gift limit has been reached.";
+    }
+
+    if (
+      code.includes("not-found")
+    ) {
+      return message ||
+        "That Daily Gift or player could not be found.";
+    }
+
+    if (
+      code.includes("failed-precondition")
+    ) {
+      return message ||
+        "Your player profile is not ready for Daily Gifts.";
+    }
+
+    if (
+      code.includes("unavailable") ||
+      code.includes("deadline-exceeded")
+    ) {
+      return "The Daily Gift server is temporarily unavailable. Please try again.";
+    }
+
+    return message ||
+      "The Daily Gift action could not be completed.";
+  }
+
+  async function sendGiftSecurely(receiver) {
+    const receiverUid =
+      normalizeReceiverUid(receiver);
+
+    if (!receiverUid) {
+      throw new Error(
+        "Missing friend account."
+      );
+    }
+
+    const user = firebase.auth().currentUser;
+
+    if (!user) {
+      throw new Error(
+        "Please sign in again before sending a gift."
+      );
+    }
+
+    if (user.uid === receiverUid) {
+      throw new Error(
+        "You cannot send a gift to yourself."
+      );
+    }
+
+    if (sendingTo.has(receiverUid)) {
+      throw new Error(
+        "This gift is already being processed."
+      );
+    }
+
+    sendingTo.add(receiverUid);
+
+    try {
+      const callable = getSendCallable();
+
+      const result = await callable({
+        receiverUid
+      });
+
+      const data = result?.data || {};
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "rg:daily-gift-sent",
+          {
+            detail: data
+          }
+        )
+      );
+
+      return data;
+    } catch (error) {
+      console.error(
+        "Secure Daily Gift send failed:",
+        error
+      );
+
+      const friendlyError =
+        new Error(getFriendlyError(error));
+
+      friendlyError.code =
+        error?.code || "";
+
+      friendlyError.originalError = error;
+
+      throw friendlyError;
+    } finally {
+      sendingTo.delete(receiverUid);
+    }
+  }
+
+  async function openGiftSecurely(gift) {
+    const giftId = normalizeGiftId(gift);
+
+    if (!giftId) {
+      throw new Error(
+        "Missing Daily Gift."
+      );
+    }
+
+    const user = firebase.auth().currentUser;
+
+    if (!user) {
+      throw new Error(
+        "Please sign in again before opening your gift."
+      );
+    }
+
+    if (openingGifts.has(giftId)) {
+      throw new Error(
+        "This gift is already being opened."
+      );
+    }
+
+    openingGifts.add(giftId);
+
+    try {
+      const callable = getOpenCallable();
+
+      const result = await callable({
+        giftId
+      });
+
+      const data = result?.data || {};
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "rg:daily-gift-opened",
+          {
+            detail: data
+          }
+        )
+      );
+
+      return data;
+    } catch (error) {
+      console.error(
+        "Secure Daily Gift open failed:",
+        error
+      );
+
+      const friendlyError =
+        new Error(getFriendlyError(error));
+
+      friendlyError.code =
+        error?.code || "";
+
+      friendlyError.originalError = error;
+
+      throw friendlyError;
+    } finally {
+      openingGifts.delete(giftId);
+    }
+  }
+
+  function isSendingTo(friendUid) {
+    return sendingTo.has(
+      String(friendUid || "")
     );
   }
 
-  function openGiftSecurely() {
-    return Promise.reject(
-      new Error(
-        "Daily Gift backend is not deployed yet."
-      )
+  function isOpeningGift(giftId) {
+    return openingGifts.has(
+      String(giftId || "")
     );
   }
 
   return {
     TIME_ZONE,
+    FUNCTIONS_REGION,
     MAX_RECEIVED_PER_DAY,
     rewardOdds,
+
     getZonedDateKey,
     getDailyGiftPath,
     getGiftInboxPath,
     getGiftHistoryPath,
+
+    normalizeDailyStats,
     listenToDailyStats,
     listenToGiftInbox,
+
     hasSentToFriendToday,
     canReceiveMore,
     getGiftButtonState,
+
     getRewardIcon,
     getOddsTotal,
+    getFriendlyError,
+
     sendGiftSecurely,
-    openGiftSecurely
+    openGiftSecurely,
+
+    isSendingTo,
+    isOpeningGift
   };
 })();
+
+window.RGDailyGifts = RGDailyGifts;

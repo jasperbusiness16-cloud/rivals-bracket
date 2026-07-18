@@ -1,5 +1,9 @@
 const RGDailyCheckIn = (() => {
   const TIME_ZONE = "America/Chicago";
+  const FUNCTIONS_REGION = "us-central1";
+
+  let claimInProgress = false;
+  let claimDailyRewardCallable = null;
 
   const rewardTrack = [
     {
@@ -327,8 +331,178 @@ const RGDailyCheckIn = (() => {
     };
   }
 
+  function getClaimCallable() {
+    if (
+      typeof firebase === "undefined" ||
+      typeof firebase.functions !== "function"
+    ) {
+      throw new Error(
+        "Firebase Functions is not loaded on this page."
+      );
+    }
+
+    if (!claimDailyRewardCallable) {
+      claimDailyRewardCallable = firebase
+        .functions(FUNCTIONS_REGION)
+        .httpsCallable("claimDailyReward");
+    }
+
+    return claimDailyRewardCallable;
+  }
+
+  function getFriendlyClaimError(error) {
+    const code = String(error?.code || "");
+
+    if (code.includes("unauthenticated")) {
+      return "Please sign in again before claiming your reward.";
+    }
+
+    if (code.includes("already-exists")) {
+      return "You already claimed today's daily reward.";
+    }
+
+    if (code.includes("failed-precondition")) {
+      return error?.message ||
+        "Your player profile must be completed before claiming.";
+    }
+
+    if (code.includes("resource-exhausted")) {
+      return "Your reward is already being processed. Wait a moment and try again.";
+    }
+
+    if (
+      code.includes("unavailable") ||
+      code.includes("deadline-exceeded")
+    ) {
+      return "The reward server is temporarily unavailable. Please try again.";
+    }
+
+    if (code.includes("permission-denied")) {
+      return "Your account is not allowed to claim this reward.";
+    }
+
+    return error?.message ||
+      "The daily reward could not be claimed.";
+  }
+
+  function setClaimUi({
+    text,
+    disabled,
+    countdownText,
+    error = false
+  }) {
+    const button = document.getElementById("dailyClaimButton");
+    const countdown = document.getElementById("dailyCountdown");
+
+    if (button) {
+      if (text) {
+        button.innerText = text;
+      }
+
+      button.disabled = Boolean(disabled);
+    }
+
+    if (countdown && countdownText) {
+      countdown.innerText = countdownText;
+      countdown.style.color = error ? "#ef4444" : "";
+    }
+  }
+
+  async function claimDailyReward() {
+    if (claimInProgress) {
+      return;
+    }
+
+    const user = firebase.auth().currentUser;
+
+    if (!user) {
+      setClaimUi({
+        text: "Sign In Required",
+        disabled: true,
+        countdownText: "Please sign in again to claim your reward.",
+        error: true
+      });
+      return;
+    }
+
+    claimInProgress = true;
+
+    setClaimUi({
+      text: "Claiming...",
+      disabled: true,
+      countdownText: "Securely processing your reward..."
+    });
+
+    try {
+      const callable = getClaimCallable();
+      const result = await callable({});
+      const data = result?.data || {};
+
+      const rewardName =
+        data.reward?.name ||
+        data.reward?.label ||
+        "Daily reward";
+
+      if (data.duplicate) {
+        setClaimUi({
+          text: "Claimed Today",
+          disabled: true,
+          countdownText:
+            "Today's reward was already added to your account."
+        });
+      } else {
+        setClaimUi({
+          text: "Claimed!",
+          disabled: true,
+          countdownText:
+            `✓ ${rewardName} added. Streak: ${Number(
+              data.currentStreak || 1
+            )}.`
+        });
+      }
+
+      window.dispatchEvent(
+        new CustomEvent("rg:daily-reward-claimed", {
+          detail: data
+        })
+      );
+
+      window.setTimeout(() => {
+        load(user.uid)
+          .then(refreshed => {
+            window.dispatchEvent(
+              new CustomEvent("rg:daily-checkin-refreshed", {
+                detail: refreshed
+              })
+            );
+          })
+          .catch(error => {
+            console.error(
+              "Daily check-in fallback refresh failed:",
+              error
+            );
+          });
+      }, 1200);
+    } catch (error) {
+      console.error(
+        "Secure daily reward claim failed:",
+        error
+      );
+
+      setClaimUi({
+        text: "Try Again",
+        disabled: false,
+        countdownText: getFriendlyClaimError(error),
+        error: true
+      });
+    } finally {
+      claimInProgress = false;
+    }
+  }
+
   return {
     TIME_ZONE,
+    FUNCTIONS_REGION,
     rewardTrack,
     getDateKey,
     getPreviousDateKey,
@@ -338,6 +512,10 @@ const RGDailyCheckIn = (() => {
     formatCountdown,
     getCountdown,
     load,
-    listen
+    listen,
+    claimDailyReward
   };
 })();
+
+window.claimDailyReward =
+  RGDailyCheckIn.claimDailyReward;

@@ -286,17 +286,116 @@ window.RGFriends = (() => {
   }
 
 
-  function listenToFriends(uid, callback) {
-    const ref = database.ref(`userFriends/${uid}`);
-
-    const handler = snapshot => {
-      callback(snapshot.val() || {});
-    };
-
-    ref.on("value", handler);
-
-    return () => ref.off("value", handler);
+ function listenToFriends(uid, callback) {
+  if (!uid || typeof callback !== "function") {
+    return null;
   }
+
+  const userFriendsRef = database.ref(
+    `userFriends/${uid}`
+  );
+
+  let fallbackQuery = null;
+  let fallbackRunning = false;
+
+  const handleFallbackSnapshot = snapshot => {
+    const friendMap = {};
+
+    snapshot.forEach(friendshipSnapshot => {
+      const friendship =
+        friendshipSnapshot.val() || {};
+
+      const users = friendship.users || {};
+
+      const friendUid = Object.keys(users).find(
+        userUid =>
+          userUid !== uid &&
+          users[userUid] === true
+      );
+
+      if (!friendUid) {
+        return;
+      }
+
+      friendMap[friendUid] = {
+        friendshipId: friendshipSnapshot.key,
+        since: Number(
+          friendship.createdAt || 0
+        )
+      };
+    });
+
+    callback(friendMap);
+  };
+
+  const handleFallbackError = error => {
+    console.error(
+      "Friendship fallback listener failed:",
+      error
+    );
+
+    callback({});
+  };
+
+  const startFallbackListener = () => {
+    if (fallbackRunning) {
+      return;
+    }
+
+    fallbackRunning = true;
+
+    fallbackQuery = database
+      .ref("friendships")
+      .orderByChild(`users/${uid}`)
+      .equalTo(true);
+
+    fallbackQuery.on(
+      "value",
+      handleFallbackSnapshot,
+      handleFallbackError
+    );
+  };
+
+  const handleUserFriendsSnapshot = snapshot => {
+    const friends = snapshot.val() || {};
+
+    if (Object.keys(friends).length > 0) {
+      callback(friends);
+      return;
+    }
+
+    startFallbackListener();
+  };
+
+  const handleUserFriendsError = error => {
+    console.error(
+      "userFriends listener failed:",
+      error
+    );
+
+    startFallbackListener();
+  };
+
+  userFriendsRef.on(
+    "value",
+    handleUserFriendsSnapshot,
+    handleUserFriendsError
+  );
+
+  return () => {
+    userFriendsRef.off(
+      "value",
+      handleUserFriendsSnapshot
+    );
+
+    if (fallbackQuery) {
+      fallbackQuery.off(
+        "value",
+        handleFallbackSnapshot
+      );
+    }
+  };
+}
 
 
   function listenToIncomingRequests(uid, callback) {

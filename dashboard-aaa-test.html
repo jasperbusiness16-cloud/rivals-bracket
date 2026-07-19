@@ -1,0 +1,5194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08080d">
+
+<title>Dashboard | Rivals Gauntlet</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+  rel="stylesheet"
+>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+
+<link rel="stylesheet" href="global-header.css?v=16">
+
+<style>
+:root {
+  --bg: #08080d;
+  --panel: #111019;
+  --panel2: #171421;
+  --text: #f8f6ff;
+  --muted: #aaa4b8;
+  --dim: #756f82;
+  --line: rgba(255,255,255,.09);
+  --purple: #a855f7;
+  --pl: #d0a3ff;
+  --green: #35d58b;
+  --yellow: #f3c969;
+  --red: #f05a67;
+  --max: 1640px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(
+      circle at 80% 0,
+      rgba(109,40,217,.15),
+      transparent 32%
+    ),
+    linear-gradient(#09090f, #07070b);
+  color: var(--text);
+  font-family: Rajdhani, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+.shell {
+  width: min(calc(100% - 28px), var(--max));
+  display: grid;
+  grid-template-columns: 260px minmax(0,1fr);
+  gap: 16px;
+  margin: 18px auto 70px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.025),
+      transparent 42%
+    ),
+    rgba(15,14,22,.97);
+  box-shadow: 0 22px 65px rgba(0,0,0,.33);
+}
+
+.eyebrow {
+  color: var(--pl);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 7px 0 0;
+  font-size: 25px;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.btn {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 10px;
+  background: rgba(255,255,255,.035);
+  color: inherit;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  border-color: rgba(192,132,252,.5);
+  background: rgba(168,85,247,.08);
+}
+
+.btn.primary {
+  border-color: rgba(208,163,255,.5);
+  background:
+    linear-gradient(
+      135deg,
+      #6d28d9,
+      var(--purple)
+    );
+  color: white;
+}
+
+.btn.red {
+  border-color: rgba(240,90,103,.45);
+  background: rgba(240,90,103,.1);
+  color: #ffb1b8;
+}
+
+.btn.discord {
+  border-color: rgba(125,139,255,.4);
+  color: #c9ceff;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+.empty {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px dashed rgba(255,255,255,.14);
+  border-radius: 11px;
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.pill {
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+}
+
+.pill.good {
+  border-color: rgba(53,213,139,.36);
+  background: rgba(53,213,139,.07);
+  color: #91eebe;
+}
+
+.pill.warn {
+  border-color: rgba(243,201,105,.36);
+  background: rgba(243,201,105,.07);
+  color: #ffe1a0;
+}
+
+.pill.bad {
+  border-color: rgba(240,90,103,.43);
+  background: rgba(240,90,103,.08);
+  color: #ffadb5;
+}
+
+.pill.purple {
+  border-color: rgba(192,132,252,.42);
+  background: rgba(168,85,247,.08);
+  color: var(--pl);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.side {
+  position: sticky;
+  top: 16px;
+  height: max-content;
+  overflow: hidden;
+}
+
+.side-brand {
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.side-brand span {
+  display: block;
+  color: var(--pl);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.side-brand strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+.profile {
+  padding: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.identity {
+  display: grid;
+  grid-template-columns: 58px minmax(0,1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar,
+.avatar-fallback {
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(192,132,252,.32);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #332247,
+      #121019
+    );
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  display: grid;
+  place-items: center;
+  color: var(--pl);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.who {
+  min-width: 0;
+}
+
+.who small {
+  display: block;
+  color: var(--dim);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.who h2 {
+  overflow: hidden;
+  margin: 5px 0 0;
+  font-size: 22px;
+  line-height: .95;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.who strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--pl);
+  font-size: 9px;
+}
+
+.progress {
+  margin-top: 16px;
+}
+
+.progress-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.track {
+  height: 5px;
+  overflow: hidden;
+  margin-top: 7px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.07);
+}
+
+.fill {
+  width: 0;
+  height: 100%;
+  background:
+    linear-gradient(
+      90deg,
+      #6d28d9,
+      var(--pl)
+    );
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+}
+
+.stat {
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.stat:nth-child(odd) {
+  border-left: 0;
+}
+
+.stat:nth-child(-n + 2) {
+  border-top: 0;
+}
+
+.stat span {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.nav {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+}
+
+.nav a,
+.nav button {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.nav a:hover,
+.nav button:hover,
+.nav .active {
+  border-color: rgba(192,132,252,.32);
+  background: rgba(168,85,247,.07);
+  color: white;
+}
+
+.nav .active {
+  box-shadow: inset 3px 0 var(--purple);
+}
+
+.nav i {
+  width: 17px;
+  color: var(--pl);
+  text-align: center;
+}
+
+/* =========================================================
+   MAIN HEADER
+   ========================================================= */
+
+.main {
+  min-width: 0;
+}
+
+.topbar {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 11px 3px 17px;
+}
+
+.topbar h1 {
+  margin: 6px 0 0;
+  font-size: clamp(31px,4vw,48px);
+  line-height: .9;
+  text-transform: uppercase;
+}
+
+.topbar p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================================
+   ALERT
+   ========================================================= */
+
+.alert {
+  position: relative;
+  display: none;
+  margin-bottom: 12px;
+  padding: 15px 52px 15px 17px;
+  border: 1px solid rgba(240,90,103,.42);
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(240,90,103,.13),
+      transparent
+    ),
+    #170d12;
+}
+
+.alert h2 {
+  margin: 0;
+  color: #ffb1b8;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.alert p {
+  margin: 7px 0 0;
+  color: #d8c9cc;
+  font-size: 12px;
+}
+
+.dismiss {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 31px;
+  height: 31px;
+  border: 1px solid rgba(240,90,103,.4);
+  border-radius: 50%;
+  background: #120b0e;
+  color: #ffb1b8;
+  font-size: 18px;
+}
+
+/* =========================================================
+   COMMAND CENTER HERO
+   ========================================================= */
+
+.command {
+  overflow: hidden;
+  border-color: rgba(192,132,252,.33);
+  background:
+    radial-gradient(
+      circle at 88% 20%,
+      rgba(168,85,247,.2),
+      transparent 29%
+    ),
+    linear-gradient(
+      130deg,
+      rgba(255,255,255,.03),
+      transparent 48%
+    ),
+    #100e18;
+}
+
+.command-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 19px;
+  border-bottom: 1px solid var(--line);
+}
+
+.event span {
+  display: block;
+  color: var(--pl);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.event strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.command-body {
+  display: grid;
+  grid-template-columns:
+    minmax(0,1.25fr)
+    minmax(290px,.75fr);
+}
+
+.action {
+  padding: clamp(27px,4vw,45px);
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--pl);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow:
+    0 0 16px rgba(168,85,247,.8);
+}
+
+.state.live .dot {
+  background: var(--red);
+  box-shadow:
+    0 0 16px rgba(240,90,103,.8);
+}
+
+.action h2 {
+  max-width: 780px;
+  margin: 15px 0 0;
+  font-size: clamp(38px,5vw,68px);
+  line-height: .86;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+}
+
+.action > p {
+  max-width: 730px;
+  margin: 17px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.note {
+  display: none;
+  max-width: 730px;
+  margin-top: 15px;
+  padding: 12px 13px;
+  border-left: 3px solid var(--purple);
+  background: rgba(168,85,247,.055);
+  color: #d8d1df;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.command-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 26px;
+  border-left: 1px solid var(--line);
+  background: rgba(0,0,0,.08);
+}
+
+.command-side > span {
+  color: var(--dim);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.command-side > strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 27px;
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.side-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--line);
+}
+
+.side-cell {
+  padding: 12px;
+  background: #121019;
+}
+
+.side-cell span {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.side-cell strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns:
+    repeat(7,minmax(115px,1fr));
+  overflow-x: auto;
+  border-top: 1px solid var(--line);
+  background: rgba(0,0,0,.12);
+}
+
+.step {
+  min-width: 120px;
+  padding: 14px 12px;
+  border-left: 1px solid var(--line);
+}
+
+.step:first-child {
+  border-left: 0;
+}
+
+.step span {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.step strong {
+  display: block;
+  margin-top: 5px;
+  color: #77717f;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.step.done span,
+.step.done strong {
+  color: #86e9b4;
+}
+
+.step.now {
+  background: rgba(168,85,247,.08);
+  box-shadow: inset 0 3px var(--purple);
+}
+
+.step.now span,
+.step.now strong {
+  color: var(--pl);
+}
+
+/* =========================================================
+   CONTENT CARDS
+   ========================================================= */
+
+.grid3 {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr .9fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.card {
+  min-width: 0;
+  padding: 20px;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 13px;
+}
+
+.mini {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.mini.live {
+  border-color: rgba(240,90,103,.4);
+  background: rgba(240,90,103,.08);
+  color: #ffadb5;
+}
+
+.mini.deck {
+  border-color: rgba(192,132,252,.4);
+  background: rgba(168,85,247,.08);
+  color: var(--pl);
+}
+
+.match {
+  margin-top: 20px;
+}
+
+.round {
+  color: var(--pl);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.versus {
+  display: grid;
+  grid-template-columns:
+    1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.team {
+  font-size: 18px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.team.right {
+  text-align: right;
+}
+
+.score {
+  min-width: 58px;
+  color: var(--pl);
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.progress-box {
+  margin-top: 14px;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.copy {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.data-list {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.data-row {
+  padding: 10px 11px;
+  background: #121019;
+}
+
+.data-row span,
+.detail span {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.data-row strong,
+.detail strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 3px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.detail {
+  padding: 10px 11px;
+  background: #121019;
+}
+
+.roster {
+  display: grid;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns:
+    34px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+}
+
+.initials {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(192,132,252,.27);
+  border-radius: 8px;
+  background: rgba(168,85,247,.07);
+  color: var(--pl);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.player-info {
+  min-width: 0;
+}
+
+.player-info strong {
+  display: block;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-info span {
+  display: block;
+  overflow: hidden;
+  margin-top: 2px;
+  color: var(--dim);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ready {
+  color: var(--yellow);
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ready.good {
+  color: #86e9b4;
+}
+
+.ready.bad {
+  color: #ff9fa8;
+}
+
+.journey {
+  display: grid;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.journey-row {
+  display: grid;
+  grid-template-columns:
+    105px minmax(0,1fr) 75px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+}
+
+.journey-row small {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.journey-row strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.journey-vs {
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result {
+  font-size: 9px;
+  font-weight: 800;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.result.win {
+  color: #86e9b4;
+}
+
+.result.loss,
+.result.live {
+  color: #ff9fa8;
+}
+
+.result.wait {
+  color: var(--dim);
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.issue {
+  border-color: rgba(240,90,103,.3);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(240,90,103,.08),
+      transparent
+    ),
+    #120d12;
+}
+
+.issue .title {
+  color: #ffb1b8;
+}
+
+/* =========================================================
+   DAILY REWARD
+   ========================================================= */
+
+.daily-track {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.day {
+  min-width: 0;
+  padding: 7px 3px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--dim);
+  text-align: center;
+}
+
+.day span {
+  display: block;
+  font-size: 6px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.day b {
+  display: block;
+  margin: 4px 0;
+  color: var(--pl);
+  font-size: 9px;
+}
+
+.day strong {
+  display: block;
+  overflow: hidden;
+  font-size: 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day.done {
+  border-color: rgba(53,213,139,.28);
+  color: #86e9b4;
+}
+
+.day.current {
+  border-color: rgba(192,132,252,.45);
+  background: rgba(168,85,247,.08);
+  color: var(--pl);
+}
+
+.daily-foot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 13px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255,255,255,.02);
+}
+
+.daily-foot span {
+  display: block;
+  color: var(--dim);
+  font-size: 7px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.daily-foot strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+}
+
+.daily-foot small {
+  display: block;
+  margin-top: 3px;
+  color: var(--dim);
+  font-size: 8px;
+}
+
+.quick {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.quick a {
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.quick i {
+  color: var(--pl);
+  font-size: 15px;
+}
+
+/* =========================================================
+   ACTIVITY
+   ========================================================= */
+
+.feed {
+  display: grid;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.feed-item {
+  display: grid;
+  grid-template-columns:
+    31px minmax(0,1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255,255,255,.018);
+}
+
+.feed-icon {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(192,132,252,.27);
+  border-radius: 8px;
+  background: rgba(168,85,247,.06);
+  color: var(--pl);
+  font-weight: 800;
+}
+
+.feed-item strong {
+  display: block;
+  font-size: 11px;
+}
+
+.feed-item span {
+  display: block;
+  margin-top: 2px;
+  color: var(--dim);
+  font-size: 9px;
+}
+
+.status {
+  min-height: 18px;
+  margin: 13px 2px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* =========================================================
+   REPORT MODAL
+   ========================================================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  place-items: center;
+  padding: 18px;
+  background: rgba(3,3,7,.84);
+  backdrop-filter: blur(8px);
+}
+
+.modal.open {
+  display: grid;
+}
+
+.modal-card {
+  width: min(100%,540px);
+  max-height: 86vh;
+  overflow: auto;
+  border: 1px solid rgba(240,90,103,.36);
+  border-radius: 16px;
+  background: #111018;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-head h2 {
+  margin: 5px 0 0;
+  font-size: 27px;
+  text-transform: uppercase;
+}
+
+.close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255,255,255,.03);
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.modal-body {
+  padding: 18px;
+}
+
+.field {
+  margin-top: 13px;
+}
+
+.field:first-child {
+  margin-top: 0;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 9px;
+  outline: 0;
+  background: #0d0c12;
+}
+
+.field select {
+  height: 43px;
+  padding: 0 11px;
+}
+
+.field textarea {
+  min-height: 110px;
+  padding: 11px;
+  resize: vertical;
+}
+
+.guidance {
+  margin-top: 14px;
+  padding: 11px;
+  border-left: 3px solid var(--red);
+  background: rgba(240,90,103,.055);
+  color: #d7c9cc;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.report-status {
+  min-height: 17px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width:1180px) {
+  .shell {
+    grid-template-columns: 235px minmax(0,1fr);
+  }
+
+  .grid3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .discord-card {
+    grid-column: 1 / -1;
+  }
+
+  .data-list {
+    grid-template-columns: repeat(3,1fr);
+  }
+}
+
+@media (max-width:980px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .side {
+    position: relative;
+    top: auto;
+  }
+
+  .side-brand {
+    display: none;
+  }
+
+  .profile {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .progress {
+    margin-top: 0;
+  }
+
+  .stats {
+    grid-template-columns: repeat(6,1fr);
+  }
+
+  .stat,
+  .stat:nth-child(odd),
+  .stat:nth-child(-n + 2) {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .stat:first-child {
+    border-left: 0;
+  }
+
+  .nav {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .nav a,
+  .nav button {
+    min-width: max-content;
+  }
+
+  .command-body {
+    grid-template-columns: 1fr;
+  }
+
+  .command-side {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width:700px) {
+  .shell {
+    width: min(calc(100% - 16px),var(--max));
+    margin-top: 10px;
+  }
+
+  .profile {
+    grid-template-columns: 1fr;
+  }
+
+  .progress {
+    margin-top: 15px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3,1fr);
+  }
+
+  .stat:nth-child(4) {
+    border-left: 0;
+  }
+
+  .stat:nth-child(n + 4) {
+    border-top: 1px solid var(--line);
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .top-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .command-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pills {
+    justify-content: flex-start;
+  }
+
+  .action {
+    padding: 25px 19px;
+  }
+
+  .action h2 {
+    font-size: 41px;
+  }
+
+  .command-side {
+    padding: 20px;
+  }
+
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .discord-card {
+    grid-column: auto;
+  }
+
+  .data-list {
+    grid-template-columns: 1fr;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+  }
+
+  .journey-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .result {
+    text-align: left;
+  }
+
+  .quick {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width:450px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat:nth-child(3),
+  .stat:nth-child(5) {
+    border-left: 0;
+  }
+
+  .stat:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .side-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .versus {
+    grid-template-columns: 1fr;
+  }
+
+  .team.right,
+  .score {
+    text-align: left;
+  }
+
+  .daily-track {
+    grid-template-columns: repeat(7,48px);
+    overflow-x: auto;
+  }
+}
+</style>
+</head>
+
+<body data-page="dashboard">
+<div id="globalHeader"></div>
+
+<div class="shell">
+  <aside class="panel side">
+    <div class="side-brand">
+      <span>Rivals Gauntlet</span>
+      <strong>Player Command</strong>
+    </div>
+
+    <div class="profile">
+      <div class="identity">
+        <img
+          id="sidebarAvatar"
+          class="avatar"
+          src=""
+          alt="Profile"
+          style="display:none"
+        >
+
+        <div
+          id="sidebarFallback"
+          class="avatar-fallback"
+        >
+          RG
+        </div>
+
+        <div class="who">
+          <small>Competitor Profile</small>
+          <h2 id="sidebarName">Player</h2>
+          <strong id="sidebarId">RG ACCOUNT</strong>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-head">
+          <span>Profile Completion</span>
+          <span id="profilePercent">0%</span>
+        </div>
+
+        <div class="track">
+          <div
+            id="profileFill"
+            class="fill"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span>RG Points</span>
+        <strong id="sidebarRgPoints">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Lifetime RP</span>
+        <strong id="sidebarLifetimeRp">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Prestige</span>
+        <strong id="sidebarPrestige">★ 0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Events</span>
+        <strong id="sidebarEvents">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Titles</span>
+        <strong id="sidebarChamps">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Best Finish</span>
+        <strong id="sidebarBestFinish">--</strong>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a
+        class="active"
+        href="dashboard.html"
+      >
+        <i class="fa-solid fa-gauge-high"></i>
+        Command Center
+      </a>
+
+      <a
+        id="publicProfileLink"
+        href="#"
+      >
+        <i class="fa-solid fa-user"></i>
+        Public Profile
+      </a>
+
+      <a href="apply.html">
+        <i class="fa-solid fa-file-signature"></i>
+        Application
+      </a>
+
+      <a href="inventory.html">
+        <i class="fa-solid fa-box-open"></i>
+        Inventory
+      </a>
+
+      <a href="predictions.html">
+        <i class="fa-solid fa-chart-line"></i>
+        Predictions
+      </a>
+
+      <a href="settings.html">
+        <i class="fa-solid fa-gear"></i>
+        Settings
+      </a>
+
+      <button
+        type="button"
+        onclick="logoutUser()"
+      >
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Sign Out
+      </button>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">
+          Tournament Day Dashboard
+        </div>
+
+        <h1 id="welcomeName">
+          Welcome Back
+        </h1>
+
+        <p>
+          Your application, check-in, team, live match and
+          tournament instructions in one place.
+        </p>
+      </div>
+
+      <div class="top-actions">
+        <div id="dashboardNotificationMount"></div>
+
+        <a
+          id="topProfileBtn"
+          class="btn"
+          href="#"
+        >
+          <i class="fa-solid fa-user"></i>
+          Public Profile
+        </a>
+
+        <a
+          class="btn"
+          href="settings.html"
+        >
+          <i class="fa-solid fa-gear"></i>
+          Settings
+        </a>
+      </div>
+    </header>
+
+    <section
+      id="subbedInAlert"
+      class="alert"
+    >
+      <button
+        class="dismiss"
+        onclick="dismissSubbedInAlert()"
+      >
+        ×
+      </button>
+
+      <h2>You Have Been Subbed In</h2>
+      <div id="subbedInContent"></div>
+    </section>
+
+    <section class="panel command">
+      <div class="command-head">
+        <div class="event">
+          <span>Active Tournament</span>
+
+          <strong id="eventName">
+            Loading Current Tournament...
+          </strong>
+        </div>
+
+        <div class="pills">
+          <span
+            id="appPill"
+            class="pill"
+          >
+            Application Loading
+          </span>
+
+          <span
+            id="checkPill"
+            class="pill"
+          >
+            Check-In Loading
+          </span>
+
+          <span
+            id="teamPill"
+            class="pill"
+          >
+            Team Pending
+          </span>
+        </div>
+      </div>
+
+      <div class="command-body">
+        <div class="action">
+          <div
+            id="actionState"
+            class="state"
+          >
+            <span class="dot"></span>
+
+            <span id="actionStateText">
+              Loading Player Status
+            </span>
+          </div>
+
+          <h2 id="actionTitle">
+            Preparing Your Command Center
+          </h2>
+
+          <p id="actionDescription">
+            Loading your application, team and tournament status.
+          </p>
+
+          <div
+            id="actionNote"
+            class="note"
+          ></div>
+
+          <div
+            id="actionButtons"
+            class="btns"
+          ></div>
+        </div>
+
+        <aside class="command-side">
+          <span>Your Tournament Position</span>
+
+          <strong id="commandState">
+            Loading
+          </strong>
+
+          <div class="side-grid">
+            <div class="side-cell">
+              <span>Team</span>
+              <strong id="commandTeam">Pending</strong>
+            </div>
+
+            <div class="side-cell">
+              <span>Next Match</span>
+              <strong id="commandNext">Pending</strong>
+            </div>
+
+            <div class="side-cell">
+              <span>Voice Channel</span>
+              <strong id="commandVoice">
+                Tournament Lobby
+              </strong>
+            </div>
+
+            <div class="side-cell">
+              <span>Availability</span>
+              <strong id="commandAvailability">
+                Unknown
+              </strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div
+        id="actionSteps"
+        class="steps"
+      ></div>
+    </section>
+
+    <section class="grid3">
+      <article class="panel card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Live Broadcast
+            </div>
+
+            <h2 class="title">
+              Current Series
+            </h2>
+          </div>
+
+          <span
+            id="liveBadge"
+            class="mini"
+          >
+            Waiting
+          </span>
+        </div>
+
+        <div id="liveSeries">
+          <div class="empty">
+            Loading current series...
+          </div>
+        </div>
+      </article>
+
+      <article class="panel card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Competitor Assignment
+            </div>
+
+            <h2 class="title">
+              Your Next Match
+            </h2>
+          </div>
+
+          <span
+            id="nextBadge"
+            class="mini"
+          >
+            Waiting
+          </span>
+        </div>
+
+        <div id="nextMatch">
+          <div class="empty">
+            Loading your tournament path...
+          </div>
+        </div>
+      </article>
+
+      <article class="panel card discord-card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Tournament Communication
+            </div>
+
+            <h2 class="title">
+              Discord Lobby
+            </h2>
+          </div>
+
+          <span class="mini">
+            Required
+          </span>
+        </div>
+
+        <p class="copy">
+          Stay in Discord during tournament day so staff can
+          reach your team when your match is ready.
+        </p>
+
+        <div class="data-list">
+          <div class="data-row">
+            <span>Voice Channel</span>
+            <strong id="voiceChannel">
+              Tournament Lobby
+            </strong>
+          </div>
+
+          <div class="data-row">
+            <span>Support Channel</span>
+            <strong id="supportChannel">
+              #tournament-help
+            </strong>
+          </div>
+
+          <div class="data-row">
+            <span>Instruction</span>
+            <strong id="discordInstruction">
+              Stay available for staff
+            </strong>
+          </div>
+        </div>
+
+        <div class="btns">
+          <a
+            id="discordButton"
+            class="btn primary discord"
+            href="https://discord.gg/82HPpfkhQN"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="fa-brands fa-discord"></i>
+            Open Discord
+          </a>
+
+          <button
+            class="btn"
+            onclick="copyVoiceChannel()"
+          >
+            <i class="fa-solid fa-copy"></i>
+            Copy Channel
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid2">
+      <article class="panel card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Registration Record
+            </div>
+
+            <h2 class="title">
+              Current Application
+            </h2>
+          </div>
+
+          <span
+            id="applicationStatus"
+            class="pill"
+          >
+            Loading
+          </span>
+        </div>
+
+        <div id="applicationCard">
+          <div class="empty">
+            Loading your application...
+          </div>
+        </div>
+      </article>
+
+      <article class="panel card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Team Operations
+            </div>
+
+            <h2 class="title">
+              Roster Readiness
+            </h2>
+          </div>
+
+          <span
+            id="readyPill"
+            class="pill"
+          >
+            Team Pending
+          </span>
+        </div>
+
+        <div id="rosterCard">
+          <div class="empty">
+            Your roster will appear after assignments are published.
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid2">
+      <article class="panel card">
+        <div class="card-head">
+          <div>
+            <div class="eyebrow">
+              Personal Bracket Path
+            </div>
+
+            <h2 class="title">
+              Your Tournament Journey
+            </h2>
+          </div>
+
+          <a
+            class="btn"
+            href="tournament.html"
+          >
+            Full Bracket
+          </a>
+        </div>
+
+        <div
+          id="journey"
+          class="journey"
+        >
+          <div class="empty">
+            Loading your journey...
+          </div>
+        </div>
+      </article>
+
+      <div class="stack">
+        <article class="panel card issue">
+          <div class="eyebrow">
+            Tournament Support
+          </div>
+
+          <h2 class="title">
+            Report an Issue
+          </h2>
+
+          <p class="copy">
+            Report an AFK player, intentional throwing,
+            a missing teammate, needed replacement or
+            urgent match problem.
+          </p>
+
+          <div class="btns">
+            <button
+              class="btn red"
+              onclick="openReportModal()"
+            >
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              Report Tournament Issue
+            </button>
+          </div>
+        </article>
+
+        <article class="panel card">
+          <div class="card-head">
+            <div>
+              <div class="eyebrow">
+                Daily Progression
+              </div>
+
+              <h2 class="title">
+                Daily Reward
+              </h2>
+            </div>
+
+            <strong id="dailyCurrentStreak">
+              0 Days
+            </strong>
+          </div>
+
+          <div
+            id="dailyRewardTrack"
+            class="daily-track"
+          ></div>
+
+          <div class="daily-foot">
+            <div>
+              <span id="dailyRewardStatusLabel">
+                Next Reward
+              </span>
+
+              <strong id="dailyNextReward">
+                Loading...
+              </strong>
+
+              <small id="dailyCountdown">
+                Checking availability...
+              </small>
+            </div>
+
+            <button
+              id="dailyClaimButton"
+              class="btn primary"
+              disabled
+            >
+              Loading...
+            </button>
+          </div>
+        </article>
+
+        <article class="panel card">
+          <div class="eyebrow">
+            Player Hub
+          </div>
+
+          <h2 class="title">
+            Account Shortcuts
+          </h2>
+
+          <div class="quick">
+            <a href="inventory.html">
+              <i class="fa-solid fa-box-open"></i>
+              Inventory
+            </a>
+
+            <a href="predictions.html">
+              <i class="fa-solid fa-chart-line"></i>
+              Predictions
+            </a>
+
+            <a href="settings.html">
+              <i class="fa-solid fa-gear"></i>
+              Settings
+            </a>
+          </div>
+
+          <div class="btns">
+            <button
+              id="starterBonusBtn"
+              class="btn"
+              onclick="claimStarterRgBonus()"
+            >
+              Claim 100 RP Starter Bonus
+            </button>
+          </div>
+
+          <p
+            id="rewardStatus"
+            class="status"
+          ></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <article class="panel card">
+        <div class="eyebrow">
+          Player Updates
+        </div>
+
+        <h2 class="title">
+          Activity Feed
+        </h2>
+
+        <div
+          id="activityFeed"
+          class="feed"
+        >
+          <div class="empty">
+            Loading activity...
+          </div>
+        </div>
+      </article>
+
+      <article class="panel card">
+        <div class="eyebrow">
+          Reward History
+        </div>
+
+        <h2 class="title">
+          Recent RG Points
+        </h2>
+
+        <div
+          id="rgHistory"
+          class="feed"
+        >
+          <div class="empty">
+            Loading RG Points...
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <p
+      id="dashboardStatus"
+      class="status"
+    ></p>
+  </main>
+</div>
+
+<div
+  id="reportModal"
+  class="modal"
+>
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">
+          Tournament Incident
+        </div>
+
+        <h2>Report an Issue</h2>
+      </div>
+
+      <button
+        class="close"
+        onclick="closeReportModal()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="field">
+        <label for="issueType">
+          What is happening?
+        </label>
+
+        <select id="issueType">
+          <option value="">
+            Select an issue
+          </option>
+
+          <option value="afk">
+            Player is AFK
+          </option>
+
+          <option value="throwing">
+            Player is intentionally throwing
+          </option>
+
+          <option value="disconnected">
+            Player disconnected
+          </option>
+
+          <option value="missing_lobby">
+            Player missing from lobby
+          </option>
+
+          <option value="replacement">
+            Team needs a replacement
+          </option>
+
+          <option value="opponent_missing">
+            Opponent missing
+          </option>
+
+          <option value="roster">
+            Roster problem
+          </option>
+
+          <option value="technical">
+            Technical problem
+          </option>
+
+          <option value="other">
+            Other urgent issue
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="targetPlayer">
+          Player involved
+        </label>
+
+        <select id="targetPlayer">
+          <option value="">
+            No specific player / team issue
+          </option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="reportDetails">
+          Short explanation
+        </label>
+
+        <textarea
+          id="reportDetails"
+          maxlength="500"
+          placeholder="Explain what is happening and what staff needs to know."
+        ></textarea>
+      </div>
+
+      <div class="guidance">
+        Reports never automatically remove a player.
+        Multiple unique teammate reports raise the incident
+        priority for administrator review and the substitute workflow.
+      </div>
+
+      <div class="btns">
+        <button
+          id="submitReportBtn"
+          class="btn red"
+          onclick="submitTournamentReport()"
+        >
+          Submit Report
+        </button>
+
+        <button
+          class="btn"
+          onclick="closeReportModal()"
+        >
+          Cancel
+        </button>
+      </div>
+
+      <p
+        id="reportStatus"
+        class="report-status"
+      ></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
+
+<script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=4"></script>
+<script src="daily-gifts.js?v=2"></script>
+<script src="daily-checkin.js?v=3"></script>
+<script src="global-header.js?v=16"></script>
+
+<script>
+const $ = id =>
+  document.getElementById(id);
+
+const C = (value, fallback = "") =>
+  String(value ?? "").trim() || fallback;
+
+const N = value =>
+  C(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+const E = value =>
+  C(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+const DISCORD =
+  "https://discord.gg/82HPpfkhQN";
+
+const TWITCH =
+  "https://www.twitch.tv/atrophylive";
+
+let tournamentId = "open1";
+let user = null;
+let player = {};
+let application = null;
+let checkIn = null;
+let availability = null;
+
+let checkIns = {};
+let availabilities = {};
+let teams = {};
+let tournament = {};
+let site = {};
+let broadcast = {};
+let activities = {};
+
+let dailyStatus = null;
+let dailyStop = null;
+let dailyTimer = null;
+
+
+/* =========================================================
+   BASIC PROFILE HELPERS
+   ========================================================= */
+
+function initials(name) {
+  return C(name, "RG")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(word => word[0])
+    .join("")
+    .toUpperCase();
+}
+
+function completion(profile) {
+  const socials =
+    profile.socials || {};
+
+  const fields = [
+    profile.displayName,
+    profile.rivalsIgn,
+    profile.discordUsername,
+    profile.region,
+    profile.platform,
+    profile.bio,
+    profile.profileImage,
+    socials.twitch ||
+      socials.youtube ||
+      socials.tiktok ||
+      socials.x
+  ];
+
+  return Math.round(
+    (
+      fields.filter(value => C(value)).length /
+      fields.length
+    ) * 100
+  );
+}
+
+function setPill(element, text, type = "") {
+  element.className =
+    `pill ${type}`.trim();
+
+  element.textContent =
+    text;
+}
+
+function formatStatus(value) {
+  return C(value, "Unknown")
+    .replaceAll("_", " ")
+    .replace(
+      /\b\w/g,
+      letter => letter.toUpperCase()
+    );
+}
+
+function formatDate(timestamp) {
+  if (!timestamp) {
+    return "Not available";
+  }
+
+  return new Date(
+    Number(timestamp)
+  ).toLocaleDateString(
+    undefined,
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    }
+  );
+}
+
+function renderProfile() {
+  const name =
+    C(player.displayName, "Player");
+
+  const percent =
+    completion(player);
+
+  $("sidebarName").textContent =
+    name;
+
+  $("sidebarFallback").textContent =
+    initials(name);
+
+  $("sidebarId").textContent =
+    player.rgId ||
+    "RG ACCOUNT";
+
+  $("sidebarRgPoints").textContent =
+    Number(
+      player.rgPoints || 0
+    ).toLocaleString();
+
+  $("sidebarLifetimeRp").textContent =
+    Number(
+      player.lifetimeRgPoints || 0
+    ).toLocaleString();
+
+  $("sidebarPrestige").textContent =
+    `★ ${player.prestige || 0}`;
+
+  $("sidebarEvents").textContent =
+    player.eventsPlayed || 0;
+
+  $("sidebarChamps").textContent =
+    player.championships || 0;
+
+  $("sidebarBestFinish").textContent =
+    player.bestFinish || "--";
+
+  $("profilePercent").textContent =
+    `${percent}%`;
+
+  $("profileFill").style.width =
+    `${percent}%`;
+
+  $("welcomeName").textContent =
+    `Welcome Back, ${name}`;
+
+  const profileUrl =
+    `player.html?id=${user.uid}`;
+
+  $("publicProfileLink").href =
+    profileUrl;
+
+  $("topProfileBtn").href =
+    profileUrl;
+
+  if (player.profileImage) {
+    $("sidebarAvatar").src =
+      player.profileImage;
+
+    $("sidebarAvatar").style.display =
+      "block";
+
+    $("sidebarFallback").style.display =
+      "none";
+  } else {
+    $("sidebarAvatar").style.display =
+      "none";
+
+    $("sidebarFallback").style.display =
+      "grid";
+  }
+
+  const claimed =
+    Boolean(
+      player.starterRgBonusClaimed
+    );
+
+  $("starterBonusBtn").disabled =
+    claimed;
+
+  $("starterBonusBtn").textContent =
+    claimed
+      ? "Starter Bonus Claimed"
+      : "Claim 100 RP Starter Bonus";
+}
+
+
+/* =========================================================
+   TEAM HELPERS
+   ========================================================= */
+
+function teamObject() {
+  const source =
+    teams.teams ||
+    teams ||
+    {};
+
+  const output = {};
+
+  Object.keys(source).forEach(key => {
+    if (Array.isArray(source[key])) {
+      output[key] =
+        source[key];
+    }
+  });
+
+  return output;
+}
+
+function teamName(key) {
+  return C(
+    teams.teamNames?.[key] ||
+      tournament.teamNames?.[key] ||
+      site[key],
+    key.replace(
+      /^team/i,
+      "Team "
+    )
+  );
+}
+
+function myTeam() {
+  const source =
+    teamObject();
+
+  for (const key in source) {
+    const roster =
+      source[key] || [];
+
+    const found =
+      roster.some(
+        rosterPlayer =>
+          rosterPlayer?.uid === user?.uid
+      );
+
+    if (found) {
+      return {
+        key,
+        name: teamName(key),
+        players: roster
+      };
+    }
+  }
+
+  return null;
+}
+
+
+/* =========================================================
+   MATCH HELPERS
+   ========================================================= */
+
+function matches() {
+  return [
+    {
+      id: "qf1",
+      aliases: [
+        "qf1",
+        "quarterfinal1"
+      ],
+      name: "Quarterfinal 1",
+      short: "QF1",
+      format: "Bo3",
+      teams: [
+        site.team1,
+        site.team2
+      ],
+      winner:
+        site.qf1Winner,
+      scores: [
+        Number(
+          site.qf1Team1Score || 0
+        ),
+        Number(
+          site.qf1Team2Score || 0
+        )
+      ],
+      next: "Semifinal 1"
+    },
+
+    {
+      id: "qf2",
+      aliases: [
+        "qf2",
+        "quarterfinal2"
+      ],
+      name: "Quarterfinal 2",
+      short: "QF2",
+      format: "Bo3",
+      teams: [
+        site.team3,
+        site.team4
+      ],
+      winner:
+        site.qf2Winner,
+      scores: [
+        Number(
+          site.qf2Team1Score || 0
+        ),
+        Number(
+          site.qf2Team2Score || 0
+        )
+      ],
+      next: "Semifinal 1"
+    },
+
+    {
+      id: "qf3",
+      aliases: [
+        "qf3",
+        "quarterfinal3"
+      ],
+      name: "Quarterfinal 3",
+      short: "QF3",
+      format: "Bo3",
+      teams: [
+        site.team5,
+        site.team6
+      ],
+      winner:
+        site.qf3Winner,
+      scores: [
+        Number(
+          site.qf3Team1Score || 0
+        ),
+        Number(
+          site.qf3Team2Score || 0
+        )
+      ],
+      next: "Semifinal 2"
+    },
+
+    {
+      id: "qf4",
+      aliases: [
+        "qf4",
+        "quarterfinal4"
+      ],
+      name: "Quarterfinal 4",
+      short: "QF4",
+      format: "Bo3",
+      teams: [
+        site.team7,
+        site.team8
+      ],
+      winner:
+        site.qf4Winner,
+      scores: [
+        Number(
+          site.qf4Team1Score || 0
+        ),
+        Number(
+          site.qf4Team2Score || 0
+        )
+      ],
+      next: "Semifinal 2"
+    },
+
+    {
+      id: "sf1",
+      aliases: [
+        "sf1",
+        "semifinal1"
+      ],
+      name: "Semifinal 1",
+      short: "SF1",
+      format: "Bo3",
+      teams: [
+        site.qf1Winner,
+        site.qf2Winner
+      ],
+      winner:
+        site.sf1Winner,
+      scores: [
+        Number(
+          site.sf1Team1Score || 0
+        ),
+        Number(
+          site.sf1Team2Score || 0
+        )
+      ],
+      next: "Grand Finals"
+    },
+
+    {
+      id: "sf2",
+      aliases: [
+        "sf2",
+        "semifinal2"
+      ],
+      name: "Semifinal 2",
+      short: "SF2",
+      format: "Bo3",
+      teams: [
+        site.qf3Winner,
+        site.qf4Winner
+      ],
+      winner:
+        site.sf2Winner,
+      scores: [
+        Number(
+          site.sf2Team1Score || 0
+        ),
+        Number(
+          site.sf2Team2Score || 0
+        )
+      ],
+      next: "Grand Finals"
+    },
+
+    {
+      id: "grand",
+      aliases: [
+        "grand",
+        "grandfinal",
+        "grandfinals",
+        "gf"
+      ],
+      name: "Grand Finals",
+      short: "GF",
+      format: "Bo5",
+      teams: [
+        site.sf1Winner,
+        site.sf2Winner
+      ],
+      winner:
+        site.grandWinner ||
+        site.gfWinner,
+      scores: [
+        Number(
+          site.gfTeam1Score || 0
+        ),
+        Number(
+          site.gfTeam2Score || 0
+        )
+      ],
+      next: "Tournament Complete"
+    }
+  ];
+}
+
+function matchFromText(text) {
+  const value =
+    N(text);
+
+  if (!value) {
+    return null;
+  }
+
+  return matches().find(match =>
+    match.aliases.some(alias =>
+      value.includes(
+        N(alias)
+      )
+    )
+  ) || null;
+}
+
+function inMatch(name, match) {
+  if (!name || !match) {
+    return false;
+  }
+
+  return match.teams.some(team =>
+    N(team) === N(name)
+  );
+}
+
+function currentMatch() {
+  return matchFromText(
+    site.currentMatch ||
+    broadcast.currentMatch
+  );
+}
+
+function upNextMatch() {
+  return matchFromText(
+    broadcast.upNext ||
+    broadcast.nextMatch ||
+    site.nextMatch ||
+    site.upNext
+  );
+}
+
+function nextFor(team) {
+  if (!team) {
+    return null;
+  }
+
+  return matches().find(match =>
+    inMatch(
+      team.name,
+      match
+    ) &&
+    !C(match.winner)
+  ) || null;
+}
+
+function opponent(match, name) {
+  return C(
+    match?.teams.find(team =>
+      N(team) !== N(name)
+    ),
+    "TBD"
+  );
+}
+
+function seriesProgress(match) {
+  if (!match) {
+    return "Awaiting series information";
+  }
+
+  const [
+    scoreOne,
+    scoreTwo
+  ] = match.scores;
+
+  const target =
+    match.format === "Bo5"
+      ? 3
+      : 2;
+
+  if (
+    C(match.winner) ||
+    scoreOne >= target ||
+    scoreTwo >= target
+  ) {
+    return "Series complete";
+  }
+
+  if (
+    scoreOne === 0 &&
+    scoreTwo === 0
+  ) {
+    return "Series beginning";
+  }
+
+  if (
+    scoreOne === target - 1 &&
+    scoreTwo === target - 1
+  ) {
+    return "Deciding map possible";
+  }
+
+  if (
+    scoreOne === target - 1 ||
+    scoreTwo === target - 1
+  ) {
+    return "Series entering its later stages";
+  }
+
+  return "Series underway";
+}
+
+
+/* =========================================================
+   DISCORD HELPERS
+   ========================================================= */
+
+function discordConfig(team) {
+  const key =
+    team?.key || "";
+
+  return {
+    voice: C(
+      tournament.teamVoiceChannels?.[key] ||
+        teams.voiceChannels?.[key] ||
+        application?.discordVoiceChannel ||
+        tournament.discordVoiceChannel ||
+        site.discordVoiceChannel,
+      "Tournament Lobby"
+    ),
+
+    support: C(
+      tournament.discordSupportChannel ||
+        site.discordSupportChannel,
+      "#tournament-help"
+    ),
+
+    invite: C(
+      tournament.discordInvite ||
+        site.discordInvite,
+      DISCORD
+    )
+  };
+}
+
+function copyVoiceChannel() {
+  const value =
+    $("voiceChannel").textContent;
+
+  navigator.clipboard
+    .writeText(value)
+    .then(() => {
+      $("dashboardStatus").textContent =
+        "Voice channel copied.";
+    })
+    .catch(() => {
+      $("dashboardStatus").textContent =
+        `Voice channel: ${value}`;
+    });
+}
+
+
+/* =========================================================
+   DASHBOARD STATE
+   ========================================================= */
+
+function dashboardState() {
+  const team =
+    myTeam();
+
+  const appStatus =
+    C(
+      application?.status
+    ).toLowerCase();
+
+  const next =
+    nextFor(team);
+
+  const current =
+    currentMatch();
+
+  const upNext =
+    upNextMatch();
+
+  const base = {
+    team,
+    next,
+    current,
+    upNext
+  };
+
+  if (!application) {
+    return {
+      key: "no_application",
+      ...base
+    };
+  }
+
+  if (appStatus === "pending") {
+    return {
+      key: "pending",
+      ...base
+    };
+  }
+
+  if (appStatus === "waitlist") {
+    return {
+      key: "waitlist",
+      ...base
+    };
+  }
+
+  if (
+    appStatus === "declined" ||
+    appStatus === "rejected"
+  ) {
+    return {
+      key: "declined",
+      ...base
+    };
+  }
+
+  if (!team) {
+    return {
+      key: "waiting_team",
+      ...base
+    };
+  }
+
+  if (!checkIn?.checkedIn) {
+    return {
+      key: "checkin",
+      ...base
+    };
+  }
+
+  if (
+    current &&
+    inMatch(
+      team.name,
+      current
+    )
+  ) {
+    return {
+      key: "live",
+      ...base
+    };
+  }
+
+  if (
+    upNext &&
+    inMatch(
+      team.name,
+      upNext
+    )
+  ) {
+    return {
+      key: "deck",
+      ...base
+    };
+  }
+
+  if (!next) {
+    const path =
+      matches().filter(match =>
+        inMatch(
+          team.name,
+          match
+        )
+      );
+
+    const last =
+      path[path.length - 1];
+
+    const champion =
+      last?.id === "grand" &&
+      N(last.winner) === N(team.name);
+
+    return {
+      key:
+        champion
+          ? "champion"
+          : "complete",
+      ...base
+    };
+  }
+
+  return {
+    key: "waiting",
+    ...base
+  };
+}
+
+
+/* =========================================================
+   MAIN ACTION COPY
+   ========================================================= */
+
+function actionCopy(state) {
+  const discord =
+    discordConfig(state.team);
+
+  const map = {
+    no_application: {
+      status: "Registration Available",
+      title: "Apply for the Next Tournament",
+      description:
+        "You do not currently have an application for this event. Submit your competitor information to enter the selection process.",
+      note:
+        "Your application status, team assignment and tournament-day instructions will all appear here.",
+      buttons: [
+        {
+          label: "Apply Now",
+          href: "apply.html",
+          className: "primary",
+          icon: "fa-solid fa-file-signature"
+        },
+        {
+          label: "View Tournament",
+          href: "tournament.html",
+          className: "",
+          icon: "fa-solid fa-trophy"
+        }
+      ]
+    },
+
+    pending: {
+      status: "Application Under Review",
+      title: "Your Application Has Been Submitted",
+      description:
+        "Tournament staff has received your application. Keep your profile and Discord information current while selections are reviewed.",
+      note:
+        "This page updates automatically when your application is reviewed.",
+      buttons: [
+        {
+          label: "View Application",
+          href: "apply.html",
+          className: "primary",
+          icon: "fa-solid fa-file-lines"
+        },
+        {
+          label: "Complete Profile",
+          href: "settings.html",
+          className: "",
+          icon: "fa-solid fa-user-pen"
+        }
+      ]
+    },
+
+    waitlist: {
+      status: "Waitlist Status",
+      title: "Stay Ready for an Open Spot",
+      description:
+        "You are currently on the event waitlist. Staff may contact you if a starting or substitute position becomes available.",
+      note:
+        "Keep Discord available and your profile information accurate.",
+      buttons: [
+        {
+          label: "View Application",
+          href: "apply.html",
+          className: "primary",
+          icon: "fa-solid fa-file-lines"
+        },
+        {
+          label: "Open Discord",
+          href: discord.invite,
+          className: "discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        }
+      ]
+    },
+
+    declined: {
+      status: "Application Reviewed",
+      title: "This Tournament Application Is Complete",
+      description:
+        "You were not selected for the active event. Your account remains ready for future tournaments.",
+      note:
+        "Future application opportunities will appear on the tournament page.",
+      buttons: [
+        {
+          label: "View Application",
+          href: "apply.html",
+          className: "",
+          icon: "fa-solid fa-file-lines"
+        },
+        {
+          label: "View Tournament",
+          href: "tournament.html",
+          className: "primary",
+          icon: "fa-solid fa-trophy"
+        }
+      ]
+    },
+
+    waiting_team: {
+      status: "Application Approved",
+      title: "Accepted — Team Assignment Pending",
+      description:
+        "You have been selected. Your team and roster will appear when assignments are published.",
+      note:
+        "Stay available in Discord and watch for the tournament check-in window.",
+      buttons: [
+        {
+          label: "Open Discord",
+          href: discord.invite,
+          className: "primary discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        },
+        {
+          label: "View Application",
+          href: "apply.html",
+          className: "",
+          icon: "fa-solid fa-file-lines"
+        }
+      ]
+    },
+
+    checkin: {
+      status: "Action Required",
+      title: "Complete Tournament Check-In",
+      description:
+        "Your team is assigned, but your tournament check-in is not complete. Check in to confirm that you are available.",
+      note:
+        "Missing check-in may cause your spot to be offered to a substitute.",
+      buttons: [
+        {
+          label: "Check In Now",
+          href: "check-in.html",
+          className: "primary",
+          icon: "fa-solid fa-circle-check"
+        },
+        {
+          label: "Open Discord",
+          href: discord.invite,
+          className: "discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        }
+      ]
+    },
+
+    waiting: {
+      status: "Checked In — Standing By",
+      title: "Monitor the Tournament and Stay Available",
+      description:
+        "Your matchup is not on deck yet. Stay available in Discord and follow the live bracket while earlier series are completed.",
+      note:
+        "This automatically switches to ON DECK when your match becomes the next series.",
+      buttons: [
+        {
+          label: "View Bracket",
+          href: "tournament.html",
+          className: "primary",
+          icon: "fa-solid fa-diagram-project"
+        },
+        {
+          label: "Watch Live",
+          href: TWITCH,
+          className: "",
+          icon: "fa-brands fa-twitch",
+          target: "_blank"
+        },
+        {
+          label: "Open Discord",
+          href: discord.invite,
+          className: "discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        }
+      ]
+    },
+
+    deck: {
+      status: "Your Team Is On Deck",
+      title: "Watch the Current Series and Prepare",
+      description:
+        "Your match begins after the current series. A series can last roughly 40–90 minutes, so remain available and monitor live progress.",
+      note:
+        "Please join the tournament Discord lobby at least 10 minutes before the current series is expected to finish. Watching the stream is the easiest way to track progress.",
+      buttons: [
+        {
+          label: "Watch Current Series",
+          href: TWITCH,
+          className: "primary",
+          icon: "fa-brands fa-twitch",
+          target: "_blank"
+        },
+        {
+          label: "Join Tournament Lobby",
+          href: discord.invite,
+          className: "discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        },
+        {
+          label: "View Bracket",
+          href: "tournament.html",
+          className: "",
+          icon: "fa-solid fa-diagram-project"
+        }
+      ]
+    },
+
+    live: {
+      status: "Your Match Is Active",
+      title: "Report to Your Tournament Lobby Now",
+      description:
+        "Your team is in the current match. Join your assigned Discord voice channel and follow staff instructions before entering the game lobby.",
+      note:
+        "Remain in the assigned channel throughout the series and use Report an Issue for urgent problems.",
+      buttons: [
+        {
+          label: "Open Discord",
+          href: discord.invite,
+          className: "primary discord",
+          icon: "fa-brands fa-discord",
+          target: "_blank"
+        },
+        {
+          label: "Watch Broadcast",
+          href: TWITCH,
+          className: "red",
+          icon: "fa-brands fa-twitch",
+          target: "_blank"
+        },
+        {
+          label: "Open Bracket",
+          href: "tournament.html",
+          className: "",
+          icon: "fa-solid fa-diagram-project"
+        }
+      ]
+    },
+
+    complete: {
+      status: "Tournament Run Complete",
+      title: "Your Event Results Are Recorded",
+      description:
+        "Your active tournament path has concluded. Results remain connected to your Rivals Gauntlet profile.",
+      note:
+        "You can continue watching the event and reviewing your account progression.",
+      buttons: [
+        {
+          label: "Watch Tournament",
+          href: TWITCH,
+          className: "primary",
+          icon: "fa-brands fa-twitch",
+          target: "_blank"
+        },
+        {
+          label: "View Bracket",
+          href: "tournament.html",
+          className: "",
+          icon: "fa-solid fa-diagram-project"
+        }
+      ]
+    },
+
+    champion: {
+      status: "Tournament Champion",
+      title: "You Conquered the Gauntlet",
+      description:
+        "Your team has won the active Rivals Gauntlet tournament.",
+      note:
+        "Remain available for the championship broadcast and final announcements.",
+      buttons: [
+        {
+          label: "Watch Celebration",
+          href: TWITCH,
+          className: "primary",
+          icon: "fa-brands fa-twitch",
+          target: "_blank"
+        },
+        {
+          label: "Final Bracket",
+          href: "tournament.html",
+          className: "",
+          icon: "fa-solid fa-trophy"
+        }
+      ]
+    }
+  };
+
+  return map[state.key];
+}
+
+
+/* =========================================================
+   RENDER MAIN COMMAND
+   ========================================================= */
+
+function renderCommandButtons(buttons) {
+  $("actionButtons").innerHTML =
+    buttons.map(button => `
+      <a
+        class="btn ${E(button.className || "")}"
+        href="${E(button.href)}"
+        ${
+          button.target
+            ? `target="${button.target}" rel="noopener"`
+            : ""
+        }
+      >
+        <i class="${E(button.icon)}"></i>
+        ${E(button.label)}
+      </a>
+    `).join("");
+}
+
+function renderPills(state) {
+  const appStatus =
+    C(
+      application?.status,
+      "none"
+    ).toLowerCase();
+
+  setPill(
+    $("appPill"),
+    application
+      ? `Application ${formatStatus(appStatus)}`
+      : "No Application",
+    ["accepted", "approved"].includes(appStatus)
+      ? "good"
+      : ["declined", "rejected"].includes(appStatus)
+        ? "bad"
+        : application
+          ? "purple"
+          : "warn"
+  );
+
+  setPill(
+    $("checkPill"),
+    checkIn?.checkedIn
+      ? "Checked In"
+      : "Check-In Pending",
+    checkIn?.checkedIn
+      ? "good"
+      : "warn"
+  );
+
+  setPill(
+    $("teamPill"),
+    state.team?.name ||
+      "Team Pending",
+    state.team
+      ? "purple"
+      : ""
+  );
+}
+
+function renderSteps(state) {
+  const labels = [
+    "Application",
+    "Check In",
+    "Monitor Event",
+    "Join Lobby",
+    "Ready Check",
+    "Play Match",
+    "Next Instructions"
+  ];
+
+  const completed =
+    new Set();
+
+  const current = {
+    no_application: 0,
+    pending: 0,
+    waitlist: 0,
+    declined: 0,
+    waiting_team: 1,
+    checkin: 1,
+    waiting: 2,
+    deck: 3,
+    live: 5,
+    complete: 6,
+    champion: 6
+  }[state.key] ?? 0;
+
+  if (
+    state.key === "waiting_team" ||
+    state.key === "checkin"
+  ) {
+    completed.add(0);
+  }
+
+  if (state.key === "waiting") {
+    [
+      0,
+      1
+    ].forEach(index =>
+      completed.add(index)
+    );
+  }
+
+  if (state.key === "deck") {
+    [
+      0,
+      1,
+      2
+    ].forEach(index =>
+      completed.add(index)
+    );
+  }
+
+  if (state.key === "live") {
+    [
+      0,
+      1,
+      2,
+      3,
+      4
+    ].forEach(index =>
+      completed.add(index)
+    );
+  }
+
+  if (
+    state.key === "complete" ||
+    state.key === "champion"
+  ) {
+    labels.forEach(
+      (_, index) =>
+        completed.add(index)
+    );
+  }
+
+  $("actionSteps").innerHTML =
+    labels.map((label, index) => {
+      const className =
+        completed.has(index)
+          ? "done"
+          : index === current
+            ? "now"
+            : "";
+
+      const symbol =
+        completed.has(index)
+          ? "✓"
+          : index === current
+            ? "●"
+            : "○";
+
+      return `
+        <div class="step ${className}">
+          <span>
+            ${symbol}
+            STEP
+            ${String(index + 1).padStart(2,"0")}
+          </span>
+
+          <strong>
+            ${label}
+          </strong>
+        </div>
+      `;
+    }).join("");
+}
+
+function renderCommand() {
+  const state =
+    dashboardState();
+
+  const copy =
+    actionCopy(state);
+
+  const discord =
+    discordConfig(state.team);
+
+  $("eventName").textContent =
+    tournament.name ||
+    site.eventName ||
+    "Rivals Gauntlet Open #1";
+
+  $("actionStateText").textContent =
+    copy.status;
+
+  $("actionState").classList.toggle(
+    "live",
+    state.key === "live"
+  );
+
+  $("actionTitle").textContent =
+    copy.title;
+
+  $("actionDescription").textContent =
+    copy.description;
+
+  $("actionNote").style.display =
+    copy.note
+      ? "block"
+      : "none";
+
+  $("actionNote").textContent =
+    copy.note || "";
+
+  $("commandState").textContent =
+    copy.status;
+
+  $("commandTeam").textContent =
+    state.team?.name ||
+    "Pending";
+
+  $("commandNext").textContent =
+    state.next?.short ||
+    "Pending";
+
+  $("commandVoice").textContent =
+    discord.voice;
+
+  $("commandAvailability").textContent =
+    availability?.status === "not_available"
+      ? "Unavailable"
+      : checkIn?.checkedIn
+        ? "Ready"
+        : "Pending";
+
+  renderCommandButtons(
+    copy.buttons
+  );
+
+  renderPills(state);
+  renderSteps(state);
+}
+
+
+/* =========================================================
+   RENDER LIVE SERIES
+   ========================================================= */
+
+function renderLive() {
+  const match =
+    currentMatch();
+
+  if (!match) {
+    $("liveBadge").className =
+      "mini";
+
+    $("liveBadge").textContent =
+      "Waiting";
+
+    $("liveSeries").innerHTML = `
+      <div class="empty">
+        No current series is selected.
+      </div>
+
+      <div class="btns">
+        <a
+          class="btn"
+          href="${TWITCH}"
+          target="_blank"
+          rel="noopener"
+        >
+          <i class="fa-brands fa-twitch"></i>
+          Open Twitch
+        </a>
+      </div>
+    `;
+
+    return;
+  }
+
+  $("liveBadge").className =
+    "mini live";
+
+  $("liveBadge").textContent =
+    "Live Now";
+
+  $("liveSeries").innerHTML = `
+    <div class="match">
+      <div class="round">
+        ${E(match.name)}
+        •
+        ${match.format}
+      </div>
+
+      <div class="versus">
+        <strong class="team">
+          ${E(C(match.teams[0],"TBD"))}
+        </strong>
+
+        <div class="score">
+          ${match.scores[0]}
+          –
+          ${match.scores[1]}
+        </div>
+
+        <strong class="team right">
+          ${E(C(match.teams[1],"TBD"))}
+        </strong>
+      </div>
+
+      <div class="progress-box">
+        ${seriesProgress(match)}
+      </div>
+    </div>
+
+    <p class="copy">
+      This uses the same score data as the bracket and broadcast.
+    </p>
+
+    <div class="btns">
+      <a
+        class="btn primary"
+        href="${TWITCH}"
+        target="_blank"
+        rel="noopener"
+      >
+        <i class="fa-brands fa-twitch"></i>
+        Watch Live
+      </a>
+
+      <a
+        class="btn"
+        href="tournament.html"
+      >
+        View Bracket
+      </a>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RENDER NEXT MATCH
+   ========================================================= */
+
+function renderNext() {
+  const state =
+    dashboardState();
+
+  const team =
+    state.team;
+
+  const match =
+    state.next;
+
+  if (!team) {
+    $("nextBadge").className =
+      "mini";
+
+    $("nextBadge").textContent =
+      "Pending";
+
+    $("nextMatch").innerHTML = `
+      <div class="empty">
+        Your next match appears after teams and bracket
+        positions are published.
+      </div>
+    `;
+
+    return;
+  }
+
+  if (!match) {
+    $("nextBadge").className =
+      "mini";
+
+    $("nextBadge").textContent =
+      "Complete";
+
+    $("nextMatch").innerHTML = `
+      <div class="match">
+        <div class="round">
+          Tournament Status
+        </div>
+
+        <h3>
+          Your active bracket path is complete.
+        </h3>
+      </div>
+    `;
+
+    return;
+  }
+
+  $("nextBadge").className =
+    `mini ${
+      state.key === "deck"
+        ? "deck"
+        : state.key === "live"
+          ? "live"
+          : ""
+    }`;
+
+  $("nextBadge").textContent =
+    state.key === "deck"
+      ? "On Deck"
+      : state.key === "live"
+        ? "Active"
+        : "Upcoming";
+
+  const description =
+    state.key === "deck"
+      ? "Your match follows the current live series. Track progress on the broadcast."
+      : state.key === "live"
+        ? "Your match is active. Report to Discord now."
+        : "This panel updates automatically when your team is on deck.";
+
+  const buttonText =
+    state.key === "deck"
+      ? "Track Live Progress"
+      : "Open Bracket";
+
+  const buttonHref =
+    state.key === "deck"
+      ? TWITCH
+      : "tournament.html";
+
+  $("nextMatch").innerHTML = `
+    <div class="match">
+      <div class="round">
+        ${match.name}
+        •
+        ${match.format}
+      </div>
+
+      <div class="versus">
+        <strong class="team">
+          ${E(team.name)}
+        </strong>
+
+        <div class="score">
+          VS
+        </div>
+
+        <strong class="team right">
+          ${E(opponent(match,team.name))}
+        </strong>
+      </div>
+
+      <div class="progress-box">
+        Winner advances to
+        <strong>${match.next}</strong>
+      </div>
+    </div>
+
+    <p class="copy">
+      ${description}
+    </p>
+
+    <div class="btns">
+      <a
+        class="btn ${
+          state.key === "deck"
+            ? "primary"
+            : ""
+        }"
+        href="${buttonHref}"
+        ${
+          state.key === "deck"
+            ? 'target="_blank" rel="noopener"'
+            : ""
+        }
+      >
+        ${buttonText}
+      </a>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RENDER DISCORD
+   ========================================================= */
+
+function renderDiscord() {
+  const state =
+    dashboardState();
+
+  const discord =
+    discordConfig(state.team);
+
+  $("voiceChannel").textContent =
+    discord.voice;
+
+  $("supportChannel").textContent =
+    discord.support;
+
+  $("discordButton").href =
+    discord.invite;
+
+  $("discordInstruction").textContent =
+    state.key === "live"
+      ? "Join your assigned voice channel now"
+      : state.key === "deck"
+        ? "Join at least 10 minutes before the current series ends"
+        : "Stay available for tournament staff";
+}
+
+
+/* =========================================================
+   RENDER APPLICATION
+   ========================================================= */
+
+function renderApplication() {
+  if (!application) {
+    setPill(
+      $("applicationStatus"),
+      "Not Submitted",
+      "warn"
+    );
+
+    $("applicationCard").innerHTML = `
+      <div class="empty">
+        You have not submitted an application for
+        the active tournament.
+      </div>
+
+      <div class="btns">
+        <a
+          class="btn primary"
+          href="apply.html"
+        >
+          Apply for Event
+        </a>
+      </div>
+    `;
+
+    return;
+  }
+
+  const appStatus =
+    C(
+      application.status,
+      "submitted"
+    ).toLowerCase();
+
+  const team =
+    myTeam();
+
+  const submitted =
+    application.submittedAt ||
+    application.createdAt ||
+    application.appliedAt;
+
+  setPill(
+    $("applicationStatus"),
+    formatStatus(appStatus),
+    ["accepted", "approved"].includes(appStatus)
+      ? "good"
+      : ["declined", "rejected"].includes(appStatus)
+        ? "bad"
+        : "purple"
+  );
+
+  $("applicationCard").innerHTML = `
+    <div class="details">
+      <div class="detail">
+        <span>Competitor</span>
+
+        <strong>
+          ${E(
+            application.displayName ||
+            player.displayName ||
+            "Player"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Rivals IGN</span>
+
+        <strong>
+          ${E(
+            application.rivalsIgn ||
+            player.rivalsIgn ||
+            "Not provided"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Discord</span>
+
+        <strong>
+          ${E(
+            application.discordUsername ||
+            player.discordUsername ||
+            "Not provided"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Region</span>
+
+        <strong>
+          ${E(
+            application.region ||
+            player.region ||
+            "Not provided"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Platform</span>
+
+        <strong>
+          ${E(
+            application.platform ||
+            player.platform ||
+            "Not provided"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Submitted</span>
+
+        <strong>
+          ${formatDate(submitted)}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Team</span>
+
+        <strong>
+          ${E(
+            team?.name ||
+            "Pending"
+          )}
+        </strong>
+      </div>
+
+      <div class="detail">
+        <span>Entry Type</span>
+
+        <strong>
+          ${
+            application.addedAsSubstitute
+              ? "Active Substitute"
+              : application.substitute
+                ? "Available Substitute"
+                : "Standard Entry"
+          }
+        </strong>
+      </div>
+    </div>
+
+    <div class="btns">
+      <a
+        class="btn"
+        href="apply.html"
+      >
+        View Full Application
+      </a>
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RENDER ROSTER
+   ========================================================= */
+
+function renderRoster() {
+  const team =
+    myTeam();
+
+  if (!team) {
+    setPill(
+      $("readyPill"),
+      "Team Pending"
+    );
+
+    $("rosterCard").innerHTML = `
+      <div class="empty">
+        Your roster appears after assignments are published.
+      </div>
+    `;
+
+    return;
+  }
+
+  const readyCount =
+    team.players.filter(rosterPlayer =>
+      checkIns[rosterPlayer.uid]?.checkedIn &&
+      availabilities[rosterPlayer.uid]?.status !== "not_available"
+    ).length;
+
+  setPill(
+    $("readyPill"),
+    `${readyCount}/${team.players.length} Ready`,
+    readyCount === team.players.length
+      ? "good"
+      : "warn"
+  );
+
+  $("rosterCard").innerHTML = `
+    <div class="details">
+      <div class="detail">
+        <span>Assigned Team</span>
+        <strong>${E(team.name)}</strong>
+      </div>
+
+      <div class="detail">
+        <span>Roster Readiness</span>
+
+        <strong>
+          ${readyCount}/${team.players.length}
+          Confirmed
+        </strong>
+      </div>
+    </div>
+
+    <div class="roster">
+      ${team.players.map(rosterPlayer => {
+        const checked =
+          Boolean(
+            checkIns[rosterPlayer.uid]?.checkedIn
+          );
+
+        const unavailable =
+          availabilities[rosterPlayer.uid]?.status ===
+          "not_available";
+
+        const stateClass =
+          unavailable
+            ? "bad"
+            : checked
+              ? "good"
+              : "";
+
+        const stateText =
+          unavailable
+            ? "Unavailable"
+            : checked
+              ? "Checked In"
+              : "Pending";
+
+        return `
+          <a
+            class="player-row"
+            href="player.html?id=${E(rosterPlayer.uid || "")}"
+          >
+            <div class="initials">
+              ${initials(rosterPlayer.displayName)}
+            </div>
+
+            <div class="player-info">
+              <strong>
+                ${E(
+                  rosterPlayer.displayName ||
+                  "Player"
+                )}
+              </strong>
+
+              <span>
+                ${E(
+                  rosterPlayer.peakRank ||
+                  "Rank Pending"
+                )}
+                •
+                ${E(
+                  rosterPlayer.mainRole ||
+                  "Role Pending"
+                )}
+              </span>
+            </div>
+
+            <div class="ready ${stateClass}">
+              ${stateText}
+            </div>
+          </a>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   RENDER TOURNAMENT JOURNEY
+   ========================================================= */
+
+function renderJourney() {
+  const team =
+    myTeam();
+
+  const path =
+    team
+      ? matches().filter(match =>
+          inMatch(
+            team.name,
+            match
+          )
+        )
+      : [];
+
+  const current =
+    currentMatch();
+
+  if (
+    !team ||
+    !path.length
+  ) {
+    $("journey").innerHTML = `
+      <div class="empty">
+        Your personal tournament path appears after
+        the bracket is available.
+      </div>
+    `;
+
+    return;
+  }
+
+  $("journey").innerHTML =
+    path.map(match => {
+      const live =
+        current?.id === match.id;
+
+      const won =
+        N(match.winner) ===
+        N(team.name);
+
+      const complete =
+        Boolean(
+          C(match.winner)
+        );
+
+      let resultText =
+        "Waiting";
+
+      let resultClass =
+        "wait";
+
+      if (live) {
+        resultText =
+          `${match.scores[0]}–${match.scores[1]} Live`;
+
+        resultClass =
+          "live";
+      } else if (
+        complete &&
+        won
+      ) {
+        resultText =
+          `${match.scores[0]}–${match.scores[1]} Win`;
+
+        resultClass =
+          "win";
+      } else if (complete) {
+        resultText =
+          `${match.scores[0]}–${match.scores[1]} Loss`;
+
+        resultClass =
+          "loss";
+      }
+
+      return `
+        <div class="journey-row">
+          <div>
+            <small>${match.format}</small>
+            <strong>${match.name}</strong>
+          </div>
+
+          <div class="journey-vs">
+            ${E(team.name)}
+            vs
+            ${E(opponent(match,team.name))}
+          </div>
+
+          <div class="result ${resultClass}">
+            ${resultText}
+          </div>
+        </div>
+      `;
+    }).join("");
+}
+
+
+/* =========================================================
+   SUBSTITUTION ALERT
+   ========================================================= */
+
+function renderSubAlert() {
+  const dismissed =
+    localStorage.getItem(
+      `subbed_${tournamentId}_${user?.uid}`
+    ) === "yes";
+
+  if (
+    dismissed ||
+    !application?.addedAsSubstitute
+  ) {
+    $("subbedInAlert").style.display =
+      "none";
+
+    return;
+  }
+
+  const assignedTeam =
+    application.substitutedInto
+      ? application.substitutedInto.replace(
+          "team",
+          "Team "
+        )
+      : "your assigned team";
+
+  $("subbedInAlert").style.display =
+    "block";
+
+  $("subbedInContent").innerHTML = `
+    <p>
+      You have been added to
+      <strong>${E(assignedTeam)}</strong>.
+      Report to your team and watch Discord for instructions.
+    </p>
+
+    <div class="btns">
+      <a
+        class="btn primary"
+        href="teams.html"
+      >
+        View Team
+      </a>
+
+      <a
+        class="btn"
+        href="check-in.html"
+      >
+        Check In
+      </a>
+    </div>
+  `;
+}
+
+function dismissSubbedInAlert() {
+  localStorage.setItem(
+    `subbed_${tournamentId}_${user?.uid}`,
+    "yes"
+  );
+
+  renderSubAlert();
+}
+
+
+/* =========================================================
+   ACTIVITY AND RP HISTORY
+   ========================================================= */
+
+function renderActivity() {
+  const items = [];
+
+  if (application) {
+    items.push({
+      title:
+        "Application Submitted",
+
+      detail:
+        tournament.name ||
+        "Rivals Gauntlet Tournament",
+
+      time:
+        application.submittedAt ||
+        application.createdAt ||
+        0
+    });
+
+    const appStatus =
+      C(
+        application.status
+      ).toLowerCase();
+
+    if (
+      appStatus === "accepted" ||
+      appStatus === "approved"
+    ) {
+      items.push({
+        title:
+          "Application Accepted",
+
+        detail:
+          "You were accepted for this event.",
+
+        time:
+          application.reviewedAt ||
+          0
+      });
+    }
+  }
+
+  const team =
+    myTeam();
+
+  if (team) {
+    items.push({
+      title:
+        "Team Assigned",
+
+      detail:
+        `You were assigned to ${team.name}.`,
+
+      time:
+        tournament.teamsPublishedAt ||
+        0
+    });
+  }
+
+  Object.values(
+    activities || {}
+  ).forEach(activity => {
+    items.push({
+      title:
+        activity.title ||
+        "Activity",
+
+      detail:
+        activity.message ||
+        "",
+
+      time:
+        activity.createdAt ||
+        0
+    });
+  });
+
+  if (!items.length) {
+    $("activityFeed").innerHTML = `
+      <div class="empty">
+        Application updates, team assignments and tournament
+        alerts appear here.
+      </div>
+    `;
+
+    return;
+  }
+
+  $("activityFeed").innerHTML =
+    items
+      .sort(
+        (a,b) =>
+          b.time - a.time
+      )
+      .slice(0,6)
+      .map(item => `
+        <div class="feed-item">
+          <div class="feed-icon">
+            ✓
+          </div>
+
+          <div>
+            <strong>
+              ${E(item.title)}
+            </strong>
+
+            <span>
+              ${E(item.detail)}
+            </span>
+          </div>
+        </div>
+      `).join("");
+}
+
+function renderHistory() {
+  if (!user) {
+    return;
+  }
+
+  database
+    .ref(
+      `rgPointHistory/${user.uid}`
+    )
+    .orderByChild("createdAt")
+    .limitToLast(6)
+    .once("value")
+    .then(snapshot => {
+      const entries =
+        Object.values(
+          snapshot.val() || {}
+        ).sort(
+          (a,b) =>
+            (b.createdAt || 0) -
+            (a.createdAt || 0)
+        );
+
+      if (!entries.length) {
+        $("rgHistory").innerHTML = `
+          <div class="empty">
+            No RG Points activity yet.
+          </div>
+        `;
+
+        return;
+      }
+
+      $("rgHistory").innerHTML =
+        entries.map(entry => {
+          const amount =
+            Number(
+              entry.amount || 0
+            );
+
+          const sign =
+            amount >= 0
+              ? "+"
+              : "";
+
+          return `
+            <div class="feed-item">
+              <div class="feed-icon">
+                ${amount >= 0 ? "＋" : "−"}
+              </div>
+
+              <div>
+                <strong>
+                  ${sign}${amount.toLocaleString()}
+                  RG Points
+                </strong>
+
+                <span>
+                  ${E(
+                    entry.reason ||
+                    "RG Points Update"
+                  )}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join("");
+    });
+}
+
+
+/* =========================================================
+   DAILY CHECK-IN
+   ========================================================= */
+
+function renderDaily() {
+  if (
+    !dailyStatus ||
+    !window.RGDailyCheckIn
+  ) {
+    return;
+  }
+
+  const streak =
+    Number(
+      dailyStatus.currentStreak || 0
+    );
+
+  $("dailyCurrentStreak").textContent =
+    `${streak} ${
+      streak === 1
+        ? "Day"
+        : "Days"
+    }`;
+
+  $("dailyNextReward").textContent =
+    dailyStatus.nextReward?.label ||
+    "Reward";
+
+  $("dailyRewardStatusLabel").textContent =
+    dailyStatus.canClaim
+      ? `Day ${dailyStatus.nextCycleDay} Reward`
+      : "Next Reward";
+
+  const claimed =
+    Number(
+      dailyStatus.cycleDay || 0
+    );
+
+  const next =
+    Number(
+      dailyStatus.nextCycleDay || 1
+    );
+
+  $("dailyRewardTrack").innerHTML =
+    RGDailyCheckIn.rewardTrack.map(reward => {
+      const completed =
+        claimed > 0 &&
+        reward.day <= claimed &&
+        !(
+          claimed === 7 &&
+          next === 1
+        );
+
+      const current =
+        reward.day === next;
+
+      return `
+        <div class="
+          day
+          ${completed ? "done" : ""}
+          ${current ? "current" : ""}
+        ">
+          <span>
+            Day ${reward.day}
+          </span>
+
+          <b>
+            ${
+              reward.type === "crate"
+                ? "📦"
+                : "RP"
+            }
+          </b>
+
+          <strong>
+            ${E(reward.label)}
+          </strong>
+        </div>
+      `;
+    }).join("");
+
+  clearInterval(
+    dailyTimer
+  );
+
+  const updateCountdown = () => {
+    if (dailyStatus.canClaim) {
+      $("dailyCountdown").textContent =
+        "Reward available now";
+
+      $("dailyClaimButton").textContent =
+        "Claim Reward";
+
+      $("dailyClaimButton").disabled =
+        false;
+
+      return;
+    }
+
+    const timer =
+      RGDailyCheckIn.getCountdown(
+        dailyStatus.nextResetAt
+      );
+
+    $("dailyCountdown").textContent =
+      `Next claim in ${timer.formatted}`;
+
+    $("dailyClaimButton").textContent =
+      "Claimed Today";
+
+    $("dailyClaimButton").disabled =
+      true;
+  };
+
+  updateCountdown();
+
+  dailyTimer =
+    setInterval(
+      updateCountdown,
+      1000
+    );
+}
+
+$("dailyClaimButton")
+  .addEventListener(
+    "click",
+    () => {
+      if (
+        typeof claimDailyReward ===
+        "function"
+      ) {
+        claimDailyReward();
+      }
+    }
+  );
+
+
+/* =========================================================
+   STARTER BONUS
+   ========================================================= */
+
+function claimStarterRgBonus() {
+  if (!user) {
+    return;
+  }
+
+  const output =
+    $("rewardStatus");
+
+  const button =
+    $("starterBonusBtn");
+
+  database
+    .ref(
+      `players/${user.uid}/starterRgBonusClaimed`
+    )
+    .once("value")
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        output.textContent =
+          "You already claimed this bonus.";
+
+        throw new Error(
+          "STOP"
+        );
+      }
+
+      return database
+        .ref(
+          `players/${user.uid}`
+        )
+        .transaction(profile => {
+          if (!profile) {
+            return profile;
+          }
+
+          profile.rgPoints =
+            Number(
+              profile.rgPoints || 0
+            ) + 100;
+
+          profile.lifetimeRgPoints =
+            Number(
+              profile.lifetimeRgPoints || 0
+            ) + 100;
+
+          profile.starterRgBonusClaimed =
+            true;
+
+          profile.updatedAt =
+            Date.now();
+
+          return profile;
+        });
+    })
+    .then(result => {
+      if (!result?.committed) {
+        return null;
+      }
+
+      return database
+        .ref(
+          `rgPointHistory/${user.uid}`
+        )
+        .push({
+          amount: 100,
+          reason: "Starter Bonus",
+          source: "starter_bonus",
+          createdAt: Date.now()
+        });
+    })
+    .then(result => {
+      if (result === null) {
+        return;
+      }
+
+      output.textContent =
+        "Starter bonus claimed: +100 RG Points.";
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Starter Bonus Claimed";
+    })
+    .catch(error => {
+      if (error.message !== "STOP") {
+        output.textContent =
+          error.message;
+      }
+    });
+}
+
+
+/* =========================================================
+   REPORT SYSTEM
+   ========================================================= */
+
+function openReportModal() {
+  const team =
+    myTeam();
+
+  $("targetPlayer").innerHTML = `
+    <option value="">
+      No specific player / team issue
+    </option>
+
+    ${
+      team?.players
+        .filter(
+          rosterPlayer =>
+            rosterPlayer.uid !== user?.uid
+        )
+        .map(rosterPlayer => `
+          <option
+            value="${E(rosterPlayer.uid)}"
+            data-name="${E(rosterPlayer.displayName || "Player")}"
+          >
+            ${E(rosterPlayer.displayName || "Player")}
+          </option>
+        `).join("") || ""
+    }
+  `;
+
+  $("reportStatus").textContent =
+    "";
+
+  $("reportModal").classList.add(
+    "open"
+  );
+}
+
+function closeReportModal() {
+  $("reportModal").classList.remove(
+    "open"
+  );
+}
+
+async function submitTournamentReport() {
+  const issueType =
+    C(
+      $("issueType").value
+    );
+
+  const playerSelect =
+    $("targetPlayer");
+
+  const targetUid =
+    C(
+      playerSelect.value
+    );
+
+  const targetName =
+    playerSelect
+      .selectedOptions[0]
+      ?.dataset.name ||
+    "";
+
+  const details =
+    C(
+      $("reportDetails").value
+    );
+
+  const output =
+    $("reportStatus");
+
+  const button =
+    $("submitReportBtn");
+
+  if (!issueType) {
+    output.textContent =
+      "Select an issue.";
+
+    return;
+  }
+
+  if (!details) {
+    output.textContent =
+      "Add a short explanation.";
+
+    return;
+  }
+
+  const state =
+    dashboardState();
+
+  const matchKey =
+    state.current?.id ||
+    state.next?.id ||
+    "general";
+
+  const teamKey =
+    state.team?.key ||
+    "no_team";
+
+  const incidentKey = [
+    matchKey,
+    teamKey,
+    targetUid || "team",
+    issueType
+  ]
+    .map(value => N(value))
+    .join("_");
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    "Submitting...";
+
+  try {
+    const base =
+      `tournamentReports/${tournamentId}/${incidentKey}`;
+
+    const updates = {};
+
+    updates[`${base}/meta`] = {
+      tournamentId,
+      matchKey,
+      teamKey,
+      issueType,
+      targetUid:
+        targetUid || null,
+      targetName:
+        targetName || null,
+      status:
+        "open",
+      updatedAt:
+        Date.now()
+    };
+
+    updates[
+      `${base}/reporters/${user.uid}`
+    ] = {
+      reporterUid:
+        user.uid,
+
+      reporterName:
+        player.displayName ||
+        "Player",
+
+      details,
+
+      createdAt:
+        Date.now()
+    };
+
+    await database
+      .ref()
+      .update(updates);
+
+    output.textContent =
+      "Report received. Tournament staff can review it.";
+
+    button.textContent =
+      "Report Submitted";
+
+    $("reportDetails").value =
+      "";
+
+    setTimeout(
+      closeReportModal,
+      1000
+    );
+  } catch (error) {
+    output.textContent =
+      "Report form is ready, but tournamentReports Firebase rules still need to be added.";
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Submit Report";
+  }
+}
+
+$("reportModal")
+  .addEventListener(
+    "click",
+    event => {
+      if (
+        event.target.id ===
+        "reportModal"
+      ) {
+        closeReportModal();
+      }
+    }
+  );
+
+
+/* =========================================================
+   MASTER RENDER
+   ========================================================= */
+
+function renderEverything() {
+  renderCommand();
+  renderLive();
+  renderNext();
+  renderDiscord();
+  renderApplication();
+  renderRoster();
+  renderJourney();
+  renderSubAlert();
+  renderActivity();
+}
+
+
+/* =========================================================
+   FIREBASE LISTENERS
+   ========================================================= */
+
+auth.onAuthStateChanged(currentUser => {
+  if (!currentUser) {
+    window.location.href =
+      "login.html";
+
+    return;
+  }
+
+  user =
+    currentUser;
+
+  if (
+    window.RGDailyCheckIn &&
+    typeof RGDailyCheckIn.listen ===
+      "function"
+  ) {
+    dailyStop =
+      RGDailyCheckIn.listen(
+        user.uid,
+        result => {
+          dailyStatus =
+            result.status;
+
+          renderDaily();
+        }
+      );
+  }
+
+  if (
+    window.RGNotificationCenter &&
+    typeof RGNotificationCenter.init ===
+      "function"
+  ) {
+    RGNotificationCenter.init(
+      user.uid,
+      "#dashboardNotificationMount"
+    );
+  }
+
+  database
+    .ref(
+      `activities/${user.uid}`
+    )
+    .on("value", snapshot => {
+      activities =
+        snapshot.val() || {};
+
+      renderActivity();
+    });
+
+  database
+    .ref(
+      "site/currentTournament"
+    )
+    .once("value")
+    .then(snapshot => {
+      tournamentId =
+        snapshot.val() ||
+        "open1";
+
+      database
+        .ref(
+          `tournaments/${tournamentId}`
+        )
+        .on("value", result => {
+          tournament =
+            result.val() || {};
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `applications/${tournamentId}/${user.uid}`
+        )
+        .on("value", result => {
+          application =
+            result.val();
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `checkIns/${tournamentId}/${user.uid}`
+        )
+        .on("value", result => {
+          checkIn =
+            result.val();
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `checkIns/${tournamentId}`
+        )
+        .on("value", result => {
+          checkIns =
+            result.val() || {};
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `availability/${tournamentId}/${user.uid}`
+        )
+        .on("value", result => {
+          availability =
+            result.val();
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `availability/${tournamentId}`
+        )
+        .on("value", result => {
+          availabilities =
+            result.val() || {};
+
+          renderEverything();
+        });
+
+      database
+        .ref(
+          `teams/${tournamentId}`
+        )
+        .on("value", result => {
+          teams =
+            result.val() || {};
+
+          renderEverything();
+        });
+    });
+
+  database
+    .ref("site")
+    .on("value", snapshot => {
+      site =
+        snapshot.val() || {};
+
+      renderEverything();
+    });
+
+  database
+    .ref("broadcastCountdown")
+    .on("value", snapshot => {
+      broadcast =
+        snapshot.val() || {};
+
+      renderEverything();
+    });
+
+  database
+    .ref(
+      `users/${user.uid}`
+    )
+    .update({
+      emailVerified:
+        user.emailVerified,
+
+      lastLogin:
+        Date.now()
+    });
+
+  database
+    .ref(
+      `players/${user.uid}`
+    )
+    .on("value", snapshot => {
+      player =
+        snapshot.val() || {};
+
+      renderProfile();
+      renderEverything();
+      renderHistory();
+    });
+});
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+function logoutUser() {
+  auth
+    .signOut()
+    .then(() => {
+      window.location.href =
+        "login.html";
+    });
+}
+
+window.addEventListener(
+  "beforeunload",
+  () => {
+    if (
+      typeof dailyStop ===
+      "function"
+    ) {
+      dailyStop();
+    }
+
+    clearInterval(
+      dailyTimer
+    );
+  }
+);
+</script>
+</body>
+</html>

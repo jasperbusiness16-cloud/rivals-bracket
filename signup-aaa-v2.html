@@ -591,8 +591,6 @@
         const assignedNumber = transactionResult.snapshot.val() - 1;
         assignedRgId = `RG${String(assignedNumber).padStart(6, "0")}`;
 
-        await user.sendEmailVerification();
-
         const updates = {};
         updates[`users/${user.uid}`] = {
           email,
@@ -629,7 +627,17 @@
 
         await database.ref().update(updates);
 
-        document.getElementById("assignedRgId").textContent = assignedRgId;
+try {
+  await user.sendEmailVerification();
+} catch (verificationError) {
+  console.warn(
+    "Verification email could not be sent:",
+    verificationError
+  );
+}
+
+document.getElementById("assignedRgId").textContent =
+  assignedRgId;
         document.getElementById("signupHeader").hidden = true;
         document.getElementById("signupForm").hidden = true;
         document.getElementById("successView").hidden = false;

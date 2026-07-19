@@ -114,61 +114,6 @@ body.rg-overlay-open { overflow: hidden; }
   opacity: .65;
 }
 
-/* Thin travelling energy line around full header perimeter */
-.rg-header__energy {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.rg-header__energy::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  padding: 1px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 318deg,
-    rgba(112,67,255,0) 323deg,
-    rgba(145,103,255,.28) 328deg,
-    rgba(223,214,255,.98) 333deg,
-    rgba(155,113,255,.88) 338deg,
-    rgba(112,67,255,.12) 344deg,
-    transparent 350deg,
-    transparent 360deg
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  animation: rgHeaderEnergy 9s linear infinite;
-}
-
-.rg-header__energy::after {
-  content: "";
-  position: absolute;
-  inset: -10px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 324deg,
-    rgba(127,92,255,.04) 328deg,
-    rgba(157,130,255,.24) 334deg,
-    rgba(127,92,255,.08) 342deg,
-    transparent 349deg
-  );
-  filter: blur(7px);
-  opacity: .45;
-  animation: rgHeaderEnergy 9s linear infinite;
-}
-
-.rg-header:hover .rg-header__energy::before,
-.rg-header:hover .rg-header__energy::after { animation-duration: 7s; }
-
-@keyframes rgHeaderEnergy { to { transform: rotate(360deg); } }
 
 @keyframes rgHeaderBottomBeam {
   0% {

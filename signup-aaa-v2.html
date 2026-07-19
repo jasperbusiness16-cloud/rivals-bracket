@@ -592,40 +592,81 @@
         assignedRgId = `RG${String(assignedNumber).padStart(6, "0")}`;
 
         const updates = {};
-        updates[`users/${user.uid}`] = {
-          email,
-          emailVerified: false,
-          role: "player",
-          rgId: assignedRgId,
-          createdAt: now,
-          lastLogin: now
-        };
 
-        updates[`players/${user.uid}`] = {
-          uid: user.uid,
-          rgId: assignedRgId,
-          displayName,
-          rivalsIgn,
-          discordUsername,
-          discordMember: false,
-          region: "",
-          platform: "",
-          bio: "",
-          profileImage: "",
-          socials: {
-            twitch: "",
-            youtube: "",
-            tiktok: "",
-            x: ""
-          },
-          eventsPlayed: 0,
-          championships: 0,
-          bestFinish: "--",
-          createdAt: now,
-          updatedAt: now
-        };
+/* Private account record */
+updates[`users/${user.uid}/email`] =
+  email;
 
-        await database.ref().update(updates);
+updates[`users/${user.uid}/emailVerified`] =
+  false;
+
+updates[`users/${user.uid}/role`] =
+  "player";
+
+updates[`users/${user.uid}/rgId`] =
+  assignedRgId;
+
+updates[`users/${user.uid}/createdAt`] =
+  now;
+
+updates[`users/${user.uid}/lastLogin`] =
+  now;
+
+
+/* Public competitor profile */
+updates[`players/${user.uid}/uid`] =
+  user.uid;
+
+updates[`players/${user.uid}/rgId`] =
+  assignedRgId;
+
+updates[`players/${user.uid}/displayName`] =
+  displayName;
+
+updates[`players/${user.uid}/rivalsIgn`] =
+  rivalsIgn;
+
+updates[`players/${user.uid}/discordUsername`] =
+  discordUsername;
+
+updates[`players/${user.uid}/discordMember`] =
+  false;
+
+updates[`players/${user.uid}/region`] =
+  "";
+
+updates[`players/${user.uid}/platform`] =
+  "";
+
+updates[`players/${user.uid}/bio`] =
+  "";
+
+updates[`players/${user.uid}/profileImage`] =
+  "";
+
+updates[`players/${user.uid}/socials`] = {
+  twitch: "",
+  youtube: "",
+  tiktok: "",
+  x: ""
+};
+
+updates[`players/${user.uid}/eventsPlayed`] =
+  0;
+
+updates[`players/${user.uid}/championships`] =
+  0;
+
+updates[`players/${user.uid}/bestFinish`] =
+  "--";
+
+updates[`players/${user.uid}/createdAt`] =
+  now;
+
+updates[`players/${user.uid}/updatedAt`] =
+  now;
+
+await database.ref().update(updates);
 
 try {
   await user.sendEmailVerification();

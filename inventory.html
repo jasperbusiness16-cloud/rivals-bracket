@@ -1,0 +1,4897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="theme-color" content="#08070d">
+
+  <title>Inventory | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="global-header.css?v=16"
+  >
+
+  <style>
+    :root {
+      --background: #07070b;
+      --surface: #0c0b12;
+      --surface-light: #111019;
+      --surface-raised: #15131d;
+
+      --text: #f7f4fb;
+      --muted: #aaa3b4;
+      --dim: #756e7d;
+
+      --line: rgba(255, 255, 255, 0.085);
+      --line-strong: rgba(255, 255, 255, 0.14);
+
+      --purple: #a855f7;
+      --purple-light: #d09cff;
+      --purple-dark: #6d28d9;
+
+      --green: #3cd38b;
+      --yellow: #f2c969;
+      --red: #ef5b68;
+      --blue: #4c8df6;
+
+      --max-width: 1660px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+
+      background:
+        radial-gradient(
+          circle at 82% 0%,
+          rgba(112, 44, 184, 0.16),
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          #09080f,
+          var(--background)
+        );
+
+      color: var(--text);
+      font-family: "Rajdhani", sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      color: inherit;
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .inventory-page {
+      width: min(
+        calc(100% - 32px),
+        var(--max-width)
+      );
+
+      margin:
+        22px
+        auto
+        70px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 24px;
+      height: 2px;
+
+      content: "";
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          transparent
+        );
+    }
+
+    .client-button {
+      min-height: 41px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      padding:
+        0
+        14px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.025
+        );
+
+      color: #e7e0ec;
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.65px;
+      text-transform: uppercase;
+
+      transition:
+        transform 0.18s,
+        border-color 0.18s,
+        background 0.18s;
+    }
+
+    .client-button:hover {
+      transform: translateY(-1px);
+
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.48
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.07
+        );
+    }
+
+    .client-button.primary {
+      border-color:
+        rgba(
+          208,
+          156,
+          255,
+          0.5
+        );
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple-dark),
+          var(--purple)
+        );
+
+      color: white;
+    }
+
+    .client-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .empty-state {
+      min-height: 190px;
+
+      display: grid;
+      place-items: center;
+
+      padding: 30px;
+
+      color: var(--dim);
+
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* =====================================================
+       PAGE HEADER
+       ===================================================== */
+
+    .inventory-header {
+      min-height: 130px;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 30px;
+
+      padding:
+        20px
+        4px
+        24px;
+    }
+
+    .inventory-title h1 {
+      margin:
+        8px
+        0
+        0;
+
+      font-size:
+        clamp(
+          47px,
+          7vw,
+          84px
+        );
+
+      line-height: 0.82;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+    }
+
+    .inventory-title p {
+      max-width: 690px;
+
+      margin:
+        16px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .inventory-summary {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            110px,
+            1fr
+          )
+        );
+
+      border:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(
+          12,
+          11,
+          18,
+          0.78
+        );
+    }
+
+    .summary-stat {
+      min-width: 0;
+
+      padding:
+        15px
+        18px;
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .summary-stat:first-child {
+      border-left: 0;
+    }
+
+    .summary-stat span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .summary-stat strong {
+      display: block;
+
+      margin-top: 4px;
+
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    /* =====================================================
+       MAIN CLIENT
+       ===================================================== */
+
+    .inventory-client {
+      overflow: hidden;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.28
+        );
+
+      border-radius: 14px;
+
+      background:
+        radial-gradient(
+          circle at 93% 4%,
+          rgba(
+            168,
+            85,
+            247,
+            0.11
+          ),
+          transparent 25%
+        ),
+        var(--surface);
+    }
+
+    .client-tabs {
+      display: flex;
+      overflow-x: auto;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background: #0a090f;
+    }
+
+    .client-tab {
+      min-width: max-content;
+      min-height: 52px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding:
+        0
+        20px;
+
+      border: 0;
+
+      border-right:
+        1px solid
+        var(--line);
+
+      background: transparent;
+      color: var(--dim);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .client-tab i {
+      color: var(--purple-light);
+    }
+
+    .client-tab.active {
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.055
+        );
+
+      box-shadow:
+        inset
+        0
+        -3px
+        0
+        var(--purple);
+
+      color: var(--purple-light);
+    }
+
+    .client-panel {
+      display: none;
+    }
+
+    .client-panel.active {
+      display: block;
+    }
+
+    /* =====================================================
+       COLLECTION TOOLBAR
+       ===================================================== */
+
+    .collection-toolbar {
+      min-height: 65px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+
+      padding:
+        11px
+        15px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.01
+        );
+    }
+
+    .search-field {
+      width: min(
+        100%,
+        370px
+      );
+
+      min-height: 42px;
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      padding:
+        0
+        13px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      background: #0a090f;
+    }
+
+    .search-field i {
+      color: var(--purple-light);
+    }
+
+    .search-field input {
+      width: 100%;
+
+      border: 0;
+      outline: 0;
+
+      background: transparent;
+      color: white;
+
+      font-size: 12px;
+    }
+
+    .search-field input::placeholder {
+      color: var(--dim);
+    }
+
+    .toolbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-select {
+      min-height: 42px;
+
+      padding:
+        0
+        34px
+        0
+        11px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      outline: 0;
+
+      background: #0a090f;
+      color: #ddd6e4;
+
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .duplicate-filter {
+      min-height: 42px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding:
+        0
+        12px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      background: #0a090f;
+      color: var(--muted);
+
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .duplicate-filter.active {
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.4
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.07
+        );
+
+      color: var(--purple-light);
+    }
+
+    /* =====================================================
+       COLLECTION LAYOUT
+       ===================================================== */
+
+    .collection-layout {
+      min-height: 650px;
+
+      display: grid;
+
+      grid-template-columns:
+        180px
+        minmax(0, 1fr)
+        315px;
+    }
+
+    .category-rail {
+      padding: 10px;
+
+      border-right:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(
+          0,
+          0,
+          0,
+          0.08
+        );
+    }
+
+    .category-button {
+      width: 100%;
+      min-height: 43px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+
+      padding:
+        0
+        11px;
+
+      border:
+        1px solid
+        transparent;
+
+      border-radius: 7px;
+
+      background: transparent;
+      color: var(--muted);
+
+      font-size: 9px;
+      font-weight: 800;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .category-button span {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .category-button i {
+      width: 17px;
+
+      color: var(--purple-light);
+      text-align: center;
+    }
+
+    .category-button em {
+      color: var(--dim);
+      font-style: normal;
+    }
+
+    .category-button:hover,
+    .category-button.active {
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.27
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.06
+        );
+
+      color: white;
+    }
+
+    .category-button.active {
+      box-shadow:
+        inset
+        3px
+        0
+        0
+        var(--purple);
+    }
+
+    .collection-browser {
+      min-width: 0;
+
+      padding: 16px;
+    }
+
+    .collection-browser-head {
+      min-height: 38px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+
+      margin-bottom: 12px;
+    }
+
+    .collection-browser-head strong {
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .collection-browser-head span {
+      color: var(--dim);
+
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .item-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          4,
+          minmax(
+            0,
+            1fr
+          )
+        );
+
+      gap: 9px;
+    }
+
+    .inventory-item {
+      position: relative;
+
+      min-width: 0;
+      min-height: 190px;
+
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: column;
+
+      padding: 0;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 9px;
+
+      background:
+        linear-gradient(
+          150deg,
+          rgba(
+            255,
+            255,
+            255,
+            0.025
+          ),
+          transparent 42%
+        ),
+        #0e0d14;
+
+      color: inherit;
+      text-align: left;
+
+      transition:
+        transform 0.18s,
+        border-color 0.18s,
+        background 0.18s;
+    }
+
+    .inventory-item::after {
+      position: absolute;
+
+      right: 0;
+      bottom: 0;
+      left: 0;
+
+      height: 2px;
+
+      content: "";
+
+      background: var(--item-accent);
+    }
+
+    .inventory-item:hover {
+      transform: translateY(-2px);
+
+      border-color:
+        var(--item-border);
+
+      background:
+        linear-gradient(
+          150deg,
+          var(--item-soft),
+          transparent 48%
+        ),
+        #100e17;
+    }
+
+    .inventory-item.selected {
+      border-color:
+        var(--item-border);
+
+      box-shadow:
+        inset
+        0
+        0
+        0
+        1px
+        var(--item-border);
+    }
+
+    .item-visual {
+      position: relative;
+
+      min-height: 125px;
+
+      display: grid;
+      place-items: center;
+
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle,
+          var(--item-soft),
+          transparent 64%
+        );
+    }
+
+    .item-visual::before {
+      position: absolute;
+
+      width: 96px;
+      height: 96px;
+
+      content: "";
+
+      border:
+        1px solid
+        var(--item-border);
+
+      transform: rotate(45deg);
+
+      opacity: 0.22;
+    }
+
+    .item-image {
+      position: relative;
+      z-index: 2;
+
+      width: 78%;
+      height: 105px;
+
+      object-fit: contain;
+      filter:
+        drop-shadow(
+          0
+          15px
+          18px
+          rgba(
+            0,
+            0,
+            0,
+            0.42
+          )
+        );
+    }
+
+    .item-fallback {
+      position: relative;
+      z-index: 2;
+
+      width: 70px;
+      height: 70px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--item-border);
+
+      border-radius: 14px;
+
+      background:
+        var(--item-soft);
+
+      color: var(--item-accent);
+
+      font-size: 27px;
+    }
+
+    .quantity-badge {
+      position: absolute;
+      z-index: 4;
+
+      top: 8px;
+      right: 8px;
+
+      min-width: 26px;
+      min-height: 23px;
+
+      display: grid;
+      place-items: center;
+
+      padding:
+        0
+        7px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          7,
+          7,
+          11,
+          0.88
+        );
+
+      color: white;
+
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .equipped-badge {
+      position: absolute;
+      z-index: 4;
+
+      top: 8px;
+      left: 8px;
+
+      min-height: 23px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      padding:
+        0
+        7px;
+
+      border:
+        1px solid
+        rgba(
+          60,
+          211,
+          139,
+          0.34
+        );
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          60,
+          211,
+          139,
+          0.08
+        );
+
+      color: #8fe9b8;
+
+      font-size: 7px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .item-copy {
+      min-width: 0;
+
+      padding:
+        10px
+        11px
+        12px;
+    }
+
+    .item-copy span {
+      display: block;
+
+      color: var(--item-accent);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.85px;
+      text-transform: uppercase;
+    }
+
+    .item-copy strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 4px;
+
+      font-size: 12px;
+      line-height: 1.05;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .item-copy small {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 4px;
+
+      color: var(--dim);
+
+      font-size: 8px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* =====================================================
+       ITEM INSPECTOR
+       ===================================================== */
+
+    .item-inspector {
+      min-width: 0;
+
+      display: flex;
+      flex-direction: column;
+
+      border-left:
+        1px solid
+        var(--line);
+
+      background:
+        radial-gradient(
+          circle at 50% 12%,
+          var(--selected-soft),
+          transparent 32%
+        ),
+        #0b0a10;
+    }
+
+    .inspector-close {
+      display: none;
+    }
+
+    .inspector-visual {
+      position: relative;
+
+      min-height: 270px;
+
+      display: grid;
+      place-items: center;
+
+      overflow: hidden;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .inspector-visual::before,
+    .inspector-visual::after {
+      position: absolute;
+
+      width: 170px;
+      height: 170px;
+
+      content: "";
+
+      border:
+        1px solid
+        var(--selected-border);
+
+      transform: rotate(45deg);
+
+      opacity: 0.2;
+    }
+
+    .inspector-visual::after {
+      width: 125px;
+      height: 125px;
+
+      transform: rotate(22deg);
+
+      opacity: 0.13;
+    }
+
+    .inspector-image {
+      position: relative;
+      z-index: 2;
+
+      width: 78%;
+      height: 225px;
+
+      object-fit: contain;
+
+      filter:
+        drop-shadow(
+          0
+          25px
+          25px
+          rgba(
+            0,
+            0,
+            0,
+            0.48
+          )
+        );
+    }
+
+    .inspector-fallback {
+      position: relative;
+      z-index: 2;
+
+      width: 110px;
+      height: 110px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--selected-border);
+
+      border-radius: 21px;
+
+      background:
+        var(--selected-soft);
+
+      color: var(--selected-accent);
+
+      font-size: 43px;
+    }
+
+    .inspector-content {
+      padding: 20px;
+    }
+
+    .inspector-rarity {
+      color: var(--selected-accent);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .inspector-content h2 {
+      margin:
+        7px
+        0
+        0;
+
+      font-size: 29px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .inspector-category {
+      display: block;
+
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .inspector-details {
+      margin-top: 18px;
+
+      border-top:
+        1px solid
+        var(--line);
+    }
+
+    .inspector-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+
+      padding:
+        9px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .inspector-row span {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .inspector-row strong {
+      max-width: 62%;
+      overflow: hidden;
+
+      font-size: 10px;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .inspector-note {
+      margin-top: 15px;
+
+      padding:
+        11px;
+
+      border-left:
+        3px solid
+        var(--selected-accent);
+
+      background:
+        var(--selected-soft);
+
+      color: #d5cedc;
+
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .inspector-actions {
+      display: grid;
+      gap: 8px;
+
+      margin-top: 17px;
+    }
+
+    /* =====================================================
+       CRATES
+       ===================================================== */
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 25px;
+
+      padding:
+        25px
+        25px
+        20px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .section-heading h2 {
+      margin:
+        7px
+        0
+        0;
+
+      font-size: 32px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .section-heading p {
+      max-width: 660px;
+
+      margin:
+        10px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .crate-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          4,
+          minmax(
+            0,
+            1fr
+          )
+        );
+
+      padding: 20px;
+    }
+
+    .crate-entry {
+      min-width: 0;
+
+      border-left:
+        1px solid
+        var(--line);
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background:
+        radial-gradient(
+          circle at 50% 30%,
+          var(--crate-soft),
+          transparent 52%
+        );
+    }
+
+    .crate-entry:nth-child(4n + 1) {
+      border-left: 0;
+    }
+
+    .crate-visual {
+      position: relative;
+
+      min-height: 270px;
+
+      display: grid;
+      place-items: center;
+
+      overflow: hidden;
+    }
+
+    .crate-visual::before {
+      position: absolute;
+
+      width: 160px;
+      height: 160px;
+
+      content: "";
+
+      border:
+        1px solid
+        var(--crate-border);
+
+      transform: rotate(45deg);
+
+      opacity: 0.2;
+    }
+
+    .crate-visual img {
+      position: relative;
+      z-index: 2;
+
+      width: 82%;
+      height: 220px;
+
+      object-fit: contain;
+
+      filter:
+        drop-shadow(
+          0
+          24px
+          24px
+          rgba(
+            0,
+            0,
+            0,
+            0.46
+          )
+        );
+    }
+
+    .crate-fallback {
+      position: relative;
+      z-index: 2;
+
+      color: var(--crate-accent);
+
+      font-size: 36px;
+    }
+
+    .crate-count {
+      position: absolute;
+      z-index: 4;
+
+      top: 13px;
+      right: 13px;
+
+      min-width: 35px;
+      min-height: 29px;
+
+      display: grid;
+      place-items: center;
+
+      padding:
+        0
+        9px;
+
+      border:
+        1px solid
+        var(--crate-border);
+
+      border-radius: 999px;
+
+      background:
+        rgba(
+          7,
+          7,
+          11,
+          0.88
+        );
+
+      color: white;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .crate-copy {
+      padding:
+        0
+        17px
+        18px;
+    }
+
+    .crate-copy span {
+      color: var(--crate-accent);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .crate-copy h3 {
+      margin:
+        5px
+        0
+        0;
+
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .crate-copy p {
+      min-height: 38px;
+
+      margin:
+        8px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .crate-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+
+      margin-top: 14px;
+    }
+
+    /* =====================================================
+       LOADOUT
+       ===================================================== */
+
+    .loadout-layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        350px;
+    }
+
+    .loadout-slots {
+      min-width: 0;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
+    }
+
+    .loadout-slot {
+      min-height: 175px;
+
+      padding: 18px;
+
+      border-right:
+        1px solid
+        var(--line);
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(
+            255,
+            255,
+            255,
+            0.02
+          ),
+          transparent
+        );
+    }
+
+    .loadout-slot:nth-child(3n) {
+      border-right: 0;
+    }
+
+    .slot-icon {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.28
+        );
+
+      border-radius: 9px;
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.06
+        );
+
+      color: var(--purple-light);
+    }
+
+    .loadout-slot span {
+      display: block;
+
+      margin-top: 16px;
+
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .loadout-slot strong {
+      display: block;
+
+      margin-top: 5px;
+
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .loadout-slot small {
+      display: block;
+
+      margin-top: 5px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    .loadout-preview {
+      min-width: 0;
+
+      padding: 24px;
+
+      border-left:
+        1px solid
+        var(--line);
+
+      background:
+        radial-gradient(
+          circle at 50% 18%,
+          rgba(
+            168,
+            85,
+            247,
+            0.11
+          ),
+          transparent 36%
+        ),
+        #0a090f;
+    }
+
+    .loadout-avatar {
+      width: 92px;
+      height: 92px;
+
+      display: grid;
+      place-items: center;
+
+      margin-top: 20px;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.36
+        );
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #38244c,
+          #121019
+        );
+
+      color: var(--purple-light);
+
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .loadout-preview h2 {
+      margin:
+        18px
+        0
+        0;
+
+      font-size: 27px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .loadout-preview p {
+      margin:
+        10px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .loadout-updated {
+      margin-top: 17px;
+
+      padding-top: 13px;
+
+      border-top:
+        1px solid
+        var(--line);
+
+      color: var(--dim);
+
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    /* =====================================================
+       HISTORY
+       ===================================================== */
+
+    .history-table {
+      width: 100%;
+
+      border-collapse: collapse;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding:
+        13px
+        16px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      text-align: left;
+    }
+
+    .history-table th {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.85px;
+      text-transform: uppercase;
+    }
+
+    .history-table td {
+      font-size: 11px;
+    }
+
+    .history-reward {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .history-icon {
+      width: 35px;
+      height: 35px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--history-border);
+
+      border-radius: 8px;
+
+      background: var(--history-soft);
+      color: var(--history-accent);
+    }
+
+    .history-reward strong {
+      display: block;
+
+      font-size: 11px;
+    }
+
+    .history-reward span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: var(--dim);
+
+      font-size: 8px;
+    }
+
+    .history-rarity {
+      color: var(--history-accent);
+
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .page-status {
+      min-height: 20px;
+
+      margin:
+        13px
+        2px
+        0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 1320px) {
+      .collection-layout {
+        grid-template-columns:
+          165px
+          minmax(0, 1fr)
+          285px;
+      }
+
+      .item-grid {
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(
+              0,
+              1fr
+            )
+          );
+      }
+
+      .crate-grid {
+        grid-template-columns:
+          repeat(
+            3,
+            minmax(
+              0,
+              1fr
+            )
+          );
+      }
+
+      .crate-entry:nth-child(4n + 1) {
+        border-left:
+          1px solid
+          var(--line);
+      }
+
+      .crate-entry:nth-child(3n + 1) {
+        border-left: 0;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .inventory-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .inventory-summary {
+        width: 100%;
+      }
+
+      .collection-layout {
+        grid-template-columns:
+          155px
+          minmax(0, 1fr);
+      }
+
+      .item-inspector {
+        position: fixed;
+        z-index: 99990;
+
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        max-height: 88vh;
+
+        overflow-y: auto;
+
+        border:
+          1px solid
+          rgba(
+            192,
+            132,
+            252,
+            0.38
+          );
+
+        border-bottom: 0;
+
+        transform:
+          translateY(
+            105%
+          );
+
+        transition:
+          transform
+          0.25s;
+      }
+
+      .item-inspector.open {
+        transform:
+          translateY(
+            0
+          );
+      }
+
+      .inspector-close {
+        position: absolute;
+        z-index: 10;
+
+        top: 12px;
+        right: 12px;
+
+        width: 36px;
+        height: 36px;
+
+        display: grid;
+        place-items: center;
+
+        border:
+          1px solid
+          var(--line-strong);
+
+        border-radius: 50%;
+
+        background:
+          rgba(
+            7,
+            7,
+            11,
+            0.82
+          );
+
+        color: white;
+
+        font-size: 18px;
+      }
+
+      .inspector-visual {
+        min-height: 220px;
+      }
+
+      .inspector-image {
+        height: 180px;
+      }
+
+      .loadout-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .loadout-preview {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .inventory-page {
+        width: min(
+          calc(100% - 14px),
+          var(--max-width)
+        );
+
+        margin-top: 12px;
+      }
+
+      .inventory-header {
+        min-height: 110px;
+
+        padding-top: 12px;
+      }
+
+      .inventory-title h1 {
+        font-size: 52px;
+      }
+
+      .inventory-title p {
+        font-size: 12px;
+      }
+
+      .inventory-summary {
+        grid-template-columns:
+          repeat(
+            3,
+            1fr
+          );
+      }
+
+      .summary-stat {
+        padding:
+          12px
+          10px;
+      }
+
+      .summary-stat strong {
+        font-size: 18px;
+      }
+
+      .collection-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .search-field {
+        width: 100%;
+        max-width: none;
+      }
+
+      .toolbar-controls {
+        display: grid;
+
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+
+      .duplicate-filter {
+        grid-column:
+          1 /
+          -1;
+
+        justify-content: center;
+      }
+
+      .collection-layout {
+        display: block;
+      }
+
+      .category-rail {
+        display: flex;
+        gap: 5px;
+
+        overflow-x: auto;
+
+        padding: 8px;
+
+        border-right: 0;
+        border-bottom:
+          1px solid
+          var(--line);
+      }
+
+      .category-button {
+        width: auto;
+        min-width: max-content;
+      }
+
+      .category-button.active {
+        box-shadow:
+          inset
+          0
+          -3px
+          0
+          var(--purple);
+      }
+
+      .collection-browser {
+        padding: 11px;
+      }
+
+      .item-grid {
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(
+              0,
+              1fr
+            )
+          );
+
+        gap: 7px;
+      }
+
+      .inventory-item {
+        min-height: 175px;
+      }
+
+      .item-visual {
+        min-height: 112px;
+      }
+
+      .item-image {
+        height: 92px;
+      }
+
+      .crate-grid {
+        grid-template-columns:
+          1fr
+          1fr;
+
+        padding: 11px;
+      }
+
+      .crate-entry,
+      .crate-entry:nth-child(3n + 1) {
+        border-left:
+          1px solid
+          var(--line);
+      }
+
+      .crate-entry:nth-child(odd) {
+        border-left: 0;
+      }
+
+      .crate-visual {
+        min-height: 200px;
+      }
+
+      .crate-visual img {
+        height: 165px;
+      }
+
+      .loadout-slots {
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+
+      .loadout-slot,
+      .loadout-slot:nth-child(3n) {
+        border-right:
+          1px solid
+          var(--line);
+      }
+
+      .loadout-slot:nth-child(even) {
+        border-right: 0;
+      }
+
+      .history-scroll {
+        overflow-x: auto;
+      }
+
+      .history-table {
+        min-width: 720px;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+
+        padding: 19px;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .inventory-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-stat,
+      .summary-stat:first-child {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+
+      .summary-stat:first-child {
+        border-top: 0;
+      }
+
+      .toolbar-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .duplicate-filter {
+        grid-column: auto;
+      }
+
+      .loadout-slots {
+        grid-template-columns: 1fr;
+      }
+
+      .loadout-slot,
+      .loadout-slot:nth-child(even),
+      .loadout-slot:nth-child(3n) {
+        border-right: 0;
+      }
+
+      .crate-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .crate-entry,
+      .crate-entry:nth-child(odd) {
+        border-left: 0;
+      }
+    }
+  </style>
+</head>
+
+<body data-page="inventory">
+  <div id="globalHeader"></div>
+
+  <main class="inventory-page">
+    <header class="inventory-header">
+      <div class="inventory-title">
+        <div class="eyebrow">
+          Player Collection
+        </div>
+
+        <h1>Inventory</h1>
+
+        <p>
+          Browse your unlocked cosmetics, inspect duplicate rewards,
+          manage compatible profile items, and review your crate history.
+        </p>
+      </div>
+
+      <div class="inventory-summary">
+        <div class="summary-stat">
+          <span>Unique Items</span>
+          <strong id="uniqueItemCount">0</strong>
+        </div>
+
+        <div class="summary-stat">
+          <span>Total Copies</span>
+          <strong id="totalCopyCount">0</strong>
+        </div>
+
+        <div class="summary-stat">
+          <span>Owned Crates</span>
+          <strong id="ownedCrateCount">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="inventory-client">
+      <nav class="client-tabs">
+        <button
+          class="client-tab active"
+          type="button"
+          data-client-tab="collection"
+        >
+          <i class="fa-solid fa-layer-group"></i>
+          Collection
+        </button>
+
+        <button
+          class="client-tab"
+          type="button"
+          data-client-tab="crates"
+        >
+          <i class="fa-solid fa-box-open"></i>
+          Crates
+        </button>
+
+        <button
+          class="client-tab"
+          type="button"
+          data-client-tab="loadout"
+        >
+          <i class="fa-solid fa-user-gear"></i>
+          Profile Loadout
+        </button>
+
+        <button
+          class="client-tab"
+          type="button"
+          data-client-tab="history"
+        >
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          Reward History
+        </button>
+      </nav>
+
+      <section
+        id="client-collection"
+        class="client-panel active"
+      >
+        <div class="collection-toolbar">
+          <label class="search-field">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="inventorySearch"
+              type="search"
+              placeholder="Search your collection..."
+              autocomplete="off"
+            >
+          </label>
+
+          <div class="toolbar-controls">
+            <select
+              id="rarityFilter"
+              class="toolbar-select"
+              aria-label="Filter by rarity"
+            >
+              <option value="all">All Rarities</option>
+              <option value="common">Common</option>
+              <option value="uncommon">Uncommon</option>
+              <option value="rare">Rare</option>
+              <option value="epic">Epic</option>
+              <option value="legendary">Legendary</option>
+              <option value="mythic">Mythic</option>
+              <option value="seasonal">Seasonal</option>
+              <option value="limited">Limited</option>
+            </select>
+
+            <select
+              id="inventorySort"
+              class="toolbar-select"
+              aria-label="Sort inventory"
+            >
+              <option value="newest">Newest</option>
+              <option value="rarity">Highest Rarity</option>
+              <option value="name">Name</option>
+              <option value="quantity">Most Copies</option>
+            </select>
+
+            <button
+              id="duplicateFilter"
+              class="duplicate-filter"
+              type="button"
+            >
+              <i class="fa-solid fa-clone"></i>
+              Duplicates Only
+            </button>
+          </div>
+        </div>
+
+        <div class="collection-layout">
+          <aside
+            id="categoryRail"
+            class="category-rail"
+          ></aside>
+
+          <section class="collection-browser">
+            <header class="collection-browser-head">
+              <strong id="activeCategoryTitle">
+                All Collection
+              </strong>
+
+              <span id="collectionResultCount">
+                0 Items
+              </span>
+            </header>
+
+            <div
+              id="itemGrid"
+              class="item-grid"
+            ></div>
+          </section>
+
+          <aside
+            id="itemInspector"
+            class="item-inspector"
+          >
+            <button
+              class="inspector-close"
+              type="button"
+              onclick="closeItemInspector()"
+              aria-label="Close item details"
+            >
+              ×
+            </button>
+
+            <div class="inspector-visual">
+              <img
+                id="inspectorImage"
+                class="inspector-image"
+                src=""
+                alt=""
+                hidden
+              >
+
+              <div
+                id="inspectorFallback"
+                class="inspector-fallback"
+              >
+                <i class="fa-solid fa-box"></i>
+              </div>
+            </div>
+
+            <div class="inspector-content">
+              <div
+                id="inspectorRarity"
+                class="inspector-rarity"
+              >
+                Select an Item
+              </div>
+
+              <h2 id="inspectorName">
+                Collection Item
+              </h2>
+
+              <span
+                id="inspectorCategory"
+                class="inspector-category"
+              >
+                Choose an item to inspect
+              </span>
+
+              <div class="inspector-details">
+                <div class="inspector-row">
+                  <span>Quantity</span>
+                  <strong id="inspectorQuantity">—</strong>
+                </div>
+
+                <div class="inspector-row">
+                  <span>Source</span>
+                  <strong id="inspectorSource">—</strong>
+                </div>
+
+                <div class="inspector-row">
+                  <span>First Unlocked</span>
+                  <strong id="inspectorUnlocked">—</strong>
+                </div>
+
+                <div class="inspector-row">
+                  <span>Profile Status</span>
+                  <strong id="inspectorEquipStatus">—</strong>
+                </div>
+              </div>
+
+              <div
+                id="inspectorNote"
+                class="inspector-note"
+              >
+                Select an item from your collection.
+              </div>
+
+              <div class="inspector-actions">
+                <button
+                  id="equipItemButton"
+                  class="client-button primary"
+                  type="button"
+                  disabled
+                >
+                  Equip Item
+                </button>
+
+                <a
+                  id="viewProfileButton"
+                  class="client-button"
+                  href="#"
+                >
+                  <i class="fa-solid fa-user"></i>
+                  View Public Profile
+                </a>
+              </div>
+
+              <p
+                id="inventoryActionStatus"
+                class="page-status"
+              ></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        id="client-crates"
+        class="client-panel"
+      >
+        <header class="section-heading">
+          <div>
+            <div class="eyebrow">
+              Mystery Rewards
+            </div>
+
+            <h2>Your Crates</h2>
+
+            <p>
+              Review crate quantities and jump to the Shop for additional
+              reward opportunities.
+            </p>
+          </div>
+
+          <a
+            class="client-button primary"
+            href="shop.html"
+          >
+            <i class="fa-solid fa-store"></i>
+            Open Shop
+          </a>
+        </header>
+
+        <div
+          id="crateGrid"
+          class="crate-grid"
+        ></div>
+      </section>
+
+      <section
+        id="client-loadout"
+        class="client-panel"
+      >
+        <header class="section-heading">
+          <div>
+            <div class="eyebrow">
+              Public Profile Presentation
+            </div>
+
+            <h2>Profile Loadout</h2>
+
+            <p>
+              Review the cosmetics currently applied to your Rivals
+              Gauntlet public profile.
+            </p>
+          </div>
+
+          <a
+            id="loadoutProfileButton"
+            class="client-button"
+            href="#"
+          >
+            <i class="fa-solid fa-eye"></i>
+            View Profile
+          </a>
+        </header>
+
+        <div class="loadout-layout">
+          <div
+            id="loadoutSlots"
+            class="loadout-slots"
+          ></div>
+
+          <aside class="loadout-preview">
+            <div class="eyebrow">
+              Active Competitor
+            </div>
+
+            <div
+              id="loadoutAvatar"
+              class="loadout-avatar"
+            >
+              RG
+            </div>
+
+            <h2 id="loadoutPlayerName">
+              Player
+            </h2>
+
+            <p>
+              Compatible cosmetics can be equipped directly from the
+              Collection inspector. Other collectible categories remain
+              visible until their profile slot is connected.
+            </p>
+
+            <div
+              id="loadoutUpdated"
+              class="loadout-updated"
+            >
+              Loadout has not been updated.
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        id="client-history"
+        class="client-panel"
+      >
+        <header class="section-heading">
+          <div>
+            <div class="eyebrow">
+              Collection Timeline
+            </div>
+
+            <h2>Reward History</h2>
+
+            <p>
+              Review recent crate rewards and additions to your collection.
+            </p>
+          </div>
+        </header>
+
+        <div class="history-scroll">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Reward</th>
+                <th>Rarity</th>
+                <th>Source</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+
+            <tbody id="rewardHistoryBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <p
+      id="inventoryPageStatus"
+      class="page-status"
+    ></p>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="friends.js?v=4"></script>
+  <script src="daily-gifts.js?v=2"></script>
+  <script src="global-header.js?v=16"></script>
+
+  <script>
+    const $ = id =>
+      document.getElementById(id);
+
+    const clean = (
+      value,
+      fallback = ""
+    ) => {
+      const output =
+        String(
+          value ?? ""
+        ).trim();
+
+      return output || fallback;
+    };
+
+    const normalize = value =>
+      clean(value)
+        .toLowerCase()
+        .replace(
+          /[^a-z0-9]/g,
+          ""
+        );
+
+    const escapeHtml = value =>
+      clean(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+    let currentUser = null;
+    let currentPlayer = {};
+    let currentInventory = {};
+    let currentLoadout = {};
+    let crateRewardHistory = {};
+
+    let collectionItems = [];
+    let selectedItemId = "";
+    let activeCategory = "all";
+    let duplicatesOnly = false;
+
+    const rarityOrder = {
+      mythic: 8,
+      legendary: 7,
+      epic: 6,
+      seasonal: 5,
+      limited: 5,
+      rare: 4,
+      uncommon: 3,
+      common: 2,
+      standard: 1
+    };
+
+    const rarityThemes = {
+      common: {
+        accent: "#a8adb7",
+        soft: "rgba(168,173,183,.11)",
+        border: "rgba(168,173,183,.34)"
+      },
+
+      uncommon: {
+        accent: "#42d392",
+        soft: "rgba(66,211,146,.11)",
+        border: "rgba(66,211,146,.36)"
+      },
+
+      rare: {
+        accent: "#4c8df6",
+        soft: "rgba(76,141,246,.12)",
+        border: "rgba(76,141,246,.4)"
+      },
+
+      epic: {
+        accent: "#b269ff",
+        soft: "rgba(178,105,255,.13)",
+        border: "rgba(178,105,255,.43)"
+      },
+
+      legendary: {
+        accent: "#f2b94b",
+        soft: "rgba(242,185,75,.13)",
+        border: "rgba(242,185,75,.43)"
+      },
+
+      mythic: {
+        accent: "#f05a78",
+        soft: "rgba(240,90,120,.13)",
+        border: "rgba(240,90,120,.45)"
+      },
+
+      seasonal: {
+        accent: "#f2c969",
+        soft: "rgba(242,201,105,.13)",
+        border: "rgba(242,201,105,.43)"
+      },
+
+      limited: {
+        accent: "#42d392",
+        soft: "rgba(66,211,146,.12)",
+        border: "rgba(66,211,146,.4)"
+      },
+
+      standard: {
+        accent: "#a8adb7",
+        soft: "rgba(168,173,183,.1)",
+        border: "rgba(168,173,183,.3)"
+      }
+    };
+
+    const categoryConfig = {
+      all: {
+        label: "All Collection",
+        icon: "fa-solid fa-layer-group"
+      },
+
+      avatar: {
+        label: "Avatars",
+        icon: "fa-solid fa-user-astronaut"
+      },
+
+      banner: {
+        label: "Banners",
+        icon: "fa-solid fa-panorama"
+      },
+
+      title: {
+        label: "Titles",
+        icon: "fa-solid fa-crown"
+      },
+
+      background: {
+        label: "Backgrounds",
+        icon: "fa-solid fa-image"
+      },
+
+      frame: {
+        label: "Frames",
+        icon: "fa-solid fa-border-all"
+      },
+
+      badge: {
+        label: "Badges",
+        icon: "fa-solid fa-medal"
+      },
+
+      effect: {
+        label: "Effects",
+        icon: "fa-solid fa-wand-magic-sparkles"
+      },
+
+      nameplate: {
+        label: "Nameplates",
+        icon: "fa-solid fa-id-card"
+      },
+
+      tracker: {
+        label: "Trackers",
+        icon: "fa-solid fa-chart-simple"
+      },
+
+      test: {
+        label: "Other",
+        icon: "fa-solid fa-cube"
+      }
+    };
+
+    const cosmeticBuckets = {
+      backgrounds: {
+        category: "Background",
+        loadoutField: "backgroundId"
+      },
+
+      frames: {
+        category: "Frame",
+        loadoutField: "frameId"
+      },
+
+      titles: {
+        category: "Title",
+        loadoutField: "titleId"
+      },
+
+      badges: {
+        category: "Badge",
+        loadoutField: "badgeId"
+      },
+
+      effects: {
+        category: "Effect",
+        loadoutField: "effectId"
+      },
+
+      nameplates: {
+        category: "Nameplate",
+        loadoutField: "nameplateId"
+      }
+    };
+
+    const crateCatalog = {
+      basic_crate: {
+        name: "Basic Crate",
+        rarity: "Common",
+        description:
+          "Entry-tier mystery rewards and profile collectibles.",
+        image:
+          "assets/shop/crates/basic-crate.PNG"
+      },
+
+      rare_crate: {
+        name: "Rare Crate",
+        rarity: "Rare",
+        description:
+          "Improved odds for upgraded collection rewards.",
+        image:
+          "assets/shop/crates/rare-crate.PNG"
+      },
+
+      elite_crate: {
+        name: "Elite Crate",
+        rarity: "Epic",
+        description:
+          "Premium profile cosmetics and higher-rarity rewards.",
+        image:
+          "assets/shop/crates/elite-crate.PNG"
+      },
+
+      summer_crate: {
+        name: "Summer Crate",
+        rarity: "Seasonal",
+        description:
+          "Limited summer-themed collection rewards.",
+        image:
+          "assets/shop/crates/summer-crate.PNG"
+      },
+
+      halloween_crate: {
+        name: "Halloween Crate",
+        rarity: "Seasonal",
+        description:
+          "Seasonal Halloween collection rewards.",
+        image:
+          "assets/shop/crates/halloween-crate.PNG"
+      },
+
+      steam_5: {
+        name: "$5 Steam Card",
+        rarity: "Limited",
+        description:
+          "Limited digital reward redemption.",
+        image:
+          "assets/shop/rewards/steam-card.png"
+      },
+
+      steam_10: {
+        name: "$10 Steam Card",
+        rarity: "Limited",
+        description:
+          "Higher-value limited digital reward.",
+        image:
+          "assets/shop/rewards/steam-card.png"
+      }
+    };
+
+    const allowedTrackerStats = [
+      "championships",
+      "eventsPlayed",
+      "bestFinish",
+      "lifetimeRgPoints",
+      "prestige",
+      "predictionAccuracy",
+      "correctPredictions",
+      "bestPredictionStreak",
+      "predictionRpEarned"
+    ];
+
+    function titleFromId(value) {
+      return clean(value, "Unknown Item")
+        .replaceAll("_", " ")
+        .replace(
+          /\b\w/g,
+          letter =>
+            letter.toUpperCase()
+        );
+    }
+
+    function getInitials(name) {
+      return clean(name, "RG")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(word => word[0])
+        .join("")
+        .toUpperCase();
+    }
+
+    function formatDate(timestamp) {
+      const value =
+        Number(timestamp || 0);
+
+      if (!value) {
+        return "Unknown";
+      }
+
+      return new Date(value)
+        .toLocaleDateString(
+          undefined,
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+          }
+        );
+    }
+
+    function formatDateTime(timestamp) {
+      const value =
+        Number(timestamp || 0);
+
+      if (!value) {
+        return "Not updated";
+      }
+
+      return new Date(value)
+        .toLocaleString(
+          undefined,
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit"
+          }
+        );
+    }
+
+    function getTheme(rarity) {
+      return (
+        rarityThemes[
+          clean(
+            rarity,
+            "standard"
+          ).toLowerCase()
+        ] ||
+        rarityThemes.standard
+      );
+    }
+
+    function getCategoryKey(category) {
+      const value =
+        normalize(category);
+
+      if (value.includes("avatar")) {
+        return "avatar";
+      }
+
+      if (
+        value.includes("banner") ||
+        value.includes("profilebanner")
+      ) {
+        return "banner";
+      }
+
+      if (value.includes("title")) {
+        return "title";
+      }
+
+      if (value.includes("background")) {
+        return "background";
+      }
+
+      if (value.includes("frame")) {
+        return "frame";
+      }
+
+      if (value.includes("badge")) {
+        return "badge";
+      }
+
+      if (value.includes("effect")) {
+        return "effect";
+      }
+
+      if (value.includes("nameplate")) {
+        return "nameplate";
+      }
+
+      if (value.includes("tracker")) {
+        return "tracker";
+      }
+
+      return "test";
+    }
+
+    function iconForCategory(category) {
+      const key =
+        getCategoryKey(category);
+
+      return (
+        categoryConfig[key]?.icon ||
+        "fa-solid fa-cube"
+      );
+    }
+
+    function normalizeObject(value) {
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      ) {
+        return value;
+      }
+
+      return {};
+    }
+
+    function normalizeCollection() {
+      const itemsById =
+        new Map();
+
+      const collectibles =
+        normalizeObject(
+          currentInventory.collectibles
+        );
+
+      Object.entries(
+        collectibles
+      ).forEach(
+        (
+          [
+            itemId,
+            rawItem
+          ]
+        ) => {
+          const data =
+            normalizeObject(
+              rawItem
+            );
+
+          itemsById.set(
+            itemId,
+            {
+              id:
+                itemId,
+
+              name:
+                clean(
+                  data.name,
+                  titleFromId(itemId)
+                ),
+
+              category:
+                clean(
+                  data.category,
+                  "Collectible"
+                ),
+
+              rarity:
+                clean(
+                  data.rarity,
+                  "Common"
+                ),
+
+              quantity:
+                Math.max(
+                  1,
+                  Number(
+                    data.quantity ||
+                    1
+                  )
+                ),
+
+              image:
+                clean(
+                  data.image
+                ),
+
+              sourceCrate:
+                clean(
+                  data.sourceCrate
+                ),
+
+              sourceName:
+                clean(
+                  data.sourceCrateName,
+                  "Rivals Gauntlet"
+                ),
+
+              firstUnlockedAt:
+                Number(
+                  data.firstUnlockedAt ||
+                  data.createdAt ||
+                  0
+                ),
+
+              lastUnlockedAt:
+                Number(
+                  data.lastUnlockedAt ||
+                  data.firstUnlockedAt ||
+                  data.createdAt ||
+                  0
+                ),
+
+              loadoutField:
+                null,
+
+              inventoryPath:
+                `collectibles/${itemId}`
+            }
+          );
+        }
+      );
+
+      const profileCosmetics =
+        normalizeObject(
+          currentInventory.profileCosmetics
+        );
+
+      Object.entries(
+        cosmeticBuckets
+      ).forEach(
+        (
+          [
+            bucketName,
+            bucketConfig
+          ]
+        ) => {
+          const bucket =
+            normalizeObject(
+              profileCosmetics[
+                bucketName
+              ]
+            );
+
+          Object.entries(
+            bucket
+          ).forEach(
+            (
+              [
+                itemId,
+                rawItem
+              ]
+            ) => {
+              const data =
+                normalizeObject(
+                  rawItem
+                );
+
+              const previous =
+                itemsById.get(
+                  itemId
+                ) ||
+                {};
+
+              itemsById.set(
+                itemId,
+                {
+                  ...previous,
+
+                  id:
+                    itemId,
+
+                  name:
+                    clean(
+                      data.name,
+                      previous.name ||
+                      titleFromId(itemId)
+                    ),
+
+                  category:
+                    bucketConfig.category,
+
+                  rarity:
+                    clean(
+                      data.rarity,
+                      previous.rarity ||
+                      "Common"
+                    ),
+
+                  quantity:
+                    Math.max(
+                      1,
+                      Number(
+                        data.quantity ||
+                        previous.quantity ||
+                        1
+                      )
+                    ),
+
+                  image:
+                    clean(
+                      data.image,
+                      previous.image ||
+                      ""
+                    ),
+
+                  sourceCrate:
+                    clean(
+                      data.sourceCrate,
+                      previous.sourceCrate ||
+                      ""
+                    ),
+
+                  sourceName:
+                    clean(
+                      data.sourceCrateName,
+                      previous.sourceName ||
+                      "Rivals Gauntlet"
+                    ),
+
+                  firstUnlockedAt:
+                    Number(
+                      data.firstUnlockedAt ||
+                      previous.firstUnlockedAt ||
+                      data.createdAt ||
+                      0
+                    ),
+
+                  lastUnlockedAt:
+                    Number(
+                      data.lastUnlockedAt ||
+                      previous.lastUnlockedAt ||
+                      data.firstUnlockedAt ||
+                      0
+                    ),
+
+                  loadoutField:
+                    bucketConfig.loadoutField,
+
+                  inventoryPath:
+                    `profileCosmetics/${bucketName}/${itemId}`
+                }
+              );
+            }
+          );
+        }
+      );
+
+      const profileTrackers =
+        normalizeObject(
+          currentInventory.profileTrackers
+        );
+
+      Object.entries(
+        profileTrackers
+      ).forEach(
+        (
+          [
+            itemId,
+            rawItem
+          ]
+        ) => {
+          const data =
+            normalizeObject(
+              rawItem
+            );
+
+          itemsById.set(
+            itemId,
+            {
+              id:
+                itemId,
+
+              name:
+                clean(
+                  data.name,
+                  titleFromId(itemId)
+                ),
+
+              category:
+                "Tracker",
+
+              rarity:
+                clean(
+                  data.rarity,
+                  "Common"
+                ),
+
+              quantity:
+                Math.max(
+                  1,
+                  Number(
+                    data.quantity ||
+                    1
+                  )
+                ),
+
+              image:
+                clean(
+                  data.image
+                ),
+
+              sourceCrate:
+                clean(
+                  data.sourceCrate
+                ),
+
+              sourceName:
+                clean(
+                  data.sourceCrateName,
+                  "Rivals Gauntlet"
+                ),
+
+              firstUnlockedAt:
+                Number(
+                  data.firstUnlockedAt ||
+                  data.createdAt ||
+                  0
+                ),
+
+              lastUnlockedAt:
+                Number(
+                  data.lastUnlockedAt ||
+                  data.createdAt ||
+                  0
+                ),
+
+              loadoutField:
+                null,
+
+              tracker:
+                true,
+
+              inventoryPath:
+                `profileTrackers/${itemId}`
+            }
+          );
+        }
+      );
+
+      collectionItems =
+        Array.from(
+          itemsById.values()
+        );
+    }
+
+    function isItemEquipped(item) {
+      if (
+        !item ||
+        !item.loadoutField
+      ) {
+        return false;
+      }
+
+      return (
+        clean(
+          currentLoadout[
+            item.loadoutField
+          ]
+        ) ===
+        item.id
+      );
+    }
+
+    function renderSummary() {
+      const uniqueItems =
+        collectionItems.length;
+
+      const totalCopies =
+        collectionItems.reduce(
+          (
+            total,
+            item
+          ) =>
+            total +
+            Number(
+              item.quantity ||
+              0
+            ),
+          0
+        );
+
+      const crateTotal =
+        Object.values(
+          normalizeObject(
+            currentInventory.crates
+          )
+        ).reduce(
+          (
+            total,
+            quantity
+          ) =>
+            total +
+            Number(
+              quantity ||
+              0
+            ),
+          0
+        );
+
+      $("uniqueItemCount").textContent =
+        uniqueItems.toLocaleString();
+
+      $("totalCopyCount").textContent =
+        totalCopies.toLocaleString();
+
+      $("ownedCrateCount").textContent =
+        crateTotal.toLocaleString();
+    }
+
+    function getCategoryCounts() {
+      const counts = {
+        all:
+          collectionItems.length
+      };
+
+      collectionItems.forEach(item => {
+        const category =
+          getCategoryKey(
+            item.category
+          );
+
+        counts[category] =
+          Number(
+            counts[category] ||
+            0
+          ) +
+          1;
+      });
+
+      return counts;
+    }
+
+    function renderCategoryRail() {
+      const counts =
+        getCategoryCounts();
+
+      const categories = [
+        "all",
+        "avatar",
+        "banner",
+        "title",
+        "background",
+        "frame",
+        "badge",
+        "effect",
+        "nameplate",
+        "tracker",
+        "test"
+      ].filter(
+        category =>
+          category === "all" ||
+          Number(
+            counts[category] ||
+            0
+          ) >
+            0
+      );
+
+      $("categoryRail").innerHTML =
+        categories
+          .map(category => {
+            const config =
+              categoryConfig[
+                category
+              ];
+
+            return `
+              <button
+                class="category-button ${
+                  activeCategory === category
+                    ? "active"
+                    : ""
+                }"
+                type="button"
+                data-category="${category}"
+              >
+                <span>
+                  <i class="${config.icon}"></i>
+                  ${escapeHtml(config.label)}
+                </span>
+
+                <em>
+                  ${Number(counts[category] || 0)}
+                </em>
+              </button>
+            `;
+          })
+          .join("");
+
+      document
+        .querySelectorAll(
+          "[data-category]"
+        )
+        .forEach(button => {
+          button.addEventListener(
+            "click",
+            () => {
+              activeCategory =
+                button.dataset.category;
+
+              renderCategoryRail();
+              renderCollectionGrid();
+            }
+          );
+        });
+    }
+
+    function getFilteredItems() {
+      const searchValue =
+        normalize(
+          $("inventorySearch").value
+        );
+
+      const rarity =
+        $("rarityFilter").value;
+
+      const sort =
+        $("inventorySort").value;
+
+      const items =
+        collectionItems.filter(item => {
+          const categoryMatches =
+            activeCategory === "all" ||
+            getCategoryKey(
+              item.category
+            ) ===
+              activeCategory;
+
+          const rarityMatches =
+            rarity === "all" ||
+            clean(
+              item.rarity
+            ).toLowerCase() ===
+              rarity;
+
+          const searchMatches =
+            !searchValue ||
+            normalize(
+              [
+                item.name,
+                item.category,
+                item.rarity,
+                item.sourceName
+              ].join(" ")
+            ).includes(
+              searchValue
+            );
+
+          const duplicateMatches =
+            !duplicatesOnly ||
+            Number(
+              item.quantity ||
+              0
+            ) >
+              1;
+
+          return (
+            categoryMatches &&
+            rarityMatches &&
+            searchMatches &&
+            duplicateMatches
+          );
+        });
+
+      items.sort(
+        (
+          first,
+          second
+        ) => {
+          if (
+            sort ===
+            "name"
+          ) {
+            return first.name.localeCompare(
+              second.name
+            );
+          }
+
+          if (
+            sort ===
+            "quantity"
+          ) {
+            return (
+              Number(
+                second.quantity ||
+                0
+              ) -
+              Number(
+                first.quantity ||
+                0
+              )
+            );
+          }
+
+          if (
+            sort ===
+            "rarity"
+          ) {
+            return (
+              Number(
+                rarityOrder[
+                  clean(
+                    second.rarity
+                  ).toLowerCase()
+                ] ||
+                0
+              ) -
+              Number(
+                rarityOrder[
+                  clean(
+                    first.rarity
+                  ).toLowerCase()
+                ] ||
+                0
+              )
+            );
+          }
+
+          return (
+            Number(
+              second.lastUnlockedAt ||
+              0
+            ) -
+            Number(
+              first.lastUnlockedAt ||
+              0
+            )
+          );
+        }
+      );
+
+      return items;
+    }
+
+    function renderCollectionGrid() {
+      const items =
+        getFilteredItems();
+
+      const categoryTitle =
+        categoryConfig[
+          activeCategory
+        ]?.label ||
+        "Collection";
+
+      $("activeCategoryTitle").textContent =
+        categoryTitle;
+
+      $("collectionResultCount").textContent =
+        `${items.length} ${
+          items.length === 1
+            ? "Item"
+            : "Items"
+        }`;
+
+      if (!items.length) {
+        $("itemGrid").innerHTML = `
+          <div
+            class="empty-state"
+            style="grid-column:1/-1;"
+          >
+            No collection items match the current filters.
+          </div>
+        `;
+
+        return;
+      }
+
+      $("itemGrid").innerHTML =
+        items
+          .map(item => {
+            const theme =
+              getTheme(
+                item.rarity
+              );
+
+            const equipped =
+              isItemEquipped(
+                item
+              );
+
+            return `
+              <button
+                class="inventory-item ${
+                  selectedItemId === item.id
+                    ? "selected"
+                    : ""
+                }"
+                type="button"
+                data-item-id="${escapeHtml(item.id)}"
+                style="
+                  --item-accent:${theme.accent};
+                  --item-soft:${theme.soft};
+                  --item-border:${theme.border};
+                "
+              >
+                <div class="item-visual">
+                  ${
+                    equipped
+                      ? `
+                        <span class="equipped-badge">
+                          <i class="fa-solid fa-check"></i>
+                          Equipped
+                        </span>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    Number(item.quantity || 0) > 1
+                      ? `
+                        <span class="quantity-badge">
+                          ×${Number(item.quantity)}
+                        </span>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    item.image
+                      ? `
+                        <img
+                          class="item-image"
+                          src="${escapeHtml(item.image)}"
+                          alt="${escapeHtml(item.name)}"
+                          onerror="
+                            this.hidden=true;
+                            this.nextElementSibling.hidden=false;
+                          "
+                        >
+                      `
+                      : ""
+                  }
+
+                  <div
+                    class="item-fallback"
+                    ${item.image ? "hidden" : ""}
+                  >
+                    <i class="${iconForCategory(item.category)}"></i>
+                  </div>
+                </div>
+
+                <div class="item-copy">
+                  <span>
+                    ${escapeHtml(item.rarity)}
+                  </span>
+
+                  <strong>
+                    ${escapeHtml(item.name)}
+                  </strong>
+
+                  <small>
+                    ${escapeHtml(item.category)}
+                  </small>
+                </div>
+              </button>
+            `;
+          })
+          .join("");
+
+      document
+        .querySelectorAll(
+          "[data-item-id]"
+        )
+        .forEach(button => {
+          button.addEventListener(
+            "click",
+            () => {
+              selectItem(
+                button.dataset.itemId
+              );
+            }
+          );
+        });
+    }
+
+    function selectItem(itemId) {
+      const item =
+        collectionItems.find(
+          entry =>
+            entry.id === itemId
+        );
+
+      if (!item) {
+        return;
+      }
+
+      selectedItemId =
+        item.id;
+
+      renderCollectionGrid();
+      renderInspector();
+
+      if (
+        window.innerWidth <=
+        1020
+      ) {
+        $("itemInspector").classList.add(
+          "open"
+        );
+      }
+    }
+
+    function closeItemInspector() {
+      $("itemInspector").classList.remove(
+        "open"
+      );
+    }
+
+    function renderInspector() {
+      const item =
+        collectionItems.find(
+          entry =>
+            entry.id ===
+            selectedItemId
+        );
+
+      const inspector =
+        $("itemInspector");
+
+      if (!item) {
+        inspector.style.setProperty(
+          "--selected-accent",
+          "#a855f7"
+        );
+
+        inspector.style.setProperty(
+          "--selected-soft",
+          "rgba(168,85,247,.1)"
+        );
+
+        inspector.style.setProperty(
+          "--selected-border",
+          "rgba(168,85,247,.35)"
+        );
+
+        $("inspectorImage").hidden =
+          true;
+
+        $("inspectorFallback").hidden =
+          false;
+
+        $("inspectorFallback").innerHTML =
+          '<i class="fa-solid fa-box"></i>';
+
+        $("inspectorRarity").textContent =
+          "Select an Item";
+
+        $("inspectorName").textContent =
+          "Collection Item";
+
+        $("inspectorCategory").textContent =
+          "Choose an item to inspect";
+
+        $("inspectorQuantity").textContent =
+          "—";
+
+        $("inspectorSource").textContent =
+          "—";
+
+        $("inspectorUnlocked").textContent =
+          "—";
+
+        $("inspectorEquipStatus").textContent =
+          "—";
+
+        $("inspectorNote").textContent =
+          "Select an item from your collection.";
+
+        $("equipItemButton").disabled =
+          true;
+
+        $("equipItemButton").textContent =
+          "Equip Item";
+
+        return;
+      }
+
+      const theme =
+        getTheme(
+          item.rarity
+        );
+
+      inspector.style.setProperty(
+        "--selected-accent",
+        theme.accent
+      );
+
+      inspector.style.setProperty(
+        "--selected-soft",
+        theme.soft
+      );
+
+      inspector.style.setProperty(
+        "--selected-border",
+        theme.border
+      );
+
+      if (item.image) {
+        $("inspectorImage").src =
+          item.image;
+
+        $("inspectorImage").alt =
+          item.name;
+
+        $("inspectorImage").hidden =
+          false;
+
+        $("inspectorFallback").hidden =
+          true;
+
+        $("inspectorImage").onerror =
+          () => {
+            $("inspectorImage").hidden =
+              true;
+
+            $("inspectorFallback").hidden =
+              false;
+          };
+      } else {
+        $("inspectorImage").hidden =
+          true;
+
+        $("inspectorFallback").hidden =
+          false;
+      }
+
+      $("inspectorFallback").innerHTML = `
+        <i class="${iconForCategory(item.category)}"></i>
+      `;
+
+      $("inspectorRarity").textContent =
+        item.rarity;
+
+      $("inspectorName").textContent =
+        item.name;
+
+      $("inspectorCategory").textContent =
+        item.category;
+
+      $("inspectorQuantity").textContent =
+        Number(
+          item.quantity ||
+          0
+        ).toLocaleString();
+
+      $("inspectorSource").textContent =
+        item.sourceName ||
+        "Rivals Gauntlet";
+
+      $("inspectorUnlocked").textContent =
+        formatDate(
+          item.firstUnlockedAt
+        );
+
+      const equipped =
+        isItemEquipped(
+          item
+        );
+
+      if (equipped) {
+        $("inspectorEquipStatus").textContent =
+          "Currently Equipped";
+
+        $("inspectorNote").textContent =
+          "This item is currently active on your public profile.";
+
+        $("equipItemButton").disabled =
+          true;
+
+        $("equipItemButton").textContent =
+          "Equipped";
+      } else if (item.loadoutField) {
+        $("inspectorEquipStatus").textContent =
+          "Compatible";
+
+        $("inspectorNote").textContent =
+          "This cosmetic is connected to a profile loadout slot and can be equipped.";
+
+        $("equipItemButton").disabled =
+          false;
+
+        $("equipItemButton").textContent =
+          "Equip to Profile";
+      } else if (item.tracker) {
+        $("inspectorEquipStatus").textContent =
+          "Tracker Slot Pending";
+
+        $("inspectorNote").textContent =
+          "This tracker is collected. Tracker slot selection will be connected separately.";
+
+        $("equipItemButton").disabled =
+          true;
+
+        $("equipItemButton").textContent =
+          "Tracker Collected";
+      } else {
+        $("inspectorEquipStatus").textContent =
+          "Collection Only";
+
+        $("inspectorNote").textContent =
+          "This reward is safely stored in your collection. Its profile display slot has not been connected yet.";
+
+        $("equipItemButton").disabled =
+          true;
+
+        $("equipItemButton").textContent =
+          "Collected";
+      }
+    }
+
+    function normalizedTracker(
+      tracker,
+      fallbackStat
+    ) {
+      const value =
+        normalizeObject(
+          tracker
+        );
+
+      const statKey =
+        allowedTrackerStats.includes(
+          value.statKey
+        )
+          ? value.statKey
+          : fallbackStat;
+
+      return {
+        trackerId:
+          clean(
+            value.trackerId
+          ),
+
+        statKey
+      };
+    }
+
+    function getCompleteLoadout() {
+      return {
+        backgroundId:
+          clean(
+            currentLoadout.backgroundId,
+            "default_void"
+          ),
+
+        frameId:
+          clean(
+            currentLoadout.frameId,
+            "default_frame"
+          ),
+
+        titleId:
+          clean(
+            currentLoadout.titleId,
+            "default_title"
+          ),
+
+        badgeId:
+          clean(
+            currentLoadout.badgeId,
+            "default_badge"
+          ),
+
+        effectId:
+          clean(
+            currentLoadout.effectId,
+            "none"
+          ),
+
+        nameplateId:
+          clean(
+            currentLoadout.nameplateId,
+            "default_nameplate"
+          ),
+
+        trackers: {
+          slot1:
+            normalizedTracker(
+              currentLoadout.trackers?.slot1,
+              "eventsPlayed"
+            ),
+
+          slot2:
+            normalizedTracker(
+              currentLoadout.trackers?.slot2,
+              "championships"
+            ),
+
+          slot3:
+            normalizedTracker(
+              currentLoadout.trackers?.slot3,
+              "lifetimeRgPoints"
+            )
+        },
+
+        updatedAt:
+          Date.now()
+      };
+    }
+
+    async function equipSelectedItem() {
+      const item =
+        collectionItems.find(
+          entry =>
+            entry.id ===
+            selectedItemId
+        );
+
+      const status =
+        $("inventoryActionStatus");
+
+      if (
+        !item ||
+        !item.loadoutField ||
+        !currentUser
+      ) {
+        return;
+      }
+
+      const button =
+        $("equipItemButton");
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Equipping...";
+
+      status.textContent =
+        "Updating your public profile loadout...";
+
+      try {
+        const nextLoadout =
+          getCompleteLoadout();
+
+        nextLoadout[
+          item.loadoutField
+        ] =
+          item.id;
+
+        await database
+          .ref(
+            `profileLoadouts/${currentUser.uid}`
+          )
+          .set(
+            nextLoadout
+          );
+
+        status.textContent =
+          `${item.name} is now equipped.`;
+
+        status.style.color =
+          "#82e7af";
+      } catch (error) {
+        console.error(
+          "Equip failed:",
+          error
+        );
+
+        status.textContent =
+          error.message;
+
+        status.style.color =
+          "#ff9fa8";
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Equip to Profile";
+      }
+    }
+
+    $("equipItemButton")
+      .addEventListener(
+        "click",
+        equipSelectedItem
+      );
+
+    function renderCrates() {
+      const ownedCrates =
+        normalizeObject(
+          currentInventory.crates
+        );
+
+      const crateIds =
+        Array.from(
+          new Set([
+            ...Object.keys(
+              crateCatalog
+            ),
+            ...Object.keys(
+              ownedCrates
+            )
+          ])
+        );
+
+      $("crateGrid").innerHTML =
+        crateIds
+          .map(crateId => {
+            const catalog =
+              crateCatalog[
+                crateId
+              ] ||
+              {
+                name:
+                  titleFromId(
+                    crateId
+                  ),
+
+                rarity:
+                  "Common",
+
+                description:
+                  "Rivals Gauntlet reward item.",
+
+                image:
+                  ""
+              };
+
+            const count =
+              Number(
+                ownedCrates[
+                  crateId
+                ] ||
+                0
+              );
+
+            const theme =
+              getTheme(
+                catalog.rarity
+              );
+
+            return `
+              <article
+                class="crate-entry"
+                style="
+                  --crate-accent:${theme.accent};
+                  --crate-soft:${theme.soft};
+                  --crate-border:${theme.border};
+                "
+              >
+                <div class="crate-visual">
+                  <span class="crate-count">
+                    ×${count}
+                  </span>
+
+                  ${
+                    catalog.image
+                      ? `
+                        <img
+                          src="${escapeHtml(catalog.image)}"
+                          alt="${escapeHtml(catalog.name)}"
+                          onerror="
+                            this.hidden=true;
+                            this.nextElementSibling.hidden=false;
+                          "
+                        >
+                      `
+                      : ""
+                  }
+
+                  <div
+                    class="crate-fallback"
+                    ${catalog.image ? "hidden" : ""}
+                  >
+                    <i class="fa-solid fa-box-open"></i>
+                  </div>
+                </div>
+
+                <div class="crate-copy">
+                  <span>
+                    ${escapeHtml(catalog.rarity)}
+                  </span>
+
+                  <h3>
+                    ${escapeHtml(catalog.name)}
+                  </h3>
+
+                  <p>
+                    ${escapeHtml(catalog.description)}
+                  </p>
+
+                  <div class="crate-actions">
+                    ${
+                      count > 0
+                        ? `
+                          <button
+                            class="client-button primary"
+                            type="button"
+                            onclick="handleOwnedCrate('${escapeHtml(crateId)}')"
+                          >
+                            Open Crate
+                          </button>
+                        `
+                        : `
+                          <a
+                            class="client-button"
+                            href="shop.html"
+                          >
+                            View in Shop
+                          </a>
+                        `
+                    }
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join("");
+    }
+
+    function handleOwnedCrate(crateId) {
+      const count =
+        Number(
+          currentInventory.crates?.[
+            crateId
+          ] ||
+          0
+        );
+
+      if (count <= 0) {
+        return;
+      }
+
+      if (
+        typeof window.openOwnedCrate ===
+        "function"
+      ) {
+        window.openOwnedCrate(
+          crateId
+        );
+
+        return;
+      }
+
+      $("inventoryPageStatus").textContent =
+        "The owned-crate opening interface is ready, but the secure opening backend is not connected yet.";
+
+      $("inventoryPageStatus").style.color =
+        "#f2c969";
+    }
+
+    function getItemName(itemId) {
+      const item =
+        collectionItems.find(
+          entry =>
+            entry.id ===
+            itemId
+        );
+
+      if (item) {
+        return item.name;
+      }
+
+      const defaults = {
+        default_void:
+          "Default Void",
+
+        default_frame:
+          "Default Frame",
+
+        default_title:
+          "Default Title",
+
+        default_badge:
+          "Default Badge",
+
+        default_nameplate:
+          "Default Nameplate",
+
+        none:
+          "None"
+      };
+
+      return (
+        defaults[
+          itemId
+        ] ||
+        titleFromId(
+          itemId
+        )
+      );
+    }
+
+    function renderLoadout() {
+      const loadout =
+        getCompleteLoadout();
+
+      const slots = [
+        {
+          label:
+            "Background",
+
+          field:
+            "backgroundId",
+
+          icon:
+            "fa-solid fa-image"
+        },
+
+        {
+          label:
+            "Frame",
+
+          field:
+            "frameId",
+
+          icon:
+            "fa-solid fa-border-all"
+        },
+
+        {
+          label:
+            "Title",
+
+          field:
+            "titleId",
+
+          icon:
+            "fa-solid fa-crown"
+        },
+
+        {
+          label:
+            "Badge",
+
+          field:
+            "badgeId",
+
+          icon:
+            "fa-solid fa-medal"
+        },
+
+        {
+          label:
+            "Effect",
+
+          field:
+            "effectId",
+
+          icon:
+            "fa-solid fa-wand-magic-sparkles"
+        },
+
+        {
+          label:
+            "Nameplate",
+
+          field:
+            "nameplateId",
+
+          icon:
+            "fa-solid fa-id-card"
+        }
+      ];
+
+      $("loadoutSlots").innerHTML =
+        slots
+          .map(slot => {
+            const itemId =
+              loadout[
+                slot.field
+              ];
+
+            return `
+              <article class="loadout-slot">
+                <div class="slot-icon">
+                  <i class="${slot.icon}"></i>
+                </div>
+
+                <span>
+                  ${escapeHtml(slot.label)}
+                </span>
+
+                <strong>
+                  ${escapeHtml(getItemName(itemId))}
+                </strong>
+
+                <small>
+                  ${escapeHtml(itemId)}
+                </small>
+              </article>
+            `;
+          })
+          .join("");
+
+      const displayName =
+        clean(
+          currentPlayer.displayName,
+          "Player"
+        );
+
+      $("loadoutAvatar").textContent =
+        getInitials(
+          displayName
+        );
+
+      $("loadoutPlayerName").textContent =
+        displayName;
+
+      $("loadoutUpdated").textContent =
+        currentLoadout.updatedAt
+          ? `Last updated ${formatDateTime(currentLoadout.updatedAt)}`
+          : "Loadout has not been customized yet.";
+    }
+
+    function normalizeHistory() {
+      const results =
+        [];
+
+      Object.entries(
+        normalizeObject(
+          crateRewardHistory
+        )
+      ).forEach(
+        (
+          [
+            historyId,
+            entry
+          ]
+        ) => {
+          const data =
+            normalizeObject(
+              entry
+            );
+
+          results.push({
+            id:
+              historyId,
+
+            rewardName:
+              clean(
+                data.rewardName,
+                "Collection Reward"
+              ),
+
+            category:
+              clean(
+                data.rewardCategory,
+                "Reward"
+              ),
+
+            rarity:
+              clean(
+                data.rewardRarity,
+                "Common"
+              ),
+
+            sourceName:
+              clean(
+                data.sourceCrateName,
+                "Rivals Gauntlet"
+              ),
+
+            createdAt:
+              Number(
+                data.createdAt ||
+                0
+              )
+          });
+        }
+      );
+
+      if (!results.length) {
+        Object.entries(
+          normalizeObject(
+            currentInventory.rewards
+          )
+        ).forEach(
+          (
+            [
+              historyId,
+              entry
+            ]
+          ) => {
+            const data =
+              normalizeObject(
+                entry
+              );
+
+            results.push({
+              id:
+                historyId,
+
+              rewardName:
+                clean(
+                  data.rewardName,
+                  "Collection Reward"
+                ),
+
+              category:
+                clean(
+                  data.rewardCategory,
+                  "Reward"
+                ),
+
+              rarity:
+                clean(
+                  data.rarity,
+                  "Common"
+                ),
+
+              sourceName:
+                clean(
+                  data.sourceCrateName,
+                  "Rivals Gauntlet"
+                ),
+
+              createdAt:
+                Number(
+                  data.createdAt ||
+                  0
+                )
+            });
+          }
+        );
+      }
+
+      return results.sort(
+        (
+          first,
+          second
+        ) =>
+          second.createdAt -
+          first.createdAt
+      );
+    }
+
+    function renderHistory() {
+      const history =
+        normalizeHistory();
+
+      if (!history.length) {
+        $("rewardHistoryBody").innerHTML = `
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                No reward history has been recorded yet.
+              </div>
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      $("rewardHistoryBody").innerHTML =
+        history
+          .slice(
+            0,
+            75
+          )
+          .map(entry => {
+            const theme =
+              getTheme(
+                entry.rarity
+              );
+
+            return `
+              <tr
+                style="
+                  --history-accent:${theme.accent};
+                  --history-soft:${theme.soft};
+                  --history-border:${theme.border};
+                "
+              >
+                <td>
+                  <div class="history-reward">
+                    <div class="history-icon">
+                      <i class="${iconForCategory(entry.category)}"></i>
+                    </div>
+
+                    <div>
+                      <strong>
+                        ${escapeHtml(entry.rewardName)}
+                      </strong>
+
+                      <span>
+                        ${escapeHtml(entry.category)}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="history-rarity">
+                    ${escapeHtml(entry.rarity)}
+                  </span>
+                </td>
+
+                <td>
+                  ${escapeHtml(entry.sourceName)}
+                </td>
+
+                <td>
+                  ${escapeHtml(formatDate(entry.createdAt))}
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+    }
+
+    function renderEverything() {
+      normalizeCollection();
+      renderSummary();
+      renderCategoryRail();
+      renderCollectionGrid();
+      renderInspector();
+      renderCrates();
+      renderLoadout();
+      renderHistory();
+    }
+
+    document
+      .querySelectorAll(
+        "[data-client-tab]"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            const tab =
+              button.dataset.clientTab;
+
+            document
+              .querySelectorAll(
+                "[data-client-tab]"
+              )
+              .forEach(tabButton => {
+                tabButton.classList.toggle(
+                  "active",
+                  tabButton === button
+                );
+              });
+
+            document
+              .querySelectorAll(
+                ".client-panel"
+              )
+              .forEach(panel => {
+                panel.classList.toggle(
+                  "active",
+                  panel.id ===
+                    `client-${tab}`
+                );
+              });
+
+            closeItemInspector();
+          }
+        );
+      });
+
+    $("inventorySearch")
+      .addEventListener(
+        "input",
+        renderCollectionGrid
+      );
+
+    $("rarityFilter")
+      .addEventListener(
+        "change",
+        renderCollectionGrid
+      );
+
+    $("inventorySort")
+      .addEventListener(
+        "change",
+        renderCollectionGrid
+      );
+
+    $("duplicateFilter")
+      .addEventListener(
+        "click",
+        () => {
+          duplicatesOnly =
+            !duplicatesOnly;
+
+          $("duplicateFilter").classList.toggle(
+            "active",
+            duplicatesOnly
+          );
+
+          renderCollectionGrid();
+        }
+      );
+
+    auth.onAuthStateChanged(
+      user => {
+        if (!user) {
+          window.location.href =
+            "login.html";
+
+          return;
+        }
+
+        currentUser =
+          user;
+
+        const profileUrl =
+          `player.html?id=${user.uid}`;
+
+        $("viewProfileButton").href =
+          profileUrl;
+
+        $("loadoutProfileButton").href =
+          profileUrl;
+
+        database
+          .ref(
+            `players/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentPlayer =
+                snapshot.val() ||
+                {};
+
+              renderLoadout();
+            }
+          );
+
+        database
+          .ref(
+            `inventory/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentInventory =
+                snapshot.val() ||
+                {};
+
+              renderEverything();
+            },
+            error => {
+              console.error(
+                "Inventory listener failed:",
+                error
+              );
+
+              $("inventoryPageStatus").textContent =
+                error.message;
+
+              $("inventoryPageStatus").style.color =
+                "#ff9fa8";
+            }
+          );
+
+        database
+          .ref(
+            `profileLoadouts/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentLoadout =
+                snapshot.val() ||
+                {};
+
+              renderEverything();
+            }
+          );
+
+        database
+          .ref(
+            `crateRewardHistory/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              crateRewardHistory =
+                snapshot.val() ||
+                {};
+
+              renderHistory();
+            }
+          );
+      }
+    );
+  </script>
+</body>
+</html>

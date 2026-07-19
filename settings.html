@@ -1,139 +1,1198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings | Rivals Gauntlet</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Settings | Rivals Gauntlet</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/global-header.css?v=10">
+
+<style>
+:root{
+  --bg:#06060a;
+  --panel:#0d0d14;
+  --panel-2:#11111a;
+  --panel-3:#15151f;
+  --text:#f7f5ff;
+  --muted:#aaa5b7;
+  --dim:#747080;
+  --line:rgba(255,255,255,.105);
+  --line-strong:rgba(255,255,255,.17);
+  --accent:#9a7cff;
+  --accent-rgb:154,124,255;
+  --success:#54d68a;
+  --warning:#f2bd62;
+  --danger:#ff657b;
+  --max:1560px;
+  --radius:0px;
+}
+
+*{box-sizing:border-box}
+html{
+  min-width:320px;
+  background:var(--bg);
+  scroll-behavior:smooth;
+}
+body{
+  margin:0;
+  min-width:320px;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 72% -10%,rgba(var(--accent-rgb),.11),transparent 30%),
+    radial-gradient(circle at 8% 22%,rgba(83,51,164,.08),transparent 28%),
+    var(--bg);
+  color:var(--text);
+  font-family:Rajdhani,Arial,sans-serif;
+}
+body.is-saving{cursor:progress}
+button,input,textarea,select{font:inherit}
+button,a{color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+a{text-decoration:none}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+
+.settings-page{
+  width:min(calc(100% - 28px),var(--max));
+  margin:0 auto;
+  padding:22px 0 80px;
+}
+
+.settings-hero{
+  position:relative;
+  min-height:250px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(290px,410px);
+  align-items:center;
+  gap:34px;
+  padding:clamp(28px,4vw,58px);
+  border:1px solid var(--line);
+  background:
+    linear-gradient(110deg,rgba(255,255,255,.028),transparent 44%),
+    radial-gradient(circle at 78% 40%,rgba(var(--accent-rgb),.17),transparent 31%),
+    #0a0a10;
+  box-shadow:0 24px 80px rgba(0,0,0,.34);
+  isolation:isolate;
+}
+.settings-hero::before{
+  content:"RG";
+  position:absolute;
+  z-index:-1;
+  right:-3%;
+  bottom:-43%;
+  color:rgba(255,255,255,.025);
+  font-size:clamp(250px,28vw,480px);
+  font-weight:800;
+  letter-spacing:-38px;
+  line-height:1;
+  transform:skewX(-8deg);
+}
+.hero-kicker,
+.section-kicker,
+.nav-kicker,
+.field-hint,
+.account-label,
+.preview-label{
+  color:var(--accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.65px;
+  text-transform:uppercase;
+}
+.settings-hero h1{
+  margin:10px 0 0;
+  font-size:clamp(48px,6vw,92px);
+  line-height:.78;
+  letter-spacing:-4px;
+  text-transform:uppercase;
+}
+.settings-hero-copy{
+  max-width:710px;
+  margin:18px 0 0;
+  color:var(--muted);
+  font-size:clamp(14px,1.15vw,18px);
+  line-height:1.5;
+}
+.hero-actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+.button{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 16px;
+  border:1px solid var(--line-strong);
+  background:rgba(255,255,255,.025);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  transition:.18s ease;
+}
+.button:hover{
+  border-color:rgba(var(--accent-rgb),.62);
+  background:rgba(var(--accent-rgb),.1);
+}
+.button.primary{
+  border-color:rgba(var(--accent-rgb),.62);
+  background:linear-gradient(135deg,#6e34d6,var(--accent));
+  box-shadow:0 16px 40px rgba(var(--accent-rgb),.2);
+}
+.button.danger:hover{
+  border-color:rgba(255,101,123,.55);
+  background:rgba(255,101,123,.1);
+}
+.button svg{width:15px;height:15px}
+.button.compact{min-height:38px;padding-inline:12px}
+
+.hero-profile-card{
+  position:relative;
+  min-height:160px;
+  display:grid;
+  grid-template-columns:100px minmax(0,1fr);
+  align-items:center;
+  gap:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(6,6,10,.58);
+  backdrop-filter:blur(13px);
+}
+.hero-avatar{
+  position:relative;
+  width:100px;
+  aspect-ratio:1;
+  padding:4px;
+  clip-path:polygon(13% 0,87% 0,100% 13%,100% 87%,87% 100%,13% 100%,0 87%,0 13%);
+  background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(var(--accent-rgb),.65));
+}
+.hero-avatar-inner{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  clip-path:polygon(13% 0,87% 0,100% 13%,100% 87%,87% 100%,13% 100%,0 87%,0 13%);
+  background:
+    radial-gradient(circle at 50% 35%,rgba(var(--accent-rgb),.28),transparent 44%),
+    #111119;
+}
+.hero-avatar-inner img{width:100%;height:100%;object-fit:cover}
+.hero-avatar-fallback{
+  font-size:31px;
+  font-weight:800;
+  letter-spacing:-2px;
+}
+.hero-card-copy{min-width:0}
+.hero-card-copy span{
+  display:block;
+  color:var(--dim);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+.hero-card-copy strong{
+  display:block;
+  margin-top:5px;
+  overflow:hidden;
+  color:#fff;
+  font-size:25px;
+  line-height:.9;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.hero-card-copy em{
+  display:block;
+  margin-top:6px;
+  overflow:hidden;
+  color:var(--accent);
+  font-size:12px;
+  font-style:normal;
+  font-weight:800;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.completion{
+  margin-top:15px;
+}
+.completion-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  color:var(--dim);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.completion-row strong{color:#fff}
+.completion-track{
+  height:5px;
+  margin-top:8px;
+  overflow:hidden;
+  background:rgba(255,255,255,.07);
+}
+.completion-fill{
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,#6d28d9,var(--accent));
+  box-shadow:0 0 16px rgba(var(--accent-rgb),.45);
+  transition:width .3s ease;
+}
+
+.settings-layout{
+  display:grid;
+  grid-template-columns:245px minmax(0,1fr);
+  gap:14px;
+  margin-top:14px;
+  align-items:start;
+}
+.settings-nav{
+  position:sticky;
+  top:92px;
+  border:1px solid var(--line);
+  background:rgba(11,11,17,.88);
+  backdrop-filter:blur(16px);
+}
+.settings-nav-head{
+  padding:19px 18px;
+  border-bottom:1px solid var(--line);
+}
+.settings-nav-head strong{
+  display:block;
+  margin-top:4px;
+  font-size:19px;
+  text-transform:uppercase;
+}
+.settings-nav-links{
+  display:grid;
+  padding:8px;
+}
+.settings-nav-link{
+  position:relative;
+  min-height:43px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  border:1px solid transparent;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+}
+.settings-nav-link:hover{
+  color:#fff;
+  background:rgba(255,255,255,.025);
+}
+.settings-nav-link.active{
+  border-color:rgba(var(--accent-rgb),.28);
+  background:rgba(var(--accent-rgb),.09);
+  color:#fff;
+}
+.settings-nav-link.active::before{
+  content:"";
+  position:absolute;
+  left:-1px;
+  top:8px;
+  bottom:8px;
+  width:2px;
+  background:var(--accent);
+  box-shadow:0 0 12px rgba(var(--accent-rgb),.6);
+}
+.settings-nav-footer{
+  padding:12px;
+  border-top:1px solid var(--line);
+}
+.settings-nav-footer .button{width:100%}
+
+.settings-content{
+  min-width:0;
+  display:grid;
+  gap:14px;
+}
+.settings-section{
+  scroll-margin-top:96px;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.022),transparent 45%),
+    var(--panel);
+}
+.section-head{
+  min-height:76px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  padding:20px 22px;
+  border-bottom:1px solid var(--line);
+}
+.section-head h2{
+  margin:4px 0 0;
+  font-size:25px;
+  line-height:.9;
+  text-transform:uppercase;
+}
+.section-head p{
+  max-width:520px;
+  margin:0;
+  color:var(--dim);
+  font-size:11px;
+  line-height:1.35;
+  text-align:right;
+}
+.section-body{padding:22px}
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.form-field{min-width:0}
+.form-field.full{grid-column:1/-1}
+.form-field label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:7px;
+  color:#d4cfdb;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+}
+.character-count{
+  color:var(--dim);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.7px;
+}
+.field-shell{
+  position:relative;
+}
+.form-field input,
+.form-field textarea,
+.form-field select{
+  width:100%;
+  border:1px solid rgba(255,255,255,.11);
+  outline:0;
+  background:#101018;
+  color:#fff;
+  font:inherit;
+  transition:.18s ease;
+}
+.form-field input,
+.form-field select{
+  height:48px;
+  padding:0 14px;
+}
+.form-field textarea{
+  min-height:122px;
+  resize:vertical;
+  padding:13px 14px;
+  line-height:1.45;
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus{
+  border-color:rgba(var(--accent-rgb),.7);
+  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.08);
+}
+.form-field input.invalid,
+.form-field textarea.invalid{
+  border-color:rgba(255,101,123,.7);
+}
+.form-field input::placeholder,
+.form-field textarea::placeholder{color:#585461}
+.form-field select{appearance:auto}
+.field-note{
+  margin:7px 0 0;
+  color:var(--dim);
+  font-size:10px;
+  line-height:1.35;
+}
+.field-note.error{color:var(--danger)}
+.image-preview{
+  min-height:140px;
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr);
+  align-items:center;
+  gap:18px;
+  margin-top:15px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.018);
+}
+.image-preview-avatar{
+  width:120px;
+  aspect-ratio:1;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  clip-path:polygon(13% 0,87% 0,100% 13%,100% 87%,87% 100%,13% 100%,0 87%,0 13%);
+  background:
+    radial-gradient(circle at 50% 36%,rgba(var(--accent-rgb),.25),transparent 47%),
+    #12121b;
+}
+.image-preview-avatar img{width:100%;height:100%;object-fit:cover}
+.image-preview-fallback{
+  font-size:36px;
+  font-weight:800;
+}
+.image-preview-copy strong{
+  display:block;
+  font-size:17px;
+  text-transform:uppercase;
+}
+.image-preview-copy p{
+  margin:7px 0 0;
+  color:var(--dim);
+  font-size:11px;
+  line-height:1.4;
+}
+
+.social-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.social-card{
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.085);
+  background:rgba(255,255,255,.018);
+}
+.social-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:9px;
+}
+.social-card-top strong{
+  font-size:13px;
+  text-transform:uppercase;
+}
+.social-state{
+  color:var(--dim);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.social-state.connected{color:var(--success)}
+
+.account-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.account-tile{
+  min-width:0;
+  min-height:105px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:17px;
+  border:1px solid rgba(255,255,255,.085);
+  background:
+    radial-gradient(circle at 100% 0,rgba(var(--accent-rgb),.08),transparent 38%),
+    rgba(255,255,255,.018);
+}
+.account-tile strong{
+  display:block;
+  margin-top:5px;
+  overflow-wrap:anywhere;
+  color:#fff;
+  font-size:17px;
+}
+.account-tile .verified{color:var(--success)}
+.account-tile .unverified{color:var(--warning)}
+
+.security-actions{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-top:14px;
+}
+.security-actions .button{width:100%}
+
+.showcase-preview{
+  position:relative;
+  min-height:340px;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr) minmax(230px,320px);
+  align-items:center;
+  gap:24px;
+  padding:30px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at 18% 45%,rgba(var(--accent-rgb),.18),transparent 30%),
+    linear-gradient(135deg,#15151f,#08080d 58%,#050508);
+  isolation:isolate;
+}
+.showcase-preview::before{
+  content:"RG";
+  position:absolute;
+  z-index:-1;
+  left:34%;
+  bottom:-35%;
+  color:rgba(255,255,255,.025);
+  font-size:330px;
+  font-weight:800;
+  letter-spacing:-36px;
+  line-height:1;
+}
+.preview-avatar-shell{
+  width:170px;
+  height:205px;
+  padding:6px;
+  clip-path:polygon(13% 0,87% 0,100% 12%,100% 88%,87% 100%,13% 100%,0 88%,0 12%);
+  background:linear-gradient(145deg,rgba(255,255,255,.25),rgba(var(--accent-rgb),.65));
+}
+.preview-avatar-inner{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  display:grid;
+  place-items:center;
+  clip-path:polygon(13% 0,87% 0,100% 12%,100% 88%,87% 100%,13% 100%,0 88%,0 12%);
+  background:#111119;
+}
+.preview-avatar-inner img{width:100%;height:100%;object-fit:cover}
+.preview-avatar-fallback{
+  font-size:58px;
+  font-weight:800;
+  letter-spacing:-5px;
+}
+.preview-title{
+  color:var(--accent);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.7px;
+  text-transform:uppercase;
+}
+.preview-name{
+  margin:10px 0 0;
+  font-size:clamp(35px,4vw,62px);
+  line-height:.78;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+}
+.preview-nameplate{
+  margin-top:15px;
+  padding:11px 13px;
+  border-left:3px solid var(--accent);
+  background:linear-gradient(90deg,rgba(var(--accent-rgb),.13),transparent);
+}
+.preview-nameplate strong{
+  display:block;
+  font-size:15px;
+}
+.preview-nameplate span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+.preview-trackers{
+  display:grid;
+  gap:7px;
+}
+.preview-tracker{
+  min-height:72px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  border:1px dashed rgba(255,255,255,.14);
+  background:rgba(7,7,12,.53);
+}
+.preview-tracker span{
+  display:block;
+  color:var(--dim);
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.preview-tracker strong{
+  display:block;
+  margin-top:3px;
+  font-size:17px;
+  text-transform:uppercase;
+}
+.preview-tracker b{
+  color:rgba(255,255,255,.34);
+  font-size:18px;
+}
+.showcase-preview-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:13px;
+}
+
+.sticky-save{
+  position:sticky;
+  z-index:1000;
+  bottom:12px;
+  min-height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-top:14px;
+  padding:12px 14px 12px 18px;
+  border:1px solid rgba(var(--accent-rgb),.28);
+  background:rgba(9,9,14,.92);
+  backdrop-filter:blur(18px);
+  box-shadow:0 18px 60px rgba(0,0,0,.5);
+}
+.save-state{
+  min-width:0;
+}
+.save-state strong{
+  display:block;
+  font-size:13px;
+  text-transform:uppercase;
+}
+.save-state span{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  color:var(--dim);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.8px;
+  text-overflow:ellipsis;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.save-state.dirty strong{color:var(--warning)}
+.save-state.success strong{color:var(--success)}
+.save-state.error strong{color:var(--danger)}
+.save-actions{
+  display:flex;
+  gap:8px;
+  flex:0 0 auto;
+}
+.save-actions .button{min-width:150px}
+
+.toast{
+  position:fixed;
+  z-index:9000;
+  right:18px;
+  bottom:18px;
+  width:min(380px,calc(100vw - 28px));
+  padding:14px 16px;
+  border:1px solid var(--line-strong);
+  background:rgba(10,10,16,.95);
+  box-shadow:0 24px 80px rgba(0,0,0,.48);
+  color:#fff;
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:.22s ease;
+}
+.toast.show{
+  transform:none;
+  opacity:1;
+}
+.toast.success{border-color:rgba(84,214,138,.45)}
+.toast.error{border-color:rgba(255,101,123,.5)}
+.toast strong{
+  display:block;
+  font-size:13px;
+  text-transform:uppercase;
+}
+.toast span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.35;
+}
+
+@media(max-width:1120px){
+  .settings-layout{grid-template-columns:210px minmax(0,1fr)}
+  .showcase-preview{
+    grid-template-columns:150px minmax(0,1fr);
+  }
+  .preview-avatar-shell{width:145px;height:178px}
+  .preview-trackers{
+    grid-column:1/-1;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+@media(max-width:900px){
+  .settings-hero{grid-template-columns:1fr}
+  .hero-profile-card{max-width:540px}
+  .settings-layout{grid-template-columns:1fr}
+  .settings-nav{
+    position:static;
+  }
+  .settings-nav-head,
+  .settings-nav-footer{display:none}
+  .settings-nav-links{
+    display:flex;
+    overflow-x:auto;
+    padding:8px;
+    scrollbar-width:none;
+  }
+  .settings-nav-links::-webkit-scrollbar{display:none}
+  .settings-nav-link{
+    flex:0 0 auto;
+    padding-inline:14px;
+  }
+  .settings-nav-link.active::before{
+    left:10px;
+    right:10px;
+    top:auto;
+    bottom:0;
+    width:auto;
+    height:2px;
+  }
+  .form-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .account-grid{grid-template-columns:1fr 1fr}
+  .security-actions{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .settings-page{
+    width:calc(100% - 16px);
+    padding-top:8px;
+  }
+  .settings-hero{
+    min-height:0;
+    padding:26px 18px;
+  }
+  .settings-hero h1{
+    font-size:46px;
+    letter-spacing:-2.6px;
+  }
+  .hero-profile-card{
+    grid-template-columns:82px minmax(0,1fr);
+    min-height:130px;
+    padding:15px;
+  }
+  .hero-avatar{width:82px}
+  .hero-card-copy strong{font-size:21px}
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+    padding:18px 16px;
+  }
+  .section-head p{text-align:left}
+  .section-body{padding:16px}
+  .form-grid,
+  .form-grid.three,
+  .social-grid,
+  .account-grid{grid-template-columns:1fr}
+  .image-preview{
+    grid-template-columns:86px minmax(0,1fr);
+  }
+  .image-preview-avatar{width:86px}
+  .showcase-preview{
+    grid-template-columns:1fr;
+    padding:22px 16px;
+    text-align:center;
+  }
+  .preview-avatar-shell{
+    width:160px;
+    height:194px;
+    margin:auto;
+  }
+  .preview-nameplate{margin-inline:auto}
+  .preview-trackers{
+    grid-template-columns:1fr;
+    text-align:left;
+  }
+  .showcase-preview-actions{justify-content:center}
+  .sticky-save{
+    bottom:8px;
+    align-items:stretch;
+    flex-direction:column;
+    gap:10px;
+    padding:12px;
+  }
+  .save-actions{
+    display:grid;
+    grid-template-columns:1fr 1.25fr;
+  }
+  .save-actions .button{min-width:0}
+}
+@media(max-width:420px){
+  .hero-actions{display:grid}
+  .hero-actions .button{width:100%}
+  .save-state span{white-space:normal}
+}
+
+/* =========================================================
+   MOBILE VIEWPORT CONTAINMENT
+   Prevents the page from becoming wider than the device.
+========================================================= */
+html,
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden!important;
+  overscroll-behavior-x:none;
+}
+
+#globalHeader{
+  width:100%;
+  max-width:100%;
+  overflow-x:clip;
+}
+
+.settings-page,
+.settings-hero,
+.settings-layout,
+.settings-nav,
+.settings-content,
+.settings-section,
+.section-head,
+.section-body,
+.form-grid,
+.form-field,
+.field-shell,
+.social-grid,
+.social-card,
+.account-grid,
+.account-tile,
+.showcase-preview,
+.sticky-save{
+  min-width:0;
+  max-width:100%;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select{
+  min-width:0;
+  max-width:100%;
+}
+
+.hero-card-copy,
+.image-preview-copy,
+.save-state,
+.preview-nameplate,
+.showcase-preview > *,
+.settings-content > *{
+  min-width:0;
+}
+
+.hero-card-copy strong,
+.hero-card-copy em,
+.account-tile strong,
+.image-preview-copy p,
+.section-head p,
+.field-note,
+.save-state span{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+@media(max-width:680px){
+  .settings-page{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:8px 8px 78px;
+    overflow-x:clip;
+  }
+
+  .settings-hero,
+  .settings-layout,
+  .settings-content,
+  .settings-section,
+  .section-body,
+  .showcase-preview,
+  .sticky-save{
+    width:100%;
+    max-width:100%;
+  }
+
+  .settings-hero{
+    overflow:hidden;
+  }
+
+  .settings-hero::before{
+    right:-22%;
+    max-width:100vw;
+  }
+
+  .hero-profile-card{
+    width:100%;
+    max-width:100%;
+    grid-template-columns:minmax(0,82px) minmax(0,1fr);
+  }
+
+  .settings-nav{
+    width:100%;
+    overflow:hidden;
+  }
+
+  .settings-nav-links{
+    width:100%;
+    max-width:100%;
+    overscroll-behavior-x:contain;
+  }
+
+  .settings-nav-link{
+    min-width:max-content;
+  }
+
+  .form-grid,
+  .form-grid.three,
+  .social-grid,
+  .account-grid,
+  .security-actions,
+  .preview-trackers{
+    width:100%;
+    min-width:0;
+  }
+
+  .image-preview{
+    width:100%;
+    max-width:100%;
+    grid-template-columns:minmax(0,86px) minmax(0,1fr);
+    overflow:hidden;
+  }
+
+  .showcase-preview::before{
+    left:18%;
+    max-width:100vw;
+  }
+
+  .showcase-preview-actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .showcase-preview-actions .button{
+    width:100%;
+    min-width:0;
+    white-space:normal;
+    text-align:center;
+  }
+
+  .sticky-save{
+    left:auto;
+    right:auto;
+    overflow:hidden;
+  }
+
+  .save-actions{
+    width:100%;
+    min-width:0;
+  }
+
+  .save-actions .button{
+    width:100%;
+    min-width:0;
+    padding-inline:8px;
+    white-space:normal;
+    text-align:center;
+  }
+}
+
+@media(max-width:420px){
+  .settings-page{
+    padding-inline:6px;
+  }
+
+  .settings-hero{
+    padding-inline:14px;
+  }
+
+  .section-head,
+  .section-body{
+    padding-inline:13px;
+  }
+
+  .hero-profile-card{
+    grid-template-columns:minmax(0,72px) minmax(0,1fr);
+    gap:12px;
+    padding:12px;
+  }
+
+  .hero-avatar{
+    width:72px;
+  }
+
+  .save-actions{
+    grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
 </head>
 
-<body class="account-body">
+<body>
 
-<div class="account-center-shell">
-  <div class="account-center">
+<div id="globalHeader"></div>
 
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>ACCOUNT CENTER</h2>
+<main class="settings-page">
+  <section class="settings-hero">
+    <div>
+      <span class="hero-kicker">Rivals Gauntlet Account Center</span>
+      <h1>Settings</h1>
+      <p class="settings-hero-copy">
+        Manage the information shown across Rivals Gauntlet. Cosmetic backgrounds, frames,
+        titles, effects, badges, and stat trackers are equipped directly from your public profile.
+      </p>
+      <div class="hero-actions">
+        <a id="heroViewProfile" class="button primary" href="#">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5c5.2 0 8.5 4.8 8.5 7s-3.3 7-8.5 7-8.5-4.8-8.5-7S6.8 5 12 5Z" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="2.7" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+          View Public Profile
+        </a>
+        <a id="heroCustomizeProfile" class="button" href="#">
+          Customize Profile Cosmetics
+        </a>
       </div>
+    </div>
 
-      <div class="account-mini-card">
-        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
-        <div id="sidebarFallback" class="account-avatar-fallback">RG</div>
-
-        <h1 id="sidebarName">Player</h1>
-        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
-        <span class="account-badge">PLAYER</span>
-
-        <div class="profile-progress">
-          <div class="profile-progress-top">
-            <span>Profile</span>
-            <span id="profilePercent">0%</span>
+    <aside class="hero-profile-card">
+      <div class="hero-avatar">
+        <div class="hero-avatar-inner">
+          <img id="heroAvatarImage" src="" alt="Profile avatar" hidden>
+          <div id="heroAvatarFallback" class="hero-avatar-fallback">RG</div>
+        </div>
+      </div>
+      <div class="hero-card-copy">
+        <span>Signed-in Player</span>
+        <strong id="heroPlayerName">Loading Player</strong>
+        <em id="heroRgId">RG ACCOUNT</em>
+        <div class="completion">
+          <div class="completion-row">
+            <span>Profile Completion</span>
+            <strong id="completionPercent">0%</strong>
           </div>
-          <div class="profile-progress-track">
-            <div id="profileFill" class="profile-progress-fill"></div>
+          <div class="completion-track">
+            <div id="completionFill" class="completion-fill"></div>
           </div>
         </div>
-      
-      <div class="creator-card-stats">
-  <div class="creator-stat-row">
-    <span>Events Played</span>
-    <strong id="sidebarEvents">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Championships</span>
-    <strong id="sidebarChamps">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Best Finish</span>
-    <strong id="sidebarBestFinish">--</strong>
-  </div>
-</div>
-  <div class="creator-card-status">
-  <div class="creator-status-row">
-    <span>Discord</span>
-    <strong id="statusDiscord">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>Twitch</span>
-    <strong id="statusTwitch">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>YouTube</span>
-    <strong id="statusYoutube">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>TikTok</span>
-    <strong id="statusTiktok">--</strong>
-  </div>
-</div>
       </div>
+    </aside>
+  </section>
 
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a id="publicProfileLink" href="#">Public Profile</a>
-        <a href="#">Applications</a>
-        <a href="#">Tournament History</a>
-        <a href="#">Career Stats</a>
-        <a href="#">Achievements</a>
-        <a href="#">Notifications</a>
-        <a class="active" href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
+  <div class="settings-layout">
+    <aside class="settings-nav">
+      <div class="settings-nav-head">
+        <span class="nav-kicker">Account Settings</span>
+        <strong>Manage Profile</strong>
+      </div>
+      <nav class="settings-nav-links" aria-label="Settings sections">
+        <a class="settings-nav-link active" href="#public-profile">Public Profile</a>
+        <a class="settings-nav-link" href="#competitive">Competitive</a>
+        <a class="settings-nav-link" href="#community">Community</a>
+        <a class="settings-nav-link" href="#creator-links">Creator Links</a>
+        <a class="settings-nav-link" href="#showcase">Profile Showcase</a>
+        <a class="settings-nav-link" href="#account-security">Account</a>
       </nav>
+      <div class="settings-nav-footer">
+        <a class="button" href="dashboard.html">Return to Dashboard</a>
+      </div>
     </aside>
 
-    <main class="account-main">
-      <div class="account-topbar">
-        <div>
-          <p>ACCOUNT SETTINGS</p>
-          <h1>Profile Setup</h1>
-          <span>Update your creator profile, Marvel Rivals info, and account details.</span>
-        </div>
-      </div>
+    <div class="settings-content">
+      <section id="public-profile" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">Public Identity</span>
+            <h2>Profile Information</h2>
+          </div>
+          <p>This information appears on your public player profile and in community-facing areas.</p>
+        </header>
 
-      <div class="account-panel-grid">
-
-        <section class="account-panel full">
-          <h2>Profile</h2>
-
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Display Name</label>
-              <input id="displayName" placeholder="Atrophy">
+        <div class="section-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="displayName">
+                Display Name
+                <span id="displayNameCount" class="character-count">0 / 32</span>
+              </label>
+              <input id="displayName" maxlength="32" autocomplete="nickname" placeholder="Your public display name">
+              <p class="field-note">This is your main Rivals Gauntlet identity.</p>
             </div>
 
-            <div class="account-field">
-              <label>Profile Image URL</label>
-              <input id="profileImage" placeholder="https://...">
+            <div class="form-field">
+              <label for="profileImage">Profile Image URL</label>
+              <input id="profileImage" inputmode="url" autocomplete="url" placeholder="https://...">
+              <p id="profileImageError" class="field-note">Use a direct HTTPS image URL.</p>
             </div>
 
-            <div class="account-field account-full">
-              <label>Bio</label>
-              <textarea id="bio" placeholder="Short creator bio"></textarea>
+            <div class="form-field full">
+              <label for="bio">
+                Bio
+                <span id="bioCount" class="character-count">0 / 240</span>
+              </label>
+              <textarea id="bio" maxlength="240" placeholder="Tell the community who you are, what you play, or what you create."></textarea>
+              <p class="field-note">Keep this concise. Your cosmetic showcase should remain the main focus.</p>
             </div>
           </div>
-        </section>
 
-        <section class="account-panel full">
-          <h2>Marvel Rivals</h2>
+          <div class="image-preview">
+            <div class="image-preview-avatar">
+              <img id="imagePreview" src="" alt="Profile image preview" hidden>
+              <div id="imagePreviewFallback" class="image-preview-fallback">RG</div>
+            </div>
+            <div class="image-preview-copy">
+              <span class="preview-label">Live Preview</span>
+              <strong id="imagePreviewName">Player</strong>
+              <p>The profile image is reused in your public showcase, leaderboard entries, friend requests, and account surfaces.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Marvel Rivals IGN</label>
-              <input id="rivalsIgn" placeholder="Your in-game name">
+      <section id="competitive" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">Game Identity</span>
+            <h2>Marvel Rivals</h2>
+          </div>
+          <p>Used for tournaments, applications, team displays, and official event records.</p>
+        </header>
+
+        <div class="section-body">
+          <div class="form-grid three">
+            <div class="form-field">
+              <label for="rivalsIgn">
+                Marvel Rivals IGN
+                <span id="ignCount" class="character-count">0 / 32</span>
+              </label>
+              <input id="rivalsIgn" maxlength="32" autocomplete="off" placeholder="Your in-game name">
             </div>
 
-            <div class="account-field">
-              <label>Region</label>
+            <div class="form-field">
+              <label for="region">Region</label>
               <select id="region">
                 <option value="">Select Region</option>
                 <option value="NA East">NA East</option>
@@ -141,12 +1200,13 @@
                 <option value="NA West">NA West</option>
                 <option value="EU">EU</option>
                 <option value="Asia">Asia</option>
+                <option value="OCE">OCE</option>
                 <option value="Other">Other</option>
               </select>
             </div>
 
-            <div class="account-field">
-              <label>Platform</label>
+            <div class="form-field">
+              <label for="platform">Platform</label>
               <select id="platform">
                 <option value="">Select Platform</option>
                 <option value="PC">PC</option>
@@ -155,260 +1215,771 @@
               </select>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="account-panel full">
-          <h2>Discord</h2>
+      <section id="community" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">Community Identity</span>
+            <h2>Discord</h2>
+          </div>
+          <p>Used for tournament communication, player coordination, and community recognition.</p>
+        </header>
 
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Discord Username</label>
-              <input id="discordUsername" placeholder="yourname">
+        <div class="section-body">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="discordUsername">
+                Discord Username
+                <span id="discordCount" class="character-count">0 / 40</span>
+              </label>
+              <input id="discordUsername" maxlength="40" autocomplete="off" placeholder="yourname">
             </div>
 
-            <div class="account-field">
-              <label>Are you in the Rivals Gauntlet Discord?</label>
+            <div class="form-field">
+              <label for="discordMember">Rivals Gauntlet Discord</label>
               <select id="discordMember">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
+                <option value="false">Not joined / not confirmed</option>
+                <option value="true">Member</option>
               </select>
+              <p class="field-note">This is currently self-reported and can be replaced by Discord verification later.</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="account-panel full">
-          <h2>Creator Links</h2>
+      <section id="creator-links" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">External Profiles</span>
+            <h2>Creator Links</h2>
+          </div>
+          <p>Only completed links appear publicly. Leave a field empty to hide that platform.</p>
+        </header>
 
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Twitch</label>
-              <input id="twitch" placeholder="https://twitch.tv/yourname">
+        <div class="section-body">
+          <div class="social-grid">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>Twitch</strong>
+                <span id="twitchState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="twitch" inputmode="url" autocomplete="url" aria-label="Twitch URL" placeholder="https://twitch.tv/yourname">
+              </div>
             </div>
 
-            <div class="account-field">
-              <label>YouTube</label>
-              <input id="youtube" placeholder="https://youtube.com/@yourname">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>YouTube</strong>
+                <span id="youtubeState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="youtube" inputmode="url" autocomplete="url" aria-label="YouTube URL" placeholder="https://youtube.com/@yourname">
+              </div>
             </div>
 
-            <div class="account-field">
-              <label>TikTok</label>
-              <input id="tiktok" placeholder="https://tiktok.com/@yourname">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>TikTok</strong>
+                <span id="tiktokState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="tiktok" inputmode="url" autocomplete="url" aria-label="TikTok URL" placeholder="https://tiktok.com/@yourname">
+              </div>
             </div>
 
-            <div class="account-field">
-              <label>X / Twitter</label>
-              <input id="x" placeholder="https://x.com/yourname">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>X / Twitter</strong>
+                <span id="xState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="x" inputmode="url" autocomplete="url" aria-label="X URL" placeholder="https://x.com/yourname">
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="account-panel full">
-          <h2>Account</h2>
-          <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
-          <p><strong>Email Status:</strong> <span id="emailStatus">Loading...</span></p>
-
-          <div class="account-actions">
-            <button class="account-secondary" onclick="sendPasswordReset()">
-              Send Password Reset
-            </button>
+      <section id="showcase" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">Cosmetic Identity</span>
+            <h2>Public Profile Showcase</h2>
           </div>
-        </section>
+          <p>Cosmetics are previewed and equipped on your public profile, where you can see the complete composition.</p>
+        </header>
 
-        <section class="account-panel full">
-          <div class="account-actions">
-            <button class="account-primary" onclick="saveSettings()">
-              Save Settings
-            </button>
+        <div class="section-body">
+          <div class="showcase-preview">
+            <div class="preview-avatar-shell">
+              <div class="preview-avatar-inner">
+                <img id="showcaseAvatar" src="" alt="Showcase avatar" hidden>
+                <div id="showcaseAvatarFallback" class="preview-avatar-fallback">RG</div>
+              </div>
+            </div>
 
-            <a id="viewProfileBtn" class="account-secondary" href="#">
-              View Public Profile
-            </a>
+            <div>
+              <span id="showcaseTitle" class="preview-title">Rivals Gauntlet Competitor</span>
+              <h3 id="showcaseName" class="preview-name">Player</h3>
+              <div class="preview-nameplate">
+                <strong id="showcaseIgn">Marvel Rivals IGN not set</strong>
+                <span id="showcaseMeta">Region not set • Platform not set</span>
+              </div>
+              <div class="showcase-preview-actions">
+                <a id="showcaseViewButton" class="button primary compact" href="#">Open Public Profile</a>
+                <a id="showcaseCustomizeButton" class="button compact" href="#">Customize Cosmetics</a>
+              </div>
+            </div>
 
-            <button class="account-secondary" onclick="logoutUser()">
-              Sign Out
-            </button>
+            <div id="showcaseTrackers" class="preview-trackers">
+              <div class="preview-tracker">
+                <div><span>Tracker Slot 1</span><strong>Empty</strong></div><b>＋</b>
+              </div>
+              <div class="preview-tracker">
+                <div><span>Tracker Slot 2</span><strong>Empty</strong></div><b>＋</b>
+              </div>
+              <div class="preview-tracker">
+                <div><span>Tracker Slot 3</span><strong>Empty</strong></div><b>＋</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="account-security" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">Account Security</span>
+            <h2>Account</h2>
+          </div>
+          <p>Authentication details are managed through Firebase Authentication.</p>
+        </header>
+
+        <div class="section-body">
+          <div class="account-grid">
+            <article class="account-tile">
+              <span class="account-label">Email Address</span>
+              <strong id="accountEmail">Loading...</strong>
+            </article>
+            <article class="account-tile">
+              <span class="account-label">Email Status</span>
+              <strong id="emailStatus">Loading...</strong>
+            </article>
+            <article class="account-tile">
+              <span class="account-label">RG Account ID</span>
+              <strong id="accountRgId">RG ACCOUNT</strong>
+            </article>
           </div>
 
-          <p id="settingsStatus" class="account-status"></p>
-        </section>
+          <div class="security-actions">
+            <button id="passwordResetButton" class="button" type="button">Send Password Reset</button>
+            <button id="verificationButton" class="button" type="button">Resend Verification Email</button>
+            <button id="logoutButton" class="button danger" type="button">Sign Out</button>
+          </div>
+        </div>
+      </section>
 
+      <div class="sticky-save">
+        <div id="saveState" class="save-state">
+          <strong>Settings are up to date</strong>
+          <span id="saveStateDetail">No unsaved profile changes</span>
+        </div>
+        <div class="save-actions">
+          <button id="discardButton" class="button" type="button" disabled>Discard</button>
+          <button id="saveButton" class="button primary" type="button" disabled>Save Settings</button>
+        </div>
       </div>
-    </main>
-
+    </div>
   </div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <strong id="toastTitle">Settings Updated</strong>
+  <span id="toastMessage">Your changes have been saved.</span>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script src="firebase.js?v=2"></script>
+<script src="notifications.js?v=1"></script>
+<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
+<script src="daily-gifts.js?v=1"></script>
+<script src="global-header.js?v=2"></script>
 
 <script>
-let currentUser = null;
-let currentPlayer = {};
+(() => {
+  "use strict";
 
-function clean(value, fallback = "") {
-  return String(value || fallback).trim();
-}
-
-function getInitials(name) {
-  const words = clean(name, "RG").split(" ").filter(Boolean);
-  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
-}
-
-function calculateProfileCompletion(player) {
-  const socials = player.socials || {};
-
-  const fields = [
-    player.displayName,
-    player.rivalsIgn,
-    player.discordUsername,
-    player.region,
-    player.platform,
-    player.bio,
-    player.profileImage,
-    socials.twitch || socials.youtube || socials.tiktok || socials.x
-  ];
-
-  const completed = fields.filter(value => clean(value)).length;
-  return Math.round((completed / fields.length) * 100);
-}
-
-function renderSidebar(player, user) {
-  const displayName = clean(player.displayName, "Player");
-
-  document.getElementById("sidebarName").innerText = displayName;
-  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
-  document.getElementById("sidebarId").innerText = player.rgId || "RG ACCOUNT";
-document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
-document.getElementById("sidebarChamps").innerText = player.championships || 0;
-document.getElementById("sidebarBestFinish").innerText = player.bestFinish || "--";
-
-const socials = player.socials || {};
-
-function setCardStatus(id, active) {
-  const el = document.getElementById(id);
-  el.innerText = active ? "✓" : "—";
-  el.classList.toggle("missing", !active);
-}
-
-setCardStatus("statusDiscord", player.discordMember);
-setCardStatus("statusTwitch", socials.twitch);
-setCardStatus("statusYoutube", socials.youtube);
-setCardStatus("statusTiktok", socials.tiktok);
-  
-  const avatar = document.getElementById("sidebarAvatar");
-  const fallback = document.getElementById("sidebarFallback");
-
-  if (player.profileImage) {
-    avatar.src = player.profileImage;
-    avatar.style.display = "block";
-    fallback.style.display = "none";
-  } else {
-    avatar.style.display = "none";
-    fallback.style.display = "flex";
-  }
-
-  const percent = calculateProfileCompletion(player);
-  document.getElementById("profilePercent").innerText = `${percent}%`;
-  document.getElementById("profileFill").style.width = `${percent}%`;
-
-  document.getElementById("publicProfileLink").href = `player.html?id=${user.uid}`;
-  document.getElementById("viewProfileBtn").href = `player.html?id=${user.uid}`;
-}
-
-function setStatus(message, good = true) {
-  const status = document.getElementById("settingsStatus");
-  status.innerText = message;
-  status.style.color = good ? "#22c55e" : "#ef4444";
-}
-
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  currentUser = user;
-
-  document.getElementById("accountEmail").innerText = user.email || "";
-  document.getElementById("emailStatus").innerText =
-    user.emailVerified ? "✅ Verified" : "⚠️ Not Verified";
-
-  database.ref(`players/${user.uid}`).once("value").then(snapshot => {
-    const player = snapshot.val() || {};
-    currentPlayer = player;
-
-    renderSidebar(player, user);
-
-    const socials = player.socials || {};
-
-    document.getElementById("displayName").value = player.displayName || "";
-    document.getElementById("bio").value = player.bio || "";
-    document.getElementById("profileImage").value = player.profileImage || "";
-    document.getElementById("rivalsIgn").value = player.rivalsIgn || "";
-    document.getElementById("region").value = player.region || "";
-    document.getElementById("platform").value = player.platform || "";
-    document.getElementById("discordUsername").value = player.discordUsername || "";
-    document.getElementById("discordMember").value = String(player.discordMember || false);
-
-    document.getElementById("twitch").value = socials.twitch || "";
-    document.getElementById("youtube").value = socials.youtube || "";
-    document.getElementById("tiktok").value = socials.tiktok || "";
-    document.getElementById("x").value = socials.x || "";
-  });
-});
-
-function saveSettings() {
-  if (!currentUser) return;
-
-  const updates = {
-    displayName: clean(document.getElementById("displayName").value),
-    bio: clean(document.getElementById("bio").value),
-    profileImage: clean(document.getElementById("profileImage").value),
-    rivalsIgn: clean(document.getElementById("rivalsIgn").value),
-    region: document.getElementById("region").value,
-    platform: document.getElementById("platform").value,
-    discordUsername: clean(document.getElementById("discordUsername").value),
-    discordMember: document.getElementById("discordMember").value === "true",
-    socials: {
-      twitch: clean(document.getElementById("twitch").value),
-      youtube: clean(document.getElementById("youtube").value),
-      tiktok: clean(document.getElementById("tiktok").value),
-      x: clean(document.getElementById("x").value)
-    },
-    updatedAt: Date.now()
+  const state = {
+    user: null,
+    player: {},
+    baseline: {},
+    loadout: null,
+    profileCatalog: {},
+    dirty: false,
+    saving: false,
+    initialized: false,
+    toastTimer: null
   };
 
-  database.ref(`players/${currentUser.uid}`).update(updates)
-    .then(() => {
-      currentPlayer = { ...currentPlayer, ...updates };
-      renderSidebar(currentPlayer, currentUser);
-      setStatus("✓ Settings saved");
-    })
-    .catch(error => {
-      setStatus(error.message, false);
+  const FIELD_IDS = [
+    "displayName",
+    "profileImage",
+    "bio",
+    "rivalsIgn",
+    "region",
+    "platform",
+    "discordUsername",
+    "discordMember",
+    "twitch",
+    "youtube",
+    "tiktok",
+    "x"
+  ];
+
+  const $ = id => document.getElementById(id);
+  const clean = (value, fallback = "") => String(value ?? fallback).trim();
+  const number = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+
+  function getInitials(name) {
+    return clean(name, "RG")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(word => word[0])
+      .join("")
+      .toUpperCase();
+  }
+
+  function safeUrl(value) {
+    const raw = clean(value);
+    if (!raw) return "";
+    try {
+      const url = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+      if (!["http:", "https:"].includes(url.protocol)) return "";
+      return url.href;
+    } catch {
+      return "";
+    }
+  }
+
+  function calculateProfileCompletion(player) {
+    const socials = player.socials || {};
+    const fields = [
+      player.displayName,
+      player.rivalsIgn,
+      player.discordUsername,
+      player.region,
+      player.platform,
+      player.bio,
+      player.profileImage,
+      socials.twitch || socials.youtube || socials.tiktok || socials.x
+    ];
+    return Math.round((fields.filter(value => clean(value)).length / fields.length) * 100);
+  }
+
+  function buildProfileUrl(uid) {
+    return `player.html?id=${encodeURIComponent(uid)}`;
+  }
+
+  function showToast(title, message, type = "success") {
+    clearTimeout(state.toastTimer);
+    const toast = $("toast");
+    toast.className = `toast ${type}`;
+    $("toastTitle").textContent = title;
+    $("toastMessage").textContent = message;
+    requestAnimationFrame(() => toast.classList.add("show"));
+    state.toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+  }
+
+  function currentFormData() {
+    return {
+      displayName: clean($("displayName").value),
+      profileImage: clean($("profileImage").value),
+      bio: clean($("bio").value),
+      rivalsIgn: clean($("rivalsIgn").value),
+      region: $("region").value,
+      platform: $("platform").value,
+      discordUsername: clean($("discordUsername").value),
+      discordMember: $("discordMember").value === "true",
+      socials: {
+        twitch: clean($("twitch").value),
+        youtube: clean($("youtube").value),
+        tiktok: clean($("tiktok").value),
+        x: clean($("x").value)
+      }
+    };
+  }
+
+  function normalizeComparable(data) {
+    return JSON.stringify({
+      displayName: clean(data.displayName),
+      profileImage: clean(data.profileImage),
+      bio: clean(data.bio),
+      rivalsIgn: clean(data.rivalsIgn),
+      region: clean(data.region),
+      platform: clean(data.platform),
+      discordUsername: clean(data.discordUsername),
+      discordMember: Boolean(data.discordMember),
+      socials: {
+        twitch: clean(data.socials?.twitch),
+        youtube: clean(data.socials?.youtube),
+        tiktok: clean(data.socials?.tiktok),
+        x: clean(data.socials?.x)
+      }
     });
-}
+  }
 
-function sendPasswordReset() {
-  if (!currentUser || !currentUser.email) return;
+  function hasUnsavedChanges() {
+    return normalizeComparable(currentFormData()) !== normalizeComparable(state.baseline);
+  }
 
-  auth.sendPasswordResetEmail(currentUser.email)
-    .then(() => {
-      setStatus("✓ Password reset email sent");
-    })
-    .catch(error => {
-      setStatus(error.message, false);
+  function setDirtyUi() {
+    state.dirty = hasUnsavedChanges();
+    const saveState = $("saveState");
+    saveState.className = `save-state${state.dirty ? " dirty" : ""}`;
+    saveState.querySelector("strong").textContent = state.dirty
+      ? "Unsaved profile changes"
+      : "Settings are up to date";
+    $("saveStateDetail").textContent = state.dirty
+      ? "Save before leaving this page"
+      : "No unsaved profile changes";
+    $("saveButton").disabled = !state.dirty || state.saving;
+    $("discardButton").disabled = !state.dirty || state.saving;
+  }
+
+  function setSavingUi(saving) {
+    state.saving = saving;
+    document.body.classList.toggle("is-saving", saving);
+    $("saveButton").disabled = saving || !state.dirty;
+    $("discardButton").disabled = saving || !state.dirty;
+    $("saveButton").textContent = saving ? "Saving..." : "Save Settings";
+
+    if (saving) {
+      $("saveState").className = "save-state";
+      $("saveState").querySelector("strong").textContent = "Saving settings";
+      $("saveStateDetail").textContent = "Updating your Rivals Gauntlet profile";
+    }
+  }
+
+  function updateCounter(inputId, counterId, max) {
+    $(counterId).textContent = `${$(inputId).value.length} / ${max}`;
+  }
+
+  function setImage(imgId, fallbackId, url, name) {
+    const image = $(imgId);
+    const fallback = $(fallbackId);
+    const safe = safeUrl(url);
+
+    fallback.textContent = getInitials(name);
+
+    if (!safe) {
+      image.hidden = true;
+      image.removeAttribute("src");
+      fallback.hidden = false;
+      return;
+    }
+
+    image.src = safe;
+    image.hidden = false;
+    fallback.hidden = true;
+    image.onerror = () => {
+      image.hidden = true;
+      fallback.hidden = false;
+    };
+  }
+
+  function updateSocialStates() {
+    ["twitch","youtube","tiktok","x"].forEach(id => {
+      const connected = Boolean(clean($(id).value));
+      const stateNode = $(`${id}State`);
+      stateNode.textContent = connected ? "Connected" : "Not connected";
+      stateNode.classList.toggle("connected", connected);
     });
-}
+  }
 
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
+  function updateLivePreview() {
+    const data = currentFormData();
+    const displayName = clean(data.displayName, "Player");
+    const imageUrl = data.profileImage;
+
+    $("heroPlayerName").textContent = displayName;
+    $("imagePreviewName").textContent = displayName;
+    $("showcaseName").textContent = displayName.toUpperCase();
+    $("showcaseIgn").textContent = clean(data.rivalsIgn, "Marvel Rivals IGN not set");
+    $("showcaseMeta").textContent =
+      `${clean(data.region, "Region not set")} • ${clean(data.platform, "Platform not set")}`;
+
+    setImage("heroAvatarImage", "heroAvatarFallback", imageUrl, displayName);
+    setImage("imagePreview", "imagePreviewFallback", imageUrl, displayName);
+    setImage("showcaseAvatar", "showcaseAvatarFallback", imageUrl, displayName);
+
+    const previewPlayer = {
+      ...state.player,
+      ...data
+    };
+    const completion = calculateProfileCompletion(previewPlayer);
+    $("completionPercent").textContent = `${completion}%`;
+    $("completionFill").style.width = `${completion}%`;
+
+    updateCounter("displayName", "displayNameCount", 32);
+    updateCounter("bio", "bioCount", 240);
+    updateCounter("rivalsIgn", "ignCount", 32);
+    updateCounter("discordUsername", "discordCount", 40);
+    updateSocialStates();
+    validateProfileImage(false);
+    setDirtyUi();
+  }
+
+  function validateProfileImage(markInvalid = true) {
+    const input = $("profileImage");
+    const raw = clean(input.value);
+    const valid = !raw || Boolean(safeUrl(raw));
+    input.classList.toggle("invalid", markInvalid && !valid);
+    $("profileImageError").classList.toggle("error", markInvalid && !valid);
+    $("profileImageError").textContent = valid
+      ? "Use a direct HTTPS image URL."
+      : "Enter a valid HTTP or HTTPS image URL.";
+    return valid;
+  }
+
+  function validateAll() {
+    const errors = [];
+
+    if (!clean($("displayName").value)) {
+      errors.push("Display Name is required.");
+      $("displayName").classList.add("invalid");
+    } else {
+      $("displayName").classList.remove("invalid");
+    }
+
+    if (!validateProfileImage(true)) {
+      errors.push("Profile Image URL is not valid.");
+    }
+
+    const socialInputs = [
+      ["twitch","Twitch"],
+      ["youtube","YouTube"],
+      ["tiktok","TikTok"],
+      ["x","X"]
+    ];
+
+    socialInputs.forEach(([id,label]) => {
+      const raw = clean($(id).value);
+      const valid = !raw || Boolean(safeUrl(raw));
+      $(id).classList.toggle("invalid", !valid);
+      if (!valid) errors.push(`${label} URL is not valid.`);
+    });
+
+    return errors;
+  }
+
+  function populateForm(player) {
+    const socials = player.socials || {};
+
+    $("displayName").value = clean(player.displayName);
+    $("profileImage").value = clean(player.profileImage);
+    $("bio").value = clean(player.bio);
+    $("rivalsIgn").value = clean(player.rivalsIgn);
+    $("region").value = clean(player.region);
+    $("platform").value = clean(player.platform);
+    $("discordUsername").value = clean(player.discordUsername);
+    $("discordMember").value = String(Boolean(player.discordMember));
+    $("twitch").value = clean(socials.twitch);
+    $("youtube").value = clean(socials.youtube);
+    $("tiktok").value = clean(socials.tiktok);
+    $("x").value = clean(socials.x);
+
+    state.baseline = currentFormData();
+    updateLivePreview();
+    setDirtyUi();
+  }
+
+  function renderAccount(user, player) {
+    $("accountEmail").textContent = clean(user.email, "No email available");
+    $("emailStatus").textContent = user.emailVerified ? "Verified" : "Not verified";
+    $("emailStatus").className = user.emailVerified ? "verified" : "unverified";
+    $("accountRgId").textContent = clean(player.rgId, "RG ACCOUNT");
+    $("heroRgId").textContent = clean(player.rgId, "RG ACCOUNT");
+
+    $("verificationButton").hidden = Boolean(user.emailVerified);
+  }
+
+  function catalogItemById(id) {
+    return state.profileCatalog[id] || null;
+  }
+
+  function resolveTrackerValue(statKey) {
+    const player = state.player;
+    const stats = player.predictionStats || {};
+    const accuracy = number(stats.total) > 0
+      ? Math.round((number(stats.correct) / number(stats.total)) * 100)
+      : 0;
+
+    const values = {
+      championships: [number(player.championships), "Championships"],
+      eventsPlayed: [number(player.eventsPlayed), "Events Played"],
+      bestFinish: [clean(player.bestFinish, "--"), "Best Finish"],
+      lifetimeRgPoints: [number(player.lifetimeRgPoints), "Lifetime RG Points"],
+      prestige: [number(player.prestige), "Prestige"],
+      predictionAccuracy: [`${accuracy}%`, "Prediction Accuracy"],
+      correctPredictions: [number(stats.correct), "Correct Predictions"],
+      bestPredictionStreak: [number(stats.bestStreak), "Best Prediction Streak"],
+      predictionRpEarned: [number(stats.rpEarned), "Prediction RP Earned"]
+    };
+
+    return values[statKey] || ["--", "Profile Statistic"];
+  }
+
+  function renderShowcaseLoadout() {
+    const titleItem = catalogItemById(state.loadout?.titleId);
+    $("showcaseTitle").textContent =
+      clean(titleItem?.value || titleItem?.name, "Rivals Gauntlet Competitor");
+
+    const trackers = state.loadout?.trackers || {};
+    $("showcaseTrackers").innerHTML = ["slot1","slot2","slot3"].map((slot,index) => {
+      const config = trackers[slot] || {};
+      const tracker = catalogItemById(config.trackerId);
+
+      if (!tracker) {
+        return `
+          <div class="preview-tracker">
+            <div>
+              <span>Tracker Slot ${index + 1}</span>
+              <strong>Empty</strong>
+            </div>
+            <b>＋</b>
+          </div>
+        `;
+      }
+
+      const [value,label] = resolveTrackerValue(config.statKey);
+      return `
+        <div class="preview-tracker" style="border-style:solid;border-color:rgba(${clean(tracker.accentRgb,"154,124,255")},.34)">
+          <div>
+            <span>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+          </div>
+          <b style="color:${escapeHtml(clean(tracker.accent,"#9a7cff"))}">${escapeHtml(clean(tracker.symbol,"RG"))}</b>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  async function loadProfile(uid) {
+    const [playerSnapshot, loadoutSnapshot, cosmeticsSnapshot, trackersSnapshot] = await Promise.all([
+      database.ref(`players/${uid}`).once("value"),
+      database.ref(`profileLoadouts/${uid}`).once("value").catch(() => ({ val: () => null })),
+      database.ref("profileCosmetics").once("value").catch(() => ({ val: () => null })),
+      database.ref("profileTrackers").once("value").catch(() => ({ val: () => null }))
+    ]);
+
+    state.player = playerSnapshot.val() || {};
+    state.loadout = loadoutSnapshot.val() || null;
+    state.profileCatalog = {
+      ...(cosmeticsSnapshot.val() || {}),
+      ...(trackersSnapshot.val() || {})
+    };
+
+    const profileUrl = buildProfileUrl(uid);
+    [
+      "heroViewProfile",
+      "heroCustomizeProfile",
+      "showcaseViewButton",
+      "showcaseCustomizeButton"
+    ].forEach(id => { $(id).href = profileUrl; });
+
+    populateForm(state.player);
+    renderAccount(state.user, state.player);
+    renderShowcaseLoadout();
+    state.initialized = true;
+  }
+
+  async function saveSettings() {
+    if (!state.user || state.saving) return;
+
+    const errors = validateAll();
+    if (errors.length) {
+      showToast("Check Your Settings", errors[0], "error");
+      return;
+    }
+
+    setSavingUi(true);
+
+    const form = currentFormData();
+    const updates = {
+      displayName: form.displayName,
+      profileImage: safeUrl(form.profileImage),
+      bio: form.bio,
+      rivalsIgn: form.rivalsIgn,
+      region: form.region,
+      platform: form.platform,
+      discordUsername: form.discordUsername,
+      discordMember: form.discordMember,
+      socials: {
+        twitch: safeUrl(form.socials.twitch),
+        youtube: safeUrl(form.socials.youtube),
+        tiktok: safeUrl(form.socials.tiktok),
+        x: safeUrl(form.socials.x)
+      },
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    try {
+      await database.ref(`players/${state.user.uid}`).update(updates);
+      state.player = {
+        ...state.player,
+        ...updates,
+        updatedAt: Date.now()
+      };
+      state.baseline = currentFormData();
+      state.dirty = false;
+
+      $("saveState").className = "save-state success";
+      $("saveState").querySelector("strong").textContent = "Settings saved";
+      $("saveStateDetail").textContent = "Your public profile information is up to date";
+      showToast("Settings Saved", "Your Rivals Gauntlet profile has been updated.", "success");
+
+      setTimeout(() => {
+        if (!state.dirty) setDirtyUi();
+      }, 1800);
+    } catch (error) {
+      console.error("Settings save failed:", error);
+      $("saveState").className = "save-state error";
+      $("saveState").querySelector("strong").textContent = "Save failed";
+      $("saveStateDetail").textContent = error.message || "Firebase rejected the update";
+      showToast("Could Not Save", error.message || "Your settings could not be saved.", "error");
+    } finally {
+      setSavingUi(false);
+      setDirtyUi();
+    }
+  }
+
+  function discardChanges() {
+    populateForm(state.baseline);
+    showToast("Changes Discarded", "Your unsaved changes were removed.", "success");
+  }
+
+  async function sendPasswordReset() {
+    if (!state.user?.email) {
+      showToast("Password Reset", "No email address is available for this account.", "error");
+      return;
+    }
+
+    const button = $("passwordResetButton");
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    try {
+      await auth.sendPasswordResetEmail(state.user.email);
+      showToast("Reset Email Sent", `Password reset instructions were sent to ${state.user.email}.`, "success");
+    } catch (error) {
+      showToast("Reset Failed", error.message, "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Send Password Reset";
+    }
+  }
+
+  async function resendVerification() {
+    if (!state.user || state.user.emailVerified) return;
+
+    const button = $("verificationButton");
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    try {
+      await state.user.sendEmailVerification();
+      showToast("Verification Sent", "Check your email for the verification link.", "success");
+    } catch (error) {
+      showToast("Verification Failed", error.message, "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Resend Verification Email";
+    }
+  }
+
+  async function logoutUser() {
+    try {
+      await auth.signOut();
+      location.href = "login.html";
+    } catch (error) {
+      showToast("Sign Out Failed", error.message, "error");
+    }
+  }
+
+  function bindEvents() {
+    FIELD_IDS.forEach(id => {
+      $(id).addEventListener("input", updateLivePreview);
+      $(id).addEventListener("change", updateLivePreview);
+    });
+
+    $("profileImage").addEventListener("blur", () => validateProfileImage(true));
+    $("saveButton").addEventListener("click", saveSettings);
+    $("discardButton").addEventListener("click", discardChanges);
+    $("passwordResetButton").addEventListener("click", sendPasswordReset);
+    $("verificationButton").addEventListener("click", resendVerification);
+    $("logoutButton").addEventListener("click", logoutUser);
+
+    window.addEventListener("beforeunload", event => {
+      if (!state.dirty || state.saving) return;
+      event.preventDefault();
+      event.returnValue = "";
+    });
+
+    const sections = [...document.querySelectorAll(".settings-section")];
+    const links = [...document.querySelectorAll(".settings-nav-link")];
+
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+      links.forEach(link => {
+        link.classList.toggle("active", link.getAttribute("href") === `#${visible.target.id}`);
+      });
+    }, {
+      rootMargin:"-25% 0px -60% 0px",
+      threshold:[0,.15,.35]
+    });
+
+    sections.forEach(section => observer.observe(section));
+  }
+
+  bindEvents();
+
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      location.href = "login.html";
+      return;
+    }
+
+    state.user = user;
+
+    try {
+      await loadProfile(user.uid);
+    } catch (error) {
+      console.error("Settings load failed:", error);
+      showToast("Settings Unavailable", error.message || "Your account settings could not be loaded.", "error");
+    }
   });
-}
+})();
 </script>
-
 </body>
 </html>

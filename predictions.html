@@ -2,726 +2,2557 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Predictions | Rivals Gauntlet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Prediction Command | Rivals Gauntlet</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=7">
+  <link rel="stylesheet" href="/global-header.css?v=10">
+
+  <style>
+    :root{
+      --bg-0:#050509;
+      --bg-1:#09080f;
+      --bg-2:#0d0b16;
+      --surface:#100e19;
+      --surface-2:#151221;
+      --surface-3:#1a1629;
+      --glass:rgba(18,15,29,.82);
+      --line:rgba(255,255,255,.085);
+      --line-strong:rgba(192,132,252,.32);
+      --text:#f7f4ff;
+      --muted:#aaa3ba;
+      --dim:#716a80;
+      --purple:#a855f7;
+      --purple-2:#c084fc;
+      --purple-3:#7c3aed;
+      --purple-4:#4c1d95;
+      --green:#3ddc97;
+      --red:#ff536d;
+      --gold:#f5c95b;
+      --cyan:#79d9ff;
+      --shadow:0 28px 90px rgba(0,0,0,.5);
+      --header-h:76px;
+      --rail-left:224px;
+      --rail-right:238px;
+      --radius-lg:20px;
+      --radius-md:14px;
+      --radius-sm:10px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;max-width:100%;min-height:100%;font-family:"Rajdhani",sans-serif}
+    html{overflow-x:hidden;overscroll-behavior-x:none}
+    body{
+      min-height:100dvh;
+      height:100dvh;
+      display:flex;
+      flex-direction:column;
+      overflow-x:hidden;
+      overflow-y:hidden;
+      overscroll-behavior-x:none;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 78% -10%,rgba(124,58,237,.23),transparent 32%),
+        radial-gradient(circle at 14% 110%,rgba(76,29,149,.18),transparent 34%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-0));
+    }
+    body.modal-open{overflow:hidden}
+    button,a,input{font:inherit;color:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none}
+    img{display:block;max-width:100%}
+    #globalHeader{position:relative;z-index:300;flex:0 0 auto}
+
+    .prediction-client{
+      position:relative;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      isolation:isolate;
+      flex:1 1 auto;
+      min-height:0;
+      overflow:hidden;
+      padding:14px;
+    }
+    .prediction-client::before{
+      content:"";
+      position:absolute;
+      inset:-20%;
+      z-index:-3;
+      background:
+        radial-gradient(circle at 20% 30%,rgba(168,85,247,.08),transparent 22%),
+        radial-gradient(circle at 76% 72%,rgba(124,58,237,.08),transparent 24%);
+      animation:ambientDrift 18s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    .prediction-client::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      opacity:.22;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.014) 1px,transparent 1px);
+      background-size:38px 38px;
+      mask-image:linear-gradient(180deg,transparent,black 16%,black 84%,transparent);
+      pointer-events:none;
+    }
+
+    .client-shell{
+      width:min(100%,1680px);
+      max-width:100%;
+      min-width:0;
+      height:100%;
+      min-height:0;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:22px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.024),transparent 12%),
+        rgba(7,6,12,.9);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+    }
+
+    .client-topbar{
+      position:relative;
+      flex:0 0 auto;
+      min-height:78px;
+      display:grid;
+      grid-template-columns:minmax(230px,.9fr) minmax(420px,1.5fr) minmax(210px,.8fr);
+      align-items:center;
+      gap:16px;
+      padding:12px 16px 12px 20px;
+      border-bottom:1px solid var(--line);
+      background:
+        linear-gradient(90deg,rgba(76,29,149,.16),transparent 34%,transparent 70%,rgba(124,58,237,.1)),
+        rgba(12,10,19,.9);
+    }
+    .client-topbar::after{
+      content:"";
+      position:absolute;
+      left:20px;
+      right:20px;
+      bottom:-1px;
+      height:1px;
+      background:linear-gradient(90deg,transparent,rgba(192,132,252,.5),transparent);
+      opacity:.65;
+    }
+    .brand-lockup{min-width:0}
+    .brand-kicker{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:var(--purple-2);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+    .brand-kicker::before{
+      content:"";
+      width:22px;
+      height:2px;
+      background:linear-gradient(90deg,var(--purple-3),var(--purple-2));
+      box-shadow:0 0 12px rgba(168,85,247,.75);
+    }
+    .brand-lockup h1{
+      margin:5px 0 0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:clamp(20px,2vw,31px);
+      line-height:.95;
+      letter-spacing:-.6px;
+      text-transform:uppercase;
+    }
+    .brand-lockup p{
+      margin:4px 0 0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.6px;
+    }
+
+    .section-tabs{
+      min-width:0;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:6px;
+      padding:5px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:rgba(255,255,255,.018);
+    }
+    .section-tab{
+      position:relative;
+      min-width:0;
+      min-height:42px;
+      padding:0 12px;
+      border:1px solid transparent;
+      border-radius:9px;
+      background:transparent;
+      color:var(--dim);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      transition:.2s ease;
+    }
+    .section-tab:hover{color:#fff;background:rgba(255,255,255,.025)}
+    .section-tab.active{
+      color:#fff;
+      border-color:rgba(192,132,252,.35);
+      background:linear-gradient(135deg,rgba(76,29,149,.52),rgba(168,85,247,.16));
+      box-shadow:inset 0 0 22px rgba(168,85,247,.08),0 8px 24px rgba(0,0,0,.22);
+    }
+    .section-tab.active::after{
+      content:"";
+      position:absolute;
+      left:18%;
+      right:18%;
+      bottom:-6px;
+      height:2px;
+      background:linear-gradient(90deg,transparent,var(--purple-2),transparent);
+      box-shadow:0 0 12px rgba(192,132,252,.7);
+    }
+
+    .top-status{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap:9px;
+      min-width:0;
+    }
+    .status-chip{
+      min-height:34px;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:0 11px;
+      border:1px solid var(--line);
+      border-radius:9px;
+      background:rgba(255,255,255,.025);
+      color:var(--muted);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .status-chip strong{color:#fff;font-size:11px}
+    .status-dot{
+      width:7px;height:7px;border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 12px rgba(61,220,151,.85);
+    }
+    .status-chip.locked .status-dot{background:var(--red);box-shadow:0 0 12px rgba(255,83,109,.7)}
+    .status-chip.locked{color:#ff9dac;border-color:rgba(255,83,109,.22);background:rgba(255,83,109,.05)}
+
+    .client-grid{
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      flex:1 1 auto;
+      min-height:0;
+      display:grid;
+      grid-template-columns:var(--rail-left) minmax(0,1fr) var(--rail-right);
+      overflow:hidden;
+    }
+
+    .player-rail,.intel-rail{
+      min-height:0;
+      overflow:hidden;
+      background:rgba(255,255,255,.009);
+    }
+    .player-rail{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      overflow-x:hidden;
+      overflow-y:auto;
+      overscroll-behavior:contain;
+      scrollbar-width:none;
+      border-right:1px solid var(--line);
+      padding:17px 15px;
+    }
+    .player-rail::-webkit-scrollbar{width:0;height:0}
+    .player-rail::after{
+      content:"";
+      position:absolute;
+      right:-1px;
+      top:16%;
+      bottom:16%;
+      width:1px;
+      background:linear-gradient(180deg,transparent,rgba(192,132,252,.42),transparent);
+    }
+
+    .identity-card{
+      position:relative;
+      flex:0 0 auto;
+      overflow:hidden;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(168,85,247,.18),transparent 45%),
+        linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));
+    }
+    .identity-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.2;
+      background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.08) 48%,transparent 65%);
+      transform:translateX(-120%);
+      animation:cardSweep 7s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .identity-avatar{
+      width:74px;height:74px;
+      display:grid;
+      place-items:center;
+      margin:0 auto;
+      overflow:hidden;
+      border:1px solid rgba(192,132,252,.5);
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(76,29,149,.8),rgba(168,85,247,.25));
+      box-shadow:0 0 0 5px rgba(168,85,247,.055),0 0 28px rgba(168,85,247,.18);
+      color:#fff;
+      font-size:26px;
+      font-weight:800;
+    }
+    .identity-avatar img{width:100%;height:100%;object-fit:cover}
+    .identity-name{
+      margin-top:11px;
+      text-align:center;
+    }
+    .identity-name strong{
+      display:block;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      font-size:17px;
+      text-transform:uppercase;
+    }
+    .identity-name span{
+      display:block;
+      margin-top:2px;
+      color:var(--dim);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.25px;
+      text-transform:uppercase;
+    }
+    .rank-emblem{
+      position:relative;
+      width:84px;
+      height:64px;
+      display:grid;
+      place-items:center;
+      margin:14px auto 8px;
+      clip-path:polygon(50% 0,92% 22%,86% 78%,50% 100%,14% 78%,8% 22%);
+      background:linear-gradient(160deg,rgba(192,132,252,.95),rgba(76,29,149,.82));
+      box-shadow:0 12px 30px rgba(76,29,149,.28);
+    }
+    .rank-emblem::before{
+      content:"";
+      position:absolute;
+      inset:3px;
+      clip-path:inherit;
+      background:linear-gradient(180deg,#1d1730,#0c0914);
+    }
+    .rank-emblem span{
+      position:relative;
+      z-index:1;
+      font-size:26px;
+      font-weight:800;
+      color:var(--purple-2);
+      text-shadow:0 0 18px rgba(192,132,252,.55);
+    }
+    .rank-title{text-align:center}
+    .rank-title strong{display:block;font-size:19px;text-transform:uppercase}
+    .rank-title span{display:block;margin-top:1px;color:var(--gold);font-size:12px;letter-spacing:1px}
+
+    .mastery-block{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+    }
+    .rail-label{
+      color:var(--dim);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+    }
+    .mastery-row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:5px;
+    }
+    .mastery-row strong{font-size:15px;text-transform:uppercase}
+    .mastery-row span{color:var(--purple-2);font-size:12px;font-weight:800}
+    .xp-track{
+      height:7px;
+      overflow:hidden;
+      margin-top:8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+    }
+    .xp-fill{
+      width:0;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--purple-4),var(--purple-2));
+      box-shadow:0 0 14px rgba(168,85,247,.55);
+      transition:width .45s ease;
+    }
+    .xp-copy{
+      display:flex;
+      justify-content:space-between;
+      margin-top:5px;
+      color:var(--dim);
+      font-size:8px;
+      font-weight:700;
+    }
+
+    .rail-stat-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:7px;
+      margin-top:11px;
+    }
+    .rail-stat{
+      min-width:0;
+      padding:9px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:rgba(255,255,255,.018);
+    }
+    .rail-stat span{
+      display:block;
+      color:var(--dim);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+    .rail-stat strong{
+      display:block;
+      margin-top:3px;
+      font-size:17px;
+      line-height:1;
+    }
+
+    .rail-footer{
+      margin-top:auto;
+      padding-top:12px;
+      border-top:1px solid var(--line);
+    }
+    .multiplier-chip{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:10px;
+      border:1px solid rgba(192,132,252,.24);
+      border-radius:11px;
+      background:linear-gradient(90deg,rgba(76,29,149,.24),rgba(168,85,247,.06));
+    }
+    .multiplier-chip span{color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase}
+    .multiplier-chip strong{color:var(--purple-2);font-size:17px}
+
+    .stage-shell{
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      min-height:0;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 40%,rgba(124,58,237,.06),transparent 42%),
+        rgba(8,7,13,.7);
+    }
+    .stage-panel{
+      position:absolute;
+      width:100%;
+      max-width:100%;
+      inset:0;
+      min-width:0;
+      min-height:0;
+      display:none;
+      overflow:hidden;
+      animation:panelIn .34s cubic-bezier(.2,.8,.2,1);
+    }
+    .stage-panel.active{display:flex;flex-direction:column}
+
+    .stage-header{
+      flex:0 0 auto;
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:11px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.018),transparent);
+    }
+    .stage-title{min-width:0}
+    .eyebrow{
+      color:var(--purple-2);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1.7px;
+      text-transform:uppercase;
+    }
+    .stage-title h2{
+      margin:3px 0 0;
+      font-size:22px;
+      line-height:1;
+      text-transform:uppercase;
+    }
+    .stage-title p{
+      margin:4px 0 0;
+      color:var(--dim);
+      font-size:10px;
+    }
+    .header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+    .button{
+      min-height:36px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      padding:0 13px;
+      border:1px solid var(--line);
+      border-radius:9px;
+      background:rgba(255,255,255,.025);
+      color:var(--muted);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.75px;
+      text-transform:uppercase;
+      transition:.18s ease;
+    }
+    .button:hover:not(:disabled){transform:translateY(-1px);color:#fff;border-color:rgba(192,132,252,.42);background:rgba(168,85,247,.06)}
+    .button.primary{
+      color:#fff;
+      border-color:rgba(192,132,252,.5);
+      background:linear-gradient(135deg,var(--purple-4),var(--purple));
+      box-shadow:0 12px 28px rgba(76,29,149,.28),inset 0 1px rgba(255,255,255,.1);
+    }
+    .button.primary:hover:not(:disabled){box-shadow:0 14px 32px rgba(76,29,149,.38),0 0 24px rgba(168,85,247,.12)}
+    .button:disabled{opacity:.38;cursor:not-allowed;transform:none}
+
+    /* COMMAND CENTER */
+    .command-grid{
+      flex:1 1 auto;
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(260px,.72fr);
+      grid-template-rows:minmax(0,1.1fr) minmax(160px,.72fr);
+      gap:10px;
+      padding:10px;
+    }
+    .command-card{
+      position:relative;
+      min-width:0;
+      min-height:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.025),transparent 38%),
+        rgba(17,14,27,.76);
+    }
+    .command-card::after{
+      content:"";
+      position:absolute;
+      inset:auto 18px 0;
+      height:1px;
+      background:linear-gradient(90deg,transparent,rgba(192,132,252,.28),transparent);
+    }
+    .primary-command{
+      grid-row:1 / 2;
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      background:
+        radial-gradient(circle at 76% 38%,rgba(168,85,247,.2),transparent 27%),
+        linear-gradient(125deg,rgba(76,29,149,.27),transparent 54%),
+        rgba(15,12,25,.9);
+    }
+    .primary-command::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.28;
+      background:
+        linear-gradient(120deg,transparent 30%,rgba(255,255,255,.05) 48%,transparent 66%),
+        repeating-linear-gradient(90deg,transparent 0 72px,rgba(255,255,255,.02) 73px 74px);
+      animation:heroScan 9s linear infinite;
+      pointer-events:none;
+    }
+    .priority-badge{
+      width:max-content;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 9px;
+      border:1px solid rgba(61,220,151,.28);
+      border-radius:999px;
+      background:rgba(61,220,151,.06);
+      color:#91efc7;
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .priority-badge .pulse{
+      width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(61,220,151,.5);animation:pulseRing 1.8s infinite;
+    }
+    .primary-copy{position:relative;z-index:1;max-width:680px}
+    .primary-copy h3{
+      margin:12px 0 0;
+      font-size:clamp(30px,4vw,58px);
+      line-height:.88;
+      letter-spacing:-1.8px;
+      text-transform:uppercase;
+    }
+    .primary-copy p{
+      max-width:580px;
+      margin:12px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .primary-command-footer{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      margin-top:18px;
+    }
+    .reward-preview span{display:block;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+    .reward-preview strong{display:block;margin-top:3px;color:var(--green);font-size:25px}
+
+    .command-side-stack{
+      min-height:0;
+      display:grid;
+      grid-template-rows:1fr 1fr;
+      gap:10px;
+    }
+    .mini-command{
+      padding:15px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .mini-command .mini-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+    .mini-command .mini-icon{
+      width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:10px;background:rgba(168,85,247,.07);color:var(--purple-2);font-size:15px;
+    }
+    .mini-command .mini-value{text-align:right}
+    .mini-command .mini-value span{display:block;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}
+    .mini-command .mini-value strong{display:block;margin-top:2px;font-size:20px}
+    .mini-command h4{margin:12px 0 0;font-size:15px;text-transform:uppercase}
+    .mini-command p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.35}
+    .mini-command button{margin-top:10px;align-self:flex-start}
+
+    .recent-command{
+      grid-column:1 / -1;
+      padding:14px 16px;
+      display:grid;
+      grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(110px,.55fr));
+      gap:12px;
+      align-items:center;
+    }
+    .recent-copy{min-width:0}
+    .recent-copy h4{margin:3px 0 0;font-size:16px;text-transform:uppercase}
+    .recent-copy p{margin:4px 0 0;color:var(--dim);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .recent-stat{
+      min-width:0;
+      padding-left:12px;
+      border-left:1px solid var(--line);
+    }
+    .recent-stat span{display:block;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+    .recent-stat strong{display:block;margin-top:3px;font-size:18px}
+
+    /* PICK'EM */
+    .pickem-body{flex:1 1 auto;min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto}
+    .bracket-viewport{min-height:0;overflow:auto;padding:12px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.35) transparent}
+    .bracket{
+      min-width:900px;
+      height:100%;
+      min-height:470px;
+      display:grid;
+      grid-template-columns:1.22fr 1fr .9fr .72fr;
+      gap:18px;
+    }
+    .round{min-height:0;display:grid;grid-template-rows:auto 1fr}
+    .round-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:0 5px 9px;
+      color:var(--dim);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1.45px;
+      text-transform:uppercase;
+    }
+    .round-head strong{color:var(--purple-2)}
+    .match-stack{min-height:0;display:flex;flex-direction:column;justify-content:space-around;gap:10px}
+    .match-card{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.018);
+      box-shadow:0 12px 30px rgba(0,0,0,.13);
+    }
+    .match-card::before{
+      content:"";
+      position:absolute;
+      top:0;bottom:0;left:0;width:2px;
+      background:linear-gradient(180deg,transparent,rgba(168,85,247,.32),transparent);
+    }
+    .match-meta{
+      min-height:25px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:0 9px 0 11px;
+      border-bottom:1px solid var(--line);
+      color:var(--dim);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+    .match-meta .resolved{color:var(--green)}
+    .bracket-team{
+      width:100%;
+      min-height:43px;
+      display:grid;
+      grid-template-columns:28px minmax(0,1fr) auto;
+      align-items:center;
+      gap:8px;
+      padding:0 9px;
+      border:0;
+      border-bottom:1px solid rgba(255,255,255,.055);
+      background:transparent;
+      color:var(--muted);
+      text-align:left;
+      transition:.18s ease;
+    }
+    .bracket-team:last-child{border-bottom:0}
+    .bracket-team:hover:not(:disabled){color:#fff;background:rgba(168,85,247,.055)}
+    .bracket-team.selected{
+      color:#fff;
+      background:linear-gradient(90deg,rgba(76,29,149,.34),rgba(168,85,247,.055));
+      box-shadow:inset 3px 0 var(--purple-2);
+    }
+    .bracket-team.selected .team-check{opacity:1;transform:scale(1)}
+    .bracket-team.correct{box-shadow:inset 3px 0 var(--green);background:linear-gradient(90deg,rgba(61,220,151,.13),transparent)}
+    .bracket-team.incorrect{opacity:.5;box-shadow:inset 3px 0 var(--red)}
+    .bracket-team:disabled{cursor:default}
+    .team-crest{
+      width:26px;height:26px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.03);font-size:8px;font-weight:800;
+    }
+    .team-crest img{width:100%;height:100%;object-fit:cover}
+    .team-copy{min-width:0}
+    .team-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;text-transform:uppercase}
+    .team-copy span{display:block;margin-top:1px;color:var(--dim);font-size:7px;text-transform:uppercase}
+    .team-check{color:var(--purple-2);font-size:12px;opacity:0;transform:scale(.5);transition:.18s}
+    .champion-stage{
+      position:relative;
+      min-height:200px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid rgba(245,201,91,.2);
+      border-radius:14px;
+      background:
+        radial-gradient(circle at 50% 38%,rgba(245,201,91,.12),transparent 34%),
+        rgba(255,255,255,.014);
+      text-align:center;
+    }
+    .champion-stage::before{
+      content:"";
+      position:absolute;
+      width:150px;height:150px;border:1px solid rgba(245,201,91,.12);border-radius:50%;animation:slowSpin 18s linear infinite;
+    }
+    .champion-crown{
+      position:relative;
+      z-index:1;
+      width:54px;height:54px;display:grid;place-items:center;border:1px solid rgba(245,201,91,.35);border-radius:16px;background:rgba(245,201,91,.06);color:var(--gold);font-size:23px;box-shadow:0 0 30px rgba(245,201,91,.08);
+    }
+    .champion-stage span{position:relative;z-index:1;margin-top:12px;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .champion-stage strong{position:relative;z-index:1;margin-top:5px;font-size:18px;text-transform:uppercase}
+    .champion-stage small{position:relative;z-index:1;margin-top:4px;color:var(--gold);font-size:9px;font-weight:800}
+
+    .bracket-dock{
+      min-height:64px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+      gap:15px;
+      padding:9px 14px;
+      border-top:1px solid var(--line);
+      background:linear-gradient(90deg,rgba(76,29,149,.08),transparent 45%);
+    }
+    .dock-copy{min-width:0;display:flex;align-items:center;gap:11px}
+    .dock-glyph{width:36px;height:36px;display:grid;place-items:center;flex:0 0 36px;border-left:2px solid var(--purple-2);color:var(--purple-2)}
+    .dock-copy strong{display:block;font-size:12px;text-transform:uppercase}
+    .dock-copy span{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim);font-size:9px}
+    .dock-actions{display:flex;align-items:center;gap:7px}
+    .completion-wrap{display:flex;align-items:center;gap:9px}
+    .completion-track{width:100px;height:6px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.07)}
+    .completion-fill{width:0;height:100%;background:linear-gradient(90deg,var(--purple-4),var(--purple-2));box-shadow:0 0 12px rgba(168,85,247,.45);transition:width .35s}
+
+    /* LIVE */
+    .live-body{
+      flex:1 1 auto;
+      min-height:0;
+      display:grid;
+      grid-template-rows:minmax(180px,.72fr) minmax(0,1.28fr);
+      gap:10px;
+      padding:10px;
+    }
+    .live-match-hero{
+      position:relative;
+      min-height:0;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+      align-items:center;
+      gap:22px;
+      padding:18px 28px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 50% 50%,rgba(168,85,247,.16),transparent 26%),
+        linear-gradient(90deg,rgba(76,29,149,.22),transparent 32%,transparent 68%,rgba(76,29,149,.22)),
+        rgba(16,13,26,.88);
+    }
+    .live-match-hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.23;
+      background:repeating-linear-gradient(90deg,transparent 0 84px,rgba(255,255,255,.022) 85px 86px);
+      animation:heroScan 12s linear infinite;
+      pointer-events:none;
+    }
+    .live-team{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:0;
+    }
+    .live-team.right{justify-content:flex-end;text-align:right;flex-direction:row-reverse}
+    .live-crest{
+      width:76px;height:76px;flex:0 0 76px;display:grid;place-items:center;overflow:hidden;border:1px solid rgba(192,132,252,.34);border-radius:19px;background:linear-gradient(145deg,rgba(76,29,149,.55),rgba(168,85,247,.1));box-shadow:0 0 0 5px rgba(168,85,247,.04),0 0 30px rgba(168,85,247,.12);font-size:18px;font-weight:800;
+    }
+    .live-crest img{width:100%;height:100%;object-fit:cover}
+    .live-team-copy{min-width:0}
+    .live-team-copy span{display:block;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+    .live-team-copy strong{display:block;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(19px,2.2vw,31px);line-height:.95;text-transform:uppercase}
+    .live-center{position:relative;z-index:1;text-align:center}
+    .live-center span{display:block;color:var(--purple-2);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .live-center strong{display:block;margin-top:3px;font-size:30px;letter-spacing:1px}
+    .lock-copy{margin-top:5px;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}
+
+    .question-console{
+      min-height:0;
+      display:grid;
+      grid-template-columns:170px minmax(0,1fr) 210px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:rgba(15,12,24,.86);
+    }
+    .question-nav{
+      min-height:0;
+      padding:12px;
+      border-right:1px solid var(--line);
+      background:rgba(255,255,255,.01);
+    }
+    .question-nav-title{color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}
+    .question-tab{
+      width:100%;
+      min-height:48px;
+      display:grid;
+      grid-template-columns:28px minmax(0,1fr) auto;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+      padding:0 9px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:rgba(255,255,255,.018);
+      color:var(--muted);
+      text-align:left;
+      transition:.18s;
+    }
+    .question-tab:hover{color:#fff;border-color:rgba(192,132,252,.35)}
+    .question-tab.active{color:#fff;border-color:rgba(192,132,252,.4);background:linear-gradient(90deg,rgba(76,29,149,.34),rgba(168,85,247,.06));box-shadow:inset 3px 0 var(--purple-2)}
+    .question-number{width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;font-size:9px;font-weight:800}
+    .question-tab strong{display:block;font-size:10px;text-transform:uppercase}
+    .question-tab small{display:block;margin-top:1px;color:var(--dim);font-size:7px}
+    .question-state{color:var(--green);font-size:9px}
+
+    .question-stage{
+      min-width:0;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding:18px 22px;
+    }
+    .question-stage h3{margin:0;font-size:clamp(22px,2.6vw,38px);line-height:.95;text-transform:uppercase}
+    .question-stage p{margin:7px 0 0;color:var(--muted);font-size:11px}
+    .answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+    .live-answer{
+      position:relative;
+      min-height:54px;
+      overflow:hidden;
+      padding:0 14px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:rgba(255,255,255,.018);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      transition:.18s ease;
+    }
+    .live-answer::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.055),transparent 70%);
+      transform:translateX(-120%);
+      transition:.35s;
+    }
+    .live-answer:hover:not(:disabled){color:#fff;border-color:rgba(192,132,252,.42);transform:translateY(-1px)}
+    .live-answer:hover:not(:disabled)::before{transform:translateX(120%)}
+    .live-answer.selected{
+      padding-right:38px;
+      color:#fff;
+      border-color:rgba(192,132,252,.62);
+      background:linear-gradient(135deg,rgba(76,29,149,.55),rgba(168,85,247,.12));
+      box-shadow:inset 0 0 24px rgba(168,85,247,.08),0 8px 24px rgba(0,0,0,.18);
+    }
+    .live-answer.selected::after{
+      content:"✓";
+      position:absolute;
+      right:14px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--purple-2);
+      font-size:14px;
+    }
+    .live-answer.saving{opacity:.7}
+    .live-answer.saving::after{
+      content:"";
+      width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:buttonSpin .7s linear infinite;
+    }
+    .live-answer:disabled{cursor:default}
+
+    .question-intel{
+      min-height:0;
+      padding:14px;
+      border-left:1px solid var(--line);
+      background:rgba(255,255,255,.01);
+    }
+    .question-intel h4{margin:0;font-size:11px;text-transform:uppercase}
+    .reward-value{margin-top:5px;color:var(--green);font-size:25px;font-weight:800}
+    .reward-breakdown{margin-top:6px;color:var(--dim);font-size:8px;line-height:1.4}
+    .community-block{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+    .community-row{margin-top:9px}
+    .community-row-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:8px;font-weight:800;text-transform:uppercase}
+    .community-track{height:6px;overflow:hidden;margin-top:5px;border-radius:999px;background:rgba(255,255,255,.06)}
+    .community-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--purple-4),var(--purple-2));transition:width .35s}
+    .empty-live{
+      grid-column:1 / -1;
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      text-align:center;
+    }
+    .empty-sigil{width:66px;height:66px;display:grid;place-items:center;border:1px solid var(--line-strong);border-radius:20px;background:rgba(168,85,247,.06);color:var(--purple-2);font-size:24px}
+    .empty-live h3{margin:14px 0 0;font-size:24px;text-transform:uppercase}
+    .empty-live p{max-width:470px;margin:7px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+
+    /* CAREER */
+    .career-body{
+      flex:1 1 auto;
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1.08fr) minmax(260px,.72fr);
+      gap:10px;
+      padding:10px;
+    }
+    .career-overview{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto auto minmax(0,1fr);
+      gap:10px;
+    }
+    .career-banner{
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) auto;
+      align-items:center;
+      gap:16px;
+      padding:17px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:
+        radial-gradient(circle at 12% 50%,rgba(168,85,247,.2),transparent 25%),
+        linear-gradient(120deg,rgba(76,29,149,.22),transparent 58%),
+        rgba(16,13,26,.86);
+    }
+    .career-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 32%,rgba(255,255,255,.045),transparent 68%);transform:translateX(-120%);animation:cardSweep 8s ease-in-out infinite;pointer-events:none}
+    .career-emblem{width:76px;height:76px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 22%,86% 78%,50% 100%,14% 78%,8% 22%);background:linear-gradient(160deg,rgba(192,132,252,.95),rgba(76,29,149,.86));font-size:26px;font-weight:800}
+    .career-emblem span{width:calc(100% - 6px);height:calc(100% - 6px);display:grid;place-items:center;clip-path:inherit;background:#100d1a;color:var(--purple-2)}
+    .career-rank-copy{min-width:0}
+    .career-rank-copy span{color:var(--purple-2);font-size:8px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+    .career-rank-copy h3{margin:3px 0 0;font-size:28px;line-height:1;text-transform:uppercase}
+    .career-rank-copy p{margin:5px 0 0;color:var(--muted);font-size:10px}
+    .career-stars{text-align:right;color:var(--gold);font-size:20px;letter-spacing:1px}
+    .career-stars small{display:block;margin-top:4px;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+
+    .career-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .career-metric{padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.018)}
+    .career-metric span{display:block;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:.65px;text-transform:uppercase}
+    .career-metric strong{display:block;margin-top:5px;font-size:22px;line-height:1}
+    .career-metric small{display:block;margin-top:4px;color:var(--muted);font-size:8px}
+
+    .history-panel{min-height:0;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr);border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.012)}
+    .panel-subhead{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 13px;border-bottom:1px solid var(--line)}
+    .panel-subhead strong{font-size:11px;text-transform:uppercase}
+    .panel-subhead span{color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}
+    .history-list{min-height:0;overflow:auto;padding:8px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.3) transparent}
+    .history-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px;border-bottom:1px solid rgba(255,255,255,.055)}
+    .history-item:last-child{border-bottom:0}
+    .history-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;background:rgba(168,85,247,.05);color:var(--purple-2);font-size:12px}
+    .history-copy{min-width:0}
+    .history-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;text-transform:uppercase}
+    .history-copy span{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim);font-size:8px}
+    .history-result{text-align:right;font-size:9px;font-weight:800;text-transform:uppercase}
+    .history-result.correct{color:var(--green)}
+    .history-result.incorrect{color:var(--red)}
+    .history-result.pending{color:var(--gold)}
+
+    .career-side{min-height:0;display:grid;grid-template-rows:auto auto auto;align-content:start;gap:10px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-right:2px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.28) transparent}
+    .side-card{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.015)}
+    .side-card h4{margin:0;font-size:11px;text-transform:uppercase}
+    .side-card p{margin:6px 0 0;color:var(--muted);font-size:9px;line-height:1.4;overflow-wrap:anywhere}
+    .rank-ladder-card{align-self:start}
+    .rank-ladder-card .reward-list{margin-top:8px}
+    .mastery-large{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:10px}
+    .mastery-large strong{font-size:30px;line-height:1}
+    .mastery-large span{color:var(--purple-2);font-size:13px;font-weight:800}
+    .milestone-list{display:grid;gap:8px;margin-top:10px}
+    .milestone{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.012)}
+    .milestone-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:rgba(168,85,247,.07);color:var(--purple-2);font-size:10px}
+    .milestone strong{display:block;font-size:9px;text-transform:uppercase}
+    .milestone span{display:block;margin-top:1px;color:var(--dim);font-size:7px}
+    .milestone b{color:var(--gold);font-size:8px}
+
+    /* INTEL RAIL */
+    .intel-rail{
+      display:flex;
+      flex-direction:column;
+      border-left:1px solid var(--line);
+      padding:15px 14px;
+    }
+    .intel-rail::before{
+      content:"";
+      position:absolute;
+      pointer-events:none;
+    }
+    .intel-section + .intel-section{margin-top:15px;padding-top:14px;border-top:1px solid var(--line)}
+    .intel-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .intel-title span{color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase}
+    .intel-title strong{font-size:10px;text-transform:uppercase}
+    .perfect-display{
+      margin-top:10px;
+      padding:12px;
+      border:1px solid rgba(245,201,91,.2);
+      border-radius:12px;
+      background:radial-gradient(circle at 50% 0%,rgba(245,201,91,.09),transparent 55%);
+      text-align:center;
+    }
+    .perfect-display strong{display:block;color:var(--gold);font-size:36px;line-height:1}
+    .perfect-display span{display:block;margin-top:5px;color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.9px;text-transform:uppercase}
+    .intel-list{display:grid;gap:7px;margin-top:9px}
+    .intel-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.045)}
+    .intel-row:last-child{border-bottom:0}
+    .intel-row span{color:var(--muted);font-size:9px}
+    .intel-row strong{font-size:10px}
+    .reward-list{display:grid;gap:6px;margin-top:9px}
+    .reward-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:8px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.012)}
+    .reward-row span{color:var(--muted);font-size:8px;font-weight:800;text-transform:uppercase}
+    .reward-row strong{color:var(--green);font-size:9px}
+    .intel-footer{margin-top:auto;padding-top:13px;border-top:1px solid var(--line)}
+    .system-status{display:flex;align-items:center;gap:8px;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+    .system-status i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(61,220,151,.55)}
+
+    /* MODALS */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:4000;
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      padding:20px;
+      background:rgba(3,3,7,.82);
+      backdrop-filter:blur(11px);
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:min(1040px,100%);
+      max-height:calc(100dvh - 40px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:hidden;
+      border:1px solid rgba(168,85,247,.34);
+      border-radius:18px;
+      background:#0e0c16;
+      box-shadow:0 36px 110px rgba(0,0,0,.72);
+      animation:modalIn .24s ease;
+    }
+    .modal-header{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 20px;border-bottom:1px solid var(--line);background:#100e19}
+    .modal-header span{display:block;color:var(--purple-2);font-size:8px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase}
+    .modal-header h2{margin:4px 0 0;font-size:21px;text-transform:uppercase}
+    .modal-close{width:38px;height:38px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.03);color:var(--muted);font-size:24px}
+    .modal-body{min-height:0;overflow:auto;padding:20px;overscroll-behavior:contain}
+    .teams-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .team-card{padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.018)}
+    .team-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .team-card-head h3{margin:0;font-size:15px;text-transform:uppercase}
+    .team-card-head span{color:var(--dim);font-size:8px;font-weight:800}
+    .roster{display:grid;gap:6px;margin-top:9px}
+    .player{display:grid;grid-template-columns:22px minmax(0,1fr);gap:7px;align-items:center;padding:7px;border:1px solid rgba(255,255,255,.055);border-radius:8px}
+    .player-index{width:22px;height:22px;display:grid;place-items:center;border-radius:7px;background:rgba(168,85,247,.08);color:var(--purple-2);font-size:8px;font-weight:800}
+    .player strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}
+    .player small{display:block;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim);font-size:7px}
+    .rules{max-width:780px;margin:0 auto;display:grid;gap:16px}
+    .rule{display:grid;grid-template-columns:40px minmax(0,1fr);gap:13px;align-items:start;padding-bottom:15px;border-bottom:1px solid var(--line)}
+    .rule:last-child{border-bottom:0}
+    .rule-number{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(192,132,252,.34);border-radius:11px;color:var(--purple-2);font-weight:800}
+    .rule h3{margin:0;font-size:17px;text-transform:uppercase}
+    .rule p{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      z-index:5000;
+      max-width:min(540px,calc(100vw - 30px));
+      padding:12px 17px;
+      border:1px solid rgba(168,85,247,.42);
+      border-radius:10px;
+      background:rgba(15,13,23,.98);
+      box-shadow:var(--shadow);
+      opacity:0;
+      visibility:hidden;
+      transform:translate(-50%,10px);
+      transition:.18s;
+      font-size:11px;
+      font-weight:800;
+      text-align:center;
+    }
+    .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+    .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px;padding:18px;text-align:center;color:var(--muted)}
+    .empty-state strong{font-size:14px;text-transform:uppercase}
+    .empty-state span{margin-top:5px;color:var(--dim);font-size:9px}
+
+    @keyframes ambientDrift{0%{transform:translate3d(-1%,0,0) scale(1)}100%{transform:translate3d(2%,-1%,0) scale(1.04)}}
+    @keyframes cardSweep{0%,62%{transform:translateX(-120%)}82%,100%{transform:translateX(120%)}}
+    @keyframes heroScan{from{background-position:0 0}to{background-position:260px 0}}
+    @keyframes panelIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+    @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(61,220,151,.5)}70%{box-shadow:0 0 0 8px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+    @keyframes slowSpin{to{transform:rotate(360deg)}}
+    @keyframes buttonSpin{to{transform:translateY(-50%) rotate(360deg)}}
+    @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+
+    @media (min-width:981px) and (max-width:1280px), (min-width:981px) and (max-height:900px){
+      .player-rail{padding:10px 9px}
+      .identity-card{padding:10px}
+      .identity-avatar{width:58px;height:58px;border-radius:15px;font-size:21px}
+      .identity-name{margin-top:8px}
+      .identity-name strong{font-size:15px}
+      .identity-name span{font-size:8px;letter-spacing:1px}
+      .rank-emblem{width:68px;height:52px;margin:9px auto 5px}
+      .rank-emblem span{font-size:21px}
+      .rank-title strong{font-size:16px}
+      .rank-title span{font-size:11px}
+      .mastery-block{margin-top:8px;padding-top:8px}
+      .rail-stat-grid{margin-top:8px;gap:5px}
+      .rail-stat{padding:7px}
+      .rail-stat strong{font-size:15px}
+      .rail-footer{margin-top:9px;padding-top:8px}
+      .multiplier-chip{padding:8px}
+      .career-body{padding:8px;gap:8px}
+      .career-side{gap:8px}
+      .side-card{padding:10px}
+      .side-card p{margin-top:4px;line-height:1.28}
+      .mastery-large{margin-top:7px}
+      .milestone-list{gap:5px;margin-top:7px}
+      .milestone{padding:6px}
+      .rank-ladder-card .reward-list{grid-template-columns:1fr 1fr;gap:4px;margin-top:7px}
+      .rank-ladder-card .reward-row{padding:6px}
+    }
+
+    @media (min-width:981px) and (max-height:820px){
+      .rank-ladder-card > p{display:none}
+      .career-banner{padding:12px}
+      .career-emblem{width:62px;height:62px}
+      .career-metric{padding:9px}
+      .career-metric strong{font-size:19px}
+    }
+
+    @media(max-width:1280px){
+      :root{--rail-left:205px}
+      .client-topbar{grid-template-columns:minmax(200px,.75fr) minmax(390px,1.35fr) auto}
+      .intel-rail{display:none}
+      .client-grid{grid-template-columns:var(--rail-left) minmax(0,1fr)}
+      .question-console{grid-template-columns:160px minmax(0,1fr) 190px}
+    }
+
+    @media(max-width:980px){
+      body{height:auto;min-height:100dvh;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none}
+      .prediction-client{min-height:calc(100dvh - 70px);overflow-x:hidden;overflow-y:visible;padding:10px}
+      .client-shell{height:auto;min-height:calc(100dvh - 90px);overflow-x:hidden;overflow-y:visible}
+      .client-topbar{grid-template-columns:1fr;gap:10px;align-items:start}
+      .top-status{position:absolute;right:14px;top:14px}
+      .section-tabs{overflow-x:auto;display:flex}
+      .section-tab{flex:1 0 150px}
+      .client-grid{display:block;overflow-x:hidden;overflow-y:visible}
+      .player-rail{display:none}
+      .stage-shell{min-height:720px;overflow-x:hidden;overflow-y:visible}
+      .stage-panel{position:relative;inset:auto;min-height:720px}
+      .command-grid{grid-template-columns:1fr;grid-template-rows:auto}
+      .primary-command{min-height:330px}
+      .command-side-stack{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+      .recent-command{grid-template-columns:1fr 1fr}
+      .question-console{grid-template-columns:150px minmax(0,1fr)}
+      .question-intel{grid-column:1 / -1;border-left:0;border-top:1px solid var(--line)}
+      .career-body{grid-template-columns:1fr}
+      .career-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+      .career-side .side-card:last-child{grid-column:1 / -1}
+      .teams-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media(max-width:700px){
+      .prediction-client{padding:8px}
+      .client-shell{border-radius:16px}
+      .client-topbar{padding:12px}
+      .brand-lockup h1{font-size:22px;max-width:70%}
+      .top-status .status-chip:last-child{display:none}
+      .stage-header{align-items:flex-start;flex-direction:column;padding:12px}
+      .header-actions{justify-content:flex-start}
+      .command-grid{padding:8px}
+      .primary-command{min-height:360px;padding:18px}
+      .primary-copy h3{font-size:36px}
+      .primary-command-footer{align-items:flex-start;flex-direction:column}
+      .command-side-stack{grid-template-columns:1fr}
+      .recent-command{grid-template-columns:1fr 1fr;padding:12px}
+      .recent-copy{grid-column:1 / -1}
+      .recent-stat{padding-left:0;border-left:0;border-top:1px solid var(--line);padding-top:8px}
+      .bracket-dock{grid-template-columns:1fr}
+      .dock-actions{display:grid;grid-template-columns:1fr 1fr}
+      .completion-wrap{grid-column:1 / -1;justify-content:space-between}
+      .live-body{grid-template-rows:auto auto}
+      .live-match-hero{grid-template-columns:1fr auto 1fr;padding:16px 10px;gap:8px}
+      .live-team{display:block;text-align:center}
+      .live-team.right{display:block;text-align:center}
+      .live-crest{width:58px;height:58px;margin:0 auto 8px;flex-basis:58px}
+      .live-team-copy strong{font-size:16px}
+      .question-console{grid-template-columns:1fr}
+      .question-nav{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:7px}
+      .question-nav-title{grid-column:1 / -1}
+      .question-tab{margin-top:0}
+      .question-stage{padding:16px}
+      .answer-grid{grid-template-columns:1fr}
+      .question-intel{grid-column:auto}
+      .career-metrics{grid-template-columns:1fr 1fr}
+      .career-banner{grid-template-columns:auto minmax(0,1fr)}
+      .career-stars{grid-column:1 / -1;text-align:left}
+      .career-side{grid-template-columns:1fr}
+      .career-side .side-card:last-child{grid-column:auto}
+      .teams-grid{grid-template-columns:1fr}
+      .modal-backdrop{padding:max(10px,env(safe-area-inset-top)) 0 0}
+      .modal{width:100%;max-height:calc(100dvh - max(10px,env(safe-area-inset-top)));border-radius:16px 16px 0 0}
+      .modal-body{padding:17px 14px calc(24px + env(safe-area-inset-bottom))}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+    }
+  </style>
 </head>
 
-<body class="account-body">
-
-<div class="account-center-shell">
-  <div class="account-center">
-
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>PREDICTION CENTER</h2>
-      </div>
-
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a class="active" href="predictions.html">Predictions</a>
-        <a href="teams.html">Teams</a>
-        <a href="tournament.html">Bracket</a>
-        <a href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
-      </nav>
-    </aside>
-
-    <main class="account-main">
-
-      
-<div class="prediction-rank-card prediction-rank-card-standalone predictor-profile-clean">
-
-  <span class="prediction-label">Predictor Rank</span>
-
-  <h3 id="predictionRank">Rookie</h3>
-
-  <strong id="predictionRating">★☆☆☆☆</strong>
-
-  <div class="predictor-profile-stats">
-
-    <div>
-      <span>Accuracy</span>
-      <strong id="predictionAccuracy">0%</strong>
-    </div>
-
-    <div>
-      <span>Correct Picks</span>
-      <strong id="predictionCorrect">0</strong>
-    </div>
-
-    <div>
-      <span>Total Picks</span>
-      <strong id="predictionTotal">0</strong>
-    </div>
-
-  </div>
-
-</div>
-<div id="matchPredictionArea">
-  Loading match prediction...
-</div>
-
-<p id="matchPredictionStatus" class="account-status"></p>
-
-
-<div id="championPredictionArea">
-  Loading champion prediction...
-</div>
-
-<p id="championPredictionStatus" class="account-status"></p>
-
-
-<section class="account-panel full reward-panel">
-
-  <div class="reward-hero">
-    <span>TOP REWARD</span>
-    <strong>+2000 RP</strong>
-    <p>PERFECT BRACKET</p>
-  </div>
-
-  <div class="reward-list">
-
-    <div>
-      <span>Champion Pick</span>
-      <strong>+500 RP</strong>
-    </div>
-
-    <div>
-      <span>Quarterfinal</span>
-      <strong>+100 RP</strong>
-    </div>
-
-    <div>
-      <span>Semifinal</span>
-      <strong>+150 RP</strong>
-    </div>
-
-    <div>
-      <span>Grand Finals</span>
-      <strong>+250 RP</strong>
-    </div>
-
-    <div>
-      <span>Upset Bonus</span>
-      <strong>+250 RP</strong>
-    </div>
-
-  </div>
-
-  <p class="reward-note">
-    RP is awarded automatically after tournament staff finalize each match.
-    Champion predictions pay after the Grand Finals conclude.
-  </p>
-
-</section>
-
-
-<section class="account-panel full">
-
-  <h2>Prediction Career</h2>
-
-  <div class="prediction-career-card career-card-clean">
-
-    <div class="career-rp-hero">
-      <span>RP Earned From Predictions</span>
-      <strong id="careerRpEarned">0</strong>
-    </div>
-
-    <div class="career-mini-grid">
-
-      <div>
-        <span>Current Streak</span>
-        <strong id="careerCurrentStreak">0</strong>
-      </div>
-
-      <div>
-        <span>Best Streak</span>
-        <strong id="careerBestStreak">0</strong>
-      </div>
-
-      <div>
-        <span>Champion Correct</span>
-        <strong id="careerChampionCorrect">0</strong>
-      </div>
-
-      <div>
-        <span>Match Correct</span>
-        <strong id="careerMatchCorrect">0</strong>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-        <section class="account-panel full">
-  <h2>Your Prediction History</h2>
-  <div id="predictionHistory">
-    Loading prediction history...
-  </div>
-</section>
-      </div>
-
-    </main>
-
-  </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=2"></script>
-
-<script>
-let tournamentId = "open1";
-let currentUser = null;
-let currentPlayer = null;
-let currentTournament = {};
-let currentTeams = {};
-let siteData = {};
-let nextMatchData = {};
-let championPredictions = {};
-let matchPredictions = {};
-let lockedPredictions = {};
-
-const CHAMPION_REWARD = 500;
-const MATCH_REWARD = 100;
-  
-function clean(value, fallback = "") {
-  return String(value || fallback).trim();
-}
-
-function getPredictionType(matchId) {
-  return `match_${String(matchId || "")
-    .replaceAll(" ", "_")
-    .replaceAll("•", "")
-    .replaceAll("-", "_")}`;
-}
-
-function matchesFromLabel(label) {
-  const matchMap = {
-    "R16-1": "R16-1 • Bo3",
-    "R16-2": "R16-2 • Bo3",
-    "R16-3": "R16-3 • Bo3",
-    "R16-4": "R16-4 • Bo3",
-    "R16-5": "R16-5 • Bo3",
-    "R16-6": "R16-6 • Bo3",
-    "R16-7": "R16-7 • Bo3",
-    "R16-8": "R16-8 • Bo3",
-    "QF1": "QF1 • Bo3",
-    "QF2": "QF2 • Bo3",
-    "QF3": "QF3 • Bo3",
-    "QF4": "QF4 • Bo3",
-    "SF1": "SF1 • Bo3",
-    "SF2": "SF2 • Bo3",
-    "Grand Finals": "Grand Finals • Bo5"
-  };
-
-  return matchMap[label] || "";
-}
-  
-function getTeamsArray() {
-  const teamsObj = currentTeams.teams || {};
-  return Object.keys(teamsObj).map(teamKey => ({
-    teamKey,
-    teamName: teamKey.replace("team", "Team "),
-    players: teamsObj[teamKey] || []
-  }));
-}
-
-function getCurrentMatchText() {
-  return clean(nextMatchData.fullMatchId, "");
-}
-
-function getCurrentMatchTeams() {
-  const match = getCurrentMatchText().toLowerCase();
-
-  if (match.includes("qf1")) return ["team1", "team2"];
-  if (match.includes("qf2")) return ["team3", "team4"];
-  if (match.includes("qf3")) return ["team5", "team6"];
-  if (match.includes("qf4")) return ["team7", "team8"];
-
-  if (match.includes("sf1")) {
-    return [
-      findTeamKeyByName(siteData.qf1Winner),
-      findTeamKeyByName(siteData.qf2Winner)
-    ];
-  }
-
-  if (match.includes("sf2")) {
-    return [
-      findTeamKeyByName(siteData.qf3Winner),
-      findTeamKeyByName(siteData.qf4Winner)
-    ];
-  }
-
-  if (match.includes("grand")) {
-    return [
-      findTeamKeyByName(siteData.sf1Winner),
-      findTeamKeyByName(siteData.sf2Winner)
-    ];
-  }
-
-  return [];
-}
-
-function findTeamKeyByName(teamName) {
-  const teams = getTeamsArray();
-  const found = teams.find(team => clean(team.teamName).toLowerCase() === clean(teamName).toLowerCase());
-  return found ? found.teamKey : "";
-}
-
-function getTeamName(teamKey) {
-  const teams = getTeamsArray();
-  const found = teams.find(team => team.teamKey === teamKey);
-  return found ? found.teamName : "TBD";
-}
-
-function getVoteStats(predictionObj, validTeamKeys) {
-  const votes = Object.values(predictionObj || {});
-  const total = votes.length;
-
-  return validTeamKeys.map(teamKey => {
-    const count = votes.filter(vote => vote.pick === teamKey).length;
-    const percent = total ? Math.round((count / total) * 100) : 0;
-
-    return {
-      teamKey,
-      teamName: getTeamName(teamKey),
-      count,
-      percent,
-      total
-    };
-  });
-}
-
-function renderVoteBars(stats) {
-  if (!stats.length) return "";
-
-  return `
-    <div style="margin-top:18px;">
-      ${stats.map(stat => `
-        <div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-            <strong>${stat.teamName}</strong>
-            <span style="color:#8b949e;">${stat.percent}% • ${stat.count} votes</span>
+<body>
+  <div id="globalHeader"></div>
+
+  <main class="prediction-client">
+    <section class="client-shell">
+      <header class="client-topbar">
+        <div class="brand-lockup">
+          <div class="brand-kicker">Prediction Command</div>
+          <h1 id="tournamentName">Rivals Gauntlet Open #1</h1>
+          <p id="tournamentSub">Tournament intelligence, live calls and predictor progression.</p>
+        </div>
+
+        <nav class="section-tabs" aria-label="Prediction Center sections">
+          <button class="section-tab active" type="button" data-section="command">Command Center</button>
+          <button class="section-tab" type="button" data-section="pickem">Tournament Pick’em</button>
+          <button class="section-tab" type="button" data-section="live">Live Predictions</button>
+          <button class="section-tab" type="button" data-section="career">Career</button>
+        </nav>
+
+        <div class="top-status">
+          <div id="pickemStatusChip" class="status-chip">
+            <i class="status-dot"></i>
+            <span id="pickemStatusText">Pick’em Open</span>
           </div>
-
-          <div style="
-            height:10px;
-            background:rgba(255,255,255,.08);
-            border-radius:999px;
-            overflow:hidden;
-          ">
-            <div style="
-              width:${stat.percent}%;
-              height:100%;
-              background:#ef4444;
-              border-radius:999px;
-            "></div>
+          <div class="status-chip">
+            <span>Perfect Remaining</span>
+            <strong id="topPerfectCount">0</strong>
           </div>
         </div>
-      `).join("")}
-    </div>
-  `;
-}
+      </header>
 
-function makePrediction(type, pick, pickName, statusId) {
-  if (!currentUser || !currentPlayer) return;
+      <div class="client-grid">
+        <aside class="player-rail">
+          <section class="identity-card">
+            <div id="identityAvatar" class="identity-avatar" aria-label="Predictor profile image">P</div>
+            <div class="identity-name">
+              <strong id="identityName">Predictor</strong>
+              <span id="identityRgId">Rivals Gauntlet Competitor</span>
+            </div>
 
-  const status = document.getElementById(statusId);
+            <div class="rank-emblem"><span id="rankEmblemLetter">R</span></div>
+            <div class="rank-title">
+              <strong id="predictionRank">Rookie</strong>
+              <span id="predictionRating">★☆☆☆☆</span>
+            </div>
 
-  database.ref(`predictions/${tournamentId}/${type}/${currentUser.uid}`).set({
-    uid: currentUser.uid,
-    rgId: currentPlayer.rgId || "",
-    displayName: currentPlayer.displayName || "",
-    profileImage: currentPlayer.profileImage || "",
-    pick,
-    pickName,
-    tournamentId,
-    createdAt: Date.now()
-  }).then(() => {
-    status.innerText = `✓ Prediction saved: ${pickName}`;
-    status.style.color = "#22c55e";
-  }).catch(error => {
-    status.innerText = error.message;
-    status.style.color = "#ef4444";
-  });
-}
+            <div class="mastery-block">
+              <div class="rail-label">Predictor Mastery</div>
+              <div class="mastery-row">
+                <strong>Level <span id="predictorLevel">1</span></strong>
+                <span id="predictorMultiplier">1.00×</span>
+              </div>
+              <div class="xp-track"><div id="predictorXpFill" class="xp-fill"></div></div>
+              <div class="xp-copy"><span id="predictorXpText">0 / 100 XP</span><span id="nextMultiplierText">Bonus at Level 5</span></div>
+            </div>
 
+            <div class="rail-stat-grid">
+              <div class="rail-stat"><span>Accuracy</span><strong id="railAccuracy">0%</strong></div>
+              <div class="rail-stat"><span>Streak</span><strong id="railStreak">0</strong></div>
+              <div class="rail-stat"><span>Correct</span><strong id="railCorrect">0</strong></div>
+              <div class="rail-stat"><span>Total Picks</span><strong id="railTotal">0</strong></div>
+            </div>
+          </section>
 
-function renderChampionPrediction() {
-  const container = document.getElementById("championPredictionArea");
-  if (!container) return;
+          <div class="rail-footer">
+            <div class="multiplier-chip">
+              <span>Prediction Reward Bonus</span>
+              <strong id="railMultiplierBonus">+0%</strong>
+            </div>
+          </div>
+        </aside>
 
-  const teams = getTeamsArray();
+        <section class="stage-shell">
+          <!-- COMMAND CENTER -->
+          <section id="panel-command" class="stage-panel active" data-panel="command">
+            <header class="stage-header">
+              <div class="stage-title">
+                <div class="eyebrow">Operational Overview</div>
+                <h2>Command Center</h2>
+                <p>Your highest-priority prediction actions and tournament status.</p>
+              </div>
+              <div class="header-actions">
+                <button class="button" type="button" data-open-modal="rulesModal">How It Works</button>
+                <button class="button" type="button" data-open-modal="teamsModal">View Teams</button>
+              </div>
+            </header>
 
-  if (!currentTeams.published || !teams.length) {
-    container.innerHTML = `
-      <div class="prediction-feature-card">
-        <div class="prediction-feature-empty">
-          Champion predictions will open once teams are published.
+            <div class="command-grid">
+              <article class="command-card primary-command">
+                <div class="primary-copy">
+                  <div id="priorityBadge" class="priority-badge"><span class="pulse"></span><span>Action Available</span></div>
+                  <h3 id="priorityTitle">Complete Your Tournament Bracket</h3>
+                  <p id="priorityText">Build the complete tournament path before the first match becomes currentMatch.</p>
+                </div>
+
+                <div class="primary-command-footer">
+                  <div class="reward-preview">
+                    <span id="priorityRewardLabel">Maximum Bracket Reward</span>
+                    <strong id="priorityRewardValue">+3,850 RP</strong>
+                  </div>
+                  <button id="priorityAction" class="button primary" type="button" data-go-section="pickem">Enter Tournament Pick’em</button>
+                </div>
+              </article>
+
+              <div class="command-side-stack">
+                <article class="command-card mini-command">
+                  <div class="mini-top">
+                    <div class="mini-icon">♛</div>
+                    <div class="mini-value"><span>Perfect Remaining</span><strong id="commandPerfectCount">0</strong></div>
+                  </div>
+                  <div>
+                    <h4 id="commandBracketTitle">Bracket Not Submitted</h4>
+                    <p id="commandBracketText">Complete all seven picks to secure Perfect Bracket eligibility.</p>
+                    <button class="button" type="button" data-go-section="pickem">Open Pick’em</button>
+                  </div>
+                </article>
+
+                <article class="command-card mini-command">
+                  <div class="mini-top">
+                    <div class="mini-icon">◉</div>
+                    <div class="mini-value"><span>Live Window</span><strong id="commandLiveState">Offline</strong></div>
+                  </div>
+                  <div>
+                    <h4 id="commandLiveTitle">Awaiting Next Match</h4>
+                    <p id="commandLiveText">Questions appear automatically when staff set the next matchup.</p>
+                    <button class="button" type="button" data-go-section="live">Open Live Console</button>
+                  </div>
+                </article>
+              </div>
+
+              <article class="command-card recent-command">
+                <div class="recent-copy">
+                  <div class="eyebrow">Predictor Snapshot</div>
+                  <h4 id="snapshotTitle">Rookie Predictor</h4>
+                  <p id="snapshotText">Your prediction history will build as tournament results are finalized.</p>
+                </div>
+                <div class="recent-stat"><span>Current Streak</span><strong id="commandCurrentStreak">0</strong></div>
+                <div class="recent-stat"><span>Best Streak</span><strong id="commandBestStreak">0</strong></div>
+                <div class="recent-stat"><span>Career RP</span><strong id="commandCareerRp">0</strong></div>
+              </article>
+            </div>
+          </section>
+
+          <!-- TOURNAMENT PICK'EM -->
+          <section id="panel-pickem" class="stage-panel" data-panel="pickem">
+            <header class="stage-header">
+              <div class="stage-title">
+                <div class="eyebrow">Tournament Campaign</div>
+                <h2>My Tournament Bracket</h2>
+                <p id="bracketHelper">Select a winner in every matchup before QF1 becomes currentMatch.</p>
+              </div>
+              <div class="header-actions">
+                <div class="completion-wrap">
+                  <span id="completionText" class="eyebrow">0 / 7</span>
+                  <div class="completion-track"><div id="completionFill" class="completion-fill"></div></div>
+                </div>
+                <button class="button" type="button" data-open-modal="teamsModal">Teams</button>
+                <button class="button" type="button" data-open-modal="rulesModal">Rules</button>
+              </div>
+            </header>
+
+            <div class="pickem-body">
+              <div class="bracket-viewport">
+                <div class="bracket">
+                  <section class="round">
+                    <div class="round-head"><span>Quarterfinals</span><strong>4 Picks</strong></div>
+                    <div id="qfMount" class="match-stack"></div>
+                  </section>
+                  <section class="round">
+                    <div class="round-head"><span>Semifinals</span><strong>2 Picks</strong></div>
+                    <div id="sfMount" class="match-stack"></div>
+                  </section>
+                  <section class="round">
+                    <div class="round-head"><span>Grand Final</span><strong>1 Pick</strong></div>
+                    <div id="finalMount" class="match-stack"></div>
+                  </section>
+                  <section class="round">
+                    <div class="round-head"><span>Predicted Champion</span><strong>+500 RP</strong></div>
+                    <div id="championMount" class="match-stack"></div>
+                  </section>
+                </div>
+              </div>
+
+              <div class="bracket-dock">
+                <div class="dock-copy">
+                  <div class="dock-glyph">◆</div>
+                  <div>
+                    <strong id="commandTitle">Complete Your Bracket</strong>
+                    <span id="commandText">Your draft is saved locally as you make selections.</span>
+                  </div>
+                </div>
+                <div class="dock-actions">
+                  <button id="saveDraftButton" class="button" type="button">Save Draft</button>
+                  <button id="submitBracketButton" class="button primary" type="button" disabled>Submit Bracket</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- LIVE PREDICTIONS -->
+          <section id="panel-live" class="stage-panel" data-panel="live">
+            <header class="stage-header">
+              <div class="stage-title">
+                <div class="eyebrow">Broadcast Prediction Channel</div>
+                <h2>Live Predictions</h2>
+                <p id="liveHeaderText">Questions open with nextMatch and lock when the matchup becomes currentMatch.</p>
+              </div>
+              <div class="header-actions">
+                <div id="liveStatusChip" class="status-chip"><i class="status-dot"></i><span>Awaiting Match</span></div>
+              </div>
+            </header>
+            <div id="livePanelMount" class="live-body"></div>
+          </section>
+
+          <!-- CAREER -->
+          <section id="panel-career" class="stage-panel" data-panel="career">
+            <header class="stage-header">
+              <div class="stage-title">
+                <div class="eyebrow">Long-Term Predictor Progression</div>
+                <h2>Prediction Career</h2>
+                <p>Rank, mastery, streaks, earnings and tournament history.</p>
+              </div>
+            </header>
+
+            <div class="career-body">
+              <div class="career-overview">
+                <article class="career-banner">
+                  <div class="career-emblem"><span id="careerRankLetter">R</span></div>
+                  <div class="career-rank-copy">
+                    <span>Current Predictor Rank</span>
+                    <h3 id="careerRankName">Rookie</h3>
+                    <p id="careerRankCaption">Build a prediction record to advance through the ranking ladder.</p>
+                  </div>
+                  <div id="careerStars" class="career-stars">★☆☆☆☆<small>Prediction Rating</small></div>
+                </article>
+
+                <div class="career-metrics">
+                  <article class="career-metric"><span>Accuracy</span><strong id="careerAccuracy">0%</strong><small id="careerRecord">0 correct / 0 total</small></article>
+                  <article class="career-metric"><span>Current Streak</span><strong id="careerCurrentStreak">0</strong><small>Active correct-pick run</small></article>
+                  <article class="career-metric"><span>Best Streak</span><strong id="careerBestStreak">0</strong><small>Career personal best</small></article>
+                  <article class="career-metric"><span>Prediction RP</span><strong id="careerRpEarned">0</strong><small>Lifetime earned</small></article>
+                </div>
+
+                <section class="history-panel">
+                  <div class="panel-subhead"><strong>Prediction History</strong><span id="historyCount">0 Entries</span></div>
+                  <div id="predictionHistory" class="history-list"></div>
+                </section>
+              </div>
+
+              <aside class="career-side">
+                <section class="side-card">
+                  <h4>Predictor Mastery</h4>
+                  <p>Mastery level rewards long-term participation. Rank continues to represent prediction skill.</p>
+                  <div class="mastery-large"><strong>LV <span id="careerLevel">1</span></strong><span id="careerMultiplier">1.00× RP</span></div>
+                  <div class="xp-track"><div id="careerXpFill" class="xp-fill"></div></div>
+                  <div class="xp-copy"><span id="careerXpText">0 / 100 XP</span><span id="careerNextBonus">Next bonus: Level 5</span></div>
+                </section>
+
+                <section class="side-card">
+                  <h4>Career Specialties</h4>
+                  <div class="milestone-list">
+                    <div class="milestone"><div class="milestone-icon">♛</div><div><strong>Champion Calls</strong><span>Correct tournament champions</span></div><b id="careerChampionCorrect">0</b></div>
+                    <div class="milestone"><div class="milestone-icon">◆</div><div><strong>Match Calls</strong><span>Correct matchup predictions</span></div><b id="careerMatchCorrect">0</b></div>
+                    <div class="milestone"><div class="milestone-icon">⚡</div><div><strong>Peak Streak</strong><span>Best consecutive run</span></div><b id="careerPeakStreak">0</b></div>
+                  </div>
+                </section>
+
+                <section class="side-card rank-ladder-card">
+                  <h4>Rank Ladder</h4>
+                  <p>Rookie → Analyst → Expert → Oracle → Legend. Accuracy and completed prediction volume determine your current skill rank.</p>
+                  <div class="reward-list">
+                    <div class="reward-row"><span>Analyst</span><strong>50% / 3 Picks</strong></div>
+                    <div class="reward-row"><span>Expert</span><strong>60% / 5 Picks</strong></div>
+                    <div class="reward-row"><span>Oracle</span><strong>70% / 8 Picks</strong></div>
+                    <div class="reward-row"><span>Legend</span><strong>80% / 10 Picks</strong></div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </section>
+        </section>
+
+        <aside class="intel-rail">
+          <section class="intel-section">
+            <div class="intel-title"><span>Tournament Intelligence</span><strong id="intelTournamentState">Upcoming</strong></div>
+            <div class="perfect-display"><strong id="perfectCount">0</strong><span>Perfect Brackets Remaining</span></div>
+            <div class="intel-list">
+              <div class="intel-row"><span>Your Bracket</span><strong id="myPerfectStatus">Not Submitted</strong></div>
+              <div class="intel-row"><span>Completion</span><strong id="intelCompletion">0 / 7</strong></div>
+              <div class="intel-row"><span>Live Window</span><strong id="intelLiveState">Offline</strong></div>
+            </div>
+          </section>
+
+          <section class="intel-section">
+            <div class="intel-title"><span>Reward Matrix</span><strong id="intelMultiplier">1.00×</strong></div>
+            <div class="reward-list">
+              <div class="reward-row"><span>Quarterfinal</span><strong id="rewardQf">+100 RP</strong></div>
+              <div class="reward-row"><span>Semifinal</span><strong id="rewardSf">+150 RP</strong></div>
+              <div class="reward-row"><span>Grand Final</span><strong id="rewardGf">+250 RP</strong></div>
+              <div class="reward-row"><span>Champion Pick</span><strong id="rewardChampion">+500 RP</strong></div>
+              <div class="reward-row"><span>Perfect Bracket</span><strong>+2,000 RP</strong></div>
+            </div>
+          </section>
+
+          <section class="intel-section">
+            <div class="intel-title"><span>Current Objective</span><strong>Priority</strong></div>
+            <div class="intel-list">
+              <div class="intel-row"><span id="objectiveText">Complete your bracket</span><strong id="objectiveProgress">0%</strong></div>
+            </div>
+          </section>
+
+          <div class="intel-footer">
+            <div class="system-status"><i></i><span>Prediction services connected</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="teamsModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="teamsTitle">
+      <div class="modal-header">
+        <div><span>Rivals Gauntlet Tournament</span><h2 id="teamsTitle">Tournament Teams</h2></div>
+        <button class="modal-close" type="button" data-close-modal="teamsModal">×</button>
+      </div>
+      <div class="modal-body"><div id="teamsGrid" class="teams-grid"></div></div>
+    </section>
+  </div>
+
+  <div id="rulesModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-header">
+        <div><span>Prediction Command Protocol</span><h2 id="rulesTitle">How It Works</h2></div>
+        <button class="modal-close" type="button" data-close-modal="rulesModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="rules">
+          <div class="rule"><div class="rule-number">1</div><div><h3>Build the complete bracket</h3><p>Quarterfinal winners populate the Semifinals. Semifinal winners populate the Grand Final and your final choice becomes the predicted champion.</p></div></div>
+          <div class="rule"><div class="rule-number">2</div><div><h3>Submit before the tournament begins</h3><p>The full bracket locks when the first matchup becomes currentMatch. Submitted brackets can be updated until that moment.</p></div></div>
+          <div class="rule"><div class="rule-number">3</div><div><h3>Chase a perfect bracket</h3><p>Every matchup must be correct to earn the exclusive Perfect Bracket reward. The remaining counter updates as official results are finalized.</p></div></div>
+          <div class="rule"><div class="rule-number">4</div><div><h3>Predict the upcoming live match</h3><p>Live questions open when staff set nextMatch. Saved answers remain selected and lock automatically when that matchup becomes currentMatch.</p></div></div>
+          <div class="rule"><div class="rule-number">5</div><div><h3>Advance your predictor career</h3><p>Accuracy determines rank. Long-term participation increases Predictor Level and unlocks a capped reward multiplier for standard prediction rewards.</p></div></div>
         </div>
       </div>
-    `;
-    return;
-  }
+    </section>
+  </div>
 
-  const myPick = championPredictions[currentUser?.uid];
-  const stats = getVoteStats(championPredictions, teams.map(team => team.teamKey));
+  <div id="toast" class="toast" aria-live="polite"></div>
 
-  const statusText = myPick
-    ? "🔒 Champion Pick Locked"
-    : "🟢 Champion Predictions Open";
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js?v=3"></script>
+  <script src="notifications.js?v=2"></script>
+  <script src="friends.js?v=2"></script>
+  <script src="global-header.js?v=12"></script>
 
-  const actionArea = myPick
-    ? `
-      <div class="prediction-feature-pick">
-        <span>Your Champion Pick</span>
-        <strong>${myPick.pickName}</strong>
-      </div>
-    `
-    : `
-      <div class="champion-pick-grid">
-        ${teams.map(team => `
-          <button
-            onclick="makePrediction('champion', '${team.teamKey}', '${team.teamName}', 'championPredictionStatus')">
-            ${team.teamName}
-          </button>
-        `).join("")}
-      </div>
-    `;
+  <script>
+    let tournamentId = "open1";
+    let currentUser = null;
+    let currentPlayer = {};
+    let siteData = {};
+    let teamData = {};
+    let submittedBrackets = {};
+    let myBracketRecord = null;
+    let nextMatchData = {};
+    let currentMatchLabel = "";
+    let activeSection = "command";
+    let activeLiveQuestion = "map1Winner";
 
-  container.innerHTML = `
-    <div class="prediction-feature-card">
+    let liveQuestionData = {};
+    let myLiveAnswers = {};
+    let myLiveAnswerRecords = {};
+    let liveAnswerListenerRef = null;
+    let liveAnswerListenerCallback = null;
+    let savingLiveAnswerKey = "";
 
-      <div class="prediction-feature-top">
-        <div>
-          <span class="prediction-feature-eyebrow">Champion Prediction</span>
-          <h3>Tournament Winner</h3>
-        </div>
+    let contextRefs = [];
+    let submittedBaseline = "";
+    let contextVersion = 0;
 
-        <div class="prediction-feature-reward">
-          🏆 +${CHAMPION_REWARD} RP
-        </div>
-      </div>
+    const picks = {QF1:"",QF2:"",QF3:"",QF4:"",SF1:"",SF2:"",GRAND:""};
+    const resolvedWinners = {QF1:"",QF2:"",QF3:"",QF4:"",SF1:"",SF2:"",GRAND:""};
+    const MATCH_ORDER = ["QF1","QF2","QF3","QF4","SF1","SF2","GRAND"];
+    const BASE_REWARDS = {QF:100,SF:150,GRAND:250,CHAMPION:500,PERFECT:2000,MAP1:50,EXACT_BO3:100,EXACT_BO5:150};
 
-      <div class="prediction-feature-status">
-        ${statusText}
-      </div>
+    function clean(value,fallback=""){return String(value ?? fallback).trim()}
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+    function clonePicks(source={}){return MATCH_ORDER.reduce((acc,id)=>({...acc,[id]:clean(source[id])}),{})}
+    function serializePicks(source=picks){return JSON.stringify(clonePicks(source))}
+    function showToast(message){
+      const toast=document.getElementById("toast");
+      toast.textContent=message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer=setTimeout(()=>toast.classList.remove("show"),2600);
+    }
+    function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
+    function initials(value){
+      const parts=clean(value,"RG").split(/\s+/).filter(Boolean);
+      return (parts.slice(0,2).map(part=>part[0]).join("")||"RG").toUpperCase();
+    }
+    function formatNumber(value){return Number(value||0).toLocaleString()}
 
-      ${actionArea}
+    function addContextRef(ref,event,callback){
+      ref.on(event,callback);
+      contextRefs.push({ref,event,callback});
+    }
+    function detachContextRefs(){
+      contextRefs.forEach(({ref,event,callback})=>ref.off(event,callback));
+      contextRefs=[];
+      detachLiveListener();
+    }
 
-      <div class="prediction-feature-votes">
-        <span>Community Champion Pick</span>
-        ${renderVoteBars(stats)}
-      </div>
+    function getTeamsArray(){
+      const teams=teamData.teams||{};
+      return Object.keys(teams)
+        .sort((a,b)=>Number(a.replace(/\D/g,""))-Number(b.replace(/\D/g,"")))
+        .map((teamKey,index)=>({
+          teamKey,
+          seed:index+1,
+          teamName:teamData.teamNames?.[teamKey]||`Team ${teamKey.replace("team","")}`,
+          logo:teamData.teamLogos?.[teamKey]||teamData.logos?.[teamKey]||"",
+          players:Array.isArray(teams[teamKey])?teams[teamKey]:[]
+        }));
+    }
+    function getTeam(teamKey){return getTeamsArray().find(team=>team.teamKey===teamKey)||null}
+    function getTeamName(teamKey){return getTeam(teamKey)?.teamName||"TBD"}
+    function getTeamLogo(teamKey){return getTeam(teamKey)?.logo||""}
+    function teamCrestMarkup(teamKey,className="team-crest"){
+      const team=getTeam(teamKey);
+      if(team?.logo)return `<span class="${className}"><img src="${escapeHtml(team.logo)}" alt="${escapeHtml(team.teamName)} logo"></span>`;
+      return `<span class="${className}">${escapeHtml(initials(team?.teamName||"TBD"))}</span>`;
+    }
 
-    </div>
-  `;
-}
+    function matchupTeams(matchId){
+      const teams=getTeamsArray();
+      return {
+        QF1:[teams[0]?.teamKey||"",teams[1]?.teamKey||""],
+        QF2:[teams[2]?.teamKey||"",teams[3]?.teamKey||""],
+        QF3:[teams[4]?.teamKey||"",teams[5]?.teamKey||""],
+        QF4:[teams[6]?.teamKey||"",teams[7]?.teamKey||""],
+        SF1:[picks.QF1,picks.QF2],
+        SF2:[picks.QF3,picks.QF4],
+        GRAND:[picks.SF1,picks.SF2]
+      }[matchId]||["",""];
+    }
 
-function renderMatchPrediction() {
-  const container = document.getElementById("matchPredictionArea");
-  if (!container) return;
+    function normalizeMatchLabel(value){
+      return clean(value)
+        .replace(/Grand Finals?/i,"GRAND")
+        .split("•")[0]
+        .trim()
+        .toUpperCase();
+    }
+    function matchIndex(label){return MATCH_ORDER.indexOf(normalizeMatchLabel(label))}
+    function tournamentHasStarted(){
+      const current=normalizeMatchLabel(currentMatchLabel||siteData.currentMatch);
+      return matchIndex(current)>=0;
+    }
+    function bracketLocked(){return tournamentHasStarted()||Boolean(myBracketRecord?.locked)}
+    function liveWindowLocked(){
+      const nextIndex=matchIndex(nextMatchData.label||nextMatchData.fullMatchId);
+      const currentIndex=matchIndex(currentMatchLabel||siteData.currentMatch);
+      return nextIndex>=0&&currentIndex>=nextIndex;
+    }
+    function bracketHasChanges(){
+      if(!myBracketRecord?.submitted)return true;
+      return serializePicks(picks)!==submittedBaseline;
+    }
 
-  const matchId = getCurrentMatchText();
+    function getPredictorStats(){
+      const stats=currentPlayer.predictionStats||{};
+      const correct=Number(stats.correct||0);
+      const total=Number(stats.total||0);
+      const accuracy=total?Math.round((correct/total)*100):0;
+      const currentStreak=Number(stats.currentStreak||0);
+      const bestStreak=Number(stats.bestStreak||0);
+      const rpEarned=Number(stats.rpEarned||0);
+      const championCorrect=Number(stats.championCorrect||0);
+      const matchCorrect=Number(stats.matchCorrect||0);
+      const level=Math.max(1,Number(stats.level||stats.predictorLevel||currentPlayer.predictorLevel||1));
+      const xp=Math.max(0,Number(stats.xp||stats.predictorXp||currentPlayer.predictorXp||0));
+      const xpIntoLevel=xp%100;
 
-  if (!matchId || matchId === "No Match Live" || matchId === "NO MATCH") {
-    container.innerHTML = `
-      <div class="prediction-feature-card">
-        <div class="prediction-feature-empty">
-          No prediction match is selected yet.
-        </div>
-      </div>
-    `;
-    return;
-  }
+      let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to advance through the ranking ladder.";
+      if(accuracy>=80&&total>=10){rank="Legend";rating="★★★★★";caption="Elite prediction accuracy across a proven body of tournament calls."}
+      else if(accuracy>=70&&total>=8){rank="Oracle";rating="★★★★☆";caption="High-confidence reads backed by a strong prediction record."}
+      else if(accuracy>=60&&total>=5){rank="Expert";rating="★★★☆☆";caption="Consistent tournament analysis with above-average accuracy."}
+      else if(accuracy>=50&&total>=3){rank="Analyst";rating="★★☆☆☆";caption="A developing record with reliable early prediction performance."}
 
-  const teamKeys = getCurrentMatchTeams().filter(Boolean);
+      return {correct,total,accuracy,currentStreak,bestStreak,rpEarned,championCorrect,matchCorrect,level,xp,xpIntoLevel,rank,rating,caption};
+    }
 
-  if (teamKeys.length < 2) {
-    container.innerHTML = `
-      <div class="prediction-feature-card">
-        <div class="prediction-feature-empty">
-          Match teams are not ready yet.
-        </div>
-      </div>
-    `;
-    return;
-  }
+    function predictorMultiplier(level){
+      if(level>=30)return 1.20;
+      if(level>=25)return 1.18;
+      if(level>=20)return 1.16;
+      if(level>=15)return 1.14;
+      if(level>=10)return 1.12;
+      if(level>=5)return 1.10;
+      return 1.00;
+    }
+    function nextMultiplierMilestone(level){
+      const milestones=[5,10,15,20,25,30];
+      return milestones.find(value=>value>level)||null;
+    }
+    function multipliedReward(base){return Math.round(Number(base||0)*predictorMultiplier(getPredictorStats().level))}
 
-  const predictionType = getPredictionType(matchId);
-  const isLocked = lockedPredictions[predictionType];
-  const predictionsForMatch = matchPredictions[predictionType] || {};
-  const myPick = predictionsForMatch[currentUser?.uid];
-  const stats = getVoteStats(predictionsForMatch, teamKeys);
+    function mapResolvedWinners(){
+      resolvedWinners.QF1=clean(siteData.qf1Winner);
+      resolvedWinners.QF2=clean(siteData.qf2Winner);
+      resolvedWinners.QF3=clean(siteData.qf3Winner);
+      resolvedWinners.QF4=clean(siteData.qf4Winner);
+      resolvedWinners.SF1=clean(siteData.sf1Winner);
+      resolvedWinners.SF2=clean(siteData.sf2Winner);
+      resolvedWinners.GRAND=clean(siteData.grandWinner||siteData.champion);
 
-  const teamA = getTeamName(teamKeys[0]);
-  const teamB = getTeamName(teamKeys[1]);
-
-  const statusText = isLocked
-    ? "🔒 Prediction Closed"
-    : myPick
-      ? "✅ Prediction Submitted"
-      : "🟢 Predictions Open";
-
-  const actionArea = isLocked
-    ? `<p class="prediction-feature-note">This match has started. Predictions are locked.</p>`
-    : myPick
-      ? `
-        <div class="prediction-feature-pick">
-          <span>Your Pick</span>
-          <strong>${myPick.pickName}</strong>
-        </div>
-      `
-      : `
-        <div class="prediction-feature-actions">
-          ${teamKeys.map(teamKey => `
-            <button
-              onclick="makePrediction('${predictionType}', '${teamKey}', '${getTeamName(teamKey)}', 'matchPredictionStatus')">
-              Pick ${getTeamName(teamKey)}
-            </button>
-          `).join("")}
-        </div>
-      `;
-
-  container.innerHTML = `
-    <div class="prediction-feature-card">
-
-      <div class="prediction-feature-top">
-        <div>
-          <span class="prediction-feature-eyebrow">Match Prediction</span>
-          <h3>${matchId}</h3>
-        </div>
-
-        <div class="prediction-feature-reward">
-          +${MATCH_REWARD} RP
-        </div>
-      </div>
-
-      <div class="prediction-feature-matchup">
-        <strong>${teamA}</strong>
-        <span>VS</span>
-        <strong>${teamB}</strong>
-      </div>
-
-      <div class="prediction-feature-status">
-        ${statusText}
-      </div>
-
-      ${actionArea}
-
-      <div class="prediction-feature-votes">
-        <span>Community Prediction</span>
-        ${renderVoteBars(stats)}
-      </div>
-
-    </div>
-  `;
-}
-
-function renderPredictionHistory() {
-  const container = document.getElementById("predictionHistory");
-  if (!container || !currentUser) return;
-
-  const items = [];
-
-  const championPick = championPredictions[currentUser.uid];
-
-  if (championPick) {
-    items.push({
-      type: "Champion Pick",
-      pickName: championPick.pickName,
-      reward: `Potential +${CHAMPION_REWARD} RP`,
-      icon: "🏆"
-    });
-  }
-
-  Object.keys(matchPredictions || {}).forEach(type => {
-    if (type === "champion") return;
-
-    const prediction = matchPredictions[type]?.[currentUser.uid];
-
-    if (prediction) {
-      items.push({
-        type: "Match Pick",
-        pickName: prediction.pickName,
-        reward: `Potential +${MATCH_REWARD} RP`,
-        icon: "⚔️"
+      Object.keys(resolvedWinners).forEach(id=>{
+        const value=resolvedWinners[id];
+        if(!value||getTeam(value))return;
+        const found=getTeamsArray().find(team=>clean(team.teamName).toLowerCase()===value.toLowerCase());
+        resolvedWinners[id]=found?.teamKey||value;
       });
     }
-  });
 
-  if (!items.length) {
-    container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Your submitted predictions will appear here.
-      </div>
-    `;
-    return;
-  }
+    function selectSection(section){
+      activeSection=section;
+      document.querySelectorAll(".section-tab").forEach(tab=>tab.classList.toggle("active",tab.dataset.section===section));
+      document.querySelectorAll(".stage-panel").forEach(panel=>panel.classList.toggle("active",panel.dataset.panel===section));
+      if(section==="live")renderLivePanel();
+      if(section==="career")renderCareer();
+    }
 
-  container.innerHTML = items.reverse().map(item => `
-    <div class="prediction-log-item">
+    function renderPlayerRail(){
+      const stats=getPredictorStats();
+      const multiplier=predictorMultiplier(stats.level);
+      const bonus=Math.round((multiplier-1)*100);
+      const nextMilestone=nextMultiplierMilestone(stats.level);
+      const displayName=currentPlayer.displayName||currentUser?.displayName||"Predictor";
+      const avatar=document.getElementById("identityAvatar");
 
-      <div class="prediction-log-icon">
-        ${item.icon}
-      </div>
+      const profileImage=clean(currentPlayer.profileImage||currentUser?.photoURL);
+      if(profileImage){
+        avatar.innerHTML=`<img src="${escapeHtml(profileImage)}" alt="${escapeHtml(displayName)} profile image">`;
+      }else{
+        avatar.textContent=initials(displayName||"Predictor");
+      }
 
-      <div class="prediction-log-main">
-        <span>${item.type}</span>
-        <strong>${item.pickName}</strong>
-        <small>Prediction submitted</small>
-      </div>
+      setText("identityName",displayName);
+      setText("identityRgId",currentPlayer.rgId?`RG ID • ${currentPlayer.rgId}`:"Rivals Gauntlet Competitor");
+      setText("predictionRank",stats.rank);
+      setText("predictionRating",stats.rating);
+      setText("rankEmblemLetter",stats.rank[0]);
+      setText("predictorLevel",stats.level);
+      setText("predictorMultiplier",`${multiplier.toFixed(2)}×`);
+      setText("railAccuracy",`${stats.accuracy}%`);
+      setText("railStreak",stats.currentStreak);
+      setText("railCorrect",stats.correct);
+      setText("railTotal",stats.total);
+      setText("railMultiplierBonus",`+${bonus}%`);
+      setText("predictorXpText",`${stats.xpIntoLevel} / 100 XP`);
+      setText("nextMultiplierText",nextMilestone?`Bonus at Level ${nextMilestone}`:"Maximum Bonus Active");
+      document.getElementById("predictorXpFill").style.width=`${stats.xpIntoLevel}%`;
+    }
 
-      <div class="prediction-log-reward">
-        ${item.reward}
-      </div>
+    function renderBracketTeam(matchId,teamKey){
+      const team=getTeam(teamKey);
+      const selected=picks[matchId]===teamKey;
+      const winner=resolvedWinners[matchId];
+      const resultClass=winner?(selected&&winner===teamKey?"correct":selected?"incorrect":""):"";
+      return `
+        <button class="bracket-team ${selected?"selected":""} ${resultClass}" type="button"
+          data-pick-match="${matchId}" data-pick-team="${escapeHtml(teamKey)}" ${bracketLocked()?"disabled":""}>
+          ${teamCrestMarkup(teamKey)}
+          <span class="team-copy"><strong>${escapeHtml(team?.teamName||"TBD")}</strong><span>Seed ${team?.seed||"-"}</span></span>
+          <span class="team-check">◆</span>
+        </button>`;
+    }
 
-    </div>
-  `).join("");
-}
+    function renderMatch(matchId,label){
+      const [a,b]=matchupTeams(matchId);
+      const empty=`<button class="bracket-team" disabled><span class="team-crest">-</span><span class="team-copy"><strong>TBD</strong><span>Awaiting previous result</span></span><span></span></button>`;
+      return `
+        <article class="match-card">
+          <div class="match-meta"><span>${escapeHtml(label)}</span><span class="${resolvedWinners[matchId]?"resolved":""}">${resolvedWinners[matchId]?"Final":"Pick Winner"}</span></div>
+          ${a?renderBracketTeam(matchId,a):empty}
+          ${b?renderBracketTeam(matchId,b):empty}
+        </article>`;
+    }
 
-function renderPredictionProfile() {
-  if (!currentPlayer) return;
+    function renderBracket(){
+      document.getElementById("qfMount").innerHTML=[
+        renderMatch("QF1","Quarterfinal 1"),renderMatch("QF2","Quarterfinal 2"),
+        renderMatch("QF3","Quarterfinal 3"),renderMatch("QF4","Quarterfinal 4")
+      ].join("");
+      document.getElementById("sfMount").innerHTML=[renderMatch("SF1","Semifinal 1"),renderMatch("SF2","Semifinal 2")].join("");
+      document.getElementById("finalMount").innerHTML=renderMatch("GRAND","Grand Finals");
+      document.getElementById("championMount").innerHTML=`
+        <div class="champion-stage">
+          <div class="champion-crown">♛</div>
+          <span>Predicted Champion</span>
+          <strong>${escapeHtml(picks.GRAND?getTeamName(picks.GRAND):"Awaiting Final Pick")}</strong>
+          <small>${picks.GRAND?`Potential +${multipliedReward(BASE_REWARDS.CHAMPION)} RP`:"Complete the bracket path"}</small>
+        </div>`;
+      updateCompletion();
+    }
 
-  const stats = currentPlayer.predictionStats || {};
+    function updateCompletion(){
+      const complete=MATCH_ORDER.filter(id=>Boolean(picks[id])).length;
+      const percent=Math.round((complete/MATCH_ORDER.length)*100);
+      const locked=bracketLocked();
+      const changed=bracketHasChanges();
+      const submitted=Boolean(myBracketRecord?.submitted);
+      const submit=document.getElementById("submitBracketButton");
 
-  const correct = Number(stats.correct || 0);
-  const total = Number(stats.total || 0);
-  const accuracy = total ? Math.round((correct / total) * 100) : 0;
+      setText("completionText",`${complete} / 7`);
+      setText("intelCompletion",`${complete} / 7`);
+      setText("objectiveProgress",`${percent}%`);
+      document.getElementById("completionFill").style.width=`${percent}%`;
 
-  const streak = Number(stats.currentStreak || 0);
-  const bestStreak = Number(stats.bestStreak || 0);
-  const rpEarned = Number(stats.rpEarned || 0);
+      submit.disabled=complete!==7||locked||(submitted&&!changed);
+      document.getElementById("saveDraftButton").disabled=locked;
 
-  let rating = "★☆☆☆☆";
-  let rank = "Rookie";
+      if(locked){
+        setText("commandTitle",submitted?"Bracket Locked":"Pick’em Closed");
+        setText("commandText",submitted?"Your tournament path is final. Official results now determine your bracket status.":"The tournament has started. New bracket entries are no longer accepted.");
+        submit.textContent=submitted?"Locked":"Closed";
+      }else if(submitted&&changed){
+        setText("commandTitle","Bracket Changes Ready");
+        setText("commandText","Update your submitted bracket before the tournament begins.");
+        submit.textContent="Update Bracket";
+      }else if(submitted){
+        setText("commandTitle","Bracket Submitted");
+        setText("commandText","Your Perfect Bracket eligibility is secured. You may still edit before the tournament begins.");
+        submit.textContent="Submitted";
+      }else if(complete===7){
+        setText("commandTitle","Ready to Submit");
+        setText("commandText","All seven matchup winners are selected. Submit to secure Perfect Bracket eligibility.");
+        submit.textContent="Submit Bracket";
+      }else{
+        setText("commandTitle","Complete Your Bracket");
+        setText("commandText",`${7-complete} picks remaining before submission.`);
+        submit.textContent="Submit Bracket";
+      }
+    }
 
-  if (accuracy >= 80 && total >= 10) {
-    rating = "★★★★★";
-    rank = "Legend";
-  } else if (accuracy >= 70 && total >= 8) {
-    rating = "★★★★☆";
-    rank = "Oracle";
-  } else if (accuracy >= 60 && total >= 5) {
-    rating = "★★★☆☆";
-    rank = "Expert";
-  } else if (accuracy >= 50 && total >= 3) {
-    rating = "★★☆☆☆";
-    rank = "Analyst";
-  }
+    function selectPick(matchId,teamKey){
+      if(bracketLocked())return;
+      picks[matchId]=teamKey;
 
-  document.getElementById("predictionRating").innerText = rating;
-document.getElementById("predictionAccuracy").innerText = `${accuracy}%`;
-document.getElementById("predictionCorrect").innerText = correct;
-document.getElementById("predictionTotal").innerText = total;
-document.getElementById("predictionRank").innerText = rank;
-}
+      if(matchId==="QF1"||matchId==="QF2"){
+        if(picks.SF1&&!matchupTeams("SF1").includes(picks.SF1)){picks.SF1="";picks.GRAND=""}
+      }
+      if(matchId==="QF3"||matchId==="QF4"){
+        if(picks.SF2&&!matchupTeams("SF2").includes(picks.SF2)){picks.SF2="";picks.GRAND=""}
+      }
+      if(matchId==="SF1"||matchId==="SF2"){
+        if(picks.GRAND&&!matchupTeams("GRAND").includes(picks.GRAND)){picks.GRAND=""}
+      }
 
-function renderPredictionCareer() {
-  if (!currentPlayer) return;
+      if(currentUser)localStorage.setItem(`rgPredictionDraft_${tournamentId}_${currentUser.uid}`,serializePicks(picks));
+      renderAll();
+    }
 
-  const stats = currentPlayer.predictionStats || {};
+    async function saveDraft(){
+      if(!currentUser){showToast("Sign in to save your bracket draft.");return}
+      if(bracketLocked())return;
+      try{
+        await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).set({
+          uid:currentUser.uid,
+          displayName:currentPlayer.displayName||currentUser.displayName||"",
+          picks:clonePicks(picks),
+          updatedAt:firebase.database.ServerValue.TIMESTAMP
+        });
+        showToast("Bracket draft saved to Prediction Command.");
+      }catch(error){
+        console.error("Bracket draft save failed:",error);
+        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this draft save.":"Bracket draft could not be saved.");
+      }
+    }
 
-  document.getElementById("careerRpEarned").innerText =
-    Number(stats.rpEarned || 0).toLocaleString();
+    async function submitBracket(){
+      if(!currentUser){showToast("Sign in to submit your bracket.");return}
+      if(bracketLocked()){showToast("Tournament Pick’em is already locked.");return}
+      if(!MATCH_ORDER.every(id=>Boolean(picks[id]))){showToast("Complete all seven picks first.");return}
 
-  document.getElementById("careerCurrentStreak").innerText =
-    Number(stats.currentStreak || 0);
+      const payload={
+        uid:currentUser.uid,
+        rgId:currentPlayer.rgId||"",
+        displayName:currentPlayer.displayName||currentUser.displayName||"",
+        profileImage:currentPlayer.profileImage||"",
+        picks:clonePicks(picks),
+        championPick:picks.GRAND,
+        submitted:true,
+        perfectEligible:true,
+        submittedAt:myBracketRecord?.submittedAt||firebase.database.ServerValue.TIMESTAMP,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      };
 
-  document.getElementById("careerBestStreak").innerText =
-    Number(stats.bestStreak || 0);
+      try{
+        await database.ref(`predictions/${tournamentId}/brackets/${currentUser.uid}`).set(payload);
+        await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).remove();
+        localStorage.removeItem(`rgPredictionDraft_${tournamentId}_${currentUser.uid}`);
+        submittedBaseline=serializePicks(picks);
+        showToast(myBracketRecord?.submitted?"Bracket updated.":"Bracket submitted. Perfect Bracket eligibility secured.");
+      }catch(error){
+        console.error("Bracket submission failed:",error);
+        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this bracket submission.":"Bracket could not be submitted.");
+      }
+    }
 
-  document.getElementById("careerChampionCorrect").innerText =
-    Number(stats.championCorrect || 0);
+    function countPerfectBrackets(){
+      const entries=Object.values(submittedBrackets||{}).filter(entry=>entry?.submitted&&entry?.perfectEligible);
+      const finalized=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id]));
+      if(!entries.length)return 0;
+      if(!finalized.length)return entries.length;
+      return entries.filter(entry=>finalized.every(id=>entry.picks?.[id]===resolvedWinners[id])).length;
+    }
 
-  document.getElementById("careerMatchCorrect").innerText =
-    Number(stats.matchCorrect || 0);
-}
-  
-function renderPredictionsPage() {
-  
-  renderPredictionProfile();
-renderChampionPrediction();
-renderMatchPrediction();
-renderPredictionCareer();
-renderPredictionHistory();
-}
+    function renderPerfect(){
+      const entries=Object.values(submittedBrackets||{}).filter(entry=>entry?.submitted&&entry?.perfectEligible);
+      const remaining=countPerfectBrackets();
+      const finalized=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id])).length;
+      const statusEl=document.getElementById("myPerfectStatus");
 
-auth.onAuthStateChanged(user => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+      setText("perfectCount",formatNumber(remaining));
+      setText("topPerfectCount",formatNumber(remaining));
+      setText("commandPerfectCount",formatNumber(remaining));
 
-  currentUser = user;
+      let status="Not Submitted";
+      let color="var(--gold)";
+      if(myBracketRecord?.submitted){
+        const alive=MATCH_ORDER.filter(id=>Boolean(resolvedWinners[id])).every(id=>myBracketRecord.picks?.[id]===resolvedWinners[id]);
+        status=alive?(finalized?"Still Alive":"Eligible"):"Eliminated";
+        color=alive?"var(--green)":"var(--red)";
+      }
+      statusEl.textContent=status;
+      statusEl.style.color=color;
+    }
 
-  database.ref("site/currentTournament").once("value").then(activeTournament => {
-    tournamentId = activeTournament.val() || "open1";
+    function renderTeams(){
+      const grid=document.getElementById("teamsGrid");
+      const teams=getTeamsArray();
+      if(!teamData.published||!teams.length){
+        grid.innerHTML=`<div class="team-card"><h3>Teams Not Published</h3><p style="color:var(--muted);font-size:10px">Rosters will appear when tournament staff publish them.</p></div>`;
+        return;
+      }
+      grid.innerHTML=teams.map(team=>`
+        <article class="team-card">
+          <div class="team-card-head"><h3>${escapeHtml(team.teamName)}</h3><span>${team.players.length} Players</span></div>
+          <div class="roster">
+            ${team.players.length?team.players.map((player,index)=>`
+              <a class="player" href="player.html?id=${encodeURIComponent(player.uid||"")}">
+                <span class="player-index">${index+1}</span>
+                <span><strong>${escapeHtml(player.displayName||"Player")}</strong><small>${escapeHtml(player.peakRank||"No Rank")} • ${escapeHtml(player.mainRole||"No Role")}</small></span>
+              </a>`).join(""):`<div class="player"><span class="player-index">-</span><span><strong>No players assigned</strong></span></div>`}
+          </div>
+        </article>`).join("");
+    }
 
-    database.ref(`players/${user.uid}`).on("value", snapshot => {
-      currentPlayer = snapshot.val() || {};
-      renderPredictionsPage();
+    function getNextMatchTeams(){
+      const label=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(label==="QF1")return matchupTeams("QF1");
+      if(label==="QF2")return matchupTeams("QF2");
+      if(label==="QF3")return matchupTeams("QF3");
+      if(label==="QF4")return matchupTeams("QF4");
+      if(label==="SF1")return [resolvedWinners.QF1,resolvedWinners.QF2].filter(Boolean);
+      if(label==="SF2")return [resolvedWinners.QF3,resolvedWinners.QF4].filter(Boolean);
+      if(label==="GRAND")return [resolvedWinners.SF1,resolvedWinners.SF2].filter(Boolean);
+      return [];
+    }
+
+    function detachLiveListener(){
+      if(liveAnswerListenerRef&&liveAnswerListenerCallback)liveAnswerListenerRef.off("value",liveAnswerListenerCallback);
+      liveAnswerListenerRef=null;
+      liveAnswerListenerCallback=null;
+      liveQuestionData={};
+      myLiveAnswers={};
+      myLiveAnswerRecords={};
+    }
+
+    function attachLiveListener(){
+      detachLiveListener();
+      if(!currentUser){renderLivePanel();return}
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(!matchKey){renderLivePanel();return}
+
+      liveAnswerListenerRef=database.ref(`predictions/${tournamentId}/live/${matchKey}`);
+      liveAnswerListenerCallback=snapshot=>{
+        liveQuestionData=snapshot.val()||{};
+        myLiveAnswerRecords={
+          map1Winner:liveQuestionData.map1Winner?.[currentUser.uid]||null,
+          exactScore:liveQuestionData.exactScore?.[currentUser.uid]||null
+        };
+        myLiveAnswers={
+          map1Winner:myLiveAnswerRecords.map1Winner?.answer||"",
+          exactScore:myLiveAnswerRecords.exactScore?.answer||""
+        };
+        renderLivePanel();
+        renderCommandCenter();
+      };
+      liveAnswerListenerRef.on("value",liveAnswerListenerCallback);
+    }
+
+    async function saveLiveAnswer(questionId,answer){
+      if(!currentUser){showToast("Sign in to make live predictions.");return}
+      if(liveWindowLocked()){showToast("This live prediction window is locked.");return}
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      if(!matchKey)return;
+
+      const previous=myLiveAnswers[questionId]||"";
+      const previousRecord=myLiveAnswerRecords[questionId]||null;
+      myLiveAnswers={...myLiveAnswers,[questionId]:answer};
+      savingLiveAnswerKey=`${questionId}:${answer}`;
+      renderLivePanel();
+
+      try{
+        await database.ref(`predictions/${tournamentId}/live/${matchKey}/${questionId}/${currentUser.uid}`).set({
+          uid:currentUser.uid,
+          rgId:currentPlayer.rgId||"",
+          displayName:currentPlayer.displayName||currentUser.displayName||"",
+          answer,
+          tournamentId,
+          matchId:matchKey,
+          questionId,
+          createdAt:previousRecord?.createdAt||firebase.database.ServerValue.TIMESTAMP,
+          updatedAt:firebase.database.ServerValue.TIMESTAMP
+        });
+        savingLiveAnswerKey="";
+        renderLivePanel();
+        showToast("Live prediction saved.");
+      }catch(error){
+        console.error("Live prediction save failed:",error);
+        myLiveAnswers={...myLiveAnswers,[questionId]:previous};
+        savingLiveAnswerKey="";
+        renderLivePanel();
+        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this prediction.":"Prediction could not be saved.");
+      }
+    }
+
+    function getCommunityStats(questionId,options){
+      const records=Object.values(liveQuestionData?.[questionId]||{}).filter(Boolean);
+      return options.map(option=>{
+        const count=records.filter(record=>record.answer===option.value).length;
+        return {...option,count,total:records.length,percent:records.length?Math.round((count/records.length)*100):0};
+      });
+    }
+
+    function renderLivePanel(){
+      const mount=document.getElementById("livePanelMount");
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      const teams=getNextMatchTeams().filter(Boolean);
+      const statusChip=document.getElementById("liveStatusChip");
+
+      if(!matchKey||teams.length<2){
+        statusChip.className="status-chip";
+        statusChip.innerHTML='<i class="status-dot" style="background:var(--dim);box-shadow:none"></i><span>Awaiting Match</span>';
+        setText("liveHeaderText","Questions open with nextMatch and lock when the matchup becomes currentMatch.");
+        mount.innerHTML=`
+          <div class="empty-live">
+            <div class="empty-sigil">◉</div>
+            <h3>No Live Prediction Window</h3>
+            <p>When tournament staff set a matchup as nextMatch, Map 1 and exact-series-score questions will appear here automatically.</p>
+          </div>`;
+        return;
+      }
+
+      const locked=liveWindowLocked();
+      const isBo5=matchKey==="GRAND";
+      const scores=isBo5?["3-0","3-1","3-2","0-3","1-3","2-3"]:["2-0","2-1","0-2","1-2"];
+      const questions={
+        map1Winner:{title:"Who Wins Map 1?",description:"Call the opening map winner before the series goes live.",base:BASE_REWARDS.MAP1,options:teams.map(teamKey=>({value:teamKey,label:getTeamName(teamKey)}))},
+        exactScore:{title:"Exact Series Score",description:`Predict the exact ${isBo5?"best-of-five":"best-of-three"} result. Scores are shown from ${getTeamName(teams[0])}'s perspective.`,base:isBo5?BASE_REWARDS.EXACT_BO5:BASE_REWARDS.EXACT_BO3,options:scores.map(score=>({value:score,label:score}))}
+      };
+      if(!questions[activeLiveQuestion])activeLiveQuestion="map1Winner";
+      const currentQuestion=questions[activeLiveQuestion];
+      const community=getCommunityStats(activeLiveQuestion,currentQuestion.options);
+      const multiplier=predictorMultiplier(getPredictorStats().level);
+
+      statusChip.className=`status-chip ${locked?"locked":""}`;
+      statusChip.innerHTML=`<i class="status-dot"></i><span>${locked?"Predictions Locked":"Predictions Open"}</span>`;
+      setText("liveHeaderText",locked?"This matchup is currentMatch. Saved answers are locked and remain visible.":"Make your calls now. Answers lock automatically when this matchup becomes currentMatch.");
+
+      mount.innerHTML=`
+        <section class="live-match-hero">
+          <div class="live-team">
+            ${teamCrestMarkup(teams[0],"live-crest")}
+            <div class="live-team-copy"><span>Team Alpha</span><strong>${escapeHtml(getTeamName(teams[0]))}</strong></div>
+          </div>
+          <div class="live-center"><span>${escapeHtml(matchKey)} • ${isBo5?"Best of 5":"Best of 3"}</span><strong>VS</strong><div class="lock-copy">${locked?"Window Locked":"Locks at currentMatch"}</div></div>
+          <div class="live-team right">
+            ${teamCrestMarkup(teams[1],"live-crest")}
+            <div class="live-team-copy"><span>Team Bravo</span><strong>${escapeHtml(getTeamName(teams[1]))}</strong></div>
+          </div>
+        </section>
+
+        <section class="question-console">
+          <nav class="question-nav" aria-label="Live prediction questions">
+            <div class="question-nav-title">Prediction Questions</div>
+            ${Object.entries(questions).map(([id,question],index)=>`
+              <button class="question-tab ${activeLiveQuestion===id?"active":""}" type="button" data-live-tab="${id}">
+                <span class="question-number">0${index+1}</span>
+                <span><strong>${escapeHtml(question.title)}</strong><small>+${multipliedReward(question.base)} RP potential</small></span>
+                <span class="question-state">${myLiveAnswers[id]?"✓":""}</span>
+              </button>`).join("")}
+          </nav>
+
+          <div class="question-stage">
+            <h3>${escapeHtml(currentQuestion.title)}</h3>
+            <p>${escapeHtml(currentQuestion.description)}</p>
+            <div class="answer-grid">
+              ${currentQuestion.options.map(option=>`
+                <button class="live-answer ${myLiveAnswers[activeLiveQuestion]===option.value?"selected":""} ${savingLiveAnswerKey===`${activeLiveQuestion}:${option.value}`?"saving":""}"
+                  type="button" data-live-question="${activeLiveQuestion}" data-live-answer="${escapeHtml(option.value)}" ${locked||Boolean(savingLiveAnswerKey)?"disabled":""}>
+                  ${escapeHtml(option.label)}
+                </button>`).join("")}
+            </div>
+          </div>
+
+          <aside class="question-intel">
+            <h4>Potential Reward</h4>
+            <div class="reward-value">+${multipliedReward(currentQuestion.base)} RP</div>
+            <div class="reward-breakdown">Base ${currentQuestion.base} RP • Predictor Mastery ${multiplier.toFixed(2)}×</div>
+            <div class="community-block">
+              <h4>Community Calls</h4>
+              ${community.length?community.map(item=>`
+                <div class="community-row">
+                  <div class="community-row-head"><span>${escapeHtml(item.label)}</span><span>${item.percent}%</span></div>
+                  <div class="community-track"><div class="community-fill" style="width:${item.percent}%"></div></div>
+                </div>`).join(""):`<p style="color:var(--dim);font-size:8px">No community answers yet.</p>`}
+            </div>
+          </aside>
+        </section>`;
+    }
+
+    function getHistoryEntries(){
+      const raw=currentPlayer.predictionHistory||currentPlayer.predictionsHistory||{};
+      let entries=Array.isArray(raw)?raw:Object.values(raw||{});
+      entries=entries.filter(Boolean).map(entry=>({
+        type:entry.type||entry.questionId||"Prediction",
+        pickName:entry.pickName||entry.answerName||entry.answer||entry.pick||"Submitted Pick",
+        result:entry.result||entry.status||"pending",
+        reward:Number(entry.reward||entry.rpEarned||0),
+        timestamp:Number(entry.resolvedAt||entry.updatedAt||entry.createdAt||0)
+      }));
+
+      if(myBracketRecord?.submitted){
+        entries.push({type:"Tournament Pick’em",pickName:`Champion: ${getTeamName(myBracketRecord.championPick||myBracketRecord.picks?.GRAND)}`,result:"pending",reward:0,timestamp:Number(myBracketRecord.updatedAt||myBracketRecord.submittedAt||0)});
+      }
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      Object.entries(myLiveAnswers).forEach(([questionId,answer])=>{
+        if(answer)entries.push({type:questionId==="map1Winner"?`${matchKey} • Map 1`:`${matchKey} • Exact Score`,pickName:questionId==="map1Winner"?getTeamName(answer):answer,result:liveWindowLocked()?"locked":"pending",reward:0,timestamp:Number(myLiveAnswerRecords[questionId]?.updatedAt||Date.now())});
+      });
+
+      return entries.sort((a,b)=>b.timestamp-a.timestamp).slice(0,20);
+    }
+
+    function renderCareer(){
+      const stats=getPredictorStats();
+      const multiplier=predictorMultiplier(stats.level);
+      const nextMilestone=nextMultiplierMilestone(stats.level);
+      const entries=getHistoryEntries();
+
+      setText("careerRankLetter",stats.rank[0]);
+      setText("careerRankName",stats.rank);
+      setText("careerRankCaption",stats.caption);
+      setText("careerStars",stats.rating);
+      document.getElementById("careerStars").innerHTML=`${stats.rating}<small>Prediction Rating</small>`;
+      setText("careerAccuracy",`${stats.accuracy}%`);
+      setText("careerRecord",`${stats.correct} correct / ${stats.total} total`);
+      setText("careerCurrentStreak",stats.currentStreak);
+      setText("careerBestStreak",stats.bestStreak);
+      setText("careerRpEarned",formatNumber(stats.rpEarned));
+      setText("careerLevel",stats.level);
+      setText("careerMultiplier",`${multiplier.toFixed(2)}× RP`);
+      setText("careerXpText",`${stats.xpIntoLevel} / 100 XP`);
+      setText("careerNextBonus",nextMilestone?`Next bonus: Level ${nextMilestone}`:"Maximum bonus active");
+      setText("careerChampionCorrect",stats.championCorrect);
+      setText("careerMatchCorrect",stats.matchCorrect);
+      setText("careerPeakStreak",stats.bestStreak);
+      document.getElementById("careerXpFill").style.width=`${stats.xpIntoLevel}%`;
+      setText("historyCount",`${entries.length} ${entries.length===1?"Entry":"Entries"}`);
+
+      const container=document.getElementById("predictionHistory");
+      if(!entries.length){
+        container.innerHTML=`<div class="empty-state"><strong>No prediction history yet</strong><span>Submitted and resolved predictions will appear here.</span></div>`;
+        return;
+      }
+      container.innerHTML=entries.map(entry=>{
+        const normalized=clean(entry.result).toLowerCase();
+        const resultClass=normalized.includes("correct")||normalized.includes("won")?"correct":normalized.includes("incorrect")||normalized.includes("lost")?"incorrect":"pending";
+        const resultLabel=resultClass==="correct"?"Correct":resultClass==="incorrect"?"Incorrect":normalized==="locked"?"Locked":"Pending";
+        return `<article class="history-item">
+          <div class="history-icon">${resultClass==="correct"?"✓":resultClass==="incorrect"?"×":"◆"}</div>
+          <div class="history-copy"><strong>${escapeHtml(entry.type)}</strong><span>${escapeHtml(entry.pickName)}</span></div>
+          <div class="history-result ${resultClass}">${entry.reward?`+${formatNumber(entry.reward)} RP`:resultLabel}</div>
+        </article>`;
+      }).join("");
+    }
+
+    function renderCommandCenter(){
+      const stats=getPredictorStats();
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      const teams=getNextMatchTeams().filter(Boolean);
+      const complete=MATCH_ORDER.filter(id=>Boolean(picks[id])).length;
+      const submitted=Boolean(myBracketRecord?.submitted);
+      const locked=bracketLocked();
+      const liveOpen=Boolean(matchKey&&teams.length>=2&&!liveWindowLocked());
+
+      let priorityTitle="Complete Your Tournament Bracket";
+      let priorityText="Build the complete tournament path before the first match becomes currentMatch.";
+      let actionText="Enter Tournament Pick’em";
+      let actionSection="pickem";
+      let rewardLabel="Maximum Bracket Reward";
+      let rewardValue=`+${formatNumber(multipliedReward(4*BASE_REWARDS.QF+2*BASE_REWARDS.SF+BASE_REWARDS.GRAND+BASE_REWARDS.CHAMPION)+BASE_REWARDS.PERFECT)} RP`;
+      let badgeText="Action Available";
+
+      if(liveOpen){
+        priorityTitle=`${matchKey} Live Predictions Are Open`;
+        priorityText=`Call Map 1 and the exact series score for ${getTeamName(teams[0])} versus ${getTeamName(teams[1])}.`;
+        actionText="Enter Live Predictions";
+        actionSection="live";
+        rewardLabel="Available Live Rewards";
+        rewardValue=`+${multipliedReward(BASE_REWARDS.MAP1+(matchKey==="GRAND"?BASE_REWARDS.EXACT_BO5:BASE_REWARDS.EXACT_BO3))} RP`;
+        badgeText="Live Window Open";
+      }else if(submitted){
+        priorityTitle=locked?"Your Bracket Is Locked":"Tournament Bracket Submitted";
+        priorityText=locked?"Official results now determine your remaining bracket path and Perfect Bracket status.":"Perfect Bracket eligibility is secured. You can still update picks before the tournament begins.";
+        actionText="Review Tournament Pick’em";
+        actionSection="pickem";
+        rewardLabel="Perfect Brackets Remaining";
+        rewardValue=formatNumber(countPerfectBrackets());
+        badgeText=locked?"Tournament Active":"Submission Secured";
+      }
+
+      setText("priorityTitle",priorityTitle);
+      setText("priorityText",priorityText);
+      setText("priorityAction",actionText);
+      document.getElementById("priorityAction").dataset.goSection=actionSection;
+      setText("priorityRewardLabel",rewardLabel);
+      setText("priorityRewardValue",rewardValue);
+      document.getElementById("priorityBadge").querySelector("span:last-child").textContent=badgeText;
+
+      setText("commandBracketTitle",submitted?(locked?"Bracket Locked":"Bracket Submitted"):complete===7?"Ready to Submit":"Bracket Incomplete");
+      setText("commandBracketText",submitted?`${complete}/7 picks secured. ${locked?"No further edits are available.":"Edits remain open until the tournament begins."}`:`${complete}/7 picks selected. Complete the full path to secure eligibility.`);
+      setText("commandLiveState",liveOpen?"Open":liveWindowLocked()?"Locked":"Offline");
+      setText("commandLiveTitle",matchKey&&teams.length>=2?`${matchKey}: ${getTeamName(teams[0])} vs ${getTeamName(teams[1])}`:"Awaiting Next Match");
+      setText("commandLiveText",liveOpen?"Two prediction questions are available now.":liveWindowLocked()?"This matchup is currentMatch and all saved answers are locked.":"Questions appear automatically when staff set the next matchup.");
+      setText("snapshotTitle",`${stats.rank} Predictor • Level ${stats.level}`);
+      setText("snapshotText",stats.total?`${stats.accuracy}% accuracy across ${stats.total} completed predictions.`:"Your prediction history will build as tournament results are finalized.");
+      setText("commandCurrentStreak",stats.currentStreak);
+      setText("commandBestStreak",stats.bestStreak);
+      setText("commandCareerRp",formatNumber(stats.rpEarned));
+    }
+
+    function renderIntel(){
+      const stats=getPredictorStats();
+      const multiplier=predictorMultiplier(stats.level);
+      const started=tournamentHasStarted();
+      const complete=MATCH_ORDER.filter(id=>Boolean(picks[id])).length;
+      const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
+      const teams=getNextMatchTeams().filter(Boolean);
+      const liveState=matchKey&&teams.length>=2?(liveWindowLocked()?"Locked":"Open"):"Offline";
+
+      setText("intelTournamentState",started?"Live":"Upcoming");
+      setText("intelLiveState",liveState);
+      setText("intelMultiplier",`${multiplier.toFixed(2)}×`);
+      setText("rewardQf",`+${multipliedReward(BASE_REWARDS.QF)} RP`);
+      setText("rewardSf",`+${multipliedReward(BASE_REWARDS.SF)} RP`);
+      setText("rewardGf",`+${multipliedReward(BASE_REWARDS.GRAND)} RP`);
+      setText("rewardChampion",`+${multipliedReward(BASE_REWARDS.CHAMPION)} RP`);
+      setText("objectiveText",myBracketRecord?.submitted?(liveState==="Open"?"Complete live predictions":"Maintain predictor streak"):"Complete your bracket");
+      setText("objectiveProgress",myBracketRecord?.submitted?(liveState==="Open"?`${Object.values(myLiveAnswers).filter(Boolean).length}/2`:stats.currentStreak):`${Math.round((complete/7)*100)}%`);
+    }
+
+    function renderLockState(){
+      const locked=bracketLocked();
+      const chip=document.getElementById("pickemStatusChip");
+      chip.classList.toggle("locked",locked);
+      setText("pickemStatusText",locked?"Pick’em Locked":"Pick’em Open");
+      setText("bracketHelper",locked?"The tournament has started. Submitted brackets are final.":"Select a winner in every matchup before QF1 becomes currentMatch.");
+    }
+
+    function renderAll(){
+      mapResolvedWinners();
+      setText("tournamentName",siteData.eventName||"Rivals Gauntlet Open #1");
+      setText("tournamentSub",siteData.status?`${siteData.status} • Tournament prediction operations`:"Tournament intelligence, live calls and predictor progression.");
+      renderPlayerRail();
+      renderLockState();
+      renderBracket();
+      renderPerfect();
+      renderTeams();
+      renderLivePanel();
+      renderCareer();
+      renderCommandCenter();
+      renderIntel();
+    }
+
+    function openModal(id){
+      document.getElementById(id)?.classList.add("show");
+      document.getElementById(id)?.setAttribute("aria-hidden","false");
+      document.body.classList.add("modal-open");
+    }
+    function closeModal(id){
+      document.getElementById(id)?.classList.remove("show");
+      document.getElementById(id)?.setAttribute("aria-hidden","true");
+      if(!document.querySelector(".modal-backdrop.show"))document.body.classList.remove("modal-open");
+    }
+
+    async function loadLocalOrRemoteDraft(version){
+      if(!currentUser||version!==contextVersion||myBracketRecord?.submitted)return;
+      try{
+        const remote=await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).once("value");
+        if(version!==contextVersion||myBracketRecord?.submitted)return;
+        const remotePicks=remote.val()?.picks||{};
+        const localKey=`rgPredictionDraft_${tournamentId}_${currentUser.uid}`;
+        const legacyKey=`rgPredictionDraft_${tournamentId}`;
+        let localPicks={};
+        try{localPicks=JSON.parse(localStorage.getItem(localKey)||localStorage.getItem(legacyKey)||"{}")||{}}catch{}
+        const source=Object.keys(remotePicks).length?remotePicks:localPicks;
+        MATCH_ORDER.forEach(id=>{if(source[id])picks[id]=source[id]});
+        renderAll();
+      }catch(error){console.warn("Draft load failed:",error)}
+    }
+
+    function attachTournamentContext(){
+      if(!currentUser||!tournamentId)return;
+      detachContextRefs();
+      const version=++contextVersion;
+      MATCH_ORDER.forEach(id=>picks[id]="");
+      myBracketRecord=null;
+      submittedBaseline="";
+
+      addContextRef(database.ref(`players/${currentUser.uid}`),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        currentPlayer=snapshot.val()||{};
+        renderAll();
+      });
+      addContextRef(database.ref("site"),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        siteData=snapshot.val()||{};
+        currentMatchLabel=siteData.currentMatch||"";
+        renderAll();
+      });
+      addContextRef(database.ref(`teams/${tournamentId}`),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        teamData=snapshot.val()||{};
+        renderAll();
+      });
+      addContextRef(database.ref(`predictions/${tournamentId}/brackets`),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        submittedBrackets=snapshot.val()||{};
+        renderAll();
+      });
+      addContextRef(database.ref(`predictions/${tournamentId}/brackets/${currentUser.uid}`),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        myBracketRecord=snapshot.val()||null;
+        if(myBracketRecord?.picks){
+          const recordPicks=clonePicks(myBracketRecord.picks);
+          MATCH_ORDER.forEach(id=>picks[id]=recordPicks[id]);
+          submittedBaseline=serializePicks(recordPicks);
+        }
+        renderAll();
+      });
+      addContextRef(database.ref("broadcastCountdown/upNext"),"value",snapshot=>{
+        if(version!==contextVersion)return;
+        nextMatchData=snapshot.val()||{};
+        attachLiveListener();
+        renderAll();
+      });
+
+      loadLocalOrRemoteDraft(version);
+    }
+
+    document.addEventListener("click",event=>{
+      const sectionTab=event.target.closest("[data-section]");
+      if(sectionTab){selectSection(sectionTab.dataset.section);return}
+
+      const goSection=event.target.closest("[data-go-section]");
+      if(goSection){selectSection(goSection.dataset.goSection);return}
+
+      const pick=event.target.closest("[data-pick-match]");
+      if(pick){selectPick(pick.dataset.pickMatch,pick.dataset.pickTeam);return}
+
+      const liveTab=event.target.closest("[data-live-tab]");
+      if(liveTab){activeLiveQuestion=liveTab.dataset.liveTab;renderLivePanel();return}
+
+      const live=event.target.closest("[data-live-question]");
+      if(live){saveLiveAnswer(live.dataset.liveQuestion,live.dataset.liveAnswer);return}
+
+      const opener=event.target.closest("[data-open-modal]");
+      if(opener){openModal(opener.dataset.openModal);return}
+
+      const closer=event.target.closest("[data-close-modal]");
+      if(closer){closeModal(closer.dataset.closeModal);return}
     });
 
-    database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
-      currentTournament = snapshot.val() || {};
-      renderPredictionsPage();
+    document.getElementById("saveDraftButton").addEventListener("click",saveDraft);
+    document.getElementById("submitBracketButton").addEventListener("click",submitBracket);
+
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop=>{
+      backdrop.addEventListener("click",event=>{if(event.target===backdrop)closeModal(backdrop.id)});
+    });
+    document.addEventListener("keydown",event=>{
+      if(event.key==="Escape")document.querySelectorAll(".modal-backdrop.show").forEach(modal=>closeModal(modal.id));
     });
 
-    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
-      currentTeams = snapshot.val() || {};
-      renderPredictionsPage();
+    auth.onAuthStateChanged(user=>{
+      currentUser=user||null;
+      currentPlayer={};
+      if(!user){window.location.href="login.html";return}
+      attachTournamentContext();
     });
 
-    database.ref("site").on("value", snapshot => {
-      siteData = snapshot.val() || {};
-      renderPredictionsPage();
+    database.ref("site/currentTournament").on("value",snapshot=>{
+      const nextTournament=snapshot.val()||"open1";
+      if(nextTournament===tournamentId&&contextRefs.length)return;
+      tournamentId=nextTournament;
+      attachTournamentContext();
     });
 
-   database.ref("broadcastCountdown/upNext").on("value", snapshot => {
-  const next = snapshot.val() || {};
-
-  const fullMatchId = matchesFromLabel(next.label);
-
-  nextMatchData = {
-    ...next,
-    fullMatchId
-  };
-
-  renderPredictionsPage();
-});
-    
-    database.ref(`predictions/${tournamentId}/champion`).on("value", snapshot => {
-      championPredictions = snapshot.val() || {};
-      renderPredictionsPage();
-    });
-
-database.ref(`predictionLocks/${tournamentId}`).on("value", snapshot => {
-  lockedPredictions = snapshot.val() || {};
-  renderPredictionsPage();
-});
-    
-    database.ref(`predictions/${tournamentId}`).on("value", snapshot => {
-      matchPredictions = snapshot.val() || {};
-      renderPredictionsPage();
-    });
-  });
-});
-
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
-</script>
-
+    selectSection("command");
+  </script>
 </body>
 </html>

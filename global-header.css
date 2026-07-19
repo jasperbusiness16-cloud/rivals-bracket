@@ -858,3 +858,80 @@ body.rg-overlay-open { overflow: hidden; }
   #globalHeader * { scroll-behavior: auto !important; }
 }
 
+/* =========================================================
+   HEADER ENERGY — BOTTOM EDGE SWEEP ONLY
+   Follows the bottom of the header when closed,
+   and the bottom of the mobile dropdown when open.
+   ========================================================= */
+
+.rg-header__energy {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  width: auto;
+  height: auto;
+
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rg-header__energy::before {
+  content: "";
+
+  position: absolute;
+  top: auto;
+  right: auto;
+  bottom: 0;
+  left: -260px;
+
+  width: 260px;
+  height: 2px;
+  padding: 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(126, 87, 255, 0.08) 15%,
+    rgba(157, 130, 255, 0.55) 42%,
+    rgba(236, 230, 255, 1) 50%,
+    rgba(157, 130, 255, 0.55) 58%,
+    rgba(126, 87, 255, 0.08) 85%,
+    transparent 100%
+  );
+
+  -webkit-mask: none;
+  mask: none;
+
+  filter:
+    drop-shadow(
+      0 0 5px rgba(157, 130, 255, 0.8)
+    );
+
+  opacity: 0.9;
+
+  animation:
+    rgHeaderBottomSweep
+    6s
+    linear
+    infinite;
+}
+
+.rg-header__energy::after {
+  content: none;
+  display: none;
+}
+
+.rg-header:hover .rg-header__energy::before {
+  animation-duration: 6s;
+}
+
+@keyframes rgHeaderBottomSweep {
+  from {
+    left: -260px;
+  }
+
+  to {
+    left: 100%;
+  }
+}

@@ -25,7 +25,48 @@
     @media(max-width:980px){.hero{grid-template-columns:1fr}.event{border-top:1px solid var(--line);border-left:0}.app-state.visible{grid-template-columns:1fr}.state-side{border-top:1px solid var(--line);border-left:0}.client{grid-template-columns:175px minmax(0,1fr)}.summary{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--line);border-left:0}.summary-section{border-right:1px solid var(--line);border-bottom:0}.summary-section:last-child{border-right:0}.review-grid{grid-template-columns:1fr}.review-group.full{grid-column:auto}}
     @media(max-width:720px){.page{width:min(calc(100% - 14px),var(--max));margin-top:10px}.hero-copy{padding:26px 18px}.hero h1{font-size:46px}.hero p{font-size:12px}.event{padding:19px}.client{display:block}.client.locked{display:none}.steps{display:none}.mobile-steps{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);background:#09080e}.mobile-step{min-width:max-content;min-height:47px;padding:0 15px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.mobile-step.active{background:rgba(168,85,247,.055);box-shadow:inset 0 -3px var(--purple);color:var(--purple2)}.mobile-step.complete{color:#8fe8b8}.form-head{align-items:flex-start;flex-direction:column;padding:18px 17px}.progress-copy{text-align:left}.form-step{padding:18px 17px 20px}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.player-card{grid-template-columns:55px minmax(0,1fr)}.avatar,.avatar-fallback{width:55px;height:55px}.player-card .btn{grid-column:1/-1}.profile-grid{grid-template-columns:1fr}.readiness{grid-template-columns:1fr}.form-footer{align-items:stretch;flex-direction:column;padding:13px 17px}.footer-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.footer-actions .btn{width:100%}.summary{display:block}.summary-section{border-right:0;border-bottom:1px solid var(--line)}.summary-section:last-child{border-bottom:0}}
     @media(max-width:470px){.event-grid{grid-template-columns:1fr}.actions{display:grid;grid-template-columns:1fr}.actions .btn{width:100%}.footer-actions{grid-template-columns:1fr}.review-row{display:grid}.review-row strong{max-width:none;text-align:left}}
-  </style>
+ 
+
+
+
+/* Remove the confusing secondary application sidebar */
+.summary {
+  display: none !important;
+}
+
+/* Expand the actual application workspace */
+.client {
+  grid-template-columns:
+    215px
+    minmax(0, 1fr);
+}
+
+@media (max-width: 1220px) {
+  .client {
+    grid-template-columns:
+      190px
+      minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .client {
+    grid-template-columns:
+      175px
+      minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .client {
+    display: block;
+  }
+}
+
+
+
+
+   </style>
 </head>
 <body data-page="apply">
   <div id="globalHeader"></div>

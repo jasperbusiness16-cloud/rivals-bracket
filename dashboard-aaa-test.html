@@ -1677,7 +1677,7 @@ textarea {
       </div>
 
       <div class="top-actions">
-        <div id="dashboardNotificationMount"></div>
+       
 
         <a
           id="topProfileBtn"
@@ -5006,16 +5006,7 @@ auth.onAuthStateChanged(currentUser => {
       );
   }
 
-  if (
-    window.RGNotificationCenter &&
-    typeof RGNotificationCenter.init ===
-      "function"
-  ) {
-    RGNotificationCenter.init(
-      user.uid,
-      "#dashboardNotificationMount"
-    );
-  }
+  
 
   database
     .ref(

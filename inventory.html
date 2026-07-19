@@ -175,12 +175,7 @@
       border-radius: 8px;
 
       background:
-        rgba(
-          255,
-          255,
-          255,
-          0.025
-        );
+        rgba(255, 255, 255, 0.025);
 
       color: #e7e0ec;
 
@@ -199,30 +194,15 @@
       transform: translateY(-1px);
 
       border-color:
-        rgba(
-          192,
-          132,
-          252,
-          0.48
-        );
+        rgba(192, 132, 252, 0.48);
 
       background:
-        rgba(
-          168,
-          85,
-          247,
-          0.07
-        );
+        rgba(168, 85, 247, 0.07);
     }
 
     .client-button.primary {
       border-color:
-        rgba(
-          208,
-          156,
-          255,
-          0.5
-        );
+        rgba(208, 156, 255, 0.5);
 
       background:
         linear-gradient(
@@ -234,6 +214,16 @@
       color: white;
     }
 
+    .client-button.danger {
+      border-color:
+        rgba(239, 91, 104, 0.42);
+
+      background:
+        rgba(239, 91, 104, 0.07);
+
+      color: #ffb1b8;
+    }
+
     .client-button:disabled {
       cursor: not-allowed;
       opacity: 0.45;
@@ -241,18 +231,31 @@
     }
 
     .empty-state {
-      min-height: 190px;
+      min-height: 170px;
 
       display: grid;
       place-items: center;
 
-      padding: 30px;
+      padding: 28px;
 
       color: var(--dim);
 
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.5;
       text-align: center;
+    }
+
+    .page-status {
+      min-height: 19px;
+
+      margin:
+        12px
+        2px
+        0;
+
+      color: var(--muted);
+
+      font-size: 10px;
     }
 
     /* =====================================================
@@ -260,7 +263,7 @@
        ===================================================== */
 
     .inventory-header {
-      min-height: 130px;
+      min-height: 135px;
 
       display: flex;
       align-items: flex-end;
@@ -292,7 +295,7 @@
     }
 
     .inventory-title p {
-      max-width: 690px;
+      max-width: 720px;
 
       margin:
         16px
@@ -310,9 +313,9 @@
 
       grid-template-columns:
         repeat(
-          3,
+          4,
           minmax(
-            110px,
+            100px,
             1fr
           )
         );
@@ -322,20 +325,15 @@
         var(--line);
 
       background:
-        rgba(
-          12,
-          11,
-          18,
-          0.78
-        );
+        rgba(12, 11, 18, 0.78);
     }
 
     .summary-stat {
       min-width: 0;
 
       padding:
-        15px
-        18px;
+        14px
+        17px;
 
       border-left:
         1px solid
@@ -353,7 +351,7 @@
 
       font-size: 8px;
       font-weight: 800;
-      letter-spacing: 0.9px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
@@ -362,12 +360,103 @@
 
       margin-top: 4px;
 
-      font-size: 23px;
+      font-size: 22px;
       line-height: 1;
     }
 
     /* =====================================================
-       MAIN CLIENT
+       UNOPENED REWARD ALERT
+       ===================================================== */
+
+    .unopened-alert {
+      display: none;
+
+      margin-bottom: 13px;
+
+      border:
+        1px solid
+        rgba(242, 201, 105, 0.34);
+
+      background:
+        linear-gradient(
+          100deg,
+          rgba(242, 201, 105, 0.08),
+          transparent 55%
+        ),
+        #100e12;
+    }
+
+    .unopened-alert.visible {
+      display: grid;
+
+      grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 15px;
+
+      padding:
+        14px
+        16px;
+    }
+
+    .unopened-alert-icon {
+      width: 43px;
+      height: 43px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(242, 201, 105, 0.35);
+
+      background:
+        rgba(242, 201, 105, 0.07);
+
+      color: var(--yellow);
+
+      font-size: 17px;
+    }
+
+    .unopened-alert-copy {
+      min-width: 0;
+    }
+
+    .unopened-alert-copy span {
+      display: block;
+
+      color: var(--yellow);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .unopened-alert-copy strong {
+      display: block;
+
+      margin-top: 3px;
+
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .unopened-alert-copy small {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    /* =====================================================
+       CLIENT
        ===================================================== */
 
     .inventory-client {
@@ -375,24 +464,14 @@
 
       border:
         1px solid
-        rgba(
-          192,
-          132,
-          252,
-          0.28
-        );
+        rgba(192, 132, 252, 0.28);
 
       border-radius: 14px;
 
       background:
         radial-gradient(
           circle at 93% 4%,
-          rgba(
-            168,
-            85,
-            247,
-            0.11
-          ),
+          rgba(168, 85, 247, 0.11),
           transparent 25%
         ),
         var(--surface);
@@ -419,7 +498,7 @@
 
       padding:
         0
-        20px;
+        19px;
 
       border: 0;
 
@@ -432,7 +511,7 @@
 
       font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.75px;
       text-transform: uppercase;
     }
 
@@ -442,12 +521,7 @@
 
     .client-tab.active {
       background:
-        rgba(
-          168,
-          85,
-          247,
-          0.055
-        );
+        rgba(168, 85, 247, 0.055);
 
       box-shadow:
         inset
@@ -465,6 +539,47 @@
 
     .client-panel.active {
       display: block;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 25px;
+
+      padding:
+        24px
+        24px
+        20px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .section-heading h2 {
+      margin:
+        7px
+        0
+        0;
+
+      font-size: 32px;
+      line-height: 0.9;
+      text-transform: uppercase;
+    }
+
+    .section-heading p {
+      max-width: 670px;
+
+      margin:
+        10px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     /* =====================================================
@@ -486,14 +601,6 @@
       border-bottom:
         1px solid
         var(--line);
-
-      background:
-        rgba(
-          255,
-          255,
-          255,
-          0.01
-        );
     }
 
     .search-field {
@@ -552,7 +659,7 @@
 
       padding:
         0
-        34px
+        33px
         0
         11px;
 
@@ -599,20 +706,10 @@
 
     .duplicate-filter.active {
       border-color:
-        rgba(
-          192,
-          132,
-          252,
-          0.4
-        );
+        rgba(192, 132, 252, 0.4);
 
       background:
-        rgba(
-          168,
-          85,
-          247,
-          0.07
-        );
+        rgba(168, 85, 247, 0.07);
 
       color: var(--purple-light);
     }
@@ -627,9 +724,9 @@
       display: grid;
 
       grid-template-columns:
-        180px
+        175px
         minmax(0, 1fr)
-        315px;
+        320px;
     }
 
     .category-rail {
@@ -640,12 +737,7 @@
         var(--line);
 
       background:
-        rgba(
-          0,
-          0,
-          0,
-          0.08
-        );
+        rgba(0, 0, 0, 0.08);
     }
 
     .category-button {
@@ -697,20 +789,10 @@
     .category-button:hover,
     .category-button.active {
       border-color:
-        rgba(
-          192,
-          132,
-          252,
-          0.27
-        );
+        rgba(192, 132, 252, 0.27);
 
       background:
-        rgba(
-          168,
-          85,
-          247,
-          0.06
-        );
+        rgba(168, 85, 247, 0.06);
 
       color: white;
     }
@@ -727,7 +809,7 @@
     .collection-browser {
       min-width: 0;
 
-      padding: 16px;
+      padding: 15px;
     }
 
     .collection-browser-head {
@@ -766,15 +848,19 @@
           )
         );
 
+      grid-auto-flow: dense;
+
       gap: 9px;
     }
 
     .inventory-item {
+      --item-accent: #a855f7;
+      --item-soft: rgba(168, 85, 247, 0.1);
+      --item-border: rgba(168, 85, 247, 0.35);
+
       position: relative;
 
       min-width: 0;
-      min-height: 190px;
-
       overflow: hidden;
 
       display: flex;
@@ -791,12 +877,7 @@
       background:
         linear-gradient(
           150deg,
-          rgba(
-            255,
-            255,
-            255,
-            0.025
-          ),
+          rgba(255, 255, 255, 0.025),
           transparent 42%
         ),
         #0e0d14;
@@ -852,10 +933,17 @@
         var(--item-border);
     }
 
+    .inventory-item.shape-square {
+      grid-column: span 1;
+    }
+
+    .inventory-item.shape-wide,
+    .inventory-item.shape-cinematic {
+      grid-column: span 2;
+    }
+
     .item-visual {
       position: relative;
-
-      min-height: 125px;
 
       display: grid;
       place-items: center;
@@ -870,51 +958,48 @@
         );
     }
 
-    .item-visual::before {
-      position: absolute;
+    .shape-square .item-visual {
+      aspect-ratio: 1 / 1;
+    }
 
-      width: 96px;
-      height: 96px;
+    .shape-wide .item-visual {
+      aspect-ratio: 2.6 / 1;
+    }
 
-      content: "";
-
-      border:
-        1px solid
-        var(--item-border);
-
-      transform: rotate(45deg);
-
-      opacity: 0.22;
+    .shape-cinematic .item-visual {
+      aspect-ratio: 16 / 9;
     }
 
     .item-image {
       position: relative;
       z-index: 2;
 
-      width: 78%;
-      height: 105px;
+      width: 88%;
+      height: 88%;
 
       object-fit: contain;
+
       filter:
         drop-shadow(
           0
           15px
           18px
-          rgba(
-            0,
-            0,
-            0,
-            0.42
-          )
+          rgba(0, 0, 0, 0.42)
         );
+    }
+
+    .shape-wide .item-image,
+    .shape-cinematic .item-image {
+      width: 94%;
+      height: 86%;
     }
 
     .item-fallback {
       position: relative;
       z-index: 2;
 
-      width: 70px;
-      height: 70px;
+      width: 66px;
+      height: 66px;
 
       display: grid;
       place-items: center;
@@ -923,14 +1008,22 @@
         1px solid
         var(--item-border);
 
-      border-radius: 14px;
+      border-radius: 13px;
 
       background:
         var(--item-soft);
 
       color: var(--item-accent);
 
-      font-size: 27px;
+      font-size: 25px;
+    }
+
+    .shape-wide .item-fallback,
+    .shape-cinematic .item-fallback {
+      width: 88px;
+      height: 48px;
+
+      border-radius: 9px;
     }
 
     .quantity-badge {
@@ -957,12 +1050,7 @@
       border-radius: 999px;
 
       background:
-        rgba(
-          7,
-          7,
-          11,
-          0.88
-        );
+        rgba(7, 7, 11, 0.88);
 
       color: white;
 
@@ -989,22 +1077,12 @@
 
       border:
         1px solid
-        rgba(
-          60,
-          211,
-          139,
-          0.34
-        );
+        rgba(60, 211, 139, 0.34);
 
       border-radius: 999px;
 
       background:
-        rgba(
-          60,
-          211,
-          139,
-          0.08
-        );
+        rgba(60, 211, 139, 0.08);
 
       color: #8fe9b8;
 
@@ -1017,9 +1095,9 @@
       min-width: 0;
 
       padding:
+        9px
         10px
-        11px
-        12px;
+        11px;
     }
 
     .item-copy span {
@@ -1066,6 +1144,10 @@
        ===================================================== */
 
     .item-inspector {
+      --selected-accent: #a855f7;
+      --selected-soft: rgba(168, 85, 247, 0.1);
+      --selected-border: rgba(168, 85, 247, 0.35);
+
       min-width: 0;
 
       display: flex;
@@ -1096,6 +1178,8 @@
       display: grid;
       place-items: center;
 
+      padding: 24px;
+
       overflow: hidden;
 
       border-bottom:
@@ -1103,82 +1187,67 @@
         var(--line);
     }
 
-    .inspector-visual::before,
-    .inspector-visual::after {
-      position: absolute;
+    .inspector-preview {
+      position: relative;
+      z-index: 2;
 
-      width: 170px;
-      height: 170px;
+      display: grid;
+      place-items: center;
 
-      content: "";
+      overflow: hidden;
 
       border:
         1px solid
         var(--selected-border);
 
-      transform: rotate(45deg);
-
-      opacity: 0.2;
+      background:
+        var(--selected-soft);
     }
 
-    .inspector-visual::after {
-      width: 125px;
-      height: 125px;
+    .inspector-preview.shape-square {
+      width: min(210px, 82%);
+      aspect-ratio: 1 / 1;
 
-      transform: rotate(22deg);
+      border-radius: 18px;
+    }
 
-      opacity: 0.13;
+    .inspector-preview.shape-wide {
+      width: 100%;
+      aspect-ratio: 2.6 / 1;
+
+      border-radius: 10px;
+    }
+
+    .inspector-preview.shape-cinematic {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+
+      border-radius: 10px;
     }
 
     .inspector-image {
-      position: relative;
-      z-index: 2;
-
-      width: 78%;
-      height: 225px;
+      width: 94%;
+      height: 94%;
 
       object-fit: contain;
 
       filter:
         drop-shadow(
           0
-          25px
-          25px
-          rgba(
-            0,
-            0,
-            0,
-            0.48
-          )
+          20px
+          23px
+          rgba(0, 0, 0, 0.46)
         );
     }
 
     .inspector-fallback {
-      position: relative;
-      z-index: 2;
-
-      width: 110px;
-      height: 110px;
-
-      display: grid;
-      place-items: center;
-
-      border:
-        1px solid
-        var(--selected-border);
-
-      border-radius: 21px;
-
-      background:
-        var(--selected-soft);
-
       color: var(--selected-accent);
 
-      font-size: 43px;
+      font-size: 42px;
     }
 
     .inspector-content {
-      padding: 20px;
+      padding: 19px;
     }
 
     .inspector-rarity {
@@ -1186,7 +1255,7 @@
 
       font-size: 9px;
       font-weight: 800;
-      letter-spacing: 1.4px;
+      letter-spacing: 1.3px;
       text-transform: uppercase;
     }
 
@@ -1196,7 +1265,7 @@
         0
         0;
 
-      font-size: 29px;
+      font-size: 28px;
       line-height: 0.9;
       text-transform: uppercase;
     }
@@ -1214,7 +1283,7 @@
     }
 
     .inspector-details {
-      margin-top: 18px;
+      margin-top: 17px;
 
       border-top:
         1px solid
@@ -1256,10 +1325,9 @@
     }
 
     .inspector-note {
-      margin-top: 15px;
+      margin-top: 14px;
 
-      padding:
-        11px;
+      padding: 11px;
 
       border-left:
         3px solid
@@ -1278,55 +1346,186 @@
       display: grid;
       gap: 8px;
 
-      margin-top: 17px;
+      margin-top: 16px;
     }
 
     /* =====================================================
-       CRATES
+       WORLD COLLECTIONS
        ===================================================== */
 
-    .section-heading {
+    .world-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
+
+      gap: 1px;
+
+      background: var(--line);
+    }
+
+    .world-card {
+      --world-accent: #a855f7;
+      --world-soft: rgba(168, 85, 247, 0.1);
+
+      min-width: 0;
+
+      padding: 21px;
+
+      border: 0;
+
+      background:
+        radial-gradient(
+          circle at 90% 10%,
+          var(--world-soft),
+          transparent 40%
+        ),
+        #0d0c13;
+
+      color: inherit;
+      text-align: left;
+    }
+
+    .world-card:hover,
+    .world-card.selected {
+      background:
+        radial-gradient(
+          circle at 90% 10%,
+          var(--world-soft),
+          transparent 48%
+        ),
+        #121019;
+    }
+
+    .world-icon {
+      width: 46px;
+      height: 46px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--world-accent);
+
+      background:
+        var(--world-soft);
+
+      color: var(--world-accent);
+
+      font-size: 18px;
+    }
+
+    .world-card span {
+      display: block;
+
+      margin-top: 16px;
+
+      color: var(--world-accent);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .world-card h3 {
+      margin:
+        5px
+        0
+        0;
+
+      font-size: 23px;
+      text-transform: uppercase;
+    }
+
+    .world-count {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: 25px;
+      gap: 15px;
 
-      padding:
-        25px
-        25px
-        20px;
+      margin-top: 18px;
+    }
 
-      border-bottom:
+    .world-count strong {
+      color: white;
+
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .world-count small {
+      color: var(--dim);
+
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .world-progress {
+      height: 5px;
+
+      overflow: hidden;
+
+      margin-top: 11px;
+
+      background:
+        rgba(255, 255, 255, 0.07);
+    }
+
+    .world-progress div {
+      height: 100%;
+
+      background: var(--world-accent);
+    }
+
+    .world-detail {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        300px;
+
+      border-top:
         1px solid
         var(--line);
     }
 
-    .section-heading h2 {
+    .world-detail-main {
+      min-width: 0;
+
+      padding: 23px;
+    }
+
+    .world-detail-main h2 {
       margin:
         7px
         0
         0;
 
-      font-size: 32px;
-      line-height: 0.9;
+      font-size: 31px;
       text-transform: uppercase;
     }
 
-    .section-heading p {
-      max-width: 660px;
-
+    .world-detail-main p {
       margin:
-        10px
+        9px
         0
         0;
 
       color: var(--muted);
 
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.5;
     }
 
-    .crate-grid {
+    .world-slot-grid {
       display: grid;
 
       grid-template-columns:
@@ -1338,175 +1537,364 @@
           )
         );
 
-      padding: 20px;
+      gap: 7px;
+
+      margin-top: 19px;
     }
 
-    .crate-entry {
-      min-width: 0;
+    .world-slot {
+      min-height: 122px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+      padding: 11px;
+
+      border:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .world-slot.owned {
+      border-color:
+        var(--world-accent);
+
+      background:
+        var(--world-soft);
+    }
+
+    .world-slot-icon {
+      margin-bottom: auto;
+
+      color: var(--dim);
+
+      font-size: 22px;
+    }
+
+    .world-slot.owned .world-slot-icon {
+      color: var(--world-accent);
+    }
+
+    .world-slot span {
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .world-slot strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 4px;
+
+      font-size: 10px;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .world-detail-side {
+      padding: 23px;
 
       border-left:
         1px solid
         var(--line);
 
-      border-bottom:
-        1px solid
-        var(--line);
-
       background:
-        radial-gradient(
-          circle at 50% 30%,
-          var(--crate-soft),
-          transparent 52%
-        );
+        rgba(0, 0, 0, 0.08);
     }
 
-    .crate-entry:nth-child(4n + 1) {
-      border-left: 0;
-    }
-
-    .crate-visual {
-      position: relative;
-
-      min-height: 270px;
-
-      display: grid;
-      place-items: center;
-
-      overflow: hidden;
-    }
-
-    .crate-visual::before {
-      position: absolute;
-
-      width: 160px;
-      height: 160px;
-
-      content: "";
-
-      border:
-        1px solid
-        var(--crate-border);
-
-      transform: rotate(45deg);
-
-      opacity: 0.2;
-    }
-
-    .crate-visual img {
-      position: relative;
-      z-index: 2;
-
-      width: 82%;
-      height: 220px;
-
-      object-fit: contain;
-
-      filter:
-        drop-shadow(
-          0
-          24px
-          24px
-          rgba(
-            0,
-            0,
-            0,
-            0.46
-          )
-        );
-    }
-
-    .crate-fallback {
-      position: relative;
-      z-index: 2;
-
-      color: var(--crate-accent);
-
-      font-size: 36px;
-    }
-
-    .crate-count {
-      position: absolute;
-      z-index: 4;
-
-      top: 13px;
-      right: 13px;
-
-      min-width: 35px;
-      min-height: 29px;
-
-      display: grid;
-      place-items: center;
-
-      padding:
-        0
-        9px;
-
-      border:
-        1px solid
-        var(--crate-border);
-
-      border-radius: 999px;
-
-      background:
-        rgba(
-          7,
-          7,
-          11,
-          0.88
-        );
-
-      color: white;
-
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .crate-copy {
-      padding:
-        0
-        17px
-        18px;
-    }
-
-    .crate-copy span {
-      color: var(--crate-accent);
+    .world-detail-side span {
+      color: var(--dim);
 
       font-size: 8px;
       font-weight: 800;
-      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
-    .crate-copy h3 {
-      margin:
-        5px
-        0
-        0;
+    .world-detail-side strong {
+      display: block;
 
-      font-size: 20px;
-      text-transform: uppercase;
+      margin-top: 5px;
+
+      font-size: 29px;
     }
 
-    .crate-copy p {
-      min-height: 38px;
-
+    .world-detail-side p {
       margin:
-        8px
+        10px
         0
         0;
 
       color: var(--muted);
 
       font-size: 10px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
-    .crate-actions {
+    /* =====================================================
+       CRAFTING
+       ===================================================== */
+
+    .crafting-summary {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          1fr
+        );
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(0, 0, 0, 0.08);
+    }
+
+    .crafting-stat {
+      padding: 17px;
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .crafting-stat:first-child {
+      border-left: 0;
+    }
+
+    .crafting-stat span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .crafting-stat strong {
+      display: block;
+
+      margin-top: 4px;
+
+      font-size: 25px;
+    }
+
+    .crafting-layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.1fr)
+        minmax(320px, 0.9fr);
+    }
+
+    .crafting-section {
+      min-width: 0;
+
+      padding: 22px;
+    }
+
+    .crafting-section + .crafting-section {
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .crafting-section h2 {
+      margin:
+        7px
+        0
+        0;
+
+      font-size: 26px;
+      text-transform: uppercase;
+    }
+
+    .crafting-section > p {
+      margin:
+        9px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .duplicate-list {
+      display: grid;
+
+      margin-top: 17px;
+
+      border-top:
+        1px solid
+        var(--line);
+    }
+
+    .duplicate-row {
+      min-height: 65px;
+
+      display: grid;
+
+      grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 11px;
+
+      padding:
+        9px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .duplicate-icon {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--duplicate-border);
+
+      background:
+        var(--duplicate-soft);
+
+      color: var(--duplicate-accent);
+    }
+
+    .duplicate-copy {
+      min-width: 0;
+    }
+
+    .duplicate-copy strong {
+      display: block;
+      overflow: hidden;
+
+      font-size: 12px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .duplicate-copy span {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--dim);
+
+      font-size: 8px;
+    }
+
+    .duplicate-actions {
       display: flex;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .duplicate-value {
+      color: var(--yellow);
+
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .craft-world-select {
+      width: 100%;
+      min-height: 44px;
+
+      margin-top: 17px;
+
+      padding:
+        0
+        12px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      outline: 0;
+
+      background: #0a090f;
+      color: white;
+
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .recipe-list {
+      display: grid;
       gap: 7px;
 
-      margin-top: 14px;
+      margin-top: 12px;
+    }
+
+    .recipe {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 14px;
+
+      padding: 13px;
+
+      border:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .recipe span {
+      color: var(--recipe-accent);
+
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .recipe strong {
+      display: block;
+
+      margin-top: 4px;
+
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .recipe small {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--dim);
+
+      font-size: 8px;
     }
 
     /* =====================================================
@@ -1548,18 +1936,6 @@
       border-bottom:
         1px solid
         var(--line);
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(
-            255,
-            255,
-            255,
-            0.02
-          ),
-          transparent
-        );
     }
 
     .loadout-slot:nth-child(3n) {
@@ -1575,22 +1951,10 @@
 
       border:
         1px solid
-        rgba(
-          192,
-          132,
-          252,
-          0.28
-        );
-
-      border-radius: 9px;
+        rgba(192, 132, 252, 0.28);
 
       background:
-        rgba(
-          168,
-          85,
-          247,
-          0.06
-        );
+        rgba(168, 85, 247, 0.06);
 
       color: var(--purple-light);
     }
@@ -1604,7 +1968,6 @@
 
       font-size: 8px;
       font-weight: 800;
-      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
@@ -1639,12 +2002,7 @@
       background:
         radial-gradient(
           circle at 50% 18%,
-          rgba(
-            168,
-            85,
-            247,
-            0.11
-          ),
+          rgba(168, 85, 247, 0.11),
           transparent 36%
         ),
         #0a090f;
@@ -1661,12 +2019,7 @@
 
       border:
         1px solid
-        rgba(
-          192,
-          132,
-          252,
-          0.36
-        );
+        rgba(192, 132, 252, 0.36);
 
       border-radius: 18px;
 
@@ -1725,6 +2078,10 @@
        HISTORY
        ===================================================== */
 
+    .history-scroll {
+      overflow-x: auto;
+    }
+
     .history-table {
       width: 100%;
 
@@ -1774,8 +2131,6 @@
         1px solid
         var(--history-border);
 
-      border-radius: 8px;
-
       background: var(--history-soft);
       color: var(--history-accent);
     }
@@ -1804,19 +2159,6 @@
       text-transform: uppercase;
     }
 
-    .page-status {
-      min-height: 20px;
-
-      margin:
-        13px
-        2px
-        0;
-
-      color: var(--muted);
-
-      font-size: 11px;
-    }
-
     /* =====================================================
        RESPONSIVE
        ===================================================== */
@@ -1824,7 +2166,7 @@
     @media (max-width: 1320px) {
       .collection-layout {
         grid-template-columns:
-          165px
+          160px
           minmax(0, 1fr)
           285px;
       }
@@ -1840,7 +2182,18 @@
           );
       }
 
-      .crate-grid {
+      .world-grid {
+        grid-template-columns:
+          repeat(
+            2,
+            minmax(
+              0,
+              1fr
+            )
+          );
+      }
+
+      .world-slot-grid {
         grid-template-columns:
           repeat(
             3,
@@ -1849,16 +2202,6 @@
               1fr
             )
           );
-      }
-
-      .crate-entry:nth-child(4n + 1) {
-        border-left:
-          1px solid
-          var(--line);
-      }
-
-      .crate-entry:nth-child(3n + 1) {
-        border-left: 0;
       }
     }
 
@@ -1874,7 +2217,7 @@
 
       .collection-layout {
         grid-template-columns:
-          155px
+          150px
           minmax(0, 1fr);
       }
 
@@ -1887,35 +2230,24 @@
         left: 0;
 
         max-height: 88vh;
-
         overflow-y: auto;
 
         border:
           1px solid
-          rgba(
-            192,
-            132,
-            252,
-            0.38
-          );
+          rgba(192, 132, 252, 0.38);
 
         border-bottom: 0;
 
         transform:
-          translateY(
-            105%
-          );
+          translateY(105%);
 
         transition:
-          transform
-          0.25s;
+          transform 0.25s;
       }
 
       .item-inspector.open {
         transform:
-          translateY(
-            0
-          );
+          translateY(0);
       }
 
       .inspector-close {
@@ -1938,24 +2270,35 @@
         border-radius: 50%;
 
         background:
-          rgba(
-            7,
-            7,
-            11,
-            0.82
-          );
+          rgba(7, 7, 11, 0.82);
 
         color: white;
 
         font-size: 18px;
       }
 
-      .inspector-visual {
-        min-height: 220px;
+      .world-detail {
+        grid-template-columns: 1fr;
       }
 
-      .inspector-image {
-        height: 180px;
+      .world-detail-side {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+
+      .crafting-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .crafting-section + .crafting-section {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
       }
 
       .loadout-layout {
@@ -1981,12 +2324,6 @@
         margin-top: 12px;
       }
 
-      .inventory-header {
-        min-height: 110px;
-
-        padding-top: 12px;
-      }
-
       .inventory-title h1 {
         font-size: 52px;
       }
@@ -1997,20 +2334,34 @@
 
       .inventory-summary {
         grid-template-columns:
-          repeat(
-            3,
-            1fr
-          );
+          1fr
+          1fr;
       }
 
-      .summary-stat {
-        padding:
-          12px
-          10px;
+      .summary-stat:nth-child(3) {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
       }
 
-      .summary-stat strong {
-        font-size: 18px;
+      .summary-stat:nth-child(4) {
+        border-top:
+          1px solid
+          var(--line);
+      }
+
+      .unopened-alert.visible {
+        grid-template-columns:
+          auto
+          minmax(0, 1fr);
+      }
+
+      .unopened-alert .client-button {
+        grid-column:
+          1 /
+          -1;
       }
 
       .collection-toolbar {
@@ -2072,7 +2423,7 @@
       }
 
       .collection-browser {
-        padding: 11px;
+        padding: 10px;
       }
 
       .item-grid {
@@ -2088,43 +2439,50 @@
         gap: 7px;
       }
 
-      .inventory-item {
-        min-height: 175px;
+      .inventory-item.shape-wide,
+      .inventory-item.shape-cinematic {
+        grid-column: span 2;
       }
 
-      .item-visual {
-        min-height: 112px;
+      .world-grid {
+        grid-template-columns: 1fr;
       }
 
-      .item-image {
-        height: 92px;
-      }
-
-      .crate-grid {
+      .world-slot-grid {
         grid-template-columns:
           1fr
           1fr;
-
-        padding: 11px;
       }
 
-      .crate-entry,
-      .crate-entry:nth-child(3n + 1) {
-        border-left:
+      .crafting-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .crafting-stat,
+      .crafting-stat:first-child {
+        border-top:
           1px solid
           var(--line);
-      }
 
-      .crate-entry:nth-child(odd) {
         border-left: 0;
       }
 
-      .crate-visual {
-        min-height: 200px;
+      .crafting-stat:first-child {
+        border-top: 0;
       }
 
-      .crate-visual img {
-        height: 165px;
+      .duplicate-row {
+        grid-template-columns:
+          38px
+          minmax(0, 1fr);
+      }
+
+      .duplicate-actions {
+        grid-column:
+          1 /
+          -1;
+
+        justify-content: flex-end;
       }
 
       .loadout-slots {
@@ -2144,10 +2502,6 @@
         border-right: 0;
       }
 
-      .history-scroll {
-        overflow-x: auto;
-      }
-
       .history-table {
         min-width: 720px;
       }
@@ -2160,30 +2514,23 @@
       }
     }
 
-    @media (max-width: 450px) {
-      .inventory-summary {
-        grid-template-columns: 1fr;
-      }
-
-      .summary-stat,
-      .summary-stat:first-child {
-        border-top:
-          1px solid
-          var(--line);
-
-        border-left: 0;
-      }
-
-      .summary-stat:first-child {
-        border-top: 0;
-      }
-
+    @media (max-width: 460px) {
       .toolbar-controls {
         grid-template-columns: 1fr;
       }
 
       .duplicate-filter {
         grid-column: auto;
+      }
+
+      .item-grid {
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+
+      .world-slot-grid {
+        grid-template-columns: 1fr;
       }
 
       .loadout-slots {
@@ -2194,15 +2541,6 @@
       .loadout-slot:nth-child(even),
       .loadout-slot:nth-child(3n) {
         border-right: 0;
-      }
-
-      .crate-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .crate-entry,
-      .crate-entry:nth-child(odd) {
-        border-left: 0;
       }
     }
   </style>
@@ -2221,8 +2559,9 @@
         <h1>Inventory</h1>
 
         <p>
-          Browse your unlocked cosmetics, inspect duplicate rewards,
-          manage compatible profile items, and review your crate history.
+          Browse unlocked cosmetics, complete themed world collections,
+          convert duplicate rewards into RG Essence, and manage your
+          public profile loadout.
         </p>
       </div>
 
@@ -2238,11 +2577,45 @@
         </div>
 
         <div class="summary-stat">
-          <span>Owned Crates</span>
-          <strong id="ownedCrateCount">0</strong>
+          <span>Duplicates</span>
+          <strong id="duplicateItemCount">0</strong>
+        </div>
+
+        <div class="summary-stat">
+          <span>RG Essence</span>
+          <strong id="essenceBalance">0</strong>
         </div>
       </div>
     </header>
+
+    <section
+      id="unopenedRewardAlert"
+      class="unopened-alert"
+    >
+      <div class="unopened-alert-icon">
+        <i class="fa-solid fa-box-open"></i>
+      </div>
+
+      <div class="unopened-alert-copy">
+        <span>Unopened Earned Reward</span>
+
+        <strong id="unopenedRewardTitle">
+          You have a crate waiting
+        </strong>
+
+        <small id="unopenedRewardDescription">
+          Open earned crates from their matching Shop world.
+        </small>
+      </div>
+
+      <a
+        id="unopenedRewardButton"
+        class="client-button primary"
+        href="shop.html"
+      >
+        Open in Shop
+      </a>
+    </section>
 
     <section class="inventory-client">
       <nav class="client-tabs">
@@ -2258,10 +2631,19 @@
         <button
           class="client-tab"
           type="button"
-          data-client-tab="crates"
+          data-client-tab="worlds"
         >
-          <i class="fa-solid fa-box-open"></i>
-          Crates
+          <i class="fa-solid fa-earth-americas"></i>
+          World Collections
+        </button>
+
+        <button
+          class="client-tab"
+          type="button"
+          data-client-tab="crafting"
+        >
+          <i class="fa-solid fa-hammer"></i>
+          Crafting
         </button>
 
         <button
@@ -2282,6 +2664,8 @@
           Reward History
         </button>
       </nav>
+
+      <!-- COLLECTION -->
 
       <section
         id="client-collection"
@@ -2375,19 +2759,24 @@
             </button>
 
             <div class="inspector-visual">
-              <img
-                id="inspectorImage"
-                class="inspector-image"
-                src=""
-                alt=""
-                hidden
-              >
-
               <div
-                id="inspectorFallback"
-                class="inspector-fallback"
+                id="inspectorPreview"
+                class="inspector-preview shape-square"
               >
-                <i class="fa-solid fa-box"></i>
+                <img
+                  id="inspectorImage"
+                  class="inspector-image"
+                  src=""
+                  alt=""
+                  hidden
+                >
+
+                <div
+                  id="inspectorFallback"
+                  class="inspector-fallback"
+                >
+                  <i class="fa-solid fa-box"></i>
+                </div>
               </div>
             </div>
 
@@ -2414,6 +2803,16 @@
                 <div class="inspector-row">
                   <span>Quantity</span>
                   <strong id="inspectorQuantity">—</strong>
+                </div>
+
+                <div class="inspector-row">
+                  <span>Duplicates</span>
+                  <strong id="inspectorDuplicates">—</strong>
+                </div>
+
+                <div class="inspector-row">
+                  <span>Collection</span>
+                  <strong id="inspectorCollection">—</strong>
                 </div>
 
                 <div class="inspector-row">
@@ -2449,6 +2848,15 @@
                   Equip Item
                 </button>
 
+                <button
+                  id="inspectDismantleButton"
+                  class="client-button"
+                  type="button"
+                  disabled
+                >
+                  Dismantle Duplicate
+                </button>
+
                 <a
                   id="viewProfileButton"
                   class="client-button"
@@ -2468,38 +2876,127 @@
         </div>
       </section>
 
+      <!-- WORLD COLLECTIONS -->
+
       <section
-        id="client-crates"
+        id="client-worlds"
         class="client-panel"
       >
         <header class="section-heading">
           <div>
             <div class="eyebrow">
-              Mystery Rewards
+              Themed Reward Sets
             </div>
 
-            <h2>Your Crates</h2>
+            <h2>World Collections</h2>
 
             <p>
-              Review crate quantities and jump to the Shop for additional
-              reward opportunities.
+              Complete cosmetic sets from each crate world. Collection
+              totals are controlled from the world manifest in this page.
             </p>
           </div>
-
-          <a
-            class="client-button primary"
-            href="shop.html"
-          >
-            <i class="fa-solid fa-store"></i>
-            Open Shop
-          </a>
         </header>
 
         <div
-          id="crateGrid"
-          class="crate-grid"
+          id="worldCollectionGrid"
+          class="world-grid"
         ></div>
+
+        <section
+          id="worldCollectionDetail"
+          class="world-detail"
+        ></section>
       </section>
+
+      <!-- CRAFTING -->
+
+      <section
+        id="client-crafting"
+        class="client-panel"
+      >
+        <header class="section-heading">
+          <div>
+            <div class="eyebrow">
+              Duplicate Conversion
+            </div>
+
+            <h2>RG Essence Crafting</h2>
+
+            <p>
+              Keep the first copy of every collectible. Extra copies can
+              be dismantled into RG Essence and used to craft missing
+              collection rewards.
+            </p>
+          </div>
+        </header>
+
+        <div class="crafting-summary">
+          <div class="crafting-stat">
+            <span>RG Essence</span>
+            <strong id="craftingEssence">0</strong>
+          </div>
+
+          <div class="crafting-stat">
+            <span>Duplicate Copies</span>
+            <strong id="craftingDuplicateCount">0</strong>
+          </div>
+
+          <div class="crafting-stat">
+            <span>Craftable Recipes</span>
+            <strong id="craftingRecipeCount">3</strong>
+          </div>
+        </div>
+
+        <div class="crafting-layout">
+          <section class="crafting-section">
+            <div class="eyebrow">
+              Dismantle Duplicates
+            </div>
+
+            <h2>Available Duplicates</h2>
+
+            <p>
+              Seasonal and limited rewards are protected from automatic
+              dismantling.
+            </p>
+
+            <div
+              id="duplicateCraftingList"
+              class="duplicate-list"
+            ></div>
+          </section>
+
+          <section class="crafting-section">
+            <div class="eyebrow">
+              Craft Missing Rewards
+            </div>
+
+            <h2>World Crafting</h2>
+
+            <p>
+              Choose a collection and use Essence for a
+              duplicate-protected missing reward.
+            </p>
+
+            <select
+              id="craftWorldSelect"
+              class="craft-world-select"
+            ></select>
+
+            <div
+              id="craftRecipeList"
+              class="recipe-list"
+            ></div>
+
+            <p
+              id="craftingStatus"
+              class="page-status"
+            ></p>
+          </section>
+        </div>
+      </section>
+
+      <!-- LOADOUT -->
 
       <section
         id="client-loadout"
@@ -2514,8 +3011,7 @@
             <h2>Profile Loadout</h2>
 
             <p>
-              Review the cosmetics currently applied to your Rivals
-              Gauntlet public profile.
+              Review cosmetics currently displayed on your public profile.
             </p>
           </div>
 
@@ -2552,9 +3048,8 @@
             </h2>
 
             <p>
-              Compatible cosmetics can be equipped directly from the
-              Collection inspector. Other collectible categories remain
-              visible until their profile slot is connected.
+              Compatible cosmetics can be equipped from the Collection
+              inspector.
             </p>
 
             <div
@@ -2566,6 +3061,8 @@
           </aside>
         </div>
       </section>
+
+      <!-- HISTORY -->
 
       <section
         id="client-history"
@@ -2591,6 +3088,7 @@
               <tr>
                 <th>Reward</th>
                 <th>Rarity</th>
+                <th>Collection</th>
                 <th>Source</th>
                 <th>Date</th>
               </tr>
@@ -2611,6 +3109,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
 
   <script src="firebase.js?v=2"></script>
   <script src="notifications.js?v=1"></script>
@@ -2659,6 +3158,7 @@
 
     let collectionItems = [];
     let selectedItemId = "";
+    let selectedWorldId = "forest";
     let activeCategory = "all";
     let duplicatesOnly = false;
 
@@ -2673,6 +3173,44 @@
       common: 2,
       standard: 1
     };
+
+    const essenceYield = {
+      common: 5,
+      uncommon: 10,
+      rare: 20,
+      epic: 45,
+      legendary: 90,
+      mythic: 180,
+      seasonal: 60,
+      limited: 0,
+      standard: 5
+    };
+
+    const craftRecipes = [
+      {
+        id: "common",
+        label: "Common or Uncommon Reward",
+        rarity: "Common",
+        cost: 50,
+        description: "Craft one missing entry-tier world reward."
+      },
+
+      {
+        id: "rare",
+        label: "Rare Reward",
+        rarity: "Rare",
+        cost: 120,
+        description: "Craft one missing Rare world reward."
+      },
+
+      {
+        id: "epic",
+        label: "Epic or Higher Reward",
+        rarity: "Epic",
+        cost: 250,
+        description: "Craft one missing premium world reward."
+      }
+    ];
 
     const rarityThemes = {
       common: {
@@ -2730,6 +3268,185 @@
       }
     };
 
+    /*
+      Change collection totals and slot names here later when each
+      crate reward pool is finalized.
+    */
+
+    const WORLD_COLLECTIONS = {
+      forest: {
+        name: "Forest Collection",
+        crateName: "Forest Crate",
+        total: 7,
+        accent: "#54d18b",
+        soft: "rgba(84,209,139,.12)",
+        icon: "fa-solid fa-tree",
+        slots: [
+          "Forest Avatar",
+          "Forest Banner",
+          "Forest Title",
+          "Forest Frame",
+          "Forest Badge",
+          "Forest Effect",
+          "Forest Background"
+        ]
+      },
+
+      frozen: {
+        name: "Frozen Collection",
+        crateName: "Frozen Crate",
+        total: 8,
+        accent: "#7ecbff",
+        soft: "rgba(126,203,255,.12)",
+        icon: "fa-solid fa-snowflake",
+        slots: [
+          "Frozen Avatar",
+          "Frozen Banner",
+          "Frozen Title",
+          "Frozen Frame",
+          "Frozen Badge",
+          "Frozen Effect",
+          "Frozen Background",
+          "Frozen Nameplate"
+        ]
+      },
+
+      volcanic: {
+        name: "Volcanic Collection",
+        crateName: "Volcanic Crate",
+        total: 8,
+        accent: "#ff784d",
+        soft: "rgba(255,120,77,.12)",
+        icon: "fa-solid fa-fire",
+        slots: [
+          "Volcanic Avatar",
+          "Volcanic Banner",
+          "Volcanic Title",
+          "Volcanic Frame",
+          "Volcanic Badge",
+          "Volcanic Effect",
+          "Volcanic Background",
+          "Volcanic Nameplate"
+        ]
+      },
+
+      storm: {
+        name: "Storm Collection",
+        crateName: "Storm Crate",
+        total: 7,
+        accent: "#8e8cff",
+        soft: "rgba(142,140,255,.12)",
+        icon: "fa-solid fa-bolt",
+        slots: [
+          "Storm Avatar",
+          "Storm Banner",
+          "Storm Title",
+          "Storm Frame",
+          "Storm Badge",
+          "Storm Effect",
+          "Storm Background"
+        ]
+      },
+
+      desert: {
+        name: "Desert Collection",
+        crateName: "Desert Crate",
+        total: 9,
+        accent: "#e8b95d",
+        soft: "rgba(232,185,93,.12)",
+        icon: "fa-solid fa-sun",
+        slots: [
+          "Desert Avatar",
+          "Desert Banner",
+          "Desert Title",
+          "Desert Frame",
+          "Desert Badge",
+          "Desert Effect",
+          "Desert Background",
+          "Desert Nameplate",
+          "Desert Tracker"
+        ]
+      },
+
+      underwater: {
+        name: "Underwater Collection",
+        crateName: "Underwater Crate",
+        total: 8,
+        accent: "#48d6db",
+        soft: "rgba(72,214,219,.12)",
+        icon: "fa-solid fa-water",
+        slots: [
+          "Underwater Avatar",
+          "Underwater Banner",
+          "Underwater Title",
+          "Underwater Frame",
+          "Underwater Badge",
+          "Underwater Effect",
+          "Underwater Background",
+          "Underwater Nameplate"
+        ]
+      },
+
+      cosmic: {
+        name: "Cosmic Collection",
+        crateName: "Cosmic Crate",
+        total: 9,
+        accent: "#c66cff",
+        soft: "rgba(198,108,255,.12)",
+        icon: "fa-solid fa-star",
+        slots: [
+          "Cosmic Avatar",
+          "Cosmic Banner",
+          "Cosmic Title",
+          "Cosmic Frame",
+          "Cosmic Badge",
+          "Cosmic Effect",
+          "Cosmic Background",
+          "Cosmic Nameplate",
+          "Cosmic Tracker"
+        ]
+      },
+
+      bloom: {
+        name: "Bloom Collection",
+        crateName: "Bloom Crate",
+        total: 8,
+        accent: "#ff9fd5",
+        soft: "rgba(255,159,213,.12)",
+        icon: "fa-solid fa-seedling",
+        slots: [
+          "Bloom Avatar",
+          "Bloom Banner",
+          "Bloom Title",
+          "Bloom Frame",
+          "Bloom Badge",
+          "Bloom Effect",
+          "Bloom Background",
+          "Bloom Nameplate"
+        ]
+      },
+
+      cyber: {
+        name: "Cyber Collection",
+        crateName: "Cyber Crate",
+        total: 9,
+        accent: "#45e6ff",
+        soft: "rgba(69,230,255,.12)",
+        icon: "fa-solid fa-microchip",
+        slots: [
+          "Cyber Avatar",
+          "Cyber Banner",
+          "Cyber Title",
+          "Cyber Frame",
+          "Cyber Badge",
+          "Cyber Effect",
+          "Cyber Background",
+          "Cyber Nameplate",
+          "Cyber Tracker"
+        ]
+      }
+    };
+
     const categoryConfig = {
       all: {
         label: "All Collection",
@@ -2781,7 +3498,7 @@
         icon: "fa-solid fa-chart-simple"
       },
 
-      test: {
+      other: {
         label: "Other",
         icon: "fa-solid fa-cube"
       }
@@ -2819,71 +3536,6 @@
       }
     };
 
-    const crateCatalog = {
-      basic_crate: {
-        name: "Basic Crate",
-        rarity: "Common",
-        description:
-          "Entry-tier mystery rewards and profile collectibles.",
-        image:
-          "assets/shop/crates/basic-crate.PNG"
-      },
-
-      rare_crate: {
-        name: "Rare Crate",
-        rarity: "Rare",
-        description:
-          "Improved odds for upgraded collection rewards.",
-        image:
-          "assets/shop/crates/rare-crate.PNG"
-      },
-
-      elite_crate: {
-        name: "Elite Crate",
-        rarity: "Epic",
-        description:
-          "Premium profile cosmetics and higher-rarity rewards.",
-        image:
-          "assets/shop/crates/elite-crate.PNG"
-      },
-
-      summer_crate: {
-        name: "Summer Crate",
-        rarity: "Seasonal",
-        description:
-          "Limited summer-themed collection rewards.",
-        image:
-          "assets/shop/crates/summer-crate.PNG"
-      },
-
-      halloween_crate: {
-        name: "Halloween Crate",
-        rarity: "Seasonal",
-        description:
-          "Seasonal Halloween collection rewards.",
-        image:
-          "assets/shop/crates/halloween-crate.PNG"
-      },
-
-      steam_5: {
-        name: "$5 Steam Card",
-        rarity: "Limited",
-        description:
-          "Limited digital reward redemption.",
-        image:
-          "assets/shop/rewards/steam-card.png"
-      },
-
-      steam_10: {
-        name: "$10 Steam Card",
-        rarity: "Limited",
-        description:
-          "Higher-value limited digital reward.",
-        image:
-          "assets/shop/rewards/steam-card.png"
-      }
-    };
-
     const allowedTrackerStats = [
       "championships",
       "eventsPlayed",
@@ -2897,7 +3549,10 @@
     ];
 
     function titleFromId(value) {
-      return clean(value, "Unknown Item")
+      return clean(
+        value,
+        "Unknown Item"
+      )
         .replaceAll("_", " ")
         .replace(
           /\b\w/g,
@@ -2907,7 +3562,10 @@
     }
 
     function getInitials(name) {
-      return clean(name, "RG")
+      return clean(
+        name,
+        "RG"
+      )
         .split(" ")
         .filter(Boolean)
         .slice(0, 2)
@@ -2918,7 +3576,10 @@
 
     function formatDate(timestamp) {
       const value =
-        Number(timestamp || 0);
+        Number(
+          timestamp ||
+          0
+        );
 
       if (!value) {
         return "Unknown";
@@ -2937,7 +3598,10 @@
 
     function formatDateTime(timestamp) {
       const value =
-        Number(timestamp || 0);
+        Number(
+          timestamp ||
+          0
+        );
 
       if (!value) {
         return "Not updated";
@@ -2954,6 +3618,18 @@
             minute: "2-digit"
           }
         );
+    }
+
+    function normalizeObject(value) {
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      ) {
+        return value;
+      }
+
+      return {};
     }
 
     function getTheme(rarity) {
@@ -2976,10 +3652,7 @@
         return "avatar";
       }
 
-      if (
-        value.includes("banner") ||
-        value.includes("profilebanner")
-      ) {
+      if (value.includes("banner")) {
         return "banner";
       }
 
@@ -3011,12 +3684,35 @@
         return "tracker";
       }
 
-      return "test";
+      return "other";
+    }
+
+    function getItemShape(category) {
+      const key =
+        getCategoryKey(
+          category
+        );
+
+      if (
+        key === "banner" ||
+        key === "title" ||
+        key === "nameplate"
+      ) {
+        return "wide";
+      }
+
+      if (key === "background") {
+        return "cinematic";
+      }
+
+      return "square";
     }
 
     function iconForCategory(category) {
       const key =
-        getCategoryKey(category);
+        getCategoryKey(
+          category
+        );
 
       return (
         categoryConfig[key]?.icon ||
@@ -3024,16 +3720,42 @@
       );
     }
 
-    function normalizeObject(value) {
+    function inferCollectionId(data) {
+      const explicit =
+        normalize(
+          data.collectionId ||
+          data.worldId ||
+          data.world ||
+          ""
+        );
+
       if (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value)
+        explicit &&
+        WORLD_COLLECTIONS[explicit]
       ) {
-        return value;
+        return explicit;
       }
 
-      return {};
+      const searchable =
+        normalize(
+          [
+            data.name,
+            data.sourceCrate,
+            data.sourceCrateName,
+            data.category
+          ].join(" ")
+        );
+
+      return (
+        Object.keys(
+          WORLD_COLLECTIONS
+        ).find(worldId =>
+          searchable.includes(
+            normalize(worldId)
+          )
+        ) ||
+        ""
+      );
     }
 
     function normalizeCollection() {
@@ -3106,6 +3828,11 @@
                 clean(
                   data.sourceCrateName,
                   "Rivals Gauntlet"
+                ),
+
+              collectionId:
+                inferCollectionId(
+                  data
                 ),
 
               firstUnlockedAt:
@@ -3230,6 +3957,12 @@
                       "Rivals Gauntlet"
                     ),
 
+                  collectionId:
+                    inferCollectionId({
+                      ...previous,
+                      ...data
+                    }),
+
                   firstUnlockedAt:
                     Number(
                       data.firstUnlockedAt ||
@@ -3258,13 +3991,13 @@
         }
       );
 
-      const profileTrackers =
+      const trackers =
         normalizeObject(
           currentInventory.profileTrackers
         );
 
       Object.entries(
-        profileTrackers
+        trackers
       ).forEach(
         (
           [
@@ -3323,6 +4056,11 @@
                   "Rivals Gauntlet"
                 ),
 
+              collectionId:
+                inferCollectionId(
+                  data
+                ),
+
               firstUnlockedAt:
                 Number(
                   data.firstUnlockedAt ||
@@ -3354,6 +4092,36 @@
         Array.from(
           itemsById.values()
         );
+    }
+
+    function getEssenceBalance() {
+      return Number(
+        currentInventory
+          .crafting
+          ?.essence ||
+        currentPlayer
+          .rgEssence ||
+        0
+      );
+    }
+
+    function getDuplicateCount() {
+      return collectionItems.reduce(
+        (
+          total,
+          item
+        ) =>
+          total +
+          Math.max(
+            0,
+            Number(
+              item.quantity ||
+              0
+            ) -
+            1
+          ),
+        0
+      );
     }
 
     function isItemEquipped(item) {
@@ -3392,32 +4160,108 @@
           0
         );
 
-      const crateTotal =
-        Object.values(
-          normalizeObject(
-            currentInventory.crates
-          )
-        ).reduce(
-          (
-            total,
-            quantity
-          ) =>
-            total +
-            Number(
-              quantity ||
-              0
-            ),
-          0
-        );
-
       $("uniqueItemCount").textContent =
         uniqueItems.toLocaleString();
 
       $("totalCopyCount").textContent =
         totalCopies.toLocaleString();
 
-      $("ownedCrateCount").textContent =
-        crateTotal.toLocaleString();
+      $("duplicateItemCount").textContent =
+        getDuplicateCount()
+          .toLocaleString();
+
+      $("essenceBalance").textContent =
+        getEssenceBalance()
+          .toLocaleString();
+
+      $("craftingEssence").textContent =
+        getEssenceBalance()
+          .toLocaleString();
+
+      $("craftingDuplicateCount").textContent =
+        getDuplicateCount()
+          .toLocaleString();
+    }
+
+    function renderUnopenedRewards() {
+      const ownedCrates =
+        Object.entries(
+          normalizeObject(
+            currentInventory.crates
+          )
+        )
+          .map(
+            (
+              [
+                crateId,
+                quantity
+              ]
+            ) => ({
+              crateId,
+              quantity:
+                Number(
+                  quantity ||
+                  0
+                )
+            })
+          )
+          .filter(
+            crate =>
+              crate.quantity >
+              0
+          );
+
+      const alert =
+        $("unopenedRewardAlert");
+
+      if (!ownedCrates.length) {
+        alert.classList.remove(
+          "visible"
+        );
+
+        return;
+      }
+
+      const first =
+        ownedCrates[0];
+
+      const total =
+        ownedCrates.reduce(
+          (
+            sum,
+            crate
+          ) =>
+            sum +
+            crate.quantity,
+          0
+        );
+
+      const crateName =
+        titleFromId(
+          first.crateId
+        );
+
+      alert.classList.add(
+        "visible"
+      );
+
+      $("unopenedRewardTitle").textContent =
+        total === 1
+          ? `1 ${crateName} is waiting`
+          : `${total} earned crates are waiting`;
+
+      $("unopenedRewardDescription").textContent =
+        ownedCrates.length === 1
+          ? "This earned crate can be opened from its Shop world."
+          : `${ownedCrates.length} different crate types are ready to open.`;
+
+      $("unopenedRewardButton").href =
+        `shop.html?crate=${encodeURIComponent(first.crateId)}`;
+
+      $("unopenedRewardButton").textContent =
+        first.quantity > 0
+          ? `Open Owned (${first.quantity})`
+          : "Open in Shop";
     }
 
     function getCategoryCounts() {
@@ -3458,7 +4302,7 @@
         "effect",
         "nameplate",
         "tracker",
-        "test"
+        "other"
       ].filter(
         category =>
           category === "all" ||
@@ -3553,7 +4397,8 @@
                 item.name,
                 item.category,
                 item.rarity,
-                item.sourceName
+                item.sourceName,
+                item.collectionId
               ].join(" ")
             ).includes(
               searchValue
@@ -3580,19 +4425,13 @@
           first,
           second
         ) => {
-          if (
-            sort ===
-            "name"
-          ) {
+          if (sort === "name") {
             return first.name.localeCompare(
               second.name
             );
           }
 
-          if (
-            sort ===
-            "quantity"
-          ) {
+          if (sort === "quantity") {
             return (
               Number(
                 second.quantity ||
@@ -3605,10 +4444,7 @@
             );
           }
 
-          if (
-            sort ===
-            "rarity"
-          ) {
+          if (sort === "rarity") {
             return (
               Number(
                 rarityOrder[
@@ -3691,13 +4527,22 @@
                 item
               );
 
+            const shape =
+              getItemShape(
+                item.category
+              );
+
             return `
               <button
-                class="inventory-item ${
-                  selectedItemId === item.id
-                    ? "selected"
-                    : ""
-                }"
+                class="
+                  inventory-item
+                  shape-${shape}
+                  ${
+                    selectedItemId === item.id
+                      ? "selected"
+                      : ""
+                  }
+                "
                 type="button"
                 data-item-id="${escapeHtml(item.id)}"
                 style="
@@ -3831,20 +4676,8 @@
         $("itemInspector");
 
       if (!item) {
-        inspector.style.setProperty(
-          "--selected-accent",
-          "#a855f7"
-        );
-
-        inspector.style.setProperty(
-          "--selected-soft",
-          "rgba(168,85,247,.1)"
-        );
-
-        inspector.style.setProperty(
-          "--selected-border",
-          "rgba(168,85,247,.35)"
-        );
+        $("inspectorPreview").className =
+          "inspector-preview shape-square";
 
         $("inspectorImage").hidden =
           true;
@@ -3867,6 +4700,12 @@
         $("inspectorQuantity").textContent =
           "—";
 
+        $("inspectorDuplicates").textContent =
+          "—";
+
+        $("inspectorCollection").textContent =
+          "—";
+
         $("inspectorSource").textContent =
           "—";
 
@@ -3882,8 +4721,8 @@
         $("equipItemButton").disabled =
           true;
 
-        $("equipItemButton").textContent =
-          "Equip Item";
+        $("inspectDismantleButton").disabled =
+          true;
 
         return;
       }
@@ -3891,6 +4730,11 @@
       const theme =
         getTheme(
           item.rarity
+        );
+
+      const shape =
+        getItemShape(
+          item.category
         );
 
       inspector.style.setProperty(
@@ -3907,6 +4751,9 @@
         "--selected-border",
         theme.border
       );
+
+      $("inspectorPreview").className =
+        `inspector-preview shape-${shape}`;
 
       if (item.image) {
         $("inspectorImage").src =
@@ -3956,6 +4803,26 @@
           0
         ).toLocaleString();
 
+      $("inspectorDuplicates").textContent =
+        Math.max(
+          0,
+          Number(
+            item.quantity ||
+            0
+          ) -
+          1
+        ).toLocaleString();
+
+      $("inspectorCollection").textContent =
+        item.collectionId
+          ? WORLD_COLLECTIONS[
+              item.collectionId
+            ]?.name ||
+            titleFromId(
+              item.collectionId
+            )
+          : "Unassigned";
+
       $("inspectorSource").textContent =
         item.sourceName ||
         "Rivals Gauntlet";
@@ -3987,37 +4854,593 @@
           "Compatible";
 
         $("inspectorNote").textContent =
-          "This cosmetic is connected to a profile loadout slot and can be equipped.";
+          "This cosmetic can be equipped to its matching public profile slot.";
 
         $("equipItemButton").disabled =
           false;
 
         $("equipItemButton").textContent =
           "Equip to Profile";
-      } else if (item.tracker) {
-        $("inspectorEquipStatus").textContent =
-          "Tracker Slot Pending";
-
-        $("inspectorNote").textContent =
-          "This tracker is collected. Tracker slot selection will be connected separately.";
-
-        $("equipItemButton").disabled =
-          true;
-
-        $("equipItemButton").textContent =
-          "Tracker Collected";
       } else {
         $("inspectorEquipStatus").textContent =
           "Collection Only";
 
         $("inspectorNote").textContent =
-          "This reward is safely stored in your collection. Its profile display slot has not been connected yet.";
+          "This reward is stored in your collection. Its profile slot is not connected yet.";
 
         $("equipItemButton").disabled =
           true;
 
         $("equipItemButton").textContent =
           "Collected";
+      }
+
+      const rarity =
+        clean(
+          item.rarity,
+          "common"
+        ).toLowerCase();
+
+      const protectedItem =
+        rarity === "limited" ||
+        rarity === "seasonal";
+
+      const duplicateCount =
+        Math.max(
+          0,
+          Number(
+            item.quantity ||
+            0
+          ) -
+          1
+        );
+
+      $("inspectDismantleButton").disabled =
+        duplicateCount <= 0 ||
+        protectedItem;
+
+      $("inspectDismantleButton").textContent =
+        protectedItem
+          ? "Protected Reward"
+          : duplicateCount > 0
+            ? `Dismantle 1 (+${essenceYield[rarity] || 5})`
+            : "No Duplicates";
+    }
+
+    function getOwnedItemsForWorld(worldId) {
+      return collectionItems.filter(
+        item =>
+          item.collectionId ===
+          worldId
+      );
+    }
+
+    function renderWorldCollections() {
+      $("worldCollectionGrid").innerHTML =
+        Object.entries(
+          WORLD_COLLECTIONS
+        )
+          .map(
+            (
+              [
+                worldId,
+                world
+              ]
+            ) => {
+              const owned =
+                getOwnedItemsForWorld(
+                  worldId
+                ).length;
+
+              const percent =
+                Math.min(
+                  100,
+                  Math.round(
+                    (
+                      owned /
+                      world.total
+                    ) *
+                    100
+                  )
+                );
+
+              return `
+                <button
+                  class="world-card ${
+                    selectedWorldId === worldId
+                      ? "selected"
+                      : ""
+                  }"
+                  type="button"
+                  data-world-id="${worldId}"
+                  style="
+                    --world-accent:${world.accent};
+                    --world-soft:${world.soft};
+                  "
+                >
+                  <div class="world-icon">
+                    <i class="${world.icon}"></i>
+                  </div>
+
+                  <span>
+                    ${escapeHtml(world.crateName)}
+                  </span>
+
+                  <h3>
+                    ${escapeHtml(world.name)}
+                  </h3>
+
+                  <div class="world-count">
+                    <strong>
+                      ${owned}/${world.total}
+                    </strong>
+
+                    <small>
+                      ${percent}% Complete
+                    </small>
+                  </div>
+
+                  <div class="world-progress">
+                    <div
+                      style="width:${percent}%;"
+                    ></div>
+                  </div>
+                </button>
+              `;
+            }
+          )
+          .join("");
+
+      document
+        .querySelectorAll(
+          "[data-world-id]"
+        )
+        .forEach(button => {
+          button.addEventListener(
+            "click",
+            () => {
+              selectedWorldId =
+                button.dataset.worldId;
+
+              renderWorldCollections();
+              renderWorldDetail();
+            }
+          );
+        });
+
+      renderWorldDetail();
+    }
+
+    function renderWorldDetail() {
+      const world =
+        WORLD_COLLECTIONS[
+          selectedWorldId
+        ];
+
+      if (!world) {
+        return;
+      }
+
+      const ownedItems =
+        getOwnedItemsForWorld(
+          selectedWorldId
+        );
+
+      const percent =
+        Math.min(
+          100,
+          Math.round(
+            (
+              ownedItems.length /
+              world.total
+            ) *
+            100
+          )
+        );
+
+      const slots =
+        world.slots.map(
+          (
+            slotName,
+            index
+          ) => {
+            const item =
+              ownedItems[index];
+
+            return {
+              slotName,
+              item
+            };
+          }
+        );
+
+      $("worldCollectionDetail").style.setProperty(
+        "--world-accent",
+        world.accent
+      );
+
+      $("worldCollectionDetail").style.setProperty(
+        "--world-soft",
+        world.soft
+      );
+
+      $("worldCollectionDetail").innerHTML = `
+        <div class="world-detail-main">
+          <div class="eyebrow">
+            Collection Contents
+          </div>
+
+          <h2>
+            ${escapeHtml(world.name)}
+          </h2>
+
+          <p>
+            Owned rewards appear in full color. Missing collection
+            slots remain locked until earned or crafted.
+          </p>
+
+          <div class="world-slot-grid">
+            ${slots
+              .map(slot => {
+                const item =
+                  slot.item;
+
+                return `
+                  <div class="world-slot ${item ? "owned" : ""}">
+                    <div class="world-slot-icon">
+                      <i class="${
+                        item
+                          ? iconForCategory(item.category)
+                          : "fa-solid fa-lock"
+                      }"></i>
+                    </div>
+
+                    <span>
+                      ${item ? "Owned" : "Missing"}
+                    </span>
+
+                    <strong>
+                      ${escapeHtml(item?.name || slot.slotName)}
+                    </strong>
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+
+        <aside class="world-detail-side">
+          <span>
+            Collection Progress
+          </span>
+
+          <strong>
+            ${ownedItems.length}/${world.total}
+          </strong>
+
+          <p>
+            ${percent}% of this world collection has been unlocked.
+          </p>
+
+          <a
+            class="client-button primary"
+            href="shop.html?crate=${encodeURIComponent(selectedWorldId + "_crate")}"
+            style="margin-top:18px;"
+          >
+            View ${escapeHtml(world.crateName)}
+          </a>
+        </aside>
+      `;
+    }
+
+    function renderCrafting() {
+      const duplicates =
+        collectionItems.filter(
+          item =>
+            Number(
+              item.quantity ||
+              0
+            ) >
+              1
+        );
+
+      if (!duplicates.length) {
+        $("duplicateCraftingList").innerHTML = `
+          <div class="empty-state">
+            You do not currently have duplicate collectible copies.
+          </div>
+        `;
+      } else {
+        $("duplicateCraftingList").innerHTML =
+          duplicates
+            .map(item => {
+              const rarity =
+                clean(
+                  item.rarity,
+                  "common"
+                ).toLowerCase();
+
+              const theme =
+                getTheme(
+                  item.rarity
+                );
+
+              const duplicatesAvailable =
+                Math.max(
+                  0,
+                  Number(
+                    item.quantity ||
+                    0
+                  ) -
+                  1
+                );
+
+              const protectedItem =
+                rarity === "limited" ||
+                rarity === "seasonal";
+
+              return `
+                <div
+                  class="duplicate-row"
+                  style="
+                    --duplicate-accent:${theme.accent};
+                    --duplicate-soft:${theme.soft};
+                    --duplicate-border:${theme.border};
+                  "
+                >
+                  <div class="duplicate-icon">
+                    <i class="${iconForCategory(item.category)}"></i>
+                  </div>
+
+                  <div class="duplicate-copy">
+                    <strong>
+                      ${escapeHtml(item.name)}
+                    </strong>
+
+                    <span>
+                      ${duplicatesAvailable} duplicate ${
+                        duplicatesAvailable === 1
+                          ? "copy"
+                          : "copies"
+                      }
+                      •
+                      ${escapeHtml(item.rarity)}
+                    </span>
+                  </div>
+
+                  <div class="duplicate-actions">
+                    ${
+                      protectedItem
+                        ? `
+                          <span class="duplicate-value">
+                            Protected
+                          </span>
+                        `
+                        : `
+                          <span class="duplicate-value">
+                            +${essenceYield[rarity] || 5}
+                          </span>
+
+                          <button
+                            class="client-button"
+                            type="button"
+                            onclick="dismantleDuplicate('${escapeHtml(item.id)}')"
+                          >
+                            Dismantle 1
+                          </button>
+                        `
+                    }
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+      }
+
+      $("craftWorldSelect").innerHTML =
+        Object.entries(
+          WORLD_COLLECTIONS
+        )
+          .map(
+            (
+              [
+                worldId,
+                world
+              ]
+            ) => `
+              <option value="${worldId}">
+                ${escapeHtml(world.name)}
+              </option>
+            `
+          )
+          .join("");
+
+      $("craftWorldSelect").value =
+        selectedWorldId;
+
+      renderCraftRecipes();
+    }
+
+    function renderCraftRecipes() {
+      const worldId =
+        $("craftWorldSelect").value ||
+        selectedWorldId;
+
+      const world =
+        WORLD_COLLECTIONS[
+          worldId
+        ];
+
+      const balance =
+        getEssenceBalance();
+
+      $("craftRecipeList").innerHTML =
+        craftRecipes
+          .map(recipe => {
+            const theme =
+              getTheme(
+                recipe.rarity
+              );
+
+            return `
+              <article
+                class="recipe"
+                style="
+                  --recipe-accent:${theme.accent};
+                "
+              >
+                <div>
+                  <span>
+                    ${escapeHtml(recipe.rarity)}
+                  </span>
+
+                  <strong>
+                    ${escapeHtml(recipe.label)}
+                  </strong>
+
+                  <small>
+                    ${escapeHtml(recipe.description)}
+                  </small>
+                </div>
+
+                <button
+                  class="client-button ${
+                    balance >= recipe.cost
+                      ? "primary"
+                      : ""
+                  }"
+                  type="button"
+                  onclick="craftWorldReward(
+                    '${worldId}',
+                    '${recipe.id}',
+                    ${recipe.cost}
+                  )"
+                  ${balance < recipe.cost ? "disabled" : ""}
+                >
+                  ${recipe.cost} Essence
+                </button>
+              </article>
+            `;
+          })
+          .join("");
+
+      selectedWorldId =
+        worldId;
+
+      if (world) {
+        renderWorldCollections();
+      }
+    }
+
+    async function dismantleDuplicate(itemId) {
+      const item =
+        collectionItems.find(
+          entry =>
+            entry.id === itemId
+        );
+
+      if (
+        !item ||
+        Number(
+          item.quantity ||
+          0
+        ) <=
+          1
+      ) {
+        return;
+      }
+
+      const status =
+        $("craftingStatus");
+
+      status.textContent =
+        `Dismantling one duplicate copy of ${item.name}...`;
+
+      status.style.color =
+        "#aaa3b4";
+
+      try {
+        const callable =
+          firebase
+            .functions()
+            .httpsCallable(
+              "dismantleDuplicate"
+            );
+
+        await callable({
+          itemId:
+            item.id,
+
+          quantity:
+            1
+        });
+
+        status.textContent =
+          `${item.name} was converted into RG Essence.`;
+
+        status.style.color =
+          "#82e7af";
+      } catch (error) {
+        console.error(
+          "Dismantle failed:",
+          error
+        );
+
+        status.textContent =
+          "The crafting interface is ready, but the secure dismantleDuplicate Firebase Function still needs to be deployed.";
+
+        status.style.color =
+          "#f2c969";
+      }
+    }
+
+    async function craftWorldReward(
+      worldId,
+      recipeId,
+      cost
+    ) {
+      const status =
+        $("craftingStatus");
+
+      status.textContent =
+        "Crafting a duplicate-protected collection reward...";
+
+      status.style.color =
+        "#aaa3b4";
+
+      try {
+        const callable =
+          firebase
+            .functions()
+            .httpsCallable(
+              "craftCollectionItem"
+            );
+
+        await callable({
+          collectionId:
+            worldId,
+
+          recipeId,
+
+          cost
+        });
+
+        status.textContent =
+          "Your crafted collection reward has been added.";
+
+        status.style.color =
+          "#82e7af";
+      } catch (error) {
+        console.error(
+          "Craft failed:",
+          error
+        );
+
+        status.textContent =
+          "The crafting interface is ready, but the secure craftCollectionItem Firebase Function still needs to be deployed.";
+
+        status.style.color =
+          "#f2c969";
       }
     }
 
@@ -4181,176 +5604,6 @@
         button.textContent =
           "Equip to Profile";
       }
-    }
-
-    $("equipItemButton")
-      .addEventListener(
-        "click",
-        equipSelectedItem
-      );
-
-    function renderCrates() {
-      const ownedCrates =
-        normalizeObject(
-          currentInventory.crates
-        );
-
-      const crateIds =
-        Array.from(
-          new Set([
-            ...Object.keys(
-              crateCatalog
-            ),
-            ...Object.keys(
-              ownedCrates
-            )
-          ])
-        );
-
-      $("crateGrid").innerHTML =
-        crateIds
-          .map(crateId => {
-            const catalog =
-              crateCatalog[
-                crateId
-              ] ||
-              {
-                name:
-                  titleFromId(
-                    crateId
-                  ),
-
-                rarity:
-                  "Common",
-
-                description:
-                  "Rivals Gauntlet reward item.",
-
-                image:
-                  ""
-              };
-
-            const count =
-              Number(
-                ownedCrates[
-                  crateId
-                ] ||
-                0
-              );
-
-            const theme =
-              getTheme(
-                catalog.rarity
-              );
-
-            return `
-              <article
-                class="crate-entry"
-                style="
-                  --crate-accent:${theme.accent};
-                  --crate-soft:${theme.soft};
-                  --crate-border:${theme.border};
-                "
-              >
-                <div class="crate-visual">
-                  <span class="crate-count">
-                    ×${count}
-                  </span>
-
-                  ${
-                    catalog.image
-                      ? `
-                        <img
-                          src="${escapeHtml(catalog.image)}"
-                          alt="${escapeHtml(catalog.name)}"
-                          onerror="
-                            this.hidden=true;
-                            this.nextElementSibling.hidden=false;
-                          "
-                        >
-                      `
-                      : ""
-                  }
-
-                  <div
-                    class="crate-fallback"
-                    ${catalog.image ? "hidden" : ""}
-                  >
-                    <i class="fa-solid fa-box-open"></i>
-                  </div>
-                </div>
-
-                <div class="crate-copy">
-                  <span>
-                    ${escapeHtml(catalog.rarity)}
-                  </span>
-
-                  <h3>
-                    ${escapeHtml(catalog.name)}
-                  </h3>
-
-                  <p>
-                    ${escapeHtml(catalog.description)}
-                  </p>
-
-                  <div class="crate-actions">
-                    ${
-                      count > 0
-                        ? `
-                          <button
-                            class="client-button primary"
-                            type="button"
-                            onclick="handleOwnedCrate('${escapeHtml(crateId)}')"
-                          >
-                            Open Crate
-                          </button>
-                        `
-                        : `
-                          <a
-                            class="client-button"
-                            href="shop.html"
-                          >
-                            View in Shop
-                          </a>
-                        `
-                    }
-                  </div>
-                </div>
-              </article>
-            `;
-          })
-          .join("");
-    }
-
-    function handleOwnedCrate(crateId) {
-      const count =
-        Number(
-          currentInventory.crates?.[
-            crateId
-          ] ||
-          0
-        );
-
-      if (count <= 0) {
-        return;
-      }
-
-      if (
-        typeof window.openOwnedCrate ===
-        "function"
-      ) {
-        window.openOwnedCrate(
-          crateId
-        );
-
-        return;
-      }
-
-      $("inventoryPageStatus").textContent =
-        "The owned-crate opening interface is ready, but the secure opening backend is not connected yet.";
-
-      $("inventoryPageStatus").style.color =
-        "#f2c969";
     }
 
     function getItemName(itemId) {
@@ -4559,6 +5812,11 @@
                 "Common"
               ),
 
+            collectionId:
+              inferCollectionId(
+                data
+              ),
+
             sourceName:
               clean(
                 data.sourceCrateName,
@@ -4613,6 +5871,11 @@
                   "Common"
                 ),
 
+              collectionId:
+                inferCollectionId(
+                  data
+                ),
+
               sourceName:
                 clean(
                   data.sourceCrateName,
@@ -4646,7 +5909,7 @@
       if (!history.length) {
         $("rewardHistoryBody").innerHTML = `
           <tr>
-            <td colspan="4">
+            <td colspan="5">
               <div class="empty-state">
                 No reward history has been recorded yet.
               </div>
@@ -4668,6 +5931,16 @@
               getTheme(
                 entry.rarity
               );
+
+            const collectionName =
+              entry.collectionId
+                ? WORLD_COLLECTIONS[
+                    entry.collectionId
+                  ]?.name ||
+                  titleFromId(
+                    entry.collectionId
+                  )
+                : "Unassigned";
 
             return `
               <tr
@@ -4702,6 +5975,10 @@
                 </td>
 
                 <td>
+                  ${escapeHtml(collectionName)}
+                </td>
+
+                <td>
                   ${escapeHtml(entry.sourceName)}
                 </td>
 
@@ -4717,13 +5994,33 @@
     function renderEverything() {
       normalizeCollection();
       renderSummary();
+      renderUnopenedRewards();
       renderCategoryRail();
       renderCollectionGrid();
       renderInspector();
-      renderCrates();
+      renderWorldCollections();
+      renderCrafting();
       renderLoadout();
       renderHistory();
     }
+
+    $("equipItemButton")
+      .addEventListener(
+        "click",
+        equipSelectedItem
+      );
+
+    $("inspectDismantleButton")
+      .addEventListener(
+        "click",
+        () => {
+          if (selectedItemId) {
+            dismantleDuplicate(
+              selectedItemId
+            );
+          }
+        }
+      );
 
     document
       .querySelectorAll(
@@ -4798,6 +6095,12 @@
         }
       );
 
+    $("craftWorldSelect")
+      .addEventListener(
+        "change",
+        renderCraftRecipes
+      );
+
     auth.onAuthStateChanged(
       user => {
         if (!user) {
@@ -4830,7 +6133,7 @@
                 snapshot.val() ||
                 {};
 
-              renderLoadout();
+              renderEverything();
             }
           );
 

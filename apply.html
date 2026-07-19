@@ -2,533 +2,321 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08070d">
   <title>Apply | Rivals Gauntlet</title>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="global-header.css?v=19">
+  <style>
+    :root{--bg:#07070b;--panel:#0c0b12;--panel2:#111019;--text:#f8f5fc;--soft:#cbc4d5;--muted:#aaa3b4;--dim:#756e7d;--line:rgba(255,255,255,.085);--line2:rgba(255,255,255,.145);--purple:#a855f7;--purple2:#d09cff;--purple3:#6d28d9;--green:#43d391;--yellow:#f0c568;--red:#ef6572;--max:1540px}
+    *{box-sizing:border-box}html{overflow-x:hidden;scroll-behavior:smooth}body{min-height:100vh;margin:0;overflow-x:hidden;background:radial-gradient(circle at 87% -3%,rgba(119,65,206,.18),transparent 31%),linear-gradient(180deg,#09080f,var(--bg));color:var(--text);font-family:Rajdhani,sans-serif}a{color:inherit;text-decoration:none}button,input,select,textarea{color:inherit;font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}.page{width:min(calc(100% - 32px),var(--max));margin:20px auto 72px}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--purple2);font-size:9px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase}.eyebrow:before{width:24px;height:2px;content:"";background:linear-gradient(90deg,var(--purple),transparent)}
+    .btn{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 15px;border:1px solid var(--line2);border-radius:8px;background:rgba(255,255,255,.025);color:#e9e2ee;font-size:10px;font-weight:800;letter-spacing:.65px;text-transform:uppercase;transition:.18s}.btn:hover{transform:translateY(-1px);border-color:rgba(192,132,252,.5);background:rgba(168,85,247,.075)}.btn.primary{border-color:rgba(208,156,255,.5);background:linear-gradient(135deg,var(--purple3),var(--purple));color:#fff}.btn.discord{border-color:rgba(115,128,255,.4);color:#cbd0ff}.btn:disabled{cursor:not-allowed;opacity:.45;transform:none}.status{min-height:18px;margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,.75fr);overflow:hidden;border:1px solid rgba(192,132,252,.28);border-radius:14px;background:radial-gradient(circle at 86% 16%,rgba(168,85,247,.18),transparent 31%),linear-gradient(135deg,rgba(255,255,255,.025),transparent 45%),var(--panel)}.hero-copy{padding:clamp(28px,4vw,45px)}.hero h1{max-width:850px;margin:14px 0 0;font-size:clamp(43px,6vw,78px);line-height:.84;letter-spacing:-2.2px;text-transform:uppercase}.hero h1 span{color:var(--purple2)}.hero p{max-width:710px;margin:18px 0 0;color:var(--muted);font-size:14px;line-height:1.55}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.event{display:flex;flex-direction:column;justify-content:center;padding:27px;border-left:1px solid var(--line);background:rgba(0,0,0,.09)}.event>span{color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase}.event>strong{margin-top:7px;font-size:27px;line-height:.95;text-transform:uppercase}.event-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;margin-top:20px;border:1px solid var(--line);background:var(--line)}.event-cell{padding:12px;background:#111018}.event-cell span{display:block;color:var(--dim);font-size:7px;font-weight:800;text-transform:uppercase}.event-cell strong{display:block;overflow:hidden;margin-top:4px;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+    .app-state{display:none;margin-top:13px;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:var(--panel)}.app-state.visible{display:grid;grid-template-columns:minmax(0,1fr) 290px}.state-main{padding:24px 26px}.state-main h2{margin:8px 0 0;font-size:31px;line-height:.93;text-transform:uppercase}.state-main p{max-width:780px;margin:11px 0 0;color:var(--muted);font-size:12px;line-height:1.55}.state-side{padding:23px;border-left:1px solid var(--line);background:rgba(0,0,0,.08)}.state-side>span{display:block;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.state-side>strong{display:block;margin-top:5px;font-size:20px;text-transform:uppercase}.state-list{margin-top:15px;border-top:1px solid var(--line)}.state-row{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line)}.state-row span{color:var(--dim);font-size:7px;font-weight:800;text-transform:uppercase}.state-row strong{max-width:62%;overflow:hidden;font-size:10px;text-align:right;text-overflow:ellipsis;white-space:nowrap}
+    .client{min-height:650px;display:grid;grid-template-columns:215px minmax(0,1fr) 310px;overflow:hidden;margin-top:13px;border:1px solid rgba(192,132,252,.27);border-radius:14px;background:var(--panel)}.client.locked{display:none}.steps{padding:12px;border-right:1px solid var(--line);background:rgba(0,0,0,.08)}.steps-label{padding:5px 8px 13px;color:var(--dim);font-size:8px;font-weight:800;letter-spacing:1.15px;text-transform:uppercase}.step{width:100%;min-height:58px;display:grid;grid-template-columns:31px minmax(0,1fr) auto;align-items:center;gap:10px;padding:0 10px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);text-align:left}.step:hover,.step.active{border-color:rgba(192,132,252,.25);background:rgba(168,85,247,.055);color:#fff}.step.active{box-shadow:inset 3px 0 var(--purple)}.step-num{width:31px;height:31px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:8px;color:var(--dim);font-size:9px;font-weight:800}.step.active .step-num{border-color:rgba(192,132,252,.42);background:rgba(168,85,247,.11);color:var(--purple2)}.step.complete .step-num{border-color:rgba(67,211,145,.34);background:rgba(67,211,145,.065);color:#8fe8b8}.step-copy{min-width:0}.step-copy strong,.step-copy span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.step-copy strong{font-size:10px;text-transform:uppercase}.step-copy span{margin-top:3px;color:var(--dim);font-size:7px}.step-check{color:var(--green);font-size:10px}
+    .workspace{min-width:0}.mobile-steps{display:none}.form-head{min-height:94px;display:flex;align-items:flex-end;justify-content:space-between;gap:22px;padding:20px 23px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(168,85,247,.055),transparent 45%)}.form-head h2{margin:7px 0 0;font-size:30px;line-height:.92;text-transform:uppercase}.form-head p{max-width:530px;margin:8px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.progress-copy{color:var(--dim);font-size:8px;font-weight:800;text-align:right;text-transform:uppercase}.progress-copy strong{display:block;margin-top:4px;color:var(--purple2);font-size:18px}.form-step{display:none;padding:22px 23px 24px}.form-step.active{display:block}.section-title{margin-bottom:17px}.section-title h3{margin:6px 0 0;font-size:22px;text-transform:uppercase}.section-title p{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field.full{grid-column:1/-1}.field label{display:block;margin-bottom:7px;color:var(--soft);font-size:9px;font-weight:800;line-height:1.35;text-transform:uppercase}.req{margin-left:3px;color:var(--red)}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line2);border-radius:8px;outline:0;background:#0a090f;color:#fff;transition:.18s}.field input,.field select{min-height:45px;padding:0 12px}.field textarea{min-height:125px;padding:12px;resize:vertical;line-height:1.5}.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(192,132,252,.52);background:#0d0b13}.field.invalid input,.field.invalid select,.field.invalid textarea{border-color:rgba(239,101,114,.72);background:rgba(239,101,114,.045)}.note{margin:6px 0 0;color:var(--dim);font-size:8px;line-height:1.4}.error{display:none;margin:6px 0 0;color:#ff9fa8;font-size:8px;font-weight:700}.field.invalid .error{display:block}.divider{height:1px;margin:20px 0;background:var(--line)}
+    .player-card{display:grid;grid-template-columns:68px minmax(0,1fr) auto;align-items:center;gap:14px;padding:15px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(168,85,247,.06),transparent 48%),#100e17}.avatar,.avatar-fallback{width:68px;height:68px;border:1px solid rgba(192,132,252,.36);border-radius:13px;background:linear-gradient(145deg,#38254d,#121019);object-fit:cover}.avatar-fallback{display:grid;place-items:center;color:var(--purple2);font-size:21px;font-weight:800}.player-copy{min-width:0}.player-copy span{display:block;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.player-copy strong{display:block;overflow:hidden;margin-top:4px;font-size:20px;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}.player-copy small{display:block;margin-top:4px;color:var(--purple2);font-size:9px;font-weight:800}.profile-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;overflow:hidden;margin-top:14px;border:1px solid var(--line);background:var(--line)}.profile-cell{padding:11px 12px;background:#111018}.profile-cell span{display:block;color:var(--dim);font-size:7px;font-weight:800;text-transform:uppercase}.profile-cell strong{display:block;overflow:hidden;margin-top:4px;font-size:11px;text-overflow:ellipsis;white-space:nowrap}.readiness{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;margin-top:14px;padding:13px 14px;border-left:3px solid var(--green);background:rgba(67,211,145,.045)}.readiness.warning{border-left-color:var(--yellow);background:rgba(240,197,104,.045)}.readiness strong{display:block;font-size:12px;text-transform:uppercase}.readiness span{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.4}
+    .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.review-group{border:1px solid var(--line);background:#100f16}.review-group.full{grid-column:1/-1}.review-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 13px;border-bottom:1px solid var(--line);background:rgba(168,85,247,.04)}.review-head strong{font-size:10px;text-transform:uppercase}.review-edit{padding:0;border:0;background:transparent;color:var(--purple2);font-size:8px;font-weight:800;text-transform:uppercase}.review-list{padding:4px 13px}.review-row{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:9px 0;border-bottom:1px solid var(--line)}.review-row:last-child{border-bottom:0}.review-row span{color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.review-row strong{max-width:62%;font-size:10px;line-height:1.35;text-align:right}.agreement{margin-top:15px;padding:13px;border-left:3px solid var(--purple);background:rgba(168,85,247,.055);color:#d5cedc;font-size:10px;line-height:1.5}.form-footer{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 23px;border-top:1px solid var(--line);background:rgba(0,0,0,.08)}.footer-copy{color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.footer-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+    .summary{border-left:1px solid var(--line);background:radial-gradient(circle at 50% 5%,rgba(168,85,247,.11),transparent 25%),#0a090f}.summary-section{padding:19px;border-bottom:1px solid var(--line)}.summary-section h3{margin:6px 0 0;font-size:18px;text-transform:uppercase}.summary-section p{margin:8px 0 0;color:var(--muted);font-size:9px;line-height:1.45}.progress{margin-top:14px}.progress-head{display:flex;justify-content:space-between;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.progress-head strong{color:var(--purple2);font-size:11px}.track{height:5px;overflow:hidden;margin-top:8px;background:rgba(255,255,255,.07)}.fill{width:0;height:100%;background:linear-gradient(90deg,var(--purple3),var(--purple2));transition:.25s}.checks{display:grid;margin-top:13px}.check{min-height:34px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.check span{color:var(--muted);font-size:9px;font-weight:700}.check i{color:var(--dim)}.check.complete i{color:var(--green)}.requirements{display:grid;margin-top:12px;border-top:1px solid var(--line)}.requirement{display:grid;grid-template-columns:21px minmax(0,1fr);gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.requirement i{width:21px;height:21px;display:grid;place-items:center;border:1px solid var(--line);color:var(--purple2);font-size:8px}.requirement strong{display:block;font-size:9px;text-transform:uppercase}.requirement span{display:block;margin-top:3px;color:var(--dim);font-size:8px;line-height:1.35}.support{display:grid;gap:7px;margin-top:13px}
+    @media(max-width:1220px){.client{grid-template-columns:190px minmax(0,1fr) 275px}.profile-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:980px){.hero{grid-template-columns:1fr}.event{border-top:1px solid var(--line);border-left:0}.app-state.visible{grid-template-columns:1fr}.state-side{border-top:1px solid var(--line);border-left:0}.client{grid-template-columns:175px minmax(0,1fr)}.summary{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--line);border-left:0}.summary-section{border-right:1px solid var(--line);border-bottom:0}.summary-section:last-child{border-right:0}.review-grid{grid-template-columns:1fr}.review-group.full{grid-column:auto}}
+    @media(max-width:720px){.page{width:min(calc(100% - 14px),var(--max));margin-top:10px}.hero-copy{padding:26px 18px}.hero h1{font-size:46px}.hero p{font-size:12px}.event{padding:19px}.client{display:block}.client.locked{display:none}.steps{display:none}.mobile-steps{display:flex;overflow-x:auto;border-bottom:1px solid var(--line);background:#09080e}.mobile-step{min-width:max-content;min-height:47px;padding:0 15px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--dim);font-size:8px;font-weight:800;text-transform:uppercase}.mobile-step.active{background:rgba(168,85,247,.055);box-shadow:inset 0 -3px var(--purple);color:var(--purple2)}.mobile-step.complete{color:#8fe8b8}.form-head{align-items:flex-start;flex-direction:column;padding:18px 17px}.progress-copy{text-align:left}.form-step{padding:18px 17px 20px}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.player-card{grid-template-columns:55px minmax(0,1fr)}.avatar,.avatar-fallback{width:55px;height:55px}.player-card .btn{grid-column:1/-1}.profile-grid{grid-template-columns:1fr}.readiness{grid-template-columns:1fr}.form-footer{align-items:stretch;flex-direction:column;padding:13px 17px}.footer-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.footer-actions .btn{width:100%}.summary{display:block}.summary-section{border-right:0;border-bottom:1px solid var(--line)}.summary-section:last-child{border-bottom:0}}
+    @media(max-width:470px){.event-grid{grid-template-columns:1fr}.actions{display:grid;grid-template-columns:1fr}.actions .btn{width:100%}.footer-actions{grid-template-columns:1fr}.review-row{display:grid}.review-row strong{max-width:none;text-align:left}}
+  </style>
 </head>
+<body data-page="apply">
+  <div id="globalHeader"></div>
 
-<body class="account-body">
-
-<div class="account-center-shell">
-  <div class="account-center">
-
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>ACCOUNT CENTER</h2>
-      </div>
-
-      <div class="account-mini-card">
-        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
-        <div id="sidebarFallback" class="account-avatar-fallback">RG</div>
-
-        <h1 id="sidebarName">Player</h1>
-        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
-        <span class="account-badge">VERIFIED CREATOR</span>
-
-        <div class="profile-progress">
-          <div class="profile-progress-top">
-            <span>Profile</span>
-            <span id="profilePercent">0%</span>
-          </div>
-          <div class="profile-progress-track">
-            <div id="profileFill" class="profile-progress-fill"></div>
-          </div>
-        </div>
-
-        <div class="creator-card-stats">
-          <div class="creator-stat-row">
-            <span>Events Played</span>
-            <strong id="sidebarEvents">0</strong>
-          </div>
-
-          <div class="creator-stat-row">
-            <span>Championships</span>
-            <strong id="sidebarChamps">0</strong>
-          </div>
-
-          <div class="creator-stat-row">
-            <span>Best Finish</span>
-            <strong id="sidebarBestFinish">--</strong>
-          </div>
-        </div>
-
-        <div class="creator-card-status">
-          <div class="creator-status-row">
-            <span>Discord</span>
-            <strong id="statusDiscord">--</strong>
-          </div>
-
-          <div class="creator-status-row">
-            <span>Twitch</span>
-            <strong id="statusTwitch">--</strong>
-          </div>
-
-          <div class="creator-status-row">
-            <span>YouTube</span>
-            <strong id="statusYoutube">--</strong>
-          </div>
-
-          <div class="creator-status-row">
-            <span>TikTok</span>
-            <strong id="statusTiktok">--</strong>
-          </div>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Tournament Recruitment Center</div>
+        <h1>Enter the <span>Gauntlet.</span></h1>
+        <p>Submit your competitor profile for the active Rivals Gauntlet tournament. Your account identity is loaded automatically; complete the event-specific requirements, competitive details, availability, and creator information.</p>
+        <div class="actions">
+          <a class="btn" href="tournament.html"><i class="fa-solid fa-trophy"></i>View Tournament</a>
+          <a class="btn" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Command Center</a>
         </div>
       </div>
 
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a id="publicProfileLink" href="#">Public Profile</a>
-        <a class="active" href="apply.html">Applications</a>
-        <a href="#">Tournament History</a>
-        <a href="#">Career Stats</a>
-        <a href="#">Achievements</a>
-        <a href="#">Notifications</a>
-        <a href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
-      </nav>
-    </aside>
+      <aside class="event">
+        <span>Active Recruitment</span>
+        <strong id="eventName">Loading Tournament...</strong>
+        <div class="event-grid">
+          <div class="event-cell"><span>Application Status</span><strong id="eventStatus">Loading</strong></div>
+          <div class="event-cell"><span>Format</span><strong id="eventFormat">8 Teams • Single Elimination</strong></div>
+          <div class="event-cell"><span>Game</span><strong>Marvel Rivals</strong></div>
+          <div class="event-cell"><span>Entry Type</span><strong>Individual Application</strong></div>
+        </div>
+      </aside>
+    </section>
 
-    <main class="account-main">
-      <div class="account-topbar">
-        <div>
-          <p>TOURNAMENT APPLICATION</p>
-          <h1>Apply for Rivals Gauntlet</h1>
-          <span>Your account info is auto-filled. Complete the tournament-specific questions below.</span>
+    <section id="applicationState" class="app-state">
+      <div class="state-main">
+        <div class="eyebrow">Application Record</div>
+        <h2 id="stateTitle">Application Submitted</h2>
+        <p id="stateDescription">Your application has been received.</p>
+        <div class="actions">
+          <a class="btn primary" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Open Command Center</a>
+          <button id="reviewSubmittedButton" class="btn" type="button"><i class="fa-solid fa-file-lines"></i>Review Submission</button>
+          <a id="stateDiscord" class="btn discord" href="https://discord.gg/82HPpfkhQN" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i>Open Discord</a>
         </div>
       </div>
+      <aside class="state-side">
+        <span>Current Status</span><strong id="stateStatus">Pending</strong>
+        <div class="state-list">
+          <div class="state-row"><span>Tournament</span><strong id="stateTournament">—</strong></div>
+          <div class="state-row"><span>Submitted</span><strong id="stateSubmitted">—</strong></div>
+          <div class="state-row"><span>Rivals IGN</span><strong id="stateIgn">—</strong></div>
+          <div class="state-row"><span>Preferred Role</span><strong id="stateRole">—</strong></div>
+        </div>
+      </aside>
+    </section>
 
-      <div class="account-panel-grid">
+    <section id="applicationClient" class="client">
+      <aside class="steps">
+        <div class="steps-label">Application Progress</div>
+        <button class="step active" type="button" data-step="0"><span class="step-num">01</span><span class="step-copy"><strong>Player Record</strong><span>Account identity</span></span><i class="step-check fa-solid fa-check" hidden></i></button>
+        <button class="step" type="button" data-step="1"><span class="step-num">02</span><span class="step-copy"><strong>Requirements</strong><span>Eligibility and comms</span></span><i class="step-check fa-solid fa-check" hidden></i></button>
+        <button class="step" type="button" data-step="2"><span class="step-num">03</span><span class="step-copy"><strong>Competitive</strong><span>Rank and hero pool</span></span><i class="step-check fa-solid fa-check" hidden></i></button>
+        <button class="step" type="button" data-step="3"><span class="step-num">04</span><span class="step-copy"><strong>Creator Info</strong><span>Streaming and notes</span></span><i class="step-check fa-solid fa-check" hidden></i></button>
+        <button class="step" type="button" data-step="4"><span class="step-num">05</span><span class="step-copy"><strong>Review</strong><span>Confirm and submit</span></span><i class="step-check fa-solid fa-check" hidden></i></button>
+      </aside>
 
-        <section class="account-panel full">
-          <h2>Applicant Profile</h2>
+      <section class="workspace">
+        <nav class="mobile-steps">
+          <button class="mobile-step active" type="button" data-mobile-step="0">01 Player</button>
+          <button class="mobile-step" type="button" data-mobile-step="1">02 Requirements</button>
+          <button class="mobile-step" type="button" data-mobile-step="2">03 Competitive</button>
+          <button class="mobile-step" type="button" data-mobile-step="3">04 Creator</button>
+          <button class="mobile-step" type="button" data-mobile-step="4">05 Review</button>
+        </nav>
 
-          <p><strong>RG ID:</strong> <span id="appRgId">Loading...</span></p>
-          <p><strong>Display Name:</strong> <span id="appDisplayName">Loading...</span></p>
-          <p><strong>Marvel Rivals IGN:</strong> <span id="appIgn">Loading...</span></p>
-          <p><strong>Discord:</strong> <span id="appDiscord">Loading...</span></p>
-          <p><strong>Region:</strong> <span id="appRegion">Loading...</span></p>
-          <p><strong>Platform:</strong> <span id="appPlatform">Loading...</span></p>
+        <header class="form-head">
+          <div><div class="eyebrow">Tournament Application</div><h2 id="stepTitle">Confirm Your Player Record</h2><p id="stepDescription">Review the account information that will be attached to your tournament application.</p></div>
+          <div class="progress-copy">Application Progress<strong id="formPercent">0%</strong></div>
+        </header>
 
-          <div class="account-actions">
-            <a class="account-secondary" href="settings.html">
-              Edit Account Info
-            </a>
+        <section class="form-step active" data-form-step="0">
+          <div class="section-title"><div class="eyebrow">Account Identity</div><h3>Your Rivals Gauntlet Profile</h3><p>These fields come from your player profile and remain consistent across tournaments, team displays, and broadcasts.</p></div>
+          <div class="player-card">
+            <img id="playerAvatar" class="avatar" src="" alt="Player profile" hidden>
+            <div id="playerFallback" class="avatar-fallback">RG</div>
+            <div class="player-copy"><span>Verified Competitor</span><strong id="playerName">Player</strong><small id="playerRgId">RG ACCOUNT</small></div>
+            <a class="btn" href="settings.html"><i class="fa-solid fa-user-pen"></i>Edit Profile</a>
+          </div>
+          <div class="profile-grid">
+            <div class="profile-cell"><span>Display Name</span><strong id="profileDisplayName">Loading...</strong></div>
+            <div class="profile-cell"><span>Marvel Rivals IGN</span><strong id="profileIgn">Loading...</strong></div>
+            <div class="profile-cell"><span>Discord</span><strong id="profileDiscord">Loading...</strong></div>
+            <div class="profile-cell"><span>Region</span><strong id="profileRegion">Loading...</strong></div>
+            <div class="profile-cell"><span>Platform</span><strong id="profilePlatform">Loading...</strong></div>
+            <div class="profile-cell"><span>RG ID</span><strong id="profileId">Loading...</strong></div>
+          </div>
+          <div id="profileReadiness" class="readiness"><div><strong id="profileReadinessTitle">Checking Profile...</strong><span id="profileReadinessCopy">Confirming your required tournament identity fields.</span></div><a id="completeProfileButton" class="btn" href="settings.html" hidden>Complete Profile</a></div>
+        </section>
+
+        <section class="form-step" data-form-step="1">
+          <div class="section-title"><div class="eyebrow">Event Eligibility</div><h3>Requirements and Availability</h3><p>Confirm that you can receive tournament communication, join team voice chat, and participate for the active event.</p></div>
+          <div class="grid">
+            <div class="field full" data-field="ageConfirm"><label for="ageConfirm">Are you at least 18 years old, or do you have a parent/legal guardian who can collect prize money on your behalf?<span class="req">*</span></label><select id="ageConfirm"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">You must confirm the age or guardian requirement.</p></div>
+            <div class="field" data-field="discordConfirm"><label for="discordConfirm">Are you currently in the Rivals Gauntlet Discord?<span class="req">*</span></label><select id="discordConfirm"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Discord membership is required.</p></div>
+            <div class="field" data-field="availability"><label for="availability">Will you be available for the entire tournament?<span class="req">*</span></label><select id="availability"><option value="">Select One</option><option value="Yes">Yes</option><option value="Mostly, but I may have a conflict">Mostly, but I may have a conflict</option><option value="No">No</option></select><p class="error">Select your tournament availability.</p></div>
+            <div class="field" data-field="workingMic"><label for="workingMic">Do you have a working microphone?<span class="req">*</span></label><select id="workingMic"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Select your microphone status.</p></div>
+            <div class="field" data-field="customLobby"><label for="customLobby">Can you join a custom lobby on time?<span class="req">*</span></label><select id="customLobby"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Confirm custom-lobby availability.</p></div>
+            <div class="field" data-field="teamVc"><label for="teamVc">Are you willing to use team voice chat in Discord?<span class="req">*</span></label><select id="teamVc"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Confirm your team voice-chat preference.</p></div>
+          </div>
+          <div class="divider"></div>
+          <div class="readiness warning"><div><strong>Discord Controls Tournament Communication</strong><span>Team assignments, check-ins, lobby instructions, substitutions, and urgent staff communication are handled through the official Rivals Gauntlet Discord.</span></div><a id="requirementsDiscord" class="btn discord" href="https://discord.gg/82HPpfkhQN" target="_blank" rel="noopener">Join Discord</a></div>
+        </section>
+
+        <section class="form-step" data-form-step="2">
+          <div class="section-title"><div class="eyebrow">Competitive Evaluation</div><h3>Marvel Rivals Information</h3><p>Provide your recent peak rank, preferred role, hero pool, and previous Rivals Gauntlet experience.</p></div>
+          <div class="grid">
+            <div class="field" data-field="peakRank"><label for="peakRank">Peak Rank — Last 3 Seasons<span class="req">*</span></label><select id="peakRank"><option value="">Select Peak Rank</option><option>Bronze</option><option>Silver</option><option>Gold</option><option>Platinum</option><option>Diamond</option><option>Grandmaster</option><option>Celestial</option><option>Eternity</option><option>One Above All</option></select><p class="error">Select your peak rank.</p></div>
+            <div class="field" data-field="mainRole"><label for="mainRole">Main Role<span class="req">*</span></label><select id="mainRole"><option value="">Select Role</option><option>Vanguard</option><option>Duelist</option><option>Strategist</option><option>Flex</option></select><p class="error">Select your main role.</p></div>
+            <div class="field full" data-field="mainHeroes"><label for="mainHeroes">Main Heroes<span class="req">*</span></label><input id="mainHeroes" maxlength="180" autocomplete="off" placeholder="Example: Hela, Luna Snow, Doctor Strange"><p class="note">List your strongest and most tournament-ready heroes.</p><p class="error">Enter your main heroes.</p></div>
+            <div class="field" data-field="participatedBefore"><label for="participatedBefore">Have you competed in Rivals Gauntlet before?<span class="req">*</span></label><select id="participatedBefore"><option value="">Select One</option><option>Yes</option><option>No</option></select><p class="error">Select your prior participation status.</p></div>
+            <div class="field" data-field="wantsSub"><label for="wantsSub">If not selected as a starter, should we consider you as a substitute?<span class="req">*</span></label><select id="wantsSub"><option value="">Select One</option><option>Yes</option><option>No</option></select><p class="error">Select your substitute preference.</p></div>
           </div>
         </section>
 
-        <section class="account-panel full">
-          <h2>Requirements</h2>
-
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Are you at least 18 years old, or do you have a parent/legal guardian who can collect prize money on your behalf?</label>
-              <select id="ageConfirm">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Are you currently in the Rivals Gauntlet Discord?</label>
-              <select id="discordConfirm">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Will you be available for the entire tournament?</label>
-              <select id="availability">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="Mostly, but I may have a conflict">Mostly, but I may have a conflict</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Do you have a working mic?</label>
-              <select id="workingMic">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Can you join a custom lobby on time?</label>
-              <select id="customLobby">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Are you willing to use team VC in Discord?</label>
-              <select id="teamVc">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
+        <section class="form-step" data-form-step="3">
+          <div class="section-title"><div class="eyebrow">Creator Participation</div><h3>Streaming and Additional Context</h3><p>Creator information helps with broadcast planning and community promotion, but competitive selection remains the priority.</p></div>
+          <div class="grid">
+            <div class="field" data-field="willStream"><label for="willStream">Will you livestream your matches?<span class="req">*</span></label><select id="willStream"><option value="">Select One</option><option>Yes</option><option>Maybe</option><option>No</option></select><p class="error">Select your streaming plans.</p></div>
+            <div class="field" data-field="followerCount"><label for="followerCount">Total Combined Follower Count<span class="req">*</span></label><input id="followerCount" type="number" min="0" step="1" inputmode="numeric" placeholder="Example: 2500"><p class="note">Enter 0 when you do not currently have a creator audience.</p><p class="error">Enter your combined follower count, including 0.</p></div>
+            <div class="field full"><label for="adminNotes">Additional Information — Optional</label><textarea id="adminNotes" maxlength="700" placeholder="Schedule concerns, creator context, preferred role details, teammate information, accessibility needs, or anything tournament staff should know."></textarea><p class="note">This field is visible to tournament administrators.</p></div>
           </div>
         </section>
 
-        <section class="account-panel full">
-          <h2>Competitive Info</h2>
-
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Peak Rank (Last 3 Seasons)</label>
-              <select id="peakRank">
-                <option value="">Select Peak Rank</option>
-                <option value="Bronze">Bronze</option>
-                <option value="Silver">Silver</option>
-                <option value="Gold">Gold</option>
-                <option value="Platinum">Platinum</option>
-                <option value="Diamond">Diamond</option>
-                <option value="Grandmaster">Grandmaster</option>
-                <option value="Celestial">Celestial</option>
-                <option value="Eternity">Eternity</option>
-                <option value="One Above All">One Above All</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Main Role</label>
-              <select id="mainRole">
-                <option value="">Select Role</option>
-                <option value="Vanguard">Vanguard</option>
-                <option value="Duelist">Duelist</option>
-                <option value="Strategist">Strategist</option>
-                <option value="Flex">Flex</option>
-              </select>
-            </div>
-
-            <div class="account-field account-full">
-              <label>Main Heroes</label>
-              <input id="mainHeroes" placeholder="Example: Hela, Luna Snow, Doctor Strange">
-            </div>
-
-            <div class="account-field">
-              <label>Have you participated in Rivals Gauntlet before?</label>
-              <select id="participatedBefore">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>If not accepted, would you like to be considered as a substitute?</label>
-              <select id="wantsSub">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-          </div>
+        <section class="form-step" data-form-step="4">
+          <div class="section-title"><div class="eyebrow">Final Review</div><h3>Confirm Your Application</h3><p>Review your tournament application before submitting it for administrator evaluation.</p></div>
+          <div id="reviewGrid" class="review-grid"></div>
+          <div class="agreement">By submitting this application, you confirm that the information provided is accurate and that tournament communication, team voice chats, check-ins, lobby instructions, substitutions, and urgent staff communication will be handled through the Rivals Gauntlet Discord.</div>
+          <p id="applyStatus" class="status"></p>
         </section>
 
-        <section class="account-panel full">
-          <h2>Creator Info</h2>
+        <footer class="form-footer">
+          <div id="footerStep" class="footer-copy">Step 1 of 5</div>
+          <div class="footer-actions">
+            <button id="previousButton" class="btn" type="button" hidden><i class="fa-solid fa-arrow-left"></i>Previous</button>
+            <button id="nextButton" class="btn primary" type="button">Continue<i class="fa-solid fa-arrow-right"></i></button>
+            <button id="submitButton" class="btn primary" type="button" hidden><i class="fa-solid fa-paper-plane"></i>Submit Application</button>
+          </div>
+        </footer>
+      </section>
 
-          <div class="account-form-grid">
-            <div class="account-field">
-              <label>Will you be livestreaming your matches?</label>
-              <select id="willStream">
-                <option value="">Select One</option>
-                <option value="Yes">Yes</option>
-                <option value="Maybe">Maybe</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-
-            <div class="account-field">
-              <label>Total Combined Follower Count</label>
-              <input id="followerCount" type="number" min="0" placeholder="Example: 2500">
-            </div>
-
-            <div class="account-field account-full">
-              <label>Additional Information (Optional)</label>
-              <textarea id="adminNotes" placeholder="Schedule notes, creator info, preferred role, teammate context, etc."></textarea>
-            </div>
+      <aside class="summary">
+        <section class="summary-section">
+          <div class="eyebrow">Completion</div><h3>Application Readiness</h3><p>Every required field must be complete before the application can be submitted.</p>
+          <div class="progress"><div class="progress-head"><span>Required Fields</span><strong id="summaryPercent">0%</strong></div><div class="track"><div id="summaryFill" class="fill"></div></div></div>
+          <div class="checks">
+            <div id="checkPlayer" class="check"><span>Player Record</span><i class="fa-solid fa-circle"></i></div>
+            <div id="checkRequirements" class="check"><span>Requirements</span><i class="fa-solid fa-circle"></i></div>
+            <div id="checkCompetitive" class="check"><span>Competitive Info</span><i class="fa-solid fa-circle"></i></div>
+            <div id="checkCreator" class="check"><span>Creator Info</span><i class="fa-solid fa-circle"></i></div>
           </div>
         </section>
-
-        <section class="account-panel full">
-          <h2>Submit Application</h2>
-          <p>
-            By submitting, you confirm that your information is accurate and that you understand
-            tournament communication, team voice chats, check-ins, and replacements will be handled through the Rivals Gauntlet Discord.
-          </p>
-
-          <div class="account-actions">
-            <button class="account-primary" onclick="submitApplication()">
-              Submit Application
-            </button>
-
-            <a class="account-secondary" href="dashboard.html">
-              Back to Dashboard
-            </a>
+        <section class="summary-section">
+          <div class="eyebrow">Event Standards</div><h3>Before You Apply</h3>
+          <div class="requirements">
+            <div class="requirement"><i class="fa-solid fa-headset"></i><div><strong>Working Communication</strong><span>A working microphone and Discord team VC are required.</span></div></div>
+            <div class="requirement"><i class="fa-solid fa-clock"></i><div><strong>Tournament Availability</strong><span>Players must monitor event progress and report on time.</span></div></div>
+            <div class="requirement"><i class="fa-solid fa-users"></i><div><strong>Team Cooperation</strong><span>Competitors may be placed with players they do not know.</span></div></div>
+            <div class="requirement"><i class="fa-solid fa-shield-halved"></i><div><strong>Accurate Information</strong><span>False or misleading application data can void selection.</span></div></div>
           </div>
-
-          <p id="applyStatus" class="account-status"></p>
         </section>
+        <section class="summary-section">
+          <div class="eyebrow">Need Help?</div><h3>Tournament Support</h3><p>Update permanent account information in Settings or join the official Discord for application questions.</p>
+          <div class="support"><a class="btn" href="settings.html"><i class="fa-solid fa-gear"></i>Account Settings</a><a id="summaryDiscord" class="btn discord" href="https://discord.gg/82HPpfkhQN" target="_blank" rel="noopener"><i class="fa-brands fa-discord"></i>Open Discord</a></div>
+        </section>
+      </aside>
+    </section>
+  </main>
 
-      </div>
-    </main>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="friends.js?v=4"></script>
+  <script src="daily-gifts.js?v=2"></script>
+  <script src="global-header.js?v=16"></script>
 
-  </div>
-</div>
+  <script>
+    const $=id=>document.getElementById(id);
+    const DEFAULT_DISCORD="https://discord.gg/82HPpfkhQN";
+    let currentUser=null,currentPlayer=null,currentApplication=null,currentTournament={},currentSite={};
+    let tournamentId="open1",tournamentName="Rivals Gauntlet Open #1",activeStep=0,readOnlyReview=false;
+    const requiredFields=["ageConfirm","discordConfirm","availability","workingMic","customLobby","teamVc","peakRank","mainRole","mainHeroes","participatedBefore","wantsSub","willStream","followerCount"];
+    const stepFields={0:[],1:["ageConfirm","discordConfirm","availability","workingMic","customLobby","teamVc"],2:["peakRank","mainRole","mainHeroes","participatedBefore","wantsSub"],3:["willStream","followerCount"],4:[]};
+    const stepCopy=[
+      ["Confirm Your Player Record","Review the account information that will be attached to your tournament application."],
+      ["Confirm Event Requirements","Verify your eligibility, availability, microphone, Discord membership, and team communication."],
+      ["Competitive Information","Tell tournament staff about your peak rank, preferred role, hero pool, and prior experience."],
+      ["Creator Information","Share your streaming plans, audience size, and any additional context for tournament staff."],
+      ["Review and Submit","Check every section before sending your application for administrator review."]
+    ];
+    function clean(v,f=""){const s=String(v??"").trim();return s||f}
+    function esc(v){return clean(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+    function initials(v){return clean(v,"RG").split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()}
+    function formatDate(v){return v?new Date(Number(v)).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}):"Not available"}
+    function formatStatus(v){return clean(v,"pending").replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase())}
+    function value(id){return clean($(id)?.value)}
+    function setValue(id,v){if($(id))$(id).value=v??""}
+    function discordUrl(){return clean(currentTournament.discordInvite||currentSite.discordInvite,DEFAULT_DISCORD)}
+    function registrationOpen(){const values=[currentTournament.applicationsOpen,currentTournament.registrationOpen,currentSite.applicationsOpen,currentSite.registrationOpen];const explicit=values.find(v=>typeof v==="boolean");return explicit===undefined?true:explicit}
+    function missingProfile(){if(!currentPlayer)return["Player profile"];return[["Display Name",currentPlayer.displayName],["Marvel Rivals IGN",currentPlayer.rivalsIgn],["Discord Username",currentPlayer.discordUsername],["Region",currentPlayer.region],["Platform",currentPlayer.platform]].filter(x=>!clean(x[1])).map(x=>x[0])}
+    function profileReady(){return missingProfile().length===0}
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=2"></script>
-
-<script>
-let currentUser = null;
-let currentPlayer = null;
-let tournamentId = "open1";
-let tournamentName = "Rivals Gauntlet Open #1";
-
-function clean(value, fallback = "") {
-  return String(value || fallback).trim();
-}
-
-function getInitials(name) {
-  const words = clean(name, "RG").split(" ").filter(Boolean);
-  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
-}
-
-function calculateProfileCompletion(player) {
-  const socials = player.socials || {};
-
-  const fields = [
-    player.displayName,
-    player.rivalsIgn,
-    player.discordUsername,
-    player.region,
-    player.platform,
-    player.bio,
-    player.profileImage,
-    socials.twitch || socials.youtube || socials.tiktok || socials.x
-  ];
-
-  const completed = fields.filter(value => clean(value)).length;
-  return Math.round((completed / fields.length) * 100);
-}
-
-function setCardStatus(id, active) {
-  const el = document.getElementById(id);
-  el.innerText = active ? "✓" : "—";
-  el.classList.toggle("missing", !active);
-}
-
-function renderSidebar(player, user) {
-  const socials = player.socials || {};
-  const displayName = clean(player.displayName, "Player");
-
-  document.getElementById("sidebarName").innerText = displayName;
-  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
-  document.getElementById("sidebarId").innerText = player.rgId || "RG ACCOUNT";
-
-  document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
-  document.getElementById("sidebarChamps").innerText = player.championships || 0;
-  document.getElementById("sidebarBestFinish").innerText = player.bestFinish || "--";
-
-  setCardStatus("statusDiscord", player.discordMember);
-  setCardStatus("statusTwitch", socials.twitch);
-  setCardStatus("statusYoutube", socials.youtube);
-  setCardStatus("statusTiktok", socials.tiktok);
-
-  const avatar = document.getElementById("sidebarAvatar");
-  const fallback = document.getElementById("sidebarFallback");
-
-  if (player.profileImage) {
-    avatar.src = player.profileImage;
-    avatar.style.display = "block";
-    fallback.style.display = "none";
-  } else {
-    avatar.style.display = "none";
-    fallback.style.display = "flex";
-  }
-
-  const percent = calculateProfileCompletion(player);
-  document.getElementById("profilePercent").innerText = `${percent}%`;
-  document.getElementById("profileFill").style.width = `${percent}%`;
-
-  document.getElementById("publicProfileLink").href = `player.html?id=${user.uid}`;
-}
-
-function renderApplicantProfile(player) {
-  document.getElementById("appRgId").innerText = player.rgId || "RG ACCOUNT";
-  document.getElementById("appDisplayName").innerText = player.displayName || "Not set";
-  document.getElementById("appIgn").innerText = player.rivalsIgn || "Not set";
-  document.getElementById("appDiscord").innerText = player.discordUsername || "Not set";
-  document.getElementById("appRegion").innerText = player.region || "Not set";
-  document.getElementById("appPlatform").innerText = player.platform || "Not set";
-
-  document.getElementById("discordConfirm").value =
-    player.discordMember ? "Yes" : "";
-}
-
-function requiredValue(id) {
-  return clean(document.getElementById(id).value);
-}
-
-function submitApplication() {
-  if (!currentUser || !currentPlayer) return;
-
-  const status = document.getElementById("applyStatus");
-
-  const requiredFields = [
-    "ageConfirm",
-    "discordConfirm",
-    "availability",
-    "workingMic",
-    "customLobby",
-    "teamVc",
-    "peakRank",
-    "mainRole",
-    "mainHeroes",
-    "participatedBefore",
-    "wantsSub",
-    "willStream",
-    "followerCount"
-  ];
-
-  const missing = requiredFields.some(id => !requiredValue(id));
-
-  if (missing) {
-    status.innerText = "Please complete every required field.";
-    status.style.color = "#ef4444";
-    return;
-  }
-
-  if (requiredValue("ageConfirm") !== "Yes") {
-    status.innerText = "You must meet the age requirement to apply.";
-    status.style.color = "#ef4444";
-    return;
-  }
-
-  if (requiredValue("discordConfirm") !== "Yes") {
-    status.innerText = "You must be in the Rivals Gauntlet Discord to apply.";
-    status.style.color = "#ef4444";
-    return;
-  }
-
-  const socials = currentPlayer.socials || {};
-  const now = Date.now();
-
-  const application = {
-    tournamentId,
-    tournamentName,
-    uid: currentUser.uid,
-    rgId: currentPlayer.rgId || "",
-    displayName: currentPlayer.displayName || "",
-    rivalsIgn: currentPlayer.rivalsIgn || "",
-    discordUsername: currentPlayer.discordUsername || "",
-    discordMember: currentPlayer.discordMember || false,
-    region: currentPlayer.region || "",
-    platform: currentPlayer.platform || "",
-    profileImage: currentPlayer.profileImage || "",
-    socials: {
-      twitch: socials.twitch || "",
-      youtube: socials.youtube || "",
-      tiktok: socials.tiktok || "",
-      x: socials.x || ""
-    },
-
-    ageConfirm: requiredValue("ageConfirm"),
-    discordConfirm: requiredValue("discordConfirm"),
-    availability: requiredValue("availability"),
-    workingMic: requiredValue("workingMic"),
-    customLobby: requiredValue("customLobby"),
-    teamVc: requiredValue("teamVc"),
-
-    peakRank: requiredValue("peakRank"),
-    mainRole: requiredValue("mainRole"),
-    mainHeroes: requiredValue("mainHeroes"),
-    participatedBefore: requiredValue("participatedBefore"),
-    wantsSub: requiredValue("wantsSub"),
-
-    willStream: requiredValue("willStream"),
-    followerCount: Number(requiredValue("followerCount")) || 0,
-    adminNotes: requiredValue("adminNotes"),
-
-    status: "pending",
-    submittedAt: now,
-    updatedAt: now
-  };
-
-  database.ref(`applications/${tournamentId}/${currentUser.uid}`).once("value")
-    .then(snapshot => {
-      if (snapshot.exists()) {
-        status.innerText = "You already submitted an application for this tournament.";
-        status.style.color = "#ef4444";
-        return null;
-      }
-
-      return database.ref(`applications/${tournamentId}/${currentUser.uid}`).set(application);
-    })
-    .then(result => {
-      if (result === null) return;
-
-      status.innerText = "✓ Application submitted successfully.";
-      status.style.color = "#22c55e";
-    })
-    .catch(error => {
-      status.innerText = error.message;
-      status.style.color = "#ef4444";
-    });
-}
-
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  currentUser = user;
-
-  database.ref("site/currentTournament").once("value").then(activeTournament => {
-    tournamentId = activeTournament.val() || "open1";
-
-    return database.ref(`tournaments/${tournamentId}`).once("value");
-  }).then(tournamentSnapshot => {
-    const tournament = tournamentSnapshot.val() || {};
-    tournamentName = tournament.name || "Rivals Gauntlet Open";
-
-    return database.ref(`players/${user.uid}`).once("value");
-  }).then(snapshot => {
-    const player = snapshot.val();
-
-    if (!player) {
-      window.location.href = "settings.html";
-      return;
+    function renderTournament(){
+      $("eventName").textContent=tournamentName;
+      $("eventFormat").textContent=clean(currentTournament.format||currentSite.format,"8 Teams • Single Elimination");
+      $("eventStatus").textContent=currentApplication?formatStatus(currentApplication.status):(registrationOpen()?"Applications Open":"Applications Closed");
+      ["stateDiscord","requirementsDiscord","summaryDiscord"].forEach(id=>$(id).href=discordUrl());
     }
 
-    currentPlayer = player;
-    renderSidebar(player, user);
-    renderApplicantProfile(player);
-  });
-});
+    function renderPlayer(){
+      const name=clean(currentPlayer.displayName,"Player");
+      $("playerName").textContent=name;$("playerRgId").textContent=currentPlayer.rgId||"RG ACCOUNT";$("playerFallback").textContent=initials(name);
+      $("profileDisplayName").textContent=clean(currentPlayer.displayName,"Not set");$("profileIgn").textContent=clean(currentPlayer.rivalsIgn,"Not set");$("profileDiscord").textContent=clean(currentPlayer.discordUsername,"Not set");$("profileRegion").textContent=clean(currentPlayer.region,"Not set");$("profilePlatform").textContent=clean(currentPlayer.platform,"Not set");$("profileId").textContent=clean(currentPlayer.rgId,"RG ACCOUNT");
+      if(currentPlayer.profileImage){$("playerAvatar").src=currentPlayer.profileImage;$("playerAvatar").hidden=false;$("playerFallback").hidden=true}else{$("playerAvatar").hidden=true;$("playerFallback").hidden=false}
+      const missing=missingProfile(),ready=!missing.length;$("profileReadiness").classList.toggle("warning",!ready);$("profileReadinessTitle").textContent=ready?"Player Record Ready":"Profile Information Required";$("profileReadinessCopy").textContent=ready?"Your required tournament identity fields are complete.":`Complete: ${missing.join(", ")}.`;$("completeProfileButton").hidden=ready;
+    }
 
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
-</script>
+    function loadApplication(app){if(!app)return;requiredFields.forEach(id=>Object.prototype.hasOwnProperty.call(app,id)&&setValue(id,app[id]));setValue("adminNotes",app.adminNotes||"")}
+    function stepComplete(step){if(step===0)return profileReady();if(step===4)return profileReady()&&requiredFields.every(id=>value(id));return(stepFields[step]||[]).every(id=>value(id))}
+    function completion(){const total=requiredFields.length+1;let done=requiredFields.filter(id=>value(id)).length+(profileReady()?1:0);return Math.round(done/total*100)}
+    function validateField(id){const valid=Boolean(value(id));document.querySelector(`[data-field="${id}"]`)?.classList.toggle("invalid",!valid);return valid}
+    function clearError(id){document.querySelector(`[data-field="${id}"]`)?.classList.remove("invalid")}
+    function validateStep(step){if(step===0){if(!profileReady()){$("profileReadiness").scrollIntoView({behavior:"smooth",block:"center"});return false}return true}const results=(stepFields[step]||[]).map(validateField);if(results.includes(false)){document.querySelector(".form-step.active .field.invalid")?.scrollIntoView({behavior:"smooth",block:"center"});return false}if(step===1&&value("ageConfirm")!=="Yes"){document.querySelector('[data-field="ageConfirm"]')?.classList.add("invalid");return false}if(step===1&&value("discordConfirm")!=="Yes"){document.querySelector('[data-field="discordConfirm"]')?.classList.add("invalid");return false}return true}
 
+    function updateProgress(){
+      const p=completion();$("formPercent").textContent=`${p}%`;$("summaryPercent").textContent=`${p}%`;$("summaryFill").style.width=`${p}%`;
+      const map={checkPlayer:stepComplete(0),checkRequirements:stepComplete(1),checkCompetitive:stepComplete(2),checkCreator:stepComplete(3)};
+      Object.entries(map).forEach(([id,done])=>{const el=$(id);el.classList.toggle("complete",done);el.querySelector("i").className=done?"fa-solid fa-circle-check":"fa-solid fa-circle"});
+      document.querySelectorAll("[data-step]").forEach(btn=>{const s=Number(btn.dataset.step),done=stepComplete(s);btn.classList.toggle("complete",done);btn.querySelector(".step-check").hidden=!done});
+      document.querySelectorAll("[data-mobile-step]").forEach(btn=>btn.classList.toggle("complete",stepComplete(Number(btn.dataset.mobileStep))));
+    }
+
+    function reviewRows(rows){return rows.map(([a,b])=>`<div class="review-row"><span>${esc(a)}</span><strong>${esc(clean(b,"Not provided"))}</strong></div>`).join("")}
+    function reviewGroup(title,step,rows,full=false){return`<section class="review-group ${full?"full":""}"><header class="review-head"><strong>${esc(title)}</strong>${readOnlyReview?"":`<button class="review-edit" type="button" onclick="openStep(${step},true)">Edit</button>`}</header><div class="review-list">${reviewRows(rows)}</div></section>`}
+    function renderReview(){if(!currentPlayer)return;$("reviewGrid").innerHTML=
+      reviewGroup("Player Record",0,[["Display Name",currentPlayer.displayName],["RG ID",currentPlayer.rgId],["Rivals IGN",currentPlayer.rivalsIgn],["Discord",currentPlayer.discordUsername],["Region / Platform",`${clean(currentPlayer.region,"—")} • ${clean(currentPlayer.platform,"—")}`]])+
+      reviewGroup("Requirements",1,[["Age / Guardian",value("ageConfirm")],["RG Discord",value("discordConfirm")],["Availability",value("availability")],["Working Mic",value("workingMic")],["Custom Lobby",value("customLobby")],["Team Voice Chat",value("teamVc")]])+
+      reviewGroup("Competitive Information",2,[["Peak Rank",value("peakRank")],["Main Role",value("mainRole")],["Main Heroes",value("mainHeroes")],["Previous RG Event",value("participatedBefore")],["Substitute Interest",value("wantsSub")]])+
+      reviewGroup("Creator Information",3,[["Will Stream",value("willStream")],["Combined Followers",Number(value("followerCount")||0).toLocaleString()]])+
+      reviewGroup("Additional Information",3,[["Administrator Notes",value("adminNotes")||"No additional information provided."]],true)
+    }
+
+    function updateStep(){
+      document.querySelectorAll("[data-form-step]").forEach(el=>el.classList.toggle("active",Number(el.dataset.formStep)===activeStep));
+      document.querySelectorAll("[data-step]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.step)===activeStep));
+      document.querySelectorAll("[data-mobile-step]").forEach(btn=>btn.classList.toggle("active",Number(btn.dataset.mobileStep)===activeStep));
+      $("stepTitle").textContent=readOnlyReview?"Review Your Submitted Application":stepCopy[activeStep][0];$("stepDescription").textContent=readOnlyReview?"This is the application currently stored for the active tournament.":stepCopy[activeStep][1];$("footerStep").textContent=`Step ${activeStep+1} of 5`;$("previousButton").hidden=activeStep===0;$("nextButton").hidden=activeStep===4||readOnlyReview;$("submitButton").hidden=activeStep!==4||readOnlyReview;updateProgress();renderReview();
+      window.scrollTo({top:Math.max(0,$("applicationClient").offsetTop-90),behavior:"smooth"});
+    }
+    function openStep(step,skip=false){const target=Math.max(0,Math.min(4,Number(step)));if(!skip&&!readOnlyReview&&target>activeStep&&!validateStep(activeStep))return;activeStep=target;updateStep()}
+
+    function stateCopy(status){const s=clean(status,"pending").toLowerCase();const map={pending:["Application Under Review","Tournament staff has received your application. Keep your profile and Discord information current while selections are reviewed."],accepted:["You Have Been Accepted","You were selected for the active tournament. Watch your Command Center and Discord for team assignment, check-in, and tournament-day instructions."],approved:["You Have Been Accepted","You were selected for the active tournament. Watch your Command Center and Discord for team assignment, check-in, and tournament-day instructions."],waitlist:["You Are on the Waitlist","Remain available in Discord. Tournament staff may contact you if a starting or substitute position becomes available."],declined:["Application Review Complete","You were not selected for this tournament. Your account remains ready for future Rivals Gauntlet events."],rejected:["Application Review Complete","You were not selected for this tournament. Your account remains ready for future Rivals Gauntlet events."]};return map[s]||map.pending}
+    function renderExisting(){
+      if(!currentApplication){$("applicationState").classList.remove("visible");$("applicationClient").classList.remove("locked");return}
+      const status=clean(currentApplication.status,"pending"),copy=stateCopy(status);$("applicationState").classList.add("visible");$("applicationClient").classList.add("locked");$("stateTitle").textContent=copy[0];$("stateDescription").textContent=copy[1];$("stateStatus").textContent=formatStatus(status);$("stateTournament").textContent=tournamentName;$("stateSubmitted").textContent=formatDate(currentApplication.submittedAt||currentApplication.createdAt||currentApplication.appliedAt);$("stateIgn").textContent=clean(currentApplication.rivalsIgn,currentPlayer?.rivalsIgn||"Not provided");$("stateRole").textContent=clean(currentApplication.mainRole,"Not provided");$("eventStatus").textContent=formatStatus(status)
+    }
+    function reviewSubmitted(){if(!currentApplication)return;loadApplication(currentApplication);readOnlyReview=true;$("applicationClient").classList.remove("locked");activeStep=4;document.querySelectorAll(".application-client input,.application-client select,.application-client textarea").forEach(el=>el.disabled=true);updateStep()}
+
+    function validateAll(){if(!profileReady()){openStep(0,true);return false}for(let step=1;step<=3;step++){if(!validateStep(step)){openStep(step,true);return false}}return true}
+    async function submitApplication(){
+      if(!currentUser||!currentPlayer)return;const status=$("applyStatus"),button=$("submitButton");
+      if(!registrationOpen()){status.textContent="Applications are currently closed for this tournament.";status.style.color="#ff9fa8";return}
+      if(!validateAll()){status.textContent="Complete every required application field before submitting.";status.style.color="#ff9fa8";return}
+      if(value("ageConfirm")!=="Yes"){status.textContent="You must meet the age or guardian requirement to apply.";status.style.color="#ff9fa8";openStep(1,true);return}
+      if(value("discordConfirm")!=="Yes"){status.textContent="You must be in the Rivals Gauntlet Discord to apply.";status.style.color="#ff9fa8";openStep(1,true);return}
+      button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';status.textContent="Submitting your application...";status.style.color="#aaa3b4";
+      const socials=currentPlayer.socials||{},now=Date.now();
+      const application={tournamentId,tournamentName,uid:currentUser.uid,rgId:currentPlayer.rgId||"",displayName:currentPlayer.displayName||"",rivalsIgn:currentPlayer.rivalsIgn||"",discordUsername:currentPlayer.discordUsername||"",discordMember:currentPlayer.discordMember||false,region:currentPlayer.region||"",platform:currentPlayer.platform||"",profileImage:currentPlayer.profileImage||"",socials:{twitch:socials.twitch||"",youtube:socials.youtube||"",tiktok:socials.tiktok||"",x:socials.x||""},ageConfirm:value("ageConfirm"),discordConfirm:value("discordConfirm"),availability:value("availability"),workingMic:value("workingMic"),customLobby:value("customLobby"),teamVc:value("teamVc"),peakRank:value("peakRank"),mainRole:value("mainRole"),mainHeroes:value("mainHeroes"),participatedBefore:value("participatedBefore"),wantsSub:value("wantsSub"),willStream:value("willStream"),followerCount:Number(value("followerCount"))||0,adminNotes:value("adminNotes"),status:"pending",submittedAt:now,updatedAt:now};
+      try{const ref=database.ref(`applications/${tournamentId}/${currentUser.uid}`),existing=await ref.once("value");if(existing.exists()){currentApplication=existing.val();loadApplication(currentApplication);renderExisting();status.textContent="You already submitted an application for this tournament.";status.style.color="#ff9fa8";return}await ref.set(application);currentApplication=application;status.textContent="Application submitted successfully.";status.style.color="#82e7af";renderExisting();window.scrollTo({top:Math.max(0,$("applicationState").offsetTop-90),behavior:"smooth"})}catch(error){console.error(error);status.textContent=error.message;status.style.color="#ff9fa8"}finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Application'}
+    }
+
+    function attach(){
+      requiredFields.forEach(id=>{["input","change"].forEach(evt=>$(id).addEventListener(evt,()=>{clearError(id);updateProgress();renderReview()}))});$("adminNotes").addEventListener("input",renderReview);
+      document.querySelectorAll("[data-step]").forEach(btn=>btn.addEventListener("click",()=>openStep(Number(btn.dataset.step),readOnlyReview)));document.querySelectorAll("[data-mobile-step]").forEach(btn=>btn.addEventListener("click",()=>openStep(Number(btn.dataset.mobileStep),readOnlyReview)));
+      $("nextButton").addEventListener("click",()=>validateStep(activeStep)&&openStep(activeStep+1,true));$("previousButton").addEventListener("click",()=>openStep(activeStep-1,true));$("submitButton").addEventListener("click",submitApplication);$("reviewSubmittedButton").addEventListener("click",reviewSubmitted)
+    }
+
+    async function loadPage(user){
+      currentUser=user;const [siteSnap,playerSnap]=await Promise.all([database.ref("site").once("value"),database.ref(`players/${user.uid}`).once("value")]);currentSite=siteSnap.val()||{};tournamentId=currentSite.currentTournament||"open1";currentPlayer=playerSnap.val();if(!currentPlayer){location.href="settings.html";return}
+      const [tourneySnap,appSnap]=await Promise.all([database.ref(`tournaments/${tournamentId}`).once("value"),database.ref(`applications/${tournamentId}/${user.uid}`).once("value")]);currentTournament=tourneySnap.val()||{};currentApplication=appSnap.val();tournamentName=currentTournament.name||currentSite.eventName||"Rivals Gauntlet Open";renderTournament();renderPlayer();if(currentApplication)loadApplication(currentApplication);else if(currentPlayer.discordMember)setValue("discordConfirm","Yes");renderExisting();updateStep();
+      if(!registrationOpen()&&!currentApplication){$("applicationClient").classList.add("locked");$("applicationState").classList.add("visible");$("stateTitle").textContent="Applications Are Closed";$("stateDescription").textContent="Recruitment for the active tournament is currently closed. Watch the Tournament page for future application windows.";$("stateStatus").textContent="Closed";$("stateTournament").textContent=tournamentName;$("stateSubmitted").textContent="Not submitted";$("stateIgn").textContent=currentPlayer.rivalsIgn||"Not provided";$("stateRole").textContent="—";$("reviewSubmittedButton").hidden=true}
+    }
+
+    attach();
+    auth.onAuthStateChanged(user=>{if(!user){location.href="login.html";return}loadPage(user).catch(error=>{console.error(error);$("eventStatus").textContent="Load Error"})});
+  </script>
 </body>
 </html>

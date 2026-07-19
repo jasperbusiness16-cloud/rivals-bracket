@@ -2,234 +2,1530 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About | Rivals Gauntlet</title>
-  <link rel="stylesheet" href="style.css">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-</head>
-<body>
-
-<header>
-  <a href="index.html" class="logo">
-    <img src="clean logo.PNG" alt="Rivals Gauntlet Logo">
-    <span>RIVALS GAUNTLET</span>
-  </a>
-
-  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-
-  <nav id="mobileNav">
-  <a href="index.html">Home</a>
-  <a href="tournament.html">Tournament</a>
-  <a href="teams.html">Teams</a>
-  <a href="champions.html">Champions</a>
-  <a href="watch.html">Watch Live</a>
-  <a href="donate.html">Donations</a>
-  <a href="about.html">About</a>
-
-  <a class="join-btn mobile-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
-    JOIN THE ACTION
-  </a>
-</nav>
-
-  <a class="join-btn desktop-join" href="https://discord.gg/82HPpfkhQN" target="_blank">
-    JOIN THE ACTION
-  </a>
-</header>
-
-
-<section class="event-card about-cta">
-  <p class="eyebrow">GET INVOLVED</p>
-
-  <h2>Ready For The Next Tournament?</h2>
-
-  <p>
-    Join the Rivals Gauntlet Discord, head to
-    <strong>#sign-ups</strong>, and secure your spot in an upcoming event.
-  </p>
-
-  <a
-    href="https://discord.gg/82HPpfkhQN"
-    target="_blank"
-    class="primary"
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
   >
-    JOIN THE ACTION
-  </a>
-</section>
 
-<section class="casters-section">
+  <meta name="theme-color" content="#08080d">
 
-  <div class="section-heading">
-    <p class="eyebrow">MEET THE CASTERS</p>
-    <h2>The Team Behind Rivals Gauntlet</h2>
-  </div>
+  <title>About | Rivals Gauntlet</title>
 
-  <div class="casters-grid">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <div class="caster-card">
-      <img src="jasper-caster.JPG" alt="Jasper Harvey">
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
-      <h3>Jasper (atrophy)</h3>
-      <p class="caster-role">Founder • Caster</p>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
 
-      <div class="caster-socials">
-        <a href="https://twitch.tv/atrophylive" target="_blank">
-          <i class="fab fa-twitch"></i>
-        </a>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/global-header.css?v=14"
+  >
+
+  <style>
+    :root {
+      --bg: #08080d;
+      --bg-soft: #0c0b12;
+      --panel: #11101a;
+      --panel-2: #171522;
+
+      --text: #f8f6ff;
+      --muted: #aaa4b8;
+      --dim: #746e82;
+
+      --border: rgba(255, 255, 255, 0.09);
+      --border-purple: rgba(192, 132, 252, 0.3);
+
+      --purple: #a855f7;
+      --purple-light: #d0a3ff;
+      --purple-dark: #6d28d9;
+
+      --green: #3ddc97;
+
+      --shadow:
+        0 24px 80px rgba(0, 0, 0, 0.4);
+
+      --max: 1500px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(
+          circle at 77% 8%,
+          rgba(126, 53, 214, 0.16),
+          transparent 31%
+        ),
+        linear-gradient(
+          180deg,
+          #09090f,
+          #07070b
+        );
+      font-family: "Rajdhani", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .shell {
+      width: min(
+        calc(100% - 48px),
+        var(--max)
+      );
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--purple-light);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 34px;
+      height: 2px;
+      content: "";
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          transparent
+        );
+    }
+
+    .section-heading h2 {
+      margin: 10px 0 0;
+      font-size: clamp(34px, 4vw, 58px);
+      line-height: 0.94;
+      letter-spacing: -1.8px;
+      text-transform: uppercase;
+    }
+
+    .section-heading p {
+      max-width: 690px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       HERO
+       ========================================================= */
+
+    .about-hero {
+      position: relative;
+      min-height: 510px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      isolation: isolate;
+    }
+
+    .about-hero::before {
+      position: absolute;
+      inset: 0;
+      z-index: -4;
+      content: "";
+      background:
+        linear-gradient(
+          90deg,
+          rgba(8, 8, 13, 0.98),
+          rgba(8, 8, 13, 0.8) 48%,
+          rgba(8, 8, 13, 0.25)
+        ),
+        radial-gradient(
+          circle at 79% 45%,
+          rgba(168, 85, 247, 0.24),
+          transparent 28%
+        ),
+        linear-gradient(
+          135deg,
+          #0b0a11,
+          #151020 62%,
+          #08080d
+        );
+    }
+
+    .about-hero::after {
+      position: absolute;
+      right: -90px;
+      top: 35px;
+      z-index: -3;
+      width: 520px;
+      height: 520px;
+      content: "";
+      border: 1px solid rgba(192, 132, 252, 0.16);
+      background: rgba(168, 85, 247, 0.035);
+      transform: rotate(45deg);
+    }
+
+    .hero-grid {
+      min-height: 510px;
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.08fr)
+        minmax(390px, 0.92fr);
+      align-items: center;
+      gap: clamp(45px, 7vw, 110px);
+      padding: 62px 0;
+    }
+
+    .hero-copy {
+      max-width: 810px;
+    }
+
+    .hero-copy h1 {
+      margin: 20px 0 18px;
+      font-size: clamp(54px, 6vw, 94px);
+      line-height: 0.84;
+      letter-spacing: -3.8px;
+      text-transform: uppercase;
+    }
+
+    .hero-copy h1 span {
+      display: block;
+      color: transparent;
+      background:
+        linear-gradient(
+          90deg,
+          #ffffff,
+          #d9c3f4 62%,
+          #9a60e8
+        );
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .hero-copy > p {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.57;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .hero-button {
+      min-height: 47px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 17px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e7e1ef;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      transition:
+        transform 0.18s,
+        border-color 0.18s,
+        background 0.18s;
+    }
+
+    .hero-button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(192, 132, 252, 0.48);
+      background: rgba(168, 85, 247, 0.075);
+    }
+
+    .hero-button.primary {
+      border-color: rgba(208, 163, 255, 0.52);
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple-dark),
+          var(--purple)
+        );
+      box-shadow:
+        0 14px 34px rgba(109, 40, 217, 0.28);
+      color: white;
+    }
+
+    .hero-button.discord {
+      border-color: rgba(130, 145, 255, 0.36);
+    }
+
+    .hero-button.donate {
+      border-color: rgba(192, 132, 252, 0.38);
+      color: #e0c1ff;
+    }
+
+    .hero-button.twitch {
+      border-color: rgba(168, 85, 247, 0.32);
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 330px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-mark {
+      position: relative;
+      width: min(340px, 74%);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-mark::before,
+    .hero-mark::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      border: 1px solid rgba(208, 163, 255, 0.3);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(168, 85, 247, 0.17),
+          rgba(168, 85, 247, 0.025)
+        ),
+        rgba(12, 10, 18, 0.82);
+      box-shadow:
+        0 0 65px rgba(109, 40, 217, 0.17);
+      transform: rotate(45deg);
+    }
+
+    .hero-mark::after {
+      inset: 15%;
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(8, 8, 13, 0.85);
+    }
+
+    .hero-mark-copy {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .hero-mark-copy strong {
+      display: block;
+      font-size: clamp(82px, 9vw, 128px);
+      line-height: 0.74;
+      letter-spacing: -8px;
+    }
+
+    .hero-mark-copy span {
+      display: block;
+      margin-top: 23px;
+      color: var(--purple-light);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 4.5px;
+      text-transform: uppercase;
+    }
+
+    .hero-platform-list {
+      position: absolute;
+      right: 0;
+      bottom: 10px;
+      width: min(270px, 76%);
+      overflow: hidden;
+      border: 1px solid var(--border-purple);
+      border-radius: 13px;
+      background: rgba(11, 10, 16, 0.91);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-platform-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .hero-platform-item:first-child {
+      border-top: 0;
+    }
+
+    .hero-platform-item i {
+      width: 18px;
+      color: var(--purple-light);
+      text-align: center;
+    }
+
+    .hero-platform-item span {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    /* =========================================================
+       FEATURED TEAM
+       ========================================================= */
+
+    .team-section {
+      padding: 68px 0 58px;
+    }
+
+    .team-stage {
+      position: relative;
+      overflow: hidden;
+      margin-top: 26px;
+      border: 1px solid var(--border-purple);
+      border-radius: 21px;
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(168, 85, 247, 0.11),
+          transparent 36%
+        ),
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.025),
+          transparent
+        ),
+        rgba(14, 13, 21, 0.96);
+      box-shadow:
+        0 24px 75px rgba(0, 0, 0, 0.31);
+    }
+
+    .team-stage::before {
+      position: absolute;
+      top: -250px;
+      left: 50%;
+      width: 480px;
+      height: 480px;
+      content: "";
+      border: 1px solid rgba(192, 132, 252, 0.11);
+      transform:
+        translateX(-50%)
+        rotate(45deg);
+    }
+
+    .team-stage-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 27px 30px 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .team-stage-header h3 {
+      margin: 7px 0 0;
+      font-size: clamp(28px, 3vw, 43px);
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .team-stage-header p {
+      max-width: 530px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .team-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .team-member {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 24px;
+      padding: 30px;
+    }
+
+    .team-member + .team-member {
+      border-left: 1px solid var(--border);
+    }
+
+    .member-photo {
+      position: relative;
+      min-height: 250px;
+      overflow: hidden;
+      border: 1px solid rgba(192, 132, 252, 0.25);
+      border-radius: 16px;
+      background: #181421;
+    }
+
+    .member-photo::after {
+      position: absolute;
+      inset: auto 0 0;
+      height: 38%;
+      content: "";
+      background:
+        linear-gradient(
+          transparent,
+          rgba(9, 8, 14, 0.84)
+        );
+      pointer-events: none;
+    }
+
+    .member-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .member-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .member-index {
+      color: var(--purple-light);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+    }
+
+    .member-copy h3 {
+      margin: 8px 0 0;
+      font-size: clamp(26px, 2.8vw, 38px);
+      line-height: 0.94;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+    }
+
+    .member-role {
+      margin-top: 7px;
+      color: var(--purple-light);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .member-description {
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .member-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 18px;
+    }
+
+    .member-tag {
+      min-height: 31px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.025);
+      color: #c6c0cf;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .member-social {
+      min-height: 31px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 11px;
+      border: 1px solid rgba(168, 85, 247, 0.31);
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.07);
+      color: #d8b6fb;
+      font-size: 10px;
+      font-weight: 800;
+      transition: 0.18s;
+    }
+
+    .member-social:hover {
+      border-color: rgba(192, 132, 252, 0.55);
+      background: rgba(168, 85, 247, 0.12);
+    }
+
+    /* =========================================================
+       FEATURE STRIP
+       ========================================================= */
+
+    .platform-section {
+      padding: 0 0 58px;
+    }
+
+    .feature-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    .feature-item {
+      position: relative;
+      min-width: 0;
+      padding: 28px 26px;
+      border-left: 1px solid var(--border);
+    }
+
+    .feature-item:first-child {
+      border-left: 0;
+    }
+
+    .feature-number {
+      display: block;
+      color: rgba(192, 132, 252, 0.5);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+
+    .feature-item h3 {
+      margin: 14px 0 7px;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .feature-item p {
+      margin: 0;
+      color: var(--dim);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* =========================================================
+       STORY AND MISSION
+       ========================================================= */
+
+    .story-section {
+      padding: 0 0 62px;
+    }
+
+    .story-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.022),
+          transparent
+        ),
+        rgba(13, 12, 19, 0.94);
+    }
+
+    .story-column {
+      padding: clamp(29px, 4vw, 52px);
+    }
+
+    .story-column + .story-column {
+      border-left: 1px solid var(--border);
+    }
+
+    .story-column h2 {
+      margin: 12px 0 0;
+      font-size: clamp(32px, 3.5vw, 49px);
+      line-height: 0.93;
+      letter-spacing: -1.3px;
+      text-transform: uppercase;
+    }
+
+    .story-column p {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .story-highlight {
+      margin-top: 22px;
+      padding: 14px 15px;
+      border-left: 3px solid var(--purple);
+      background: rgba(168, 85, 247, 0.055);
+      color: #d7d0df;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       PROCESS
+       ========================================================= */
+
+    .process-section {
+      padding: 0 0 76px;
+    }
+
+    .process-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 27px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(13, 12, 19, 0.9);
+    }
+
+    .process-step {
+      position: relative;
+      min-width: 0;
+      padding: 27px 24px;
+      border-left: 1px solid var(--border);
+    }
+
+    .process-step:first-child {
+      border-left: 0;
+    }
+
+    .process-step:not(:last-child)::after {
+      position: absolute;
+      right: -5px;
+      top: 34px;
+      z-index: 2;
+      width: 9px;
+      height: 9px;
+      content: "";
+      border-top: 2px solid var(--purple-light);
+      border-right: 2px solid var(--purple-light);
+      background: var(--panel);
+      transform: rotate(45deg);
+    }
+
+    .process-step span {
+      display: block;
+      color: var(--purple-light);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+
+    .process-step h3 {
+      margin: 12px 0 7px;
+      font-size: 21px;
+      text-transform: uppercase;
+    }
+
+    .process-step p {
+      margin: 0;
+      color: var(--dim);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: #08080c;
+    }
+
+    .footer-main {
+      min-height: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 28px 0;
+    }
+
+    .footer-brand strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: 1.3px;
+    }
+
+    .footer-brand span {
+      display: block;
+      margin-top: 6px;
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-links a:hover {
+      color: var(--purple-light);
+    }
+
+    .disclaimer {
+      margin: 0;
+      padding: 0 0 25px;
+      color: #5e586a;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 1180px) {
+      .hero-grid {
+        grid-template-columns:
+          minmax(0, 1fr)
+          minmax(330px, 0.7fr);
+      }
+
+      .team-member {
+        grid-template-columns: 140px 1fr;
+        padding: 25px;
+      }
+
+      .member-photo {
+        min-height: 225px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 28px;
+        padding: 44px 0 60px;
+      }
+
+      .hero-visual {
+        min-height: 300px;
+        order: -1;
+      }
+
+      .hero-mark {
+        width: min(290px, 67%);
+      }
+
+      .hero-platform-list {
+        right: 4%;
+      }
+
+      .team-stage-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .team-member + .team-member {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .feature-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .feature-item:nth-child(3) {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .feature-item:nth-child(4) {
+        border-top: 1px solid var(--border);
+      }
+
+      .story-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .story-column + .story-column {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .process-track {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .process-step:nth-child(3) {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .process-step:nth-child(4) {
+        border-top: 1px solid var(--border);
+      }
+
+      .process-step:nth-child(2)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(
+          calc(100% - 28px),
+          var(--max)
+        );
+      }
+
+      .about-hero {
+        min-height: auto;
+      }
+
+      .hero-copy h1 {
+        font-size: 51px;
+        letter-spacing: -2.3px;
+      }
+
+      .hero-copy > p {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-button {
+        padding: 0 11px;
+        font-size: 10px;
+      }
+
+      .hero-visual {
+        min-height: 250px;
+      }
+
+      .hero-platform-list {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        margin-top: 40px;
+      }
+
+      .team-section {
+        padding-top: 48px;
+      }
+
+      .team-stage-header {
+        padding: 23px 20px 19px;
+      }
+
+      .team-member {
+        grid-template-columns: 112px 1fr;
+        gap: 17px;
+        padding: 21px 19px;
+      }
+
+      .member-photo {
+        min-height: 190px;
+      }
+
+      .member-description {
+        font-size: 13px;
+      }
+
+      .feature-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-item {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .feature-item:first-child {
+        border-top: 0;
+      }
+
+      .feature-item:nth-child(4) {
+        border-left: 0;
+      }
+
+      .process-track {
+        grid-template-columns: 1fr;
+      }
+
+      .process-step {
+        border-top: 1px solid var(--border);
+        border-left: 0;
+      }
+
+      .process-step:first-child {
+        border-top: 0;
+      }
+
+      .process-step::after {
+        display: none;
+      }
+
+      .footer-main {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .footer-links {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 470px) {
+      .hero-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .team-member {
+        grid-template-columns: 1fr;
+      }
+
+      .member-photo {
+        width: 100%;
+        min-height: 300px;
+      }
+
+      .member-footer {
+        margin-top: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body data-page="about">
+  <div id="globalHeader"></div>
+
+  <main>
+    <!-- =====================================================
+         COMPACT HERO
+         ===================================================== -->
+
+    <section class="about-hero">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            About Rivals Gauntlet
+          </div>
+
+          <h1>
+            Competition
+            <span>Built Differently.</span>
+          </h1>
+
+          <p>
+            Rivals Gauntlet is an independent Marvel Rivals
+            tournament platform built around professional
+            community events, live broadcasting, predictions,
+            progression and rewards.
+          </p>
+
+          <div class="hero-actions">
+            <a
+              class="hero-button primary discord"
+              href="https://discord.gg/82HPpfkhQN"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="fa-brands fa-discord"></i>
+              Join Discord
+            </a>
+
+            <a
+              class="hero-button donate"
+              href="donate.html"
+            >
+              <i class="fa-solid fa-heart"></i>
+              Support Prize Pool
+            </a>
+
+            <a
+              class="hero-button twitch"
+              href="https://www.twitch.tv/atrophylive"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="fa-brands fa-twitch"></i>
+              Watch on Twitch
+            </a>
+
+            <a
+              class="hero-button"
+              href="apply.html"
+            >
+              <i class="fa-solid fa-bolt"></i>
+              Apply for an Event
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-mark">
+            <div class="hero-mark-copy">
+              <strong>RG</strong>
+              <span>Rivals Gauntlet</span>
+            </div>
+          </div>
+
+          <div class="hero-platform-list">
+            <div class="hero-platform-item">
+              <i class="fa-solid fa-trophy"></i>
+              <span>Community Tournaments</span>
+            </div>
+
+            <div class="hero-platform-item">
+              <i class="fa-solid fa-microphone-lines"></i>
+              <span>Live Esports Coverage</span>
+            </div>
+
+            <div class="hero-platform-item">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Predictions and Progression</span>
+            </div>
+
+            <div class="hero-platform-item">
+              <i class="fa-solid fa-coins"></i>
+              <span>RG Points and Rewards</span>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <p>
-        Built Rivals Gauntlet to create competitive, community-driven Marvel Rivals
-        tournaments with a professional esports broadcast feel. As Founder of
-        Rivals Gauntlet, Jasper oversees tournament operations, production, and
-        live commentary while helping grow the community and improve every event.
-      </p>
+    </section>
 
-      <p style="margin-top:15px;">
-        <strong>Favorite Marvel Hero:</strong> Thor ⚡
-      </p>
-    </div>
+    <!-- =====================================================
+         FEATURED MEET THE TEAM
+         ===================================================== -->
 
-    <div class="caster-card">
-      <img src="brother-caster.PNG" alt="Jamison Harvey">
+    <section class="team-section">
+      <div class="shell">
+        <div class="section-heading">
+          <div class="eyebrow">
+            Meet the Team
+          </div>
 
-      <h3>Jamison</h3>
-      <p class="caster-role">Caster • Operations</p>
+          <h2>
+            The Brothers Behind the Gauntlet
+          </h2>
 
-      <div class="caster-socials">
-        <a href="https://twitch.tv/jamisonapex" target="_blank">
-          <i class="fab fa-twitch"></i>
-        </a>
+          <p>
+            Rivals Gauntlet is organized, produced and broadcast
+            by Jasper and Jamison Harvey, combining tournament
+            operations with live commentary and community-focused
+            competition.
+          </p>
+        </div>
+
+        <div class="team-stage">
+          <div class="team-stage-header">
+            <div>
+              <div class="eyebrow">
+                Featured Organizers
+              </div>
+
+              <h3>
+                Built Behind the Scenes.
+                Seen on Broadcast.
+              </h3>
+            </div>
+
+            <p>
+              From registration and bracket management to production,
+              commentary and event-day operations, the team works
+              directly on every part of the Rivals Gauntlet experience.
+            </p>
+          </div>
+
+          <div class="team-grid">
+            <article class="team-member">
+              <div class="member-photo">
+                <img
+                  src="jasper-caster.JPG"
+                  alt="Jasper Harvey"
+                >
+              </div>
+
+              <div class="member-copy">
+                <span class="member-index">
+                  Founder Profile // 01
+                </span>
+
+                <h3>
+                  Jasper
+                  <br>
+                  “Atrophy”
+                </h3>
+
+                <div class="member-role">
+                  Founder • Tournament Director • Caster
+                </div>
+
+                <p class="member-description">
+                  Jasper created Rivals Gauntlet to deliver
+                  community tournaments with the structure,
+                  presentation and energy of a professional
+                  esports event. He oversees the platform,
+                  tournament direction, production and live
+                  commentary.
+                </p>
+
+                <div class="member-footer">
+                  <span class="member-tag">
+                    <i class="fa-solid fa-bolt"></i>
+                    Favorite Hero: Thor
+                  </span>
+
+                  <a
+                    class="member-social"
+                    href="https://twitch.tv/atrophylive"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i class="fa-brands fa-twitch"></i>
+                    AtrophyLive
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <article class="team-member">
+              <div class="member-photo">
+                <img
+                  src="brother-caster.PNG"
+                  alt="Jamison Harvey"
+                >
+              </div>
+
+              <div class="member-copy">
+                <span class="member-index">
+                  Operations Profile // 02
+                </span>
+
+                <h3>
+                  Jamison
+                  <br>
+                  Harvey
+                </h3>
+
+                <div class="member-role">
+                  Operations • Production • Caster
+                </div>
+
+                <p class="member-description">
+                  Jamison supports tournament logistics,
+                  competitor coordination and event operations
+                  while providing live commentary throughout
+                  Rivals Gauntlet broadcasts. He helps ensure
+                  each event runs smoothly for players and viewers.
+                </p>
+
+                <div class="member-footer">
+                  <span class="member-tag">
+                    <i class="fa-solid fa-spider"></i>
+                    Favorite Hero: Spider-Man
+                  </span>
+
+                  <a
+                    class="member-social"
+                    href="https://twitch.tv/jamisonapex"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <i class="fa-brands fa-twitch"></i>
+                    JamisonApex
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
       </div>
-      
-      <p>
-        Jamison helps manage tournament logistics and operations while also
-        providing live commentary throughout Rivals Gauntlet broadcasts.He is 
-        a key part of the project behind the scenes, he
-        helps keep events running smoothly and ensures competitors have the
-        best experience possible.
-      </p>
+    </section>
 
-      <p style="margin-top:15px;">
-        <strong>Favorite Marvel Hero:</strong> Spider-Man 🕷️
-      </p>
+    <!-- =====================================================
+         COMPACT PLATFORM FEATURES
+         ===================================================== -->
+
+    <section class="platform-section">
+      <div class="shell">
+        <div class="feature-strip">
+          <article class="feature-item">
+            <span class="feature-number">
+              01 // COMPETE
+            </span>
+
+            <h3>Structured Events</h3>
+
+            <p>
+              Organized brackets, clear formats and meaningful
+              tournament competition.
+            </p>
+          </article>
+
+          <article class="feature-item">
+            <span class="feature-number">
+              02 // WATCH
+            </span>
+
+            <h3>Live Coverage</h3>
+
+            <p>
+              Broadcast presentation, commentary, match updates
+              and tournament storylines.
+            </p>
+          </article>
+
+          <article class="feature-item">
+            <span class="feature-number">
+              03 // PREDICT
+            </span>
+
+            <h3>Prediction Center</h3>
+
+            <p>
+              Bracket Pick’em and live predictions tied directly
+              into each event.
+            </p>
+          </article>
+
+          <article class="feature-item">
+            <span class="feature-number">
+              04 // PROGRESS
+            </span>
+
+            <h3>Player Legacy</h3>
+
+            <p>
+              RG Points, career statistics, leaderboards,
+              profiles and future rewards.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         ABOUT + MISSION
+         ===================================================== -->
+
+    <section class="story-section">
+      <div class="shell">
+        <div class="story-panel">
+          <article class="story-column">
+            <div class="eyebrow">
+              What We Are
+            </div>
+
+            <h2>
+              More Than a Tournament Bracket
+            </h2>
+
+            <p>
+              Rivals Gauntlet brings competition, broadcast
+              coverage, predictions and player progression
+              together in one connected platform. Competitors
+              are not simply entering isolated events—they are
+              building a permanent record across the Gauntlet.
+            </p>
+
+            <div class="story-highlight">
+              Every tournament contributes to a larger competitive
+              ecosystem built around players, viewers and community
+              participation.
+            </div>
+          </article>
+
+          <article class="story-column">
+            <div class="eyebrow">
+              Our Mission
+            </div>
+
+            <h2>
+              Built by Competitors, for Competitors
+            </h2>
+
+            <p>
+              Our goal is to create fair, entertaining and
+              professionally presented Marvel Rivals events that
+              welcome new competitors while still giving serious
+              teams something meaningful to pursue.
+            </p>
+
+            <div class="story-highlight">
+              The platform will continue expanding with deeper
+              tournament systems, predictions, rankings, rewards
+              and community-driven events.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         HOW IT WORKS
+         ===================================================== -->
+
+    <section class="process-section">
+      <div class="shell">
+        <div class="section-heading">
+          <div class="eyebrow">
+            The Rivals Gauntlet Loop
+          </div>
+
+          <h2>
+            Compete. Predict. Earn. Build Your Legacy.
+          </h2>
+        </div>
+
+        <div class="process-track">
+          <article class="process-step">
+            <span>STEP 01</span>
+
+            <h3>Compete</h3>
+
+            <p>
+              Apply for events, join a team and enter the
+              tournament bracket.
+            </p>
+          </article>
+
+          <article class="process-step">
+            <span>STEP 02</span>
+
+            <h3>Predict</h3>
+
+            <p>
+              Submit bracket picks and participate in live
+              match predictions.
+            </p>
+          </article>
+
+          <article class="process-step">
+            <span>STEP 03</span>
+
+            <h3>Earn</h3>
+
+            <p>
+              Gain RG Points through predictions, events and
+              platform activity.
+            </p>
+          </article>
+
+          <article class="process-step">
+            <span>STEP 04</span>
+
+            <h3>Build Your Legacy</h3>
+
+            <p>
+              Grow your profile, career statistics, reputation
+              and competitive history.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =======================================================
+       FOOTER
+       ======================================================= -->
+
+  <footer class="site-footer">
+    <div class="shell footer-main">
+      <div class="footer-brand">
+        <strong>RIVALS GAUNTLET</strong>
+        <span>Compete. Predict. Earn Rewards.</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="tournament.html">Tournament</a>
+        <a href="predictions.html">Predictions</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="donate.html">Support</a>
+      </div>
     </div>
 
-  </div>
+    <p class="shell disclaimer">
+      © 2026 Rivals Gauntlet. Rivals Gauntlet is an independent
+      community tournament organization and is not affiliated
+      with, endorsed by, sponsored by, or specifically approved
+      by NetEase Games, Marvel Entertainment, Marvel Games, or
+      Marvel Rivals.
+    </p>
+  </footer>
 
-</section>
+  <!-- =======================================================
+       FIREBASE + GLOBAL HEADER
+       ======================================================= -->
 
-<section class="event-card">
-  <p class="eyebrow">OUR MISSION</p>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
 
-  <h2>Built By Competitors, For Competitors</h2>
-
-  <p>
-    Rivals Gauntlet was founded by brothers Jasper and Jamison,
-    combining competitive gaming, live broadcasting, 
-    and community-driven events to create a better Marvel 
-    Rivals tournament experience.
-  </p>
-
-  <br>
-
-  <p>
-    Whether you're entering your first tournament or competing for the
-    championship, we're committed to creating events that are competitive,
-    fair, and entertaining for both players and viewers.
-  </p>
-</section>
-  
-
-
-<section class="event-card">
-  <h2>WHY PLAY RIVALS GAUNTLET?</h2>
-
-  <div class="broadcast-grid">
-
-    <div class="broadcast-item">
-      <div class="broadcast-icon">⚔️</div>
-      <h3>Competitive Events</h3>
-      <p>Structured tournaments with meaningful competition.</p>
-    </div>
-
-    <div class="broadcast-item">
-      <div class="broadcast-icon">🎙️</div>
-      <h3>Live Coverage</h3>
-      <p>Every match streamed with commentary and analysis.</p>
-    </div>
-
-    <div class="broadcast-item">
-      <div class="broadcast-icon">📊</div>
-      <h3>Live Updates</h3>
-      <p>Follow scores, standings, and bracket progression.</p>
-    </div>
-
-    <div class="broadcast-item">
-      <div class="broadcast-icon">🛡️</div>
-      <h3>Community First</h3>
-      <p>Built for Marvel Rivals players of all skill levels.</p>
-    </div>
-
-  </div>
-</section>
-
-<section class="event-card">
-  <h2>JOIN THE COMMUNITY</h2>
-  <h3>Ready to compete?</h3>
-  <p>
-    Join the Discord to sign up for upcoming events,
-    find teammates, watch broadcasts, and stay updated.
-  </p>
-
-  <a href="https://discord.gg/82HPpfkhQN" target="_blank" class="join-btn">
-    JOIN THE ACTION
-  </a>
-</section>
-
-<footer class="footer">
-  <div class="footer-logo">RIVALS GAUNTLET</div>
-
-  <div class="footer-links">
-  <a href="index.html">Home</a>
-  <a href="tournament.html">Tournament</a>
-  <a href="teams.html">Teams</a>
-  <a href="champions.html">Champions</a>
-  <a href="watch.html">Watch Live</a>
-  <a href="donate.html">Donations</a>
-  <a href="about.html">About</a>
-</div>
-
-<div class="footer-socials">
-  <a href="https://www.twitch.tv/atrophylive" target="_blank">
-    <i class="fab fa-twitch"></i>
-  </a>
-
-  <a href="https://discord.gg/82HPpfkhQN" target="_blank">
-    <i class="fab fa-discord"></i>
-  </a>
-</div>
-  <p>© 2026 Rivals Gauntlet</p>
-
-<p style="
-  margin-top:12px;
-  font-size:12px;
-  color:#666;
-  max-width:800px;
-  margin-left:auto;
-  margin-right:auto;
-">
-  Rivals Gauntlet is an independent community tournament organization and is not affiliated with, endorsed by, sponsored by, or specifically approved by NetEase Games, Marvel Entertainment, Marvel Games, or Marvel Rivals.
-</p>
-</footer>
-
-<script>
-function toggleMenu() {
-  document.getElementById("mobileNav").classList.toggle("active");
-}
-</script>
-
+  <script src="/firebase.js?v=2"></script>
+  <script src="/notifications.js?v=1"></script>
+  <script src="/notification-center.js?v=1"></script>
+  <script src="/friends.js?v=4"></script>
+  <script src="/daily-gifts.js?v=2"></script>
+  <script src="/global-header.js?v=16"></script>
 </body>
 </html>

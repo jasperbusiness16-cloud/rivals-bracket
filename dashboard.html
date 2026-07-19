@@ -1,1489 +1,7344 @@
-in<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="theme-color" content="#08070d">
+
   <title>Dashboard | Rivals Gauntlet</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=6">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="global-header.css?v=16"
+  >
+
+  <style>
+    :root {
+      --background: #07070b;
+      --surface: #0c0b12;
+      --surface-light: #111019;
+      --surface-hover: #15121e;
+
+      --text: #f7f4fb;
+      --muted: #aaa3b4;
+      --dim: #756e7d;
+
+      --line: rgba(255, 255, 255, 0.085);
+      --line-strong: rgba(255, 255, 255, 0.14);
+
+      --purple: #a855f7;
+      --purple-light: #d09cff;
+      --purple-dark: #6d28d9;
+
+      --green: #3cd38b;
+      --yellow: #f2c969;
+      --red: #ef5b68;
+
+      --max-width: 1660px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+
+      background:
+        radial-gradient(
+          circle at 85% 0%,
+          rgba(110, 44, 181, 0.16),
+          transparent 31%
+        ),
+        linear-gradient(
+          180deg,
+          #09080f,
+          var(--background)
+        );
+
+      color: var(--text);
+      font-family: "Rajdhani", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      color: inherit;
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .dashboard-page {
+      width: min(
+        calc(100% - 32px),
+        var(--max-width)
+      );
+
+      display: grid;
+
+      grid-template-columns:
+        240px
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      margin:
+        18px
+        auto
+        72px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 23px;
+      height: 2px;
+
+      content: "";
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          transparent
+        );
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      margin-top: 18px;
+    }
+
+    .client-button {
+      min-height: 41px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      padding:
+        0
+        14px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.025
+        );
+
+      color: #e9e3ef;
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.65px;
+      text-transform: uppercase;
+
+      transition:
+        border-color 0.18s,
+        background 0.18s,
+        transform 0.18s;
+    }
+
+    .client-button:hover {
+      transform: translateY(-1px);
+
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.48
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.07
+        );
+    }
+
+    .client-button.primary {
+      border-color:
+        rgba(
+          208,
+          156,
+          255,
+          0.5
+        );
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple-dark),
+          var(--purple)
+        );
+
+      color: white;
+    }
+
+    .client-button.discord {
+      border-color:
+        rgba(
+          119,
+          132,
+          255,
+          0.38
+        );
+
+      color: #cbd0ff;
+    }
+
+    .client-button.danger {
+      border-color:
+        rgba(
+          239,
+          91,
+          104,
+          0.42
+        );
+
+      background:
+        rgba(
+          239,
+          91,
+          104,
+          0.07
+        );
+
+      color: #ffb1b8;
+    }
+
+    .client-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    .empty-message {
+      padding: 18px;
+
+      border:
+        1px dashed
+        var(--line-strong);
+
+      color: var(--dim);
+
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* =====================================================
+       PLAYER RAIL
+       ===================================================== */
+
+    .player-rail {
+      position: sticky;
+      top: 16px;
+
+      height: max-content;
+      overflow: hidden;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(
+            168,
+            85,
+            247,
+            0.05
+          ),
+          transparent 30%
+        ),
+        var(--surface);
+    }
+
+    .player-identity {
+      display: grid;
+
+      grid-template-columns:
+        52px
+        minmax(0, 1fr);
+
+      align-items: center;
+      gap: 11px;
+
+      padding: 17px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .player-avatar,
+    .player-avatar-fallback {
+      width: 52px;
+      height: 52px;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.35
+        );
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #332245,
+          #131019
+        );
+
+      object-fit: cover;
+    }
+
+    .player-avatar-fallback {
+      display: grid;
+      place-items: center;
+
+      color: var(--purple-light);
+
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .player-name {
+      min-width: 0;
+    }
+
+    .player-name span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .player-name h2 {
+      overflow: hidden;
+
+      margin:
+        4px
+        0
+        0;
+
+      font-size: 20px;
+      line-height: 0.95;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .player-name strong {
+      display: block;
+
+      margin-top: 6px;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+      letter-spacing: 0.7px;
+    }
+
+    .profile-completion {
+      padding:
+        0
+        17px
+        16px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .profile-completion-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      color: var(--muted);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .profile-track {
+      height: 4px;
+
+      overflow: hidden;
+
+      margin-top: 7px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.07
+        );
+    }
+
+    .profile-fill {
+      width: 0;
+      height: 100%;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple-dark),
+          var(--purple-light)
+        );
+
+      transition: width 0.3s;
+    }
+
+    .player-metrics {
+      display: grid;
+
+      grid-template-columns:
+        1fr
+        1fr;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .player-metric {
+      min-width: 0;
+
+      padding:
+        11px
+        13px;
+
+      border-top:
+        1px solid
+        var(--line);
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .player-metric:nth-child(odd) {
+      border-left: 0;
+    }
+
+    .player-metric:nth-child(-n + 2) {
+      border-top: 0;
+    }
+
+    .player-metric span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+    }
+
+    .player-metric strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 4px;
+
+      font-size: 14px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-navigation {
+      display: grid;
+      gap: 3px;
+
+      padding: 9px;
+    }
+
+    .player-navigation a,
+    .player-navigation button {
+      min-height: 38px;
+
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      padding:
+        0
+        10px;
+
+      border:
+        1px solid
+        transparent;
+
+      border-radius: 7px;
+
+      background: transparent;
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.45px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    .player-navigation a:hover,
+    .player-navigation button:hover,
+    .player-navigation a.active {
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.28
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.065
+        );
+
+      color: white;
+    }
+
+    .player-navigation a.active {
+      box-shadow:
+        inset
+        3px
+        0
+        0
+        var(--purple);
+    }
+
+    .player-navigation i {
+      width: 17px;
+
+      color: var(--purple-light);
+      text-align: center;
+    }
+
+    /* =====================================================
+       MAIN PAGE
+       ===================================================== */
+
+    .dashboard-main {
+      min-width: 0;
+    }
+
+    .dashboard-intro {
+      min-height: 78px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+
+      padding:
+        10px
+        3px
+        14px;
+    }
+
+    .dashboard-intro h1 {
+      margin:
+        6px
+        0
+        0;
+
+      font-size:
+        clamp(
+          29px,
+          4vw,
+          45px
+        );
+
+      line-height: 0.92;
+      text-transform: uppercase;
+    }
+
+    .dashboard-intro p {
+      margin:
+        8px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+    }
+
+    /* =====================================================
+       IMPORTANT ALERT
+       ===================================================== */
+
+    .substitution-alert {
+      position: relative;
+
+      display: none;
+
+      margin-bottom: 11px;
+
+      padding:
+        15px
+        52px
+        15px
+        17px;
+
+      border:
+        1px solid
+        rgba(
+          239,
+          91,
+          104,
+          0.42
+        );
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(
+            239,
+            91,
+            104,
+            0.12
+          ),
+          transparent
+        ),
+        #170d12;
+    }
+
+    .substitution-alert h2 {
+      margin: 0;
+
+      color: #ffb1b8;
+
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .substitution-alert p {
+      margin:
+        7px
+        0
+        0;
+
+      color: #d9cbd0;
+
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .dismiss-alert {
+      position: absolute;
+
+      top: 11px;
+      right: 11px;
+
+      width: 31px;
+      height: 31px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(
+          239,
+          91,
+          104,
+          0.4
+        );
+
+      border-radius: 50%;
+
+      background:
+        rgba(
+          0,
+          0,
+          0,
+          0.2
+        );
+
+      color: #ffb1b8;
+
+      font-size: 18px;
+    }
+
+    /* =====================================================
+       TOURNAMENT WORKSPACE
+       ===================================================== */
+
+    .tournament-workspace {
+      overflow: hidden;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.3
+        );
+
+      border-radius: 13px;
+
+      background:
+        radial-gradient(
+          circle at 90% 7%,
+          rgba(
+            168,
+            85,
+            247,
+            0.16
+          ),
+          transparent 28%
+        ),
+        var(--surface);
+    }
+
+    .workspace-header {
+      min-height: 61px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+
+      padding:
+        13px
+        18px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .event-name span {
+      display: block;
+
+      color: var(--purple-light);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .event-name strong {
+      display: block;
+
+      margin-top: 4px;
+
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .status-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .status-pill {
+      min-height: 27px;
+
+      display: inline-flex;
+      align-items: center;
+
+      padding:
+        0
+        9px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 999px;
+
+      color: var(--muted);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.65px;
+      text-transform: uppercase;
+    }
+
+    .status-pill.success {
+      border-color:
+        rgba(
+          60,
+          211,
+          139,
+          0.35
+        );
+
+      background:
+        rgba(
+          60,
+          211,
+          139,
+          0.065
+        );
+
+      color: #8fe9b8;
+    }
+
+    .status-pill.warning {
+      border-color:
+        rgba(
+          242,
+          201,
+          105,
+          0.36
+        );
+
+      background:
+        rgba(
+          242,
+          201,
+          105,
+          0.06
+        );
+
+      color: #ffe1a0;
+    }
+
+    .status-pill.danger {
+      border-color:
+        rgba(
+          239,
+          91,
+          104,
+          0.42
+        );
+
+      background:
+        rgba(
+          239,
+          91,
+          104,
+          0.07
+        );
+
+      color: #ffadb5;
+    }
+
+    .status-pill.purple {
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.4
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.07
+        );
+
+      color: var(--purple-light);
+    }
+
+    /* =====================================================
+       MAIN OBJECTIVE
+       ===================================================== */
+
+    .objective-area {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.25fr)
+        minmax(290px, 0.75fr);
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .objective-content {
+      min-width: 0;
+
+      padding:
+        clamp(
+          26px,
+          4vw,
+          43px
+        );
+    }
+
+    .objective-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .objective-dot {
+      width: 8px;
+      height: 8px;
+
+      border-radius: 50%;
+
+      background: var(--purple);
+
+      box-shadow:
+        0
+        0
+        16px
+        rgba(
+          168,
+          85,
+          247,
+          0.72
+        );
+    }
+
+    .objective-status.live .objective-dot {
+      background: var(--red);
+
+      box-shadow:
+        0
+        0
+        16px
+        rgba(
+          239,
+          91,
+          104,
+          0.8
+        );
+    }
+
+    .objective-content h2 {
+      max-width: 850px;
+
+      margin:
+        15px
+        0
+        0;
+
+      font-size:
+        clamp(
+          38px,
+          5vw,
+          65px
+        );
+
+      line-height: 0.87;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+    }
+
+    .objective-content > p {
+      max-width: 740px;
+
+      margin:
+        17px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 15px;
+      line-height: 1.52;
+    }
+
+    .objective-note {
+      display: none;
+
+      max-width: 740px;
+
+      margin-top: 15px;
+
+      padding:
+        11px
+        13px;
+
+      border-left:
+        3px solid
+        var(--purple);
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.05
+        );
+
+      color: #d7d0de;
+
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .objective-summary {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 23px;
+
+      border-left:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(
+          0,
+          0,
+          0,
+          0.07
+        );
+    }
+
+    .objective-summary > span {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+
+    .objective-summary > strong {
+      display: block;
+
+      margin-top: 6px;
+
+      font-size: 26px;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .summary-grid {
+      display: grid;
+
+      grid-template-columns:
+        1fr
+        1fr;
+
+      gap: 1px;
+
+      overflow: hidden;
+
+      margin-top: 18px;
+
+      border:
+        1px solid
+        var(--line);
+
+      background: var(--line);
+    }
+
+    .summary-cell {
+      min-width: 0;
+
+      padding: 11px;
+
+      background: #111018;
+    }
+
+    .summary-cell span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .summary-cell strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 3px;
+
+      font-size: 12px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* =====================================================
+       LIVE OPERATIONS
+       ===================================================== */
+
+    .operations-bar {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.1fr)
+        minmax(0, 1fr)
+        minmax(0, 0.95fr)
+        minmax(0, 0.72fr);
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background: #0b0a10;
+    }
+
+    .operation-section {
+      min-width: 0;
+
+      padding: 16px;
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .operation-section:first-child {
+      border-left: 0;
+    }
+
+    .operation-label {
+      color: var(--purple-light);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 1.25px;
+      text-transform: uppercase;
+    }
+
+    .operation-title {
+      margin:
+        6px
+        0
+        0;
+
+      font-size: 18px;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .operation-content {
+      margin-top: 12px;
+    }
+
+    .operation-match-label {
+      color: var(--purple-light);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+    }
+
+    .operation-versus {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+      align-items: center;
+      gap: 7px;
+
+      margin-top: 9px;
+    }
+
+    .operation-team {
+      overflow: hidden;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .operation-team.right {
+      text-align: right;
+    }
+
+    .operation-score {
+      min-width: 43px;
+
+      color: var(--purple-light);
+
+      font-size: 18px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .operation-subtext {
+      margin-top: 10px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .operation-action {
+      min-height: 32px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      margin-top: 11px;
+
+      padding:
+        0
+        9px;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      background: transparent;
+      color: var(--purple-light);
+
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .communication-row {
+      padding:
+        7px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .communication-row:last-child {
+      border-bottom: 0;
+    }
+
+    .communication-row span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .communication-row strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 3px;
+
+      font-size: 11px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .readiness-number {
+      display: block;
+
+      margin-top: 10px;
+
+      color: var(--purple-light);
+
+      font-size: 31px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .readiness-text {
+      display: block;
+
+      margin-top: 7px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    /* =====================================================
+       ACTION STEPS
+       ===================================================== */
+
+    .action-steps {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          7,
+          minmax(
+            115px,
+            1fr
+          )
+        );
+
+      overflow-x: auto;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background:
+        rgba(
+          0,
+          0,
+          0,
+          0.1
+        );
+    }
+
+    .action-step {
+      min-width: 115px;
+
+      padding:
+        13px
+        12px;
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .action-step:first-child {
+      border-left: 0;
+    }
+
+    .action-step span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+    }
+
+    .action-step strong {
+      display: block;
+
+      margin-top: 5px;
+
+      color: #77717f;
+
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+
+    .action-step.completed span,
+    .action-step.completed strong {
+      color: #82e7af;
+    }
+
+    .action-step.current {
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.075
+        );
+
+      box-shadow:
+        inset
+        0
+        3px
+        0
+        var(--purple);
+    }
+
+    .action-step.current span,
+    .action-step.current strong {
+      color: var(--purple-light);
+    }
+
+    /* =====================================================
+       TOURNAMENT TABS
+       ===================================================== */
+
+    .workspace-tabs,
+    .account-tabs {
+      display: flex;
+      overflow-x: auto;
+
+      border-bottom:
+        1px solid
+        var(--line);
+
+      background: #0a090f;
+    }
+
+    .workspace-tab,
+    .account-tab {
+      min-width: max-content;
+      min-height: 47px;
+
+      padding:
+        0
+        17px;
+
+      border: 0;
+      border-right:
+        1px solid
+        var(--line);
+
+      background: transparent;
+      color: var(--dim);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.75px;
+      text-transform: uppercase;
+    }
+
+    .workspace-tab.active,
+    .account-tab.active {
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.055
+        );
+
+      box-shadow:
+        inset
+        0
+        -3px
+        0
+        var(--purple);
+
+      color: var(--purple-light);
+    }
+
+    .workspace-panel {
+      display: none;
+
+      min-height: 255px;
+
+      padding: 21px;
+    }
+
+    .workspace-panel.active {
+      display: block;
+    }
+
+    .panel-heading h2 {
+      margin:
+        6px
+        0
+        0;
+
+      font-size: 24px;
+      line-height: 0.95;
+      text-transform: uppercase;
+    }
+
+    .panel-heading p {
+      margin:
+        8px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* =====================================================
+       OVERVIEW
+       ===================================================== */
+
+    .overview-layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(270px, 0.72fr);
+
+      gap: 26px;
+    }
+
+    .overview-list {
+      margin-top: 16px;
+
+      border-top:
+        1px solid
+        var(--line);
+    }
+
+    .overview-row {
+      display: grid;
+
+      grid-template-columns:
+        140px
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      padding:
+        10px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .overview-row span {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .overview-row strong {
+      font-size: 11px;
+    }
+
+    .support-block {
+      align-self: start;
+
+      padding: 16px;
+
+      border-left:
+        2px solid
+        var(--red);
+
+      background:
+        rgba(
+          239,
+          91,
+          104,
+          0.04
+        );
+    }
+
+    .support-block h3 {
+      margin:
+        6px
+        0
+        0;
+
+      color: #ffb1b8;
+
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .support-block p {
+      margin:
+        9px
+        0
+        0;
+
+      color: #cbbfc5;
+
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    /* =====================================================
+       TEAM ROSTER
+       ===================================================== */
+
+    .roster-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+
+      margin-top: 16px;
+
+      padding:
+        11px
+        0;
+
+      border-top:
+        1px solid
+        var(--line);
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .roster-summary span {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .roster-summary strong {
+      color: var(--purple-light);
+
+      font-size: 15px;
+    }
+
+    .roster-list {
+      display: grid;
+    }
+
+    .roster-player {
+      min-height: 58px;
+
+      display: grid;
+
+      grid-template-columns:
+        36px
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 11px;
+
+      padding:
+        10px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .roster-initials {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.27
+        );
+
+      border-radius: 8px;
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.06
+        );
+
+      color: var(--purple-light);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .roster-copy {
+      min-width: 0;
+    }
+
+    .roster-copy strong {
+      display: block;
+      overflow: hidden;
+
+      font-size: 12px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .roster-copy span {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 2px;
+
+      color: var(--dim);
+
+      font-size: 8px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .roster-status {
+      color: var(--yellow);
+
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .roster-status.ready {
+      color: #82e7af;
+    }
+
+    .roster-status.unavailable {
+      color: #ff9fa8;
+    }
+
+    /* =====================================================
+       JOURNEY
+       ===================================================== */
+
+    .journey-list {
+      display: grid;
+
+      margin-top: 15px;
+
+      border-top:
+        1px solid
+        var(--line);
+    }
+
+    .journey-match {
+      display: grid;
+
+      grid-template-columns:
+        110px
+        minmax(0, 1fr)
+        82px;
+
+      align-items: center;
+      gap: 13px;
+
+      padding:
+        13px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .journey-round span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .journey-round strong {
+      display: block;
+
+      margin-top: 3px;
+
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .journey-versus {
+      overflow: hidden;
+
+      font-size: 11px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .journey-result {
+      font-size: 9px;
+      font-weight: 800;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .journey-result.win {
+      color: #82e7af;
+    }
+
+    .journey-result.loss,
+    .journey-result.live {
+      color: #ff9fa8;
+    }
+
+    .journey-result.waiting {
+      color: var(--dim);
+    }
+
+    /* =====================================================
+       APPLICATION
+       ===================================================== */
+
+    .application-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          4,
+          minmax(
+            0,
+            1fr
+          )
+        );
+
+      gap: 1px;
+
+      overflow: hidden;
+
+      margin-top: 16px;
+
+      border:
+        1px solid
+        var(--line);
+
+      background: var(--line);
+    }
+
+    .application-field {
+      min-width: 0;
+      min-height: 70px;
+
+      padding:
+        11px
+        12px;
+
+      background: #111018;
+    }
+
+    .application-field span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .application-field strong {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 4px;
+
+      font-size: 12px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* =====================================================
+       SECONDARY ACCOUNT DOCK
+       ===================================================== */
+
+    .account-dock {
+      overflow: hidden;
+
+      margin-top: 13px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 13px;
+
+      background: var(--surface);
+    }
+
+    .account-panel {
+      display: none;
+
+      min-height: 230px;
+
+      padding: 21px;
+    }
+
+    .account-panel.active {
+      display: block;
+    }
+
+    /* =====================================================
+       DAILY REWARDS
+       ===================================================== */
+
+    .rewards-layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        290px;
+
+      gap: 24px;
+      align-items: center;
+    }
+
+    .daily-track {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          7,
+          1fr
+        );
+
+      gap: 4px;
+
+      margin-top: 16px;
+    }
+
+    .daily-day {
+      min-width: 0;
+
+      padding:
+        8px
+        3px;
+
+      border:
+        1px solid
+        var(--line);
+
+      color: var(--dim);
+      text-align: center;
+    }
+
+    .daily-day span {
+      display: block;
+
+      font-size: 6px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .daily-day b {
+      display: block;
+
+      margin:
+        5px
+        0;
+
+      color: var(--purple-light);
+
+      font-size: 9px;
+    }
+
+    .daily-day strong {
+      display: block;
+      overflow: hidden;
+
+      font-size: 6px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .daily-day.completed {
+      border-color:
+        rgba(
+          60,
+          211,
+          139,
+          0.28
+        );
+
+      color: #82e7af;
+    }
+
+    .daily-day.current {
+      border-color:
+        rgba(
+          192,
+          132,
+          252,
+          0.45
+        );
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.07
+        );
+
+      color: var(--purple-light);
+    }
+
+    .reward-action {
+      padding-left: 21px;
+
+      border-left:
+        1px solid
+        var(--line);
+    }
+
+    .reward-action span {
+      display: block;
+
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .reward-action strong {
+      display: block;
+
+      margin-top: 5px;
+
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .reward-action small {
+      display: block;
+
+      margin-top: 6px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .reward-streak {
+      margin-top: 12px;
+
+      color: var(--purple-light);
+
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    /* =====================================================
+       FEEDS
+       ===================================================== */
+
+    .feed-list {
+      display: grid;
+
+      margin-top: 14px;
+
+      border-top:
+        1px solid
+        var(--line);
+    }
+
+    .feed-item {
+      min-height: 54px;
+
+      display: grid;
+
+      grid-template-columns:
+        32px
+        minmax(0, 1fr);
+
+      align-items: center;
+      gap: 10px;
+
+      padding:
+        9px
+        0;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .feed-icon {
+      width: 32px;
+      height: 32px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(
+          192,
+          132,
+          252,
+          0.27
+        );
+
+      border-radius: 8px;
+
+      background:
+        rgba(
+          168,
+          85,
+          247,
+          0.055
+        );
+
+      color: var(--purple-light);
+
+      font-weight: 800;
+    }
+
+    .feed-item strong {
+      display: block;
+
+      font-size: 11px;
+    }
+
+    .feed-item span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: var(--dim);
+
+      font-size: 9px;
+    }
+
+    .inventory-preview {
+      min-height: 180px;
+
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 25px;
+    }
+
+    .inventory-preview h2 {
+      margin:
+        6px
+        0
+        0;
+
+      font-size: 27px;
+      text-transform: uppercase;
+    }
+
+    .inventory-preview p {
+      max-width: 670px;
+
+      margin:
+        9px
+        0
+        0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .page-status {
+      min-height: 18px;
+
+      margin:
+        13px
+        2px
+        0;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    /* =====================================================
+       REPORT MODAL
+       ===================================================== */
+
+    .report-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+
+      display: none;
+      place-items: center;
+
+      padding: 18px;
+
+      background:
+        rgba(
+          3,
+          3,
+          7,
+          0.84
+        );
+
+      backdrop-filter: blur(8px);
+    }
+
+    .report-modal-backdrop.open {
+      display: grid;
+    }
+
+    .report-modal {
+      width: min(
+        100%,
+        540px
+      );
+
+      max-height: 86vh;
+      overflow-y: auto;
+
+      border:
+        1px solid
+        rgba(
+          239,
+          91,
+          104,
+          0.36
+        );
+
+      border-radius: 14px;
+
+      background: #111018;
+    }
+
+    .report-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+
+      padding: 18px;
+
+      border-bottom:
+        1px solid
+        var(--line);
+    }
+
+    .report-modal-header h2 {
+      margin:
+        5px
+        0
+        0;
+
+      font-size: 26px;
+      text-transform: uppercase;
+    }
+
+    .close-modal {
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 50%;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.025
+        );
+
+      color: var(--muted);
+
+      font-size: 18px;
+    }
+
+    .report-modal-body {
+      padding: 18px;
+    }
+
+    .report-field {
+      margin-top: 13px;
+    }
+
+    .report-field:first-child {
+      margin-top: 0;
+    }
+
+    .report-field label {
+      display: block;
+
+      margin-bottom: 6px;
+
+      color: var(--muted);
+
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .report-field select,
+    .report-field textarea {
+      width: 100%;
+
+      border:
+        1px solid
+        var(--line-strong);
+
+      border-radius: 8px;
+
+      outline: none;
+
+      background: #0c0b11;
+      color: white;
+    }
+
+    .report-field select {
+      height: 43px;
+
+      padding:
+        0
+        11px;
+    }
+
+    .report-field textarea {
+      min-height: 110px;
+
+      padding: 11px;
+
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .report-guidance {
+      margin-top: 14px;
+
+      padding: 11px;
+
+      border-left:
+        3px solid
+        var(--red);
+
+      background:
+        rgba(
+          239,
+          91,
+          104,
+          0.05
+        );
+
+      color: #d4c6cb;
+
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .report-status {
+      min-height: 17px;
+
+      margin-top: 10px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    /* =====================================================
+       RESPONSIVE
+       ===================================================== */
+
+    @media (max-width: 1180px) {
+      .dashboard-page {
+        grid-template-columns:
+          220px
+          minmax(0, 1fr);
+      }
+
+      .operations-bar {
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+
+      .operation-section:nth-child(3),
+      .operation-section:nth-child(4) {
+        border-top:
+          1px solid
+          var(--line);
+      }
+
+      .operation-section:nth-child(3) {
+        border-left: 0;
+      }
+
+      .application-grid {
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .dashboard-page {
+        grid-template-columns: 1fr;
+      }
+
+      .player-rail {
+        position: relative;
+        top: auto;
+      }
+
+      .player-identity {
+        grid-template-columns:
+          46px
+          minmax(0, 1fr);
+      }
+
+      .player-avatar,
+      .player-avatar-fallback {
+        width: 46px;
+        height: 46px;
+      }
+
+      .profile-completion {
+        display: none;
+      }
+
+      .player-metrics {
+        grid-template-columns:
+          repeat(
+            4,
+            1fr
+          );
+      }
+
+      .player-metric,
+      .player-metric:nth-child(odd),
+      .player-metric:nth-child(-n + 2) {
+        border-top: 0;
+        border-left:
+          1px solid
+          var(--line);
+      }
+
+      .player-metric:first-child {
+        border-left: 0;
+      }
+
+      .player-metric:nth-child(n + 5) {
+        display: none;
+      }
+
+      .player-navigation {
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .player-navigation a,
+      .player-navigation button {
+        min-width: max-content;
+      }
+
+      .rewards-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .reward-action {
+        padding:
+          17px
+          0
+          0;
+
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .dashboard-page {
+        width: min(
+          calc(100% - 14px),
+          var(--max-width)
+        );
+
+        margin-top: 10px;
+      }
+
+      .dashboard-intro {
+        min-height: 66px;
+      }
+
+      .dashboard-intro p {
+        font-size: 10px;
+      }
+
+      .workspace-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status-list {
+        justify-content: flex-start;
+      }
+
+      .objective-area {
+        grid-template-columns: 1fr;
+      }
+
+      .objective-content {
+        padding:
+          24px
+          18px;
+      }
+
+      .objective-content h2 {
+        font-size: 39px;
+      }
+
+      .objective-summary {
+        padding: 19px;
+
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+
+      .operations-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .operation-section,
+      .operation-section:nth-child(3),
+      .operation-section:nth-child(4) {
+        border-top:
+          1px solid
+          var(--line);
+
+        border-left: 0;
+      }
+
+      .operation-section:first-child {
+        border-top: 0;
+      }
+
+      .overview-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .support-block {
+        border-top:
+          1px solid
+          rgba(
+            239,
+            91,
+            104,
+            0.25
+          );
+
+        border-left: 0;
+      }
+
+      .overview-row {
+        grid-template-columns:
+          105px
+          minmax(0, 1fr);
+      }
+
+      .application-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .journey-match {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .journey-result {
+        text-align: left;
+      }
+
+      .workspace-panel,
+      .account-panel {
+        padding: 17px;
+      }
+
+      .inventory-preview {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 470px) {
+      .player-metrics {
+        grid-template-columns:
+          1fr
+          1fr;
+      }
+
+      .player-metric:nth-child(3) {
+        border-left: 0;
+      }
+
+      .player-metric:nth-child(n + 3) {
+        border-top:
+          1px solid
+          var(--line);
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .operation-versus {
+        grid-template-columns: 1fr;
+      }
+
+      .operation-team.right,
+      .operation-score {
+        text-align: left;
+      }
+
+      .daily-track {
+        grid-template-columns:
+          repeat(
+            7,
+            48px
+          );
+
+        overflow-x: auto;
+      }
+    }
+  </style>
 </head>
 
-<body class="account-body">
+<body data-page="dashboard">
+  <div id="globalHeader"></div>
 
-<div class="account-center-shell">
-  <div class="account-center">
+  <div class="dashboard-page">
+    <aside class="player-rail">
+      <div class="player-identity">
+        <img
+          id="sidebarAvatar"
+          class="player-avatar"
+          src=""
+          alt="Profile"
+          style="display:none;"
+        >
 
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>ACCOUNT CENTER</h2>
-      </div>
-
-      <div class="account-mini-card">
-        <img id="sidebarAvatar" class="account-avatar" src="" alt="Profile">
-
-        <div id="sidebarFallback" class="account-avatar-fallback">
+        <div
+          id="sidebarFallback"
+          class="player-avatar-fallback"
+        >
           RG
         </div>
 
-        <h1 id="sidebarName">Player</h1>
-        <div id="sidebarId" class="account-rg-id">RG ACCOUNT</div>
-
-        <span class="account-badge">PLAYER</span>
-
-        <div class="profile-progress">
-          <div class="profile-progress-top">
-            <span>Profile</span>
-            <span id="profilePercent">0%</span>
-          </div>
-
-          <div class="profile-progress-track">
-            <div id="profileFill" class="profile-progress-fill"></div>
-          </div>
+        <div class="player-name">
+          <span>Competitor Profile</span>
+          <h2 id="sidebarName">Player</h2>
+          <strong id="sidebarId">RG ACCOUNT</strong>
         </div>
-
-      <div class="creator-card-stats">
-
-  <div class="creator-stat-row">
-    <span>RG Points</span>
-    <strong id="sidebarRgPoints">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Lifetime RP</span>
-    <strong id="sidebarLifetimeRp">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Prestige</span>
-    <strong id="sidebarPrestige">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Events Played</span>
-    <strong id="sidebarEvents">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Championships</span>
-    <strong id="sidebarChamps">0</strong>
-  </div>
-
-  <div class="creator-stat-row">
-    <span>Best Finish</span>
-    <strong id="sidebarBestFinish">--</strong>
-  </div>
-</div>
-
-<div class="creator-card-status">
-  <div class="creator-status-row">
-    <span>Discord</span>
-    <strong id="statusDiscord">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>Twitch</span>
-    <strong id="statusTwitch">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>YouTube</span>
-    <strong id="statusYoutube">--</strong>
-  </div>
-
-  <div class="creator-status-row">
-    <span>TikTok</span>
-    <strong id="statusTiktok">--</strong>
-  </div>
-</div>
-        
       </div>
 
-      <nav class="account-nav">
-        <a class="active" href="dashboard.html">Dashboard</a>
-        <a id="publicProfileLink" href="#">Public Profile</a>
-        <a href="#">Applications</a>
-        <a href="#">Tournament History</a>
-        <a href="#">Career Stats</a>
-        <a href="#">Achievements</a>
-        <a href="#">Notifications</a>
-        <a href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
+      <div class="profile-completion">
+        <div class="profile-completion-head">
+          <span>Profile Completion</span>
+          <span id="profilePercent">0%</span>
+        </div>
+
+        <div class="profile-track">
+          <div
+            id="profileFill"
+            class="profile-fill"
+          ></div>
+        </div>
+      </div>
+
+      <div class="player-metrics">
+        <div class="player-metric">
+          <span>RG Points</span>
+          <strong id="sidebarRgPoints">0</strong>
+        </div>
+
+        <div class="player-metric">
+          <span>Lifetime RP</span>
+          <strong id="sidebarLifetimeRp">0</strong>
+        </div>
+
+        <div class="player-metric">
+          <span>Prestige</span>
+          <strong id="sidebarPrestige">★ 0</strong>
+        </div>
+
+        <div class="player-metric">
+          <span>Events</span>
+          <strong id="sidebarEvents">0</strong>
+        </div>
+
+        <div class="player-metric">
+          <span>Championships</span>
+          <strong id="sidebarChamps">0</strong>
+        </div>
+
+        <div class="player-metric">
+          <span>Best Finish</span>
+          <strong id="sidebarBestFinish">--</strong>
+        </div>
+      </div>
+
+      <nav class="player-navigation">
+        <a
+          class="active"
+          href="dashboard.html"
+        >
+          <i class="fa-solid fa-gauge-high"></i>
+          Command Center
+        </a>
+
+        <a
+          id="publicProfileLink"
+          href="#"
+        >
+          <i class="fa-solid fa-user"></i>
+          Public Profile
+        </a>
+
+        <a href="apply.html">
+          <i class="fa-solid fa-file-signature"></i>
+          Application
+        </a>
+
+        <a href="predictions.html">
+          <i class="fa-solid fa-chart-line"></i>
+          Predictions
+        </a>
+
+        <a href="settings.html">
+          <i class="fa-solid fa-gear"></i>
+          Settings
+        </a>
+
+        <button
+          type="button"
+          onclick="logoutUser()"
+        >
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Sign Out
+        </button>
       </nav>
     </aside>
 
-    <main class="account-main">
-      <div class="account-topbar">
+    <main class="dashboard-main">
+      <header class="dashboard-intro">
         <div>
-          <p>PLAYER DASHBOARD</p>
-          <h1 id="welcomeName">Welcome Back</h1>
-          <span>Manage your profile, applications, and Rivals Gauntlet career.</span>
-        </div>
-
-        <div class="dashboard-top-actions">
-
-<div id="dashboardNotificationMount"></div>
-          
-  <a id="topProfileBtn" class="account-secondary" href="#">
-    View Public Profile
-  </a>
-
-  <a class="account-secondary" href="settings.html">
-    Settings
-  </a>
-
-</div>
-      </div>
-
-      <div class="account-panel-grid">
-
-        <section id="subbedInAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;position:relative;">
-  <button onclick="dismissSubbedInAlert()" style="
-    position:absolute;
-    top:14px;
-    right:14px;
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    border:1px solid #ef4444;
-    background:#160b0b;
-    color:#ef4444;
-    font-size:20px;
-    font-weight:900;
-    z-index:5;
-  ">×</button>
-
-  <h2 style="color:#ef4444;padding-right:44px;">🚨 You Have Been Subbed In</h2>
-  <div id="subbedInAlertContent"></div>
-</section>
-
-        <section id="myMatchLiveAlert" class="account-panel full" style="display:none;border:2px solid #ef4444;background:#2b1010;">
-  <h2 style="color:#ef4444;">🔴 Your Match Is Live</h2>
-  <div id="myMatchLiveAlertContent"></div>
-</section>
-
-<section class="account-panel full">
-  <h2>RG Rewards</h2>
-  <p>Claim your starter bonus and begin earning RG Points.</p>
-
-  <div class="dashboard-next-step">
-    <span>Starter Bonus</span>
-    <strong>+100 RG Points</strong>
-  </div>
-
-  <div class="account-actions">
-    <button id="starterBonusBtn" class="account-primary" onclick="claimStarterRgBonus()">
-      Claim Starter Bonus
-    </button>
-  </div>
-
-  <p id="rgRewardStatus" class="account-status"></p>
-</section>
-        
-        <section class="daily-checkin-card">
-
-  <div class="daily-checkin-header">
-    <div>
-      <span class="daily-checkin-eyebrow">
-        DAILY REWARDS
-      </span>
-
-      <h2>Daily Check-In</h2>
-
-      <p>
-        Check in every day to build your streak and earn rewards.
-      </p>
-    </div>
-
-    <div class="daily-checkin-streak">
-      <span>Current Streak</span>
-
-      <strong id="dailyCurrentStreak">
-        0 Days
-      </strong>
-    </div>
-  </div>
-
-
-  <div
-    id="dailyRewardTrack"
-    class="daily-reward-track"
-  ></div>
-
-
-  <div class="daily-checkin-footer">
-
-    <div class="daily-next-reward">
-
-      <span id="dailyRewardStatusLabel">
-        NEXT REWARD
-      </span>
-
-      <strong id="dailyNextReward">
-        Loading...
-      </strong>
-
-      <small id="dailyCountdown">
-        Checking availability...
-      </small>
-
-    </div>
-
-
-    <button
-      id="dailyClaimButton"
-      class="daily-claim-button"
-      type="button"
-      disabled
-    >
-      Loading...
-    </button>
-
-  </div>
-
-</section>
-        
-        <section class="account-panel full">
-
-  <h2 id="eventTitle">
-    Loading Current Event...
-  </h2>
-
-  <p id="eventDescription">
-    Checking your tournament status...
-  </p>
-
-  <div id="eventActions" class="account-actions">
-  </div>
-
-</section>
-        
-        <section class="account-panel full">
-
-  <h2>My Tournament Journey</h2>
-
-  <div id="journeyTimeline">
-    Loading journey...
-  </div>
-
-  <div class="journey-next-match">
-    <h3>Your Next Match</h3>
-
-    <div id="nextMatchCard">
-      Loading next match...
-    </div>
-  </div>
-
-</section>
-        <section class="account-panel full">
-  <h2>Activity Feed</h2>
-  <div id="activityFeed" class="dashboard-activity-feed">
-    <p>Loading activity...</p>
-  </div>
-</section>
-
-<section class="account-panel full">
-  <h2>Recent RG Points</h2>
-  <div id="rgPointsHistory">
-    <p>Loading RG Points history...</p>
-  </div>
-</section>
-
-      </div>
-
-      <p id="dashboardStatus" class="account-status"></p>
-    </main>
-
-  </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
-
-<script src="firebase.js?v=2"></script>
-<script src="notifications.js?v=1"></script>
-<script src="notification-center.js?v=1"></script>
-<script src="daily-checkin.js?v=3"></script>
-
-<script>
-const statusEl = document.getElementById("dashboardStatus");
-let tournamentId = "open1";
-let currentUser = null;
-let currentPlayer = null;
-let currentApplication = null;
-let currentCheckIn = null;
-let currentAvailability = null;
-let allCheckIns = {};
-let allAvailability = {};
-let currentTeams = {};
-let currentTournament = {};
-let currentSubstitution = null;
-let siteData = {};
-let userActivities = {};
-  let dailyCheckInState = {};
-let dailyCheckInStatus = null;
-let dailyCheckInStopListener = null;
-let dailyCountdownTimer = null;
-  
-  
-function clean(value, fallback = "") {
-  return String(value || fallback).trim();
-}
-
-function getInitials(name) {
-  const words = clean(name, "RG").split(" ").filter(Boolean);
-  return words.slice(0, 2).map(word => word[0]).join("").toUpperCase();
-}
-
-function calculateProfileCompletion(player) {
-  const socials = player.socials || {};
-
-  const fields = [
-    player.displayName,
-    player.rivalsIgn,
-    player.discordUsername,
-    player.region,
-    player.platform,
-    player.bio,
-    player.profileImage,
-    socials.twitch || socials.youtube || socials.tiktok || socials.x
-  ];
-
-  const completed = fields.filter(value => clean(value)).length;
-  return Math.round((completed / fields.length) * 100);
-}
-
-function renderSidebar(player, user) {
-  const displayName = clean(player.displayName, "Player");
-
-  document.getElementById("sidebarName").innerText = displayName;
-  document.getElementById("sidebarFallback").innerText = getInitials(displayName);
-
-  document.getElementById("sidebarId").innerText =
-    player.rgId || "RG ACCOUNT";
-
-  document.getElementById("sidebarRgPoints").innerText =
-  Number(player.rgPoints || 0).toLocaleString();
-
-document.getElementById("sidebarLifetimeRp").innerText =
-  Number(player.lifetimeRgPoints || 0).toLocaleString();
-
-document.getElementById("sidebarPrestige").innerText =
-  `★ ${player.prestige || 0}`;
-
-document.getElementById("sidebarEvents").innerText = player.eventsPlayed || 0;
-document.getElementById("sidebarChamps").innerText = player.championships || 0;
-document.getElementById("sidebarBestFinish").innerText = player.bestFinish || "--";
-
-const socials = player.socials || {};
-
-function setCardStatus(id, active) {
-  const el = document.getElementById(id);
-  el.innerText = active ? "✓" : "—";
-  el.classList.toggle("missing", !active);
-}
-
-setCardStatus("statusDiscord", player.discordMember);
-setCardStatus("statusTwitch", socials.twitch);
-setCardStatus("statusYoutube", socials.youtube);
-setCardStatus("statusTiktok", socials.tiktok);
-
-  const avatar = document.getElementById("sidebarAvatar");
-  const fallback = document.getElementById("sidebarFallback");
-
-  if (player.profileImage) {
-    avatar.src = player.profileImage;
-    avatar.style.display = "block";
-    fallback.style.display = "none";
-  } else {
-    avatar.style.display = "none";
-    fallback.style.display = "flex";
-  }
-
-  const percent = calculateProfileCompletion(player);
-  document.getElementById("profilePercent").innerText = `${percent}%`;
-  document.getElementById("profileFill").style.width = `${percent}%`;
-
-  document.getElementById("publicProfileLink").href =
-    `player.html?id=${user.uid}`;
-
-  document.getElementById("topProfileBtn").href =
-    `player.html?id=${user.uid}`;
-}
-
-function findMyTeam(uid) {
-  const teamsObj = currentTeams.teams || currentTeams || {};
-
-  for (const teamKey in teamsObj) {
-    const players = teamsObj[teamKey] || [];
-
-    const found = players.find(player => player.uid === uid);
-
-    if (found) {
-      return {
-        teamKey,
-        teamName: teamKey.replace("team", "Team "),
-        players
-      };
-    }
-  }
-
-  return null;
-}
-
-function getCurrentMatchText() {
-  return clean(siteData.currentMatch, "");
-}
-
-function getCurrentMatchScore() {
-  const match = getCurrentMatchText().toLowerCase();
-
-  if (match.includes("qf1"))
-    return `${siteData.qf1Team1Score || "0"} - ${siteData.qf1Team2Score || "0"}`;
-
-  if (match.includes("qf2"))
-    return `${siteData.qf2Team1Score || "0"} - ${siteData.qf2Team2Score || "0"}`;
-
-  if (match.includes("qf3"))
-    return `${siteData.qf3Team1Score || "0"} - ${siteData.qf3Team2Score || "0"}`;
-
-  if (match.includes("qf4"))
-    return `${siteData.qf4Team1Score || "0"} - ${siteData.qf4Team2Score || "0"}`;
-
-  if (match.includes("sf1"))
-    return `${siteData.sf1Team1Score || "0"} - ${siteData.sf1Team2Score || "0"}`;
-
-  if (match.includes("sf2"))
-    return `${siteData.sf2Team1Score || "0"} - ${siteData.sf2Team2Score || "0"}`;
-
-  if (match.includes("grand"))
-    return `${siteData.gfTeam1Score || "0"} - ${siteData.gfTeam2Score || "0"}`;
-
-  return "0 - 0";
-}
-  
-function getCurrentMatchTeams() {
-
-  const match = getCurrentMatchText().toLowerCase();
-
-  if (match.includes("qf1"))
-    return [siteData.team1, siteData.team2];
-
-  if (match.includes("qf2"))
-    return [siteData.team3, siteData.team4];
-
-  if (match.includes("qf3"))
-    return [siteData.team5, siteData.team6];
-
-  if (match.includes("qf4"))
-    return [siteData.team7, siteData.team8];
-
-  if (match.includes("sf1"))
-    return [siteData.qf1Winner, siteData.qf2Winner];
-
-  if (match.includes("sf2"))
-    return [siteData.qf3Winner, siteData.qf4Winner];
-
-  if (match.includes("grand"))
-    return [siteData.sf1Winner, siteData.sf2Winner];
-
-  return [];
-}
-  
-function isMyTeamInCurrentMatch(myTeam) {
-  if (!myTeam) return false;
-
-  const currentTeams = getCurrentMatchTeams()
-    .map(team => clean(team).toLowerCase());
-
-  const myTeamName = clean(myTeam.teamName).toLowerCase();
-
-  return currentTeams.includes(myTeamName);
-}
-
-function renderTeamReadiness(myTeam) {
-  if (!myTeam || !myTeam.players || !myTeam.players.length) {
-    return "";
-  }
-
-  const readyCount = myTeam.players.filter(player =>
-    allCheckIns[player.uid]?.checkedIn &&
-    allAvailability[player.uid]?.status !== "not_available"
-  ).length;
-
-  return `
-    <div class="dashboard-next-step">
-      <span>Team Readiness</span>
-      <strong>${readyCount}/${myTeam.players.length} Ready</strong>
-
-      <div style="margin-top:12px;">
-        ${myTeam.players.map(player => {
-          const checkedIn = allCheckIns[player.uid]?.checkedIn;
-          const unavailable = allAvailability[player.uid]?.status === "not_available";
-
-          return `
-            <div style="
-              display:flex;
-              justify-content:space-between;
-              gap:12px;
-              padding:8px 0;
-              border-top:1px solid rgba(255,255,255,.08);
-            ">
-              <span>${player.displayName || "Player"}</span>
-              <strong style="color:${unavailable ? "#ef4444" : checkedIn ? "#22c55e" : "#facc15"};">
-                ${unavailable ? "✕ Not Available" : checkedIn ? "✓ Checked In" : "○ Not Checked In"}
-              </strong>
-            </div>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-function renderTournamentProgress() {
-
-  const progress = document.getElementById("tournamentProgress");
-
-  if (!progress) return;
-
-  const current = getCurrentMatchText().toLowerCase();
-
-  const rounds = [
-    ["qf1","Quarterfinal 1"],
-    ["qf2","Quarterfinal 2"],
-    ["qf3","Quarterfinal 3"],
-    ["qf4","Quarterfinal 4"],
-    ["sf1","Semifinal 1"],
-    ["sf2","Semifinal 2"],
-    ["grand","Grand Finals"]
-  ];
-
-  let foundCurrent = false;
-
-  progress.innerHTML = rounds.map(([id,name]) => {
-
-    let icon = "○";
-let color = "#8b949e";
-let status = "Waiting";
-
-if (current.includes(id)) {
-  icon = "🔴";
-  color = "#ef4444";
-  status = "LIVE NOW";
-  foundCurrent = true;
-} else if (!foundCurrent && current) {
-  icon = "✓";
-  color = "#22c55e";
-  status = "Complete";
-} else if (foundCurrent) {
-  status = "Upcoming";
-}
-
-    return `
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        padding:10px 0;
-        border-top:1px solid rgba(255,255,255,.08);
-      ">
-        <div>
-  <strong>${name}</strong><br>
-  <small style="color:${color};font-weight:700;">
-    ${status}
-  </small>
-</div>
-
-<strong style="color:${color};">${icon}</strong>
-      </div>
-    `;
-
-  }).join("");
-
-}
-  
-function renderActivityFeed() {
-  const feed = document.getElementById("activityFeed");
-  if (!feed) return;
-
-  const items = [];
-
-  if (currentApplication) {
-    items.push({
-      title: "Application Submitted",
-      detail: currentTournament.name || "Rivals Gauntlet Open #1"
-    });
-
-    if (currentApplication.status === "accepted") {
-      items.push({
-        title: "Application Accepted",
-        detail: "You were accepted for this event."
-      });
-    }
-
-    if (currentApplication.status === "waitlist") {
-      items.push({
-        title: "Waitlisted",
-        detail: "You are currently on the waitlist."
-      });
-    }
-
-    if (currentApplication.status === "declined") {
-      items.push({
-        title: "Application Reviewed",
-        detail: "You were not selected for this event."
-      });
-    }
-  }
-
-  const teamsPublished = currentTournament.teamsPublished || currentTeams.published;
-  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-
-  if (teamsPublished && myTeam) {
-    items.push({
-      title: "Team Assigned",
-      detail: `You were assigned to ${myTeam.teamName}.`
-    });
-  }
-
-Object.values(userActivities || {}).forEach(activity => {
-  items.push({
-    title: activity.title || "Activity",
-    detail: activity.message || "",
-    createdAt: activity.createdAt || 0
-  });
-});
-  
-  if (!items.length) {
-    feed.innerHTML = `
-      <div class="dashboard-activity-empty">
-        No activity yet. Application updates, team assignments, and tournament alerts will appear here.
-      </div>
-    `;
-    return;
-  }
-
-  feed.innerHTML = items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).map(item => `
-    <div class="dashboard-activity-item">
-      <div class="dashboard-activity-icon">✓</div>
-      <div>
-        <strong>${item.title}</strong>
-        <span>${item.detail}</span>
-      </div>
-    </div>
-  `).join("");
-}
-
-function getMyTournamentJourney(myTeam) {
-  if (!myTeam) return [];
-
-  const myTeamName = clean(myTeam.teamName);
-
-  const matches = [
-    {
-      id: "qf1",
-      name: "Quarterfinal 1",
-      teams: [siteData.team1, siteData.team2],
-      winner: siteData.qf1Winner,
-      score: `${siteData.qf1Team1Score || "0"} - ${siteData.qf1Team2Score || "0"}`
-    },
-    {
-      id: "qf2",
-      name: "Quarterfinal 2",
-      teams: [siteData.team3, siteData.team4],
-      winner: siteData.qf2Winner,
-      score: `${siteData.qf2Team1Score || "0"} - ${siteData.qf2Team2Score || "0"}`
-    },
-    {
-      id: "qf3",
-      name: "Quarterfinal 3",
-      teams: [siteData.team5, siteData.team6],
-      winner: siteData.qf3Winner,
-      score: `${siteData.qf3Team1Score || "0"} - ${siteData.qf3Team2Score || "0"}`
-    },
-    {
-      id: "qf4",
-      name: "Quarterfinal 4",
-      teams: [siteData.team7, siteData.team8],
-      winner: siteData.qf4Winner,
-      score: `${siteData.qf4Team1Score || "0"} - ${siteData.qf4Team2Score || "0"}`
-    },
-    {
-      id: "sf1",
-      name: "Semifinal 1",
-      teams: [siteData.qf1Winner, siteData.qf2Winner],
-      winner: siteData.sf1Winner,
-      score: `${siteData.sf1Team1Score || "0"} - ${siteData.sf1Team2Score || "0"}`
-    },
-    {
-      id: "sf2",
-      name: "Semifinal 2",
-      teams: [siteData.qf3Winner, siteData.qf4Winner],
-      winner: siteData.sf2Winner,
-      score: `${siteData.sf2Team1Score || "0"} - ${siteData.sf2Team2Score || "0"}`
-    },
-    {
-      id: "grand",
-      name: "Grand Finals",
-      teams: [siteData.sf1Winner, siteData.sf2Winner],
-      winner: siteData.grandWinner,
-      score: `${siteData.gfTeam1Score || "0"} - ${siteData.gfTeam2Score || "0"}`
-    }
-  ];
-
-  return matches.filter(match =>
-    match.teams.map(team => clean(team)).includes(myTeamName)
-  );
-}
-
-function renderNextMatchCard() {
-  const container = document.getElementById("nextMatchCard");
-  if (!container) return;
-
-  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-
-  if (!myTeam) {
-    container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Your next match will appear here once teams are published.
-      </div>
-    `;
-    return;
-  }
-
-  const teamName = clean(myTeam.teamName);
-
-  const possibleMatches = [
-    { name: "Quarterfinal 1", teams: [siteData.team1, siteData.team2], winner: siteData.qf1Winner, next: "Semifinal 1" },
-    { name: "Quarterfinal 2", teams: [siteData.team3, siteData.team4], winner: siteData.qf2Winner, next: "Semifinal 1" },
-    { name: "Quarterfinal 3", teams: [siteData.team5, siteData.team6], winner: siteData.qf3Winner, next: "Semifinal 2" },
-    { name: "Quarterfinal 4", teams: [siteData.team7, siteData.team8], winner: siteData.qf4Winner, next: "Semifinal 2" },
-    { name: "Semifinal 1", teams: [siteData.qf1Winner, siteData.qf2Winner], winner: siteData.sf1Winner, next: "Grand Finals" },
-    { name: "Semifinal 2", teams: [siteData.qf3Winner, siteData.qf4Winner], winner: siteData.sf2Winner, next: "Grand Finals" },
-    { name: "Grand Finals", teams: [siteData.sf1Winner, siteData.sf2Winner], winner: siteData.grandWinner, next: "Tournament Complete" }
-  ];
-
-  const nextMatch = possibleMatches.find(match =>
-    match.teams.map(team => clean(team)).includes(teamName) &&
-    !clean(match.winner)
-  );
-
-  if (!nextMatch) {
-    container.innerHTML = `
-      <div class="next-match-card">
-        <span class="next-match-eyebrow">Status</span>
-        <strong>Tournament path complete or waiting for bracket update.</strong>
-      </div>
-    `;
-    return;
-  }
-
-  const opponent = nextMatch.teams.find(team => clean(team) !== teamName) || "TBD";
-
-  container.innerHTML = `
-    <div class="next-match-card">
-
-      <span class="next-match-eyebrow">Upcoming Match</span>
-
-      <h4>${nextMatch.name}</h4>
-
-      <div class="next-match-versus">
-        <strong>${teamName}</strong>
-        <span>VS</span>
-        <strong>${opponent}</strong>
-      </div>
-
-      <div class="next-match-advance">
-        Winner advances to <strong>${nextMatch.next}</strong>
-      </div>
-
-      <div class="account-actions">
-        <a class="account-secondary" href="tournament.html">Open Bracket</a>
-      </div>
-
-    </div>
-  `;
-}
-  
-function renderMyTournamentJourney() {
-  const container = document.getElementById("journeyTimeline");
-  if (!container) return;
-
-  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-  const journey = getMyTournamentJourney(myTeam);
-  const current = getCurrentMatchText().toLowerCase();
-
-  if (!myTeam || !journey.length) {
-    container.innerHTML = `
-      <div class="dashboard-activity-empty">
-        Your tournament path will appear here once your matches are available.
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = journey.map(match => {
-    const isLive = current.includes(match.id);
-    const scoreParts = match.score.split("-").map(value => Number(value.trim()));
-const isComplete =
-  clean(match.winner) !== "" ||
-  scoreParts.some(score => score >= 2);
-    const won = clean(match.winner) === clean(myTeam.teamName);
-    const opponent = match.teams.find(team => clean(team) !== clean(myTeam.teamName)) || "TBD";
-
-    let label = "Waiting";
-    let color = "#8b949e";
-    let icon = "○";
-
-    if (isLive) {
-      label = "YOUR MATCH IS LIVE";
-      color = "#ef4444";
-      icon = "🔴";
-    } else if (isComplete && won) {
-      label = "MATCH WON";
-      color = "#22c55e";
-      icon = "✓";
-    } else if (isComplete && !won) {
-      label = "ELIMINATED";
-      color = "#ef4444";
-      icon = "✕";
-    }
-
-    return `
-      <div style="
-        padding:18px 0;
-        border-top:1px solid rgba(255,255,255,.08);
-      ">
-        <div style="
-          color:${color};
-          font-weight:900;
-          text-transform:uppercase;
-          letter-spacing:1px;
-          margin-bottom:12px;
-        ">
-          ${icon} ${label}
-        </div>
-
-        <h3 style="margin:0 0 12px 0;">
-          ${match.name}
-        </h3>
-
-        <div style="
-          display:grid;
-          grid-template-columns:1fr auto 1fr;
-          align-items:center;
-          gap:12px;
-          margin:14px 0;
-        ">
-          <strong>${myTeam.teamName}</strong>
-
-          <div style="
-            color:#ef4444;
-            font-weight:900;
-            font-size:20px;
-            text-align:center;
-          ">
-            ${match.score}
+          <div class="eyebrow">
+            Tournament Day Dashboard
           </div>
 
-          <strong style="text-align:right;">${opponent}</strong>
-        </div>
+          <h1 id="welcomeName">
+            Welcome Back
+          </h1>
 
-        ${
-          isLive
-            ? `
-              <p style="color:#c9d1d9;">
-                Your team is currently playing. Report to your lobby and follow tournament staff instructions.
+          <p>
+            Everything you need to compete and follow your tournament.
+          </p>
+        </div>
+      </header>
+
+      <section
+        id="substitutionAlert"
+        class="substitution-alert"
+      >
+        <button
+          class="dismiss-alert"
+          type="button"
+          onclick="dismissSubstitutionAlert()"
+          aria-label="Dismiss alert"
+        >
+          ×
+        </button>
+
+        <h2>You Have Been Subbed In</h2>
+        <div id="substitutionAlertContent"></div>
+      </section>
+
+      <section class="tournament-workspace">
+        <header class="workspace-header">
+          <div class="event-name">
+            <span>Active Tournament</span>
+
+            <strong id="eventName">
+              Loading Tournament...
+            </strong>
+          </div>
+
+          <div class="status-list">
+            <span
+              id="applicationStatusPill"
+              class="status-pill"
+            >
+              Application Loading
+            </span>
+
+            <span
+              id="checkInStatusPill"
+              class="status-pill"
+            >
+              Check-In Loading
+            </span>
+
+            <span
+              id="teamStatusPill"
+              class="status-pill"
+            >
+              Team Pending
+            </span>
+          </div>
+        </header>
+
+        <section class="objective-area">
+          <div class="objective-content">
+            <div
+              id="objectiveStatus"
+              class="objective-status"
+            >
+              <span class="objective-dot"></span>
+
+              <span id="objectiveStatusText">
+                Loading Player Status
+              </span>
+            </div>
+
+            <h2 id="objectiveTitle">
+              Preparing Your Command Center
+            </h2>
+
+            <p id="objectiveDescription">
+              Loading your application, team and match information.
+            </p>
+
+            <div
+              id="objectiveNote"
+              class="objective-note"
+            ></div>
+
+            <div
+              id="objectiveButtons"
+              class="button-row"
+            ></div>
+          </div>
+
+          <aside class="objective-summary">
+            <span>Your Tournament Position</span>
+
+            <strong id="objectiveState">
+              Loading
+            </strong>
+
+            <div class="summary-grid">
+              <div class="summary-cell">
+                <span>Team</span>
+                <strong id="summaryTeam">Pending</strong>
+              </div>
+
+              <div class="summary-cell">
+                <span>Next Match</span>
+                <strong id="summaryNextMatch">Pending</strong>
+              </div>
+
+              <div class="summary-cell">
+                <span>Voice Channel</span>
+                <strong id="summaryVoiceChannel">
+                  Tournament Lobby
+                </strong>
+              </div>
+
+              <div class="summary-cell">
+                <span>Availability</span>
+                <strong id="summaryAvailability">
+                  Unknown
+                </strong>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="operations-bar">
+          <article class="operation-section">
+            <div class="operation-label">
+              Live Broadcast
+            </div>
+
+            <h3 class="operation-title">
+              Current Series
+            </h3>
+
+            <div
+              id="currentSeriesOperation"
+              class="operation-content"
+            >
+              <div class="empty-message">
+                Loading current series...
+              </div>
+            </div>
+          </article>
+
+          <article class="operation-section">
+            <div class="operation-label">
+              Competitor Assignment
+            </div>
+
+            <h3 class="operation-title">
+              Your Match
+            </h3>
+
+            <div
+              id="playerMatchOperation"
+              class="operation-content"
+            >
+              <div class="empty-message">
+                Loading your matchup...
+              </div>
+            </div>
+          </article>
+
+          <article class="operation-section">
+            <div class="operation-label">
+              Tournament Communication
+            </div>
+
+            <h3 class="operation-title">
+              Discord Lobby
+            </h3>
+
+            <div class="operation-content">
+              <div class="communication-row">
+                <span>Voice Channel</span>
+
+                <strong id="discordVoiceChannel">
+                  Tournament Lobby
+                </strong>
+              </div>
+
+              <div class="communication-row">
+                <span>Support Channel</span>
+
+                <strong id="discordSupportChannel">
+                  #tournament-help
+                </strong>
+              </div>
+
+              <div class="communication-row">
+                <span>Instruction</span>
+
+                <strong id="discordInstruction">
+                  Stay available for staff
+                </strong>
+              </div>
+
+              <a
+                id="discordOperationButton"
+                class="operation-action"
+                href="https://discord.gg/82HPpfkhQN"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fa-brands fa-discord"></i>
+                Open Discord
+              </a>
+            </div>
+          </article>
+
+          <article class="operation-section">
+            <div class="operation-label">
+              Team Operations
+            </div>
+
+            <h3 class="operation-title">
+              Readiness
+            </h3>
+
+            <strong
+              id="readinessNumber"
+              class="readiness-number"
+            >
+              Pending
+            </strong>
+
+            <span
+              id="readinessText"
+              class="readiness-text"
+            >
+              Waiting for your team assignment.
+            </span>
+
+            <button
+              id="openTeamTabButton"
+              class="operation-action"
+              type="button"
+            >
+              View My Team
+            </button>
+          </article>
+        </section>
+
+        <div
+          id="actionSteps"
+          class="action-steps"
+        ></div>
+
+        <nav class="workspace-tabs">
+          <button
+            class="workspace-tab active"
+            type="button"
+            data-workspace-tab="overview"
+          >
+            Overview
+          </button>
+
+          <button
+            class="workspace-tab"
+            type="button"
+            data-workspace-tab="team"
+          >
+            My Team
+          </button>
+
+          <button
+            class="workspace-tab"
+            type="button"
+            data-workspace-tab="journey"
+          >
+            Journey
+          </button>
+
+          <button
+            class="workspace-tab"
+            type="button"
+            data-workspace-tab="application"
+          >
+            Application
+          </button>
+        </nav>
+
+        <section
+          id="workspace-overview"
+          class="workspace-panel active"
+        >
+          <div class="overview-layout">
+            <div>
+              <div class="panel-heading">
+                <div class="eyebrow">
+                  Tournament Snapshot
+                </div>
+
+                <h2>Your Event Information</h2>
+
+                <p>
+                  A compact summary of your current tournament status.
+                </p>
+              </div>
+
+              <div
+                id="overviewList"
+                class="overview-list"
+              ></div>
+            </div>
+
+            <aside class="support-block">
+              <div class="eyebrow">
+                Tournament Support
+              </div>
+
+              <h3>Need Staff Help?</h3>
+
+              <p>
+                Report an AFK player, intentional throwing, a missing
+                teammate, needed replacement or another urgent
+                tournament problem.
               </p>
 
-              <div class="account-actions">
-                <a class="account-primary" href="watch.html">Watch Live</a>
-                <a class="account-secondary" href="tournament.html">Open Bracket</a>
+              <div class="button-row">
+                <button
+                  class="client-button danger"
+                  type="button"
+                  onclick="openReportModal()"
+                >
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  Report Issue
+                </button>
+
+                <a
+                  id="overviewDiscordButton"
+                  class="client-button discord"
+                  href="https://discord.gg/82HPpfkhQN"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class="fa-brands fa-discord"></i>
+                  Open Discord
+                </a>
               </div>
-            `
-            : ""
-        }
+            </aside>
+          </div>
+        </section>
+
+        <section
+          id="workspace-team"
+          class="workspace-panel"
+        >
+          <div class="panel-heading">
+            <div class="eyebrow">
+              Team Operations
+            </div>
+
+            <h2>Roster Readiness</h2>
+
+            <p>
+              Review your team, check-in status and availability.
+            </p>
+          </div>
+
+          <div id="teamPanelContent">
+            <div class="empty-message">
+              Your roster will appear after teams are published.
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="workspace-journey"
+          class="workspace-panel"
+        >
+          <div class="panel-heading">
+            <div class="eyebrow">
+              Personal Bracket Path
+            </div>
+
+            <h2>Your Tournament Journey</h2>
+
+            <p>
+              Your completed, current and possible future matches.
+            </p>
+          </div>
+
+          <div id="journeyPanelContent">
+            <div class="empty-message">
+              Your tournament path is loading.
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="workspace-application"
+          class="workspace-panel"
+        >
+          <div class="panel-heading">
+            <div class="eyebrow">
+              Registration Record
+            </div>
+
+            <h2>Current Application</h2>
+
+            <p>
+              View your submitted tournament information and status.
+            </p>
+          </div>
+
+          <div id="applicationPanelContent">
+            <div class="empty-message">
+              Loading your application...
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="account-dock">
+        <nav class="account-tabs">
+          <button
+            class="account-tab active"
+            type="button"
+            data-account-tab="rewards"
+          >
+            Rewards
+          </button>
+
+          <button
+            class="account-tab"
+            type="button"
+            data-account-tab="activity"
+          >
+            Activity
+          </button>
+
+          <button
+            class="account-tab"
+            type="button"
+            data-account-tab="history"
+          >
+            RG History
+          </button>
+
+          <button
+            class="account-tab"
+            type="button"
+            data-account-tab="inventory"
+          >
+            Inventory
+          </button>
+        </nav>
+
+        <section
+          id="account-rewards"
+          class="account-panel active"
+        >
+          <div class="rewards-layout">
+            <div>
+              <div class="panel-heading">
+                <div class="eyebrow">
+                  Daily Progression
+                </div>
+
+                <h2>Daily Reward</h2>
+
+                <p>
+                  Build your streak and collect your seven-day rewards.
+                </p>
+              </div>
+
+              <div
+                id="dailyRewardTrack"
+                class="daily-track"
+              ></div>
+            </div>
+
+            <aside class="reward-action">
+              <span id="dailyRewardStatusLabel">
+                Next Reward
+              </span>
+
+              <strong id="dailyNextReward">
+                Loading...
+              </strong>
+
+              <small id="dailyCountdown">
+                Connecting to daily rewards...
+              </small>
+
+              <div
+                id="dailyCurrentStreak"
+                class="reward-streak"
+              >
+                0 Day Streak
+              </div>
+
+              <div class="button-row">
+                <button
+                  id="dailyClaimButton"
+                  class="client-button primary"
+                  type="button"
+                  disabled
+                >
+                  Loading...
+                </button>
+
+                <button
+                  id="starterBonusButton"
+                  class="client-button"
+                  type="button"
+                  onclick="claimStarterBonus()"
+                >
+                  Claim Starter Bonus
+                </button>
+              </div>
+
+              <p
+                id="rewardStatus"
+                class="page-status"
+              ></p>
+            </aside>
+          </div>
+        </section>
+
+        <section
+          id="account-activity"
+          class="account-panel"
+        >
+          <div class="panel-heading">
+            <div class="eyebrow">
+              Player Updates
+            </div>
+
+            <h2>Activity Feed</h2>
+
+            <p>
+              Tournament updates, rewards and account activity.
+            </p>
+          </div>
+
+          <div
+            id="activityFeed"
+            class="feed-list"
+          >
+            <div class="empty-message">
+              Loading activity...
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="account-history"
+          class="account-panel"
+        >
+          <div class="panel-heading">
+            <div class="eyebrow">
+              Reward History
+            </div>
+
+            <h2>Recent RG Points</h2>
+
+            <p>
+              Your latest earnings and redemptions.
+            </p>
+          </div>
+
+          <div
+            id="rgPointHistory"
+            class="feed-list"
+          >
+            <div class="empty-message">
+              Loading RG Points history...
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="account-inventory"
+          class="account-panel"
+        >
+          <div class="inventory-preview">
+            <div>
+              <div class="eyebrow">
+                Player Collection
+              </div>
+
+              <h2>Inventory</h2>
+
+              <p>
+                Crates, profile backgrounds, frames, titles, badges,
+                effects and equipped cosmetics will appear in the
+                dedicated Inventory client.
+              </p>
+            </div>
+
+            <span class="status-pill purple">
+              Coming Soon
+            </span>
+          </div>
+        </section>
+      </section>
+
+      <p
+        id="dashboardStatus"
+        class="page-status"
+      ></p>
+    </main>
+  </div>
+
+  <div
+    id="reportModal"
+    class="report-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="reportModalTitle"
+  >
+    <div class="report-modal">
+      <header class="report-modal-header">
+        <div>
+          <div class="eyebrow">
+            Tournament Incident
+          </div>
+
+          <h2 id="reportModalTitle">
+            Report an Issue
+          </h2>
+        </div>
+
+        <button
+          class="close-modal"
+          type="button"
+          onclick="closeReportModal()"
+          aria-label="Close report form"
+        >
+          ×
+        </button>
+      </header>
+
+      <div class="report-modal-body">
+        <div class="report-field">
+          <label for="reportIssueType">
+            What is happening?
+          </label>
+
+          <select id="reportIssueType">
+            <option value="">
+              Select an issue
+            </option>
+
+            <option value="afk">
+              Player is AFK
+            </option>
+
+            <option value="throwing">
+              Player is intentionally throwing
+            </option>
+
+            <option value="disconnected">
+              Player disconnected
+            </option>
+
+            <option value="missing_lobby">
+              Player is missing from the lobby
+            </option>
+
+            <option value="replacement">
+              Team needs a replacement
+            </option>
+
+            <option value="opponent_missing">
+              Opponent is missing
+            </option>
+
+            <option value="roster">
+              Roster problem
+            </option>
+
+            <option value="technical">
+              Technical problem
+            </option>
+
+            <option value="other">
+              Other urgent issue
+            </option>
+          </select>
+        </div>
+
+        <div class="report-field">
+          <label for="reportTargetPlayer">
+            Player involved
+          </label>
+
+          <select id="reportTargetPlayer">
+            <option value="">
+              No specific player / team issue
+            </option>
+          </select>
+        </div>
+
+        <div class="report-field">
+          <label for="reportDetails">
+            Short explanation
+          </label>
+
+          <textarea
+            id="reportDetails"
+            maxlength="500"
+            placeholder="Explain what is happening and what staff needs to know."
+          ></textarea>
+        </div>
+
+        <div class="report-guidance">
+          Reports never automatically remove a player. Multiple unique
+          teammate reports raise the incident priority for administrator
+          review and the substitute workflow.
+        </div>
+
+        <div class="button-row">
+          <button
+            id="submitReportButton"
+            class="client-button danger"
+            type="button"
+            onclick="submitTournamentReport()"
+          >
+            Submit Report
+          </button>
+
+          <button
+            class="client-button"
+            type="button"
+            onclick="closeReportModal()"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <p
+          id="reportStatus"
+          class="report-status"
+        ></p>
       </div>
-    `;
-  }).join("");
-}
-  
-function renderMyMatchLiveAlert() {
-  const alertBox = document.getElementById("myMatchLiveAlert");
-  const content = document.getElementById("myMatchLiveAlertContent");
-
-  if (!alertBox || !content) return;
-
-  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-
-  if (!myTeam || !isMyTeamInCurrentMatch(myTeam)) {
-    alertBox.style.display = "none";
-    return;
-  }
-
-  const matchTeams = getCurrentMatchTeams();
-
-  alertBox.style.display = "block";
-
-  content.innerHTML = `
-    <p style="font-size:18px;">
-      <strong>${getCurrentMatchText()}</strong>
-    </p>
-
-    <div style="text-align:center;font-size:22px;font-weight:900;margin:18px 0;">
-      ${matchTeams[0] || "TBD"}
-      <br>
-      <span style="color:#ef4444;">${getCurrentMatchScore()}</span>
-      <br>
-      ${matchTeams[1] || "TBD"}
     </div>
-
-    <p>
-      Your match is live. Report to your team lobby now and follow tournament staff instructions.
-    </p>
-
-    <div class="account-actions">
-      <a class="account-primary" href="watch.html">Watch Broadcast</a>
-      <a class="account-secondary" href="tournament.html">Open Bracket</a>
-      <a class="account-secondary" href="teams.html">View Team</a>
-    </div>
-  `;
-}
-  
-function renderSubbedInAlert() {
-  const alertBox = document.getElementById("subbedInAlert");
-  const content = document.getElementById("subbedInAlertContent");
-
-  if (!alertBox || !content) return;
-
-  if (
-  localStorage.getItem(`subbedInDismissed_${tournamentId}_${currentUser?.uid}`) === "yes" ||
-  !currentApplication ||
-  !currentApplication.addedAsSubstitute
-) {
-    alertBox.style.display = "none";
-    return;
-  }
-
-  const teamName = currentApplication.substitutedInto
-    ? currentApplication.substitutedInto.replace("team", "Team ")
-    : "your assigned team";
-
-  alertBox.style.display = "block";
-
-  content.innerHTML = `
-  <p style="font-size:18px;">
-    You have been added to <strong>${teamName}</strong> for this tournament.
-  </p>
-
-  <p>
-    Please report to your team immediately and watch Discord for tournament staff instructions.
-  </p>
-
-  <div class="account-actions">
-    <a class="account-primary" href="teams.html">View Team</a>
-    <a class="account-secondary" href="check-in.html">Go to Check-In</a>
-  </div>
-`;
-}
-
-function dismissSubbedInAlert() {
-  localStorage.setItem(`subbedInDismissed_${tournamentId}_${currentUser?.uid}`, "yes");
-  renderSubbedInAlert();
-}
-  
-function renderCurrentEvent() {
-  renderSubbedInAlert();
-  renderMyMatchLiveAlert();
-  renderNextMatchCard();
-  renderMyTournamentJourney();
-  renderActivityFeed();
-  const title = document.getElementById("eventTitle");
-  const description = document.getElementById("eventDescription");
-  const actions = document.getElementById("eventActions");
-
-  const tournamentName = currentTournament.name || "Rivals Gauntlet Open #1";
-  const appStatus = currentApplication ? currentApplication.status : "";
-  const teamsPublished = currentTournament.teamsPublished || currentTeams.published;
-
-  title.innerText = tournamentName;
-
-  if (!currentApplication) {
-    description.innerText = "Applications are open. Submit your application to be considered for this event.";
-    actions.innerHTML = `
-      <a class="account-primary" href="apply.html">Apply Now</a>
-      <a class="account-secondary" href="settings.html">Complete Profile</a>
-    `;
-    return;
-  }
-
-  if (teamsPublished) {
-    const myTeam = findMyTeam(currentUser.uid);
-
-    if (myTeam) {
-      description.innerHTML = `
-  <div class="dashboard-event-status">✓ TEAM ASSIGNED</div>
-
-  <div class="dashboard-event-team">
-    <span>Your Team</span>
-    <strong>${myTeam.teamName}</strong>
   </div>
 
-  <details class="dashboard-roster-dropdown">
-  <summary>View Roster</summary>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
 
-  <div class="dashboard-roster">
-    ${myTeam.players.map(player => `
-      <a class="dashboard-roster-player"
-         href="player.html?id=${player.uid}">
-        <strong>${player.displayName || "Player"}</strong>
-        <small>${player.peakRank || "No Rank"} • Preferred: ${player.mainRole || "No Role"}</small>
-      </a>
-    `).join("")}
-  </div>
-</details>
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="notification-center.js?v=1"></script>
+  <script src="friends.js?v=4"></script>
+  <script src="daily-gifts.js?v=2"></script>
+  <script src="daily-checkin.js?v=4"></script>
+  <script src="global-header.js?v=16"></script>
 
-  <div class="dashboard-player-status">
+  <script>
+    const $ = id =>
+      document.getElementById(id);
 
-  <div class="status-chip ${currentCheckIn?.checkedIn ? "success" : "warning"}">
-    ${currentCheckIn?.checkedIn ? "✓ Checked In" : "○ Check-In Required"}
-  </div>
+    const clean = (
+      value,
+      fallback = ""
+    ) => {
+      const result =
+        String(
+          value ?? ""
+        ).trim();
 
-  <div class="status-chip ${currentAvailability?.status === "not_available" ? "danger" : "success"}">
-    ${
-      currentAvailability?.status === "not_available"
-        ? "✕ Unavailable"
-        : "✓ Available"
-    }
-  </div>
+      return result || fallback;
+    };
 
-  <div class="status-chip ${
-    isMyTeamInCurrentMatch(myTeam)
-      ? "danger"
-      : "success"
-  }">
-    ${
-      isMyTeamInCurrentMatch(myTeam)
-        ? "🔴 Match Live"
-        : "🟢 Ready"
-    }
-  </div>
+    const normalize = value =>
+      clean(value)
+        .toLowerCase()
+        .replace(
+          /[^a-z0-9]/g,
+          ""
+        );
 
-</div>
+    const escapeHtml = value =>
+      clean(value)
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
 
-${renderTeamReadiness(myTeam)}
-`;
+    const DEFAULT_DISCORD =
+      "https://discord.gg/82HPpfkhQN";
 
-      actions.innerHTML = `
-        <a class="account-secondary" href="teams.html">View Teams</a>
-      `;
-      return;
-    }
-  }
+    const TWITCH =
+      "https://www.twitch.tv/atrophylive";
 
-  if (appStatus === "pending") {
-    description.innerText = "Application submitted. Your application is currently waiting for review.";
-    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
-    return;
-  }
+    let tournamentId =
+      "open1";
 
-  if (appStatus === "accepted") {
-    description.innerText = "You have been accepted for this event. Team assignments have not been published yet.";
-    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
-    return;
-  }
+    let currentUser =
+      null;
 
-  if (appStatus === "waitlist") {
-    description.innerText = "You are currently on the waitlist. You may be contacted if a spot opens.";
-    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
-    return;
-  }
+    let player =
+      {};
 
-  if (appStatus === "declined") {
-    description.innerText = "You were not selected for this event. You may still be considered for future tournaments.";
-    actions.innerHTML = `<a class="account-secondary" href="apply.html">View Application</a>`;
-    return;
-  }
+    let application =
+      null;
 
-  description.innerText = "Checking tournament status...";
-  actions.innerHTML = "";
-}
+    let checkIn =
+      null;
 
-function awardRgPoints(uid, amount, reason, source = "system") {
-  const playerRef = database.ref(`players/${uid}`);
+    let availability =
+      null;
 
-  return playerRef.transaction(player => {
-    if (!player) return player;
+    let allCheckIns =
+      {};
 
-    const currentPoints = Number(player.rgPoints || 0);
-    const lifetimePoints = Number(player.lifetimeRgPoints || 0);
-    const nextPoints = currentPoints + amount;
+    let allAvailability =
+      {};
 
-    if (nextPoints < 0) return;
+    let teams =
+      {};
 
-    player.rgPoints = nextPoints;
+    let tournament =
+      {};
 
-    if (amount > 0) {
-      player.lifetimeRgPoints = lifetimePoints + amount;
+    let site =
+      {};
+
+    let broadcast =
+      {};
+
+    let activities =
+      {};
+
+    let dailyStatus =
+      null;
+
+    let dailyStopListener =
+      null;
+
+    let dailyCountdownTimer =
+      null;
+
+    /* =====================================================
+       BASIC HELPERS
+       ===================================================== */
+
+    function getInitials(name) {
+      return clean(
+        name,
+        "RG"
+      )
+        .split(" ")
+        .filter(Boolean)
+        .slice(
+          0,
+          2
+        )
+        .map(
+          word =>
+            word[0]
+        )
+        .join("")
+        .toUpperCase();
     }
 
-    player.updatedAt = Date.now();
-
-    return player;
-  }).then(result => {
-    if (!result.committed) {
-      throw new Error("RG Points update failed.");
+    function formatStatus(value) {
+      return clean(
+        value,
+        "Unknown"
+      )
+        .replaceAll(
+          "_",
+          " "
+        )
+        .replace(
+          /\b\w/g,
+          letter =>
+            letter.toUpperCase()
+        );
     }
 
-    return database.ref(`rgPointHistory/${uid}`).push({
-      amount,
-      reason,
-      source,
-      tournamentId,
-      createdAt: Date.now()
-    });
-  });
-}
+    function formatDate(timestamp) {
+      if (!timestamp) {
+        return "Not available";
+      }
 
-function claimStarterRgBonus() {
-  if (!currentUser) return;
+      return new Date(
+        Number(timestamp)
+      ).toLocaleDateString(
+        undefined,
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        }
+      );
+    }
 
-  const status = document.getElementById("rgRewardStatus");
-  const button = document.getElementById("starterBonusBtn");
+    function setStatusPill(
+      element,
+      text,
+      type = ""
+    ) {
+      if (!element) return;
 
-  database.ref(`players/${currentUser.uid}/starterRgBonusClaimed`).once("value")
-    .then(snapshot => {
-      if (snapshot.exists()) {
-        status.innerText = "You already claimed your starter bonus.";
-        status.style.color = "#facc15";
+      element.className =
+        `status-pill ${type}`.trim();
+
+      element.textContent =
+        text;
+    }
+
+    function calculateProfileCompletion(
+      profile
+    ) {
+      const socials =
+        profile.socials ||
+        {};
+
+      const values = [
+        profile.displayName,
+        profile.rivalsIgn,
+        profile.discordUsername,
+        profile.region,
+        profile.platform,
+        profile.bio,
+        profile.profileImage,
+        socials.twitch ||
+          socials.youtube ||
+          socials.tiktok ||
+          socials.x
+      ];
+
+      return Math.round(
+        (
+          values.filter(
+            value =>
+              clean(value)
+          ).length /
+          values.length
+        ) *
+        100
+      );
+    }
+
+    /* =====================================================
+       PLAYER PROFILE
+       ===================================================== */
+
+    function renderPlayerProfile() {
+      const displayName =
+        clean(
+          player.displayName,
+          "Player"
+        );
+
+      $("sidebarName").textContent =
+        displayName;
+
+      $("sidebarFallback").textContent =
+        getInitials(
+          displayName
+        );
+
+      $("sidebarId").textContent =
+        player.rgId ||
+        "RG ACCOUNT";
+
+      $("sidebarRgPoints").textContent =
+        Number(
+          player.rgPoints ||
+          0
+        ).toLocaleString();
+
+      $("sidebarLifetimeRp").textContent =
+        Number(
+          player.lifetimeRgPoints ||
+          0
+        ).toLocaleString();
+
+      $("sidebarPrestige").textContent =
+        `★ ${player.prestige || 0}`;
+
+      $("sidebarEvents").textContent =
+        player.eventsPlayed ||
+        0;
+
+      $("sidebarChamps").textContent =
+        player.championships ||
+        0;
+
+      $("sidebarBestFinish").textContent =
+        player.bestFinish ||
+        "--";
+
+      $("welcomeName").textContent =
+        `Welcome Back, ${displayName}`;
+
+      const completion =
+        calculateProfileCompletion(
+          player
+        );
+
+      $("profilePercent").textContent =
+        `${completion}%`;
+
+      $("profileFill").style.width =
+        `${completion}%`;
+
+      const profileUrl =
+        `player.html?id=${currentUser.uid}`;
+
+      $("publicProfileLink").href =
+        profileUrl;
+
+      if (player.profileImage) {
+        $("sidebarAvatar").src =
+          player.profileImage;
+
+        $("sidebarAvatar").style.display =
+          "block";
+
+        $("sidebarFallback").style.display =
+          "none";
+      } else {
+        $("sidebarAvatar").style.display =
+          "none";
+
+        $("sidebarFallback").style.display =
+          "grid";
+      }
+
+      const bonusClaimed =
+        Boolean(
+          player.starterRgBonusClaimed
+        );
+
+      $("starterBonusButton").disabled =
+        bonusClaimed;
+
+      $("starterBonusButton").textContent =
+        bonusClaimed
+          ? "Starter Bonus Claimed"
+          : "Claim Starter Bonus";
+    }
+
+    /* =====================================================
+       TEAM HELPERS
+       ===================================================== */
+
+    function getTeamObject() {
+      const source =
+        teams.teams ||
+        teams ||
+        {};
+
+      const result =
+        {};
+
+      Object.keys(
+        source
+      ).forEach(key => {
+        if (
+          Array.isArray(
+            source[key]
+          )
+        ) {
+          result[key] =
+            source[key];
+        }
+      });
+
+      return result;
+    }
+
+    function getFriendlyTeamName(
+      teamKey
+    ) {
+      return clean(
+        teams.teamNames?.[teamKey] ||
+        tournament.teamNames?.[teamKey] ||
+        site[teamKey],
+        teamKey.replace(
+          /^team/i,
+          "Team "
+        )
+      );
+    }
+
+    function getMyTeam() {
+      if (!currentUser) {
         return null;
       }
 
-      return awardRgPoints(currentUser.uid, 100, "Starter Bonus", "starter_bonus");
-    })
-    .then(result => {
-      if (result === null) return;
+      const source =
+        getTeamObject();
 
-      return database.ref(`players/${currentUser.uid}`).update({
-        starterRgBonusClaimed: true
-      });
-    })
-    .then(result => {
-      if (result === null) return;
+      for (
+        const teamKey
+        in source
+      ) {
+        const roster =
+          source[teamKey] ||
+          [];
 
-      status.innerText = "✓ Starter bonus claimed. +100 RG Points!";
-      status.style.color = "#22c55e";
+        const isMember =
+          roster.some(
+            rosterPlayer =>
+              rosterPlayer?.uid ===
+              currentUser.uid
+          );
 
-      if (button) {
-        button.innerText = "Claimed";
-        button.disabled = true;
-        button.style.opacity = ".5";
+        if (isMember) {
+          return {
+            teamKey,
+            teamName:
+              getFriendlyTeamName(
+                teamKey
+              ),
+            players:
+              roster
+          };
+        }
       }
-    })
-    .catch(error => {
-      status.innerText = error.message;
-      status.style.color = "#ef4444";
-    });
-}
 
-function renderRgPointHistory() {
-  const container = document.getElementById("rgPointsHistory");
-  if (!container || !currentUser) return;
+      return null;
+    }
 
-  database.ref(`rgPointHistory/${currentUser.uid}`)
-    .orderByChild("createdAt")
-    .limitToLast(5)
-    .once("value")
-    .then(snapshot => {
-      const data = snapshot.val() || {};
-      const entries = Object.values(data).sort((a, b) => {
-        return (b.createdAt || 0) - (a.createdAt || 0);
-      });
+    /* =====================================================
+       MATCH HELPERS
+       ===================================================== */
 
-      if (!entries.length) {
-        container.innerHTML = `
-          <div class="dashboard-activity-empty">
-            No RG Points activity yet.
+    function getMatches() {
+      return [
+        {
+          id: "qf1",
+          aliases: [
+            "qf1",
+            "quarterfinal1"
+          ],
+          name:
+            "Quarterfinal 1",
+          shortName:
+            "QF1",
+          format:
+            "Bo3",
+          teams: [
+            site.team1,
+            site.team2
+          ],
+          winner:
+            site.qf1Winner,
+          scores: [
+            Number(
+              site.qf1Team1Score ||
+              0
+            ),
+            Number(
+              site.qf1Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Semifinal 1"
+        },
+
+        {
+          id: "qf2",
+          aliases: [
+            "qf2",
+            "quarterfinal2"
+          ],
+          name:
+            "Quarterfinal 2",
+          shortName:
+            "QF2",
+          format:
+            "Bo3",
+          teams: [
+            site.team3,
+            site.team4
+          ],
+          winner:
+            site.qf2Winner,
+          scores: [
+            Number(
+              site.qf2Team1Score ||
+              0
+            ),
+            Number(
+              site.qf2Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Semifinal 1"
+        },
+
+        {
+          id: "qf3",
+          aliases: [
+            "qf3",
+            "quarterfinal3"
+          ],
+          name:
+            "Quarterfinal 3",
+          shortName:
+            "QF3",
+          format:
+            "Bo3",
+          teams: [
+            site.team5,
+            site.team6
+          ],
+          winner:
+            site.qf3Winner,
+          scores: [
+            Number(
+              site.qf3Team1Score ||
+              0
+            ),
+            Number(
+              site.qf3Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Semifinal 2"
+        },
+
+        {
+          id: "qf4",
+          aliases: [
+            "qf4",
+            "quarterfinal4"
+          ],
+          name:
+            "Quarterfinal 4",
+          shortName:
+            "QF4",
+          format:
+            "Bo3",
+          teams: [
+            site.team7,
+            site.team8
+          ],
+          winner:
+            site.qf4Winner,
+          scores: [
+            Number(
+              site.qf4Team1Score ||
+              0
+            ),
+            Number(
+              site.qf4Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Semifinal 2"
+        },
+
+        {
+          id: "sf1",
+          aliases: [
+            "sf1",
+            "semifinal1"
+          ],
+          name:
+            "Semifinal 1",
+          shortName:
+            "SF1",
+          format:
+            "Bo3",
+          teams: [
+            site.qf1Winner,
+            site.qf2Winner
+          ],
+          winner:
+            site.sf1Winner,
+          scores: [
+            Number(
+              site.sf1Team1Score ||
+              0
+            ),
+            Number(
+              site.sf1Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Grand Finals"
+        },
+
+        {
+          id: "sf2",
+          aliases: [
+            "sf2",
+            "semifinal2"
+          ],
+          name:
+            "Semifinal 2",
+          shortName:
+            "SF2",
+          format:
+            "Bo3",
+          teams: [
+            site.qf3Winner,
+            site.qf4Winner
+          ],
+          winner:
+            site.sf2Winner,
+          scores: [
+            Number(
+              site.sf2Team1Score ||
+              0
+            ),
+            Number(
+              site.sf2Team2Score ||
+              0
+            )
+          ],
+          next:
+            "Grand Finals"
+        },
+
+        {
+          id: "grand",
+          aliases: [
+            "grand",
+            "grandfinal",
+            "grandfinals",
+            "gf"
+          ],
+          name:
+            "Grand Finals",
+          shortName:
+            "GF",
+          format:
+            "Bo5",
+          teams: [
+            site.sf1Winner,
+            site.sf2Winner
+          ],
+          winner:
+            site.grandWinner ||
+            site.gfWinner,
+          scores: [
+            Number(
+              site.gfTeam1Score ||
+              0
+            ),
+            Number(
+              site.gfTeam2Score ||
+              0
+            )
+          ],
+          next:
+            "Tournament Complete"
+        }
+      ];
+    }
+
+    function getMatchFromText(
+      text
+    ) {
+      const value =
+        normalize(text);
+
+      if (!value) {
+        return null;
+      }
+
+      return (
+        getMatches().find(
+          match =>
+            match.aliases.some(
+              alias =>
+                value.includes(
+                  normalize(alias)
+                )
+            )
+        ) ||
+        null
+      );
+    }
+
+    function getCurrentMatch() {
+      return getMatchFromText(
+        site.currentMatch ||
+        broadcast.currentMatch
+      );
+    }
+
+    function getUpNextMatch() {
+      return getMatchFromText(
+        broadcast.upNext ||
+        broadcast.nextMatch ||
+        site.nextMatch ||
+        site.upNext
+      );
+    }
+
+    function teamIsInMatch(
+      teamName,
+      match
+    ) {
+      if (
+        !teamName ||
+        !match
+      ) {
+        return false;
+      }
+
+      return match.teams.some(
+        team =>
+          normalize(team) ===
+          normalize(teamName)
+      );
+    }
+
+    function getMyNextMatch(
+      team
+    ) {
+      if (!team) {
+        return null;
+      }
+
+      return (
+        getMatches().find(
+          match =>
+            teamIsInMatch(
+              team.teamName,
+              match
+            ) &&
+            !clean(
+              match.winner
+            )
+        ) ||
+        null
+      );
+    }
+
+    function getOpponent(
+      match,
+      teamName
+    ) {
+      return clean(
+        match?.teams.find(
+          team =>
+            normalize(team) !==
+            normalize(teamName)
+        ),
+        "TBD"
+      );
+    }
+
+    function getSeriesProgress(
+      match
+    ) {
+      if (!match) {
+        return "Awaiting series information";
+      }
+
+      const [
+        scoreOne,
+        scoreTwo
+      ] =
+        match.scores;
+
+      const winningScore =
+        match.format === "Bo5"
+          ? 3
+          : 2;
+
+      if (
+        clean(
+          match.winner
+        ) ||
+        scoreOne >= winningScore ||
+        scoreTwo >= winningScore
+      ) {
+        return "Series complete";
+      }
+
+      if (
+        scoreOne === 0 &&
+        scoreTwo === 0
+      ) {
+        return "Series beginning";
+      }
+
+      if (
+        scoreOne ===
+          winningScore - 1 &&
+        scoreTwo ===
+          winningScore - 1
+      ) {
+        return "Deciding map possible";
+      }
+
+      if (
+        scoreOne ===
+          winningScore - 1 ||
+        scoreTwo ===
+          winningScore - 1
+      ) {
+        return "Series entering its later stages";
+      }
+
+      return "Series underway";
+    }
+
+    /* =====================================================
+       DISCORD
+       ===================================================== */
+
+    function getDiscordConfig(
+      team
+    ) {
+      const teamKey =
+        team?.teamKey ||
+        "";
+
+      return {
+        voiceChannel:
+          clean(
+            tournament
+              .teamVoiceChannels?.[teamKey] ||
+            teams
+              .voiceChannels?.[teamKey] ||
+            application
+              ?.discordVoiceChannel ||
+            tournament
+              .discordVoiceChannel ||
+            site
+              .discordVoiceChannel,
+            "Tournament Lobby"
+          ),
+
+        supportChannel:
+          clean(
+            tournament
+              .discordSupportChannel ||
+            site
+              .discordSupportChannel,
+            "#tournament-help"
+          ),
+
+        invite:
+          clean(
+            tournament
+              .discordInvite ||
+            site
+              .discordInvite,
+            DEFAULT_DISCORD
+          )
+      };
+    }
+
+    /* =====================================================
+       DASHBOARD STATE
+       ===================================================== */
+
+    function getDashboardState() {
+      const team =
+        getMyTeam();
+
+      const applicationStatus =
+        clean(
+          application?.status
+        ).toLowerCase();
+
+      const currentMatch =
+        getCurrentMatch();
+
+      const upNextMatch =
+        getUpNextMatch();
+
+      const nextMatch =
+        getMyNextMatch(
+          team
+        );
+
+      const baseState = {
+        team,
+        currentMatch,
+        upNextMatch,
+        nextMatch
+      };
+
+      if (!application) {
+        return {
+          key:
+            "no_application",
+          ...baseState
+        };
+      }
+
+      if (
+        applicationStatus ===
+        "pending"
+      ) {
+        return {
+          key:
+            "pending",
+          ...baseState
+        };
+      }
+
+      if (
+        applicationStatus ===
+        "waitlist"
+      ) {
+        return {
+          key:
+            "waitlist",
+          ...baseState
+        };
+      }
+
+      if (
+        applicationStatus ===
+          "declined" ||
+        applicationStatus ===
+          "rejected"
+      ) {
+        return {
+          key:
+            "declined",
+          ...baseState
+        };
+      }
+
+      if (!team) {
+        return {
+          key:
+            "waiting_team",
+          ...baseState
+        };
+      }
+
+      if (
+        !checkIn?.checkedIn
+      ) {
+        return {
+          key:
+            "check_in",
+          ...baseState
+        };
+      }
+
+      if (
+        currentMatch &&
+        teamIsInMatch(
+          team.teamName,
+          currentMatch
+        )
+      ) {
+        return {
+          key:
+            "live",
+          ...baseState
+        };
+      }
+
+      if (
+        upNextMatch &&
+        teamIsInMatch(
+          team.teamName,
+          upNextMatch
+        )
+      ) {
+        return {
+          key:
+            "on_deck",
+          ...baseState
+        };
+      }
+
+      if (!nextMatch) {
+        const journey =
+          getMatches().filter(
+            match =>
+              teamIsInMatch(
+                team.teamName,
+                match
+              )
+          );
+
+        const finalMatch =
+          journey[
+            journey.length - 1
+          ];
+
+        const champion =
+          finalMatch?.id ===
+            "grand" &&
+          normalize(
+            finalMatch.winner
+          ) ===
+            normalize(
+              team.teamName
+            );
+
+        return {
+          key:
+            champion
+              ? "champion"
+              : "complete",
+          ...baseState
+        };
+      }
+
+      return {
+        key:
+          "waiting",
+        ...baseState
+      };
+    }
+
+    /* =====================================================
+       OBJECTIVE COPY
+       ===================================================== */
+
+    function getObjectiveCopy(
+      state
+    ) {
+      const discord =
+        getDiscordConfig(
+          state.team
+        );
+
+      const copy = {
+        no_application: {
+          status:
+            "Registration Available",
+
+          title:
+            "Apply for the Next Tournament",
+
+          description:
+            "You do not currently have an application for this event. Submit your competitor information to enter the selection process.",
+
+          note:
+            "Your application status, team assignment and tournament instructions will appear here.",
+
+          buttons: [
+            {
+              label:
+                "Apply Now",
+              href:
+                "apply.html",
+              className:
+                "primary",
+              icon:
+                "fa-solid fa-file-signature"
+            },
+
+            {
+              label:
+                "View Tournament",
+              href:
+                "tournament.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-trophy"
+            }
+          ]
+        },
+
+        pending: {
+          status:
+            "Application Under Review",
+
+          title:
+            "Your Application Has Been Submitted",
+
+          description:
+            "Tournament staff has received your application. Keep your profile and Discord information current while selections are reviewed.",
+
+          note:
+            "This page updates automatically when your application status changes.",
+
+          buttons: [
+            {
+              label:
+                "View Application",
+              href:
+                "apply.html",
+              className:
+                "primary",
+              icon:
+                "fa-solid fa-file-lines"
+            },
+
+            {
+              label:
+                "Update Profile",
+              href:
+                "settings.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-user-pen"
+            }
+          ]
+        },
+
+        waitlist: {
+          status:
+            "Waitlist Status",
+
+          title:
+            "Stay Ready for an Open Spot",
+
+          description:
+            "You are currently on the event waitlist. Staff may contact you if a starting or substitute position becomes available.",
+
+          note:
+            "Keep Discord available and make sure your tournament profile remains accurate.",
+
+          buttons: [
+            {
+              label:
+                "Open Discord",
+              href:
+                discord.invite,
+              className:
+                "primary discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "View Application",
+              href:
+                "apply.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-file-lines"
+            }
+          ]
+        },
+
+        declined: {
+          status:
+            "Application Reviewed",
+
+          title:
+            "This Tournament Application Is Complete",
+
+          description:
+            "You were not selected for the active event. Your account remains ready for future Rivals Gauntlet tournaments.",
+
+          note:
+            "Future application opportunities will appear on the tournament page.",
+
+          buttons: [
+            {
+              label:
+                "View Tournament",
+              href:
+                "tournament.html",
+              className:
+                "primary",
+              icon:
+                "fa-solid fa-trophy"
+            },
+
+            {
+              label:
+                "View Application",
+              href:
+                "apply.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-file-lines"
+            }
+          ]
+        },
+
+        waiting_team: {
+          status:
+            "Application Approved",
+
+          title:
+            "Accepted — Team Assignment Pending",
+
+          description:
+            "You have been selected for the tournament. Your team and roster will appear when assignments are published.",
+
+          note:
+            "Stay available in Discord and watch for the tournament check-in window.",
+
+          buttons: [
+            {
+              label:
+                "Open Discord",
+              href:
+                discord.invite,
+              className:
+                "primary discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "View Application",
+              href:
+                "apply.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-file-lines"
+            }
+          ]
+        },
+
+        check_in: {
+          status:
+            "Action Required",
+
+          title:
+            "Complete Tournament Check-In",
+
+          description:
+            "Your team is assigned, but your tournament check-in is not complete. Check in to confirm that you are available to compete.",
+
+          note:
+            "Missing check-in may cause your position to be offered to a substitute.",
+
+          buttons: [
+            {
+              label:
+                "Check In Now",
+              href:
+                "check-in.html",
+              className:
+                "primary",
+              icon:
+                "fa-solid fa-circle-check"
+            },
+
+            {
+              label:
+                "Open Discord",
+              href:
+                discord.invite,
+              className:
+                "discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            }
+          ]
+        },
+
+        waiting: {
+          status:
+            "Checked In — Standing By",
+
+          title:
+            "Monitor the Tournament and Stay Available",
+
+          description:
+            "Your matchup is not on deck yet. Stay available in Discord and follow the live bracket while earlier series are completed.",
+
+          note:
+            "This automatically switches to ON DECK when your match becomes the next series.",
+
+          buttons: [
+            {
+              label:
+                "View Bracket",
+              href:
+                "tournament.html",
+              className:
+                "primary",
+              icon:
+                "fa-solid fa-diagram-project"
+            },
+
+            {
+              label:
+                "Watch Live",
+              href:
+                TWITCH,
+              className:
+                "",
+              icon:
+                "fa-brands fa-twitch",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "Open Discord",
+              href:
+                discord.invite,
+              className:
+                "discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            }
+          ]
+        },
+
+        on_deck: {
+          status:
+            "Your Team Is On Deck",
+
+          title:
+            "Watch the Current Series and Prepare",
+
+          description:
+            "Your match begins after the current series. A series can last roughly 40–90 minutes, so remain available and monitor live progress.",
+
+          note:
+            "Please join the tournament Discord lobby at least 10 minutes before the current series is expected to finish. Watching the stream is the easiest way to track progress.",
+
+          buttons: [
+            {
+              label:
+                "Watch Current Series",
+              href:
+                TWITCH,
+              className:
+                "primary",
+              icon:
+                "fa-brands fa-twitch",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "Join Tournament Lobby",
+              href:
+                discord.invite,
+              className:
+                "discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "View Bracket",
+              href:
+                "tournament.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-diagram-project"
+            }
+          ]
+        },
+
+        live: {
+          status:
+            "Your Match Is Active",
+
+          title:
+            "Report to Your Tournament Lobby Now",
+
+          description:
+            "Your team is in the current match. Join your assigned Discord voice channel and follow staff instructions before entering the game lobby.",
+
+          note:
+            "Remain in the assigned channel throughout the series and use Report Issue for urgent problems.",
+
+          buttons: [
+            {
+              label:
+                "Open Discord",
+              href:
+                discord.invite,
+              className:
+                "primary discord",
+              icon:
+                "fa-brands fa-discord",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "Watch Broadcast",
+              href:
+                TWITCH,
+              className:
+                "danger",
+              icon:
+                "fa-brands fa-twitch",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "Open Bracket",
+              href:
+                "tournament.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-diagram-project"
+            }
+          ]
+        },
+
+        complete: {
+          status:
+            "Tournament Run Complete",
+
+          title:
+            "Your Event Results Are Recorded",
+
+          description:
+            "Your active tournament path has concluded. Results remain connected to your Rivals Gauntlet profile.",
+
+          note:
+            "You can continue watching the event and reviewing your account progression.",
+
+          buttons: [
+            {
+              label:
+                "Watch Tournament",
+              href:
+                TWITCH,
+              className:
+                "primary",
+              icon:
+                "fa-brands fa-twitch",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "View Bracket",
+              href:
+                "tournament.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-diagram-project"
+            }
+          ]
+        },
+
+        champion: {
+          status:
+            "Tournament Champion",
+
+          title:
+            "You Conquered the Gauntlet",
+
+          description:
+            "Your team has won the active Rivals Gauntlet tournament.",
+
+          note:
+            "Remain available for the championship broadcast and final announcements.",
+
+          buttons: [
+            {
+              label:
+                "Watch Celebration",
+              href:
+                TWITCH,
+              className:
+                "primary",
+              icon:
+                "fa-brands fa-twitch",
+              target:
+                "_blank"
+            },
+
+            {
+              label:
+                "Final Bracket",
+              href:
+                "tournament.html",
+              className:
+                "",
+              icon:
+                "fa-solid fa-trophy"
+            }
+          ]
+        }
+      };
+
+      return copy[state.key] ||
+        copy.waiting;
+    }
+
+    function renderObjectiveButtons(
+      buttons
+    ) {
+      $("objectiveButtons").innerHTML =
+        buttons
+          .map(button => `
+            <a
+              class="client-button ${escapeHtml(button.className || "")}"
+              href="${escapeHtml(button.href)}"
+              ${
+                button.target
+                  ? `target="${button.target}" rel="noopener noreferrer"`
+                  : ""
+              }
+            >
+              <i class="${escapeHtml(button.icon)}"></i>
+              ${escapeHtml(button.label)}
+            </a>
+          `)
+          .join("");
+    }
+
+    function renderActionSteps(
+      state
+    ) {
+      const labels = [
+        "Application",
+        "Check In",
+        "Monitor Event",
+        "Join Lobby",
+        "Ready Check",
+        "Play Match",
+        "Next Instructions"
+      ];
+
+      const complete =
+        new Set();
+
+      let currentIndex =
+        0;
+
+      if (
+        state.key ===
+          "waiting_team" ||
+        state.key ===
+          "check_in"
+      ) {
+        complete.add(0);
+        currentIndex = 1;
+      }
+
+      if (
+        state.key ===
+        "waiting"
+      ) {
+        [
+          0,
+          1
+        ].forEach(
+          index =>
+            complete.add(index)
+        );
+
+        currentIndex = 2;
+      }
+
+      if (
+        state.key ===
+        "on_deck"
+      ) {
+        [
+          0,
+          1,
+          2
+        ].forEach(
+          index =>
+            complete.add(index)
+        );
+
+        currentIndex = 3;
+      }
+
+      if (
+        state.key ===
+        "live"
+      ) {
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ].forEach(
+          index =>
+            complete.add(index)
+        );
+
+        currentIndex = 5;
+      }
+
+      if (
+        state.key ===
+          "complete" ||
+        state.key ===
+          "champion"
+      ) {
+        labels.forEach(
+          (
+            _,
+            index
+          ) =>
+            complete.add(index)
+        );
+
+        currentIndex = 6;
+      }
+
+      $("actionSteps").innerHTML =
+        labels
+          .map(
+            (
+              label,
+              index
+            ) => {
+              const classes =
+                [];
+
+              if (
+                complete.has(index)
+              ) {
+                classes.push(
+                  "completed"
+                );
+              }
+
+              if (
+                index ===
+                  currentIndex &&
+                !complete.has(index)
+              ) {
+                classes.push(
+                  "current"
+                );
+              }
+
+              const symbol =
+                complete.has(index)
+                  ? "✓"
+                  : index ===
+                      currentIndex
+                    ? "●"
+                    : "○";
+
+              return `
+                <div class="action-step ${classes.join(" ")}">
+                  <span>
+                    ${symbol}
+                    STEP
+                    ${String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <strong>
+                    ${escapeHtml(label)}
+                  </strong>
+                </div>
+              `;
+            }
+          )
+          .join("");
+    }
+
+    function renderStatusPills(
+      state
+    ) {
+      const applicationStatus =
+        clean(
+          application?.status,
+          "none"
+        ).toLowerCase();
+
+      setStatusPill(
+        $("applicationStatusPill"),
+        application
+          ? `Application ${formatStatus(applicationStatus)}`
+          : "No Application",
+        [
+          "accepted",
+          "approved"
+        ].includes(
+          applicationStatus
+        )
+          ? "success"
+          : [
+              "declined",
+              "rejected"
+            ].includes(
+              applicationStatus
+            )
+            ? "danger"
+            : application
+              ? "purple"
+              : "warning"
+      );
+
+      setStatusPill(
+        $("checkInStatusPill"),
+        checkIn?.checkedIn
+          ? "Checked In"
+          : "Check-In Pending",
+        checkIn?.checkedIn
+          ? "success"
+          : "warning"
+      );
+
+      setStatusPill(
+        $("teamStatusPill"),
+        state.team?.teamName ||
+        "Team Pending",
+        state.team
+          ? "purple"
+          : ""
+      );
+    }
+
+    function renderObjective() {
+      const state =
+        getDashboardState();
+
+      const copy =
+        getObjectiveCopy(
+          state
+        );
+
+      const discord =
+        getDiscordConfig(
+          state.team
+        );
+
+      $("eventName").textContent =
+        tournament.name ||
+        site.eventName ||
+        "Rivals Gauntlet Open #1";
+
+      $("objectiveStatusText").textContent =
+        copy.status;
+
+      $("objectiveStatus").classList.toggle(
+        "live",
+        state.key ===
+          "live"
+      );
+
+      $("objectiveTitle").textContent =
+        copy.title;
+
+      $("objectiveDescription").textContent =
+        copy.description;
+
+      if (copy.note) {
+        $("objectiveNote").style.display =
+          "block";
+
+        $("objectiveNote").textContent =
+          copy.note;
+      } else {
+        $("objectiveNote").style.display =
+          "none";
+
+        $("objectiveNote").textContent =
+          "";
+      }
+
+      $("objectiveState").textContent =
+        copy.status;
+
+      $("summaryTeam").textContent =
+        state.team?.teamName ||
+        "Pending";
+
+      $("summaryNextMatch").textContent =
+        state.nextMatch?.shortName ||
+        "Pending";
+
+      $("summaryVoiceChannel").textContent =
+        discord.voiceChannel;
+
+      $("summaryAvailability").textContent =
+        availability?.status ===
+          "not_available"
+          ? "Unavailable"
+          : checkIn?.checkedIn
+            ? "Ready"
+            : "Pending";
+
+      renderObjectiveButtons(
+        copy.buttons
+      );
+
+      renderActionSteps(
+        state
+      );
+
+      renderStatusPills(
+        state
+      );
+    }
+
+    /* =====================================================
+       OPERATIONS BAR
+       ===================================================== */
+
+    function renderCurrentSeriesOperation() {
+      const match =
+        getCurrentMatch();
+
+      if (!match) {
+        $("currentSeriesOperation").innerHTML = `
+          <div class="operation-subtext">
+            No current series has been selected.
           </div>
+
+          <a
+            class="operation-action"
+            href="${TWITCH}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fa-brands fa-twitch"></i>
+            Open Twitch
+          </a>
         `;
+
         return;
       }
 
-      container.innerHTML = entries.map(entry => {
-        const amount = Number(entry.amount || 0);
-        const sign = amount >= 0 ? "+" : "";
-
-        return `
-          <div class="dashboard-activity-item">
-            <div class="dashboard-activity-icon">
-              ${amount >= 0 ? "＋" : "−"}
-            </div>
-
-            <div>
-              <strong>${sign}${amount.toLocaleString()} RG Points</strong>
-              <span>${entry.reason || "RG Points Update"}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-    });
-}
-
-function getDailyRewardIcon(reward) {
-  if (!reward) return "★";
-
-  if (reward.type === "crate") {
-    return "📦";
-  }
-
-  return "RP";
-}
-
-function renderDailyRewardTrack() {
-  const track = document.getElementById("dailyRewardTrack");
-  if (!track || !dailyCheckInStatus) return;
-
-  const claimedCycleDay = Number(dailyCheckInStatus.cycleDay || 0);
-  const nextCycleDay = Number(dailyCheckInStatus.nextCycleDay || 1);
-
-  track.innerHTML = RGDailyCheckIn.rewardTrack.map(reward => {
-    const completed =
-      claimedCycleDay > 0 &&
-      reward.day <= claimedCycleDay &&
-      !(claimedCycleDay === 7 && nextCycleDay === 1);
-
-    const current =
-      reward.day === nextCycleDay;
-
-    return `
-      <div class="
-        daily-reward-day
-        ${completed ? "completed" : ""}
-        ${current ? "current" : ""}
-        ${reward.day === 7 ? "final" : ""}
-      ">
-        <span class="daily-reward-day-number">
-          Day ${reward.day}
-        </span>
-
-        <div class="daily-reward-day-icon">
-          ${getDailyRewardIcon(reward)}
+      $("currentSeriesOperation").innerHTML = `
+        <div class="operation-match-label">
+          ${escapeHtml(match.name)}
+          •
+          ${escapeHtml(match.format)}
         </div>
 
-        <strong>${reward.label}</strong>
-      </div>
-    `;
-  }).join("");
-}
+        <div class="operation-versus">
+          <strong class="operation-team">
+            ${escapeHtml(clean(match.teams[0], "TBD"))}
+          </strong>
 
-function updateDailyCountdown() {
-  const countdown = document.getElementById("dailyCountdown");
-  const button = document.getElementById("dailyClaimButton");
+          <span class="operation-score">
+            ${match.scores[0]}–${match.scores[1]}
+          </span>
 
-  if (!countdown || !button || !dailyCheckInStatus) return;
+          <strong class="operation-team right">
+            ${escapeHtml(clean(match.teams[1], "TBD"))}
+          </strong>
+        </div>
 
-  if (dailyCheckInStatus.canClaim) {
-    countdown.innerText = "Reward available now";
-    button.innerText = "Claim Reward";
-    button.disabled = false;
-    return;
-  }
+        <div class="operation-subtext">
+          ${escapeHtml(getSeriesProgress(match))}
+        </div>
 
-  const timer = RGDailyCheckIn.getCountdown(
-    dailyCheckInStatus.nextResetAt
-  );
+        <a
+          class="operation-action"
+          href="${TWITCH}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="fa-brands fa-twitch"></i>
+          Watch Live
+        </a>
+      `;
+    }
 
-  if (timer.complete) {
-    RGDailyCheckIn.load(currentUser.uid)
-      .then(result => {
-        dailyCheckInState = result.state;
-        dailyCheckInStatus = result.status;
-        renderDailyCheckIn();
-      })
-      .catch(error => {
-        console.error("Daily check-in refresh error:", error);
+    function renderPlayerMatchOperation() {
+      const state =
+        getDashboardState();
+
+      const team =
+        state.team;
+
+      const match =
+        state.nextMatch;
+
+      if (!team) {
+        $("playerMatchOperation").innerHTML = `
+          <div class="operation-subtext">
+            Your matchup will appear after teams are published.
+          </div>
+        `;
+
+        return;
+      }
+
+      if (!match) {
+        $("playerMatchOperation").innerHTML = `
+          <div class="operation-match-label">
+            Tournament Status
+          </div>
+
+          <div class="operation-subtext">
+            Your active bracket path is complete.
+          </div>
+
+          <a
+            class="operation-action"
+            href="tournament.html"
+          >
+            View Final Bracket
+          </a>
+        `;
+
+        return;
+      }
+
+      const opponent =
+        getOpponent(
+          match,
+          team.teamName
+        );
+
+      const description =
+        state.key ===
+          "on_deck"
+          ? "Your match follows the current live series."
+          : state.key ===
+              "live"
+            ? "Your match is currently active."
+            : "Your command center updates automatically.";
+
+      $("playerMatchOperation").innerHTML = `
+        <div class="operation-match-label">
+          ${escapeHtml(match.name)}
+          •
+          ${escapeHtml(match.format)}
+        </div>
+
+        <div class="operation-versus">
+          <strong class="operation-team">
+            ${escapeHtml(team.teamName)}
+          </strong>
+
+          <span class="operation-score">
+            VS
+          </span>
+
+          <strong class="operation-team right">
+            ${escapeHtml(opponent)}
+          </strong>
+        </div>
+
+        <div class="operation-subtext">
+          ${escapeHtml(description)}
+        </div>
+
+        <a
+          class="operation-action"
+          href="${
+            state.key ===
+            "on_deck"
+              ? TWITCH
+              : "tournament.html"
+          }"
+          ${
+            state.key ===
+            "on_deck"
+              ? 'target="_blank" rel="noopener noreferrer"'
+              : ""
+          }
+        >
+          ${
+            state.key ===
+            "on_deck"
+              ? "Track Live Progress"
+              : "View Bracket"
+          }
+        </a>
+      `;
+    }
+
+    function renderDiscordOperation() {
+      const state =
+        getDashboardState();
+
+      const discord =
+        getDiscordConfig(
+          state.team
+        );
+
+      $("discordVoiceChannel").textContent =
+        discord.voiceChannel;
+
+      $("discordSupportChannel").textContent =
+        discord.supportChannel;
+
+      $("discordOperationButton").href =
+        discord.invite;
+
+      $("overviewDiscordButton").href =
+        discord.invite;
+
+      $("discordInstruction").textContent =
+        state.key ===
+          "live"
+          ? "Join your assigned voice channel now"
+          : state.key ===
+              "on_deck"
+            ? "Join at least 10 minutes before the current series ends"
+            : "Stay available for tournament staff";
+    }
+
+    function getTeamReadiness(
+      team
+    ) {
+      if (
+        !team ||
+        !team.players?.length
+      ) {
+        return {
+          ready:
+            0,
+          total:
+            0
+        };
+      }
+
+      const ready =
+        team.players.filter(
+          rosterPlayer =>
+            allCheckIns[
+              rosterPlayer.uid
+            ]?.checkedIn &&
+            allAvailability[
+              rosterPlayer.uid
+            ]?.status !==
+              "not_available"
+        ).length;
+
+      return {
+        ready,
+        total:
+          team.players.length
+      };
+    }
+
+    function renderReadinessOperation() {
+      const team =
+        getMyTeam();
+
+      const readiness =
+        getTeamReadiness(
+          team
+        );
+
+      if (!team) {
+        $("readinessNumber").textContent =
+          "Pending";
+
+        $("readinessText").textContent =
+          "Waiting for your team assignment.";
+
+        return;
+      }
+
+      $("readinessNumber").textContent =
+        `${readiness.ready}/${readiness.total}`;
+
+      $("readinessText").textContent =
+        readiness.ready ===
+          readiness.total
+          ? "Every rostered player is ready."
+          : "Open My Team to review missing check-ins.";
+    }
+
+    /* =====================================================
+       OVERVIEW
+       ===================================================== */
+
+    function renderOverview() {
+      const state =
+        getDashboardState();
+
+      const discord =
+        getDiscordConfig(
+          state.team
+        );
+
+      $("overviewList").innerHTML = `
+        <div class="overview-row">
+          <span>Application</span>
+
+          <strong>
+            ${
+              application
+                ? formatStatus(
+                    application.status ||
+                    "submitted"
+                  )
+                : "Not Submitted"
+            }
+          </strong>
+        </div>
+
+        <div class="overview-row">
+          <span>Check-In</span>
+
+          <strong>
+            ${
+              checkIn?.checkedIn
+                ? "Complete"
+                : "Pending"
+            }
+          </strong>
+        </div>
+
+        <div class="overview-row">
+          <span>Team</span>
+
+          <strong>
+            ${escapeHtml(state.team?.teamName || "Pending")}
+          </strong>
+        </div>
+
+        <div class="overview-row">
+          <span>Next Match</span>
+
+          <strong>
+            ${escapeHtml(state.nextMatch?.name || "Pending")}
+          </strong>
+        </div>
+
+        <div class="overview-row">
+          <span>Voice Channel</span>
+
+          <strong>
+            ${escapeHtml(discord.voiceChannel)}
+          </strong>
+        </div>
+
+        <div class="overview-row">
+          <span>Availability</span>
+
+          <strong>
+            ${
+              availability?.status === "not_available"
+                ? "Unavailable"
+                : checkIn?.checkedIn
+                  ? "Ready"
+                  : "Pending"
+            }
+          </strong>
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       TEAM PANEL
+       ===================================================== */
+
+    function renderTeamPanel() {
+      const team =
+        getMyTeam();
+
+      if (
+        !team ||
+        !team.players?.length
+      ) {
+        $("teamPanelContent").innerHTML = `
+          <div class="empty-message">
+            Your roster will appear after teams are published.
+          </div>
+        `;
+
+        return;
+      }
+
+      const readiness =
+        getTeamReadiness(
+          team
+        );
+
+      $("teamPanelContent").innerHTML = `
+        <div class="roster-summary">
+          <div>
+            <span>Assigned Team</span>
+            <strong>${escapeHtml(team.teamName)}</strong>
+          </div>
+
+          <div>
+            <span>Roster Readiness</span>
+            <strong>${readiness.ready}/${readiness.total} Ready</strong>
+          </div>
+        </div>
+
+        <div class="roster-list">
+          ${team.players
+            .map(rosterPlayer => {
+              const checkedIn =
+                Boolean(
+                  allCheckIns[
+                    rosterPlayer.uid
+                  ]?.checkedIn
+                );
+
+              const unavailable =
+                allAvailability[
+                  rosterPlayer.uid
+                ]?.status ===
+                "not_available";
+
+              const statusClass =
+                unavailable
+                  ? "unavailable"
+                  : checkedIn
+                    ? "ready"
+                    : "";
+
+              const statusText =
+                unavailable
+                  ? "Unavailable"
+                  : checkedIn
+                    ? "Checked In"
+                    : "Pending";
+
+              return `
+                <a
+                  class="roster-player"
+                  href="player.html?id=${escapeHtml(rosterPlayer.uid || "")}"
+                >
+                  <div class="roster-initials">
+                    ${escapeHtml(getInitials(rosterPlayer.displayName || "RG"))}
+                  </div>
+
+                  <div class="roster-copy">
+                    <strong>
+                      ${escapeHtml(rosterPlayer.displayName || "Player")}
+                    </strong>
+
+                    <span>
+                      ${escapeHtml(rosterPlayer.peakRank || "Rank Pending")}
+                      •
+                      ${escapeHtml(rosterPlayer.mainRole || "Role Pending")}
+                    </span>
+                  </div>
+
+                  <div class="roster-status ${statusClass}">
+                    ${statusText}
+                  </div>
+                </a>
+              `;
+            })
+            .join("")}
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       JOURNEY PANEL
+       ===================================================== */
+
+    function renderJourneyPanel() {
+      const team =
+        getMyTeam();
+
+      if (!team) {
+        $("journeyPanelContent").innerHTML = `
+          <div class="empty-message">
+            Your tournament path will appear after your team is assigned.
+          </div>
+        `;
+
+        return;
+      }
+
+      const journey =
+        getMatches().filter(
+          match =>
+            teamIsInMatch(
+              team.teamName,
+              match
+            )
+        );
+
+      if (!journey.length) {
+        $("journeyPanelContent").innerHTML = `
+          <div class="empty-message">
+            Your tournament path has not been published yet.
+          </div>
+        `;
+
+        return;
+      }
+
+      const currentMatch =
+        getCurrentMatch();
+
+      $("journeyPanelContent").innerHTML = `
+        <div class="journey-list">
+          ${journey
+            .map(match => {
+              const live =
+                currentMatch?.id ===
+                match.id;
+
+              const completed =
+                Boolean(
+                  clean(
+                    match.winner
+                  )
+                );
+
+              const won =
+                normalize(
+                  match.winner
+                ) ===
+                normalize(
+                  team.teamName
+                );
+
+              let resultText =
+                "Waiting";
+
+              let resultClass =
+                "waiting";
+
+              if (live) {
+                resultText =
+                  `${match.scores[0]}–${match.scores[1]} Live`;
+
+                resultClass =
+                  "live";
+              } else if (
+                completed &&
+                won
+              ) {
+                resultText =
+                  `${match.scores[0]}–${match.scores[1]} Win`;
+
+                resultClass =
+                  "win";
+              } else if (
+                completed
+              ) {
+                resultText =
+                  `${match.scores[0]}–${match.scores[1]} Loss`;
+
+                resultClass =
+                  "loss";
+              }
+
+              return `
+                <div class="journey-match">
+                  <div class="journey-round">
+                    <span>${escapeHtml(match.format)}</span>
+                    <strong>${escapeHtml(match.name)}</strong>
+                  </div>
+
+                  <div class="journey-versus">
+                    ${escapeHtml(team.teamName)}
+                    vs
+                    ${escapeHtml(getOpponent(match, team.teamName))}
+                  </div>
+
+                  <div class="journey-result ${resultClass}">
+                    ${escapeHtml(resultText)}
+                  </div>
+                </div>
+              `;
+            })
+            .join("")}
+        </div>
+
+        <div class="button-row">
+          <a
+            class="client-button"
+            href="tournament.html"
+          >
+            <i class="fa-solid fa-diagram-project"></i>
+            Open Full Bracket
+          </a>
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       APPLICATION PANEL
+       ===================================================== */
+
+    function renderApplicationPanel() {
+      if (!application) {
+        $("applicationPanelContent").innerHTML = `
+          <div class="empty-message">
+            You do not currently have an application for this tournament.
+          </div>
+
+          <div class="button-row">
+            <a
+              class="client-button primary"
+              href="apply.html"
+            >
+              Apply for Event
+            </a>
+          </div>
+        `;
+
+        return;
+      }
+
+      const team =
+        getMyTeam();
+
+      const submittedAt =
+        application.submittedAt ||
+        application.createdAt ||
+        application.appliedAt;
+
+      $("applicationPanelContent").innerHTML = `
+        <div class="application-grid">
+          <div class="application-field">
+            <span>Application Status</span>
+
+            <strong>
+              ${escapeHtml(formatStatus(application.status || "submitted"))}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Competitor</span>
+
+            <strong>
+              ${escapeHtml(application.displayName || player.displayName || "Player")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Rivals IGN</span>
+
+            <strong>
+              ${escapeHtml(application.rivalsIgn || player.rivalsIgn || "Not provided")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Discord</span>
+
+            <strong>
+              ${escapeHtml(application.discordUsername || player.discordUsername || "Not provided")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Region</span>
+
+            <strong>
+              ${escapeHtml(application.region || player.region || "Not provided")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Platform</span>
+
+            <strong>
+              ${escapeHtml(application.platform || player.platform || "Not provided")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Submitted</span>
+
+            <strong>
+              ${escapeHtml(formatDate(submittedAt))}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Team Assignment</span>
+
+            <strong>
+              ${escapeHtml(team?.teamName || "Pending")}
+            </strong>
+          </div>
+
+          <div class="application-field">
+            <span>Entry Type</span>
+
+            <strong>
+              ${
+                application.addedAsSubstitute
+                  ? "Active Substitute"
+                  : application.substitute
+                    ? "Available Substitute"
+                    : "Standard Entry"
+              }
+            </strong>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <a
+            class="client-button"
+            href="apply.html"
+          >
+            <i class="fa-solid fa-file-lines"></i>
+            View Full Application
+          </a>
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       SUBSTITUTION ALERT
+       ===================================================== */
+
+    function renderSubstitutionAlert() {
+      const dismissed =
+        localStorage.getItem(
+          `substitutionDismissed_${tournamentId}_${currentUser?.uid}`
+        ) ===
+        "yes";
+
+      if (
+        dismissed ||
+        !application?.addedAsSubstitute
+      ) {
+        $("substitutionAlert").style.display =
+          "none";
+
+        return;
+      }
+
+      const assignedTeam =
+        application.substitutedInto
+          ? application.substitutedInto.replace(
+              "team",
+              "Team "
+            )
+          : "your assigned team";
+
+      $("substitutionAlert").style.display =
+        "block";
+
+      $("substitutionAlertContent").innerHTML = `
+        <p>
+          You have been added to
+          <strong>${escapeHtml(assignedTeam)}</strong>.
+          Report to your team and watch Discord for tournament instructions.
+        </p>
+
+        <div class="button-row">
+          <button
+            class="client-button primary"
+            type="button"
+            onclick="openWorkspaceTab('team')"
+          >
+            View My Team
+          </button>
+
+          <a
+            class="client-button"
+            href="check-in.html"
+          >
+            Check In
+          </a>
+        </div>
+      `;
+    }
+
+    function dismissSubstitutionAlert() {
+      localStorage.setItem(
+        `substitutionDismissed_${tournamentId}_${currentUser?.uid}`,
+        "yes"
+      );
+
+      renderSubstitutionAlert();
+    }
+
+    /* =====================================================
+       ACTIVITY
+       ===================================================== */
+
+    function renderActivityFeed() {
+      const items =
+        [];
+
+      if (application) {
+        items.push({
+          title:
+            "Application Submitted",
+
+          detail:
+            tournament.name ||
+            "Rivals Gauntlet Tournament",
+
+          createdAt:
+            application.submittedAt ||
+            application.createdAt ||
+            0
+        });
+
+        const status =
+          clean(
+            application.status
+          ).toLowerCase();
+
+        if (
+          status ===
+            "accepted" ||
+          status ===
+            "approved"
+        ) {
+          items.push({
+            title:
+              "Application Accepted",
+
+            detail:
+              "You were accepted for this tournament.",
+
+            createdAt:
+              application.reviewedAt ||
+              0
+          });
+        }
+
+        if (
+          status ===
+          "waitlist"
+        ) {
+          items.push({
+            title:
+              "Waitlisted",
+
+            detail:
+              "You are currently on the tournament waitlist.",
+
+            createdAt:
+              application.reviewedAt ||
+              0
+          });
+        }
+      }
+
+      const team =
+        getMyTeam();
+
+      if (team) {
+        items.push({
+          title:
+            "Team Assigned",
+
+          detail:
+            `You were assigned to ${team.teamName}.`,
+
+          createdAt:
+            tournament.teamsPublishedAt ||
+            0
+        });
+      }
+
+      Object.values(
+        activities ||
+        {}
+      ).forEach(activity => {
+        items.push({
+          title:
+            activity.title ||
+            "Activity",
+
+          detail:
+            activity.message ||
+            "",
+
+          createdAt:
+            activity.createdAt ||
+            0
+        });
       });
 
-    return;
-  }
+      if (!items.length) {
+        $("activityFeed").innerHTML = `
+          <div class="empty-message">
+            Tournament updates, rewards and account activity will appear here.
+          </div>
+        `;
 
-  countdown.innerText =
-    `Next claim in ${timer.formatted}`;
+        return;
+      }
 
-  button.innerText = "Claimed Today";
-  button.disabled = true;
-}
+      $("activityFeed").innerHTML =
+        items
+          .sort(
+            (
+              first,
+              second
+            ) =>
+              (
+                second.createdAt ||
+                0
+              ) -
+              (
+                first.createdAt ||
+                0
+              )
+          )
+          .slice(
+            0,
+            8
+          )
+          .map(item => `
+            <div class="feed-item">
+              <div class="feed-icon">
+                ✓
+              </div>
 
-function startDailyCountdown() {
-  if (dailyCountdownTimer) {
-    clearInterval(dailyCountdownTimer);
-  }
+              <div>
+                <strong>
+                  ${escapeHtml(item.title)}
+                </strong>
 
-  updateDailyCountdown();
+                <span>
+                  ${escapeHtml(item.detail)}
+                </span>
+              </div>
+            </div>
+          `)
+          .join("");
+    }
 
-  dailyCountdownTimer = setInterval(() => {
-    updateDailyCountdown();
-  }, 1000);
-}
+    /* =====================================================
+       RG HISTORY
+       ===================================================== */
 
-function renderDailyCheckIn() {
-  if (!dailyCheckInStatus) return;
+    function renderRgPointHistory() {
+      if (!currentUser) {
+        return;
+      }
 
-  const streak = document.getElementById("dailyCurrentStreak");
-  const reward = document.getElementById("dailyNextReward");
-  const statusLabel = document.getElementById(
-    "dailyRewardStatusLabel"
-  );
+      database
+        .ref(
+          `rgPointHistory/${currentUser.uid}`
+        )
+        .orderByChild(
+          "createdAt"
+        )
+        .limitToLast(8)
+        .once("value")
+        .then(snapshot => {
+          const entries =
+            Object.values(
+              snapshot.val() ||
+              {}
+            ).sort(
+              (
+                first,
+                second
+              ) =>
+                (
+                  second.createdAt ||
+                  0
+                ) -
+                (
+                  first.createdAt ||
+                  0
+                )
+            );
 
-  if (!streak || !reward || !statusLabel) return;
+          if (!entries.length) {
+            $("rgPointHistory").innerHTML = `
+              <div class="empty-message">
+                No RG Points activity yet.
+              </div>
+            `;
 
-  const streakValue = Number(
-    dailyCheckInStatus.currentStreak || 0
-  );
+            return;
+          }
 
-  streak.innerText =
-    `${streakValue} ${streakValue === 1 ? "Day" : "Days"}`;
+          $("rgPointHistory").innerHTML =
+            entries
+              .map(entry => {
+                const amount =
+                  Number(
+                    entry.amount ||
+                    0
+                  );
 
-  reward.innerText =
-    dailyCheckInStatus.nextReward?.label || "Reward";
+                const sign =
+                  amount >= 0
+                    ? "+"
+                    : "";
 
-  statusLabel.innerText =
-    dailyCheckInStatus.canClaim
-      ? `DAY ${dailyCheckInStatus.nextCycleDay} REWARD`
-      : "NEXT REWARD";
+                return `
+                  <div class="feed-item">
+                    <div class="feed-icon">
+                      ${
+                        amount >= 0
+                          ? "＋"
+                          : "−"
+                      }
+                    </div>
 
-  renderDailyRewardTrack();
-  startDailyCountdown();
-}
-  
-  document
-  .getElementById("dailyClaimButton")
-  ?.addEventListener("click", () => {
-    claimDailyReward();
-  });
-  
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+                    <div>
+                      <strong>
+                        ${sign}${amount.toLocaleString()}
+                        RG Points
+                      </strong>
 
-  currentUser = user;
-  
-  dailyCheckInStopListener = RGDailyCheckIn.listen(
-  user.uid,
-  result => {
-    dailyCheckInState = result.state;
-    dailyCheckInStatus = result.status;
-    renderDailyCheckIn();
-  }
-);
-  
-  RGNotificationCenter.init(
-  user.uid,
-  "#dashboardNotificationMount"
-);
-  
-  
-database.ref(`activities/${user.uid}`).on("value", snapshot => {
-  userActivities = snapshot.val() || {};
-  renderActivityFeed();
-});
-  
-  database.ref("site/currentTournament").once("value").then(activeTournament => {
+                      <span>
+                        ${escapeHtml(entry.reason || "RG Points Update")}
+                      </span>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("");
+        })
+        .catch(error => {
+          $("rgPointHistory").innerHTML = `
+            <div class="empty-message">
+              ${escapeHtml(error.message)}
+            </div>
+          `;
+        });
+    }
 
-  tournamentId = activeTournament.val() || "open1";
+    /* =====================================================
+       DAILY REWARDS
+       ===================================================== */
 
-  database.ref(`tournaments/${tournamentId}`).on("value", snapshot => {
-    currentTournament = snapshot.val() || {};
-    renderCurrentEvent();
-  });
+    function getDailySystem() {
+      try {
+        if (
+          typeof RGDailyCheckIn !==
+          "undefined"
+        ) {
+          return RGDailyCheckIn;
+        }
+      } catch (error) {
+        console.warn(
+          error
+        );
+      }
 
-  database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
-    currentApplication = snapshot.val();
-    renderCurrentEvent();
-  });
+      return (
+        window.RGDailyCheckIn ||
+        null
+      );
+    }
 
-  database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
-    currentCheckIn = snapshot.val();
-    renderCurrentEvent();
-  });
+    function renderDailyRewards() {
+      const dailySystem =
+        getDailySystem();
 
-  database.ref(`checkIns/${tournamentId}`).on("value", snapshot => {
-    allCheckIns = snapshot.val() || {};
-    renderCurrentEvent();
-  });
+      if (
+        !dailyStatus ||
+        !dailySystem
+      ) {
+        return;
+      }
 
-  database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
-    currentAvailability = snapshot.val();
-    renderCurrentEvent();
-  });
+      const streak =
+        Number(
+          dailyStatus.currentStreak ||
+          0
+        );
 
-  database.ref(`availability/${tournamentId}`).on("value", snapshot => {
-    allAvailability = snapshot.val() || {};
-    renderCurrentEvent();
-  });
+      $("dailyCurrentStreak").textContent =
+        `${streak} ${
+          streak === 1
+            ? "Day"
+            : "Day"
+        } Streak`;
 
-  database.ref(`teams/${tournamentId}`).on("value", snapshot => {
-    currentTeams = snapshot.val() || {};
-    renderCurrentEvent();
-  });
+      $("dailyNextReward").textContent =
+        dailyStatus.nextReward?.label ||
+        "Reward";
 
-  database.ref("site").on("value", snapshot => {
-    siteData = snapshot.val() || {};
-    renderCurrentEvent();
-  });
+      $("dailyRewardStatusLabel").textContent =
+        dailyStatus.canClaim
+          ? `Day ${dailyStatus.nextCycleDay} Reward`
+          : "Next Reward";
 
-});
-  
-  database.ref(`users/${user.uid}`).update({
-    emailVerified: user.emailVerified,
-    lastLogin: Date.now()
-  });
+      const claimedDay =
+        Number(
+          dailyStatus.cycleDay ||
+          0
+        );
 
-  database.ref(`players/${user.uid}`).on("value", snapshot => {
-    const player = snapshot.val() || {};
-    currentPlayer = player;
+      const nextDay =
+        Number(
+          dailyStatus.nextCycleDay ||
+          1
+        );
 
-    renderSidebar(player, user);
-    renderCurrentEvent();
-    renderRgPointHistory();
+      $("dailyRewardTrack").innerHTML =
+        dailySystem.rewardTrack
+          .map(reward => {
+            const completed =
+              claimedDay > 0 &&
+              reward.day <=
+                claimedDay &&
+              !(
+                claimedDay ===
+                  7 &&
+                nextDay ===
+                  1
+              );
 
-    document.getElementById("welcomeName").innerText =
-      `Welcome Back, ${player.displayName || "Player"}`;
-  });
-});
-function resendVerification() {
-  const user = auth.currentUser;
+            const current =
+              reward.day ===
+              nextDay;
 
-  if (!user) return;
+            return `
+              <div class="
+                daily-day
+                ${completed ? "completed" : ""}
+                ${current ? "current" : ""}
+              ">
+                <span>
+                  Day ${reward.day}
+                </span>
 
-  if (user.emailVerified) {
-    statusEl.innerText = "Your email is already verified.";
-    statusEl.style.color = "#22c55e";
-    return;
-  }
+                <b>
+                  ${
+                    reward.type ===
+                    "crate"
+                      ? "📦"
+                      : "RP"
+                  }
+                </b>
 
-  user.sendEmailVerification()
-    .then(() => {
-      statusEl.innerText = "✓ Verification email sent.";
-      statusEl.style.color = "#22c55e";
-    })
-    .catch(error => {
-      statusEl.innerText = error.message;
-      statusEl.style.color = "#ef4444";
-    });
-}
+                <strong>
+                  ${escapeHtml(reward.label)}
+                </strong>
+              </div>
+            `;
+          })
+          .join("");
 
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
-</script>
+      if (
+        dailyCountdownTimer
+      ) {
+        clearInterval(
+          dailyCountdownTimer
+        );
+      }
 
+      updateDailyCountdown();
+
+      dailyCountdownTimer =
+        setInterval(
+          updateDailyCountdown,
+          1000
+        );
+    }
+
+    function updateDailyCountdown() {
+      const dailySystem =
+        getDailySystem();
+
+      if (
+        !dailyStatus ||
+        !dailySystem
+      ) {
+        return;
+      }
+
+      if (
+        dailyStatus.canClaim
+      ) {
+        $("dailyCountdown").textContent =
+          "Reward available now";
+
+        $("dailyClaimButton").textContent =
+          "Claim Reward";
+
+        $("dailyClaimButton").disabled =
+          false;
+
+        return;
+      }
+
+      const countdown =
+        dailySystem.getCountdown(
+          dailyStatus.nextResetAt
+        );
+
+      if (
+        countdown.complete
+      ) {
+        dailySystem
+          .load(
+            currentUser.uid
+          )
+          .then(result => {
+            dailyStatus =
+              result.status;
+
+            renderDailyRewards();
+          });
+
+        return;
+      }
+
+      $("dailyCountdown").textContent =
+        `Next claim in ${countdown.formatted}`;
+
+      $("dailyClaimButton").textContent =
+        "Claimed Today";
+
+      $("dailyClaimButton").disabled =
+        true;
+    }
+
+    $("dailyClaimButton")
+      .addEventListener(
+        "click",
+        () => {
+          const dailySystem =
+            getDailySystem();
+
+          if (
+            typeof window.claimDailyReward ===
+            "function"
+          ) {
+            window.claimDailyReward();
+            return;
+          }
+
+          if (
+            typeof dailySystem?.claimDailyReward ===
+            "function"
+          ) {
+            dailySystem.claimDailyReward();
+          }
+        }
+      );
+
+    /* =====================================================
+       STARTER BONUS
+       ===================================================== */
+
+    function claimStarterBonus() {
+      if (!currentUser) {
+        return;
+      }
+
+      const status =
+        $("rewardStatus");
+
+      const button =
+        $("starterBonusButton");
+
+      database
+        .ref(
+          `players/${currentUser.uid}/starterRgBonusClaimed`
+        )
+        .once("value")
+        .then(snapshot => {
+          if (
+            snapshot.exists()
+          ) {
+            status.textContent =
+              "You already claimed the starter bonus.";
+
+            throw new Error(
+              "ALREADY_CLAIMED"
+            );
+          }
+
+          return database
+            .ref(
+              `players/${currentUser.uid}`
+            )
+            .transaction(
+              profile => {
+                if (!profile) {
+                  return profile;
+                }
+
+                profile.rgPoints =
+                  Number(
+                    profile.rgPoints ||
+                    0
+                  ) +
+                  100;
+
+                profile.lifetimeRgPoints =
+                  Number(
+                    profile.lifetimeRgPoints ||
+                    0
+                  ) +
+                  100;
+
+                profile.starterRgBonusClaimed =
+                  true;
+
+                profile.updatedAt =
+                  Date.now();
+
+                return profile;
+              }
+            );
+        })
+        .then(result => {
+          if (
+            !result?.committed
+          ) {
+            return null;
+          }
+
+          return database
+            .ref(
+              `rgPointHistory/${currentUser.uid}`
+            )
+            .push({
+              amount:
+                100,
+
+              reason:
+                "Starter Bonus",
+
+              source:
+                "starter_bonus",
+
+              createdAt:
+                Date.now()
+            });
+        })
+        .then(result => {
+          if (
+            result ===
+            null
+          ) {
+            return;
+          }
+
+          status.textContent =
+            "Starter bonus claimed: +100 RG Points.";
+
+          button.disabled =
+            true;
+
+          button.textContent =
+            "Starter Bonus Claimed";
+        })
+        .catch(error => {
+          if (
+            error.message !==
+            "ALREADY_CLAIMED"
+          ) {
+            status.textContent =
+              error.message;
+          }
+        });
+    }
+
+    /* =====================================================
+       REPORT SYSTEM
+       ===================================================== */
+
+    function openReportModal() {
+      const team =
+        getMyTeam();
+
+      $("reportTargetPlayer").innerHTML = `
+        <option value="">
+          No specific player / team issue
+        </option>
+
+        ${
+          team?.players
+            ?.filter(
+              rosterPlayer =>
+                rosterPlayer.uid !==
+                currentUser?.uid
+            )
+            .map(rosterPlayer => `
+              <option
+                value="${escapeHtml(rosterPlayer.uid || "")}"
+                data-name="${escapeHtml(rosterPlayer.displayName || "Player")}"
+              >
+                ${escapeHtml(rosterPlayer.displayName || "Player")}
+              </option>
+            `)
+            .join("") ||
+          ""
+        }
+      `;
+
+      $("reportStatus").textContent =
+        "";
+
+      $("reportModal").classList.add(
+        "open"
+      );
+    }
+
+    function closeReportModal() {
+      $("reportModal").classList.remove(
+        "open"
+      );
+    }
+
+    function safeFirebaseKey(
+      value
+    ) {
+      return (
+        normalize(value)
+          .slice(
+            0,
+            80
+          ) ||
+        "general"
+      );
+    }
+
+    async function submitTournamentReport() {
+      const issueType =
+        clean(
+          $("reportIssueType").value
+        );
+
+      const playerSelect =
+        $("reportTargetPlayer");
+
+      const targetUid =
+        clean(
+          playerSelect.value
+        );
+
+      const targetName =
+        playerSelect
+          .selectedOptions[0]
+          ?.dataset.name ||
+        "";
+
+      const details =
+        clean(
+          $("reportDetails").value
+        );
+
+      const status =
+        $("reportStatus");
+
+      const button =
+        $("submitReportButton");
+
+      if (!issueType) {
+        status.textContent =
+          "Select an issue.";
+
+        return;
+      }
+
+      if (!details) {
+        status.textContent =
+          "Add a short explanation.";
+
+        return;
+      }
+
+      const state =
+        getDashboardState();
+
+      const matchKey =
+        state.currentMatch?.id ||
+        state.nextMatch?.id ||
+        "general";
+
+      const teamKey =
+        state.team?.teamKey ||
+        "no_team";
+
+      const incidentKey = [
+        safeFirebaseKey(
+          matchKey
+        ),
+        safeFirebaseKey(
+          teamKey
+        ),
+        safeFirebaseKey(
+          targetUid ||
+          "team"
+        ),
+        safeFirebaseKey(
+          issueType
+        )
+      ].join("_");
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Submitting...";
+
+      status.textContent =
+        "Sending report to tournament staff...";
+
+      try {
+        const basePath =
+          `tournamentReports/${tournamentId}/${incidentKey}`;
+
+        const updates =
+          {};
+
+        updates[
+          `${basePath}/meta`
+        ] = {
+          tournamentId,
+          matchKey,
+          teamKey,
+          issueType,
+          targetUid:
+            targetUid ||
+            null,
+          targetName:
+            targetName ||
+            null,
+          status:
+            "open",
+          updatedAt:
+            Date.now()
+        };
+
+        updates[
+          `${basePath}/reporters/${currentUser.uid}`
+        ] = {
+          reporterUid:
+            currentUser.uid,
+
+          reporterName:
+            player.displayName ||
+            "Player",
+
+          details,
+
+          createdAt:
+            Date.now()
+        };
+
+        await database
+          .ref()
+          .update(
+            updates
+          );
+
+        status.textContent =
+          "Report received. Tournament staff can review it.";
+
+        button.textContent =
+          "Report Submitted";
+
+        $("reportDetails").value =
+          "";
+
+        setTimeout(
+          closeReportModal,
+          1100
+        );
+      } catch (error) {
+        console.error(
+          error
+        );
+
+        status.textContent =
+          "The report form is ready, but tournamentReports Firebase permission still needs to be added.";
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "Submit Report";
+      }
+    }
+
+    $("reportModal")
+      .addEventListener(
+        "click",
+        event => {
+          if (
+            event.target.id ===
+            "reportModal"
+          ) {
+            closeReportModal();
+          }
+        }
+      );
+
+    /* =====================================================
+       TABS
+       ===================================================== */
+
+    function openWorkspaceTab(
+      name
+    ) {
+      document
+        .querySelectorAll(
+          "[data-workspace-tab]"
+        )
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.workspaceTab ===
+              name
+          );
+        });
+
+      document
+        .querySelectorAll(
+          ".workspace-panel"
+        )
+        .forEach(panel => {
+          panel.classList.toggle(
+            "active",
+            panel.id ===
+              `workspace-${name}`
+          );
+        });
+    }
+
+    document
+      .querySelectorAll(
+        "[data-workspace-tab]"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            openWorkspaceTab(
+              button.dataset.workspaceTab
+            );
+          }
+        );
+      });
+
+    $("openTeamTabButton")
+      .addEventListener(
+        "click",
+        () => {
+          openWorkspaceTab(
+            "team"
+          );
+        }
+      );
+
+    function openAccountTab(
+      name
+    ) {
+      document
+        .querySelectorAll(
+          "[data-account-tab]"
+        )
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.accountTab ===
+              name
+          );
+        });
+
+      document
+        .querySelectorAll(
+          ".account-panel"
+        )
+        .forEach(panel => {
+          panel.classList.toggle(
+            "active",
+            panel.id ===
+              `account-${name}`
+          );
+        });
+    }
+
+    document
+      .querySelectorAll(
+        "[data-account-tab]"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            openAccountTab(
+              button.dataset.accountTab
+            );
+          }
+        );
+      });
+
+    /* =====================================================
+       MASTER RENDER
+       ===================================================== */
+
+    function renderDashboard() {
+      renderObjective();
+      renderCurrentSeriesOperation();
+      renderPlayerMatchOperation();
+      renderDiscordOperation();
+      renderReadinessOperation();
+      renderOverview();
+      renderTeamPanel();
+      renderJourneyPanel();
+      renderApplicationPanel();
+      renderSubstitutionAlert();
+      renderActivityFeed();
+    }
+
+    /* =====================================================
+       FIREBASE
+       ===================================================== */
+
+    auth.onAuthStateChanged(
+      user => {
+        if (!user) {
+          window.location.href =
+            "login.html";
+
+          return;
+        }
+
+        currentUser =
+          user;
+
+        const dailySystem =
+          getDailySystem();
+
+        if (
+          dailySystem &&
+          typeof dailySystem.listen ===
+            "function"
+        ) {
+          dailyStopListener =
+            dailySystem.listen(
+              user.uid,
+              result => {
+                dailyStatus =
+                  result.status;
+
+                renderDailyRewards();
+              }
+            );
+        } else {
+          $("dailyCountdown").textContent =
+            "Daily reward system failed to load.";
+
+          $("dailyClaimButton").textContent =
+            "Unavailable";
+
+          $("dailyClaimButton").disabled =
+            true;
+        }
+
+        database
+          .ref(
+            `activities/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              activities =
+                snapshot.val() ||
+                {};
+
+              renderActivityFeed();
+            }
+          );
+
+        database
+          .ref(
+            "site/currentTournament"
+          )
+          .once(
+            "value"
+          )
+          .then(snapshot => {
+            tournamentId =
+              snapshot.val() ||
+              "open1";
+
+            database
+              .ref(
+                `tournaments/${tournamentId}`
+              )
+              .on(
+                "value",
+                result => {
+                  tournament =
+                    result.val() ||
+                    {};
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `applications/${tournamentId}/${user.uid}`
+              )
+              .on(
+                "value",
+                result => {
+                  application =
+                    result.val();
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `checkIns/${tournamentId}/${user.uid}`
+              )
+              .on(
+                "value",
+                result => {
+                  checkIn =
+                    result.val();
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `checkIns/${tournamentId}`
+              )
+              .on(
+                "value",
+                result => {
+                  allCheckIns =
+                    result.val() ||
+                    {};
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `availability/${tournamentId}/${user.uid}`
+              )
+              .on(
+                "value",
+                result => {
+                  availability =
+                    result.val();
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `availability/${tournamentId}`
+              )
+              .on(
+                "value",
+                result => {
+                  allAvailability =
+                    result.val() ||
+                    {};
+
+                  renderDashboard();
+                }
+              );
+
+            database
+              .ref(
+                `teams/${tournamentId}`
+              )
+              .on(
+                "value",
+                result => {
+                  teams =
+                    result.val() ||
+                    {};
+
+                  renderDashboard();
+                }
+              );
+          });
+
+        database
+          .ref("site")
+          .on(
+            "value",
+            snapshot => {
+              site =
+                snapshot.val() ||
+                {};
+
+              renderDashboard();
+            }
+          );
+
+        database
+          .ref(
+            "broadcastCountdown"
+          )
+          .on(
+            "value",
+            snapshot => {
+              broadcast =
+                snapshot.val() ||
+                {};
+
+              renderDashboard();
+            }
+          );
+
+        database
+          .ref(
+            `users/${user.uid}`
+          )
+          .update({
+            emailVerified:
+              user.emailVerified,
+
+            lastLogin:
+              Date.now()
+          });
+
+        database
+          .ref(
+            `players/${user.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              player =
+                snapshot.val() ||
+                {};
+
+              renderPlayerProfile();
+              renderDashboard();
+              renderRgPointHistory();
+            }
+          );
+      }
+    );
+
+    /* =====================================================
+       AUTH
+       ===================================================== */
+
+    function logoutUser() {
+      auth
+        .signOut()
+        .then(() => {
+          window.location.href =
+            "login.html";
+        });
+    }
+
+    window.addEventListener(
+      "beforeunload",
+      () => {
+        if (
+          typeof dailyStopListener ===
+          "function"
+        ) {
+          dailyStopListener();
+        }
+
+        if (
+          dailyCountdownTimer
+        ) {
+          clearInterval(
+            dailyCountdownTimer
+          );
+        }
+      }
+    );
+  </script>
 </body>
 </html>

@@ -4650,6 +4650,29 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* Forest crate sizing — non-mobile only */
+
+/* Tablet portrait */
+@media (min-width:681px) and (max-width:900px) and (orientation:portrait){
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(62vw,600px) !important;
+  }
+}
+
+/* Tablet / iPad landscape */
+@media (min-width:681px) and (max-width:1400px) and (orientation:landscape){
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(50vw,620px) !important;
+  }
+}
+
+/* Desktop */
+@media (min-width:1401px){
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(43vw,670px) !important;
+  }
+}
+
 </style>
 </head>
 

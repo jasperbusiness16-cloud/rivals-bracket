@@ -4635,129 +4635,18 @@ body.ritual-page-active .ritual-shade{
 }
 
 /* =========================================================
-   FOREST FINAL TUNING
-   - slightly smaller crate on desktop
-   - platform lower on all devices
-   - more visible fog / haze
-   - soft side haze
+   FOREST MICRO ADJUSTMENT
+   Keeps the previously approved positioning.
    ========================================================= */
 
-.vault[data-scene="forest"] .featured-crate{
-  filter:
-    drop-shadow(0 46px 64px rgba(0,0,0,.72))
-    drop-shadow(0 0 24px rgba(101,208,135,.18));
-}
-
-/* More visible moving fog */
-.vault[data-scene="forest"] #weather::before,
-.vault[data-scene="forest"] #weather::after{
-  content:"";
-  position:absolute;
-  pointer-events:none;
-}
-
-/* Main low fog across lower-middle scene */
-.vault[data-scene="forest"] #weather::before{
-  left:-8%;
-  right:-8%;
-  bottom:12%;
-  height:34%;
-  z-index:2;
-  opacity:.92;
-  background:
-    radial-gradient(ellipse at 18% 72%, rgba(220,230,218,.22), transparent 54%),
-    radial-gradient(ellipse at 50% 82%, rgba(235,245,230,.20), transparent 56%),
-    radial-gradient(ellipse at 82% 72%, rgba(220,230,218,.20), transparent 54%);
-  filter:blur(30px);
-  animation:forestFogDrift 20s ease-in-out infinite alternate;
-}
-
-/* Side haze so left/right edges feel less bare */
-.vault[data-scene="forest"] #weather::after{
-  inset:0;
-  z-index:1;
-  opacity:.76;
-  background:
-    radial-gradient(ellipse at left center, rgba(220,230,214,.20), transparent 34%),
-    radial-gradient(ellipse at right center, rgba(220,230,214,.18), transparent 34%);
-  filter:blur(54px);
-  animation:forestSideHaze 15s ease-in-out infinite alternate;
-}
-
-@keyframes forestFogDrift{
-  0%{
-    transform:translate3d(-18px,0,0) scale(1);
-  }
-  50%{
-    transform:translate3d(10px,-4px,0) scale(1.04);
-  }
-  100%{
-    transform:translate3d(24px,2px,0) scale(1.08);
-  }
-}
-
-@keyframes forestSideHaze{
-  0%{
-    transform:translateX(0);
-    opacity:.64;
-  }
-  50%{
-    transform:translateX(-6px);
-    opacity:.84;
-  }
-  100%{
-    transform:translateX(8px);
-    opacity:.74;
-  }
-}
-
-/* MOBILE */
-@media(max-width:680px){
+/* Desktop only: slightly smaller crate and platform 10px lower */
+@media(min-width:1401px){
   .vault[data-scene="forest"] .featured-crate{
-    width:min(84vw,485px)!important;
+    width:min(45vw,700px) !important;
   }
 
-  /* move platform down about 10px on mobile */
   .vault[data-scene="forest"] .platform{
-    background-position:center calc(100% + 10px)!important;
-  }
-
-  .vault[data-scene="forest"] #weather::before{
-    bottom:15%;
-    height:28%;
-    opacity:.86;
-    filter:blur(22px);
-  }
-
-  .vault[data-scene="forest"] #weather::after{
-    opacity:.66;
-    filter:blur(40px);
-  }
-}
-
-/* TABLET + DESKTOP */
-@media(min-width:681px){
-  /* tiny bit smaller crate on non-mobile */
-  .vault[data-scene="forest"] .featured-crate{
-    width:min(49vw,780px)!important;
-  }
-
-  /* move platform down about 20px */
-  .vault[data-scene="forest"] .platform{
-    background-position:center calc(100% + 20px)!important;
-  }
-}
-
-/* DESKTOP EXTRA TWEAK */
-@media(min-width:1181px) and (hover:hover) and (pointer:fine){
-  /* just a little smaller again on desktop */
-  .vault[data-scene="forest"] .featured-crate{
-    width:min(47.5vw,750px)!important;
-  }
-
-  /* move platform another ~10px down on desktop */
-  .vault[data-scene="forest"] .platform{
-    background-position:center calc(100% + 30px)!important;
+    background-position:center calc(100% + 165px) !important;
   }
 }
 

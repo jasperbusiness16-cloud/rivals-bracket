@@ -3900,6 +3900,152 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* =========================================
+   FOREST WORLD — CSS LIGHTING / ATMOSPHERE
+========================================= */
+.vault[data-scene="forest"] .sky{
+  background:
+    radial-gradient(circle at 50% 18%, rgba(205,235,170,.14), transparent 34%),
+    radial-gradient(circle at 50% 32%, rgba(144,201,116,.12), transparent 42%),
+    linear-gradient(180deg, #1a2618 0%, #0c140d 78%);
+  animation: forestSkyBreath 8s ease-in-out infinite;
+}
+
+.vault[data-scene="forest"] .background{
+  background-size: cover;
+  background-position: center center;
+  filter: saturate(.92) brightness(.92);
+}
+
+.vault[data-scene="forest"] .midground{
+  background-size: cover;
+  background-position: center bottom;
+  filter: saturate(1.02) brightness(.98);
+}
+
+.vault[data-scene="forest"] .platform{
+  background-size: cover;
+  background-position: center bottom;
+}
+
+.vault[data-scene="forest"] .lighting{
+  opacity: .78;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(217,240,185,.22), transparent 22%),
+    radial-gradient(circle at 52% 40%, rgba(173,220,138,.12), transparent 30%),
+    linear-gradient(180deg, rgba(222,246,196,.12) 0%, transparent 24%),
+    linear-gradient(102deg, transparent 18%, rgba(210,240,175,.10) 30%, transparent 42%),
+    linear-gradient(78deg, transparent 28%, rgba(194,232,154,.08) 40%, transparent 54%),
+    linear-gradient(92deg, transparent 52%, rgba(226,245,198,.06) 61%, transparent 72%);
+  filter: blur(.2px) saturate(1.05);
+}
+
+.vault[data-scene="forest"] .lighting::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(96deg, transparent 0 36%, rgba(235,250,215,.08) 40%, transparent 44%),
+    linear-gradient(87deg, transparent 0 50%, rgba(225,245,200,.06) 54%, transparent 58%),
+    linear-gradient(102deg, transparent 0 60%, rgba(240,255,225,.05) 64%, transparent 68%);
+  mix-blend-mode:screen;
+  opacity:.9;
+  pointer-events:none;
+}
+
+.vault[data-scene="forest"] .world-zone::before{
+  background:
+    linear-gradient(180deg, rgba(2,6,3,.10), transparent 16%, transparent 72%, rgba(3,7,4,.74)),
+    linear-gradient(90deg, rgba(4,9,5,.30), transparent 18%, transparent 82%, rgba(4,9,5,.28));
+}
+
+.vault[data-scene="forest"] .platform::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:calc(var(--hud-height) + 1.2%);
+  width:min(46vw,720px);
+  height:min(12vw,170px);
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(135,214,112,.22),
+      rgba(211,240,174,.08) 34%,
+      transparent 72%
+    );
+  filter:blur(14px);
+  opacity:.6;
+  mix-blend-mode:screen;
+  animation: forestGroundGlow 4.5s ease-in-out infinite;
+  pointer-events:none;
+}
+
+.vault[data-scene="forest"] .crate-shadow{
+  background: radial-gradient(ellipse, rgba(0,0,0,.88), transparent 68%);
+}
+
+.vault[data-scene="forest"] .aura{
+  background: radial-gradient(circle, rgba(132,210,112,.14), transparent 66%);
+  filter: blur(24px);
+}
+
+/* subtle forest mist */
+.vault[data-scene="forest"] .weather::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 58%, rgba(210,230,205,.08), transparent 34%),
+    linear-gradient(180deg, transparent 48%, rgba(188,212,183,.06) 72%, transparent 100%);
+  mix-blend-mode:screen;
+  opacity:.8;
+  pointer-events:none;
+}
+
+@keyframes forestSkyBreath{
+  0%,100%{filter:brightness(.98) saturate(.96)}
+  50%{filter:brightness(1.06) saturate(1.03)}
+}
+
+@keyframes forestGroundGlow{
+  0%,100%{
+    opacity:.42;
+    transform:translateX(-50%) scale(.95);
+  }
+  50%{
+    opacity:.68;
+    transform:translateX(-50%) scale(1.05);
+  }
+}
+
+/* Forest mobile composition */
+@media(max-width:680px){
+  .vault[data-scene="forest"] .midground{
+    background-size: cover !important;
+    background-position: center calc(100% + 10px) !important;
+  }
+
+  .vault[data-scene="forest"] .platform{
+    background-size: cover !important;
+    background-position: center calc(100% + 60px) !important;
+  }
+
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(84vw,500px);
+    max-height:calc(100% - 110px);
+  }
+
+  .vault[data-scene="forest"] .platform::after{
+    bottom:calc(var(--hud-height) + 3%);
+    width:84vw;
+    height:22vw;
+    filter:blur(11px);
+  }
+}
+
 </style>
 </head>
 
@@ -4096,7 +4242,42 @@ body.ritual-page-active .ritual-shade{
   const A = "assets/shop/";
 
   const worlds = {
-    forest:{group:"core",name:"Forest Crate",category:"Core World",tagline:"Awaken the ancient wilds.",description:"A living collection shaped by moss-covered ruins, fireflies, deep woods, and forgotten guardians.",price:1800,accent:"#65d087",rgb:"101,208,135",dark:"#06100b",mid:"#10291b",crate:A+"crates/worlds/FOREST-CRATE.PNG",folder:"FOREST",weather:["leaves",24,"#7ddf8c",7,13,5,12],particles:["firefly",18,"#d6ff79",5,10,2,5],flash:false,rewards:["Forest profile backgrounds","Moss borders","Wildwood avatars","Ancient titles"]},
+ forest:{
+  group:"core",
+  name:"Forest Crate",
+  category:"Core World",
+  tagline:"Awaken the ancient wilds.",
+  description:"Enter a forgotten sacred ruin reclaimed by moss, ancient roots, hanging vines, and deep forest mist.",
+  price:1800,
+
+  accent:"#65d087",
+  rgb:"101,208,135",
+  dark:"#06100b",
+  mid:"#10291b",
+
+  crate:A+"worlds/FOREST/FOREST_CRATE.PNG",
+  folder:"FOREST",
+
+  layers:{
+    sky:"",
+    background:"forestbackground.PNG",
+    midground:"forestmidground.PNG",
+    platform:"forestplatform.PNG",
+    foreground:"forestforeground.PNG",
+    lighting:""
+  },
+
+  weather:null,
+  particles:null,
+  flash:false,
+
+  rewards:[
+    "Forest profile backgrounds",
+    "Moss borders",
+    "Wildwood avatars",
+    "Ancient titles"
+  ]
+},
     frozen:{group:"core",name:"Frozen Crate",category:"Core World",tagline:"Claim the heart of winter.",description:"A crystalline collection from frozen cliffs, aurora-lit skies, and the silence of an endless blizzard.",price:1900,accent:"#80d8ff",rgb:"128,216,255",dark:"#061019",mid:"#12314a",crate:A+"crates/worlds/FROZEN-CRATE.PNG",folder:"FROZEN",weather:["snow",42,"#e7f8ff",7,15,3,9],particles:["ice",16,"#8fe7ff",8,14,2,5],flash:[6500,12000,.18],rewards:["Frozen banners","Crystal borders","Frost avatars","Winter titles"]},
     volcanic:{group:"core",name:"Volcanic Crate",category:"Core World",tagline:"Forge your collection in fire.",description:"A brutal collection born from lava rivers, falling ash, molten stone, and volcanic thunder.",price:2100,accent:"#ff6a35",rgb:"255,106,53",dark:"#120503",mid:"#3a1008",crate:A+"crates/worlds/VOLCANIC-CRATE.PNG",folder:"VOLCANIC",weather:["ash",36,"#c7afa5",8,17,2,7],particles:["ember",26,"#ff7a2f",4,9,2,6],flash:[4500,9000,.28],rewards:["Molten borders","Lava banners","Ember avatars","Inferno titles"]},
     storm:{group:"core",name:"Storm Crate",category:"Core World",tagline:"Enter the eye of the storm.",description:"A cinematic collection forged from thunder, rain, electric skies, and winds strong enough to shake the arena.",price:2000,accent:"#9a7cff",rgb:"154,124,255",dark:"#080713",mid:"#211944",crate:A+"crates/worlds/STORM-CRATE.PNG",folder:"STORM",weather:["rain",28,"#cfd7ff",1.1,1.8,1,2],particles:["mist",10,"#8d84bd",8,15,22,54],flash:[2800,6800,.42],rewards:["Storm backgrounds","Lightning borders","Tempest avatars","Thunder titles"]},

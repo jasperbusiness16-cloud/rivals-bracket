@@ -4673,6 +4673,70 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* =========================================================
+   FOREST / UNDERWATER / BLOOM CRATE SIZES
+   Mobile remains unchanged
+   ========================================================= */
+
+/* Tablet portrait */
+@media (min-width:681px) and (max-width:900px) and (orientation:portrait){
+
+  /* Forest — 1 notch smaller */
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(60vw,580px) !important;
+  }
+
+  /* Underwater — 2–3 notches smaller */
+  .vault[data-scene="underwater"] .featured-crate{
+    width:min(56vw,550px) !important;
+  }
+
+  /* Bloom — 2–3 notches smaller */
+  .vault[data-scene="bloom"] .featured-crate{
+    width:min(55vw,540px) !important;
+  }
+}
+
+
+/* Tablet / iPad landscape */
+@media (min-width:681px) and (max-width:1400px) and (orientation:landscape){
+
+  /* Forest — 1 notch smaller */
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(46vw,570px) !important;
+  }
+
+  /* Underwater — 2–3 notches smaller */
+  .vault[data-scene="underwater"] .featured-crate{
+    width:min(42vw,540px) !important;
+  }
+
+  /* Bloom — 2–3 notches smaller */
+  .vault[data-scene="bloom"] .featured-crate{
+    width:min(41vw,530px) !important;
+  }
+}
+
+
+/* Desktop */
+@media (min-width:1401px){
+
+  /* Forest — 1 notch smaller */
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(39vw,610px) !important;
+  }
+
+  /* Underwater — 2–3 notches smaller */
+  .vault[data-scene="underwater"] .featured-crate{
+    width:min(35vw,560px) !important;
+  }
+
+  /* Bloom — 2–3 notches smaller */
+  .vault[data-scene="bloom"] .featured-crate{
+    width:min(34vw,550px) !important;
+  }
+}
+
 </style>
 </head>
 

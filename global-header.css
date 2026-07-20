@@ -594,19 +594,277 @@ body.rg-overlay-open { overflow: hidden; }
 .rg-notification-summary span { display: block; }
 .rg-notification-summary strong { font-size: 13px; }
 .rg-notification-summary span { margin-top: 4px; color: var(--rg-muted); font-size: 10px; }
-.rg-notification-list { display: grid; gap: 9px; padding: 13px; }
-.rg-notification-card { position: relative; display: grid; grid-template-columns: auto minmax(0,1fr); gap: 11px; padding: 13px; border: 1px solid rgba(177,156,255,.1); border-radius: 14px; color: inherit; background: rgba(255,255,255,.02); text-decoration: none; }
-.rg-notification-card.is-unread { border-color: rgba(157,130,255,.3); background: rgba(127,92,255,.1); box-shadow: inset 3px 0 #9d82ff; }
-.rg-notification-card__icon { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--rg-border); border-radius: 12px; color: #c9bcff; background: rgba(127,92,255,.1); }
-.rg-notification-card__main,
-.rg-notification-card__content { min-width: 0; }
-.rg-notification-card__meta { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
-.rg-notification-card__category { color: #c9bcff; font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-.rg-notification-card__message { margin: 4px 0 0; color: var(--rg-muted); font-size: 11px; line-height: 1.45; }
-.rg-notification-card__footer { margin-top: 7px; color: var(--rg-faint); font-size: 9px; }
-.rg-notification-card__unread { position: absolute; top: 10px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: #bdaaff; box-shadow: 0 0 10px rgba(157,130,255,.8); }
-.rg-notification-card.is-read .rg-notification-card__unread { display: none; }
-.rg-notification-card__action { margin-top: 9px; min-height: 32px; padding: 0 10px; border: 1px solid var(--rg-border); border-radius: 8px; color: #d6ccff; background: rgba(127,92,255,.08); font-size: 9px; font-weight: 800; cursor: pointer; }
+.rg-notification-list {
+  display: grid;
+  gap: 9px;
+  padding: 13px;
+}
+
+.rg-notification-card {
+  position: relative;
+
+  display: block;
+  overflow: hidden;
+
+  margin: 0;
+  padding: 0;
+
+  border: 1px solid rgba(177, 156, 255, .12);
+  border-radius: 14px;
+
+  color: var(--rg-text);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(29, 25, 44, .96),
+      rgba(11, 10, 18, .98)
+    );
+}
+
+.rg-notification-card.is-unread {
+  border-color: rgba(157, 130, 255, .38);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(59, 43, 103, .46),
+      rgba(14, 11, 24, .98)
+    );
+
+  box-shadow:
+    inset 3px 0 0 #9d82ff,
+    0 0 18px rgba(127, 92, 255, .08);
+}
+
+/* Completely resets the nested button */
+.rg-notification-card__main {
+  all: unset;
+  box-sizing: border-box;
+
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr);
+
+  align-items: start;
+  gap: 11px;
+
+  padding: 13px;
+
+  color: var(--rg-text);
+  background: transparent;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.rg-notification-card__main:hover {
+  background: rgba(127, 92, 255, .045);
+}
+
+.rg-notification-card__main:active {
+  background: rgba(127, 92, 255, .075);
+}
+
+.rg-notification-card__main:focus-visible {
+  outline: 2px solid rgba(188, 168, 255, .7);
+  outline-offset: -3px;
+}
+
+.rg-notification-card__icon {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--rg-border);
+  border-radius: 12px;
+
+  color: #c9bcff;
+  background: rgba(127, 92, 255, .1);
+}
+
+.rg-notification-card__icon svg,
+.rg-notification-card__icon img {
+  width: 20px;
+  height: 20px;
+
+  object-fit: contain;
+}
+
+.rg-notification-card__content {
+  min-width: 0;
+
+  display: block;
+
+  color: var(--rg-text);
+}
+
+.rg-notification-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-bottom: 6px;
+}
+
+.rg-notification-card__category {
+  color: #c9bcff;
+
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.rg-notification-card__meta time {
+  color: var(--rg-faint);
+
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rg-notification-card__content > strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.rg-notification-card__message {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #aaa3b8;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.rg-notification-card__unread {
+  position: absolute;
+
+  top: 10px;
+  right: 10px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #bdaaff;
+
+  box-shadow:
+    0 0 10px rgba(157, 130, 255, .8);
+}
+
+.rg-notification-card.is-read
+.rg-notification-card__unread {
+  display: none;
+}
+
+.rg-notification-card__footer {
+  margin: 0;
+
+  padding:
+    0
+    13px
+    13px
+    66px;
+
+  color: inherit;
+}
+
+/* Reset action buttons too */
+.rg-notification-card__action {
+  all: unset;
+  box-sizing: border-box;
+
+  min-height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    0
+    11px;
+
+  border: 1px solid var(--rg-border);
+  border-radius: 8px;
+
+  color: #d6ccff;
+  background: rgba(127, 92, 255, .08);
+
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.rg-notification-card__action:hover {
+  border-color: var(--rg-border-strong);
+  background: rgba(127, 92, 255, .14);
+}
+
+@media (max-width: 760px) {
+  .rg-notification-list {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .rg-notification-card__main {
+    grid-template-columns:
+      38px
+      minmax(0, 1fr);
+
+    gap: 10px;
+
+    padding: 12px;
+  }
+
+  .rg-notification-card__icon {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 10px;
+  }
+
+  .rg-notification-card__content > strong {
+    font-size: 13px;
+  }
+
+  .rg-notification-card__message {
+    font-size: 10px;
+  }
+
+  .rg-notification-card__footer {
+    padding:
+      0
+      12px
+      12px
+      60px;
+  }
+}
 
 .rg-friend-card,
 .rg-request-card { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; margin: 9px 13px; padding: 10px; border: 1px solid rgba(177,156,255,.1); border-radius: 13px; background: rgba(255,255,255,.018); }

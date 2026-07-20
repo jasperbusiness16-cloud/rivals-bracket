@@ -4559,6 +4559,81 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* =========================================================
+   FOREST POSITION + LIGHT RAIN FINAL OVERRIDES
+   ========================================================= */
+
+/* Move the platform substantially lower on desktop */
+@media(min-width:1401px){
+  .vault[data-scene="forest"] .platform{
+    background-position:center calc(100% + 135px) !important;
+  }
+}
+
+/* Move the platform lower on iPad/tablet */
+@media(min-width:681px) and (max-width:1400px){
+  .vault[data-scene="forest"] .platform{
+    background-position:center calc(100% + 105px) !important;
+  }
+}
+
+/* Move it only slightly lower on phones */
+@media(max-width:680px){
+  .vault[data-scene="forest"] .platform{
+    background-size:cover !important;
+    background-position:center bottom 66px !important;
+  }
+}
+
+/* ---------------------------------------------------------
+   Realistic light Forest rain
+   --------------------------------------------------------- */
+
+.vault[data-scene="forest"] .weather .drop{
+  width:1px;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(220,238,218,.08) 18%,
+      rgba(228,244,225,.46) 100%
+    );
+
+  border-radius:999px;
+
+  filter:
+    blur(.2px)
+    drop-shadow(0 0 2px rgba(205,231,205,.18));
+
+  mix-blend-mode:screen;
+
+  animation-name:forestRainFall !important;
+  animation-timing-function:linear !important;
+  will-change:transform,opacity;
+}
+
+@keyframes forestRainFall{
+  from{
+    transform:
+      translate3d(-35px,-16vh,0)
+      rotate(8deg);
+  }
+
+  to{
+    transform:
+      translate3d(85px,125vh,0)
+      rotate(8deg);
+  }
+}
+
+/* Keep rain slightly softer on mobile */
+@media(max-width:680px){
+  .vault[data-scene="forest"] .weather .drop{
+    filter:blur(.3px);
+  }
+}
+
 </style>
 </head>
 
@@ -4780,8 +4855,8 @@ body.ritual-page-active .ritual-shade{
     lighting:""
   },
 
-  weather:null,
-  particles:null,
+  weather:["rain",20,"#dcebd8",1.9,3.4,1,2],
+particles:null,
   flash:false,
 
   rewards:[

@@ -3509,6 +3509,332 @@ body.ritual-page-active .ritual-shade{
   filter:blur(.42px);
 }
 
+/* =====================================================================
+   UNDERWATER WORLD
+   Uses one swimming fish school and CSS-only underwater lighting.
+   No bubbles, plankton, particles, or floating debris.
+   ===================================================================== */
+
+/* ---------------------------------------------------------
+   Underwater asset composition
+   --------------------------------------------------------- */
+
+.vault[data-scene="underwater"] .background{
+  background-size:cover;
+  background-position:center center;
+
+  filter:
+    brightness(.86)
+    saturate(.9)
+    contrast(.92);
+}
+
+.vault[data-scene="underwater"] .midground{
+  background-size:cover;
+  background-position:center bottom;
+
+  filter:
+    brightness(.82)
+    saturate(.82)
+    contrast(.9);
+}
+
+.vault[data-scene="underwater"] .platform{
+  z-index:3;
+
+  background-size:cover;
+  background-position:center bottom;
+
+  filter:
+    brightness(.8)
+    saturate(.78)
+    contrast(.9);
+}
+
+.vault[data-scene="underwater"] .foreground{
+  background-size:cover;
+  background-position:center center;
+
+  filter:
+    brightness(.72)
+    saturate(.76)
+    contrast(.88);
+}
+
+.vault[data-scene="underwater"] .lighting{
+  opacity:.3;
+}
+
+/* Make the crate inherit the surrounding water color. */
+.vault[data-scene="underwater"] .featured-crate{
+  filter:
+    brightness(.82)
+    saturate(.84)
+    contrast(.93)
+    drop-shadow(0 52px 72px rgba(0,8,24,.76))
+    drop-shadow(0 0 26px rgba(64,215,232,.2));
+}
+
+/* ---------------------------------------------------------
+   One background fish school
+   --------------------------------------------------------- */
+
+.underwater-fish{
+  position:absolute;
+  top:25%;
+  left:-36%;
+  z-index:1;
+
+  display:none;
+
+  width:min(32vw,520px);
+  height:auto;
+  max-width:none;
+
+  opacity:0;
+
+  filter:
+    brightness(.68)
+    saturate(.72)
+    contrast(.86)
+    blur(.35px);
+
+  pointer-events:none;
+  user-select:none;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.vault[data-scene="underwater"] .underwater-fish{
+  display:block;
+
+  animation:
+    underwaterFishPass
+    34s
+    linear
+    infinite;
+}
+
+@keyframes underwaterFishPass{
+  0%{
+    opacity:0;
+
+    transform:
+      translate3d(0,6px,0)
+      scale(.82);
+  }
+
+  7%{
+    opacity:.52;
+  }
+
+  48%{
+    opacity:.62;
+
+    transform:
+      translate3d(78vw,-8px,0)
+      scale(.88);
+  }
+
+  93%{
+    opacity:.5;
+  }
+
+  100%{
+    opacity:0;
+
+    transform:
+      translate3d(145vw,7px,0)
+      scale(.82);
+  }
+}
+
+/* ---------------------------------------------------------
+   Full-world water treatment
+   --------------------------------------------------------- */
+
+.underwater-effects{
+  position:absolute;
+  inset:0;
+  z-index:5;
+
+  overflow:hidden;
+
+  opacity:0;
+  visibility:hidden;
+
+  pointer-events:none;
+
+  transition:
+    opacity .55s ease,
+    visibility .55s ease;
+}
+
+.vault[data-scene="underwater"] .underwater-effects{
+  opacity:1;
+  visibility:visible;
+}
+
+.underwater-color-grade,
+.underwater-caustics,
+.underwater-depth{
+  position:absolute;
+  inset:0;
+
+  pointer-events:none;
+}
+
+/* Tints every layer and the crate so they feel submerged together. */
+.underwater-color-grade{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(55,205,230,.08) 0%,
+      rgba(4,112,164,.14) 42%,
+      rgba(0,42,87,.27) 100%
+    );
+}
+
+/* Slow patches of light moving through the water. */
+.underwater-caustics{
+  inset:-14%;
+
+  opacity:.24;
+
+  background:
+    radial-gradient(
+      ellipse at 16% 4%,
+      rgba(184,245,255,.22),
+      transparent 20%
+    ),
+    radial-gradient(
+      ellipse at 48% -2%,
+      rgba(164,238,255,.2),
+      transparent 24%
+    ),
+    radial-gradient(
+      ellipse at 78% 8%,
+      rgba(146,228,255,.16),
+      transparent 19%
+    ),
+    linear-gradient(
+      105deg,
+      transparent 10%,
+      rgba(185,244,255,.12) 20%,
+      transparent 31%,
+      transparent 43%,
+      rgba(151,232,255,.1) 52%,
+      transparent 64%,
+      transparent 73%,
+      rgba(181,243,255,.09) 81%,
+      transparent 91%
+    );
+
+  mix-blend-mode:screen;
+
+  filter:blur(16px);
+
+  will-change:
+    transform,
+    opacity;
+
+  animation:
+    underwaterCausticDrift
+    14s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+/* Darkens the lower water and outer edges. */
+.underwater-depth{
+  background:
+    radial-gradient(
+      ellipse at 50% 34%,
+      transparent 0 26%,
+      rgba(0,28,63,.08) 54%,
+      rgba(0,9,31,.34) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(67,211,237,.04) 0%,
+      transparent 30%,
+      rgba(0,13,39,.34) 100%
+    );
+}
+
+@keyframes underwaterCausticDrift{
+  from{
+    opacity:.18;
+
+    transform:
+      translate3d(-2%,-1%,0)
+      scale(1.02);
+  }
+
+  to{
+    opacity:.29;
+
+    transform:
+      translate3d(2%,1.5%,0)
+      scale(1.08);
+  }
+}
+
+/* ---------------------------------------------------------
+   Mobile Underwater composition
+   --------------------------------------------------------- */
+
+@media(max-width:680px){
+  .vault[data-scene="underwater"] .background{
+    background-size:auto 112%;
+    background-position:center center;
+  }
+
+  .vault[data-scene="underwater"] .midground,
+  .vault[data-scene="underwater"] .platform,
+  .vault[data-scene="underwater"] .foreground{
+    background-size:cover;
+    background-position:center bottom;
+  }
+
+  .underwater-fish{
+    top:29%;
+    left:-58%;
+
+    width:54vw;
+
+    filter:
+      brightness(.64)
+      saturate(.68)
+      contrast(.84)
+      blur(.35px);
+  }
+
+  .vault[data-scene="underwater"] .underwater-fish{
+    animation-duration:29s;
+  }
+
+  .underwater-caustics{
+    opacity:.18;
+    filter:blur(13px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .vault[data-scene="underwater"] .underwater-fish{
+    left:8%;
+    opacity:.42;
+    transform:none;
+  }
+
+  .underwater-caustics{
+    transform:none;
+  }
+}
+
 </style>
 </head>
 
@@ -3518,8 +3844,16 @@ body.ritual-page-active .ritual-shade{
 <main id="vault" class="vault" data-scene="storm">
   <div id="scene" class="scene" aria-hidden="true">
     <div class="layer sky" data-layer="sky"></div>
-    <div class="layer background" data-layer="background"></div>
-    <div class="layer midground" data-layer="midground"></div>
+  <div class="layer background" data-layer="background"></div>
+
+<img
+  class="underwater-fish"
+  src="assets/shop/worlds/UNDERWATER/FISH.PNG"
+  alt=""
+  aria-hidden="true"
+>
+
+<div class="layer midground" data-layer="midground"></div>
     <div class="layer platform" data-layer="platform"></div>
     <div class="layer foreground" data-layer="foreground"></div>
 
@@ -3558,14 +3892,20 @@ body.ritual-page-active .ritual-shade{
       <span id="sceneNumber">WORLD 04 / 09</span>
     </div>
 
-    <div class="crate-stage">
-      <div class="crate-shadow"></div>
-      <div class="aura"></div>
-      <img id="crate" class="featured-crate" src="" alt="">
-      <div id="fallback" class="fallback">STORM<br>CRATE</div>
-    </div>
+   <div class="crate-stage">
+  <div class="crate-shadow"></div>
+  <div class="aura"></div>
+  <img id="crate" class="featured-crate" src="" alt="">
+  <div id="fallback" class="fallback">STORM<br>CRATE</div>
+</div>
 
-    <div class="corner-price">
+<div class="underwater-effects" aria-hidden="true">
+  <div class="underwater-color-grade"></div>
+  <div class="underwater-caustics"></div>
+  <div class="underwater-depth"></div>
+</div>
+
+<div class="corner-price">
       <div class="price-chip">
         <span>Price</span>
         <strong>
@@ -3696,7 +4036,41 @@ body.ritual-page-active .ritual-shade{
     volcanic:{group:"core",name:"Volcanic Crate",category:"Core World",tagline:"Forge your collection in fire.",description:"A brutal collection born from lava rivers, falling ash, molten stone, and volcanic thunder.",price:2100,accent:"#ff6a35",rgb:"255,106,53",dark:"#120503",mid:"#3a1008",crate:A+"crates/worlds/VOLCANIC-CRATE.PNG",folder:"VOLCANIC",weather:["ash",36,"#c7afa5",8,17,2,7],particles:["ember",26,"#ff7a2f",4,9,2,6],flash:[4500,9000,.28],rewards:["Molten borders","Lava banners","Ember avatars","Inferno titles"]},
     storm:{group:"core",name:"Storm Crate",category:"Core World",tagline:"Enter the eye of the storm.",description:"A cinematic collection forged from thunder, rain, electric skies, and winds strong enough to shake the arena.",price:2000,accent:"#9a7cff",rgb:"154,124,255",dark:"#080713",mid:"#211944",crate:A+"crates/worlds/STORM-CRATE.PNG",folder:"STORM",weather:["rain",28,"#cfd7ff",1.1,1.8,1,2],particles:["mist",10,"#8d84bd",8,15,22,54],flash:[2800,6800,.42],rewards:["Storm backgrounds","Lightning borders","Tempest avatars","Thunder titles"]},
     desert:{group:"core",name:"Desert Crate",category:"Core World",tagline:"Cross the endless dunes.",description:"A sun-scorched collection hidden among sandstorms, lost ruins, heat haze, and ancient desert monuments.",price:1750,accent:"#e7b75c",rgb:"231,183,92",dark:"#140c04",mid:"#493017",crate:A+"crates/worlds/DESERT-CRATE.PNG",folder:"DESERT",weather:["dust",44,"#d7ad68",7,14,2,7],particles:["sand",18,"#e7bf78",5,10,2,5],flash:false,rewards:["Desert banners","Relic borders","Dune avatars","Wanderer titles"]},
-    underwater:{group:"core",name:"Underwater Crate",category:"Core World",tagline:"Descend beyond the surface.",description:"A deep-sea collection surrounded by coral kingdoms, drifting light, bubbles, and creatures in the blue.",price:1950,accent:"#40d7e8",rgb:"64,215,232",dark:"#031217",mid:"#063b4c",crate:A+"crates/worlds/UNDERWATER-CRATE.PNG",folder:"UNDERWATER",weather:["bubble",32,"#b9f5ff",7,14,4,13],particles:["plankton",24,"#72efff",7,15,1,4],flash:false,rewards:["Ocean backgrounds","Coral borders","Abyss avatars","Tidal titles"]},
+    underwater:{
+  group:"core",
+  name:"Underwater Crate",
+  category:"Core World",
+  tagline:"Descend beyond the surface.",
+  description:"Explore a lost Atlantean city beneath the sea, surrounded by ancient ruins, drifting light, and the silence of the deep.",
+  price:1950,
+  accent:"#40d7e8",
+  rgb:"64,215,232",
+  dark:"#031217",
+  mid:"#063b4c",
+
+  crate:A+"worlds/UNDERWATER/UNDERWATER_CRATE.PNG",
+  folder:"UNDERWATER",
+
+  layers:{
+    sky:"",
+    background:"BACKGROUND 2.PNG",
+    midground:"MIDGROUND 2.PNG",
+    platform:"PLATFORM 2.PNG",
+    foreground:"FOREGROUND.PNG",
+    lighting:""
+  },
+
+  weather:null,
+  particles:null,
+  flash:false,
+
+  rewards:[
+    "Ocean backgrounds",
+    "Coral borders",
+    "Abyss avatars",
+    "Tidal titles"
+  ]
+},
     cosmic:{group:"core",name:"Cosmic Crate",category:"Core World",tagline:"Leave the known world behind.",description:"A gravity-defying collection suspended among nebulae, planets, meteors, and endless cosmic light.",price:2200,accent:"#d46cff",rgb:"212,108,255",dark:"#07030f",mid:"#26103f",crate:A+"crates/worlds/COSMIC-CRATE.PNG",folder:"COSMIC",weather:["star",36,"#f0d6ff",9,18,1,4],particles:["cosmic",22,"#cf70ff",8,16,2,6],flash:[6500,12000,.17],rewards:["Nebula backgrounds","Orbit borders","Void avatars","Celestial titles"]},
     bloom:{group:"core",name:"Bloom Crate",category:"Core World",tagline:"Step into an eternal spring.",description:"A dreamlike collection of blossom temples, warm skies, floating petals, and soft enchanted light.",price:1850,accent:"#ff8fc7",rgb:"255,143,199",dark:"#140910",mid:"#43203a",crate:A+"worlds/BLOOM/BLOOM_CRATE.PNG",folder:"BLOOM",weather:["petal",18,"#ffb4d8",13,22,3,8],particles:["firefly",14,"#ffe29a",6,12,2,4],flash:false,rewards:["Bloom backgrounds","Petal borders","Spirit avatars","Harmony titles"]},
     cyber:{group:"core",name:"Cyber Crate",category:"Core World",tagline:"Jack into the neon frontier.",description:"A high-voltage collection from holographic skylines, neon grids, digital rain, and futuristic arenas.",price:2050,accent:"#36f1d0",rgb:"54,241,208",dark:"#020d0d",mid:"#07312f",crate:A+"crates/worlds/CYBER-CRATE.PNG",folder:"CYBER",weather:["digital",30,"#36f1d0",2,5,1,3],particles:["glitch",16,"#8affed",4,9,2,6],flash:[5200,9800,.16],rewards:["Cyber backgrounds","Hologram borders","Signal avatars","Neon titles"]},
@@ -3763,25 +4137,51 @@ body.ritual-page-active .ritual-shade{
   }
 
   function applyLayers(world){
-    const layerSources = {
-      sky:world.folder === "BLOOM" ? "" : `${A}worlds/${world.folder}/SKY.PNG`,
-      background:`${A}worlds/${world.folder}/BACKGROUND.PNG`,
-      midground:`${A}worlds/${world.folder}/MIDGROUND.PNG`,
-      platform:`${A}worlds/${world.folder}/PLATFORM.PNG`,
-      foreground:world.folder === "BLOOM" ? "" : `${A}worlds/${world.folder}/FOREGROUND.PNG`,
-      lighting:`${A}worlds/${world.folder}/LIGHTING.PNG`
+  const files = {
+    sky:
+      world.folder === "BLOOM"
+        ? ""
+        : "SKY.PNG",
+
+    background:"BACKGROUND.PNG",
+    midground:"MIDGROUND.PNG",
+    platform:"PLATFORM.PNG",
+
+    foreground:
+      world.folder === "BLOOM"
+        ? ""
+        : "FOREGROUND.PNG",
+
+    lighting:"LIGHTING.PNG",
+
+    ...(world.layers || {})
+  };
+
+  layers.forEach(element => {
+    const file = files[element.dataset.layer];
+
+    const source = file
+      ? `${A}worlds/${world.folder}/${file}`
+      : "";
+
+    element.style.backgroundImage = "";
+
+    if(!source) return;
+
+    const image = new Image();
+
+    image.onload = () => {
+      element.style.backgroundImage =
+        `url("${source}")`;
     };
 
-    layers.forEach(element => {
-      const source = layerSources[element.dataset.layer];
+    image.onerror = () => {
       element.style.backgroundImage = "";
-      if(!source) return;
-      const image = new Image();
-      image.onload = () => { element.style.backgroundImage = `url("${source}")`; };
-      image.onerror = () => { element.style.backgroundImage = ""; };
-      image.src = source;
-    });
-  }
+    };
+
+    image.src = source;
+  });
+}
 
   function build(container,config){
     container.innerHTML = "";

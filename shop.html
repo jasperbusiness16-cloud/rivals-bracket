@@ -3835,6 +3835,50 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* =========================================================
+   UNDERWATER TUNING
+   Smaller crate + better mobile composition
+   ========================================================= */
+
+/* Slightly reduce the underwater crate only */
+.vault[data-scene="underwater"] .featured-crate{
+  width:min(50vw,780px);
+}
+
+/* iPad / tablet */
+@media (min-width:681px) and (max-width:1400px){
+  .vault[data-scene="underwater"] .featured-crate{
+    width:min(58vw,700px);
+  }
+}
+
+/* Mobile */
+@media (max-width:680px){
+  /* Make the underwater crate a bit smaller so it matches Bloom better */
+  .vault[data-scene="underwater"] .featured-crate{
+    width:min(78vw,430px);
+    max-height:calc(100% - 120px);
+  }
+
+  /* Bring the distant ruins up a little */
+  .vault[data-scene="underwater"] .background{
+    background-size:cover !important;
+    background-position:center 58% !important;
+  }
+
+  /* Bring the main ruins up more */
+  .vault[data-scene="underwater"] .midground{
+    background-size:112% auto !important;
+    background-position:center calc(100% - 52px) !important;
+  }
+
+  /* Bring the platform up so it sits behind the crate better */
+  .vault[data-scene="underwater"] .platform{
+    background-size:114% auto !important;
+    background-position:center calc(100% - 34px) !important;
+  }
+}
+
 </style>
 </head>
 

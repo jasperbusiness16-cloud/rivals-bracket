@@ -4021,28 +4021,212 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
-/* Forest mobile composition */
-@media(max-width:680px){
-  .vault[data-scene="forest"] .midground{
-    background-size: cover !important;
-    background-position: center calc(100% + 10px) !important;
-  }
+/* =========================================================
+   FOREST WORLD — FINAL SIZE, MOBILE POSITIONING + CSS FOG
+   ========================================================= */
 
-  .vault[data-scene="forest"] .platform{
-    background-size: cover !important;
-    background-position: center calc(100% + 60px) !important;
-  }
+/* Slightly smaller Forest crate on desktop */
+.vault[data-scene="forest"] .featured-crate{
+  width:min(48vw,760px);
+}
 
+/* Slightly smaller on iPad/tablet too */
+@media(min-width:681px) and (max-width:1400px){
   .vault[data-scene="forest"] .featured-crate{
-    width:min(84vw,500px);
-    max-height:calc(100% - 110px);
+    width:min(56vw,680px);
+  }
+}
+
+/* ---------------------------------------------------------
+   Slow background forest fog
+   --------------------------------------------------------- */
+
+.vault[data-scene="forest"] .weather::before,
+.vault[data-scene="forest"] .weather::after{
+  content:"";
+  position:absolute;
+  inset:-18% -35%;
+  pointer-events:none;
+  will-change:transform,opacity;
+}
+
+/* Deeper fog moving behind the crate */
+.vault[data-scene="forest"] .weather::before{
+  background:
+    radial-gradient(
+      ellipse at 18% 58%,
+      rgba(205,225,198,.15),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 52% 66%,
+      rgba(173,205,168,.12),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 84% 52%,
+      rgba(215,231,207,.13),
+      transparent 32%
+    );
+
+  filter:blur(24px);
+  opacity:.65;
+
+  animation:
+    forestFogBack
+    32s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+/* A second, softer fog bank moving the other direction */
+.vault[data-scene="forest"] .weather::after{
+  background:
+    radial-gradient(
+      ellipse at 26% 72%,
+      rgba(225,235,218,.11),
+      transparent 34%
+    ),
+    radial-gradient(
+      ellipse at 70% 68%,
+      rgba(185,213,180,.13),
+      transparent 40%
+    );
+
+  filter:blur(30px);
+  opacity:.52;
+
+  animation:
+    forestFogBackReverse
+    41s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+/* Light foreground fog passes in front of the crate */
+.vault[data-scene="forest"] .world-zone::after{
+  content:"";
+  position:absolute;
+  inset:-12% -36%;
+  z-index:5;
+
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      ellipse at 20% 74%,
+      rgba(213,229,207,.11),
+      transparent 29%
+    ),
+    radial-gradient(
+      ellipse at 54% 79%,
+      rgba(190,216,184,.09),
+      transparent 35%
+    ),
+    radial-gradient(
+      ellipse at 86% 69%,
+      rgba(223,235,217,.1),
+      transparent 30%
+    );
+
+  filter:blur(24px);
+  opacity:.38;
+  mix-blend-mode:screen;
+
+  will-change:transform,opacity;
+
+  animation:
+    forestFogFront
+    36s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+@keyframes forestFogBack{
+  from{
+    transform:translate3d(-7%,1%,0) scale(1.02);
+    opacity:.45;
   }
 
-  .vault[data-scene="forest"] .platform::after{
-    bottom:calc(var(--hud-height) + 3%);
-    width:84vw;
-    height:22vw;
-    filter:blur(11px);
+  to{
+    transform:translate3d(8%,-2%,0) scale(1.1);
+    opacity:.7;
+  }
+}
+
+@keyframes forestFogBackReverse{
+  from{
+    transform:translate3d(9%,-1%,0) scale(1.08);
+    opacity:.38;
+  }
+
+  to{
+    transform:translate3d(-8%,2%,0) scale(1.02);
+    opacity:.58;
+  }
+}
+
+@keyframes forestFogFront{
+  from{
+    transform:translate3d(-8%,1%,0) scale(1.02);
+    opacity:.24;
+  }
+
+  to{
+    transform:translate3d(7%,-1.5%,0) scale(1.08);
+    opacity:.42;
+  }
+}
+
+/* ---------------------------------------------------------
+   Forest mobile composition
+   --------------------------------------------------------- */
+
+@media(max-width:680px){
+  /* Smaller crate, closer to Bloom's mobile scale */
+  .vault[data-scene="forest"] .featured-crate{
+    width:min(76vw,430px);
+    max-height:calc(100% - 120px);
+  }
+
+  .vault[data-scene="forest"] .background{
+    background-size:cover !important;
+    background-position:center center !important;
+  }
+
+  /* Raise the arch, pillars and nearby ruins substantially */
+  .vault[data-scene="forest"] .midground{
+    background-size:cover !important;
+    background-position:center bottom 110px !important;
+  }
+
+  /* Raise the forest altar/platform even more */
+  .vault[data-scene="forest"] .platform{
+    background-size:cover !important;
+    background-position:center bottom 145px !important;
+  }
+
+  /* Keep close branches and foliage aligned */
+  .vault[data-scene="forest"] .foreground{
+    background-size:cover !important;
+    background-position:center bottom 62px !important;
+  }
+
+  /* Keep fog restrained on the smaller screen */
+  .vault[data-scene="forest"] .world-zone::after{
+    opacity:.26;
+    filter:blur(19px);
+  }
+
+  .vault[data-scene="forest"] .weather::before{
+    opacity:.52;
+  }
+
+  .vault[data-scene="forest"] .weather::after{
+    opacity:.4;
   }
 }
 

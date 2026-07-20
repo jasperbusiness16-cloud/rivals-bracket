@@ -803,3 +803,171 @@ body.rg-overlay-open { overflow: hidden; }
   #globalHeader * { scroll-behavior: auto !important; }
 }
 
+/* =========================================================
+   MOBILE NOTIFICATION CARD FIX
+   Removes Safari's default white button background.
+   ========================================================= */
+
+#globalHeader .rg-notification-card {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+
+  border: 1px solid rgba(177, 156, 255, .12);
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28, 24, 43, .72),
+      rgba(10, 9, 17, .9)
+    );
+}
+
+#globalHeader .rg-notification-card.is-unread {
+  border-color: rgba(157, 130, 255, .42);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(80, 55, 145, .28),
+      rgba(17, 13, 29, .96)
+    );
+
+  box-shadow:
+    inset 3px 0 0 #9d82ff,
+    0 0 18px rgba(127, 92, 255, .08);
+}
+
+#globalHeader .rg-notification-card__main {
+  -webkit-appearance: none;
+  appearance: none;
+
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  display: grid;
+
+  grid-template-columns:
+    42px
+    minmax(0, 1fr);
+
+  align-items: start;
+  gap: 11px;
+
+  margin: 0;
+  padding: 13px;
+
+  border: 0;
+  border-radius: 0;
+
+  outline: 0;
+
+  background: transparent !important;
+  color: var(--rg-text);
+
+  box-shadow: none !important;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+#globalHeader .rg-notification-card__main:hover,
+#globalHeader .rg-notification-card__main:active,
+#globalHeader .rg-notification-card__main:focus {
+  background: rgba(127, 92, 255, .045) !important;
+}
+
+#globalHeader .rg-notification-card__content {
+  min-width: 0;
+
+  display: block;
+
+  color: var(--rg-text);
+}
+
+#globalHeader .rg-notification-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  margin-bottom: 6px;
+}
+
+#globalHeader .rg-notification-card__meta time {
+  color: var(--rg-faint);
+
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+#globalHeader .rg-notification-card__content > strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+#globalHeader .rg-notification-card__message {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #aaa3b8;
+
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+#globalHeader .rg-notification-card__footer {
+  padding:
+    0
+    13px
+    13px
+    66px;
+}
+
+@media (max-width: 760px) {
+  #globalHeader .rg-notification-list {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  #globalHeader .rg-notification-card__main {
+    grid-template-columns:
+      38px
+      minmax(0, 1fr);
+
+    gap: 10px;
+
+    padding: 12px;
+  }
+
+  #globalHeader .rg-notification-card__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  #globalHeader .rg-notification-card__content > strong {
+    font-size: 13px;
+  }
+
+  #globalHeader .rg-notification-card__message {
+    font-size: 10px;
+  }
+
+  #globalHeader .rg-notification-card__footer {
+    padding:
+      0
+      12px
+      12px
+      60px;
+  }
+}

@@ -5438,6 +5438,69 @@ body.ritual-page-active .ritual-shade{
   }
 }
 
+/* =========================================================
+   STOP WORLD EFFECTS WHEN REWARDS EMERGE
+   Reward cards continue animating normally.
+   ========================================================= */
+
+.forest-ritual-fx,
+.underwater-ritual-fx,
+.ritual-petals,
+.ritual-world-light,
+.ritual-lantern-light{
+  transition:
+    opacity .48s ease,
+    filter .48s ease;
+}
+
+/* Fade the Forest-specific opening effects away. */
+.ritual-overlay.theme-forest.world-effects-stopped .forest-ritual-fx,
+.ritual-overlay.theme-forest.world-effects-stopped .ritual-petals{
+  opacity:0!important;
+  filter:blur(4px) brightness(.8);
+}
+
+/* Fade the Underwater-specific opening effects away. */
+.ritual-overlay.theme-underwater.world-effects-stopped .underwater-ritual-fx,
+.ritual-overlay.theme-underwater.world-effects-stopped .ritual-petals{
+  opacity:0!important;
+  filter:blur(4px) brightness(.8);
+}
+
+/* Completely pause Forest CSS animations. */
+.ritual-overlay.theme-forest.world-effects-stopped
+.forest-ritual-fx,
+.ritual-overlay.theme-forest.world-effects-stopped
+.forest-ritual-fx *{
+  animation-play-state:paused!important;
+}
+
+/* Completely pause Underwater CSS animations. */
+.ritual-overlay.theme-underwater.world-effects-stopped
+.underwater-ritual-fx,
+.ritual-overlay.theme-underwater.world-effects-stopped
+.underwater-ritual-fx *{
+  animation-play-state:paused!important;
+}
+
+/*
+  Stop the breathing world light, but retain a small static glow
+  behind the rewards so the scene does not suddenly become dark.
+*/
+.ritual-overlay.theme-forest.world-effects-stopped .ritual-world-light,
+.ritual-overlay.theme-underwater.world-effects-stopped .ritual-world-light{
+  animation:none!important;
+  opacity:.36!important;
+  filter:none!important;
+}
+
+.ritual-overlay.theme-forest.world-effects-stopped .ritual-lantern-light,
+.ritual-overlay.theme-underwater.world-effects-stopped .ritual-lantern-light{
+  animation:none!important;
+  opacity:.3!important;
+  filter:none!important;
+}
+
 </style>
 </head>
 
@@ -6901,6 +6964,34 @@ crate.classList.remove("crate-resonating");
     burstWorldParticles(activeRitualTheme,winner.color);
   }
 
+function stopWorldOpeningEffects(theme){
+  if(theme === "bloom") return;
+
+  const overlay = $("ritualOverlay");
+
+  /*
+    CSS pauses the runes, roots, water column, vortex and ripples.
+  */
+  overlay.classList.add("world-effects-stopped");
+
+  /*
+    Forest leaves and Underwater bubbles use the Web Animations API,
+    so pause those animations separately.
+  */
+  document
+    .querySelectorAll("#ritualPetals i")
+    .forEach(particle => {
+      particle.getAnimations().forEach(animation => {
+        animation.pause();
+      });
+    });
+
+  /*
+    Forest and Underwater crates stop moving once the rewards emerge.
+  */
+  crate.classList.remove("crate-resonating");
+}
+
   async function runRitualRewardSelection(winner,rewardPool){
     const overlay = $("ritualOverlay");
     buildRitualRewards(winner,rewardPool);
@@ -7017,13 +7108,24 @@ crate.classList.remove("crate-resonating");
   $("ritualTitle").textContent = copy.releaseTitle;
   $("ritualSubtitle").textContent = copy.releaseSubtitle;
 
-  crate.classList.add("crate-resonating");
+  /*
+  Bloom keeps its gentle crate resonance during the reward circle.
 
-  const rewardSelection =
-    runRitualRewardSelection(
-      winner,
-      rewardPool
-    );
+  Forest and Underwater stop their opening effects exactly when
+  the reward cards begin emerging.
+*/
+if(theme === "bloom"){
+  crate.classList.add("crate-resonating");
+}else{
+  crate.classList.remove("crate-resonating");
+  stopWorldOpeningEffects(theme);
+}
+
+const rewardSelection =
+  runRitualRewardSelection(
+    winner,
+    rewardPool
+  );
 
   await sleep(700);
 

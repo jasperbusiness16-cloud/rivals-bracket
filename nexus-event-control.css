@@ -457,3 +457,42 @@
     width: 100%;
   }
 }
+
+.event-date-time-field {
+  grid-column: 1 / -1;
+}
+
+.event-date-time-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(170px, 1fr)
+    82px
+    auto
+    82px
+    92px;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-time-divider {
+  color: var(--muted);
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .event-date-time-grid {
+    grid-template-columns:
+      minmax(0, 1fr)
+      72px
+      auto
+      72px
+      82px;
+  }
+
+  .event-date-time-grid
+  > .event-control-input:first-child {
+    grid-column: 1 / -1;
+  }
+}

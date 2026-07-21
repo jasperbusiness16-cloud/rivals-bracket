@@ -1,0 +1,1029 @@
+/* =========================================================
+   NEXUS — CHECK-IN DESK
+   ========================================================= */
+
+.checkin-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.checkin-panel-content {
+  padding: 20px;
+}
+
+.checkin-context-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.checkin-field {
+  min-width: 0;
+}
+
+.checkin-field label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.checkin-select,
+.checkin-search input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+  background: #0d0c14;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.checkin-select {
+  padding: 0 14px;
+}
+
+.checkin-select:focus,
+.checkin-search input:focus {
+  border-color: rgba(var(--purple-rgb), 0.48);
+  box-shadow:
+    0 0 0 3px rgba(var(--purple-rgb), 0.09);
+}
+
+.checkin-context-grid {
+  display: grid;
+  grid-template-columns:
+    1.35fr
+    repeat(3, minmax(120px, 0.75fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.checkin-context-metric {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(var(--purple-rgb), 0.09),
+      transparent 52%
+    ),
+    rgba(255, 255, 255, 0.022);
+}
+
+.checkin-context-metric span,
+.checkin-summary-card span {
+  display: block;
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.checkin-context-metric strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 6px;
+  color: white;
+  font-size: 17px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   READINESS METRICS
+   ========================================================= */
+
+.checkin-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.checkin-summary-card {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.09),
+      transparent 55%
+    ),
+    rgba(255, 255, 255, 0.022);
+}
+
+.checkin-summary-card::after {
+  position: absolute;
+  top: -24px;
+  right: -24px;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background:
+    rgba(var(--purple-rgb), 0.08);
+  content: "";
+  filter: blur(12px);
+}
+
+.checkin-summary-card span {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.checkin-summary-card span i {
+  color: var(--purple-bright);
+}
+
+.checkin-summary-card strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 10px;
+  color: white;
+  font-size: 30px;
+  line-height: 1;
+}
+
+/* =========================================================
+   OWNER TOOLS
+   ========================================================= */
+
+.checkin-owner-panel {
+  border-color:
+    rgba(255, 100, 125, 0.18);
+}
+
+.checkin-owner-panel[hidden] {
+  display: none;
+}
+
+.checkin-owner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.checkin-owner-content p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.checkin-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.checkin-danger-button {
+  border-color:
+    rgba(255, 100, 125, 0.25) !important;
+  color: #ff7087 !important;
+}
+
+/* =========================================================
+   PRIORITY ALERTS
+   ========================================================= */
+
+.checkin-alerts-panel {
+  border-color:
+    rgba(255, 100, 125, 0.24);
+}
+
+.checkin-alerts-panel[hidden] {
+  display: none;
+}
+
+.checkin-alerts-panel
+.panel-header h3 {
+  color: #ff7087;
+}
+
+.checkin-priority-alerts {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.checkin-priority-card {
+  display: grid;
+  grid-template-columns:
+    52px
+    minmax(0, 1fr)
+    minmax(180px, 0.72fr);
+  align-items: center;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid
+    rgba(255, 100, 125, 0.24);
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 100, 125, 0.08),
+      transparent 58%
+    ),
+    rgba(255, 255, 255, 0.02);
+}
+
+.checkin-priority-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border: 1px solid
+    rgba(255, 100, 125, 0.28);
+  border-radius: 13px;
+  background:
+    rgba(255, 100, 125, 0.08);
+  color: #ff7087;
+  font-size: 19px;
+}
+
+.checkin-priority-copy span,
+.checkin-priority-replacement > span {
+  display: block;
+  color: #ff8c9e;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.checkin-priority-copy h4 {
+  margin: 4px 0 0;
+  color: white;
+  font-size: 19px;
+}
+
+.checkin-priority-copy p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.checkin-priority-replacement {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.checkin-priority-replacement strong,
+.checkin-priority-replacement small {
+  display: block;
+}
+
+.checkin-priority-replacement strong {
+  overflow: hidden;
+  margin-top: 5px;
+  color: white;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkin-priority-replacement small {
+  margin-top: 3px;
+  color: var(--dim);
+}
+
+.checkin-priority-replacement button,
+.checkin-recommendation button {
+  border: 1px solid
+    rgba(var(--purple-rgb), 0.26);
+  border-radius: 8px;
+  background:
+    rgba(var(--purple-rgb), 0.08);
+  color: var(--purple-bright);
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.checkin-priority-replacement button {
+  width: 100%;
+  min-height: 35px;
+  margin-top: 9px;
+}
+
+.checkin-priority-replacement button:hover,
+.checkin-recommendation button:hover {
+  border-color:
+    rgba(var(--purple-rgb), 0.48);
+  background:
+    rgba(var(--purple-rgb), 0.14);
+  color: white;
+}
+
+/* =========================================================
+   TEAM CARDS
+   ========================================================= */
+
+.checkin-team-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 16px;
+}
+
+.checkin-team-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(var(--purple-rgb), 0.11),
+      transparent 38%
+    ),
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.034),
+      rgba(255, 255, 255, 0.012)
+    ),
+    #11101a;
+}
+
+.checkin-team-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background:
+    linear-gradient(
+      90deg,
+      #f3cc4f,
+      rgba(243, 204, 79, 0.14),
+      transparent 75%
+    );
+  content: "";
+}
+
+.checkin-team-card.is-ready::before {
+  background:
+    linear-gradient(
+      90deg,
+      #46dda0,
+      rgba(70, 221, 160, 0.16),
+      transparent 75%
+    );
+}
+
+.checkin-team-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 13px;
+  border-bottom:
+    1px solid var(--border);
+}
+
+.checkin-team-header span {
+  color: var(--purple-bright);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.checkin-team-header h3 {
+  margin: 4px 0 0;
+  color: white;
+  font-size: 23px;
+  line-height: 1;
+}
+
+.checkin-team-readiness {
+  min-width: 76px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.checkin-team-readiness span {
+  color: var(--dim);
+  font-size: 8px;
+}
+
+.checkin-team-readiness strong {
+  display: block;
+  margin-top: 3px;
+  color: white;
+  font-size: 21px;
+  line-height: 1;
+}
+
+.checkin-team-state {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-bottom:
+    1px solid var(--border);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.checkin-team-state.ready {
+  color: #46dda0;
+  background:
+    rgba(70, 221, 160, 0.035);
+}
+
+.checkin-team-state.warning {
+  color: #f3cc4f;
+  background:
+    rgba(243, 204, 79, 0.035);
+}
+
+.checkin-roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.checkin-player-row {
+  display: grid;
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 10px;
+  background:
+    rgba(255, 255, 255, 0.024);
+}
+
+.checkin-player-row.ready {
+  border-color:
+    rgba(70, 221, 160, 0.18);
+}
+
+.checkin-player-row.unavailable {
+  border-color:
+    rgba(255, 100, 125, 0.22);
+  background:
+    rgba(255, 100, 125, 0.035);
+}
+
+.checkin-player-avatar,
+.checkin-sub-avatar {
+  display: block;
+  border: 1px solid
+    rgba(var(--purple-rgb), 0.34);
+  object-fit: cover;
+  background: #0c0b12;
+}
+
+.checkin-player-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+.checkin-sub-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+}
+
+.avatar-fallback {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.28),
+      rgba(var(--purple-rgb), 0.07)
+    ),
+    #171421;
+  color: white;
+  font-weight: 800;
+}
+
+.checkin-player-copy {
+  min-width: 0;
+}
+
+.checkin-player-copy strong,
+.checkin-player-copy span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkin-player-copy strong {
+  color: white;
+  font-size: 13px;
+}
+
+.checkin-player-copy span {
+  margin-top: 4px;
+  color: var(--dim);
+  font-size: 10px;
+}
+
+.checkin-state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 7px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.checkin-state-badge.ready {
+  color: #46dda0;
+  background:
+    rgba(70, 221, 160, 0.055);
+}
+
+.checkin-state-badge.pending {
+  color: #f3cc4f;
+  background:
+    rgba(243, 204, 79, 0.055);
+}
+
+.checkin-state-badge.unavailable {
+  color: #ff7087;
+  background:
+    rgba(255, 112, 135, 0.055);
+}
+
+/* =========================================================
+   MISSING PLAYERS
+   ========================================================= */
+
+.checkin-missing-section {
+  padding: 0 12px 12px;
+}
+
+.checkin-missing-section h4 {
+  margin: 2px 0 10px;
+  color: #f3cc4f;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.checkin-missing-player {
+  padding: 12px;
+  border: 1px solid
+    rgba(243, 204, 79, 0.16);
+  border-radius: 10px;
+  background:
+    rgba(243, 204, 79, 0.025);
+}
+
+.checkin-missing-player
++ .checkin-missing-player {
+  margin-top: 9px;
+}
+
+.checkin-missing-copy strong,
+.checkin-missing-copy span,
+.checkin-missing-copy small {
+  display: block;
+}
+
+.checkin-missing-copy strong {
+  color: white;
+}
+
+.checkin-missing-copy span {
+  margin-top: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.checkin-missing-copy span.pending {
+  color: #f3cc4f;
+}
+
+.checkin-missing-copy span.unavailable {
+  color: #ff7087;
+}
+
+.checkin-missing-copy small {
+  margin-top: 5px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+.checkin-recommendation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.checkin-recommendation {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto
+    auto;
+  align-items: center;
+  gap: 9px;
+  padding: 9px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.checkin-recommendation
+> div:first-child {
+  min-width: 0;
+}
+
+.checkin-recommendation strong,
+.checkin-recommendation span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkin-recommendation
+> div:first-child strong {
+  color: white;
+  font-size: 12px;
+}
+
+.checkin-recommendation
+> div:first-child span {
+  margin-top: 3px;
+  color: var(--dim);
+  font-size: 9px;
+}
+
+.checkin-match-score {
+  text-align: center;
+}
+
+.checkin-match-score strong {
+  color: #46dda0;
+  font-size: 14px;
+}
+
+.checkin-match-score span {
+  color: var(--dim);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.checkin-recommendation button {
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.checkin-no-replacement {
+  padding: 10px;
+  border: 1px dashed
+    rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  color: var(--dim);
+  font-size: 10px;
+}
+
+/* =========================================================
+   SUBSTITUTE POOL
+   ========================================================= */
+
+.checkin-sub-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(170px, 0.36fr);
+  gap: 10px;
+}
+
+.checkin-search {
+  position: relative;
+}
+
+.checkin-search i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  color: var(--dim);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.checkin-search input {
+  padding: 0 14px 0 40px;
+}
+
+.checkin-sub-pool {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 140px;
+  margin-top: 14px;
+}
+
+.checkin-sub-card {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.07),
+      transparent 55%
+    ),
+    #12111a;
+}
+
+.checkin-sub-card.ready {
+  border-color:
+    rgba(70, 221, 160, 0.2);
+}
+
+.checkin-sub-card.unavailable {
+  border-color:
+    rgba(255, 100, 125, 0.2);
+}
+
+.checkin-sub-identity {
+  display: grid;
+  grid-template-columns:
+    52px
+    minmax(0, 1fr)
+    auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkin-sub-identity > div {
+  min-width: 0;
+}
+
+.checkin-sub-identity strong,
+.checkin-sub-identity > div span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkin-sub-identity strong {
+  color: white;
+  font-size: 14px;
+}
+
+.checkin-sub-identity > div span {
+  margin-top: 4px;
+  color: var(--purple-bright);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+.checkin-sub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+}
+
+.checkin-sub-tags span {
+  padding: 5px 7px;
+  border: 1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 7px;
+  background:
+    rgba(255, 255, 255, 0.024);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   EMPTY STATES
+   ========================================================= */
+
+.checkin-empty-state {
+  grid-column: 1 / -1;
+  min-height: 170px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--dim);
+  text-align: center;
+}
+
+.checkin-empty-state i {
+  color: var(--purple-bright);
+  font-size: 26px;
+}
+
+.checkin-empty-state strong {
+  color: white;
+  font-size: 16px;
+}
+
+.checkin-empty-state span {
+  max-width: 390px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .checkin-summary-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .checkin-context-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .checkin-sub-pool {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .checkin-team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkin-priority-card {
+    grid-template-columns:
+      52px
+      minmax(0, 1fr);
+  }
+
+  .checkin-priority-replacement {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .checkin-panel-content {
+    padding: 15px;
+  }
+
+  .checkin-context-row,
+  .checkin-sub-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .checkin-context-row
+  .action-button {
+    width: 100%;
+  }
+
+  .checkin-summary-grid,
+  .checkin-context-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .checkin-owner-content {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .checkin-action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checkin-action-row
+  .action-button {
+    width: 100%;
+  }
+
+  .checkin-team-grid {
+    padding: 10px;
+  }
+
+  .checkin-sub-pool {
+    grid-template-columns: 1fr;
+  }
+
+  .checkin-player-row {
+    grid-template-columns:
+      42px
+      minmax(0, 1fr);
+  }
+
+  .checkin-state-badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .checkin-recommendation {
+    grid-template-columns:
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .checkin-recommendation button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .checkin-sub-identity {
+    grid-template-columns:
+      52px
+      minmax(0, 1fr);
+  }
+
+  .checkin-sub-identity
+  .checkin-state-badge {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 440px) {
+  .checkin-summary-grid,
+  .checkin-context-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .checkin-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .checkin-priority-card {
+    grid-template-columns: 1fr;
+  }
+
+  .checkin-priority-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .checkin-team-header {
+    padding: 16px 14px 12px;
+  }
+
+  .checkin-team-state {
+    padding: 9px 14px;
+  }
+
+  .checkin-roster-list,
+  .checkin-missing-section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}

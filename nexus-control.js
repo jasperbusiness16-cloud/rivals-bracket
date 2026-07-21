@@ -502,7 +502,16 @@ if (moduleId === "diagnostics") {
   }
 
   function renderDashboard() {
-    elements.content.innerHTML = `
+   elements.content.removeEventListener(
+  "click",
+  handleLiveOperationsClick
+);
+
+elements.content.removeEventListener(
+  "change",
+  handleLiveOperationsChange
+);
+     elements.content.innerHTML = `
       <section class="module-intro">
         <div>
           <h2>Command Dashboard</h2>
@@ -1732,9 +1741,31 @@ async function runLiveButtonAction(
   loadingText,
   action
 ) {
+  if (!button) {
+    window.alert("Nexus could not identify the selected control.");
+    return;
+  }
+
+  if (!auth?.currentUser) {
+    window.alert(
+      "Your Firebase session is no longer active. Sign in again."
+    );
+
+    return;
+  }
+
+  if (!state.role) {
+    window.alert(
+      "Nexus could not verify your administrative role."
+    );
+
+    return;
+  }
+
   const originalHtml = button.innerHTML;
 
   button.disabled = true;
+
   button.innerHTML = `
     <i class="fa-solid fa-spinner fa-spin"></i>
     ${escapeHtml(loadingText)}
@@ -1743,21 +1774,28 @@ async function runLiveButtonAction(
   try {
     await action();
   } catch (error) {
-    console.error("Nexus Live action failed:", error);
+    console.error("[NEXUS LIVE] Firebase action failed:", error);
 
-    showToast(
-      isPermissionDenied(error)
-        ? "Firebase denied this Live Operations action."
-        : `Live Operations error: ${
-            error.message || "Unknown error"
-          }`
+    const message = isPermissionDenied(error)
+      ? (
+          "Firebase denied this operation. Your session is valid, " +
+          "but the affected database path does not allow this write."
+        )
+      : (
+          error.message ||
+          "An unknown Live Operations error occurred."
+        );
+
+    showToast(message);
+
+    window.alert(
+      "Live Operations Error\n\n" + message
     );
   } finally {
     button.disabled = false;
     button.innerHTML = originalHtml;
   }
 }
-
 function setLiveSaveState(message) {
   setText("liveSaveState", message);
 }
@@ -1783,7 +1821,17 @@ function toggleOperationsMode(button) {
 }
 
   function renderModulePlaceholder(moduleId) {
-    const module = MODULES[moduleId];
+   elements.content.removeEventListener(
+  "click",
+  handleLiveOperationsClick
+);
+
+elements.content.removeEventListener(
+  "change",
+  handleLiveOperationsChange
+);
+    
+     const module = MODULES[moduleId];
 
     const descriptions = {
       live:
@@ -1852,6 +1900,15 @@ function toggleOperationsMode(button) {
   }
 
   function renderDiagnostics(autoRun = false) {
+    elements.content.removeEventListener(
+  "click",
+  handleLiveOperationsClick
+);
+
+elements.content.removeEventListener(
+  "change",
+  handleLiveOperationsChange
+);
     elements.content.innerHTML = `
       <section class="module-intro">
         <div>

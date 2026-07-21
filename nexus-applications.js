@@ -385,12 +385,17 @@
     }
 
     if (
-      button.id ===
-      "applicationsOpenTeamsButton"
-    ) {
-      context.openModule("teams");
-      return;
-    }
+  button.id ===
+  "applicationsOpenTeamsButton"
+) {
+  sessionStorage.setItem(
+    "nexusTeamBuilderTournament",
+    moduleState.tournamentId
+  );
+
+  context.openModule("teams");
+  return;
+}
 
     const action =
       button.dataset.applicationAction;

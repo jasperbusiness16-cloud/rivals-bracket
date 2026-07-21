@@ -6866,52 +6866,49 @@
         "Sending report to tournament staff...";
 
       try {
-        const basePath =
-          `tournamentReports/${tournamentId}/${incidentKey}`;
+       const basePath =
+  `tournamentReports/${tournamentId}/${incidentKey}`;
 
-        const updates =
-          {};
+const timestamp =
+  firebase.database.ServerValue.TIMESTAMP;
 
-        updates[
-          `${basePath}/meta`
-        ] = {
-          tournamentId,
-          matchKey,
-          teamKey,
-          issueType,
-          targetUid:
-            targetUid ||
-            null,
-          targetName:
-            targetName ||
-            null,
-          status:
-            "open",
-          updatedAt:
-            Date.now()
-        };
+const reportRecord = {
+  reporterUid:
+    currentUser.uid,
 
-        updates[
-          `${basePath}/reporters/${currentUser.uid}`
-        ] = {
-          reporterUid:
-            currentUser.uid,
+  reporterName:
+    player.displayName ||
+    "Player",
 
-          reporterName:
-            player.displayName ||
-            "Player",
+  tournamentId,
+  matchKey,
+  teamKey,
+  issueType,
 
-          details,
+  details,
 
-          createdAt:
-            Date.now()
-        };
+  createdAt:
+    timestamp,
 
-        await database
-          .ref()
-          .update(
-            updates
-          );
+  updatedAt:
+    timestamp
+};
+
+if (targetUid) {
+  reportRecord.targetUid =
+    targetUid;
+}
+
+if (targetName) {
+  reportRecord.targetName =
+    targetName;
+}
+
+await database
+  .ref(
+    `${basePath}/reporters/${currentUser.uid}`
+  )
+  .set(reportRecord);
 
         status.textContent =
           "Report received. Tournament staff can review it.";

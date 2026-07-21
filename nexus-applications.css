@@ -1,0 +1,591 @@
+/* =========================================================
+   NEXUS — APPLICATION REVIEW
+   ========================================================= */
+
+.applications-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.applications-panel-content {
+  padding: 18px;
+}
+
+.applications-tournament-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.applications-field {
+  min-width: 0;
+}
+
+.applications-field label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.applications-select,
+.applications-search input {
+  width: 100%;
+  min-height: 45px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: #0d0c14;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.applications-select {
+  padding: 0 13px;
+}
+
+.applications-select:focus,
+.applications-search input:focus {
+  border-color: rgba(var(--purple-rgb), 0.48);
+  box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.09);
+}
+
+.applications-search {
+  position: relative;
+}
+
+.applications-search i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  color: var(--dim);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.applications-search input {
+  padding: 0 14px 0 40px;
+}
+
+.applications-tournament-summary {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, minmax(120px, 0.7fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.applications-tournament-summary > div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.applications-tournament-summary span {
+  display: block;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.applications-tournament-summary strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.applications-context-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.applications-context-actions p {
+  margin: 0;
+  color: var(--dim);
+  font-size: 11px;
+}
+
+.applications-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.application-summary-card {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(var(--purple-rgb), 0.1),
+      transparent 52%
+    ),
+    rgba(255, 255, 255, 0.024);
+}
+
+.application-summary-card span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.application-summary-card span i {
+  color: var(--purple-bright);
+}
+
+.application-summary-card strong {
+  display: block;
+  margin-top: 9px;
+  color: white;
+  font-size: 29px;
+  line-height: 1;
+}
+
+.applications-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.5fr) repeat(2, minmax(160px, 0.6fr));
+  gap: 12px;
+}
+
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.nexus-application-card {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.07),
+      transparent 44%
+    ),
+    rgba(255, 255, 255, 0.022);
+}
+
+.application-card-identity {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.application-avatar-column {
+  min-width: 0;
+  text-align: center;
+}
+
+.nexus-application-avatar,
+.nexus-application-avatar-fallback {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border: 1px solid rgba(var(--purple-rgb), 0.34);
+  border-radius: 15px;
+}
+
+.nexus-application-avatar {
+  display: block;
+  object-fit: cover;
+}
+
+.nexus-application-avatar-fallback {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.27),
+      rgba(255, 255, 255, 0.025)
+    );
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.application-avatar-column > span {
+  display: block;
+  overflow: hidden;
+  margin-top: 8px;
+  color: var(--dim);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.application-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.application-name-row h3 {
+  margin: 0;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.application-name-row p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.application-name-row p strong {
+  color: white;
+}
+
+.application-status-badge {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.application-status-badge.status-pending {
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.07);
+}
+
+.application-status-badge.status-accepted {
+  color: #35dc86;
+  background: rgba(53, 220, 134, 0.07);
+}
+
+.application-status-badge.status-waitlist {
+  color: #63a8ff;
+  background: rgba(99, 168, 255, 0.07);
+}
+
+.application-status-badge.status-declined {
+  color: #ff647d;
+  background: rgba(255, 100, 125, 0.07);
+}
+
+.application-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.application-tag {
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.027);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.application-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.application-detail {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.application-detail span {
+  display: block;
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.application-detail strong {
+  display: block;
+  overflow: hidden;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 13px;
+  text-overflow: ellipsis;
+}
+
+.application-applicant-notes {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.application-applicant-notes span {
+  display: block;
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.application-applicant-notes p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.application-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.application-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.application-status-button {
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.028);
+  color: var(--muted);
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.application-status-button:hover:not(:disabled) {
+  border-color: rgba(var(--purple-rgb), 0.42);
+  color: white;
+}
+
+.application-status-button:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.status-action-accepted:not(:disabled) {
+  color: #35dc86;
+}
+
+.status-action-waitlist:not(:disabled) {
+  color: #63a8ff;
+}
+
+.status-action-declined:not(:disabled) {
+  color: #ff647d;
+}
+
+.application-note-editor {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.application-note-editor label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.application-note-editor textarea {
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: #0d0c14;
+  color: white;
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+.application-note-editor textarea:focus {
+  border-color: rgba(var(--purple-rgb), 0.48);
+  box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.09);
+}
+
+.application-note-editor > div {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 9px;
+}
+
+.applications-empty {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: var(--dim);
+  text-align: center;
+}
+
+.applications-empty i {
+  color: var(--purple-bright);
+  font-size: 28px;
+}
+
+.applications-empty strong {
+  color: white;
+  font-size: 17px;
+}
+
+.applications-empty span {
+  max-width: 390px;
+  font-size: 12px;
+}
+
+.applications-error i {
+  color: var(--red);
+}
+
+@media (max-width: 1050px) {
+  .applications-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .applications-tournament-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .applications-filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .applications-filter-grid .applications-field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .applications-tournament-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .applications-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .applications-tournament-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .applications-context-actions,
+  .application-action-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .applications-context-actions .action-button,
+  .application-action-row > .action-button {
+    width: 100%;
+  }
+
+  .applications-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .applications-filter-grid .applications-field:first-child {
+    grid-column: auto;
+  }
+
+  .application-card-identity {
+    grid-template-columns: 1fr;
+  }
+
+  .application-avatar-column {
+    text-align: left;
+  }
+
+  .nexus-application-avatar,
+  .nexus-application-avatar-fallback {
+    margin: 0;
+  }
+
+  .application-avatar-column > span {
+    max-width: 120px;
+    text-align: center;
+  }
+
+  .application-details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .application-name-row {
+    margin-top: 4px;
+  }
+
+  .application-status-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 470px) {
+  .applications-summary-grid,
+  .application-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .application-name-row {
+    flex-direction: column;
+  }
+
+  .application-status-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .application-status-button {
+    width: 100%;
+  }
+}

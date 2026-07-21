@@ -592,6 +592,12 @@ if (
 ) {
   window.NexusTeamBuilder.cleanup();
 }
+if (
+  window.NexusCheckIn &&
+  typeof window.NexusCheckIn.cleanup === "function"
+) {
+  window.NexusCheckIn.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -644,6 +650,7 @@ if (moduleId === "applications") {
 
   return;
 }
+
 if (moduleId === "teams") {
   if (
     !window.NexusTeamBuilder ||
@@ -668,6 +675,32 @@ if (moduleId === "teams") {
 
   return;
 }
+
+if (moduleId === "checkin") {
+  if (
+    !window.NexusCheckIn ||
+    typeof window.NexusCheckIn.render !== "function"
+  ) {
+    showToast("The Check-In module failed to load.");
+    renderModulePlaceholder(moduleId);
+    return;
+  }
+
+  window.NexusCheckIn.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+
 if (moduleId === "diagnostics") {
       renderDiagnostics(forceRefresh);
       return;

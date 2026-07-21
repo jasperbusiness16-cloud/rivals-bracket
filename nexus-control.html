@@ -1,1 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#08080d">
+
+  <title>Nexus Control Center | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link rel="stylesheet" href="nexus-control.css?v=1">
+</head>
+
+<body>
+
+  <!-- Initial authentication/loading screen -->
+  <section id="nexusLoading" class="state-screen">
+    <div class="state-orb">
+      <span></span>
+    </div>
+
+    <p class="eyebrow">RIVALS GAUNTLET</p>
+    <h1>Initializing Nexus</h1>
+    <p id="loadingMessage">Verifying your administrative session...</p>
+  </section>
+
+  <!-- Shown when a signed-in user does not have access -->
+  <section id="nexusDenied" class="state-screen" hidden>
+    <div class="state-icon state-icon-danger">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+
+    <p class="eyebrow">ACCESS RESTRICTED</p>
+    <h1>Nexus Access Denied</h1>
+
+    <p id="deniedMessage">
+      Your account does not have permission to use the Control Center.
+    </p>
+
+    <div class="state-actions">
+      <a class="button button-primary" href="index.html">
+        Return to Website
+      </a>
+
+      <button id="deniedSignOutButton" class="button button-secondary">
+        Sign Out
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Control Center -->
+  <div id="nexusApp" class="nexus-shell" hidden>
+
+    <aside id="nexusSidebar" class="nexus-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark">RG</div>
+
+        <div class="brand-copy">
+          <span>RIVALS GAUNTLET</span>
+          <strong>NEXUS</strong>
+        </div>
+
+        <button
+          id="closeMobileSidebar"
+          class="icon-button sidebar-close"
+          aria-label="Close navigation"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <nav id="nexusNavigation" class="nexus-navigation">
+
+        <div class="nav-section">
+          <p class="nav-section-label">COMMAND</p>
+
+          <button
+            class="nav-item active"
+            data-module="dashboard"
+            data-permission="dashboard.view"
+          >
+            <i class="fa-solid fa-grid-2"></i>
+            <span>Command Dashboard</span>
+          </button>
+
+          <button
+            class="nav-item nav-item-live"
+            data-module="live"
+            data-permission="broadcast.view"
+          >
+            <i class="fa-solid fa-satellite-dish"></i>
+            <span>Live Operations</span>
+            <em>LIVE</em>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-section-label">TOURNAMENT</p>
+
+          <button
+            class="nav-item"
+            data-module="tournament"
+            data-permission="tournaments.manage"
+          >
+            <i class="fa-solid fa-trophy"></i>
+            <span>Event Control</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="applications"
+            data-permission="applications.manage"
+          >
+            <i class="fa-solid fa-file-signature"></i>
+            <span>Applications</span>
+            <b id="applicationNavCount" class="nav-count" hidden>0</b>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="teams"
+            data-permission="teams.manage"
+          >
+            <i class="fa-solid fa-people-group"></i>
+            <span>Team Builder</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="checkin"
+            data-permission="checkin.manage"
+          >
+            <i class="fa-solid fa-user-check"></i>
+            <span>Check-In Desk</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="bracket"
+            data-permission="bracket.manage"
+          >
+            <i class="fa-solid fa-diagram-project"></i>
+            <span>Bracket & Matches</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-section-label">ENGAGEMENT</p>
+
+          <button
+            class="nav-item"
+            data-module="predictions"
+            data-permission="predictions.manage"
+          >
+            <i class="fa-solid fa-crosshairs"></i>
+            <span>Predictions</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="posts"
+            data-permission="content.manage"
+          >
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Posts & Announcements</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="giveaways"
+            data-permission="giveaways.view"
+          >
+            <i class="fa-solid fa-gift"></i>
+            <span>Giveaways & Rewards</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-section-label">COMMUNITY</p>
+
+          <button
+            class="nav-item"
+            data-module="players"
+            data-permission="users.view"
+          >
+            <i class="fa-solid fa-users"></i>
+            <span>Player Directory</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="staff"
+            data-permission="staff.view"
+          >
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Staff & Access</span>
+          </button>
+        </div>
+
+        <div class="nav-section">
+          <p class="nav-section-label">SYSTEM</p>
+
+          <button
+            class="nav-item"
+            data-module="diagnostics"
+            data-permission="diagnostics.view"
+          >
+            <i class="fa-solid fa-wave-square"></i>
+            <span>System Diagnostics</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="audit"
+            data-permission="audit.view"
+          >
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Audit History</span>
+          </button>
+
+          <button
+            class="nav-item"
+            data-module="settings"
+            data-permission="system.manage"
+          >
+            <i class="fa-solid fa-sliders"></i>
+            <span>Nexus Settings</span>
+          </button>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="connection-row">
+          <span id="connectionDot" class="connection-dot"></span>
+
+          <div>
+            <strong id="connectionLabel">Connecting</strong>
+            <small>Firebase Realtime Database</small>
+          </div>
+        </div>
+
+        <button id="collapseSidebarButton" class="collapse-button">
+          <i class="fa-solid fa-angles-left"></i>
+          <span>Collapse Navigation</span>
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <section class="nexus-workspace">
+
+      <header class="nexus-header">
+        <div class="header-left">
+          <button
+            id="mobileMenuButton"
+            class="icon-button mobile-menu-button"
+            aria-label="Open navigation"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div>
+            <p id="nexusBreadcrumb" class="breadcrumb">
+              Nexus / Command
+            </p>
+
+            <h1 id="nexusPageTitle">Command Dashboard</h1>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button
+            id="commandButton"
+            class="command-button"
+            title="Open command search"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search Nexus</span>
+            <kbd>⌘ K</kbd>
+          </button>
+
+          <button
+            id="refreshModuleButton"
+            class="icon-button"
+            title="Refresh current module"
+          >
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+
+          <div class="admin-account">
+            <button id="adminAccountButton" class="admin-account-button">
+              <div id="adminAvatar" class="admin-avatar">RG</div>
+
+              <div class="admin-account-copy">
+                <strong id="adminDisplayName">Administrator</strong>
+                <span id="adminRoleLabel">Verifying...</span>
+              </div>
+
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <div id="adminAccountMenu" class="admin-account-menu" hidden>
+              <div class="account-menu-header">
+                <strong id="menuAdminName">Administrator</strong>
+                <span id="menuAdminEmail">—</span>
+              </div>
+
+              <button id="signOutButton">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main id="nexusContent" class="nexus-content"></main>
+
+    </section>
+  </div>
+
+  <!-- Command search -->
+  <div id="commandOverlay" class="command-overlay" hidden>
+    <div class="command-palette">
+      <div class="command-search-row">
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          id="commandSearchInput"
+          type="search"
+          placeholder="Search pages and commands..."
+          autocomplete="off"
+        >
+
+        <kbd>ESC</kbd>
+      </div>
+
+      <div id="commandResults" class="command-results"></div>
+    </div>
+  </div>
+
+  <div id="nexusToast" class="nexus-toast" role="status"></div>
+
+  <!-- Existing Firebase version used by your website -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Your existing Firebase initialization -->
+  <script src="firebase.js"></script>
+
+  <script src="nexus-control.js?v=1"></script>
+</body>
+</html>

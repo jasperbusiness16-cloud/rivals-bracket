@@ -1027,3 +1027,156 @@
     padding-right: 10px;
   }
 }
+
+/* =========================================================
+   COLLAPSIBLE MISSING PLAYER AREA
+   ========================================================= */
+
+.checkin-missing-dropdown {
+  margin: 0 12px 12px;
+  overflow: hidden;
+  border: 1px solid rgba(243, 204, 79, 0.18);
+  border-radius: 11px;
+  background: rgba(243, 204, 79, 0.025);
+}
+
+.checkin-missing-dropdown summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 58px;
+  padding: 11px 13px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background 150ms ease,
+    color 150ms ease;
+}
+
+.checkin-missing-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.checkin-missing-dropdown summary::marker {
+  display: none;
+  content: "";
+}
+
+.checkin-missing-dropdown summary:hover {
+  background: rgba(243, 204, 79, 0.055);
+}
+
+.checkin-missing-summary-copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.checkin-missing-summary-copy > i {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(243, 204, 79, 0.2);
+  border-radius: 9px;
+  background: rgba(243, 204, 79, 0.06);
+  color: #f3cc4f;
+}
+
+.checkin-missing-summary-copy > div {
+  min-width: 0;
+}
+
+.checkin-missing-summary-copy strong,
+.checkin-missing-summary-copy span {
+  display: block;
+}
+
+.checkin-missing-summary-copy strong {
+  color: #f3cc4f;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.checkin-missing-summary-copy span {
+  margin-top: 3px;
+  color: var(--dim);
+  font-size: 10px;
+}
+
+.checkin-missing-summary-action {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.checkin-missing-summary-action i {
+  color: #f3cc4f;
+  transition: transform 180ms ease;
+}
+
+.checkin-missing-dropdown[open]
+.checkin-missing-summary-action i {
+  transform: rotate(180deg);
+}
+
+.checkin-missing-dropdown[open] summary {
+  border-bottom: 1px solid rgba(243, 204, 79, 0.14);
+  background: rgba(243, 204, 79, 0.045);
+}
+
+.checkin-missing-dropdown[open]
+.checkin-missing-summary-action span {
+  font-size: 0;
+}
+
+.checkin-missing-dropdown[open]
+.checkin-missing-summary-action span::after {
+  font-size: 10px;
+  content: "Close";
+}
+
+.checkin-missing-dropdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px;
+}
+
+/* Remove extra spacing because the dropdown now controls it */
+.checkin-missing-dropdown-content
+.checkin-missing-player {
+  margin: 0;
+}
+
+.checkin-missing-dropdown-content
+.checkin-missing-player
++ .checkin-missing-player {
+  margin-top: 0;
+}
+
+@media (max-width: 440px) {
+  .checkin-missing-dropdown {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  .checkin-missing-dropdown summary {
+    padding: 10px;
+  }
+
+  .checkin-missing-summary-action span {
+    display: none;
+  }
+}

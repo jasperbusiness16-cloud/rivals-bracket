@@ -131,12 +131,10 @@
   "Optional. Leave blank to accept unlimited player applications."
 )}
 
-            ${fieldMarkup(
-              "newEventCountdownDate",
-              "Tournament Date / Countdown",
-              "text",
-              "2026-06-27T19:00:00-06:00"
-            )}
+           ${dateTimePickerMarkup(
+  "newEvent",
+  "Tournament Start"
+)}
           </div>
 
           <label class="event-checkbox-row">
@@ -318,12 +316,10 @@
   "Optional. Leave blank to accept unlimited player applications."
 )}
 
-              ${fieldMarkup(
-                "eventCountdownDateInput",
-                "Tournament Date / Countdown",
-                "text",
-                "2026-06-27T19:00:00-06:00"
-              )}
+            ${dateTimePickerMarkup(
+  "event",
+  "Tournament Start"
+)}
 
               <div class="event-field">
                 <label for="eventRegistrationStatusSelect">
@@ -939,10 +935,10 @@
     }
 
     if (
-      target.matches(
-        "#eventFormatSelect, #eventRegistrationStatusSelect, #eventPhaseSelect"
-      )
-    ) {
+  target.matches(
+    "#eventFormatSelect, #eventRegistrationStatusSelect, #eventPhaseSelect, #eventStartDate, #eventStartHour, #eventStartMinute, #eventStartPeriod"
+  )
+) {
       moduleState.dirty =
         true;
 
@@ -999,7 +995,7 @@
 
     if (
       event.target.matches(
-        "#eventNameInput, #eventFormatSelect, #eventPlayersPerTeamInput, #eventMaxPlayersInput, #eventCountdownDateInput, #eventRegistrationStatusSelect, #eventPhaseSelect, #eventPrizePoolInput, #eventStartingPrizePoolInput, #eventDonationGoalInput"
+       "#eventNameInput, #eventFormatSelect, #eventPlayersPerTeamInput, #eventMaxPlayersInput, #eventStartDate, #eventStartHour, #eventStartMinute, #eventStartPeriod, #eventRegistrationStatusSelect, #eventPhaseSelect, #eventPrizePoolInput, #eventStartingPrizePoolInput, #eventDonationGoalInput"
       )
     ) {
       moduleState.dirty =
@@ -1077,9 +1073,17 @@
   );
 
     const countdownDate =
-      valueOf(
-        "newEventCountdownDate"
-      );
+  readFriendlyDateTime(
+    "newEvent"
+  );
+
+if (!countdownDate) {
+  context.showToast(
+    "Choose a tournament start date and time."
+  );
+
+  return;
+}
 
     const setActive =
       Boolean(
@@ -1678,9 +1682,9 @@
   ),
 
       countdownDate:
-        valueOf(
-          "eventCountdownDateInput"
-        ),
+  readFriendlyDateTime(
+    "event"
+  ),
 
       registrationStatus,
 
@@ -1795,11 +1799,10 @@
     : tournament.maxPlayers
 );
 
-    setValue(
-      "eventCountdownDateInput",
-      tournament.countdownDate ||
-      ""
-    );
+    populateFriendlyDateTime(
+  "event",
+  tournament.countdownDate
+);
 
     setValue(
       "eventRegistrationStatusSelect",
@@ -1849,11 +1852,13 @@
 
   function clearEventForm() {
     [
-      "eventNameInput",
-      "eventCountdownDateInput",
-      "eventPrizePoolInput",
-      "eventStartingPrizePoolInput",
-      "eventDonationGoalInput"
+       "eventNameInput",
+
+  "eventPrizePoolInput",
+
+  "eventStartingPrizePoolInput",
+
+  "eventDonationGoalInput"
     ].forEach(
       id => {
         setValue(
@@ -1862,6 +1867,10 @@
         );
       }
     );
+
+clearFriendlyDateTime(
+  "event"
+);
 
     setValue(
       "eventFormatSelect",
@@ -1917,10 +1926,9 @@
   ""
 );
 
-    setValue(
-      "newEventCountdownDate",
-      ""
-    );
+    clearFriendlyDateTime(
+  "newEvent"
+);
 
     const setActive =
       document.getElementById(
@@ -2496,6 +2504,96 @@
     `;
   }
 
+function dateTimePickerMarkup(
+  prefix,
+  label
+) {
+  return `
+    <div class="event-field event-date-time-field">
+      <label for="${escapeHtml(prefix)}StartDate">
+        ${escapeHtml(label)}
+      </label>
+
+      <div class="event-date-time-grid">
+        <input
+          id="${escapeHtml(prefix)}StartDate"
+          class="event-control-input"
+          type="date"
+        >
+
+        <select
+          id="${escapeHtml(prefix)}StartHour"
+          class="event-control-select"
+          aria-label="Start hour"
+        >
+          ${Array.from(
+            { length: 12 },
+            (_, index) => {
+              const hour =
+                index + 1;
+
+              return `
+                <option value="${hour}">
+                  ${hour}
+                </option>
+              `;
+            }
+          ).join("")}
+        </select>
+
+        <span class="event-time-divider">
+          :
+        </span>
+
+        <select
+          id="${escapeHtml(prefix)}StartMinute"
+          class="event-control-select"
+          aria-label="Start minute"
+        >
+          ${[
+            "00",
+            "05",
+            "10",
+            "15",
+            "20",
+            "25",
+            "30",
+            "35",
+            "40",
+            "45",
+            "50",
+            "55"
+          ].map(
+            minute => `
+              <option value="${minute}">
+                ${minute}
+              </option>
+            `
+          ).join("")}
+        </select>
+
+        <select
+          id="${escapeHtml(prefix)}StartPeriod"
+          class="event-control-select"
+          aria-label="AM or PM"
+        >
+          <option value="AM">
+            AM
+          </option>
+
+          <option value="PM">
+            PM
+          </option>
+        </select>
+      </div>
+
+      <small>
+        Choose the date and enter the time using AM or PM.
+      </small>
+    </div>
+  `;
+}
+
   function fieldMarkup(
     id,
     label,
@@ -2688,6 +2786,203 @@
         64
       );
   }
+
+function readFriendlyDateTime(
+  prefix
+) {
+  const dateValue =
+    valueOf(
+      `${prefix}StartDate`
+    );
+
+  const hourValue =
+    Number(
+      valueOf(
+        `${prefix}StartHour`
+      )
+    );
+
+  const minuteValue =
+    Number(
+      valueOf(
+        `${prefix}StartMinute`
+      )
+    );
+
+  const period =
+    valueOf(
+      `${prefix}StartPeriod`
+    );
+
+  if (
+    !dateValue ||
+    !Number.isFinite(hourValue) ||
+    !Number.isFinite(minuteValue) ||
+    ![
+      "AM",
+      "PM"
+    ].includes(period)
+  ) {
+    return "";
+  }
+
+  let hour24 =
+    hourValue % 12;
+
+  if (period === "PM") {
+    hour24 += 12;
+  }
+
+  const [
+    year,
+    month,
+    day
+  ] = dateValue
+    .split("-")
+    .map(Number);
+
+  const localDate =
+    new Date(
+      year,
+      month - 1,
+      day,
+      hour24,
+      minuteValue,
+      0,
+      0
+    );
+
+  if (
+    Number.isNaN(
+      localDate.getTime()
+    )
+  ) {
+    return "";
+  }
+
+  return localDate.toISOString();
+}
+
+function populateFriendlyDateTime(
+  prefix,
+  savedValue
+) {
+  if (!savedValue) {
+    clearFriendlyDateTime(
+      prefix
+    );
+
+    return;
+  }
+
+  const date =
+    new Date(
+      savedValue
+    );
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    clearFriendlyDateTime(
+      prefix
+    );
+
+    return;
+  }
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+  const hour24 =
+    date.getHours();
+
+  const hour12 =
+    hour24 % 12 ||
+    12;
+
+  const period =
+    hour24 >= 12
+      ? "PM"
+      : "AM";
+
+  const roundedMinute =
+    Math.round(
+      date.getMinutes() /
+      5
+    ) * 5;
+
+  const safeMinute =
+    roundedMinute >= 60
+      ? "55"
+      : String(
+          roundedMinute
+        ).padStart(
+          2,
+          "0"
+        );
+
+  setValue(
+    `${prefix}StartDate`,
+    `${year}-${month}-${day}`
+  );
+
+  setValue(
+    `${prefix}StartHour`,
+    hour12
+  );
+
+  setValue(
+    `${prefix}StartMinute`,
+    safeMinute
+  );
+
+  setValue(
+    `${prefix}StartPeriod`,
+    period
+  );
+}
+
+function clearFriendlyDateTime(
+  prefix
+) {
+  setValue(
+    `${prefix}StartDate`,
+    ""
+  );
+
+  setValue(
+    `${prefix}StartHour`,
+    7
+  );
+
+  setValue(
+    `${prefix}StartMinute`,
+    "00"
+  );
+
+  setValue(
+    `${prefix}StartPeriod`,
+    "PM"
+  );
+}
 
   function valueOf(id) {
     return String(

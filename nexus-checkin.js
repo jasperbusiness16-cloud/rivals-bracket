@@ -1225,26 +1225,54 @@
         </div>
 
         ${
-          missing.length
-            ? `
-              <div class="checkin-missing-section">
-                <h4>
-                  Missing Players & Replacements
-                </h4>
+  missing.length
+    ? `
+      <details class="checkin-missing-dropdown">
+        <summary>
+          <div class="checkin-missing-summary-copy">
+            <i class="fa-solid fa-user-clock"></i>
 
-                ${missing
-                  .map(
-                    player =>
-                      missingBlock(
-                        player,
-                        teamKey
-                      )
-                  )
-                  .join("")}
-              </div>
-            `
-            : ""
-        }
+            <div>
+              <strong>
+                Missing Players & Replacements
+              </strong>
+
+              <span>
+                ${missing.length}
+                ${
+                  missing.length === 1
+                    ? "player needs"
+                    : "players need"
+                }
+                attention
+              </span>
+            </div>
+          </div>
+
+          <div class="checkin-missing-summary-action">
+            <span>
+              View
+            </span>
+
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </summary>
+
+        <div class="checkin-missing-dropdown-content">
+          ${missing
+            .map(
+              player =>
+                missingBlock(
+                  player,
+                  teamKey
+                )
+            )
+            .join("")}
+        </div>
+      </details>
+    `
+    : ""
+}
       </article>
     `;
   }

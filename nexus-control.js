@@ -586,7 +586,12 @@ if (
 ) {
   window.NexusApplications.cleanup();
 }
-
+if (
+  window.NexusTeamBuilder &&
+  typeof window.NexusTeamBuilder.cleanup === "function"
+) {
+  window.NexusTeamBuilder.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -639,7 +644,30 @@ if (moduleId === "applications") {
 
   return;
 }
+if (moduleId === "teams") {
+  if (
+    !window.NexusTeamBuilder ||
+    typeof window.NexusTeamBuilder.render !== "function"
+  ) {
+    showToast("The Team Builder module failed to load.");
+    renderModulePlaceholder(moduleId);
+    return;
+  }
 
+  window.NexusTeamBuilder.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
 if (moduleId === "diagnostics") {
       renderDiagnostics(forceRefresh);
       return;

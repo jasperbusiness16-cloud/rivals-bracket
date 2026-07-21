@@ -252,9 +252,9 @@ function saveCurrentResult() {
 
   siteRef.update(updates)
     .then(() => {
-      if (winner) {
-        return payMatchPredictions(currentMatchId, winner);
-      }
+     // Prediction payouts are temporarily disabled.
+// They will be moved to a protected Firebase Function.
+return Promise.resolve();
     })
     .then(() => {
       const next = getAutoNextMatch();
@@ -276,7 +276,7 @@ function saveCurrentResult() {
       });
     })
     .then(() => {
-      showToast(winner ? "✓ Result + Predictions Paid" : "✓ Result Saved");
+      showToast(winner ? "✓ Result Saved" : "✓ Scores Saved");
     })
     .catch(error => {
       console.error(error);

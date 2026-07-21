@@ -1,18 +1,6 @@
 (() => {
   "use strict";
 
-window.addEventListener("error", event => {
-  console.error("Nexus startup error:", event.error || event.message);
-
-  const loading = document.getElementById("nexusLoading");
-  const message = document.getElementById("loadingMessage");
-
-  if (loading && message) {
-    message.textContent =
-      `Nexus encountered a JavaScript error: ${event.message}`;
-  }
-});
-
   const MODULES = {
     dashboard: {
       title: "Command Dashboard",
@@ -20,98 +8,84 @@ window.addEventListener("error", event => {
       icon: "fa-grid-2",
       permission: "dashboard.view"
     },
-
     live: {
       title: "Live Operations",
       breadcrumb: "Nexus / Broadcast",
       icon: "fa-satellite-dish",
       permission: "broadcast.view"
     },
-
     tournament: {
       title: "Event Control",
       breadcrumb: "Nexus / Tournament",
       icon: "fa-trophy",
       permission: "tournaments.manage"
     },
-
     applications: {
       title: "Application Review",
       breadcrumb: "Nexus / Tournament / Applications",
       icon: "fa-file-signature",
       permission: "applications.manage"
     },
-
     teams: {
       title: "Team Builder",
       breadcrumb: "Nexus / Tournament / Teams",
       icon: "fa-people-group",
       permission: "teams.manage"
     },
-
     checkin: {
       title: "Check-In Desk",
       breadcrumb: "Nexus / Tournament / Check-In",
       icon: "fa-user-check",
       permission: "checkin.manage"
     },
-
     bracket: {
       title: "Bracket & Matches",
       breadcrumb: "Nexus / Tournament / Bracket",
       icon: "fa-diagram-project",
       permission: "bracket.manage"
     },
-
     predictions: {
       title: "Prediction Operations",
       breadcrumb: "Nexus / Engagement / Predictions",
       icon: "fa-crosshairs",
       permission: "predictions.manage"
     },
-
     posts: {
       title: "Posts & Announcements",
       breadcrumb: "Nexus / Engagement / Content",
       icon: "fa-newspaper",
       permission: "content.manage"
     },
-
     giveaways: {
       title: "Giveaways & Rewards",
       breadcrumb: "Nexus / Engagement / Giveaways",
       icon: "fa-gift",
       permission: "giveaways.view"
     },
-
     players: {
       title: "Player Directory",
       breadcrumb: "Nexus / Community / Players",
       icon: "fa-users",
       permission: "users.view"
     },
-
     staff: {
       title: "Staff & Access",
       breadcrumb: "Nexus / Community / Staff",
       icon: "fa-user-shield",
       permission: "staff.view"
     },
-
     diagnostics: {
       title: "System Diagnostics",
       breadcrumb: "Nexus / System / Diagnostics",
       icon: "fa-wave-square",
       permission: "diagnostics.view"
     },
-
     audit: {
       title: "Audit History",
       breadcrumb: "Nexus / System / Audit",
       icon: "fa-clock-rotate-left",
       permission: "audit.view"
     },
-
     settings: {
       title: "Nexus Settings",
       breadcrumb: "Nexus / System / Settings",
@@ -120,13 +94,6 @@ window.addEventListener("error", event => {
     }
   };
 
-  /*
-   * Phase 1 maps your existing roles.
-   *
-   * Later, these permissions will be loaded from:
-   * staffRoles/{roleId}
-   * staffMembers/{uid}
-   */
   const ROLE_TEMPLATES = {
     owner: {
       label: "Owner",
@@ -157,105 +124,182 @@ window.addEventListener("error", event => {
   };
 
   const LIVE_MATCHES = [
-  "No Match Live",
-
-  "R16-1 • Bo3",
-  "R16-2 • Bo3",
-  "R16-3 • Bo3",
-  "R16-4 • Bo3",
-  "R16-5 • Bo3",
-  "R16-6 • Bo3",
-  "R16-7 • Bo3",
-  "R16-8 • Bo3",
-
-  "QF1 • Bo3",
-  "QF2 • Bo3",
-  "QF3 • Bo3",
-  "QF4 • Bo3",
-
-  "SF1 • Bo3",
-  "SF2 • Bo3",
-
-  "Grand Finals • Bo5"
-];
+    "No Match Live",
+    "R16-1 • Bo3",
+    "R16-2 • Bo3",
+    "R16-3 • Bo3",
+    "R16-4 • Bo3",
+    "R16-5 • Bo3",
+    "R16-6 • Bo3",
+    "R16-7 • Bo3",
+    "R16-8 • Bo3",
+    "QF1 • Bo3",
+    "QF2 • Bo3",
+    "QF3 • Bo3",
+    "QF4 • Bo3",
+    "SF1 • Bo3",
+    "SF2 • Bo3",
+    "Grand Finals • Bo5"
+  ];
 
   const state = {
-  user: null,
-  userRecord: {},
-  playerRecord: {},
-  roleId: "",
-  role: null,
-  activeModule: "dashboard",
-  connected: false,
-  listenersStarted: false,
+    user: null,
+    userRecord: {},
+    playerRecord: {},
+    roleId: "",
+    role: null,
+    activeModule: "dashboard",
+    connected: false,
+    listenersStarted: false,
 
-  liveDraft: {
-    currentMatchId: "No Match Live",
-    teamAScore: 0,
-    teamBScore: 0,
+    liveDraft: {
+      currentMatchId: "No Match Live",
+      teamAScore: 0,
+      teamBScore: 0,
 
-    nextMatch: {
-      label: "",
-      teamA: "",
-      teamB: ""
-    },
+      nextMatch: {
+        label: "",
+        teamA: "",
+        teamB: ""
+      },
 
-    dirty: false
-  }
-};
+      dirty: false
+    }
+  };
+
+  const elements = {};
 
   let auth;
   let database;
   let toastTimer;
+  let startupComplete = false;
 
-  const elements = {};
+  window.addEventListener("error", event => {
+    console.error(
+      "Nexus startup error:",
+      event.error || event.message
+    );
 
-  document.addEventListener("DOMContentLoaded", initializeNexus);
+    if (startupComplete) return;
+
+    const message = document.getElementById("loadingMessage");
+
+    if (message) {
+      message.textContent =
+        `Nexus JavaScript error: ${
+          event.message || "Unknown error"
+        }`;
+    }
+  });
+
+  window.addEventListener("unhandledrejection", event => {
+    console.error(
+      "Unhandled Nexus promise rejection:",
+      event.reason
+    );
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener(
+      "DOMContentLoaded",
+      initializeNexus,
+      { once: true }
+    );
+  } else {
+    initializeNexus();
+  }
 
   function initializeNexus() {
-    cacheElements();
+    try {
+      cacheElements();
 
-    if (
-      typeof firebase === "undefined" ||
-      !firebase.apps ||
-      firebase.apps.length === 0
-    ) {
-      showFatalError(
-        "Firebase Not Initialized",
-        "Nexus could not find your Firebase configuration. Check firebase.js."
+      if (
+        typeof firebase === "undefined" ||
+        !firebase.apps ||
+        firebase.apps.length === 0
+      ) {
+        showFatalError(
+          "Firebase Not Initialized",
+          "Nexus could not find your Firebase configuration. Check firebase.js."
+        );
+
+        return;
+      }
+
+      auth = firebase.auth();
+      database = firebase.database();
+
+      bindInterfaceEvents();
+      watchFirebaseConnection();
+
+      auth.onAuthStateChanged(
+        handleAuthenticationChange,
+        error => {
+          console.error(
+            "Authentication observer failed:",
+            error
+          );
+
+          showFatalError(
+            "Authentication Failed",
+            error.message ||
+              "Firebase Authentication did not respond."
+          );
+        }
+      );
+    } catch (error) {
+      console.error(
+        "Nexus initialization failed:",
+        error
       );
 
-      return;
+      showFatalError(
+        "Nexus Startup Failed",
+        error.message ||
+          "An unknown startup error occurred."
+      );
     }
-
-    auth = firebase.auth();
-    database = firebase.database();
-
-    bindInterfaceEvents();
-    watchFirebaseConnection();
-
-    auth.onAuthStateChanged(handleAuthenticationChange);
   }
 
   function cacheElements() {
-    elements.loading = document.getElementById("nexusLoading");
-    elements.loadingMessage = document.getElementById("loadingMessage");
+    elements.loading =
+      document.getElementById("nexusLoading");
 
-    elements.denied = document.getElementById("nexusDenied");
-    elements.deniedMessage = document.getElementById("deniedMessage");
+    elements.loadingMessage =
+      document.getElementById("loadingMessage");
 
-    elements.app = document.getElementById("nexusApp");
-    elements.sidebar = document.getElementById("nexusSidebar");
-    elements.sidebarBackdrop = document.getElementById("sidebarBackdrop");
+    elements.denied =
+      document.getElementById("nexusDenied");
 
-    elements.navigation = document.getElementById("nexusNavigation");
-    elements.content = document.getElementById("nexusContent");
+    elements.deniedMessage =
+      document.getElementById("deniedMessage");
 
-    elements.pageTitle = document.getElementById("nexusPageTitle");
-    elements.breadcrumb = document.getElementById("nexusBreadcrumb");
+    elements.app =
+      document.getElementById("nexusApp");
 
-    elements.connectionDot = document.getElementById("connectionDot");
-    elements.connectionLabel = document.getElementById("connectionLabel");
+    elements.sidebar =
+      document.getElementById("nexusSidebar");
+
+    elements.sidebarBackdrop =
+      document.getElementById("sidebarBackdrop");
+
+    elements.navigation =
+      document.getElementById("nexusNavigation");
+
+    elements.content =
+      document.getElementById("nexusContent");
+
+    elements.pageTitle =
+      document.getElementById("nexusPageTitle");
+
+    elements.breadcrumb =
+      document.getElementById("nexusBreadcrumb");
+
+    elements.connectionDot =
+      document.getElementById("connectionDot");
+
+    elements.connectionLabel =
+      document.getElementById("connectionLabel");
 
     elements.adminDisplayName =
       document.getElementById("adminDisplayName");
@@ -295,20 +339,31 @@ window.addEventListener("error", event => {
   }
 
   function bindInterfaceEvents() {
-    elements.navigation.addEventListener("click", event => {
-      const button = event.target.closest("[data-module]");
-      if (!button || button.hidden) return;
+    elements.navigation.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest("[data-module]");
 
-      openModule(button.dataset.module);
-    });
+        if (!button || button.hidden) return;
+
+        openModule(button.dataset.module);
+      }
+    );
 
     document
       .getElementById("mobileMenuButton")
-      .addEventListener("click", openMobileSidebar);
+      .addEventListener(
+        "click",
+        openMobileSidebar
+      );
 
     document
       .getElementById("closeMobileSidebar")
-      .addEventListener("click", closeMobileSidebar);
+      .addEventListener(
+        "click",
+        closeMobileSidebar
+      );
 
     elements.sidebarBackdrop.addEventListener(
       "click",
@@ -317,11 +372,17 @@ window.addEventListener("error", event => {
 
     document
       .getElementById("collapseSidebarButton")
-      .addEventListener("click", toggleDesktopSidebar);
+      .addEventListener(
+        "click",
+        toggleDesktopSidebar
+      );
 
     document
       .getElementById("commandButton")
-      .addEventListener("click", openCommandPalette);
+      .addEventListener(
+        "click",
+        openCommandPalette
+      );
 
     document
       .getElementById("refreshModuleButton")
@@ -329,36 +390,52 @@ window.addEventListener("error", event => {
         openModule(state.activeModule, true);
       });
 
-    elements.commandOverlay.addEventListener("click", event => {
-      if (event.target === elements.commandOverlay) {
-        closeCommandPalette();
+    elements.commandOverlay.addEventListener(
+      "click",
+      event => {
+        if (event.target === elements.commandOverlay) {
+          closeCommandPalette();
+        }
       }
-    });
+    );
 
     elements.commandSearchInput.addEventListener(
       "input",
       renderCommandResults
     );
 
-    elements.commandResults.addEventListener("click", event => {
-      const command = event.target.closest("[data-command-module]");
-      if (!command) return;
+    elements.commandResults.addEventListener(
+      "click",
+      event => {
+        const command = event.target.closest(
+          "[data-command-module]"
+        );
 
-      closeCommandPalette();
-      openModule(command.dataset.commandModule);
-    });
+        if (!command) return;
 
-    document.addEventListener("keydown", handleKeyboardShortcuts);
+        closeCommandPalette();
+        openModule(command.dataset.commandModule);
+      }
+    );
 
-    elements.adminAccountButton.addEventListener("click", event => {
-      event.stopPropagation();
-      elements.adminAccountMenu.hidden =
-        !elements.adminAccountMenu.hidden;
-    });
+    elements.adminAccountButton.addEventListener(
+      "click",
+      event => {
+        event.stopPropagation();
+
+        elements.adminAccountMenu.hidden =
+          !elements.adminAccountMenu.hidden;
+      }
+    );
 
     document.addEventListener("click", () => {
       elements.adminAccountMenu.hidden = true;
     });
+
+    document.addEventListener(
+      "keydown",
+      handleKeyboardShortcuts
+    );
 
     document
       .getElementById("signOutButton")
@@ -382,17 +459,32 @@ window.addEventListener("error", event => {
     state.user = user;
 
     try {
-      setLoadingMessage("Loading your Nexus access profile...");
+      setLoadingMessage(
+        "Loading your Nexus access profile..."
+      );
 
-      const [userSnapshot, playerSnapshot] = await Promise.all([
-        database.ref(`users/${user.uid}`).once("value"),
-        database.ref(`players/${user.uid}`).once("value")
-      ]);
+      const [userSnapshot, playerSnapshot] =
+        await Promise.all([
+          database
+            .ref(`users/${user.uid}`)
+            .once("value"),
 
-      state.userRecord = userSnapshot.val() || {};
-      state.playerRecord = playerSnapshot.val() || {};
-      state.roleId = state.userRecord.role || "";
-      state.role = ROLE_TEMPLATES[state.roleId] || null;
+          database
+            .ref(`players/${user.uid}`)
+            .once("value")
+        ]);
+
+      state.userRecord =
+        userSnapshot.val() || {};
+
+      state.playerRecord =
+        playerSnapshot.val() || {};
+
+      state.roleId =
+        state.userRecord.role || "";
+
+      state.role =
+        ROLE_TEMPLATES[state.roleId] || null;
 
       if (!state.role) {
         denyAccess(
@@ -409,16 +501,19 @@ window.addEventListener("error", event => {
       elements.denied.hidden = true;
       elements.app.hidden = false;
 
+      startupComplete = true;
+
       startDashboardListeners();
       openModule("dashboard");
     } catch (error) {
-      console.error("Nexus access verification failed:", error);
-
-      const permissionDenied = isPermissionDenied(error);
+      console.error(
+        "Nexus access verification failed:",
+        error
+      );
 
       denyAccess(
-        permissionDenied
-          ? "Firebase denied access while Nexus was checking your account role. Confirm users/YOUR_UID/role is set to owner or admin."
+        isPermissionDenied(error)
+          ? "Firebase denied access while Nexus checked your account role. Confirm users/YOUR_UID/role is owner or admin."
           : "Nexus could not verify your account. Check the browser console for the full error."
       );
     }
@@ -432,23 +527,28 @@ window.addEventListener("error", event => {
       state.user.email ||
       "Administrator";
 
-    const initials = createInitials(name);
-
     elements.adminDisplayName.textContent = name;
-    elements.adminRoleLabel.textContent = state.role.label;
-    elements.adminAvatar.textContent = initials;
+    elements.adminRoleLabel.textContent =
+      state.role.label;
+
+    elements.adminAvatar.textContent =
+      createInitials(name);
 
     elements.menuAdminName.textContent = name;
+
     elements.menuAdminEmail.textContent =
-      state.user.email || "No email available";
+      state.user.email ||
+      "No email available";
   }
 
   function applyNavigationPermissions() {
     document
       .querySelectorAll("[data-permission]")
       .forEach(element => {
-        const permission = element.dataset.permission;
-        element.hidden = !hasPermission(permission);
+        element.hidden =
+          !hasPermission(
+            element.dataset.permission
+          );
       });
   }
 
@@ -461,39 +561,55 @@ window.addEventListener("error", event => {
     );
   }
 
-  function openModule(moduleId, forceRefresh = false) {
+  function openModule(
+    moduleId,
+    forceRefresh = false
+  ) {
     const module = MODULES[moduleId];
 
-    if (!module || !hasPermission(module.permission)) {
-      showToast("You do not have access to that module.");
+    if (
+      !module ||
+      !hasPermission(module.permission)
+    ) {
+      showToast(
+        "You do not have access to that module."
+      );
+
       return;
     }
 
+    cleanupLiveModuleEvents();
+
     state.activeModule = moduleId;
 
-    elements.pageTitle.textContent = module.title;
-    elements.breadcrumb.textContent = module.breadcrumb;
+    elements.pageTitle.textContent =
+      module.title;
 
-    document.querySelectorAll(".nav-item").forEach(item => {
-      item.classList.toggle(
-        "active",
-        item.dataset.module === moduleId
-      );
-    });
+    elements.breadcrumb.textContent =
+      module.breadcrumb;
+
+    document
+      .querySelectorAll(".nav-item")
+      .forEach(item => {
+        item.classList.toggle(
+          "active",
+          item.dataset.module === moduleId
+        );
+      });
 
     closeMobileSidebar();
 
     if (moduleId === "dashboard") {
-  renderDashboard();
-  return;
-}
+      renderDashboard();
+      return;
+    }
 
-if (moduleId === "live") {
-  renderLiveOperations();
-  return;
-}
+    if (moduleId === "live") {
+      renderLiveOperations();
+      return;
+    }
 
-if (moduleId === "diagnostics") {
+    if (moduleId === "diagnostics") {
       renderDiagnostics(forceRefresh);
       return;
     }
@@ -501,23 +617,28 @@ if (moduleId === "diagnostics") {
     renderModulePlaceholder(moduleId);
   }
 
-  function renderDashboard() {
-   elements.content.removeEventListener(
-  "click",
-  handleLiveOperationsClick
-);
+  function cleanupLiveModuleEvents() {
+    if (!elements.content) return;
 
-elements.content.removeEventListener(
-  "change",
-  handleLiveOperationsChange
-);
-     elements.content.innerHTML = `
+    elements.content.removeEventListener(
+      "click",
+      handleLiveOperationsClick
+    );
+
+    elements.content.removeEventListener(
+      "change",
+      handleLiveOperationsChange
+    );
+  }
+
+  function renderDashboard() {
+    elements.content.innerHTML = `
       <section class="module-intro">
         <div>
           <h2>Command Dashboard</h2>
           <p>
-            Tournament operations, broadcast status, pending work and
-            system health in one place.
+            Tournament operations, broadcast status,
+            pending work and system health in one place.
           </p>
         </div>
 
@@ -622,7 +743,10 @@ elements.content.removeEventListener(
             <span>Live Health</span>
           </header>
 
-          <div id="dashboardSystemStatus" class="panel-content status-list">
+          <div
+            id="dashboardSystemStatus"
+            class="panel-content status-list"
+          >
             ${createStatusRow(
               "Firebase Connection",
               "Checking realtime connection...",
@@ -630,14 +754,15 @@ elements.content.removeEventListener(
               "CHECKING"
             )}
 
-         ${createStatusRow(
-  "Authentication",
-  `Signed in as ${escapeHtml(
-    state.user.email || state.user.uid
-  )}`,
-  "good",
-  "ACTIVE"
-)}
+            ${createStatusRow(
+              "Authentication",
+              `Signed in as ${escapeHtml(
+                state.user.email ||
+                state.user.uid
+              )}`,
+              "good",
+              "ACTIVE"
+            )}
 
             ${createStatusRow(
               "Nexus Role",
@@ -660,1183 +785,1419 @@ elements.content.removeEventListener(
     elements.content
       .querySelectorAll("[data-open-module]")
       .forEach(button => {
-        const moduleId = button.dataset.openModule;
+        const moduleId =
+          button.dataset.openModule;
 
         if (
           !MODULES[moduleId] ||
-          !hasPermission(MODULES[moduleId].permission)
+          !hasPermission(
+            MODULES[moduleId].permission
+          )
         ) {
           button.hidden = true;
           return;
         }
 
-        button.addEventListener("click", () => {
-          openModule(moduleId);
-        });
+        button.addEventListener(
+          "click",
+          () => openModule(moduleId)
+        );
       });
 
     updateDashboardValues();
   }
 
-function renderLiveOperations() {
-  elements.content.innerHTML = `
-    <section class="module-intro">
-      <div>
-        <h2>Live Operations</h2>
-        <p>
-          Fast tournament controls for current match, scores, Up Next,
-          broadcast status and break timers.
-        </p>
+  function renderLiveOperations() {
+    elements.content.innerHTML = `
+      <section class="module-intro">
+        <div>
+          <h2>Live Operations</h2>
+          <p>
+            Fast tournament controls for current match,
+            scores, Up Next, broadcast status and break timers.
+          </p>
+        </div>
+
+        <div class="module-actions">
+          <button
+            id="toggleOperationsModeButton"
+            class="action-button"
+          >
+            <i class="fa-solid fa-expand"></i>
+            Focus Mode
+          </button>
+        </div>
+      </section>
+
+      <div class="live-safety-note">
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <div>
+          <strong>
+            Prediction payout protection is active.
+          </strong>
+
+          Match results save normally, but Nexus
+          will not distribute prediction RP until
+          the secure payout system is added.
+        </div>
       </div>
 
-      <div class="module-actions">
-        <button
-          id="toggleOperationsModeButton"
-          class="action-button"
-        >
-          <i class="fa-solid fa-expand"></i>
-          Focus Mode
-        </button>
-      </div>
-    </section>
+      <section class="live-ops-layout">
 
-    <div class="live-safety-note">
-      <i class="fa-solid fa-shield-halved"></i>
+        <div class="live-ops-stack">
 
-      <div>
-        <strong>Prediction payout protection is active.</strong>
-        Match results save normally, but Nexus will not distribute
-        prediction RP until the secure payout system is added.
-      </div>
-    </div>
+          <article class="nexus-panel">
+            <header class="panel-header">
+              <h3>Current Match</h3>
 
-    <section class="live-ops-layout">
+              <span
+                id="liveSaveState"
+                class="live-save-state"
+              >
+                Synced with Firebase
+              </span>
+            </header>
 
-      <div class="live-ops-stack">
+            <div class="live-panel-content">
 
-        <article class="nexus-panel">
-          <header class="panel-header">
-            <h3>Current Match</h3>
-            <span id="liveSaveState" class="live-save-state">
-              Synced with Firebase
-            </span>
-          </header>
+              <label
+                class="live-field-label"
+                for="liveCurrentMatchSelect"
+              >
+                Match
+              </label>
 
-          <div class="live-panel-content">
-            <label
-              class="live-field-label"
-              for="liveCurrentMatchSelect"
-            >
-              Match
-            </label>
+              <div class="live-match-toolbar">
 
-            <div class="live-match-toolbar">
+                <select
+                  id="liveCurrentMatchSelect"
+                  class="live-select"
+                >
+                  ${LIVE_MATCHES.map(match => `
+                    <option value="${escapeHtml(match)}">
+                      ${escapeHtml(match)}
+                    </option>
+                  `).join("")}
+                </select>
+
+                <button
+                  id="setCurrentMatchButton"
+                  class="action-button action-button-primary"
+                >
+                  <i class="fa-solid fa-bolt"></i>
+                  Set Live
+                </button>
+
+              </div>
+
+              <div class="live-score-stage">
+
+                <div class="live-team-card">
+                  <h3 id="liveTeamAName">
+                    Team A
+                  </h3>
+
+                  <small>TEAM A</small>
+
+                  <div class="live-score-controls">
+
+                    <button
+                      class="live-score-button"
+                      data-score-side="A"
+                      data-score-change="-1"
+                      aria-label="Decrease Team A score"
+                    >
+                      −
+                    </button>
+
+                    <strong
+                      id="liveTeamAScore"
+                      class="live-score-value"
+                    >
+                      0
+                    </strong>
+
+                    <button
+                      class="live-score-button"
+                      data-score-side="A"
+                      data-score-change="1"
+                      aria-label="Increase Team A score"
+                    >
+                      +
+                    </button>
+
+                  </div>
+                </div>
+
+                <div class="live-vs">
+                  VS
+                </div>
+
+                <div class="live-team-card">
+                  <h3 id="liveTeamBName">
+                    Team B
+                  </h3>
+
+                  <small>TEAM B</small>
+
+                  <div class="live-score-controls">
+
+                    <button
+                      class="live-score-button"
+                      data-score-side="B"
+                      data-score-change="-1"
+                      aria-label="Decrease Team B score"
+                    >
+                      −
+                    </button>
+
+                    <strong
+                      id="liveTeamBScore"
+                      class="live-score-value"
+                    >
+                      0
+                    </strong>
+
+                    <button
+                      class="live-score-button"
+                      data-score-side="B"
+                      data-score-change="1"
+                      aria-label="Increase Team B score"
+                    >
+                      +
+                    </button>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="live-winner-preview">
+                Winner:
+                <strong id="liveWinnerPreview">
+                  Not decided
+                </strong>
+              </div>
+
+              <div class="live-button-row">
+                <button
+                  id="saveLiveResultButton"
+                  class="action-button action-button-primary"
+                >
+                  <i class="fa-solid fa-floppy-disk"></i>
+                  Save Scores / Result
+                </button>
+              </div>
+
+            </div>
+          </article>
+
+          <article class="nexus-panel">
+            <header class="panel-header">
+              <h3>Up Next</h3>
+              <span>Broadcast Queue</span>
+            </header>
+
+            <div class="live-panel-content">
+
+              <div class="live-up-next">
+                <span
+                  id="liveNextLabel"
+                  class="live-up-next-label"
+                >
+                  NO MATCH
+                </span>
+
+                <strong id="liveNextTeams">
+                  No upcoming match
+                </strong>
+
+                <span>
+                  Displayed across tournament
+                  and broadcast surfaces
+                </span>
+              </div>
+
+              <div class="live-button-row">
+
+                <button
+                  id="autoGenerateNextButton"
+                  class="action-button"
+                >
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  Auto Generate
+                </button>
+
+                <button
+                  id="saveNextMatchButton"
+                  class="action-button action-button-primary"
+                >
+                  <i class="fa-solid fa-arrow-up-right-dots"></i>
+                  Save Up Next
+                </button>
+
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="live-ops-stack">
+
+          <article class="nexus-panel">
+            <header class="panel-header">
+              <h3>Broadcast Status</h3>
+              <span>Public State</span>
+            </header>
+
+            <div class="live-panel-content">
+
+              <label
+                class="live-field-label"
+                for="liveBroadcastStatusSelect"
+              >
+                Stream Status
+              </label>
+
               <select
-                id="liveCurrentMatchSelect"
+                id="liveBroadcastStatusSelect"
                 class="live-select"
               >
-                ${LIVE_MATCHES.map(match => `
-                  <option value="${escapeHtml(match)}">
-                    ${escapeHtml(match)}
-                  </option>
-                `).join("")}
+                <option value="● OFFLINE">
+                  ● OFFLINE
+                </option>
+
+                <option value="● LIVE">
+                  ● LIVE
+                </option>
               </select>
 
-              <button
-                id="setCurrentMatchButton"
-                class="action-button action-button-primary"
-              >
-                <i class="fa-solid fa-bolt"></i>
-                Set Live
-              </button>
-            </div>
-
-            <div class="live-score-stage">
-
-              <div class="live-team-card">
-                <h3 id="liveTeamAName">Team A</h3>
-                <small>TEAM A</small>
-
-                <div class="live-score-controls">
-                  <button
-                    class="live-score-button"
-                    data-score-side="A"
-                    data-score-change="-1"
-                    aria-label="Decrease Team A score"
-                  >
-                    −
-                  </button>
-
-                  <strong
-                    id="liveTeamAScore"
-                    class="live-score-value"
-                  >
-                    0
-                  </strong>
-
-                  <button
-                    class="live-score-button"
-                    data-score-side="A"
-                    data-score-change="1"
-                    aria-label="Increase Team A score"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div class="live-vs">VS</div>
-
-              <div class="live-team-card">
-                <h3 id="liveTeamBName">Team B</h3>
-                <small>TEAM B</small>
-
-                <div class="live-score-controls">
-                  <button
-                    class="live-score-button"
-                    data-score-side="B"
-                    data-score-change="-1"
-                    aria-label="Decrease Team B score"
-                  >
-                    −
-                  </button>
-
-                  <strong
-                    id="liveTeamBScore"
-                    class="live-score-value"
-                  >
-                    0
-                  </strong>
-
-                  <button
-                    class="live-score-button"
-                    data-score-side="B"
-                    data-score-change="1"
-                    aria-label="Increase Team B score"
-                  >
-                    +
-                  </button>
-                </div>
+              <div class="live-button-row">
+                <button
+                  id="saveBroadcastStatusButton"
+                  class="action-button action-button-primary"
+                >
+                  <i class="fa-solid fa-tower-broadcast"></i>
+                  Save Status
+                </button>
               </div>
 
             </div>
+          </article>
 
-            <div class="live-winner-preview">
-              Winner:
-              <strong id="liveWinnerPreview">Not decided</strong>
+          <article class="nexus-panel">
+            <header class="panel-header">
+              <h3>Break Timer</h3>
+              <span>Tournament Hub</span>
+            </header>
+
+            <div class="live-panel-content">
+              <div class="live-break-grid">
+
+                <button data-break-minutes="3">
+                  3 Minutes
+                </button>
+
+                <button data-break-minutes="5">
+                  5 Minutes
+                </button>
+
+                <button data-break-minutes="10">
+                  10 Minutes
+                </button>
+
+                <button id="resetBreakTimerButton">
+                  Reset Timer
+                </button>
+
+              </div>
             </div>
+          </article>
 
-            <div class="live-button-row">
-              <button
-                id="saveLiveResultButton"
-                class="action-button action-button-primary"
-              >
-                <i class="fa-solid fa-floppy-disk"></i>
-                Save Scores / Result
-              </button>
+          <article class="nexus-panel">
+            <header class="panel-header">
+              <h3>Tournament State</h3>
+              <span>Protected Action</span>
+            </header>
+
+            <div class="live-panel-content">
+
+              <div class="live-danger-zone">
+                <p>
+                  Clears Current Match and removes
+                  the Up Next matchup. It does not
+                  erase bracket results.
+                </p>
+
+                <button
+                  id="finishTournamentButton"
+                  class="live-danger-button"
+                >
+                  <i class="fa-solid fa-flag-checkered"></i>
+                  Mark Tournament Complete
+                </button>
+              </div>
+
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article class="nexus-panel">
-          <header class="panel-header">
-            <h3>Up Next</h3>
-            <span>Broadcast Queue</span>
-          </header>
+        </div>
+      </section>
+    `;
 
-          <div class="live-panel-content">
-            <div class="live-up-next">
-              <span
-                id="liveNextLabel"
-                class="live-up-next-label"
-              >
-                NO MATCH
-              </span>
-
-              <strong id="liveNextTeams">
-                No upcoming match
-              </strong>
-
-              <span>
-                Displayed across tournament and broadcast surfaces
-              </span>
-            </div>
-
-            <div class="live-button-row">
-              <button
-                id="autoGenerateNextButton"
-                class="action-button"
-              >
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                Auto Generate
-              </button>
-
-              <button
-                id="saveNextMatchButton"
-                class="action-button action-button-primary"
-              >
-                <i class="fa-solid fa-arrow-up-right-dots"></i>
-                Save Up Next
-              </button>
-            </div>
-          </div>
-        </article>
-
-      </div>
-
-      <div class="live-ops-stack">
-
-        <article class="nexus-panel">
-          <header class="panel-header">
-            <h3>Broadcast Status</h3>
-            <span>Public State</span>
-          </header>
-
-          <div class="live-panel-content">
-            <label
-              class="live-field-label"
-              for="liveBroadcastStatusSelect"
-            >
-              Stream Status
-            </label>
-
-            <select
-              id="liveBroadcastStatusSelect"
-              class="live-select"
-            >
-              <option value="● OFFLINE">● OFFLINE</option>
-              <option value="● LIVE">● LIVE</option>
-            </select>
-
-            <div class="live-button-row">
-              <button
-                id="saveBroadcastStatusButton"
-                class="action-button action-button-primary"
-              >
-                <i class="fa-solid fa-tower-broadcast"></i>
-                Save Status
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <article class="nexus-panel">
-          <header class="panel-header">
-            <h3>Break Timer</h3>
-            <span>Tournament Hub</span>
-          </header>
-
-          <div class="live-panel-content">
-            <div class="live-break-grid">
-              <button data-break-minutes="3">
-                3 Minutes
-              </button>
-
-              <button data-break-minutes="5">
-                5 Minutes
-              </button>
-
-              <button data-break-minutes="10">
-                10 Minutes
-              </button>
-
-              <button id="resetBreakTimerButton">
-                Reset Timer
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <article class="nexus-panel">
-          <header class="panel-header">
-            <h3>Tournament State</h3>
-            <span>Protected Action</span>
-          </header>
-
-          <div class="live-panel-content">
-            <div class="live-danger-zone">
-              <p>
-                Clears Current Match and removes the Up Next matchup.
-                It does not erase bracket results.
-              </p>
-
-              <button
-                id="finishTournamentButton"
-                class="live-danger-button"
-              >
-                <i class="fa-solid fa-flag-checkered"></i>
-                Mark Tournament Complete
-              </button>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-  `;
-
-  try {
-  bindLiveOperationsEvents();
-  syncLiveOperationsFromFirebase(true);
-
-  console.log("[NEXUS LIVE] Controls successfully connected.");
-} catch (error) {
-  console.error("[NEXUS LIVE] Initialization failed:", error);
-
-  showToast(
-    `Live Operations initialization failed: ${
-      error.message || "Unknown error"
-    }`
-  );
-
-  window.alert(
-    "Live Operations could not initialize.\n\n" +
-    (error.message || "Unknown JavaScript error")
-  );
-}
-
-function bindLiveOperationsEvents() {
-  elements.content.removeEventListener(
-    "click",
-    handleLiveOperationsClick
-  );
-
-  elements.content.removeEventListener(
-    "change",
-    handleLiveOperationsChange
-  );
-
-  elements.content.addEventListener(
-    "click",
-    handleLiveOperationsClick
-  );
-
-  elements.content.addEventListener(
-    "change",
-    handleLiveOperationsChange
-  );
-}
-
-function handleLiveOperationsClick(event) {
-  if (state.activeModule !== "live") return;
-
-  const button = event.target.closest("button");
-
-  if (!button || !elements.content.contains(button)) {
-    return;
+    bindLiveOperationsEvents();
+    syncLiveOperationsFromFirebase(true);
   }
 
-  if (button.matches("[data-score-side]")) {
-    changeLiveScore(
-      button.dataset.scoreSide,
-      Number(button.dataset.scoreChange)
+  function bindLiveOperationsEvents() {
+    cleanupLiveModuleEvents();
+
+    elements.content.addEventListener(
+      "click",
+      handleLiveOperationsClick
     );
 
-    return;
-  }
-
-  if (button.matches("[data-break-minutes]")) {
-    startLiveBreakTimer(
-      Number(button.dataset.breakMinutes),
-      button
+    elements.content.addEventListener(
+      "change",
+      handleLiveOperationsChange
     );
-
-    return;
   }
 
-  switch (button.id) {
-    case "setCurrentMatchButton":
-      setCurrentMatchLive(button);
-      break;
+  function handleLiveOperationsClick(event) {
+    if (state.activeModule !== "live") return;
 
-    case "saveLiveResultButton":
-      saveLiveResult(button);
-      break;
+    const button =
+      event.target.closest("button");
 
-    case "autoGenerateNextButton":
-      autoGenerateLiveNext();
-      state.liveDraft.dirty = true;
-      setLiveSaveState("Up Next not saved");
-      paintLiveOperations();
-      showToast("Next match generated.");
-      break;
-
-    case "saveNextMatchButton":
-      saveLiveNextMatch(button);
-      break;
-
-    case "saveBroadcastStatusButton":
-      saveLiveBroadcastStatus(button);
-      break;
-
-    case "resetBreakTimerButton":
-      resetLiveBreakTimer(button);
-      break;
-
-    case "finishTournamentButton":
-      completeLiveTournament(button);
-      break;
-
-    case "toggleOperationsModeButton":
-      toggleOperationsMode(button);
-      break;
-  }
-}
-
-function handleLiveOperationsChange(event) {
-  if (state.activeModule !== "live") return;
-
-  const target = event.target;
-
-  if (target.id === "liveCurrentMatchSelect") {
-    state.liveDraft.currentMatchId = target.value;
-    state.liveDraft.dirty = true;
-
-    loadSelectedMatchScores();
-    autoGenerateLiveNext();
-    setLiveSaveState("Match selection not saved");
-    paintLiveOperations();
-
-    return;
-  }
-
-  if (target.id === "liveBroadcastStatusSelect") {
-    state.liveDraft.dirty = true;
-    setLiveSaveState("Broadcast status not saved");
-  }
-}
-function getLiveMatchConfig(
-  matchId = state.liveDraft.currentMatchId
-) {
-  const site = window.nexusSiteData || {};
-
-  const is16 =
-    (site.formatType || "8_single_elim") ===
-    "16_single_elim";
-
-  const configs = {
-    "R16-1 • Bo3": {
-      label: "R16-1",
-      a: site.team1 || "Team 1",
-      b: site.team2 || "Team 2",
-      scoreA: "r16m1Team1Score",
-      scoreB: "r16m1Team2Score",
-      winner: "r16m1Winner",
-      max: 2
-    },
-
-    "R16-2 • Bo3": {
-      label: "R16-2",
-      a: site.team3 || "Team 3",
-      b: site.team4 || "Team 4",
-      scoreA: "r16m2Team1Score",
-      scoreB: "r16m2Team2Score",
-      winner: "r16m2Winner",
-      max: 2
-    },
-
-    "R16-3 • Bo3": {
-      label: "R16-3",
-      a: site.team5 || "Team 5",
-      b: site.team6 || "Team 6",
-      scoreA: "r16m3Team1Score",
-      scoreB: "r16m3Team2Score",
-      winner: "r16m3Winner",
-      max: 2
-    },
-
-    "R16-4 • Bo3": {
-      label: "R16-4",
-      a: site.team7 || "Team 7",
-      b: site.team8 || "Team 8",
-      scoreA: "r16m4Team1Score",
-      scoreB: "r16m4Team2Score",
-      winner: "r16m4Winner",
-      max: 2
-    },
-
-    "R16-5 • Bo3": {
-      label: "R16-5",
-      a: site.team9 || "Team 9",
-      b: site.team10 || "Team 10",
-      scoreA: "r16m5Team1Score",
-      scoreB: "r16m5Team2Score",
-      winner: "r16m5Winner",
-      max: 2
-    },
-
-    "R16-6 • Bo3": {
-      label: "R16-6",
-      a: site.team11 || "Team 11",
-      b: site.team12 || "Team 12",
-      scoreA: "r16m6Team1Score",
-      scoreB: "r16m6Team2Score",
-      winner: "r16m6Winner",
-      max: 2
-    },
-
-    "R16-7 • Bo3": {
-      label: "R16-7",
-      a: site.team13 || "Team 13",
-      b: site.team14 || "Team 14",
-      scoreA: "r16m7Team1Score",
-      scoreB: "r16m7Team2Score",
-      winner: "r16m7Winner",
-      max: 2
-    },
-
-    "R16-8 • Bo3": {
-      label: "R16-8",
-      a: site.team15 || "Team 15",
-      b: site.team16 || "Team 16",
-      scoreA: "r16m8Team1Score",
-      scoreB: "r16m8Team2Score",
-      winner: "r16m8Winner",
-      max: 2
-    },
-
-    "QF1 • Bo3": {
-      label: "QF1",
-      a: is16
-        ? site.r16m1Winner || "Winner R16-1"
-        : site.team1 || "Team 1",
-      b: is16
-        ? site.r16m2Winner || "Winner R16-2"
-        : site.team2 || "Team 2",
-      scoreA: "qf1Team1Score",
-      scoreB: "qf1Team2Score",
-      winner: "qf1Winner",
-      max: 2
-    },
-
-    "QF2 • Bo3": {
-      label: "QF2",
-      a: is16
-        ? site.r16m3Winner || "Winner R16-3"
-        : site.team3 || "Team 3",
-      b: is16
-        ? site.r16m4Winner || "Winner R16-4"
-        : site.team4 || "Team 4",
-      scoreA: "qf2Team1Score",
-      scoreB: "qf2Team2Score",
-      winner: "qf2Winner",
-      max: 2
-    },
-
-    "QF3 • Bo3": {
-      label: "QF3",
-      a: is16
-        ? site.r16m5Winner || "Winner R16-5"
-        : site.team5 || "Team 5",
-      b: is16
-        ? site.r16m6Winner || "Winner R16-6"
-        : site.team6 || "Team 6",
-      scoreA: "qf3Team1Score",
-      scoreB: "qf3Team2Score",
-      winner: "qf3Winner",
-      max: 2
-    },
-
-    "QF4 • Bo3": {
-      label: "QF4",
-      a: is16
-        ? site.r16m7Winner || "Winner R16-7"
-        : site.team7 || "Team 7",
-      b: is16
-        ? site.r16m8Winner || "Winner R16-8"
-        : site.team8 || "Team 8",
-      scoreA: "qf4Team1Score",
-      scoreB: "qf4Team2Score",
-      winner: "qf4Winner",
-      max: 2
-    },
-
-    "SF1 • Bo3": {
-      label: "SF1",
-      a: site.qf1Winner || "Winner QF1",
-      b: site.qf2Winner || "Winner QF2",
-      scoreA: "sf1Team1Score",
-      scoreB: "sf1Team2Score",
-      winner: "sf1Winner",
-      max: 2
-    },
-
-    "SF2 • Bo3": {
-      label: "SF2",
-      a: site.qf3Winner || "Winner QF3",
-      b: site.qf4Winner || "Winner QF4",
-      scoreA: "sf2Team1Score",
-      scoreB: "sf2Team2Score",
-      winner: "sf2Winner",
-      max: 2
-    },
-
-    "Grand Finals • Bo5": {
-      label: "Grand Finals",
-      a: site.sf1Winner || "Winner SF1",
-      b: site.sf2Winner || "Winner SF2",
-      scoreA: "gfTeam1Score",
-      scoreB: "gfTeam2Score",
-      winner: "grandWinner",
-      max: 3
+    if (
+      !button ||
+      !elements.content.contains(button)
+    ) {
+      return;
     }
-  };
 
-function syncLiveOperationsFromFirebase(force = false) {
-  if (state.activeModule !== "live") return;
+    if (button.matches("[data-score-side]")) {
+      changeLiveScore(
+        button.dataset.scoreSide,
+        Number(button.dataset.scoreChange)
+      );
 
-  const site = window.nexusSiteData || {};
-  const broadcast = window.nexusBroadcastData || {};
-
-  if (force || !state.liveDraft.dirty) {
-    state.liveDraft.currentMatchId =
-      site.currentMatch || "No Match Live";
-
-    loadSelectedMatchScores();
-
-    const savedNext = broadcast.upNext;
-
-    if (savedNext) {
-      state.liveDraft.nextMatch = {
-        label: savedNext.label || "",
-        teamA: savedNext.teamA || "",
-        teamB: savedNext.teamB || ""
-      };
-    } else {
-      autoGenerateLiveNext();
+      return;
     }
-  }
 
-  paintLiveOperations();
-}
+    if (
+      button.matches("[data-break-minutes]")
+    ) {
+      void startLiveBreakTimer(
+        Number(button.dataset.breakMinutes),
+        button
+      );
 
-function loadSelectedMatchScores() {
-  const config = getLiveMatchConfig();
-  const site = window.nexusSiteData || {};
+      return;
+    }
 
-  if (!config) {
-    state.liveDraft.teamAScore = 0;
-    state.liveDraft.teamBScore = 0;
-    return;
-  }
+    switch (button.id) {
+      case "setCurrentMatchButton":
+        void setCurrentMatchLive(button);
+        break;
 
-  state.liveDraft.teamAScore =
-    Number(site[config.scoreA] || 0);
+      case "saveLiveResultButton":
+        void saveLiveResult(button);
+        break;
 
-  state.liveDraft.teamBScore =
-    Number(site[config.scoreB] || 0);
-}
+      case "autoGenerateNextButton":
+        autoGenerateLiveNext();
 
-function paintLiveOperations() {
-  const config = getLiveMatchConfig();
-  const site = window.nexusSiteData || {};
+        state.liveDraft.dirty = true;
 
-  const matchSelect =
-    document.getElementById("liveCurrentMatchSelect");
-
-  if (!matchSelect) return;
-
-  matchSelect.value = state.liveDraft.currentMatchId;
-
-  setText(
-    "liveTeamAName",
-    config ? config.a : "No Match"
-  );
-
-  setText(
-    "liveTeamBName",
-    config ? config.b : "Select Match"
-  );
-
-  setText(
-    "liveTeamAScore",
-    state.liveDraft.teamAScore
-  );
-
-  setText(
-    "liveTeamBScore",
-    state.liveDraft.teamBScore
-  );
-
-  setText(
-    "liveWinnerPreview",
-    getLiveWinner(config) || "Not decided"
-  );
-
-  setText(
-    "liveNextLabel",
-    state.liveDraft.nextMatch.label || "NO MATCH"
-  );
-
-  setText(
-    "liveNextTeams",
-    state.liveDraft.nextMatch.teamA &&
-    state.liveDraft.nextMatch.teamB
-      ? `${state.liveDraft.nextMatch.teamA} vs ${state.liveDraft.nextMatch.teamB}`
-      : "No upcoming match"
-  );
-
-  const statusSelect =
-    document.getElementById("liveBroadcastStatusSelect");
-
-  if (statusSelect && !state.liveDraft.dirty) {
-    statusSelect.value = site.status || "● OFFLINE";
-  }
-}
-
-function changeLiveScore(side, amount) {
-  const config = getLiveMatchConfig();
-  if (!config) return;
-
-  if (side === "A") {
-    state.liveDraft.teamAScore = Math.max(
-      0,
-      Math.min(
-        config.max,
-        state.liveDraft.teamAScore + amount
-      )
-    );
-  }
-
-  if (side === "B") {
-    state.liveDraft.teamBScore = Math.max(
-      0,
-      Math.min(
-        config.max,
-        state.liveDraft.teamBScore + amount
-      )
-    );
-  }
-
-  state.liveDraft.dirty = true;
-  setLiveSaveState("Unsaved score changes");
-  paintLiveOperations();
-}
-
-function getLiveWinner(config) {
-  if (!config) return "";
-
-  if (
-    state.liveDraft.teamAScore >= config.max &&
-    state.liveDraft.teamAScore >
-      state.liveDraft.teamBScore
-  ) {
-    return config.a;
-  }
-
-  if (
-    state.liveDraft.teamBScore >= config.max &&
-    state.liveDraft.teamBScore >
-      state.liveDraft.teamAScore
-  ) {
-    return config.b;
-  }
-
-  return "";
-}
-
-function getAutoLiveNextMatch() {
-  const site = window.nexusSiteData || {};
-
-  const order8 = [
-    "QF1 • Bo3",
-    "QF2 • Bo3",
-    "QF3 • Bo3",
-    "QF4 • Bo3",
-    "SF1 • Bo3",
-    "SF2 • Bo3",
-    "Grand Finals • Bo5"
-  ];
-
-  const order16 = [
-    "R16-1 • Bo3",
-    "R16-2 • Bo3",
-    "R16-3 • Bo3",
-    "R16-4 • Bo3",
-    "R16-5 • Bo3",
-    "R16-6 • Bo3",
-    "R16-7 • Bo3",
-    "R16-8 • Bo3",
-    ...order8
-  ];
-
-  const order =
-    (site.formatType || "8_single_elim") ===
-    "16_single_elim"
-      ? order16
-      : order8;
-
-  const index = order.indexOf(
-    state.liveDraft.currentMatchId
-  );
-
-  const nextId =
-    index >= 0
-      ? order[index + 1]
-      : order[0];
-
-  const config = getLiveMatchConfig(nextId);
-
-  if (!config) {
-    return {
-      label: "TOURNAMENT COMPLETE",
-      teamA: "",
-      teamB: ""
-    };
-  }
-
-  return {
-    label: config.label,
-    teamA: config.a,
-    teamB: config.b
-  };
-}
-
-function autoGenerateLiveNext() {
-  state.liveDraft.nextMatch = getAutoLiveNextMatch();
-}
-
-function getLivePredictionType(matchId) {
-  return `match_${String(matchId || "")
-    .replaceAll(" ", "_")
-    .replaceAll("•", "")
-    .replaceAll("-", "_")}`;
-}
-
-async function setCurrentMatchLive(button) {
-  const config = getLiveMatchConfig();
-
-  if (!config) {
-    showToast("Select a valid tournament match.");
-    return;
-  }
-
-  await runLiveButtonAction(
-    button,
-    "Setting Live...",
-    async () => {
-      const tournamentId =
-        await getCurrentTournamentId();
-
-      const next = getAutoLiveNextMatch();
-
-      const currentPredictionId =
-        getLivePredictionType(
-          state.liveDraft.currentMatchId
+        setLiveSaveState(
+          "Up Next not saved"
         );
 
-      const nextFullMatchId =
-        LIVE_MATCHES.find(match => {
-          const matchConfig = getLiveMatchConfig(match);
+        paintLiveOperations();
 
-          return (
-            matchConfig &&
-            matchConfig.label === next.label
-          );
-        });
+        showToast(
+          "Next match generated."
+        );
 
-      const updates = {
-        "site/currentMatch":
-          state.liveDraft.currentMatchId,
+        break;
 
-        [`predictionLocks/${tournamentId}/${currentPredictionId}`]: {
-          locked: true,
-          matchId: state.liveDraft.currentMatchId,
-          lockedAt:
-            firebase.database.ServerValue.TIMESTAMP
-        },
+      case "saveNextMatchButton":
+        void saveLiveNextMatch(button);
+        break;
 
-        "broadcastCountdown/upNext": next
-      };
+      case "saveBroadcastStatusButton":
+        void saveLiveBroadcastStatus(button);
+        break;
 
-      if (
-        nextFullMatchId &&
-        next.label !== "TOURNAMENT COMPLETE"
-      ) {
-        const nextPredictionId =
-          getLivePredictionType(nextFullMatchId);
+      case "resetBreakTimerButton":
+        void resetLiveBreakTimer(button);
+        break;
 
-        updates[
-          `predictionLocks/${tournamentId}/${nextPredictionId}`
-        ] = null;
-      }
+      case "finishTournamentButton":
+        void completeLiveTournament(button);
+        break;
 
-      await database.ref().update(updates);
+      case "toggleOperationsModeButton":
+        toggleOperationsMode(button);
+        break;
 
-      state.liveDraft.nextMatch = next;
-      state.liveDraft.dirty = false;
-
-      setLiveSaveState("Current match is live");
-      showToast(
-        "Current match live. Up Next updated."
-      );
+      default:
+        break;
     }
-  );
-}
-
-async function saveLiveResult(button) {
-  const config = getLiveMatchConfig();
-
-  if (!config) {
-    showToast("Select a valid match first.");
-    return;
   }
 
-  await runLiveButtonAction(
-    button,
-    "Saving Result...",
-    async () => {
-      const winner = getLiveWinner(config);
-      const next = getAutoLiveNextMatch();
+  function handleLiveOperationsChange(event) {
+    if (state.activeModule !== "live") return;
 
-      const updates = {
-        "site/currentMatch":
-          state.liveDraft.currentMatchId,
+    const target = event.target;
 
-        [`site/${config.scoreA}`]:
-          String(state.liveDraft.teamAScore),
+    if (
+      target.id === "liveCurrentMatchSelect"
+    ) {
+      state.liveDraft.currentMatchId =
+        target.value;
 
-        [`site/${config.scoreB}`]:
-          String(state.liveDraft.teamBScore),
+      state.liveDraft.dirty = true;
 
-        [`site/${config.winner}`]:
-          winner || null,
+      loadSelectedMatchScores();
+      autoGenerateLiveNext();
 
-        "broadcastCountdown/upNext": next
-      };
+      setLiveSaveState(
+        "Match selection not saved"
+      );
 
-      await database.ref().update(updates);
+      paintLiveOperations();
 
-      state.liveDraft.nextMatch = next;
-      state.liveDraft.dirty = false;
+      return;
+    }
 
-      setLiveSaveState("Saved to Firebase");
+    if (
+      target.id ===
+      "liveBroadcastStatusSelect"
+    ) {
+      state.liveDraft.dirty = true;
 
-      showToast(
-        winner
-          ? `Result saved: ${winner} wins`
-          : "Scores saved"
+      setLiveSaveState(
+        "Broadcast status not saved"
       );
     }
-  );
-}
+  }
 
-async function saveLiveNextMatch(button) {
-  await runLiveButtonAction(
-    button,
-    "Saving...",
-    async () => {
-      await database
-        .ref("broadcastCountdown/upNext")
-        .set(state.liveDraft.nextMatch);
+  function getLiveMatchConfig(
+    matchId = state.liveDraft.currentMatchId
+  ) {
+    const site =
+      window.nexusSiteData || {};
 
-      state.liveDraft.dirty = false;
-      setLiveSaveState("Up Next saved");
-      showToast("Up Next saved.");
+    const is16 =
+      (
+        site.formatType ||
+        "8_single_elim"
+      ) === "16_single_elim";
+
+    const configs = {
+      "R16-1 • Bo3": {
+        label: "R16-1",
+        a: site.team1 || "Team 1",
+        b: site.team2 || "Team 2",
+        scoreA: "r16m1Team1Score",
+        scoreB: "r16m1Team2Score",
+        winner: "r16m1Winner",
+        max: 2
+      },
+
+      "R16-2 • Bo3": {
+        label: "R16-2",
+        a: site.team3 || "Team 3",
+        b: site.team4 || "Team 4",
+        scoreA: "r16m2Team1Score",
+        scoreB: "r16m2Team2Score",
+        winner: "r16m2Winner",
+        max: 2
+      },
+
+      "R16-3 • Bo3": {
+        label: "R16-3",
+        a: site.team5 || "Team 5",
+        b: site.team6 || "Team 6",
+        scoreA: "r16m3Team1Score",
+        scoreB: "r16m3Team2Score",
+        winner: "r16m3Winner",
+        max: 2
+      },
+
+      "R16-4 • Bo3": {
+        label: "R16-4",
+        a: site.team7 || "Team 7",
+        b: site.team8 || "Team 8",
+        scoreA: "r16m4Team1Score",
+        scoreB: "r16m4Team2Score",
+        winner: "r16m4Winner",
+        max: 2
+      },
+
+      "R16-5 • Bo3": {
+        label: "R16-5",
+        a: site.team9 || "Team 9",
+        b: site.team10 || "Team 10",
+        scoreA: "r16m5Team1Score",
+        scoreB: "r16m5Team2Score",
+        winner: "r16m5Winner",
+        max: 2
+      },
+
+      "R16-6 • Bo3": {
+        label: "R16-6",
+        a: site.team11 || "Team 11",
+        b: site.team12 || "Team 12",
+        scoreA: "r16m6Team1Score",
+        scoreB: "r16m6Team2Score",
+        winner: "r16m6Winner",
+        max: 2
+      },
+
+      "R16-7 • Bo3": {
+        label: "R16-7",
+        a: site.team13 || "Team 13",
+        b: site.team14 || "Team 14",
+        scoreA: "r16m7Team1Score",
+        scoreB: "r16m7Team2Score",
+        winner: "r16m7Winner",
+        max: 2
+      },
+
+      "R16-8 • Bo3": {
+        label: "R16-8",
+        a: site.team15 || "Team 15",
+        b: site.team16 || "Team 16",
+        scoreA: "r16m8Team1Score",
+        scoreB: "r16m8Team2Score",
+        winner: "r16m8Winner",
+        max: 2
+      },
+
+      "QF1 • Bo3": {
+        label: "QF1",
+
+        a: is16
+          ? site.r16m1Winner ||
+            "Winner R16-1"
+          : site.team1 ||
+            "Team 1",
+
+        b: is16
+          ? site.r16m2Winner ||
+            "Winner R16-2"
+          : site.team2 ||
+            "Team 2",
+
+        scoreA: "qf1Team1Score",
+        scoreB: "qf1Team2Score",
+        winner: "qf1Winner",
+        max: 2
+      },
+
+      "QF2 • Bo3": {
+        label: "QF2",
+
+        a: is16
+          ? site.r16m3Winner ||
+            "Winner R16-3"
+          : site.team3 ||
+            "Team 3",
+
+        b: is16
+          ? site.r16m4Winner ||
+            "Winner R16-4"
+          : site.team4 ||
+            "Team 4",
+
+        scoreA: "qf2Team1Score",
+        scoreB: "qf2Team2Score",
+        winner: "qf2Winner",
+        max: 2
+      },
+
+      "QF3 • Bo3": {
+        label: "QF3",
+
+        a: is16
+          ? site.r16m5Winner ||
+            "Winner R16-5"
+          : site.team5 ||
+            "Team 5",
+
+        b: is16
+          ? site.r16m6Winner ||
+            "Winner R16-6"
+          : site.team6 ||
+            "Team 6",
+
+        scoreA: "qf3Team1Score",
+        scoreB: "qf3Team2Score",
+        winner: "qf3Winner",
+        max: 2
+      },
+
+      "QF4 • Bo3": {
+        label: "QF4",
+
+        a: is16
+          ? site.r16m7Winner ||
+            "Winner R16-7"
+          : site.team7 ||
+            "Team 7",
+
+        b: is16
+          ? site.r16m8Winner ||
+            "Winner R16-8"
+          : site.team8 ||
+            "Team 8",
+
+        scoreA: "qf4Team1Score",
+        scoreB: "qf4Team2Score",
+        winner: "qf4Winner",
+        max: 2
+      },
+
+      "SF1 • Bo3": {
+        label: "SF1",
+
+        a:
+          site.qf1Winner ||
+          "Winner QF1",
+
+        b:
+          site.qf2Winner ||
+          "Winner QF2",
+
+        scoreA: "sf1Team1Score",
+        scoreB: "sf1Team2Score",
+        winner: "sf1Winner",
+        max: 2
+      },
+
+      "SF2 • Bo3": {
+        label: "SF2",
+
+        a:
+          site.qf3Winner ||
+          "Winner QF3",
+
+        b:
+          site.qf4Winner ||
+          "Winner QF4",
+
+        scoreA: "sf2Team1Score",
+        scoreB: "sf2Team2Score",
+        winner: "sf2Winner",
+        max: 2
+      },
+
+      "Grand Finals • Bo5": {
+        label: "Grand Finals",
+
+        a:
+          site.sf1Winner ||
+          "Winner SF1",
+
+        b:
+          site.sf2Winner ||
+          "Winner SF2",
+
+        scoreA: "gfTeam1Score",
+        scoreB: "gfTeam2Score",
+        winner: "grandWinner",
+        max: 3
+      }
+    };
+
+    return configs[matchId] || null;
+  }
+
+  function syncLiveOperationsFromFirebase(
+    force = false
+  ) {
+    if (state.activeModule !== "live") return;
+
+    const site =
+      window.nexusSiteData || {};
+
+    const broadcast =
+      window.nexusBroadcastData || {};
+
+    if (
+      force ||
+      !state.liveDraft.dirty
+    ) {
+      state.liveDraft.currentMatchId =
+        site.currentMatch ||
+        "No Match Live";
+
+      loadSelectedMatchScores();
+
+      const savedNext =
+        broadcast.upNext;
+
+      if (savedNext) {
+        state.liveDraft.nextMatch = {
+          label: savedNext.label || "",
+          teamA: savedNext.teamA || "",
+          teamB: savedNext.teamB || ""
+        };
+      } else {
+        autoGenerateLiveNext();
+      }
     }
-  );
-}
 
-async function saveLiveBroadcastStatus(button) {
-  const select =
-    document.getElementById(
-      "liveBroadcastStatusSelect"
+    paintLiveOperations();
+  }
+
+  function loadSelectedMatchScores() {
+    const config =
+      getLiveMatchConfig();
+
+    const site =
+      window.nexusSiteData || {};
+
+    if (!config) {
+      state.liveDraft.teamAScore = 0;
+      state.liveDraft.teamBScore = 0;
+      return;
+    }
+
+    state.liveDraft.teamAScore =
+      Number(
+        site[config.scoreA] || 0
+      );
+
+    state.liveDraft.teamBScore =
+      Number(
+        site[config.scoreB] || 0
+      );
+  }
+
+  function paintLiveOperations() {
+    const config =
+      getLiveMatchConfig();
+
+    const site =
+      window.nexusSiteData || {};
+
+    const matchSelect =
+      document.getElementById(
+        "liveCurrentMatchSelect"
+      );
+
+    if (!matchSelect) return;
+
+    matchSelect.value =
+      state.liveDraft.currentMatchId;
+
+    setText(
+      "liveTeamAName",
+      config
+        ? config.a
+        : "No Match"
     );
 
-  await runLiveButtonAction(
-    button,
-    "Saving...",
-    async () => {
-      await database.ref("site/status").set(
-        select.value
+    setText(
+      "liveTeamBName",
+      config
+        ? config.b
+        : "Select Match"
+    );
+
+    setText(
+      "liveTeamAScore",
+      state.liveDraft.teamAScore
+    );
+
+    setText(
+      "liveTeamBScore",
+      state.liveDraft.teamBScore
+    );
+
+    setText(
+      "liveWinnerPreview",
+      getLiveWinner(config) ||
+      "Not decided"
+    );
+
+    setText(
+      "liveNextLabel",
+      state.liveDraft.nextMatch.label ||
+      "NO MATCH"
+    );
+
+    setText(
+      "liveNextTeams",
+      (
+        state.liveDraft.nextMatch.teamA &&
+        state.liveDraft.nextMatch.teamB
+      )
+        ? `${state.liveDraft.nextMatch.teamA} vs ${state.liveDraft.nextMatch.teamB}`
+        : "No upcoming match"
+    );
+
+    const statusSelect =
+      document.getElementById(
+        "liveBroadcastStatusSelect"
       );
 
-      state.liveDraft.dirty = false;
-      setLiveSaveState("Broadcast status saved");
-      showToast("Broadcast status saved.");
+    if (
+      statusSelect &&
+      !state.liveDraft.dirty
+    ) {
+      statusSelect.value =
+        site.status ||
+        "● OFFLINE";
     }
-  );
-}
+  }
 
-async function startLiveBreakTimer(minutes, button) {
-  const durationMs = minutes * 60 * 1000;
+  function changeLiveScore(
+    side,
+    amount
+  ) {
+    const config =
+      getLiveMatchConfig();
 
-  await runLiveButtonAction(
-    button,
-    "Starting...",
-    async () => {
-      await database
-        .ref("broadcastCountdown")
-        .update({
-          hubEndTime: new Date(
-            Date.now() + durationMs
-          ).toISOString(),
+    if (!config) return;
 
-          hubDurationMs: durationMs
-        });
-
-      showToast(`${minutes}-minute break started.`);
+    if (side === "A") {
+      state.liveDraft.teamAScore =
+        Math.max(
+          0,
+          Math.min(
+            config.max,
+            state.liveDraft.teamAScore +
+              amount
+          )
+        );
     }
-  );
-}
 
-async function resetLiveBreakTimer(button) {
-  await runLiveButtonAction(
-    button,
-    "Resetting...",
-    async () => {
-      await database
-        .ref("broadcastCountdown")
-        .update({
-          hubEndTime: null,
-          hubDurationMs: null
-        });
-
-      showToast("Break timer reset.");
+    if (side === "B") {
+      state.liveDraft.teamBScore =
+        Math.max(
+          0,
+          Math.min(
+            config.max,
+            state.liveDraft.teamBScore +
+              amount
+          )
+        );
     }
-  );
-}
 
-async function completeLiveTournament(button) {
-  const confirmed = window.confirm(
-    "Mark the tournament complete?\n\n" +
-    "This clears Current Match and Up Next. " +
-    "Bracket results will remain saved."
-  );
+    state.liveDraft.dirty = true;
 
-  if (!confirmed) return;
+    setLiveSaveState(
+      "Unsaved score changes"
+    );
 
-  await runLiveButtonAction(
-    button,
-    "Completing...",
-    async () => {
-      const completedNext = {
-        label: "NO MATCH",
+    paintLiveOperations();
+  }
+
+  function getLiveWinner(config) {
+    if (!config) return "";
+
+    if (
+      state.liveDraft.teamAScore >=
+        config.max &&
+      state.liveDraft.teamAScore >
+        state.liveDraft.teamBScore
+    ) {
+      return config.a;
+    }
+
+    if (
+      state.liveDraft.teamBScore >=
+        config.max &&
+      state.liveDraft.teamBScore >
+        state.liveDraft.teamAScore
+    ) {
+      return config.b;
+    }
+
+    return "";
+  }
+
+  function getAutoLiveNextMatch() {
+    const site =
+      window.nexusSiteData || {};
+
+    const order8 = [
+      "QF1 • Bo3",
+      "QF2 • Bo3",
+      "QF3 • Bo3",
+      "QF4 • Bo3",
+      "SF1 • Bo3",
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ];
+
+    const order16 = [
+      "R16-1 • Bo3",
+      "R16-2 • Bo3",
+      "R16-3 • Bo3",
+      "R16-4 • Bo3",
+      "R16-5 • Bo3",
+      "R16-6 • Bo3",
+      "R16-7 • Bo3",
+      "R16-8 • Bo3",
+      ...order8
+    ];
+
+    const order =
+      (
+        site.formatType ||
+        "8_single_elim"
+      ) === "16_single_elim"
+        ? order16
+        : order8;
+
+    const index =
+      order.indexOf(
+        state.liveDraft.currentMatchId
+      );
+
+    const nextId =
+      index >= 0
+        ? order[index + 1]
+        : order[0];
+
+    const config =
+      getLiveMatchConfig(nextId);
+
+    if (!config) {
+      return {
+        label: "TOURNAMENT COMPLETE",
         teamA: "",
         teamB: ""
       };
-
-      await database.ref().update({
-        "site/currentMatch": "No Match Live",
-        "broadcastCountdown/upNext": completedNext
-      });
-
-      state.liveDraft.currentMatchId =
-        "No Match Live";
-
-      state.liveDraft.teamAScore = 0;
-      state.liveDraft.teamBScore = 0;
-      state.liveDraft.nextMatch = completedNext;
-      state.liveDraft.dirty = false;
-
-      paintLiveOperations();
-      setLiveSaveState("Tournament complete");
-      showToast("Tournament marked complete.");
     }
-  );
-}
 
-async function runLiveButtonAction(
-  button,
-  loadingText,
-  action
-) {
-  if (!button) {
-    window.alert("Nexus could not identify the selected control.");
-    return;
+    return {
+      label: config.label,
+      teamA: config.a,
+      teamB: config.b
+    };
   }
 
-  if (!auth?.currentUser) {
-    window.alert(
-      "Your Firebase session is no longer active. Sign in again."
-    );
-
-    return;
+  function autoGenerateLiveNext() {
+    state.liveDraft.nextMatch =
+      getAutoLiveNextMatch();
   }
 
-  if (!state.role) {
-    window.alert(
-      "Nexus could not verify your administrative role."
-    );
-
-    return;
+  function getLivePredictionType(matchId) {
+    return `match_${String(matchId || "")
+      .replaceAll(" ", "_")
+      .replaceAll("•", "")
+      .replaceAll("-", "_")}`;
   }
 
-  const originalHtml = button.innerHTML;
+  async function setCurrentMatchLive(button) {
+    const config =
+      getLiveMatchConfig();
 
-  button.disabled = true;
+    if (!config) {
+      showToast(
+        "Select a valid tournament match."
+      );
 
-  button.innerHTML = `
-    <i class="fa-solid fa-spinner fa-spin"></i>
-    ${escapeHtml(loadingText)}
-  `;
+      return;
+    }
 
-  try {
-    await action();
-  } catch (error) {
-    console.error("[NEXUS LIVE] Firebase action failed:", error);
+    await runLiveButtonAction(
+      button,
+      "Setting Live...",
+      async () => {
+        const tournamentId =
+          await getCurrentTournamentId();
 
-    const message = isPermissionDenied(error)
-      ? (
-          "Firebase denied this operation. Your session is valid, " +
-          "but the affected database path does not allow this write."
-        )
-      : (
-          error.message ||
-          "An unknown Live Operations error occurred."
+        const next =
+          getAutoLiveNextMatch();
+
+        const currentPredictionId =
+          getLivePredictionType(
+            state.liveDraft.currentMatchId
+          );
+
+        const nextFullMatchId =
+          LIVE_MATCHES.find(match => {
+            const matchConfig =
+              getLiveMatchConfig(match);
+
+            return (
+              matchConfig &&
+              matchConfig.label === next.label
+            );
+          });
+
+        const updates = {
+          "site/currentMatch":
+            state.liveDraft.currentMatchId,
+
+          [`predictionLocks/${tournamentId}/${currentPredictionId}`]:
+            {
+              locked: true,
+
+              matchId:
+                state.liveDraft.currentMatchId,
+
+              lockedAt:
+                firebase.database
+                  .ServerValue
+                  .TIMESTAMP
+            },
+
+          "broadcastCountdown/upNext":
+            next
+        };
+
+        if (
+          nextFullMatchId &&
+          next.label !==
+            "TOURNAMENT COMPLETE"
+        ) {
+          const nextPredictionId =
+            getLivePredictionType(
+              nextFullMatchId
+            );
+
+          updates[
+            `predictionLocks/${tournamentId}/${nextPredictionId}`
+          ] = null;
+        }
+
+        await database
+          .ref()
+          .update(updates);
+
+        state.liveDraft.nextMatch = next;
+        state.liveDraft.dirty = false;
+
+        setLiveSaveState(
+          "Current match is live"
         );
 
-    showToast(message);
-
-    window.alert(
-      "Live Operations Error\n\n" + message
+        showToast(
+          "Current match live. Up Next updated."
+        );
+      }
     );
-  } finally {
-    button.disabled = false;
-    button.innerHTML = originalHtml;
   }
-}
-function setLiveSaveState(message) {
-  setText("liveSaveState", message);
-}
 
-function toggleOperationsMode(button) {
-  const enabled =
-    elements.app.classList.toggle(
-      "operations-mode"
+  async function saveLiveResult(button) {
+    const config =
+      getLiveMatchConfig();
+
+    if (!config) {
+      showToast(
+        "Select a valid match first."
+      );
+
+      return;
+    }
+
+    await runLiveButtonAction(
+      button,
+      "Saving Result...",
+      async () => {
+        const winner =
+          getLiveWinner(config);
+
+        const next =
+          getAutoLiveNextMatch();
+
+        const updates = {
+          "site/currentMatch":
+            state.liveDraft.currentMatchId,
+
+          [`site/${config.scoreA}`]:
+            String(
+              state.liveDraft.teamAScore
+            ),
+
+          [`site/${config.scoreB}`]:
+            String(
+              state.liveDraft.teamBScore
+            ),
+
+          [`site/${config.winner}`]:
+            winner || null,
+
+          "broadcastCountdown/upNext":
+            next
+        };
+
+        await database
+          .ref()
+          .update(updates);
+
+        state.liveDraft.nextMatch = next;
+        state.liveDraft.dirty = false;
+
+        setLiveSaveState(
+          "Saved to Firebase"
+        );
+
+        showToast(
+          winner
+            ? `Result saved: ${winner} wins`
+            : "Scores saved"
+        );
+      }
     );
+  }
 
-  button.innerHTML = enabled
-    ? `
-      <i class="fa-solid fa-compress"></i>
-      Exit Focus Mode
-    `
-    : `
-      <i class="fa-solid fa-expand"></i>
-      Focus Mode
+  async function saveLiveNextMatch(button) {
+    await runLiveButtonAction(
+      button,
+      "Saving...",
+      async () => {
+        await database
+          .ref("broadcastCountdown/upNext")
+          .set(state.liveDraft.nextMatch);
+
+        state.liveDraft.dirty = false;
+
+        setLiveSaveState(
+          "Up Next saved"
+        );
+
+        showToast(
+          "Up Next saved."
+        );
+      }
+    );
+  }
+
+  async function saveLiveBroadcastStatus(
+    button
+  ) {
+    const select =
+      document.getElementById(
+        "liveBroadcastStatusSelect"
+      );
+
+    await runLiveButtonAction(
+      button,
+      "Saving...",
+      async () => {
+        await database
+          .ref("site/status")
+          .set(select.value);
+
+        state.liveDraft.dirty = false;
+
+        setLiveSaveState(
+          "Broadcast status saved"
+        );
+
+        showToast(
+          "Broadcast status saved."
+        );
+      }
+    );
+  }
+
+  async function startLiveBreakTimer(
+    minutes,
+    button
+  ) {
+    const durationMs =
+      minutes * 60 * 1000;
+
+    await runLiveButtonAction(
+      button,
+      "Starting...",
+      async () => {
+        await database
+          .ref("broadcastCountdown")
+          .update({
+            hubEndTime:
+              new Date(
+                Date.now() + durationMs
+              ).toISOString(),
+
+            hubDurationMs:
+              durationMs
+          });
+
+        showToast(
+          `${minutes}-minute break started.`
+        );
+      }
+    );
+  }
+
+  async function resetLiveBreakTimer(button) {
+    await runLiveButtonAction(
+      button,
+      "Resetting...",
+      async () => {
+        await database
+          .ref("broadcastCountdown")
+          .update({
+            hubEndTime: null,
+            hubDurationMs: null
+          });
+
+        showToast(
+          "Break timer reset."
+        );
+      }
+    );
+  }
+
+  async function completeLiveTournament(
+    button
+  ) {
+    const confirmed =
+      window.confirm(
+        "Mark the tournament complete?\n\n" +
+        "This clears Current Match and Up Next. " +
+        "Bracket results will remain saved."
+      );
+
+    if (!confirmed) return;
+
+    await runLiveButtonAction(
+      button,
+      "Completing...",
+      async () => {
+        const completedNext = {
+          label: "NO MATCH",
+          teamA: "",
+          teamB: ""
+        };
+
+        await database
+          .ref()
+          .update({
+            "site/currentMatch":
+              "No Match Live",
+
+            "broadcastCountdown/upNext":
+              completedNext
+          });
+
+        state.liveDraft.currentMatchId =
+          "No Match Live";
+
+        state.liveDraft.teamAScore = 0;
+        state.liveDraft.teamBScore = 0;
+
+        state.liveDraft.nextMatch =
+          completedNext;
+
+        state.liveDraft.dirty = false;
+
+        paintLiveOperations();
+
+        setLiveSaveState(
+          "Tournament complete"
+        );
+
+        showToast(
+          "Tournament marked complete."
+        );
+      }
+    );
+  }
+
+  async function runLiveButtonAction(
+    button,
+    loadingText,
+    action
+  ) {
+    if (!button) {
+      window.alert(
+        "Nexus could not identify the selected control."
+      );
+
+      return;
+    }
+
+    if (
+      !auth ||
+      !auth.currentUser
+    ) {
+      window.alert(
+        "Your Firebase session is no longer active. Sign in again."
+      );
+
+      return;
+    }
+
+    if (!state.role) {
+      window.alert(
+        "Nexus could not verify your administrative role."
+      );
+
+      return;
+    }
+
+    const originalHtml =
+      button.innerHTML;
+
+    button.disabled = true;
+
+    button.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      ${escapeHtml(loadingText)}
     `;
-}
 
-  return configs[matchId] || null;
-}
+    try {
+      await action();
+    } catch (error) {
+      console.error(
+        "[NEXUS LIVE] Firebase action failed:",
+        error
+      );
+
+      const message =
+        isPermissionDenied(error)
+          ? "Firebase denied this operation. Your session is valid, but this database path does not allow the write."
+          : error.message ||
+            "An unknown Live Operations error occurred.";
+
+      showToast(message);
+
+      window.alert(
+        `Live Operations Error\n\n${message}`
+      );
+    } finally {
+      button.disabled = false;
+      button.innerHTML = originalHtml;
+    }
+  }
+
+  function setLiveSaveState(message) {
+    setText(
+      "liveSaveState",
+      message
+    );
+  }
+
+  function toggleOperationsMode(button) {
+    const enabled =
+      elements.app.classList.toggle(
+        "operations-mode"
+      );
+
+    button.innerHTML = enabled
+      ? '<i class="fa-solid fa-compress"></i> Exit Focus Mode'
+      : '<i class="fa-solid fa-expand"></i> Focus Mode';
+  }
 
   function renderModulePlaceholder(moduleId) {
-   elements.content.removeEventListener(
-  "click",
-  handleLiveOperationsClick
-);
-
-elements.content.removeEventListener(
-  "change",
-  handleLiveOperationsChange
-);
-    
-     const module = MODULES[moduleId];
+    const module =
+      MODULES[moduleId];
 
     const descriptions = {
-      live:
-        "Your current admin-live controls will be imported here first as a dedicated iPad-friendly Operations Mode.",
-
       tournament:
         "Tournament settings, event state, prize pool and public visibility will be managed here.",
 
@@ -1853,7 +2214,7 @@ elements.content.removeEventListener(
         "The visual bracket, match schedule, results and automatic advancement controls will live here.",
 
       predictions:
-        "Bracket Pick’em and Live Prediction administration will be consolidated here without the unsafe client payout logic.",
+        "Bracket Pick’em and Live Prediction administration will be consolidated here without unsafe client payout logic.",
 
       posts:
         "Your current admin posts tools will become a complete content and announcement workspace.",
@@ -1878,7 +2239,11 @@ elements.content.removeEventListener(
       <section class="module-intro">
         <div>
           <h2>${escapeHtml(module.title)}</h2>
-          <p>${escapeHtml(descriptions[moduleId] || "")}</p>
+          <p>
+            ${escapeHtml(
+              descriptions[moduleId] || ""
+            )}
+          </p>
         </div>
       </section>
 
@@ -1888,34 +2253,33 @@ elements.content.removeEventListener(
             <i class="fa-solid ${escapeHtml(module.icon)}"></i>
           </div>
 
-          <h3>${escapeHtml(module.title)}</h3>
+          <h3>
+            ${escapeHtml(module.title)}
+          </h3>
 
           <p>
-            The secure Nexus shell is active. This module is ready for
-            its existing admin functionality to be imported.
+            The secure Nexus shell is active.
+            This module is ready for its
+            existing admin functionality
+            to be imported.
           </p>
         </div>
       </article>
     `;
   }
 
-  function renderDiagnostics(autoRun = false) {
-    elements.content.removeEventListener(
-  "click",
-  handleLiveOperationsClick
-);
-
-elements.content.removeEventListener(
-  "change",
-  handleLiveOperationsChange
-);
+  function renderDiagnostics(
+    autoRun = false
+  ) {
     elements.content.innerHTML = `
       <section class="module-intro">
         <div>
           <h2>System Diagnostics</h2>
+
           <p>
-            Test which important Firebase collections Nexus can read
-            with your current account and database rules.
+            Test which important Firebase
+            collections Nexus can read with
+            your current account and database rules.
           </p>
         </div>
       </section>
@@ -1931,7 +2295,10 @@ elements.content.removeEventListener(
       </div>
 
       <article class="nexus-panel">
-        <div id="diagnosticsList" class="diagnostics-list">
+        <div
+          id="diagnosticsList"
+          class="diagnostics-list"
+        >
           ${createDiagnosticRow(
             "auth",
             "Firebase Authentication",
@@ -1979,254 +2346,414 @@ elements.content.removeEventListener(
 
     document
       .getElementById("runDiagnosticsButton")
-      .addEventListener("click", runDiagnostics);
+      .addEventListener(
+        "click",
+        runDiagnostics
+      );
 
     if (autoRun) {
-      runDiagnostics();
+      void runDiagnostics();
     }
   }
 
   async function runDiagnostics() {
-    const button = document.getElementById("runDiagnosticsButton");
+    const button =
+      document.getElementById(
+        "runDiagnosticsButton"
+      );
 
     if (button) {
       button.disabled = true;
+
       button.innerHTML =
         '<i class="fa-solid fa-spinner fa-spin"></i> Running...';
     }
 
-    setDiagnosticRunning("auth");
-    setDiagnosticRunning("role");
-    setDiagnosticRunning("site");
-    setDiagnosticRunning("broadcast");
-    setDiagnosticRunning("posts");
-    setDiagnosticRunning("applications");
-    setDiagnosticRunning("users");
+    [
+      "auth",
+      "role",
+      "site",
+      "broadcast",
+      "posts",
+      "applications",
+      "users"
+    ].forEach(setDiagnosticRunning);
 
     const tournamentId =
-      await getCurrentTournamentId().catch(() => "open1");
+      await getCurrentTournamentId()
+        .catch(() => "open1");
 
-    await runDiagnosticTest("auth", async () => {
-      if (!auth.currentUser) {
-        throw new Error("No authenticated Firebase user.");
+    await runDiagnosticTest(
+      "auth",
+      async () => {
+        if (!auth.currentUser) {
+          throw new Error(
+            "No authenticated Firebase user."
+          );
+        }
+
+        return (
+          auth.currentUser.email ||
+          auth.currentUser.uid
+        );
       }
+    );
 
-      return auth.currentUser.email || auth.currentUser.uid;
-    });
+    await runDiagnosticTest(
+      "role",
+      async () => {
+        const snapshot =
+          await database
+            .ref(
+              `users/${state.user.uid}/role`
+            )
+            .once("value");
 
-    await runDiagnosticTest("role", async () => {
-      const snapshot = await database
-        .ref(`users/${state.user.uid}/role`)
-        .once("value");
+        const role = snapshot.val();
 
-      const role = snapshot.val();
+        if (
+          role !== "owner" &&
+          role !== "admin"
+        ) {
+          throw new Error(
+            `Unsupported role: ${
+              role || "missing"
+            }`
+          );
+        }
 
-      if (role !== "owner" && role !== "admin") {
-        throw new Error(`Unsupported role: ${role || "missing"}`);
+        return role;
       }
+    );
 
-      return role;
-    });
+    await runDiagnosticTest(
+      "site",
+      async () => {
+        const snapshot =
+          await database
+            .ref("site")
+            .once("value");
 
-    await runDiagnosticTest("site", async () => {
-      const snapshot = await database.ref("site").once("value");
-      return snapshot.exists() ? "Readable" : "Readable, no data";
-    });
+        return snapshot.exists()
+          ? "Readable"
+          : "Readable, no data";
+      }
+    );
 
-    await runDiagnosticTest("broadcast", async () => {
-      const snapshot = await database
-        .ref("broadcastCountdown")
-        .once("value");
+    await runDiagnosticTest(
+      "broadcast",
+      async () => {
+        const snapshot =
+          await database
+            .ref("broadcastCountdown")
+            .once("value");
 
-      return snapshot.exists() ? "Readable" : "Readable, no data";
-    });
+        return snapshot.exists()
+          ? "Readable"
+          : "Readable, no data";
+      }
+    );
 
-    await runDiagnosticTest("posts", async () => {
-      const snapshot = await database
-        .ref("officialPosts")
-        .limitToFirst(1)
-        .once("value");
+    await runDiagnosticTest(
+      "posts",
+      async () => {
+        const snapshot =
+          await database
+            .ref("officialPosts")
+            .limitToFirst(1)
+            .once("value");
 
-      return snapshot.exists() ? "Readable" : "Readable, no posts";
-    });
+        return snapshot.exists()
+          ? "Readable"
+          : "Readable, no posts";
+      }
+    );
 
-    await runDiagnosticTest("applications", async () => {
-      const snapshot = await database
-        .ref(`applications/${tournamentId}`)
-        .once("value");
+    await runDiagnosticTest(
+      "applications",
+      async () => {
+        const snapshot =
+          await database
+            .ref(
+              `applications/${tournamentId}`
+            )
+            .once("value");
 
-      return snapshot.exists()
-        ? "Tournament applications readable"
-        : "Readable, no applications";
-    });
+        return snapshot.exists()
+          ? "Tournament applications readable"
+          : "Readable, no applications";
+      }
+    );
 
-    await runDiagnosticTest("users", async () => {
-      const snapshot = await database
-        .ref("users")
-        .limitToFirst(1)
-        .once("value");
+    await runDiagnosticTest(
+      "users",
+      async () => {
+        const snapshot =
+          await database
+            .ref("users")
+            .limitToFirst(1)
+            .once("value");
 
-      return snapshot.exists()
-        ? "Account collection readable"
-        : "Readable, no accounts";
-    });
+        return snapshot.exists()
+          ? "Account collection readable"
+          : "Readable, no accounts";
+      }
+    );
 
     if (button) {
       button.disabled = false;
+
       button.innerHTML =
         '<i class="fa-solid fa-play"></i> Run Diagnostics';
     }
 
-    showToast("Diagnostics complete.");
+    showToast(
+      "Diagnostics complete."
+    );
   }
 
-  async function runDiagnosticTest(id, test) {
+  async function runDiagnosticTest(
+    id,
+    test
+  ) {
     try {
       const result = await test();
-      setDiagnosticResult(id, true, result);
+
+      setDiagnosticResult(
+        id,
+        true,
+        result
+      );
     } catch (error) {
-      console.error(`Diagnostic ${id} failed:`, error);
+      console.error(
+        `Diagnostic ${id} failed:`,
+        error
+      );
 
-      const message = isPermissionDenied(error)
-        ? "Permission denied by Firebase rules"
-        : error.message || "Test failed";
-
-      setDiagnosticResult(id, false, message);
+      setDiagnosticResult(
+        id,
+        false,
+        isPermissionDenied(error)
+          ? "Permission denied by Firebase rules"
+          : error.message ||
+            "Test failed"
+      );
     }
   }
 
   function setDiagnosticRunning(id) {
-    const row = document.querySelector(
-      `[data-diagnostic="${id}"]`
-    );
-
-    if (!row) return;
-
-    row.className = "diagnostic-row running";
-
-    row.querySelector(".diagnostic-icon").innerHTML =
-      '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-    row.querySelector(".diagnostic-result").textContent =
-      "Testing";
-  }
-
-  function setDiagnosticResult(id, success, message) {
-    const row = document.querySelector(
-      `[data-diagnostic="${id}"]`
-    );
+    const row =
+      document.querySelector(
+        `[data-diagnostic="${id}"]`
+      );
 
     if (!row) return;
 
     row.className =
-      `diagnostic-row ${success ? "success" : "failure"}`;
+      "diagnostic-row running";
 
-    row.querySelector(".diagnostic-icon").innerHTML = success
-      ? '<i class="fa-solid fa-check"></i>'
-      : '<i class="fa-solid fa-xmark"></i>';
+    row
+      .querySelector(".diagnostic-icon")
+      .innerHTML =
+        '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    row.querySelector(".diagnostic-copy span").textContent =
-      message;
+    row
+      .querySelector(".diagnostic-result")
+      .textContent =
+        "Testing";
+  }
 
-    row.querySelector(".diagnostic-result").textContent =
-      success ? "Passed" : "Blocked";
+  function setDiagnosticResult(
+    id,
+    success,
+    message
+  ) {
+    const row =
+      document.querySelector(
+        `[data-diagnostic="${id}"]`
+      );
+
+    if (!row) return;
+
+    row.className =
+      `diagnostic-row ${
+        success
+          ? "success"
+          : "failure"
+      }`;
+
+    row
+      .querySelector(".diagnostic-icon")
+      .innerHTML =
+        success
+          ? '<i class="fa-solid fa-check"></i>'
+          : '<i class="fa-solid fa-xmark"></i>';
+
+    row
+      .querySelector(".diagnostic-copy span")
+      .textContent =
+        message;
+
+    row
+      .querySelector(".diagnostic-result")
+      .textContent =
+        success
+          ? "Passed"
+          : "Blocked";
   }
 
   function startDashboardListeners() {
     if (state.listenersStarted) return;
+
     state.listenersStarted = true;
 
     database.ref("site").on(
       "value",
-      snapshot => {
-        window.nexusSiteData = snapshot.val() || {};
 
-        if (state.activeModule === "dashboard") {
-          updateDashboardValues();
+      snapshot => {
+        window.nexusSiteData =
+          snapshot.val() || {};
+
+        if (
+          state.activeModule ===
+          "dashboard"
+        ) {
+          void updateDashboardValues();
         }
 
-if (state.activeModule === "live") {
-  syncLiveOperationsFromFirebase();
-}
+        if (
+          state.activeModule ===
+          "live"
+        ) {
+          syncLiveOperationsFromFirebase();
+        }
 
-        updatePendingApplicationCount();
+        void updatePendingApplicationCount();
       },
+
       error => {
-        console.error("Unable to read site:", error);
+        console.error(
+          "Unable to read site:",
+          error
+        );
       }
     );
 
-    database.ref("broadcastCountdown").on(
-      "value",
-      snapshot => {
-        window.nexusBroadcastData = snapshot.val() || {};
+    database
+      .ref("broadcastCountdown")
+      .on(
+        "value",
 
-        if (state.activeModule === "dashboard") {
-          updateDashboardValues();
+        snapshot => {
+          window.nexusBroadcastData =
+            snapshot.val() || {};
+
+          if (
+            state.activeModule ===
+            "dashboard"
+          ) {
+            void updateDashboardValues();
+          }
+
+          if (
+            state.activeModule ===
+            "live"
+          ) {
+            syncLiveOperationsFromFirebase();
+          }
+        },
+
+        error => {
+          console.error(
+            "Unable to read broadcast data:",
+            error
+          );
         }
-     if (state.activeModule === "live") {
-  syncLiveOperationsFromFirebase();
-}
-       },
-      error => {
-        console.error("Unable to read broadcast data:", error);
-      }
-    );
+      );
   }
 
   async function updateDashboardValues() {
-    const site = window.nexusSiteData || {};
-    const broadcast = window.nexusBroadcastData || {};
+    const site =
+      window.nexusSiteData || {};
+
+    const broadcast =
+      window.nexusBroadcastData || {};
+
+    const upNext =
+      broadcast.upNext || {};
 
     setText(
       "dashboardTournament",
-      site.eventName || site.currentTournament || "No Tournament"
+      site.eventName ||
+      site.currentTournament ||
+      "No Tournament"
     );
 
     setText(
       "dashboardCurrentMatch",
-      site.currentMatch || "No Match Live"
+      site.currentMatch ||
+      "No Match Live"
     );
-
-    const upNext = broadcast.upNext || {};
 
     setText(
       "dashboardTournamentDetail",
-      normalizeStatus(site.status || "Status unavailable")
+      normalizeStatus(
+        site.status ||
+        "Status unavailable"
+      )
     );
 
     setText(
       "dashboardCurrentMatchDetail",
-      upNext.teamA && upNext.teamB
+
+      upNext.teamA &&
+      upNext.teamB
         ? `Up next: ${upNext.teamA} vs ${upNext.teamB}`
         : "No upcoming match set"
     );
 
     updateConnectionStatusRow();
-    updatePendingApplicationCount();
-    updateCheckInCount();
+
+    await Promise.all([
+      updatePendingApplicationCount(),
+      updateCheckInCount()
+    ]);
   }
 
   async function updatePendingApplicationCount() {
     const valueElement =
-      document.getElementById("dashboardApplications");
+      document.getElementById(
+        "dashboardApplications"
+      );
 
     const detailElement =
-      document.getElementById("dashboardApplicationsDetail");
+      document.getElementById(
+        "dashboardApplicationsDetail"
+      );
 
-    if (!valueElement) return;
+    if (
+      !valueElement ||
+      !detailElement
+    ) {
+      return;
+    }
 
     try {
-      const tournamentId = await getCurrentTournamentId();
+      const tournamentId =
+        await getCurrentTournamentId();
 
-      const snapshot = await database
-        .ref(`applications/${tournamentId}`)
-        .once("value");
+      const snapshot =
+        await database
+          .ref(
+            `applications/${tournamentId}`
+          )
+          .once("value");
 
       let pending = 0;
 
       snapshot.forEach(child => {
-        const application = child.val() || {};
+        const application =
+          child.val() || {};
 
         if (
           !application.status ||
@@ -2236,39 +2763,61 @@ if (state.activeModule === "live") {
         }
       });
 
-      valueElement.textContent = pending;
+      valueElement.textContent =
+        pending;
+
       detailElement.textContent =
         pending === 1
           ? "1 application awaiting review"
           : `${pending} applications awaiting review`;
 
-      elements.applicationNavCount.textContent = pending;
-      elements.applicationNavCount.hidden = pending === 0;
-    } catch (error) {
-      valueElement.textContent = "Blocked";
-      detailElement.textContent = isPermissionDenied(error)
-        ? "Firebase parent read denied"
-        : "Unable to load applications";
+      elements.applicationNavCount.textContent =
+        pending;
 
-      elements.applicationNavCount.hidden = true;
+      elements.applicationNavCount.hidden =
+        pending === 0;
+    } catch (error) {
+      valueElement.textContent =
+        "Blocked";
+
+      detailElement.textContent =
+        isPermissionDenied(error)
+          ? "Firebase parent read denied"
+          : "Unable to load applications";
+
+      elements.applicationNavCount.hidden =
+        true;
     }
   }
 
   async function updateCheckInCount() {
     const valueElement =
-      document.getElementById("dashboardCheckIns");
+      document.getElementById(
+        "dashboardCheckIns"
+      );
 
     const detailElement =
-      document.getElementById("dashboardCheckInsDetail");
+      document.getElementById(
+        "dashboardCheckInsDetail"
+      );
 
-    if (!valueElement) return;
+    if (
+      !valueElement ||
+      !detailElement
+    ) {
+      return;
+    }
 
     try {
-      const tournamentId = await getCurrentTournamentId();
+      const tournamentId =
+        await getCurrentTournamentId();
 
-      const snapshot = await database
-        .ref(`checkIns/${tournamentId}`)
-        .once("value");
+      const snapshot =
+        await database
+          .ref(
+            `checkIns/${tournamentId}`
+          )
+          .once("value");
 
       let total = 0;
       let checkedIn = 0;
@@ -2276,93 +2825,141 @@ if (state.activeModule === "live") {
       snapshot.forEach(child => {
         total += 1;
 
-        const checkIn = child.val();
+        const checkIn =
+          child.val();
 
         if (
           checkIn === true ||
-          checkIn?.checkedIn === true ||
-          checkIn?.status === "checkedIn"
+          (
+            checkIn &&
+            checkIn.checkedIn === true
+          ) ||
+          (
+            checkIn &&
+            checkIn.status === "checkedIn"
+          )
         ) {
           checkedIn += 1;
         }
       });
 
-      valueElement.textContent = `${checkedIn}/${total || 0}`;
+      valueElement.textContent =
+        `${checkedIn}/${total}`;
+
       detailElement.textContent =
         total > 0
           ? `${total - checkedIn} still awaiting check-in`
           : "No check-in records yet";
     } catch (error) {
-      valueElement.textContent = "Blocked";
-      detailElement.textContent = isPermissionDenied(error)
-        ? "Firebase read denied"
-        : "Unable to load check-ins";
+      valueElement.textContent =
+        "Blocked";
+
+      detailElement.textContent =
+        isPermissionDenied(error)
+          ? "Firebase read denied"
+          : "Unable to load check-ins";
     }
   }
 
   async function getCurrentTournamentId() {
-    const site = window.nexusSiteData;
+    const site =
+      window.nexusSiteData;
 
-    if (site?.currentTournament) {
+    if (
+      site &&
+      site.currentTournament
+    ) {
       return site.currentTournament;
     }
 
-    const snapshot = await database
-      .ref("site/currentTournament")
-      .once("value");
+    const snapshot =
+      await database
+        .ref("site/currentTournament")
+        .once("value");
 
-    return snapshot.val() || "open1";
+    return (
+      snapshot.val() ||
+      "open1"
+    );
   }
 
   function watchFirebaseConnection() {
-    database.ref(".info/connected").on("value", snapshot => {
-      state.connected = snapshot.val() === true;
+    database
+      .ref(".info/connected")
+      .on("value", snapshot => {
+        state.connected =
+          snapshot.val() === true;
 
-      elements.connectionDot.classList.toggle(
-        "online",
-        state.connected
-      );
+        elements.connectionDot.classList
+          .toggle(
+            "online",
+            state.connected
+          );
 
-      elements.connectionDot.classList.toggle(
-        "offline",
-        !state.connected
-      );
+        elements.connectionDot.classList
+          .toggle(
+            "offline",
+            !state.connected
+          );
 
-      elements.connectionLabel.textContent =
-        state.connected ? "Connected" : "Disconnected";
+        elements.connectionLabel.textContent =
+          state.connected
+            ? "Connected"
+            : "Disconnected";
 
-      updateConnectionStatusRow();
-    });
+        updateConnectionStatusRow();
+      });
   }
 
   function updateConnectionStatusRow() {
     const statusContainer =
-      document.getElementById("dashboardSystemStatus");
+      document.getElementById(
+        "dashboardSystemStatus"
+      );
 
     if (!statusContainer) return;
 
-    const firstRow = statusContainer.querySelector(".status-row");
+    const firstRow =
+      statusContainer.querySelector(
+        ".status-row"
+      );
 
     if (!firstRow) return;
 
-    const dot = firstRow.querySelector(".status-dot");
-    const detail = firstRow.querySelector("small");
-    const result = firstRow.querySelector("em");
+    const dot =
+      firstRow.querySelector(
+        ".status-dot"
+      );
+
+    const detail =
+      firstRow.querySelector("small");
+
+    const result =
+      firstRow.querySelector("em");
 
     dot.className =
-      `status-dot ${state.connected ? "good" : "bad"}`;
+      `status-dot ${
+        state.connected
+          ? "good"
+          : "bad"
+      }`;
 
-    detail.textContent = state.connected
-      ? "Realtime Database connection is active"
-      : "Realtime Database is disconnected";
+    detail.textContent =
+      state.connected
+        ? "Realtime Database connection is active"
+        : "Realtime Database is disconnected";
 
     result.textContent =
-      state.connected ? "ONLINE" : "OFFLINE";
+      state.connected
+        ? "ONLINE"
+        : "OFFLINE";
   }
 
   function openCommandPalette() {
     elements.commandOverlay.hidden = false;
+
     elements.commandSearchInput.value = "";
+
     renderCommandResults();
 
     requestAnimationFrame(() => {
@@ -2376,20 +2973,38 @@ if (state.activeModule === "live") {
 
   function renderCommandResults() {
     const query =
-      elements.commandSearchInput.value.trim().toLowerCase();
+      elements.commandSearchInput
+        .value
+        .trim()
+        .toLowerCase();
 
-    const availableModules = Object.entries(MODULES)
-      .filter(([, module]) => hasPermission(module.permission))
-      .filter(([, module]) => {
-        if (!query) return true;
+    const availableModules =
+      Object.entries(MODULES)
+        .filter(
+          ([, module]) =>
+            hasPermission(
+              module.permission
+            )
+        )
+        .filter(
+          ([, module]) => {
+            if (!query) return true;
 
-        return (
-          module.title.toLowerCase().includes(query) ||
-          module.breadcrumb.toLowerCase().includes(query)
+            return (
+              module.title
+                .toLowerCase()
+                .includes(query) ||
+
+              module.breadcrumb
+                .toLowerCase()
+                .includes(query)
+            );
+          }
         );
-      });
 
-    if (availableModules.length === 0) {
+    if (
+      availableModules.length === 0
+    ) {
       elements.commandResults.innerHTML = `
         <div class="command-empty">
           No Nexus commands match that search.
@@ -2399,34 +3014,47 @@ if (state.activeModule === "live") {
       return;
     }
 
-    elements.commandResults.innerHTML = availableModules
-      .map(([id, module]) => `
-        <button
-          class="command-result"
-          data-command-module="${escapeHtml(id)}"
-        >
-          <i class="fa-solid ${escapeHtml(module.icon)}"></i>
+    elements.commandResults.innerHTML =
+      availableModules
+        .map(
+          ([id, module]) => `
+            <button
+              class="command-result"
+              data-command-module="${escapeHtml(id)}"
+            >
+              <i class="fa-solid ${escapeHtml(module.icon)}"></i>
 
-          <div>
-            <strong>${escapeHtml(module.title)}</strong>
-            <small>${escapeHtml(module.breadcrumb)}</small>
-          </div>
+              <div>
+                <strong>
+                  ${escapeHtml(module.title)}
+                </strong>
 
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      `)
-      .join("");
+                <small>
+                  ${escapeHtml(module.breadcrumb)}
+                </small>
+              </div>
+
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          `
+        )
+        .join("");
   }
 
   function handleKeyboardShortcuts(event) {
     const commandShortcut =
-      (event.metaKey || event.ctrlKey) &&
+      (
+        event.metaKey ||
+        event.ctrlKey
+      ) &&
       event.key.toLowerCase() === "k";
 
     if (commandShortcut) {
       event.preventDefault();
 
-      if (elements.commandOverlay.hidden) {
+      if (
+        elements.commandOverlay.hidden
+      ) {
         openCommandPalette();
       } else {
         closeCommandPalette();
@@ -2444,19 +3072,28 @@ if (state.activeModule === "live") {
   }
 
   function openMobileSidebar() {
-    elements.app.classList.add("mobile-sidebar-open");
+    elements.app.classList.add(
+      "mobile-sidebar-open"
+    );
   }
 
   function closeMobileSidebar() {
-    elements.app.classList.remove("mobile-sidebar-open");
+    elements.app.classList.remove(
+      "mobile-sidebar-open"
+    );
   }
 
   function toggleDesktopSidebar() {
-    elements.app.classList.toggle("sidebar-collapsed");
+    elements.app.classList.toggle(
+      "sidebar-collapsed"
+    );
 
     localStorage.setItem(
       "nexusSidebarCollapsed",
-      elements.app.classList.contains("sidebar-collapsed")
+
+      elements.app.classList.contains(
+        "sidebar-collapsed"
+      )
         ? "1"
         : "0"
     );
@@ -2466,8 +3103,14 @@ if (state.activeModule === "live") {
     try {
       await auth.signOut();
     } catch (error) {
-      console.error("Sign-out failed:", error);
-      showToast("Unable to sign out.");
+      console.error(
+        "Sign-out failed:",
+        error
+      );
+
+      showToast(
+        "Unable to sign out."
+      );
     }
   }
 
@@ -2486,38 +3129,63 @@ if (state.activeModule === "live") {
     elements.loading.hidden = true;
     elements.app.hidden = true;
     elements.denied.hidden = false;
-    elements.deniedMessage.textContent = message;
+
+    elements.deniedMessage.textContent =
+      message;
   }
 
-  function showFatalError(title, message) {
+  function showFatalError(
+    title,
+    message
+  ) {
+    if (!elements.loading) return;
+
     elements.loading.innerHTML = `
       <div class="state-icon state-icon-danger">
         <i class="fa-solid fa-triangle-exclamation"></i>
       </div>
 
-      <p class="eyebrow">NEXUS ERROR</p>
-      <h1>${escapeHtml(title)}</h1>
-      <p>${escapeHtml(message)}</p>
+      <p class="eyebrow">
+        NEXUS ERROR
+      </p>
+
+      <h1>
+        ${escapeHtml(title)}
+      </h1>
+
+      <p>
+        ${escapeHtml(message)}
+      </p>
     `;
   }
 
   function setLoadingMessage(message) {
-    elements.loadingMessage.textContent = message;
+    if (elements.loadingMessage) {
+      elements.loadingMessage.textContent =
+        message;
+    }
   }
 
   function showToast(message) {
     clearTimeout(toastTimer);
 
-    elements.toast.textContent = message;
-    elements.toast.classList.add("show");
+    elements.toast.textContent =
+      message;
+
+    elements.toast.classList.add(
+      "show"
+    );
 
     toastTimer = setTimeout(() => {
-      elements.toast.classList.remove("show");
+      elements.toast.classList.remove(
+        "show"
+      );
     }, 2500);
   }
 
   function setText(id, value) {
-    const element = document.getElementById(id);
+    const element =
+      document.getElementById(id);
 
     if (element) {
       element.textContent = value;
@@ -2525,13 +3193,26 @@ if (state.activeModule === "live") {
   }
 
   function isPermissionDenied(error) {
-    const code = String(error?.code || "").toLowerCase();
-    const message = String(error?.message || "").toLowerCase();
+    const code =
+      String(
+        error?.code || ""
+      ).toLowerCase();
+
+    const message =
+      String(
+        error?.message || ""
+      ).toLowerCase();
 
     return (
-      code.includes("permission-denied") ||
-      message.includes("permission_denied") ||
-      message.includes("permission denied")
+      code.includes(
+        "permission-denied"
+      ) ||
+      message.includes(
+        "permission_denied"
+      ) ||
+      message.includes(
+        "permission denied"
+      )
     );
   }
 
@@ -2551,18 +3232,32 @@ if (state.activeModule === "live") {
       .trim();
   }
 
-  function createMetricCard(label, id, detail, icon) {
+  function createMetricCard(
+    label,
+    id,
+    detail,
+    icon
+  ) {
     return `
       <article class="metric-card">
         <div class="metric-card-top">
-          <span class="metric-label">${escapeHtml(label)}</span>
+
+          <span class="metric-label">
+            ${escapeHtml(label)}
+          </span>
 
           <span class="metric-icon">
             <i class="fa-solid ${escapeHtml(icon)}"></i>
           </span>
+
         </div>
 
-        <strong id="${escapeHtml(id)}" class="metric-value">—</strong>
+        <strong
+          id="${escapeHtml(id)}"
+          class="metric-value"
+        >
+          —
+        </strong>
 
         <span
           id="${escapeHtml(id)}Detail"
@@ -2588,8 +3283,13 @@ if (state.activeModule === "live") {
         <i class="fa-solid ${escapeHtml(icon)}"></i>
 
         <div>
-          <strong>${escapeHtml(title)}</strong>
-          <span>${escapeHtml(detail)}</span>
+          <strong>
+            ${escapeHtml(title)}
+          </strong>
+
+          <span>
+            ${escapeHtml(detail)}
+          </span>
         </div>
       </button>
     `;
@@ -2603,19 +3303,34 @@ if (state.activeModule === "live") {
   ) {
     return `
       <div class="status-row">
-        <span class="status-dot ${escapeHtml(status)}"></span>
+
+        <span
+          class="status-dot ${escapeHtml(status)}"
+        ></span>
 
         <div>
-          <strong>${escapeHtml(title)}</strong>
-          <small>${detail}</small>
+          <strong>
+            ${escapeHtml(title)}
+          </strong>
+
+          <small>
+            ${detail}
+          </small>
         </div>
 
-        <em>${escapeHtml(result)}</em>
+        <em>
+          ${escapeHtml(result)}
+        </em>
+
       </div>
     `;
   }
 
-  function createDiagnosticRow(id, title, detail) {
+  function createDiagnosticRow(
+    id,
+    title,
+    detail
+  ) {
     return `
       <div
         class="diagnostic-row"
@@ -2626,25 +3341,32 @@ if (state.activeModule === "live") {
         </span>
 
         <div class="diagnostic-copy">
-          <strong>${escapeHtml(title)}</strong>
-          <span>${escapeHtml(detail)}</span>
+          <strong>
+            ${escapeHtml(title)}
+          </strong>
+
+          <span>
+            ${escapeHtml(detail)}
+          </span>
         </div>
 
-        <span class="diagnostic-result">Not tested</span>
+        <span class="diagnostic-result">
+          Not tested
+        </span>
       </div>
     `;
   }
 
   function escapeHtml(value) {
-    return String(value ?? "")
+    return String(
+      value == null
+        ? ""
+        : value
+    )
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
   }
-
-  window.addEventListener("unhandledrejection", event => {
-    console.error("Unhandled Nexus promise rejection:", event.reason);
-  });
 })();

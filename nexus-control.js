@@ -38,6 +38,12 @@
       icon: "fa-user-check",
       permission: "checkin.manage"
     },
+    reports: {
+  title: "Reports & Substitutions",
+  breadcrumb: "Tournament Operations / Reports & Substitutions",
+  icon: "fa-solid fa-triangle-exclamation",
+  permission: "checkin.manage"
+},
     bracket: {
       title: "Bracket & Matches",
       breadcrumb: "Nexus / Tournament / Bracket",
@@ -598,6 +604,12 @@ if (
 ) {
   window.NexusCheckIn.cleanup();
 }
+if (
+  window.NexusReports &&
+  typeof window.NexusReports.cleanup === "function"
+) {
+  window.NexusReports.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -687,6 +699,31 @@ if (moduleId === "checkin") {
   }
 
   window.NexusCheckIn.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+
+if (moduleId === "reports") {
+  if (
+    !window.NexusReports ||
+    typeof window.NexusReports.render !== "function"
+  ) {
+    showToast("The Reports module failed to load.");
+    renderModulePlaceholder(moduleId);
+    return;
+  }
+
+  window.NexusReports.render({
     database,
     content: elements.content,
     currentUser: auth.currentUser,

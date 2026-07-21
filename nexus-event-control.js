@@ -123,12 +123,13 @@
               "6"
             )}
 
-            ${fieldMarkup(
-              "newEventMaxPlayers",
-              "Maximum Applications",
-              "number",
-              "64"
-            )}
+        ${fieldMarkup(
+  "newEventMaxPlayers",
+  "Application Capacity",
+  "number",
+  "Leave blank for unlimited",
+  "Optional. Leave blank to accept unlimited player applications."
+)}
 
             ${fieldMarkup(
               "newEventCountdownDate",
@@ -309,12 +310,13 @@
                 "6"
               )}
 
-              ${fieldMarkup(
-                "eventMaxPlayersInput",
-                "Maximum Applications",
-                "number",
-                "64"
-              )}
+             ${fieldMarkup(
+  "eventMaxPlayersInput",
+  "Application Capacity",
+  "number",
+  "Leave blank for unlimited",
+  "Optional. Leave blank to accept unlimited player applications."
+)}
 
               ${fieldMarkup(
                 "eventCountdownDateInput",
@@ -1070,10 +1072,9 @@
       );
 
     const maxPlayers =
-      numberValue(
-        "newEventMaxPlayers",
-        64
-      );
+  optionalNumberValue(
+    "newEventMaxPlayers"
+  );
 
     const countdownDate =
       valueOf(
@@ -1136,15 +1137,15 @@
     }
 
     if (
-      maxPlayers <
-      rosterCapacity
-    ) {
-      context.showToast(
-        `Maximum applications must be at least ${rosterCapacity} for this roster size.`
-      );
+  maxPlayers !== null &&
+  maxPlayers < rosterCapacity
+) {
+  context.showToast(
+    `Application capacity must be at least ${rosterCapacity}, or left blank for unlimited.`
+  );
 
-      return;
-    }
+  return;
+}
 
     await buttonAction(
       button,
@@ -1672,11 +1673,9 @@
       playersPerTeam,
 
       maxPlayers:
-        numberValue(
-          "eventMaxPlayersInput",
-          teamCount *
-          playersPerTeam
-        ),
+  optionalNumberValue(
+    "eventMaxPlayersInput"
+  ),
 
       countdownDate:
         valueOf(
@@ -1739,11 +1738,11 @@
       form.playersPerTeam;
 
     if (
-      form.maxPlayers <
-      rosterCapacity
-    ) {
-      return `Maximum applications must be at least ${rosterCapacity}.`;
-    }
+  form.maxPlayers !== null &&
+  form.maxPlayers < rosterCapacity
+) {
+  return `Application capacity must be at least ${rosterCapacity}, or left blank for unlimited.`;
+}
 
     if (
       !PHASE_OPTIONS[
@@ -1788,19 +1787,13 @@
     );
 
     setValue(
-      "eventMaxPlayersInput",
-      Number(
-        tournament.maxPlayers ||
-        (
-          tournament.teamCount ||
-          8
-        ) *
-        (
-          tournament.playersPerTeam ||
-          6
-        )
-      )
-    );
+  "eventMaxPlayersInput",
+
+  tournament.maxPlayers === null ||
+  tournament.maxPlayers === undefined
+    ? ""
+    : tournament.maxPlayers
+);
 
     setValue(
       "eventCountdownDateInput",
@@ -1881,9 +1874,9 @@
     );
 
     setValue(
-      "eventMaxPlayersInput",
-      64
-    );
+  "eventMaxPlayersInput",
+  ""
+);
 
     setValue(
       "eventRegistrationStatusSelect",
@@ -1920,9 +1913,9 @@
     );
 
     setValue(
-      "newEventMaxPlayers",
-      64
-    );
+  "newEventMaxPlayers",
+  ""
+);
 
     setValue(
       "newEventCountdownDate",
@@ -1940,53 +1933,21 @@
     }
   }
 
-  function updateNewEventDefaults() {
-    const formatType =
-      valueOf(
-        "newEventFormat"
-      );
+ function updateNewEventDefaults() {
+  const maxInput =
+    document.getElementById(
+      "newEventMaxPlayers"
+    );
 
-    const teamCount =
-      FORMAT_OPTIONS[
-        formatType
-      ]?.teamCount ||
-      8;
+  if (maxInput) {
+    maxInput.removeAttribute(
+      "min"
+    );
 
-    const playersPerTeam =
-      numberValue(
-        "newEventPlayersPerTeam",
-        6
-      );
-
-    const maxInput =
-      document.getElementById(
-        "newEventMaxPlayers"
-      );
-
-    if (maxInput) {
-      maxInput.min =
-        String(
-          teamCount *
-          playersPerTeam
-        );
-
-      if (
-        Number(
-          maxInput.value ||
-          0
-        ) <
-        teamCount *
-        playersPerTeam
-      ) {
-        maxInput.value =
-          String(
-            teamCount === 16
-              ? 112
-              : 64
-          );
-      }
-    }
+    maxInput.placeholder =
+      "Leave blank for unlimited";
   }
+}
 
   function updateCalculatedValues() {
     const formatType =
@@ -2754,6 +2715,27 @@
       ? Math.round(value)
       : fallback;
   }
+
+function optionalNumberValue(id) {
+  const rawValue =
+    String(
+      document.getElementById(
+        id
+      )?.value ||
+      ""
+    ).trim();
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const value =
+    Number(rawValue);
+
+  return Number.isFinite(value)
+    ? Math.round(value)
+    : null;
+}
 
   function setValue(
     id,

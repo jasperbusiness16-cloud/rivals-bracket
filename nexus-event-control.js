@@ -1,6 +1,39 @@
 (() => {
   "use strict";
 
+  const EVENT_TIME_ZONE =
+    "America/Chicago";
+
+  const EVENT_TIME_FORMATTER =
+    new Intl.DateTimeFormat(
+      "en-US",
+      {
+        timeZone:
+          EVENT_TIME_ZONE,
+
+        year:
+          "numeric",
+
+        month:
+          "2-digit",
+
+        day:
+          "2-digit",
+
+        hour:
+          "2-digit",
+
+        minute:
+          "2-digit",
+
+        second:
+          "2-digit",
+
+        hourCycle:
+          "h23"
+      }
+    );
+
   const FORMAT_OPTIONS = {
     "8_single_elim": {
       label: "8 Team Single Elimination",
@@ -133,7 +166,7 @@
 
            ${dateTimePickerMarkup(
   "newEvent",
-  "Tournament Start"
+ "Tournament Start — Central Time"
 )}
           </div>
 
@@ -318,7 +351,7 @@
 
             ${dateTimePickerMarkup(
   "event",
-  "Tournament Start"
+"Tournament Start — Central Time"
 )}
 
               <div class="event-field">
@@ -2587,9 +2620,9 @@ function dateTimePickerMarkup(
         </select>
       </div>
 
-      <small>
-        Choose the date and enter the time using AM or PM.
-      </small>
+   <small>
+  All tournament start times use Central Time (CST/CDT).
+</small>
     </div>
   `;
 }
@@ -2787,6 +2820,85 @@ function dateTimePickerMarkup(
       );
   }
 
+function getEventTimeParts(
+  date
+) {
+  const values = {};
+
+  EVENT_TIME_FORMATTER
+    .formatToParts(date)
+    .forEach(part => {
+      if (
+        part.type !==
+        "literal"
+      ) {
+        values[
+          part.type
+        ] = part.value;
+      }
+    });
+
+  return {
+    year:
+      Number(
+        values.year
+      ),
+
+    month:
+      Number(
+        values.month
+      ),
+
+    day:
+      Number(
+        values.day
+      ),
+
+    hour:
+      Number(
+        values.hour
+      ),
+
+    minute:
+      Number(
+        values.minute
+      ),
+
+    second:
+      Number(
+        values.second
+      )
+  };
+}
+
+function getEventTimeZoneOffset(
+  date
+) {
+  const parts =
+    getEventTimeParts(
+      date
+    );
+
+  const displayedAsUtc =
+    Date.UTC(
+      parts.year,
+      parts.month - 1,
+      parts.day,
+      parts.hour,
+      parts.minute,
+      parts.second
+    );
+
+  const timestampWithoutMilliseconds =
+    date.getTime() -
+    date.getMilliseconds();
+
+  return (
+    displayedAsUtc -
+    timestampWithoutMilliseconds
+  );
+}
+
 function readFriendlyDateTime(
   prefix
 ) {
@@ -2816,8 +2928,10 @@ function readFriendlyDateTime(
 
   if (
     !dateValue ||
-    !Number.isFinite(hourValue) ||
-    !Number.isFinite(minuteValue) ||
+    hourValue < 1 ||
+    hourValue > 12 ||
+    minuteValue < 0 ||
+    minuteValue > 59 ||
     ![
       "AM",
       "PM"
@@ -2829,7 +2943,10 @@ function readFriendlyDateTime(
   let hour24 =
     hourValue % 12;
 
-  if (period === "PM") {
+  if (
+    period ===
+    "PM"
+  ) {
     hour24 += 12;
   }
 
@@ -2841,8 +2958,20 @@ function readFriendlyDateTime(
     .split("-")
     .map(Number);
 
-  const localDate =
-    new Date(
+  if (
+    !year ||
+    !month ||
+    !day
+  ) {
+    return "";
+  }
+
+  /*
+   * Begin with the selected clock values
+   * represented temporarily as UTC.
+   */
+  const wallClockTimestamp =
+    Date.UTC(
       year,
       month - 1,
       day,
@@ -2852,15 +2981,75 @@ function readFriendlyDateTime(
       0
     );
 
+  /*
+   * Calculate the Central Time offset
+   * for this particular calendar date.
+   */
+  let offset =
+    getEventTimeZoneOffset(
+      new Date(
+        wallClockTimestamp
+      )
+    );
+
+  let finalTimestamp =
+    wallClockTimestamp -
+    offset;
+
+  /*
+   * Recheck because the first estimate
+   * may cross a daylight-saving boundary.
+   */
+  const correctedOffset =
+    getEventTimeZoneOffset(
+      new Date(
+        finalTimestamp
+      )
+    );
+
   if (
-    Number.isNaN(
-      localDate.getTime()
-    )
+    correctedOffset !==
+    offset
+  ) {
+    offset =
+      correctedOffset;
+
+    finalTimestamp =
+      wallClockTimestamp -
+      offset;
+  }
+
+  const finalDate =
+    new Date(
+      finalTimestamp
+    );
+
+  const verification =
+    getEventTimeParts(
+      finalDate
+    );
+
+  /*
+   * Reject nonexistent clock times,
+   * such as during the spring DST jump.
+   */
+  if (
+    verification.year !==
+      year ||
+    verification.month !==
+      month ||
+    verification.day !==
+      day ||
+    verification.hour !==
+      hour24 ||
+    verification.minute !==
+      minuteValue
   ) {
     return "";
   }
 
-  return localDate.toISOString();
+  return finalDate
+    .toISOString();
 }
 
 function populateFriendlyDateTime(
@@ -2892,12 +3081,23 @@ function populateFriendlyDateTime(
     return;
   }
 
-  const year =
-    date.getFullYear();
+  const parts =
+    getEventTimeParts(
+      date
+    );
+
+  const hour12 =
+    parts.hour % 12 ||
+    12;
+
+  const period =
+    parts.hour >= 12
+      ? "PM"
+      : "AM";
 
   const month =
     String(
-      date.getMonth() + 1
+      parts.month
     ).padStart(
       2,
       "0"
@@ -2905,43 +3105,59 @@ function populateFriendlyDateTime(
 
   const day =
     String(
-      date.getDate()
+      parts.day
     ).padStart(
       2,
       "0"
     );
 
-  const hour24 =
-    date.getHours();
+  const minute =
+    String(
+      parts.minute
+    ).padStart(
+      2,
+      "0"
+    );
 
-  const hour12 =
-    hour24 % 12 ||
-    12;
+  const minuteSelect =
+    document.getElementById(
+      `${prefix}StartMinute`
+    );
 
-  const period =
-    hour24 >= 12
-      ? "PM"
-      : "AM";
+  /*
+   * Preserve an older saved minute even
+   * when it is not a five-minute option.
+   */
+  if (
+    minuteSelect &&
+    !Array.from(
+      minuteSelect.options
+    ).some(
+      option =>
+        option.value ===
+        minute
+    )
+  ) {
+    const option =
+      document.createElement(
+        "option"
+      );
 
-  const roundedMinute =
-    Math.round(
-      date.getMinutes() /
-      5
-    ) * 5;
+    option.value =
+      minute;
 
-  const safeMinute =
-    roundedMinute >= 60
-      ? "55"
-      : String(
-          roundedMinute
-        ).padStart(
-          2,
-          "0"
-        );
+    option.textContent =
+      minute;
+
+    minuteSelect.appendChild(
+      option
+    );
+  }
 
   setValue(
     `${prefix}StartDate`,
-    `${year}-${month}-${day}`
+
+    `${parts.year}-${month}-${day}`
   );
 
   setValue(
@@ -2951,7 +3167,7 @@ function populateFriendlyDateTime(
 
   setValue(
     `${prefix}StartMinute`,
-    safeMinute
+    minute
   );
 
   setValue(
@@ -2959,7 +3175,6 @@ function populateFriendlyDateTime(
     period
   );
 }
-
 function clearFriendlyDateTime(
   prefix
 ) {

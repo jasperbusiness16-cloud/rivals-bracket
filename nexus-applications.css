@@ -1,16 +1,22 @@
 /* =========================================================
-   NEXUS — APPLICATION REVIEW
+   NEXUS — APPLICATION REVIEW / PLAYER CARDS
    ========================================================= */
 
 .applications-layout {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
 }
 
 .applications-panel-content {
-  padding: 18px;
+  padding: 20px;
 }
+
+/* =========================================================
+   TOURNAMENT CONTEXT
+   ========================================================= */
 
 .applications-tournament-controls {
   display: grid;
@@ -23,38 +29,47 @@
   min-width: 0;
 }
 
-.applications-field label {
+.applications-field label,
+.application-note-editor label {
   display: block;
-  margin-bottom: 7px;
+  margin: 0 0 7px;
   color: var(--muted);
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .applications-select,
-.applications-search input {
+.applications-search input,
+.application-note-editor textarea {
   width: 100%;
-  min-height: 45px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   outline: none;
-  background: #0d0c14;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0.01)
+    ),
+    #0d0c14;
   color: var(--text);
   font-family: inherit;
-  font-size: 14px;
   font-weight: 700;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.applications-select,
+.applications-search input {
+  min-height: 46px;
+  border-radius: 11px;
 }
 
 .applications-select {
-  padding: 0 13px;
-}
-
-.applications-select:focus,
-.applications-search input:focus {
-  border-color: rgba(var(--purple-rgb), 0.48);
-  box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.09);
+  padding: 0 14px;
 }
 
 .applications-search {
@@ -64,29 +79,47 @@
 .applications-search i {
   position: absolute;
   top: 50%;
-  left: 14px;
+  left: 15px;
+  z-index: 1;
   color: var(--dim);
+  font-size: 13px;
   transform: translateY(-50%);
   pointer-events: none;
 }
 
 .applications-search input {
-  padding: 0 14px 0 40px;
+  padding: 0 14px 0 42px;
+}
+
+.applications-select:focus,
+.applications-search input:focus,
+.application-note-editor textarea:focus {
+  border-color: rgba(var(--purple-rgb), 0.55);
+  background-color: #11101a;
+  box-shadow:
+    0 0 0 3px rgba(var(--purple-rgb), 0.1),
+    0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 .applications-tournament-summary {
   display: grid;
-  grid-template-columns: 1.5fr repeat(3, minmax(120px, 0.7fr));
+  grid-template-columns: 1.45fr repeat(3, minmax(120px, 0.7fr));
   gap: 10px;
   margin-top: 16px;
 }
 
 .applications-tournament-summary > div {
   min-width: 0;
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.025);
+  padding: 15px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(var(--purple-rgb), 0.09),
+      transparent 50%
+    ),
+    rgba(255, 255, 255, 0.022);
 }
 
 .applications-tournament-summary span {
@@ -94,16 +127,17 @@
   color: var(--dim);
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 .applications-tournament-summary strong {
   display: block;
   overflow: hidden;
-  margin-top: 5px;
-  color: var(--text);
-  font-size: 17px;
+  margin-top: 6px;
+  color: white;
+  font-size: 18px;
+  line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -112,14 +146,19 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-top: 14px;
+  margin-top: 15px;
 }
 
 .applications-context-actions p {
   margin: 0;
   color: var(--dim);
   font-size: 11px;
+  line-height: 1.4;
 }
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
 
 .applications-summary-grid {
   display: grid;
@@ -128,26 +167,44 @@
 }
 
 .application-summary-card {
-  padding: 15px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 13px;
   background:
-    radial-gradient(
-      circle at 100% 0,
-      rgba(var(--purple-rgb), 0.1),
-      transparent 52%
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.09),
+      transparent 55%
     ),
-    rgba(255, 255, 255, 0.024);
+    rgba(255, 255, 255, 0.022);
+}
+
+.application-summary-card::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: rgba(var(--purple-rgb), 0.08);
+  content: "";
+  filter: blur(14px);
+  transform: translate(30%, -30%);
 }
 
 .application-summary-card span {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -156,43 +213,107 @@
 }
 
 .application-summary-card strong {
+  position: relative;
+  z-index: 1;
   display: block;
-  margin-top: 9px;
+  margin-top: 10px;
   color: white;
-  font-size: 29px;
+  font-size: 31px;
   line-height: 1;
 }
 
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
 .applications-filter-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 1.5fr) repeat(2, minmax(160px, 0.6fr));
+  grid-template-columns:
+    minmax(260px, 1.5fr)
+    minmax(150px, 0.55fr)
+    minmax(170px, 0.65fr);
   gap: 12px;
 }
+
+/* =========================================================
+   APPLICATION LIST
+   ========================================================= */
 
 .applications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 16px;
 }
 
+/* =========================================================
+   PLAYER APPLICATION CARD
+   ========================================================= */
+
 .nexus-application-card {
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.095);
+  border-radius: 16px;
   background:
-    linear-gradient(
-      145deg,
-      rgba(var(--purple-rgb), 0.07),
-      transparent 44%
+    radial-gradient(
+      circle at 0 0,
+      rgba(var(--purple-rgb), 0.13),
+      transparent 34%
     ),
-    rgba(255, 255, 255, 0.022);
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.012)
+    ),
+    #11101a;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
 }
+
+.nexus-application-card:hover {
+  border-color: rgba(var(--purple-rgb), 0.28);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(var(--purple-rgb), 0.05);
+  transform: translateY(-1px);
+}
+
+.nexus-application-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--purple-bright),
+    rgba(var(--purple-rgb), 0.16),
+    transparent 75%
+  );
+  content: "";
+}
+
+/* =========================================================
+   PLAYER IDENTITY HEADER
+   ========================================================= */
 
 .application-card-identity {
   display: grid;
   grid-template-columns: 92px minmax(0, 1fr);
   gap: 16px;
+  padding: 19px 19px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.075);
 }
 
 .application-avatar-column {
@@ -202,16 +323,20 @@
 
 .nexus-application-avatar,
 .nexus-application-avatar-fallback {
-  width: 72px;
-  height: 72px;
+  width: 76px;
+  height: 76px;
   margin: 0 auto;
-  border: 1px solid rgba(var(--purple-rgb), 0.34);
-  border-radius: 15px;
+  border: 1px solid rgba(var(--purple-rgb), 0.42);
+  border-radius: 17px;
+  box-shadow:
+    0 0 0 4px rgba(var(--purple-rgb), 0.07),
+    0 12px 24px rgba(0, 0, 0, 0.22);
 }
 
 .nexus-application-avatar {
   display: block;
   object-fit: cover;
+  background: #0c0b12;
 }
 
 .nexus-application-avatar-fallback {
@@ -220,42 +345,57 @@
   background:
     linear-gradient(
       145deg,
-      rgba(var(--purple-rgb), 0.27),
-      rgba(255, 255, 255, 0.025)
-    );
+      rgba(var(--purple-rgb), 0.34),
+      rgba(var(--purple-rgb), 0.08)
+    ),
+    #171421;
   color: white;
-  font-size: 22px;
+  font-size: 25px;
   font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
 .application-avatar-column > span {
-  display: block;
+  display: inline-block;
   overflow: hidden;
-  margin-top: 8px;
-  color: var(--dim);
-  font-size: 10px;
+  max-width: 100%;
+  margin-top: 10px;
+  padding: 4px 7px;
+  border: 1px solid rgba(var(--purple-rgb), 0.2);
+  border-radius: 6px;
+  background: rgba(var(--purple-rgb), 0.07);
+  color: var(--purple-bright);
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.application-identity-copy {
+  min-width: 0;
 }
 
 .application-name-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
 }
 
 .application-name-row h3 {
+  overflow: hidden;
   margin: 0;
   color: white;
-  font-size: 24px;
+  font-size: 25px;
   line-height: 1;
+  letter-spacing: -0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .application-name-row p {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
   color: var(--muted);
   font-size: 13px;
 }
@@ -269,70 +409,79 @@
   padding: 6px 9px;
   border: 1px solid currentColor;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.1em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
 .application-status-badge.status-pending {
-  color: #facc15;
-  background: rgba(250, 204, 21, 0.07);
+  color: #f3cc4f;
+  background: rgba(243, 204, 79, 0.07);
 }
 
 .application-status-badge.status-accepted {
-  color: #35dc86;
-  background: rgba(53, 220, 134, 0.07);
+  color: #46dda0;
+  background: rgba(70, 221, 160, 0.07);
 }
 
 .application-status-badge.status-waitlist {
-  color: #63a8ff;
-  background: rgba(99, 168, 255, 0.07);
+  color: #6cadff;
+  background: rgba(108, 173, 255, 0.07);
 }
 
 .application-status-badge.status-declined {
-  color: #ff647d;
-  background: rgba(255, 100, 125, 0.07);
+  color: #ff7087;
+  background: rgba(255, 112, 135, 0.07);
 }
 
 .application-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 13px;
+  gap: 6px;
+  margin-top: 14px;
 }
 
 .application-tag {
-  padding: 6px 9px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.027);
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.028);
+  color: #c6c1d0;
   font-size: 10px;
   font-weight: 800;
+  line-height: 1;
 }
+
+/* =========================================================
+   PLAYER STATS
+   ========================================================= */
 
 .application-details-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 16px;
+  padding: 15px 19px 0;
 }
 
 .application-detail {
   min-width: 0;
-  padding: 12px;
-  border: 1px solid var(--border);
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.13);
+  background: rgba(0, 0, 0, 0.14);
 }
 
 .application-detail span {
   display: block;
   color: var(--dim);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
@@ -340,117 +489,145 @@
   display: block;
   overflow: hidden;
   margin-top: 5px;
-  color: var(--text);
-  font-size: 13px;
+  color: #f5f2fb;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
   text-overflow: ellipsis;
 }
 
+/* =========================================================
+   APPLICANT NOTES
+   ========================================================= */
+
 .application-applicant-notes {
-  margin-top: 12px;
-  padding: 13px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.018);
+  margin: 12px 19px 0;
+  padding: 12px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-left: 3px solid rgba(var(--purple-rgb), 0.45);
+  border-radius: 9px;
+  background: rgba(var(--purple-rgb), 0.035);
 }
 
 .application-applicant-notes span {
   display: block;
-  color: var(--dim);
-  font-size: 9px;
+  color: var(--purple-bright);
+  font-size: 8px;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 .application-applicant-notes p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.45;
+  white-space: pre-wrap;
 }
+
+/* =========================================================
+   PLAYER CARD ACTIONS
+   ========================================================= */
 
 .application-action-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin: 14px 19px 0;
+}
+
+.application-action-row > .action-button {
+  align-self: flex-start;
+  min-height: 38px;
 }
 
 .application-status-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 7px;
+  width: 100%;
 }
 
 .application-status-button {
-  min-height: 38px;
-  padding: 0 11px;
-  border: 1px solid var(--border);
+  min-width: 0;
+  min-height: 39px;
+  padding: 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.095);
   border-radius: 9px;
   background: rgba(255, 255, 255, 0.028);
   color: var(--muted);
   font-family: inherit;
+  font-size: 11px;
   font-weight: 800;
   cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.application-status-button i {
+  margin-right: 4px;
 }
 
 .application-status-button:hover:not(:disabled) {
-  border-color: rgba(var(--purple-rgb), 0.42);
+  border-color: rgba(var(--purple-rgb), 0.4);
+  background: rgba(var(--purple-rgb), 0.09);
   color: white;
+  transform: translateY(-1px);
 }
 
 .application-status-button:disabled {
-  opacity: 0.42;
+  border-color: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.018);
+  color: var(--dim);
+  opacity: 0.48;
   cursor: default;
 }
 
 .status-action-accepted:not(:disabled) {
-  color: #35dc86;
+  border-color: rgba(70, 221, 160, 0.2);
+  color: #46dda0;
 }
 
 .status-action-waitlist:not(:disabled) {
-  color: #63a8ff;
+  border-color: rgba(108, 173, 255, 0.2);
+  color: #6cadff;
 }
 
 .status-action-declined:not(:disabled) {
-  color: #ff647d;
+  border-color: rgba(255, 112, 135, 0.2);
+  color: #ff7087;
 }
+
+/* =========================================================
+   INTERNAL NOTES
+   ========================================================= */
 
 .application-note-editor {
   margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid var(--border);
-}
-
-.application-note-editor label {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
+  padding: 15px 19px 19px;
+  border-top: 1px solid rgba(255, 255, 255, 0.075);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .application-note-editor textarea {
-  width: 100%;
-  min-height: 92px;
+  display: block;
+  min-height: 90px;
   resize: vertical;
-  padding: 12px;
-  border: 1px solid var(--border);
+  padding: 12px 13px;
   border-radius: 10px;
-  outline: none;
-  background: #0d0c14;
   color: white;
-  font-family: inherit;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
-.application-note-editor textarea:focus {
-  border-color: rgba(var(--purple-rgb), 0.48);
-  box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.09);
+.application-note-editor textarea::placeholder {
+  color: #676271;
+  opacity: 1;
 }
 
 .application-note-editor > div {
@@ -459,36 +636,51 @@
   margin-top: 9px;
 }
 
+/* =========================================================
+   EMPTY / LOADING
+   ========================================================= */
+
 .applications-empty {
-  min-height: 240px;
+  grid-column: 1 / -1;
+  min-height: 270px;
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 8px;
+  gap: 9px;
+  padding: 30px;
   color: var(--dim);
   text-align: center;
 }
 
 .applications-empty i {
   color: var(--purple-bright);
-  font-size: 28px;
+  font-size: 30px;
 }
 
 .applications-empty strong {
   color: white;
-  font-size: 17px;
+  font-size: 18px;
 }
 
 .applications-empty span {
-  max-width: 390px;
+  max-width: 400px;
   font-size: 12px;
+  line-height: 1.45;
 }
 
 .applications-error i {
   color: var(--red);
 }
 
-@media (max-width: 1050px) {
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .applications-list {
+    grid-template-columns: 1fr;
+  }
+
   .applications-summary-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -496,96 +688,193 @@
   .applications-tournament-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .applications-filter-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .applications-filter-grid .applications-field:first-child {
-    grid-column: 1 / -1;
-  }
 }
 
-@media (max-width: 720px) {
+/* =========================================================
+   MOBILE / IPHONE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .applications-panel-content {
+    padding: 15px;
+  }
+
   .applications-tournament-controls {
     grid-template-columns: 1fr;
+  }
+
+  .applications-tournament-controls .action-button {
+    width: 100%;
+  }
+
+  .applications-tournament-summary {
+    grid-template-columns: 1fr 1fr;
   }
 
   .applications-summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .applications-tournament-summary {
-    grid-template-columns: 1fr;
-  }
-
-  .applications-context-actions,
-  .application-action-row {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .applications-context-actions .action-button,
-  .application-action-row > .action-button {
-    width: 100%;
-  }
-
   .applications-filter-grid {
     grid-template-columns: 1fr;
   }
 
-  .applications-filter-grid .applications-field:first-child {
-    grid-column: auto;
+  .applications-context-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .applications-context-actions .action-button {
+    width: 100%;
+  }
+
+  .applications-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .nexus-application-card {
+    border-radius: 14px;
   }
 
   .application-card-identity {
-    grid-template-columns: 1fr;
-  }
-
-  .application-avatar-column {
-    text-align: left;
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 13px;
+    padding: 16px 14px 14px;
   }
 
   .nexus-application-avatar,
   .nexus-application-avatar-fallback {
-    margin: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+  }
+
+  .nexus-application-avatar-fallback {
+    font-size: 21px;
   }
 
   .application-avatar-column > span {
-    max-width: 120px;
-    text-align: center;
+    max-width: 70px;
+    padding: 4px 5px;
+    font-size: 8px;
+  }
+
+  .application-name-row {
+    gap: 8px;
+  }
+
+  .application-name-row h3 {
+    font-size: 21px;
+  }
+
+  .application-name-row p {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .application-status-badge {
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .application-tags {
+    gap: 5px;
+    margin-top: 11px;
+  }
+
+  .application-tag {
+    min-height: 25px;
+    padding: 0 7px;
+    font-size: 9px;
   }
 
   .application-details-grid {
     grid-template-columns: 1fr 1fr;
+    padding: 12px 14px 0;
   }
 
-  .application-name-row {
-    margin-top: 4px;
+  .application-applicant-notes {
+    margin: 11px 14px 0;
+  }
+
+  .application-action-row {
+    margin: 12px 14px 0;
+  }
+
+  .application-action-row > .action-button {
+    width: 100%;
   }
 
   .application-status-actions {
-    justify-content: flex-start;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .application-note-editor {
+    padding: 14px;
   }
 }
 
-@media (max-width: 470px) {
-  .applications-summary-grid,
-  .application-details-grid {
-    grid-template-columns: 1fr;
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 430px) {
+  .applications-tournament-summary,
+  .applications-summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .application-card-identity {
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 11px;
+  }
+
+  .nexus-application-avatar,
+  .nexus-application-avatar-fallback {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+  }
+
+  .nexus-application-avatar-fallback {
+    font-size: 18px;
+  }
+
+  .application-avatar-column > span {
+    max-width: 58px;
+    font-size: 7px;
   }
 
   .application-name-row {
     flex-direction: column;
+    gap: 8px;
   }
 
-  .application-status-actions {
-    display: grid;
+  .application-name-row h3 {
+    font-size: 20px;
+  }
+
+  .application-status-badge {
+    align-self: flex-start;
+  }
+
+  .application-details-grid {
     grid-template-columns: 1fr 1fr;
-    width: 100%;
+  }
+
+  .application-detail {
+    padding: 10px;
+  }
+
+  .application-detail strong {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .application-status-button {
-    width: 100%;
+    min-height: 41px;
+    font-size: 10px;
   }
 }

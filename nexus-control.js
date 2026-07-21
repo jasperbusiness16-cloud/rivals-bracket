@@ -1,6 +1,18 @@
 (() => {
   "use strict";
 
+window.addEventListener("error", event => {
+  console.error("Nexus startup error:", event.error || event.message);
+
+  const loading = document.getElementById("nexusLoading");
+  const message = document.getElementById("loadingMessage");
+
+  if (loading && message) {
+    message.textContent =
+      `Nexus encountered a JavaScript error: ${event.message}`;
+  }
+});
+
   const MODULES = {
     dashboard: {
       title: "Command Dashboard",
@@ -567,14 +579,14 @@
               "CHECKING"
             )}
 
-            ${createStatusRow(
-              "Authentication",
-              "Signed in as ${escapeHtml(
-                state.user.email || state.user.uid
-              )}",
-              "good",
-              "ACTIVE"
-            )}
+         ${createStatusRow(
+  "Authentication",
+  `Signed in as ${escapeHtml(
+    state.user.email || state.user.uid
+  )}`,
+  "good",
+  "ACTIVE"
+)}
 
             ${createStatusRow(
               "Nexus Role",

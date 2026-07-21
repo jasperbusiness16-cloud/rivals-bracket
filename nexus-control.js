@@ -966,103 +966,136 @@ function renderLiveOperations() {
     </section>
   `;
 
+  try {
   bindLiveOperationsEvents();
   syncLiveOperationsFromFirebase(true);
+
+  console.log("[NEXUS LIVE] Controls successfully connected.");
+} catch (error) {
+  console.error("[NEXUS LIVE] Initialization failed:", error);
+
+  showToast(
+    `Live Operations initialization failed: ${
+      error.message || "Unknown error"
+    }`
+  );
+
+  window.alert(
+    "Live Operations could not initialize.\n\n" +
+    (error.message || "Unknown JavaScript error")
+  );
 }
 
 function bindLiveOperationsEvents() {
-  const matchSelect =
-    document.getElementById("liveCurrentMatchSelect");
+  elements.content.removeEventListener(
+    "click",
+    handleLiveOperationsClick
+  );
 
-  matchSelect.addEventListener("change", event => {
-    state.liveDraft.currentMatchId = event.target.value;
+  elements.content.removeEventListener(
+    "change",
+    handleLiveOperationsChange
+  );
+
+  elements.content.addEventListener(
+    "click",
+    handleLiveOperationsClick
+  );
+
+  elements.content.addEventListener(
+    "change",
+    handleLiveOperationsChange
+  );
+}
+
+function handleLiveOperationsClick(event) {
+  if (state.activeModule !== "live") return;
+
+  const button = event.target.closest("button");
+
+  if (!button || !elements.content.contains(button)) {
+    return;
+  }
+
+  if (button.matches("[data-score-side]")) {
+    changeLiveScore(
+      button.dataset.scoreSide,
+      Number(button.dataset.scoreChange)
+    );
+
+    return;
+  }
+
+  if (button.matches("[data-break-minutes]")) {
+    startLiveBreakTimer(
+      Number(button.dataset.breakMinutes),
+      button
+    );
+
+    return;
+  }
+
+  switch (button.id) {
+    case "setCurrentMatchButton":
+      setCurrentMatchLive(button);
+      break;
+
+    case "saveLiveResultButton":
+      saveLiveResult(button);
+      break;
+
+    case "autoGenerateNextButton":
+      autoGenerateLiveNext();
+      state.liveDraft.dirty = true;
+      setLiveSaveState("Up Next not saved");
+      paintLiveOperations();
+      showToast("Next match generated.");
+      break;
+
+    case "saveNextMatchButton":
+      saveLiveNextMatch(button);
+      break;
+
+    case "saveBroadcastStatusButton":
+      saveLiveBroadcastStatus(button);
+      break;
+
+    case "resetBreakTimerButton":
+      resetLiveBreakTimer(button);
+      break;
+
+    case "finishTournamentButton":
+      completeLiveTournament(button);
+      break;
+
+    case "toggleOperationsModeButton":
+      toggleOperationsMode(button);
+      break;
+  }
+}
+
+function handleLiveOperationsChange(event) {
+  if (state.activeModule !== "live") return;
+
+  const target = event.target;
+
+  if (target.id === "liveCurrentMatchSelect") {
+    state.liveDraft.currentMatchId = target.value;
     state.liveDraft.dirty = true;
 
     loadSelectedMatchScores();
     autoGenerateLiveNext();
+    setLiveSaveState("Match selection not saved");
     paintLiveOperations();
-  });
 
-  document
-    .querySelectorAll("[data-score-side]")
-    .forEach(button => {
-      button.addEventListener("click", () => {
-        changeLiveScore(
-          button.dataset.scoreSide,
-          Number(button.dataset.scoreChange)
-        );
-      });
-    });
+    return;
+  }
 
-  document
-    .getElementById("setCurrentMatchButton")
-    .addEventListener("click", event => {
-      setCurrentMatchLive(event.currentTarget);
-    });
-
-  document
-    .getElementById("saveLiveResultButton")
-    .addEventListener("click", event => {
-      saveLiveResult(event.currentTarget);
-    });
-
-  document
-    .getElementById("autoGenerateNextButton")
-    .addEventListener("click", () => {
-      autoGenerateLiveNext();
-      state.liveDraft.dirty = true;
-      paintLiveOperations();
-    });
-
-  document
-    .getElementById("saveNextMatchButton")
-    .addEventListener("click", event => {
-      saveLiveNextMatch(event.currentTarget);
-    });
-
-  document
-    .getElementById("saveBroadcastStatusButton")
-    .addEventListener("click", event => {
-      saveLiveBroadcastStatus(event.currentTarget);
-    });
-
-  document
-    .querySelectorAll("[data-break-minutes]")
-    .forEach(button => {
-      button.addEventListener("click", () => {
-        startLiveBreakTimer(
-          Number(button.dataset.breakMinutes),
-          button
-        );
-      });
-    });
-
-  document
-    .getElementById("resetBreakTimerButton")
-    .addEventListener("click", event => {
-      resetLiveBreakTimer(event.currentTarget);
-    });
-
-  document
-    .getElementById("finishTournamentButton")
-    .addEventListener("click", event => {
-      completeLiveTournament(event.currentTarget);
-    });
-
-  document
-    .getElementById("toggleOperationsModeButton")
-    .addEventListener("click", event => {
-      toggleOperationsMode(event.currentTarget);
-    });
-
-  document
-    .getElementById("liveBroadcastStatusSelect")
-    .addEventListener("change", () => {
-      state.liveDraft.dirty = true;
-      setLiveSaveState("Unsaved changes");
-    });
+  if (target.id === "liveBroadcastStatusSelect") {
+    state.liveDraft.dirty = true;
+    setLiveSaveState("Broadcast status not saved");
+  }
 }
-
 function getLiveMatchConfig(
   matchId = state.liveDraft.currentMatchId
 ) {

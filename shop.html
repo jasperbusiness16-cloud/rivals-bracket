@@ -6646,7 +6646,7 @@ function burstWorldParticles(theme,color){
     }
   }
 
-  function buildRitualRewards(winner){
+function buildRitualRewards(winner,rewardPool){
     const root = $("ritualRewards");
     const count = 8;
     const rewards = [];
@@ -6654,7 +6654,7 @@ function burstWorldParticles(theme,color){
     for(let index=0; index<count; index+=1){
       rewards.push(index === 2
         ? winner
-        : TEST_REWARDS[Math.floor(Math.random()*TEST_REWARDS.length)]);
+        : rewardPool[Math.floor(Math.random()*rewardPool.length)]);
     }
 
     root.innerHTML = rewards.map((reward,index) => `
@@ -6677,13 +6677,27 @@ function burstWorldParticles(theme,color){
     const centerY = crateRect.top + crateRect.height*.42;
     const mobile = window.matchMedia("(max-width:680px)").matches;
 
-    const radiusX = mobile
-      ? Math.min(window.innerWidth*.43,crateRect.width*.62)
-      : Math.min(window.innerWidth*.31,430);
+    let radiusX = mobile
+  ? Math.min(window.innerWidth*.43,crateRect.width*.62)
+  : Math.min(window.innerWidth*.31,430);
 
-    const radiusY = mobile
-      ? Math.min(window.innerHeight*.14,118)
-      : Math.min(window.innerHeight*.25,255);
+let radiusY = mobile
+  ? Math.min(window.innerHeight*.14,118)
+  : Math.min(window.innerHeight*.25,255);
+
+/*
+  Forest uses a wide rune-like ring.
+  Underwater uses a taller flowing vortex.
+*/
+if(activeRitualTheme === "forest"){
+  radiusX *= 1.05;
+  radiusY *= .88;
+}
+
+if(activeRitualTheme === "underwater"){
+  radiusX *= .94;
+  radiusY *= 1.08;
+}
 
     const step = 360/cards.length;
 
@@ -6696,7 +6710,15 @@ function burstWorldParticles(theme,color){
         behind the large crate/beam, so a complete circle is not required.
       */
       const x = centerX + Math.cos(radians)*radiusX;
-      const y = centerY + Math.sin(radians)*radiusY;
+      const underwaterWave =
+  activeRitualTheme === "underwater"
+    ? Math.sin(radians*2 + baseAngle*Math.PI/90)*10
+    : 0;
+
+const y =
+  centerY +
+  Math.sin(radians)*radiusY +
+  underwaterWave;
       const behind = Math.sin(radians) > .24;
 
       card.style.left = `${x}px`;
@@ -6740,31 +6762,48 @@ function burstWorldParticles(theme,color){
     return target;
   }
 
-  async function animateExistingCrateCharge(){
-    crate.getAnimations().forEach(animation => animation.cancel());
+  async function animateExistingCrateCharge(world){
+  crate.getAnimations().forEach(animation => animation.cancel());
 
-    const animation = crate.animate(
-      [
-        {transform:"translateY(0) rotate(0deg) scale(1)",filter:crate.style.filter || getComputedStyle(crate).filter},
-        {offset:.18,transform:"translate(-2px,-2px) rotate(-.35deg) scale(1.005)"},
-        {offset:.31,transform:"translate(3px,-4px) rotate(.45deg) scale(1.008)"},
-        {offset:.43,transform:"translate(-2px,-6px) rotate(-.25deg) scale(1.012)"},
-        {offset:.58,transform:"translate(2px,-9px) rotate(.28deg) scale(1.018)"},
-        {
-          transform:"translateY(-16px) rotate(0deg) scale(1.025)",
-          filter:"brightness(1.3) drop-shadow(0 42px 60px rgba(0,0,0,.6)) drop-shadow(0 0 58px rgba(255,143,199,.8))"
-        }
-      ],
+  const animation = crate.animate(
+    [
       {
-        duration:1250,
-        easing:"cubic-bezier(.18,.72,.2,1)",
-        fill:"forwards"
+        transform:"translateY(0) rotate(0deg) scale(1)",
+        filter:crate.style.filter || getComputedStyle(crate).filter
+      },
+      {
+        offset:.18,
+        transform:"translate(-2px,-2px) rotate(-.35deg) scale(1.005)"
+      },
+      {
+        offset:.31,
+        transform:"translate(3px,-4px) rotate(.45deg) scale(1.008)"
+      },
+      {
+        offset:.43,
+        transform:"translate(-2px,-6px) rotate(-.25deg) scale(1.012)"
+      },
+      {
+        offset:.58,
+        transform:"translate(2px,-9px) rotate(.28deg) scale(1.018)"
+      },
+      {
+        transform:"translateY(-16px) rotate(0deg) scale(1.025)",
+        filter:
+          `brightness(1.3)
+           drop-shadow(0 42px 60px rgba(0,0,0,.6))
+           drop-shadow(0 0 58px rgba(${world.rgb},.82))`
       }
-    );
+    ],
+    {
+      duration:1250,
+      easing:"cubic-bezier(.18,.72,.2,1)",
+      fill:"forwards"
+    }
+  );
 
-    await animation.finished;
-  }
-
+  await animation.finished;
+}
   async function awakenRitualWorld(){
   document.body.classList.add("ritual-page-active");
   vault.classList.add("ritual-active");
@@ -6808,6 +6847,8 @@ function burstWorldParticles(theme,color){
     $("ritualRewards").innerHTML = "";
     $("ritualBurst").innerHTML = "";
     $("ritualPetals").innerHTML = "";
+$("forestRoots").innerHTML = "";
+
 
     const winner = $("ritualWinner");
     winner.className = "ritual-winner";
@@ -6857,12 +6898,12 @@ crate.classList.remove("crate-resonating");
     ritualWinner.classList.add("show");
     ritualWinner.setAttribute("aria-hidden","false");
 
-    burstRitualPetals(winner.color);
+    burstWorldParticles(activeRitualTheme,winner.color);
   }
 
-  async function runRitualRewardSelection(winner){
+  async function runRitualRewardSelection(winner,rewardPool){
     const overlay = $("ritualOverlay");
-    buildRitualRewards(winner);
+    buildRitualRewards(winner,rewardPool);
 
     const cards = [...$("ritualRewards").querySelectorAll(".ritual-reward")];
     let angle = -135;
@@ -6911,91 +6952,142 @@ crate.classList.remove("crate-resonating");
     await showWinner(winner);
   }
 
-  async function playBloomRitual(world,winner){
-    resetRitual();
-    createRitualPetals();
+  async function playWorldRitual(
+  world,
+  winner,
+  theme,
+  rewardPool
+){
+  resetRitual();
 
-    document.documentElement.style.setProperty("--opening-rgb",world.rgb);
-    document.documentElement.style.setProperty("--opening-accent",world.accent);
+  activeRitualTheme = theme;
 
-    const overlay = $("ritualOverlay");
-    $("ritualTitle").textContent = "The Shrine Awakens";
-    $("ritualSubtitle").textContent = "Ancient blossom magic is gathering around the crate.";
+  createRitualParticles(theme);
 
-    await awakenRitualWorld();
+  document.documentElement.style.setProperty(
+    "--opening-rgb",
+    world.rgb
+  );
 
-    overlay.classList.add("active","show-status","phase-awaken");
-    overlay.setAttribute("aria-hidden","false");
+  document.documentElement.style.setProperty(
+    "--opening-accent",
+    world.accent
+  );
 
-    await sleep(1450);
+  const overlay = $("ritualOverlay");
+  const copy = RITUAL_COPY[theme];
 
-    overlay.classList.remove("phase-awaken");
-    overlay.classList.add("phase-charge");
-    $("ritualTitle").textContent = "Bloom Resonance";
-    $("ritualSubtitle").textContent = "The crate is responding to the shrine.";
+  overlay.classList.add(`theme-${theme}`);
 
-    swirlRitualPetals();
-    await animateExistingCrateCharge();
+  $("ritualKicker").textContent = copy.kicker;
+  $("ritualTitle").textContent = copy.awakenTitle;
+  $("ritualSubtitle").textContent = copy.awakenSubtitle;
 
-    positionRitualToCrate();
+  await awakenRitualWorld();
 
-    overlay.classList.remove("phase-charge");
-overlay.classList.add("phase-impact","phase-orbit");
+  overlay.classList.add(
+    "active",
+    "show-status",
+    "phase-awaken"
+  );
 
-$("ritualTitle").textContent = "Reward Energy Released";
-$("ritualSubtitle").textContent = "The shrine is revealing what lies within.";
+  overlay.setAttribute("aria-hidden","false");
 
-/*
-  Start the reward cards immediately when
-  "Reward Energy Released" appears.
-*/
+  await sleep(1450);
 
-crate.classList.add("crate-resonating");
+  overlay.classList.remove("phase-awaken");
+  overlay.classList.add("phase-charge");
 
-const rewardSelection = runRitualRewardSelection(winner);
+  $("ritualTitle").textContent = copy.chargeTitle;
+  $("ritualSubtitle").textContent = copy.chargeSubtitle;
 
-/*
-  Keep the status text briefly visible while the cards emerge,
-  then fade it away without delaying the reward animation.
-*/
-await sleep(700);
-overlay.classList.remove("show-status","phase-impact");
+  animateWorldParticles(theme);
 
-/*
-  Wait for the already-running reward selection to finish.
-*/
-await rewardSelection;
-  }
+  await animateExistingCrateCharge(world);
+
+  positionRitualToCrate();
+
+  overlay.classList.remove("phase-charge");
+
+  overlay.classList.add(
+    "phase-impact",
+    "phase-orbit"
+  );
+
+  $("ritualTitle").textContent = copy.releaseTitle;
+  $("ritualSubtitle").textContent = copy.releaseSubtitle;
+
+  crate.classList.add("crate-resonating");
+
+  const rewardSelection =
+    runRitualRewardSelection(
+      winner,
+      rewardPool
+    );
+
+  await sleep(700);
+
+  overlay.classList.remove(
+    "show-status",
+    "phase-impact"
+  );
+
+  await rewardSelection;
+}
 
   async function runTestRitual(){
-    if(openingBusy) return;
+  if(openingBusy) return;
 
-    const world = worlds[selected];
+  const world = worlds[selected];
 
-    if(!world || world.folder !== "BLOOM"){
-      alert("The Bloom ritual test currently requires the Bloom Crate.");
-      return;
-    }
+  const supportedWorlds = [
+    "bloom",
+    "forest",
+    "underwater"
+  ];
 
-    openingBusy = true;
-    $("testOpen").disabled = true;
-
-    /* ***************************************************************
-       TEMPORARY FAKE RESULT — REPLACE WITH SECURE CALLABLE RESPONSE
-       *************************************************************** */
-    const winner = fakeRandomReward();
-
-    try{
-      await playBloomRitual(world,winner);
-    }catch(error){
-      console.error("Bloom ritual test failed:",error);
-      resetRitual();
-      restoreRitualWorld();
-      openingBusy = false;
-      $("testOpen").disabled = false;
-      alert("The visual test hit an error. Check the browser console.");
-    }
+  if(!world || !supportedWorlds.includes(selected)){
+    alert(
+      "Opening tests are currently available for the Bloom, Forest, and Underwater crates."
+    );
+    return;
   }
+
+  openingBusy = true;
+  $("testOpen").disabled = true;
+
+  const theme = selected;
+  const rewardPool = TEST_REWARDS_BY_WORLD[theme];
+
+  /* ***************************************************************
+     TEMPORARY FAKE RESULT — REPLACE WITH SECURE CALLABLE RESPONSE
+     *************************************************************** */
+  const winner = fakeRandomReward(rewardPool);
+
+  try{
+    await playWorldRitual(
+      world,
+      winner,
+      theme,
+      rewardPool
+    );
+  }catch(error){
+    console.error(
+      `${theme} opening test failed:`,
+      error
+    );
+
+    resetRitual();
+    restoreRitualWorld();
+
+    openingBusy = false;
+    $("testOpen").disabled = false;
+
+    alert(
+      "The visual opening test hit an error. Check the browser console."
+    );
+  }
+}
 
   async function finishRitual(){
     const overlay = $("ritualOverlay");

@@ -610,6 +610,14 @@ if (
 ) {
   window.NexusReports.cleanup();
 }
+
+if (
+  window.NexusEventControl &&
+  typeof window.NexusEventControl.cleanup === "function"
+) {
+  window.NexusEventControl.cleanup();
+}
+
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -636,6 +644,31 @@ state.activeModule = moduleId;
 
     if (moduleId === "live") {
   renderLiveOperations();
+  return;
+}
+
+if (moduleId === "tournament") {
+  if (
+    !window.NexusEventControl ||
+    typeof window.NexusEventControl.render !== "function"
+  ) {
+    showToast("The Event Control module failed to load.");
+    renderModulePlaceholder(moduleId);
+    return;
+  }
+
+  window.NexusEventControl.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
   return;
 }
 

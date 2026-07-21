@@ -580,7 +580,14 @@
 
     cleanupLiveModuleEvents();
 
-    state.activeModule = moduleId;
+if (
+  window.NexusApplications &&
+  typeof window.NexusApplications.cleanup === "function"
+) {
+  window.NexusApplications.cleanup();
+}
+
+state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
       module.title;
@@ -605,11 +612,35 @@
     }
 
     if (moduleId === "live") {
-      renderLiveOperations();
-      return;
-    }
+  renderLiveOperations();
+  return;
+}
 
-    if (moduleId === "diagnostics") {
+if (moduleId === "applications") {
+  if (
+    !window.NexusApplications ||
+    typeof window.NexusApplications.render !== "function"
+  ) {
+    showToast("The Applications module failed to load.");
+    renderModulePlaceholder(moduleId);
+    return;
+  }
+
+  window.NexusApplications.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+
+if (moduleId === "diagnostics") {
       renderDiagnostics(forceRefresh);
       return;
     }

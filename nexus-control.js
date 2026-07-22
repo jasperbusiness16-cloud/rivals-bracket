@@ -633,6 +633,13 @@ if (
   window.NexusPredictions.cleanup();
 }
 
+if (
+  window.NexusPosts &&
+  typeof window.NexusPosts.cleanup === "function"
+) {
+  window.NexusPosts.cleanup();
+}
+
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -748,7 +755,39 @@ if (moduleId === "predictions") {
 
   return;
 }
+if (moduleId === "posts") {
+  if (
+    !window.NexusPosts ||
+    typeof window.NexusPosts.render !== "function"
+  ) {
+    showToast(
+      "The Posts & Announcements module failed to load."
+    );
 
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusPosts.render({
+    database,
+    content:
+      elements.content,
+    currentUser:
+      auth.currentUser,
+    roleId:
+      state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
 if (moduleId === "applications") {
   if (
     !window.NexusApplications ||

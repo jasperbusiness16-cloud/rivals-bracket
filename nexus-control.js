@@ -639,7 +639,12 @@ if (
 ) {
   window.NexusPosts.cleanup();
 }
-
+if (
+  window.NexusGiveaways &&
+  typeof window.NexusGiveaways.cleanup === "function"
+) {
+  window.NexusGiveaways.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -772,6 +777,39 @@ if (moduleId === "posts") {
   }
 
   window.NexusPosts.render({
+    database,
+    content:
+      elements.content,
+    currentUser:
+      auth.currentUser,
+    roleId:
+      state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+if (moduleId === "giveaways") {
+  if (
+    !window.NexusGiveaways ||
+    typeof window.NexusGiveaways.render !== "function"
+  ) {
+    showToast(
+      "The Giveaways & Rewards module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusGiveaways.render({
     database,
     content:
       elements.content,

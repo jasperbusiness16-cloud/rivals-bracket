@@ -625,6 +625,14 @@ if (
 ) {
   window.NexusBracket.cleanup();
 }
+
+if (
+  window.NexusPredictions &&
+  typeof window.NexusPredictions.cleanup === "function"
+) {
+  window.NexusPredictions.cleanup();
+}
+
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -698,6 +706,39 @@ if (moduleId === "bracket") {
     content: elements.content,
     currentUser: auth.currentUser,
     roleId: state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+
+if (moduleId === "predictions") {
+  if (
+    !window.NexusPredictions ||
+    typeof window.NexusPredictions.render !== "function"
+  ) {
+    showToast(
+      "The Prediction Operations module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusPredictions.render({
+    database,
+    content: elements.content,
+    currentUser:
+      auth.currentUser,
+    roleId:
+      state.roleId,
     showToast,
     openModule,
     getCurrentTournamentId,

@@ -645,6 +645,12 @@ if (
 ) {
   window.NexusGiveaways.cleanup();
 }
+if (
+  window.NexusPlayers &&
+  typeof window.NexusPlayers.cleanup === "function"
+) {
+  window.NexusPlayers.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -810,6 +816,39 @@ if (moduleId === "giveaways") {
   }
 
   window.NexusGiveaways.render({
+    database,
+    content:
+      elements.content,
+    currentUser:
+      auth.currentUser,
+    roleId:
+      state.roleId,
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+if (moduleId === "players") {
+  if (
+    !window.NexusPlayers ||
+    typeof window.NexusPlayers.render !== "function"
+  ) {
+    showToast(
+      "The Player Directory module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusPlayers.render({
     database,
     content:
       elements.content,

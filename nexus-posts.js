@@ -241,29 +241,8 @@ currentUser: null,
   }
 
   function getAuthorName() {
-    const user =
-      state.currentUser;
-
-    if (
-      clean(
-        user?.displayName
-      )
-    ) {
-      return clean(
-        user.displayName
-      );
-    }
-
-    if (
-      clean(user?.email)
-    ) {
-      return clean(
-        user.email
-      ).split("@")[0];
-    }
-
-    return "Rivals Gauntlet";
-  }
+  return "Rivals Gauntlet";
+}
 
   function normalizePost(
     id,
@@ -2819,9 +2798,7 @@ async function savePost(
         "",
 
       authorName:
-        existing
-          ?.authorName ||
-        getAuthorName(),
+  getAuthorName(),
 
       commentCount:
         Number(

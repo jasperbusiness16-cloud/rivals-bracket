@@ -2320,10 +2320,11 @@ async function saveNoCurrentMatch(button) {
         await getCurrentTournamentId();
 
       const previousMatch =
-        clean(
-          window.nexusSiteData
-            ?.currentMatch
-        );
+  String(
+    window.nexusSiteData
+      ?.currentMatch ??
+      ""
+  ).trim();
 
       const updates = {
         "site/currentMatch":

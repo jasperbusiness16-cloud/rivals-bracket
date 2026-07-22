@@ -1790,7 +1790,17 @@
       const current=normalizeMatchLabel(currentMatchLabel||siteData.currentMatch);
       return matchIndex(current)>=0;
     }
-    function bracketLocked(){return tournamentHasStarted()||Boolean(myBracketRecord?.locked)}
+    function bracketLocked(){
+  return (
+    tournamentHasStarted() ||
+    Boolean(
+      siteData.predictionPickemLocked
+    ) ||
+    Boolean(
+      myBracketRecord?.locked
+    )
+  );
+}
     function liveWindowLocked(){
       const nextIndex=matchIndex(nextMatchData.label||nextMatchData.fullMatchId);
       const currentIndex=matchIndex(currentMatchLabel||siteData.currentMatch);

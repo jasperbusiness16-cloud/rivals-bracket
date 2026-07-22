@@ -1262,25 +1262,31 @@ if (moduleId === "diagnostics") {
                 </span>
               </div>
 
-              <div class="live-button-row">
+            <div class="live-button-row">
+  <button
+    id="autoGenerateNextButton"
+    class="action-button"
+  >
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    Auto Generate
+  </button>
 
-                <button
-                  id="autoGenerateNextButton"
-                  class="action-button"
-                >
-                  <i class="fa-solid fa-wand-magic-sparkles"></i>
-                  Auto Generate
-                </button>
+  <button
+    id="clearNextMatchButton"
+    class="action-button"
+  >
+    <i class="fa-solid fa-ban"></i>
+    No Next Match
+  </button>
 
-                <button
-                  id="saveNextMatchButton"
-                  class="action-button action-button-primary"
-                >
-                  <i class="fa-solid fa-arrow-up-right-dots"></i>
-                  Save Up Next
-                </button>
-
-              </div>
+  <button
+    id="saveNextMatchButton"
+    class="action-button action-button-primary"
+  >
+    <i class="fa-solid fa-arrow-up-right-dots"></i>
+    Save Up Next
+  </button>
+</div>
             </div>
           </article>
 
@@ -1465,7 +1471,11 @@ if (moduleId === "diagnostics") {
         );
 
         break;
-
+case "clearNextMatchButton":
+  void clearLiveNextMatch(
+    button
+  );
+  break;
       case "saveNextMatchButton":
         void saveLiveNextMatch(button);
         break;
@@ -1497,24 +1507,42 @@ if (moduleId === "diagnostics") {
     const target = event.target;
 
     if (
-      target.id === "liveCurrentMatchSelect"
-    ) {
-      state.liveDraft.currentMatchId =
-        target.value;
+  target.id ===
+  "liveCurrentMatchSelect"
+) {
+  state.liveDraft
+    .currentMatchId =
+      target.value;
 
-      state.liveDraft.dirty = true;
+  state.liveDraft.dirty =
+    true;
 
-      loadSelectedMatchScores();
-      autoGenerateLiveNext();
+  loadSelectedMatchScores();
 
-      setLiveSaveState(
-        "Match selection not saved"
-      );
+  /*
+   * No Current Match should not
+   * automatically create QF1 as
+   * the next match.
+   *
+   * Staff can still press
+   * Auto Generate when they
+   * actually want QF1 Up Next.
+   */
+  if (
+    target.value !==
+    "No Match Live"
+  ) {
+    autoGenerateLiveNext();
+  }
 
-      paintLiveOperations();
+  setLiveSaveState(
+    "Match selection not saved"
+  );
 
-      return;
-    }
+  paintLiveOperations();
+
+  return;
+}
 
     if (
       target.id ===
@@ -1840,6 +1868,24 @@ if (moduleId === "diagnostics") {
 
     matchSelect.value =
       state.liveDraft.currentMatchId;
+
+const currentMatchButton =
+  document.getElementById(
+    "setCurrentMatchButton"
+  );
+
+if (currentMatchButton) {
+  currentMatchButton.innerHTML =
+    isNoCurrentMatchSelected()
+      ? `
+        <i class="fa-solid fa-ban"></i>
+        Save No Current Match
+      `
+      : `
+        <i class="fa-solid fa-bolt"></i>
+        Set Live
+      `;
+}
 
     setText(
       "liveTeamAName",
@@ -2257,9 +2303,109 @@ function clearLiveMatchResult(
       .replaceAll("-", "_")}`;
   }
 
+function isNoCurrentMatchSelected() {
+  return (
+    !state.liveDraft.currentMatchId ||
+    state.liveDraft.currentMatchId ===
+      "No Match Live"
+  );
+}
+
+async function saveNoCurrentMatch(button) {
+  await runLiveButtonAction(
+    button,
+    "Clearing Current Match...",
+    async () => {
+      const tournamentId =
+        await getCurrentTournamentId();
+
+      const previousMatch =
+        clean(
+          window.nexusSiteData
+            ?.currentMatch
+        );
+
+      const updates = {
+        "site/currentMatch":
+          "No Match Live"
+      };
+
+      /*
+       * Unlock the previously live
+       * match if one was accidentally
+       * activated before the event.
+       */
+      if (
+        previousMatch &&
+        previousMatch !==
+          "No Match Live" &&
+        getLiveMatchConfig(
+          previousMatch
+        )
+      ) {
+        const predictionId =
+          getLivePredictionType(
+            previousMatch
+          );
+
+        updates[
+          `predictionLocks/${tournamentId}/${predictionId}`
+        ] = null;
+      }
+
+      await database
+        .ref()
+        .update(updates);
+
+      window.nexusSiteData = {
+        ...(
+          window.nexusSiteData ||
+          {}
+        ),
+
+        currentMatch:
+          "No Match Live"
+      };
+
+      state.liveDraft
+        .currentMatchId =
+          "No Match Live";
+
+      state.liveDraft
+        .teamAScore = 0;
+
+      state.liveDraft
+        .teamBScore = 0;
+
+      state.liveDraft.dirty =
+        false;
+
+      paintLiveOperations();
+
+      setLiveSaveState(
+        "No current match"
+      );
+
+      showToast(
+        "Current Match cleared."
+      );
+    }
+  );
+}
+
   async function setCurrentMatchLive(button) {
-    const config =
-      getLiveMatchConfig();
+  if (
+    isNoCurrentMatchSelected()
+  ) {
+    await saveNoCurrentMatch(
+      button
+    );
+
+    return;
+  }
+
+  const config =
+    getLiveMatchConfig();
 
     if (!config) {
       showToast(
@@ -2350,6 +2496,16 @@ function clearLiveMatchResult(
   }
 
   async function saveLiveResult(button) {
+   if (
+    isNoCurrentMatchSelected()
+  ) {
+    await saveNoCurrentMatch(
+      button
+    );
+
+    return;
+  }
+  
   const matchId =
     state.liveDraft.currentMatchId;
 
@@ -2530,6 +2686,66 @@ function clearLiveMatchResult(
       }
     );
   }
+
+async function clearLiveNextMatch(
+  button
+) {
+  const confirmed =
+    window.confirm(
+      "Set Up Next to No Next Match?\n\n" +
+      "Live prediction questions will remain unavailable until another match is placed Up Next."
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await runLiveButtonAction(
+    button,
+    "Clearing...",
+    async () => {
+      /*
+       * Do not remove this Firebase
+       * path completely.
+       *
+       * The current sync system
+       * auto-generates QF1 when
+       * upNext is missing, so Nexus
+       * saves an explicit NO MATCH
+       * record instead.
+       */
+      const noNextMatch = {
+        label: "NO MATCH",
+        teamA: "",
+        teamB: ""
+      };
+
+      await database
+        .ref(
+          "broadcastCountdown/upNext"
+        )
+        .set(
+          noNextMatch
+        );
+
+      state.liveDraft.nextMatch =
+        noNextMatch;
+
+      state.liveDraft.dirty =
+        false;
+
+      paintLiveOperations();
+
+      setLiveSaveState(
+        "No next match"
+      );
+
+      showToast(
+        "Up Next cleared."
+      );
+    }
+  );
+}
 
   async function saveLiveBroadcastStatus(
     button

@@ -20,6 +20,7 @@
     tournament: {},
     acceptedPlayers: [],
     teams: {},
+    teamNames: {},
     teamRecord: {},
     selectedPlayerUid: null,
     dirty: false,
@@ -401,6 +402,7 @@
     moduleState.tournament = {};
     moduleState.acceptedPlayers = [];
     moduleState.teams = {};
+    moduleState.teamNames = {};
     moduleState.teamRecord = {};
     moduleState.selectedPlayerUid = null;
     moduleState.dirty = false;
@@ -613,6 +615,14 @@
       return;
     }
 
+    if (
+      event.target.closest(
+        "[data-team-name]"
+      )
+    ) {
+      return;
+    }
+
     const teamCard =
       event.target.closest("[data-team-key]");
 
@@ -662,6 +672,43 @@
       "teamBuilderPlayerSearch"
     ) {
       renderPlayerPool();
+      return;
+    }
+
+    const teamKey =
+      event.target.dataset.teamName;
+
+    if (
+      teamKey &&
+      moduleState.teamNames[
+        teamKey
+      ] !== undefined
+    ) {
+      moduleState.teamNames[
+        teamKey
+      ] =
+        clean(
+          event.target.value
+        );
+
+      const teamCard =
+        event.target.closest(
+          "[data-team-key]"
+        );
+
+      const heading =
+        teamCard?.querySelector(
+          ".team-builder-team-header h3"
+        );
+
+      if (heading) {
+        heading.textContent =
+          getTeamName(teamKey);
+      }
+
+      markDirty(
+        "Unsaved team-name changes"
+      );
     }
   }
 
@@ -810,6 +857,7 @@
     moduleState.tournament = {};
     moduleState.acceptedPlayers = [];
     moduleState.teams = {};
+    moduleState.teamNames = {};
     moduleState.teamRecord = {};
     moduleState.selectedPlayerUid = null;
     moduleState.dirty = false;
@@ -933,6 +981,12 @@
           moduleState.teams =
             normalizeSavedTeams(
               moduleState.teamRecord.teams ||
+              {}
+            );
+
+          moduleState.teamNames =
+            normalizeSavedTeamNames(
+              moduleState.teamRecord.teamNames ||
               {}
             );
 
@@ -1257,6 +1311,9 @@
         moduleState.teams[teamKey] ||
         [];
 
+      const teamName =
+        getTeamName(teamKey);
+
       assignedCount +=
         players.length;
 
@@ -1278,7 +1335,10 @@
           <header class="team-builder-team-header">
             <div>
               <span>TEAM ${index}</span>
-              <h3>Team ${index}</h3>
+
+              <h3>
+                ${escapeHtml(teamName)}
+              </h3>
             </div>
 
             <div class="team-builder-team-score">
@@ -1289,6 +1349,28 @@
               </strong>
             </div>
           </header>
+
+          <div class="team-builder-team-identity">
+            <label for="teamBuilderName${index}">
+              Team Name
+            </label>
+
+            <input
+              id="teamBuilderName${index}"
+              class="team-builder-team-name-input"
+              type="text"
+              value="${escapeHtml(teamName)}"
+              placeholder="Team ${index}"
+              maxlength="40"
+              autocomplete="off"
+              data-team-name="${teamKey}"
+            >
+
+            <small>
+              This name will appear in the bracket,
+              Live Operations and public tournament pages.
+            </small>
+          </div>
 
           <div class="team-builder-team-meta">
             <span>
@@ -2045,6 +2127,9 @@
             teams:
               serializeTeams(),
 
+            teamNames:
+              serializeTeamNames(),
+
             updatedAt:
               firebase.database
                 .ServerValue
@@ -2054,6 +2139,9 @@
               context.currentUser?.uid ||
               null
           });
+
+        moduleState.teamRecord.teamNames =
+          serializeTeamNames();
 
         moduleState.dirty = false;
 
@@ -2113,39 +2201,72 @@
             .ServerValue
             .TIMESTAMP;
 
+        const updates = {
+          [`teams/${moduleState.tournamentId}/teams`]:
+            serializeTeams(),
+
+          [`teams/${moduleState.tournamentId}/teamNames`]:
+            serializeTeamNames(),
+
+          [`teams/${moduleState.tournamentId}/published`]:
+            true,
+
+          [`teams/${moduleState.tournamentId}/publishedAt`]:
+            timestamp,
+
+          [`teams/${moduleState.tournamentId}/updatedAt`]:
+            timestamp,
+
+          [`teams/${moduleState.tournamentId}/updatedBy`]:
+            context.currentUser?.uid ||
+            null,
+
+          [`tournaments/${moduleState.tournamentId}/teamsPublished`]:
+            true,
+
+          [`tournaments/${moduleState.tournamentId}/teamsPublishedAt`]:
+            timestamp,
+
+          [`tournaments/${moduleState.tournamentId}/status`]:
+            "teams_published"
+        };
+
+        /*
+         * Only the active tournament should update
+         * the legacy public-site team fields.
+         */
+        if (
+          moduleState.tournamentId ===
+          moduleState.activeTournamentId
+        ) {
+          for (
+            let index = 1;
+            index <= 16;
+            index += 1
+          ) {
+            const teamKey =
+              `team${index}`;
+
+            updates[
+              `site/${teamKey}`
+            ] =
+              index <= getTeamCount()
+                ? getTeamName(teamKey)
+                : null;
+          }
+        }
+
         await context.database
           .ref()
-          .update({
-            [`teams/${moduleState.tournamentId}/teams`]:
-              serializeTeams(),
-
-            [`teams/${moduleState.tournamentId}/published`]:
-              true,
-
-            [`teams/${moduleState.tournamentId}/publishedAt`]:
-              timestamp,
-
-            [`teams/${moduleState.tournamentId}/updatedAt`]:
-              timestamp,
-
-            [`teams/${moduleState.tournamentId}/updatedBy`]:
-              context.currentUser?.uid ||
-              null,
-
-            [`tournaments/${moduleState.tournamentId}/teamsPublished`]:
-              true,
-
-            [`tournaments/${moduleState.tournamentId}/teamsPublishedAt`]:
-              timestamp,
-
-            [`tournaments/${moduleState.tournamentId}/status`]:
-              "teams_published"
-          });
+          .update(updates);
 
         moduleState.dirty = false;
 
         moduleState.teamRecord.published =
           true;
+
+        moduleState.teamRecord.teamNames =
+          serializeTeamNames();
 
         renderAll();
 
@@ -2405,6 +2526,8 @@
           .update(updates);
 
         resetTeams();
+        moduleState.teamNames = {};
+        ensureTeamStructure();
 
         moduleState.teamRecord = {};
         moduleState.dirty = false;
@@ -2463,6 +2586,7 @@
       getTeamCount();
 
     const nextTeams = {};
+    const nextTeamNames = {};
 
     for (
       let index = 1;
@@ -2485,10 +2609,20 @@
               getPlayersPerTeam()
             )
           : [];
+
+      nextTeamNames[teamKey] =
+        clean(
+          moduleState.teamNames[
+            teamKey
+          ]
+        );
     }
 
     moduleState.teams =
       nextTeams;
+
+    moduleState.teamNames =
+      nextTeamNames;
   }
 
   function normalizeSavedTeams(
@@ -2632,6 +2766,61 @@
     return serialized;
   }
 
+  function normalizeSavedTeamNames(
+    savedNames
+  ) {
+    const normalized = {};
+
+    for (
+      let index = 1;
+      index <= getTeamCount();
+      index += 1
+    ) {
+      const teamKey =
+        `team${index}`;
+
+      normalized[teamKey] =
+        clean(
+          savedNames[teamKey]
+        );
+    }
+
+    return normalized;
+  }
+
+  function serializeTeamNames() {
+    const serialized = {};
+
+    for (
+      let index = 1;
+      index <= getTeamCount();
+      index += 1
+    ) {
+      const teamKey =
+        `team${index}`;
+
+      serialized[teamKey] =
+        getTeamName(teamKey);
+    }
+
+    return serialized;
+  }
+
+  function getTeamName(teamKey) {
+    const teamNumber =
+      String(teamKey || "")
+        .replace("team", "");
+
+    return (
+      clean(
+        moduleState.teamNames[
+          teamKey
+        ]
+      ) ||
+      `Team ${teamNumber}`
+    );
+  }
+
   function getTeamCount() {
     return Math.max(
       1,
@@ -2772,9 +2961,7 @@
   }
 
   function formatTeamName(teamKey) {
-    return `Team ${String(
-      teamKey
-    ).replace("team", "")}`;
+    return getTeamName(teamKey);
   }
 
   function shuffle(list) {

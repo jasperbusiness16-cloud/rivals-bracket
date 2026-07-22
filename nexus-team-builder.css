@@ -35,7 +35,8 @@
 }
 
 .team-builder-select,
-.team-builder-search input {
+.team-builder-search input,
+.team-builder-team-name-input {
   width: 100%;
   min-height: 46px;
   border: 1px solid var(--border);
@@ -53,7 +54,8 @@
 }
 
 .team-builder-select:focus,
-.team-builder-search input:focus {
+.team-builder-search input:focus,
+.team-builder-team-name-input:focus {
   border-color: rgba(var(--purple-rgb), 0.48);
   box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.09);
 }
@@ -454,6 +456,36 @@
   line-height: 1;
 }
 
+.team-builder-team-identity {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.team-builder-team-identity label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--dim);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.team-builder-team-name-input {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 13px;
+}
+
+.team-builder-team-identity small {
+  display: block;
+  margin-top: 7px;
+  color: var(--dim);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
 .team-builder-team-meta {
   display: flex;
   align-items: center;
@@ -678,6 +710,10 @@
 
   .team-builder-team-header {
     padding: 16px 14px 12px;
+  }
+
+  .team-builder-team-identity {
+    padding: 12px 14px;
   }
 
   .team-builder-team-meta {

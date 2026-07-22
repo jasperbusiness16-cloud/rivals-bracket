@@ -1125,7 +1125,11 @@
             max="${maxScore}"
             step="1"
             inputmode="numeric"
-            value="${escapeHtml(score)}"
+            value="${escapeHtml(
+  score === ""
+    ? 0
+    : score
+)}"
             aria-label="${escapeHtml(
               participant.name
             )} score"

@@ -59,15 +59,19 @@
   };
 
   const moduleState = {
-    activeTournamentId: "",
-    selectedTournamentId: "",
-    tournaments: {},
-    applications: {},
-    teamsRecord: {},
-    dirty: false,
-    listeners: [],
-    tournamentListeners: []
-  };
+  activeTournamentId: "",
+  selectedTournamentId: "",
+  tournaments: {},
+  applications: {},
+  teamsRecord: {},
+
+  championDraft: {},
+  publishedChampion: {},
+
+  dirty: false,
+  listeners: [],
+  tournamentListeners: []
+};
 
   let context = null;
   let boundContent = null;
@@ -563,18 +567,30 @@
               </button>
             </div>
           </article>
-        </aside>
+              </aside>
       </section>
+
+      <section
+        id="eventChampionWorkspace"
+      ></section>
     `;
 
     bindEvents();
     void initialize();
   }
 
-  function cleanup() {
-    detachAllListeners();
+function cleanup() {
+  detachAllListeners();
 
-    if (boundContent) {
+  if (
+    window.NexusEventChampions &&
+    typeof window.NexusEventChampions.cleanup ===
+      "function"
+  ) {
+    window.NexusEventChampions.cleanup();
+  }
+
+  if (boundContent) {
       boundContent.removeEventListener(
         "click",
         handleClick
@@ -600,8 +616,12 @@
     moduleState.selectedTournamentId = "";
     moduleState.tournaments = {};
     moduleState.applications = {};
-    moduleState.teamsRecord = {};
-    moduleState.dirty = false;
+moduleState.teamsRecord = {};
+
+moduleState.championDraft = {};
+moduleState.publishedChampion = {};
+
+moduleState.dirty = false;
     moduleState.listeners = [];
     moduleState.tournamentListeners = [];
   }
@@ -827,7 +847,10 @@
     detachSelectedTournamentListeners();
 
     moduleState.applications = {};
-    moduleState.teamsRecord = {};
+moduleState.teamsRecord = {};
+
+moduleState.championDraft = {};
+moduleState.publishedChampion = {};
 
     const tournamentId =
       moduleState.selectedTournamentId;
@@ -868,7 +891,32 @@
 
       "teams"
     );
-  }
+ listenSelected(
+  context.database.ref(
+    `tournaments/${tournamentId}/hallOfChampions`
+  ),
+  snapshot => {
+    moduleState.championDraft =
+      snapshot.val() || {};
+
+    renderAll();
+  },
+  "Hall of Champions draft"
+);
+
+listenSelected(
+  context.database.ref(
+    `champions/${tournamentId}`
+  ),
+  snapshot => {
+    moduleState.publishedChampion =
+      snapshot.val() || {};
+
+    renderAll();
+  },
+  "published champion"
+);
+   }
 
   function handleClick(event) {
     const button =
@@ -942,12 +990,25 @@
       const nextId =
         target.value;
 
-      if (
-        moduleState.dirty &&
-        !window.confirm(
-          "Discard the unsaved Event Control changes and switch tournaments?"
-        )
-      ) {
+      const championDirty =
+  Boolean(
+    window.NexusEventChampions &&
+    typeof window.NexusEventChampions
+      .hasUnsavedChanges ===
+      "function" &&
+    window.NexusEventChampions
+      .hasUnsavedChanges()
+  );
+
+if (
+  (
+    moduleState.dirty ||
+    championDirty
+  ) &&
+  !window.confirm(
+    "Discard the unsaved Event Control or Hall of Champions changes and switch tournaments?"
+  )
+) {
         target.value =
           moduleState.selectedTournamentId;
 
@@ -2205,13 +2266,83 @@ clearFriendlyDateTime(
   }
 
   function renderAll() {
-    renderTournamentOptions();
-    renderContext();
-    renderSummary();
-    renderLifecycle();
-    updateCalculatedValues();
+  renderTournamentOptions();
+  renderContext();
+  renderSummary();
+  renderLifecycle();
+  updateCalculatedValues();
+  renderHallOfChampions();
+}
+function renderHallOfChampions() {
+  const mount =
+    document.getElementById(
+      "eventChampionWorkspace"
+    );
+
+  if (!mount) {
+    return;
   }
 
+  if (
+    !window.NexusEventChampions ||
+    typeof window.NexusEventChampions.render !==
+      "function"
+  ) {
+    mount.innerHTML = `
+      <article class="nexus-panel event-champion-no-event">
+
+        <i class="fa-solid fa-triangle-exclamation"></i>
+
+        <strong>
+          Hall of Champions failed to load
+        </strong>
+
+        <span>
+          Confirm nexus-event-champions.js is loaded before nexus-event-control.js.
+        </span>
+
+      </article>
+    `;
+
+    return;
+  }
+
+  window.NexusEventChampions.render({
+    database:
+      context.database,
+
+    mount,
+
+    currentUser:
+      context.currentUser,
+
+    roleId:
+      context.roleId,
+
+    tournamentId:
+      moduleState.selectedTournamentId,
+
+    tournament:
+      selectedTournament(),
+
+    teamsRecord:
+      moduleState.teamsRecord,
+
+    draft:
+      moduleState.championDraft,
+
+    publishedRecord:
+      moduleState.publishedChampion,
+
+    showToast:
+      context.showToast,
+
+    escapeHtml,
+
+    isPermissionDenied:
+      context.isPermissionDenied
+  });
+}
   function renderTournamentOptions() {
     const select =
       document.getElementById(

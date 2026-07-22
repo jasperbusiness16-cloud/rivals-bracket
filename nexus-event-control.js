@@ -1271,11 +1271,45 @@ if (!countdownDate) {
         }
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        moduleState.selectedTournamentId =
-          tournamentId;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      setActive
+        ? "tournament.created_and_activated"
+        : "tournament.created",
+
+    category:
+      "tournaments",
+
+    summary:
+      setActive
+        ? `Created tournament "${name}" and set it as the active event.`
+        : `Created tournament "${name}".`,
+
+    severity:
+      "success",
+
+    targetType:
+      "tournament",
+
+    targetId:
+      tournamentId,
+
+    targetName:
+      name
+  });
+
+moduleState.selectedTournamentId =
+  tournamentId;
 
         moduleState.activeTournamentId =
           setActive
@@ -1378,12 +1412,41 @@ if (!countdownDate) {
         }
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        moduleState.dirty =
-          false;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
 
+    currentUser:
+      context.currentUser,
+
+    action:
+      "tournament.settings_updated",
+
+    category:
+      "tournaments",
+
+    summary:
+      `Updated tournament settings for "${record.name || tournamentId}".`,
+
+    severity:
+      "info",
+
+    targetType:
+      "tournament",
+
+    targetId:
+      tournamentId,
+
+    targetName:
+      record.name ||
+      tournamentId
+  });
+
+moduleState.dirty = false;
         setText(
           "eventSaveState",
           "Saved to Firebase"
@@ -1442,16 +1505,46 @@ if (!countdownDate) {
 
       async () => {
         await context.database
-          .ref()
-          .update(
-            activeSiteUpdates(
-              tournamentId,
-              tournament
-            )
-          );
+  .ref()
+  .update(
+    activeSiteUpdates(
+      tournamentId,
+      tournament
+    )
+  );
 
-        moduleState.activeTournamentId =
-          tournamentId;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "tournament.set_active",
+
+    category:
+      "tournaments",
+
+    summary:
+      `Set "${tournament.name}" as the active tournament.`,
+
+    severity:
+      "success",
+
+    targetType:
+      "tournament",
+
+    targetId:
+      tournamentId,
+
+    targetName:
+      tournament.name
+  });
+
+moduleState.activeTournamentId =
+  tournamentId;
 
         renderTournamentOptions();
         renderAll();
@@ -1533,11 +1626,47 @@ if (!countdownDate) {
         }
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        moduleState.dirty =
-          false;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      open
+        ? "tournament.applications_opened"
+        : "tournament.applications_closed",
+
+    category:
+      "tournaments",
+
+    summary:
+      open
+        ? `Opened applications for "${current.name || tournamentId}".`
+        : `Closed applications for "${current.name || tournamentId}".`,
+
+    severity:
+      open
+        ? "success"
+        : "warning",
+
+    targetType:
+      "tournament",
+
+    targetId:
+      tournamentId,
+
+    targetName:
+      current.name ||
+      tournamentId
+  });
+
+moduleState.dirty = false;
 
         context.showToast(
           open
@@ -1600,36 +1729,67 @@ if (!countdownDate) {
             .TIMESTAMP;
 
         await context.database
-          .ref(
-            `tournaments/${tournamentId}`
-          )
-          .update({
-            status:
-              "archived",
+  .ref(
+    `tournaments/${tournamentId}`
+  )
+  .update({
+    status:
+      "archived",
 
-            registrationStatus:
-              "CLOSED",
+    registrationStatus:
+      "CLOSED",
 
-            applicationsOpen:
-              false,
+    applicationsOpen:
+      false,
 
-            archivedAt:
-              timestamp,
+    archivedAt:
+      timestamp,
 
-            archivedBy:
-              context.currentUser?.uid ||
-              null,
+    archivedBy:
+      context.currentUser
+        ?.uid ||
+      null,
 
-            updatedAt:
-              timestamp,
+    updatedAt:
+      timestamp,
 
-            updatedBy:
-              context.currentUser?.uid ||
-              null
-          });
+    updatedBy:
+      context.currentUser
+        ?.uid ||
+      null
+  });
 
-        moduleState.dirty =
-          false;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "tournament.archived",
+
+    category:
+      "tournaments",
+
+    summary:
+      `Archived tournament "${tournament.name}".`,
+
+    severity:
+      "critical",
+
+    targetType:
+      "tournament",
+
+    targetId:
+      tournamentId,
+
+    targetName:
+      tournament.name
+  });
+
+moduleState.dirty = false;
 
         context.showToast(
           "Tournament archived."

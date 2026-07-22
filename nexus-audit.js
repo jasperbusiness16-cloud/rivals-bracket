@@ -2415,8 +2415,36 @@
     cleanup
   };
 
-  window.NexusAuditLogger = {
-    log:
-      appendAuditLog
-  };
+  async function safeAppendAuditLog(
+  options = {}
+) {
+  try {
+    return await appendAuditLog(
+      options
+    );
+  } catch (error) {
+    /*
+     * The original Nexus action has
+     * already succeeded.
+     *
+     * Do not falsely report the
+     * original save as failed just
+     * because its audit record failed.
+     */
+    console.warn(
+      "[NEXUS AUDIT] Record could not be created:",
+      error
+    );
+
+    return null;
+  }
+}
+
+window.NexusAuditLogger = {
+  log:
+    appendAuditLog,
+
+  safeLog:
+    safeAppendAuditLog
+};
 })();

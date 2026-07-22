@@ -1488,11 +1488,13 @@ if (moduleId === "diagnostics") {
   }
 
   function getLiveMatchConfig(
-    matchId = state.liveDraft.currentMatchId
-  ) {
-    const site =
-      window.nexusSiteData || {};
-
+  matchId = state.liveDraft.currentMatchId,
+  siteOverride = null
+) {
+  const site =
+    siteOverride ||
+    window.nexusSiteData ||
+    {};
     const is16 =
       (
         site.formatType ||
@@ -1925,9 +1927,13 @@ if (moduleId === "diagnostics") {
     return "";
   }
 
-  function getAutoLiveNextMatch() {
-    const site =
-      window.nexusSiteData || {};
+  function getAutoLiveNextMatch(
+  siteOverride = null
+) {
+  const site =
+    siteOverride ||
+    window.nexusSiteData ||
+    {};
 
     const order8 = [
       "QF1 • Bo3",
@@ -1970,7 +1976,10 @@ if (moduleId === "diagnostics") {
         : order[0];
 
     const config =
-      getLiveMatchConfig(nextId);
+  getLiveMatchConfig(
+    nextId,
+    site
+  );
 
     if (!config) {
       return {
@@ -1991,6 +2000,214 @@ if (moduleId === "diagnostics") {
     state.liveDraft.nextMatch =
       getAutoLiveNextMatch();
   }
+
+function getLiveBracketStorageKey(
+  matchId
+) {
+  const shortId =
+    String(matchId || "")
+      .split(" • ")[0]
+      .trim();
+
+  if (
+    shortId ===
+    "Grand Finals"
+  ) {
+    return "gf";
+  }
+
+  const r16Match =
+    shortId.match(
+      /^R16-(\d+)$/
+    );
+
+  if (r16Match) {
+    return `r16m${r16Match[1]}`;
+  }
+
+  return shortId.toLowerCase();
+}
+
+function getLiveDescendantMatches(
+  matchId
+) {
+  const descendants = {
+    "R16-1 • Bo3": [
+      "QF1 • Bo3",
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-2 • Bo3": [
+      "QF1 • Bo3",
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-3 • Bo3": [
+      "QF2 • Bo3",
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-4 • Bo3": [
+      "QF2 • Bo3",
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-5 • Bo3": [
+      "QF3 • Bo3",
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-6 • Bo3": [
+      "QF3 • Bo3",
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-7 • Bo3": [
+      "QF4 • Bo3",
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "R16-8 • Bo3": [
+      "QF4 • Bo3",
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "QF1 • Bo3": [
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "QF2 • Bo3": [
+      "SF1 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "QF3 • Bo3": [
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "QF4 • Bo3": [
+      "SF2 • Bo3",
+      "Grand Finals • Bo5"
+    ],
+
+    "SF1 • Bo3": [
+      "Grand Finals • Bo5"
+    ],
+
+    "SF2 • Bo3": [
+      "Grand Finals • Bo5"
+    ],
+
+    "Grand Finals • Bo5": []
+  };
+
+  return descendants[
+    matchId
+  ] || [];
+}
+
+function liveMatchHasSavedData(
+  matchId,
+  site
+) {
+  const config =
+    getLiveMatchConfig(
+      matchId,
+      site
+    );
+
+  if (!config) {
+    return false;
+  }
+
+  return Boolean(
+    String(
+      site[config.scoreA] ??
+      ""
+    ).trim() !== "" ||
+
+    String(
+      site[config.scoreB] ??
+      ""
+    ).trim() !== "" ||
+
+    String(
+      site[config.winner] ??
+      ""
+    ).trim() !== ""
+  );
+}
+
+function clearLiveMatchResult(
+  updates,
+  tournamentId,
+  matchId,
+  timestamp
+) {
+  const config =
+    getLiveMatchConfig(
+      matchId
+    );
+
+  const storageKey =
+    getLiveBracketStorageKey(
+      matchId
+    );
+
+  if (
+    !config ||
+    !storageKey
+  ) {
+    return;
+  }
+
+  const canonicalPath =
+    `tournaments/${tournamentId}/bracket/${storageKey}`;
+
+  updates[
+    `${canonicalPath}/scoreA`
+  ] = "";
+
+  updates[
+    `${canonicalPath}/scoreB`
+  ] = "";
+
+  updates[
+    `${canonicalPath}/winner`
+  ] = "";
+
+  updates[
+    `${canonicalPath}/updatedAt`
+  ] = timestamp;
+
+  updates[
+    `${canonicalPath}/updatedBy`
+  ] =
+    state.user?.uid ||
+    null;
+
+  updates[
+    `site/${config.scoreA}`
+  ] = "";
+
+  updates[
+    `site/${config.scoreB}`
+  ] = "";
+
+  updates[
+    `site/${config.winner}`
+  ] = null;
+}
 
   function getLivePredictionType(matchId) {
     return `match_${String(matchId || "")
@@ -2091,68 +2308,213 @@ if (moduleId === "diagnostics") {
     );
   }
 
-  async function saveLiveResult(button) {
-    const config =
-      getLiveMatchConfig();
+  async function saveLiveResult(
+  button
+) {
+  const config =
+    getLiveMatchConfig();
 
-    if (!config) {
-      showToast(
-        "Select a valid match first."
+  if (!config) {
+    showToast(
+      "Select a valid match first."
+    );
+
+    return;
+  }
+
+  const site =
+    window.nexusSiteData ||
+    {};
+
+  const winner =
+    getLiveWinner(config);
+
+  const previousWinner =
+    String(
+      site[config.winner] ??
+      ""
+    ).trim();
+
+  const winnerChanged =
+    previousWinner !==
+    winner;
+
+  const descendants =
+    getLiveDescendantMatches(
+      state.liveDraft
+        .currentMatchId
+    );
+
+  const affectedDescendants =
+    winnerChanged
+      ? descendants.filter(
+          matchId =>
+            liveMatchHasSavedData(
+              matchId,
+              site
+            )
+        )
+      : [];
+
+  if (
+    affectedDescendants.length
+  ) {
+    const confirmed =
+      window.confirm(
+        `Changing this winner will clear dependent results for:\n\n${affectedDescendants.join(
+          "\n"
+        )}\n\nContinue?`
       );
 
+    if (!confirmed) {
       return;
     }
+  }
 
-    await runLiveButtonAction(
-      button,
-      "Saving Result...",
-      async () => {
-        const winner =
-          getLiveWinner(config);
+  await runLiveButtonAction(
+    button,
+    "Saving Result...",
+    async () => {
+      const tournamentId =
+        await getCurrentTournamentId();
 
-        const next =
-          getAutoLiveNextMatch();
+      const timestamp =
+        firebase.database
+          .ServerValue
+          .TIMESTAMP;
 
-        const updates = {
-          "site/currentMatch":
-            state.liveDraft.currentMatchId,
-
-          [`site/${config.scoreA}`]:
-            String(
-              state.liveDraft.teamAScore
-            ),
-
-          [`site/${config.scoreB}`]:
-            String(
-              state.liveDraft.teamBScore
-            ),
-
-          [`site/${config.winner}`]:
-            winner || null,
-
-          "broadcastCountdown/upNext":
-            next
-        };
-
-        await database
-          .ref()
-          .update(updates);
-
-        state.liveDraft.nextMatch = next;
-        state.liveDraft.dirty = false;
-
-        setLiveSaveState(
-          "Saved to Firebase"
+      const storageKey =
+        getLiveBracketStorageKey(
+          state.liveDraft
+            .currentMatchId
         );
 
-        showToast(
-          winner
-            ? `Result saved: ${winner} wins`
-            : "Scores saved"
+      if (!storageKey) {
+        throw new Error(
+          "Nexus could not determine the bracket match path."
         );
       }
-    );
-  }
+
+      /*
+       * Preview the newly saved winner so
+       * Up Next can immediately use it.
+       */
+      const nextSiteData = {
+        ...site,
+
+        [config.scoreA]:
+          String(
+            state.liveDraft
+              .teamAScore
+          ),
+
+        [config.scoreB]:
+          String(
+            state.liveDraft
+              .teamBScore
+          ),
+
+        [config.winner]:
+          winner || ""
+      };
+
+      const next =
+        getAutoLiveNextMatch(
+          nextSiteData
+        );
+
+      const canonicalPath =
+        `tournaments/${tournamentId}/bracket/${storageKey}`;
+
+      const updates = {
+        "site/currentMatch":
+          state.liveDraft
+            .currentMatchId,
+
+        [`site/${config.scoreA}`]:
+          String(
+            state.liveDraft
+              .teamAScore
+          ),
+
+        [`site/${config.scoreB}`]:
+          String(
+            state.liveDraft
+              .teamBScore
+          ),
+
+        [`site/${config.winner}`]:
+          winner || null,
+
+        "broadcastCountdown/upNext":
+          next,
+
+        [`${canonicalPath}/scoreA`]:
+          state.liveDraft
+            .teamAScore,
+
+        [`${canonicalPath}/scoreB`]:
+          state.liveDraft
+            .teamBScore,
+
+        [`${canonicalPath}/winner`]:
+          winner || "",
+
+        [`${canonicalPath}/updatedAt`]:
+          timestamp,
+
+        [`${canonicalPath}/updatedBy`]:
+          state.user?.uid ||
+          null,
+
+        [`tournaments/${tournamentId}/bracketUpdatedAt`]:
+          timestamp,
+
+        [`tournaments/${tournamentId}/bracketUpdatedBy`]:
+          state.user?.uid ||
+          null
+      };
+
+      /*
+       * If an earlier winner changes,
+       * remove every dependent result.
+       */
+      if (winnerChanged) {
+        descendants.forEach(
+          descendantId => {
+            clearLiveMatchResult(
+              updates,
+              tournamentId,
+              descendantId,
+              timestamp
+            );
+          }
+        );
+      }
+
+      await database
+        .ref()
+        .update(updates);
+
+      state.liveDraft
+        .nextMatch =
+          next;
+
+      state.liveDraft.dirty =
+        false;
+
+      setLiveSaveState(
+        "Saved to bracket and public site"
+      );
+
+      showToast(
+        winner
+          ? `Result saved: ${winner} wins`
+          : "Scores saved"
+      );
+    }
+  );
+}
 
   async function saveLiveNextMatch(button) {
     await runLiveButtonAction(

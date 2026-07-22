@@ -3085,16 +3085,50 @@
         );
 
       if (
-        previousImagePath &&
-        previousImagePath !==
-          finalImagePath
-      ) {
-        await deleteArtwork(
-          previousImagePath
-        );
-      }
+  previousImagePath &&
+  previousImagePath !==
+    finalImagePath
+) {
+  await deleteArtwork(
+    previousImagePath
+  );
+}
 
-      state.formDirty = false;
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      state.database,
+
+    currentUser:
+      state.currentUser,
+
+    action:
+      editing
+        ? "giveaway.updated"
+        : "giveaway.created",
+
+    category:
+      "giveaways",
+
+    summary:
+      editing
+        ? `Updated giveaway "${state.draft.title}".`
+        : `Created giveaway "${state.draft.title}".`,
+
+    severity:
+      "success",
+
+    targetType:
+      "giveaway",
+
+    targetId:
+      giveawayId,
+
+    targetName:
+      state.draft.title
+  });
+
+state.formDirty = false;
 
       const message =
         editing
@@ -3249,22 +3283,74 @@
           : null;
 
       await state.database
-        .ref()
-        .update({
-          [`giveaways/${giveawayId}/status`]:
-            privateUpdate.status,
+  .ref()
+  .update({
+    [`giveaways/${giveawayId}/status`]:
+      privateUpdate.status,
 
-          [`giveaways/${giveawayId}/updatedAt`]:
-            privateUpdate.updatedAt,
+    [`giveaways/${giveawayId}/updatedAt`]:
+      privateUpdate.updatedAt,
 
-          [`giveaways/${giveawayId}/updatedBy`]:
-            privateUpdate.updatedBy,
+    [`giveaways/${giveawayId}/updatedBy`]:
+      privateUpdate.updatedBy,
 
-          [`publicGiveaways/${giveawayId}`]:
-            publicRecord
-        });
+    [`publicGiveaways/${giveawayId}`]:
+      publicRecord
+  });
 
-      showToast(
+const auditActions = {
+  live:
+    "giveaway.started",
+
+  paused:
+    "giveaway.paused",
+
+  closed:
+    "giveaway.closed",
+
+  scheduled:
+    "giveaway.scheduled",
+
+  draft:
+    "giveaway.returned_to_draft"
+};
+
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      state.database,
+
+    currentUser:
+      state.currentUser,
+
+    action:
+      auditActions[newStatus] ||
+      "giveaway.status_changed",
+
+    category:
+      "giveaways",
+
+    summary:
+      `Changed giveaway "${giveaway.title}" to ${getStatusLabel(
+        newStatus
+      )}.`,
+
+    severity:
+      newStatus === "closed"
+        ? "warning"
+        : "info",
+
+    targetType:
+      "giveaway",
+
+    targetId:
+      giveawayId,
+
+    targetName:
+      giveaway.title
+  });
+
+showToast(
         newStatus === "live"
           ? "Giveaway is now live."
           : (
@@ -3341,14 +3427,44 @@
             null
         });
 
-      await deleteArtwork(
-        giveaway.imagePath
-      );
+await deleteArtwork(
+  giveaway.imagePath
+);
 
-      if (
-        state.selectedGiveawayId ===
-        giveawayId
-      ) {
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      state.database,
+
+    currentUser:
+      state.currentUser,
+
+    action:
+      "giveaway.deleted",
+
+    category:
+      "giveaways",
+
+    summary:
+      `Deleted giveaway "${giveaway.title}".`,
+
+    severity:
+      "critical",
+
+    targetType:
+      "giveaway",
+
+    targetId:
+      giveawayId,
+
+    targetName:
+      giveaway.title
+  });
+
+if (
+  state.selectedGiveawayId ===
+  giveawayId
+) {
         resetEditor(true);
       }
 

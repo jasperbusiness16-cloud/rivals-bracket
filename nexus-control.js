@@ -4131,6 +4131,17 @@ async function clearLiveNextMatch(
     `;
   }
 
+function clean(value, fallback = "") {
+  const resolved =
+    value == null
+      ? fallback
+      : value;
+
+  return String(
+    resolved
+  ).trim();
+}
+
   function escapeHtml(value) {
     return String(
       value == null

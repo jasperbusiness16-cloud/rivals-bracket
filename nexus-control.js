@@ -651,6 +651,12 @@ if (
 ) {
   window.NexusPlayers.cleanup();
 }
+if (
+  window.NexusStaffAccess &&
+  typeof window.NexusStaffAccess.cleanup === "function"
+) {
+  window.NexusStaffAccess.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -859,6 +865,47 @@ if (moduleId === "players") {
     showToast,
     openModule,
     getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+if (moduleId === "staff") {
+  if (
+    !window.NexusStaffAccess ||
+    typeof window.NexusStaffAccess.render !== "function"
+  ) {
+    showToast(
+      "The Staff & Access module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusStaffAccess.render({
+    database,
+
+    content:
+      elements.content,
+
+    currentUser:
+      auth.currentUser,
+
+    roleId:
+      state.roleId,
+
+    roleTemplates:
+      ROLE_TEMPLATES,
+
+    modules:
+      MODULES,
+
+    showToast,
     escapeHtml,
     isPermissionDenied
   });

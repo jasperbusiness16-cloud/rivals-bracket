@@ -20,6 +20,12 @@
       icon: "fa-trophy",
       permission: "tournaments.manage"
     },
+    bracket: {
+  title: "Bracket & Matches",
+  breadcrumb: "Nexus / Bracket",
+  icon: "fa-diagram-project",
+  permission: "bracket.manage"
+},
     applications: {
       title: "Application Review",
       breadcrumb: "Nexus / Tournament / Applications",
@@ -617,7 +623,13 @@ if (
 ) {
   window.NexusEventControl.cleanup();
 }
-
+if (
+  window.NexusBracket &&
+  typeof window.NexusBracket.cleanup ===
+    "function"
+) {
+  window.NexusBracket.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -673,7 +685,47 @@ if (moduleId === "tournament") {
 }
 
 if (moduleId === "applications") {
+ if (
+  moduleId ===
+  "bracket"
+) {
   if (
+    !window.NexusBracket ||
+    typeof window.NexusBracket.render !==
+      "function"
+  ) {
+    showToast(
+      "The Bracket & Matches module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusBracket.render({
+    database,
+    content:
+      elements.content,
+
+    currentUser:
+      auth.currentUser,
+
+    roleId:
+      state.roleId,
+
+    showToast,
+    openModule,
+    getCurrentTournamentId,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+   if (
     !window.NexusApplications ||
     typeof window.NexusApplications.render !== "function"
   ) {

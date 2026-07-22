@@ -657,6 +657,12 @@ if (
 ) {
   window.NexusStaffAccess.cleanup();
 }
+if (
+  window.NexusAudit &&
+  typeof window.NexusAudit.cleanup === "function"
+) {
+  window.NexusAudit.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -904,6 +910,41 @@ if (moduleId === "staff") {
 
     modules:
       MODULES,
+
+    showToast,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+if (moduleId === "audit") {
+  if (
+    !window.NexusAudit ||
+    typeof window.NexusAudit.render !== "function"
+  ) {
+    showToast(
+      "The Audit History module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusAudit.render({
+    database,
+
+    content:
+      elements.content,
+
+    currentUser:
+      auth.currentUser,
+
+    roleId:
+      state.roleId,
 
     showToast,
     escapeHtml,

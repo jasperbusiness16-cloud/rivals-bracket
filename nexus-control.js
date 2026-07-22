@@ -20,12 +20,7 @@
       icon: "fa-trophy",
       permission: "tournaments.manage"
     },
-    bracket: {
-  title: "Bracket & Matches",
-  breadcrumb: "Nexus / Bracket",
-  icon: "fa-diagram-project",
-  permission: "bracket.manage"
-},
+    
     applications: {
       title: "Application Review",
       breadcrumb: "Nexus / Tournament / Applications",
@@ -684,11 +679,7 @@ if (moduleId === "tournament") {
   return;
 }
 
-if (moduleId === "applications") {
- if (
-  moduleId ===
-  "bracket"
-) {
+if (moduleId === "bracket") {
   if (
     !window.NexusBracket ||
     typeof window.NexusBracket.render !==
@@ -698,24 +689,15 @@ if (moduleId === "applications") {
       "The Bracket & Matches module failed to load."
     );
 
-    renderModulePlaceholder(
-      moduleId
-    );
-
+    renderModulePlaceholder(moduleId);
     return;
   }
 
   window.NexusBracket.render({
     database,
-    content:
-      elements.content,
-
-    currentUser:
-      auth.currentUser,
-
-    roleId:
-      state.roleId,
-
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
     showToast,
     openModule,
     getCurrentTournamentId,
@@ -725,11 +707,17 @@ if (moduleId === "applications") {
 
   return;
 }
-   if (
+
+if (moduleId === "applications") {
+  if (
     !window.NexusApplications ||
-    typeof window.NexusApplications.render !== "function"
+    typeof window.NexusApplications.render !==
+      "function"
   ) {
-    showToast("The Applications module failed to load.");
+    showToast(
+      "The Applications module failed to load."
+    );
+
     renderModulePlaceholder(moduleId);
     return;
   }

@@ -5,13 +5,11 @@
     8 * 1024 * 1024;
 
   const ALLOWED_IMAGE_TYPES =
-    new Set([
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/heic",
-      "image/heif"
-    ]);
+  new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ]);
 
   const CATEGORIES = {
     announcement: "Announcement",
@@ -26,9 +24,10 @@
 
   const state = {
     api: null,
-    database: null,
-    content: null,
-    currentUser: null,
+database: null,
+storage: null,
+content: null,
+currentUser: null,
     roleId: "",
 
     postsRef: null,
@@ -577,13 +576,13 @@
           <i class="fa-solid fa-shield-halved"></i>
 
           <div>
-            <strong>
-              Secure Image Upload Is Prepared
-            </strong>
+          <strong>
+  Owner Image Upload Active
+</strong>
 
-            <span>
-              Camera Roll selection and local preview work now. Publishing a newly selected local image remains blocked until the secure Firebase upload Function is deployed.
-            </span>
+<span>
+  Camera Roll images upload directly to the protected official-posts Storage folder. Only the authorized owner UID can create, replace, or delete files.
+</span>
           </div>
         </div>
 
@@ -734,17 +733,17 @@
                     <h4>Post Image</h4>
                   </div>
 
-                  <strong>
-                    JPG, PNG, WebP or iPhone HEIC
-                  </strong>
+               <strong>
+  JPG, PNG or WebP • Maximum 8 MB
+</strong>
                 </div>
 
-                <input
-                  id="nexusPostImageFile"
-                  type="file"
-                  accept="image/*"
-                  hidden
-                >
+               <input
+  id="nexusPostImageFile"
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  hidden
+>
 
                 <div
                   id="nexusPostImageWorkspace"
@@ -822,13 +821,13 @@
               <div class="nexus-post-save-row">
 
                 <div>
-                  <strong>
-                    Direct RTDB Content Save
-                  </strong>
+               <strong>
+  Firebase Content + Image Save
+</strong>
 
-                  <span>
-                    Text content saves to officialPosts. Camera Roll files require the future secure image backend.
-                  </span>
+<span>
+  Post content saves to Realtime Database and selected artwork uploads to Firebase Storage.
+</span>
                 </div>
 
                 <button
@@ -1292,7 +1291,7 @@
               state.localImage
                 ? `
                   <span>
-                    Local Preview • Not Uploaded
+                    Local Preview • Uploads on Save
                   </span>
                 `
                 : ""
@@ -1415,9 +1414,9 @@
 
           <div class="nexus-post-image-preview-copy">
 
-            <span class="nexus-post-image-state pending">
-              Local File • Awaiting Backend
-            </span>
+         <span class="nexus-post-image-state uploaded">
+  Ready to Upload
+</span>
 
             <strong>
               ${escapeHtml(
@@ -1445,9 +1444,9 @@
               }
             </small>
 
-            <p>
-              This file is previewing only on this device. Save the post as a draft, or remove the file before publishing.
-            </p>
+          <p>
+  This image will upload to Firebase Storage when the post is saved.
+</p>
 
           </div>
 
@@ -1944,13 +1943,11 @@
         .pop();
 
     return [
-      "jpg",
-      "jpeg",
-      "png",
-      "webp",
-      "heic",
-      "heif"
-    ].includes(extension);
+  "jpg",
+  "jpeg",
+  "png",
+  "webp"
+].includes(extension);
   }
 
   async function selectLocalImage(
@@ -1962,8 +1959,8 @@
 
     if (!isAllowedImage(file)) {
       showToast(
-        "Select a JPG, PNG, WebP, HEIC or HEIF image."
-      );
+  "Select a JPG, PNG or WebP image."
+);
 
       setStatus(
         "That image format is not supported.",
@@ -2041,9 +2038,9 @@
     renderPreview();
 
     setStatus(
-      "Image selected locally. Save as a draft or wait for the secure upload backend before publishing.",
-      "warning"
-    );
+  "Image ready. It will upload when you save the post.",
+  "success"
+);
   }
 
   function removeImage() {
@@ -2226,111 +2223,526 @@
   }
 
   function validateDraft() {
-    const draft =
-      state.draft;
+  const draft =
+    state.draft;
 
-    if (!draft.title) {
-      return "Enter a post title.";
-    }
-
-    if (!draft.body) {
-      return "Enter the post body.";
-    }
-
-    if (
-      draft.linkUrl &&
-      !/^https?:\/\//i.test(
-        draft.linkUrl
-      )
-    ) {
-      return "The optional link must begin with http:// or https://.";
-    }
-
-    const uploadPending =
-      Boolean(
-        state.localImage ||
-        draft.imageUploadPending
-      );
-
-    if (
-      draft.published &&
-      uploadPending
-    ) {
-      return (
-        "This post has a Camera Roll image awaiting secure upload. " +
-        "Turn Published off to save it as a draft, enter an existing image URL, or remove the pending image."
-      );
-    }
-
-    return "";
+  if (!draft.title) {
+    return "Enter a post title.";
   }
 
-  async function savePost(
-    button
+  if (!draft.body) {
+    return "Enter the post body.";
+  }
+
+  if (
+    draft.linkUrl &&
+    !/^https?:\/\//i.test(
+      draft.linkUrl
+    )
   ) {
-    if (state.saving) {
-      return;
+    return (
+      "The optional link must begin with " +
+      "http:// or https://."
+    );
+  }
+
+  /*
+   * Older drafts may contain only
+   * pending image metadata. The actual
+   * phone file was never stored, so it
+   * must be selected again.
+   */
+  if (
+    draft.imageUploadPending &&
+    !state.localImage &&
+    !clean(
+      draft.imageUrl ||
+      draft.image
+    )
+  ) {
+    return (
+      "Reselect the pending Camera Roll image, " +
+      "enter an existing image URL, or remove it."
+    );
+  }
+
+  return "";
+}
+
+function sanitizeStorageFileName(
+  file
+) {
+  const rawName =
+    clean(
+      file?.name,
+      "announcement-image"
+    );
+
+  const mimeType =
+    clean(
+      file?.type
+    ).toLowerCase();
+
+  let extension =
+    rawName
+      .toLowerCase()
+      .split(".")
+      .pop();
+
+  if (
+    extension ===
+    rawName.toLowerCase()
+  ) {
+    extension = "";
+  }
+
+  if (
+    extension === "jpeg"
+  ) {
+    extension = "jpg";
+  }
+
+  if (
+    ![
+      "jpg",
+      "png",
+      "webp"
+    ].includes(extension)
+  ) {
+    if (
+      mimeType ===
+      "image/png"
+    ) {
+      extension = "png";
+    } else if (
+      mimeType ===
+      "image/webp"
+    ) {
+      extension = "webp";
+    } else {
+      extension = "jpg";
     }
+  }
 
-    syncDraftFromForm();
+  const baseName =
+    rawName
+      .replace(
+        /\.[^.]+$/,
+        ""
+      )
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9]+/g,
+        "-"
+      )
+      .replace(
+        /^-+|-+$/g,
+        ""
+      )
+      .slice(
+        0,
+        60
+      ) ||
+    "announcement-image";
 
-    const validationError =
-      validateDraft();
+  return `${baseName}.${extension}`;
+}
 
-    if (validationError) {
-      setStatus(
-        validationError,
-        "error"
-      );
+function createImageStoragePath(
+  postId,
+  file
+) {
+  return (
+    `official-posts/${postId}/` +
+    `${Date.now()}-` +
+    sanitizeStorageFileName(
+      file
+    )
+  );
+}
 
-      showToast(
-        validationError
-      );
+function uploadAnnouncementImage(
+  postId
+) {
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
+      const localImage =
+        state.localImage;
 
-      return;
-    }
+      if (
+        !localImage?.file
+      ) {
+        resolve(null);
+        return;
+      }
 
-    const editing =
-      Boolean(
-        state.selectedPostId
-      );
-
-    const existing =
-      getSelectedPost();
-
-    const ref =
-      editing
-        ? state.database.ref(
-            `officialPosts/${state.selectedPostId}`
+      if (!state.storage) {
+        reject(
+          new Error(
+            "Firebase Storage is not initialized."
           )
-        : state.database
-            .ref(
-              "officialPosts"
-            )
-            .push();
+        );
+
+        return;
+      }
+
+      const file =
+        localImage.file;
+
+      const storagePath =
+        createImageStoragePath(
+          postId,
+          file
+        );
+
+      const storageRef =
+        state.storage.ref(
+          storagePath
+        );
+
+      const uploadTask =
+        storageRef.put(
+          file,
+          {
+            contentType:
+              file.type,
+
+            customMetadata: {
+              postId:
+                String(postId),
+
+              uploadedBy:
+                state.currentUser
+                  ?.uid ||
+                ""
+            }
+          }
+        );
+
+      uploadTask.on(
+        "state_changed",
+
+        snapshot => {
+          const total =
+            Number(
+              snapshot
+                .totalBytes ||
+              0
+            );
+
+          const transferred =
+            Number(
+              snapshot
+                .bytesTransferred ||
+              0
+            );
+
+          const progress =
+            total > 0
+              ? Math.round(
+                  (
+                    transferred /
+                    total
+                  ) *
+                  100
+                )
+              : 0;
+
+          setStatus(
+            `Uploading image: ${progress}%`,
+            "info"
+          );
+        },
+
+        error => {
+          reject(error);
+        },
+
+        async () => {
+          try {
+            const downloadUrl =
+              await uploadTask
+                .snapshot
+                .ref
+                .getDownloadURL();
+
+            resolve({
+              url:
+                downloadUrl,
+
+              path:
+                storagePath,
+
+              name:
+                clean(
+                  file.name
+                ),
+
+              type:
+                clean(
+                  file.type
+                ),
+
+              size:
+                Number(
+                  file.size ||
+                  0
+                ),
+
+              width:
+                Number(
+                  localImage
+                    .width ||
+                  0
+                ),
+
+              height:
+                Number(
+                  localImage
+                    .height ||
+                  0
+                )
+            });
+          } catch (error) {
+            reject(error);
+          }
+        }
+      );
+    }
+  );
+}
+
+async function deleteAnnouncementImage(
+  storagePath
+) {
+  const path =
+    clean(storagePath);
+
+  if (
+    !path ||
+    !path.startsWith(
+      "official-posts/"
+    ) ||
+    !state.storage
+  ) {
+    return;
+  }
+
+  try {
+    await state.storage
+      .ref(path)
+      .delete();
+  } catch (error) {
+    const code =
+      clean(
+        error?.code
+      ).toLowerCase();
+
+    if (
+      code !==
+      "storage/object-not-found"
+    ) {
+      console.warn(
+        "Old announcement image could not be deleted:",
+        error
+      );
+    }
+  }
+}
+
+async function savePost(
+  button
+) {
+  if (state.saving) {
+    return;
+  }
+
+  syncDraftFromForm();
+
+  const validationError =
+    validateDraft();
+
+  if (validationError) {
+    setStatus(
+      validationError,
+      "error"
+    );
+
+    showToast(
+      validationError
+    );
+
+    return;
+  }
+
+  const editing =
+    Boolean(
+      state.selectedPostId
+    );
+
+  const existing =
+    getSelectedPost();
+
+  const ref =
+    editing
+      ? state.database.ref(
+          `officialPosts/${state.selectedPostId}`
+        )
+      : state.database
+          .ref(
+            "officialPosts"
+          )
+          .push();
+
+  const postId =
+    editing
+      ? state.selectedPostId
+      : ref.key;
+
+  if (!postId) {
+    setStatus(
+      "Nexus could not create a post ID.",
+      "error"
+    );
+
+    return;
+  }
+
+  state.saving =
+    true;
+
+  setButtonLoading(
+    button,
+    true,
+    state.localImage
+      ? "Uploading Image..."
+      : "Saving..."
+  );
+
+  let uploadedImage =
+    null;
+
+  try {
+    /*
+     * Upload the selected phone image
+     * before writing the post record.
+     */
+    if (state.localImage) {
+      uploadedImage =
+        await uploadAnnouncementImage(
+          postId
+        );
+    }
+
+    const typedImageUrl =
+      clean(
+        state.draft.imageUrl ||
+        state.draft.image
+      );
+
+    const existingImageUrl =
+      getPostImage(
+        existing
+      );
+
+    const finalImageUrl =
+      uploadedImage?.url ||
+      typedImageUrl;
+
+    const preservingExistingImage =
+      Boolean(
+        !uploadedImage &&
+        existing &&
+        finalImageUrl &&
+        finalImageUrl ===
+          existingImageUrl
+      );
+
+    const finalImagePath =
+      uploadedImage
+        ? uploadedImage.path
+        : (
+            preservingExistingImage
+              ? clean(
+                  existing
+                    ?.imagePath
+                )
+              : ""
+          );
+
+    const finalImageName =
+      uploadedImage
+        ? uploadedImage.name
+        : (
+            preservingExistingImage
+              ? clean(
+                  existing
+                    ?.imageName
+                )
+              : ""
+          );
+
+    const finalImageType =
+      uploadedImage
+        ? uploadedImage.type
+        : (
+            preservingExistingImage
+              ? clean(
+                  existing
+                    ?.imageType
+                )
+              : ""
+          );
+
+    const finalImageSize =
+      uploadedImage
+        ? uploadedImage.size
+        : (
+            preservingExistingImage
+              ? Number(
+                  existing
+                    ?.imageSize ||
+                  0
+                )
+              : 0
+          );
+
+    const finalImageWidth =
+      uploadedImage
+        ? uploadedImage.width
+        : (
+            preservingExistingImage
+              ? Number(
+                  existing
+                    ?.imageWidth ||
+                  0
+                )
+              : 0
+          );
+
+    const finalImageHeight =
+      uploadedImage
+        ? uploadedImage.height
+        : (
+            preservingExistingImage
+              ? Number(
+                  existing
+                    ?.imageHeight ||
+                  0
+                )
+              : 0
+          );
 
     const timestamp =
       firebase.database
         .ServerValue
         .TIMESTAMP;
 
-    const imageUrl =
-      clean(
-        state.draft
-          .imageUrl ||
-        state.draft.image
-      );
-
-    const pendingUpload =
-      Boolean(
-        state.localImage ||
-        state.draft
-          .imageUploadPending
-      );
-
     const becamePublished =
-      state.draft
-        .published &&
+      state.draft.published &&
       (
         !existing ||
         existing.published ===
@@ -2345,141 +2757,47 @@
         state.draft.body,
 
       category:
-        state.draft
-          .category,
+        state.draft.category,
 
+      /*
+       * Keep image for compatibility
+       * with the existing posts.html.
+       */
       image:
-        imageUrl,
+        finalImageUrl,
 
       imageUrl:
-        imageUrl,
+        finalImageUrl,
 
       imagePath:
-        imageUrl
-          ? clean(
-              existing
-                ?.imagePath
-            )
-          : "",
+        finalImagePath,
 
       imageName:
-        pendingUpload
-          ? clean(
-              state.localImage
-                ?.file
-                ?.name ||
-              state.draft
-                .imageName
-            )
-          : (
-              imageUrl
-                ? clean(
-                    state.draft
-                      .imageName ||
-                    existing
-                      ?.imageName
-                  )
-                : ""
-            ),
+        finalImageName,
 
       imageType:
-        pendingUpload
-          ? clean(
-              state.localImage
-                ?.file
-                ?.type ||
-              state.draft
-                .imageType
-            )
-          : (
-              imageUrl
-                ? clean(
-                    state.draft
-                      .imageType ||
-                    existing
-                      ?.imageType
-                  )
-                : ""
-            ),
+        finalImageType,
 
       imageSize:
-        pendingUpload
-          ? Number(
-              state.localImage
-                ?.file
-                ?.size ||
-              state.draft
-                .imageSize ||
-              0
-            )
-          : (
-              imageUrl
-                ? Number(
-                    state.draft
-                      .imageSize ||
-                    existing
-                      ?.imageSize ||
-                    0
-                  )
-                : 0
-            ),
+        finalImageSize,
 
       imageWidth:
-        pendingUpload
-          ? Number(
-              state.localImage
-                ?.width ||
-              state.draft
-                .imageWidth ||
-              0
-            )
-          : (
-              imageUrl
-                ? Number(
-                    state.draft
-                      .imageWidth ||
-                    existing
-                      ?.imageWidth ||
-                    0
-                  )
-                : 0
-            ),
+        finalImageWidth,
 
       imageHeight:
-        pendingUpload
-          ? Number(
-              state.localImage
-                ?.height ||
-              state.draft
-                .imageHeight ||
-              0
-            )
-          : (
-              imageUrl
-                ? Number(
-                    state.draft
-                      .imageHeight ||
-                    existing
-                      ?.imageHeight ||
-                    0
-                  )
-                : 0
-            ),
+        finalImageHeight,
 
       imageUploadPending:
-        pendingUpload,
+        false,
 
       linkUrl:
-        state.draft
-          .linkUrl,
+        state.draft.linkUrl,
 
       linkLabel:
-        state.draft
-          .linkLabel,
+        state.draft.linkLabel,
 
       scope:
-        state.draft
-          .scope,
+        state.draft.scope,
 
       tournamentId:
         state.draft.scope ===
@@ -2488,12 +2806,10 @@
           : "",
 
       published:
-        state.draft
-          .published,
+        state.draft.published,
 
       pinned:
-        state.draft
-          .pinned,
+        state.draft.pinned,
 
       authorId:
         state.currentUser
@@ -2503,6 +2819,8 @@
         "",
 
       authorName:
+        existing
+          ?.authorName ||
         getAuthorName(),
 
       commentCount:
@@ -2535,80 +2853,128 @@
         timestamp
     };
 
+    await ref.set(
+      postData
+    );
+
+    /*
+     * Delete the previous Storage file
+     * after the new post record saves.
+     */
+    const previousImagePath =
+      clean(
+        existing?.imagePath
+      );
+
+    if (
+      previousImagePath &&
+      previousImagePath !==
+        finalImagePath
+    ) {
+      await deleteAnnouncementImage(
+        previousImagePath
+      );
+    }
+
+    state.formDirty =
+      false;
+
+    const message =
+      editing
+        ? (
+            state.draft.published
+              ? "Post and image updated."
+              : "Draft and image updated."
+          )
+        : (
+            state.draft.published
+              ? "Post published."
+              : "Draft saved."
+          );
+
+    showToast(message);
+
+    resetEditor(true);
+
+    setStatus(
+      message,
+      "success"
+    );
+  } catch (error) {
+    /*
+     * Avoid leaving an orphaned upload
+     * when the RTDB post save fails.
+     */
+    if (
+      uploadedImage?.path
+    ) {
+      await deleteAnnouncementImage(
+        uploadedImage.path
+      );
+    }
+
+    console.error(
+      "Post or image save failed:",
+      error
+    );
+
+    const code =
+      clean(
+        error?.code
+      ).toLowerCase();
+
+    let message =
+      error?.message ||
+      "The post could not be saved.";
+
+    if (
+      code.includes(
+        "storage/unauthorized"
+      )
+    ) {
+      message =
+        "Firebase Storage denied the upload. Confirm you are signed into the owner account.";
+    } else if (
+      code.includes(
+        "storage/quota-exceeded"
+      )
+    ) {
+      message =
+        "Firebase Storage quota has been exceeded.";
+    } else if (
+      code.includes(
+        "storage/canceled"
+      )
+    ) {
+      message =
+        "The image upload was canceled.";
+    } else if (
+      isPermissionDenied(
+        error
+      )
+    ) {
+      message =
+        "Firebase rules blocked the post or image save.";
+    }
+
+    showToast(message);
+
+    setStatus(
+      message,
+      "error"
+    );
+  } finally {
     state.saving =
-      true;
+      false;
 
     setButtonLoading(
       button,
-      true,
-      "Saving..."
+      false
     );
 
-    try {
-      await ref.set(
-        postData
-      );
-
-      state.formDirty =
-        false;
-
-      const message =
-        editing
-          ? (
-              state.draft
-                .published
-                ? "Post updated."
-                : "Draft updated."
-            )
-          : (
-              state.draft
-                .published
-                ? "Post published."
-                : "Draft saved."
-            );
-
-      showToast(message);
-
-      resetEditor(true);
-
-      setStatus(
-        message,
-        "success"
-      );
-    } catch (error) {
-      console.error(
-        "Post save failed:",
-        error
-      );
-
-      const message =
-        isPermissionDenied(
-          error
-        )
-          ? "Firebase rules blocked this post save."
-          : (
-              error?.message ||
-              "The post could not be saved."
-            );
-
-      showToast(message);
-
-      setStatus(
-        message,
-        "error"
-      );
-    } finally {
-      state.saving =
-        false;
-
-      setButtonLoading(
-        button,
-        false
-      );
-
-      updateEditorLabels();
-    }
+    updateEditorLabels();
   }
+}
 
   async function togglePublished(
     postId,
@@ -3134,11 +3500,40 @@
     cleanup();
 
     state.api = api;
-    state.database =
-      api.database;
 
-    state.content =
-      api.content;
+state.database =
+  api.database;
+
+if (
+  typeof firebase.storage !==
+  "function"
+) {
+  api.content.innerHTML = `
+    <div class="nexus-post-empty error">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+
+      <strong>
+        Firebase Storage SDK Missing
+      </strong>
+
+      <span>
+        Add firebase-storage.js before firebase.js in nexus-control.html.
+      </span>
+    </div>
+  `;
+
+  api.showToast(
+    "Firebase Storage failed to load."
+  );
+
+  return;
+}
+
+state.storage =
+  firebase.storage();
+
+state.content =
+  api.content;
 
     state.currentUser =
       api.currentUser;
@@ -3239,8 +3634,9 @@
     }
 
     state.api = null;
-    state.database = null;
-    state.content = null;
+state.database = null;
+state.storage = null;
+state.content = null;
     state.currentUser = null;
     state.roleId = "";
 

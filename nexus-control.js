@@ -2308,11 +2308,12 @@ function clearLiveMatchResult(
     );
   }
 
-  async function saveLiveResult(
-  button
-) {
+  async function saveLiveResult(button) {
+  const matchId =
+    state.liveDraft.currentMatchId;
+
   const config =
-    getLiveMatchConfig();
+    getLiveMatchConfig(matchId);
 
   if (!config) {
     showToast(
@@ -2322,55 +2323,6 @@ function clearLiveMatchResult(
     return;
   }
 
-  const site =
-    window.nexusSiteData ||
-    {};
-
-  const winner =
-    getLiveWinner(config);
-
-  const previousWinner =
-    String(
-      site[config.winner] ??
-      ""
-    ).trim();
-
-  const winnerChanged =
-    previousWinner !==
-    winner;
-
-  const descendants =
-    getLiveDescendantMatches(
-      state.liveDraft
-        .currentMatchId
-    );
-
-  const affectedDescendants =
-    winnerChanged
-      ? descendants.filter(
-          matchId =>
-            liveMatchHasSavedData(
-              matchId,
-              site
-            )
-        )
-      : [];
-
-  if (
-    affectedDescendants.length
-  ) {
-    const confirmed =
-      window.confirm(
-        `Changing this winner will clear dependent results for:\n\n${affectedDescendants.join(
-          "\n"
-        )}\n\nContinue?`
-      );
-
-    if (!confirmed) {
-      return;
-    }
-  }
-
   await runLiveButtonAction(
     button,
     "Saving Result...",
@@ -2378,70 +2330,71 @@ function clearLiveMatchResult(
       const tournamentId =
         await getCurrentTournamentId();
 
+      const winner =
+        getLiveWinner(config);
+
       const timestamp =
         firebase.database
           .ServerValue
           .TIMESTAMP;
 
-      const storageKey =
-        getLiveBracketStorageKey(
-          state.liveDraft
-            .currentMatchId
-        );
+      const shortMatchId =
+        String(matchId || "")
+          .split(" • ")[0]
+          .trim();
+
+      let storageKey = "";
+
+      if (
+        shortMatchId ===
+        "Grand Finals"
+      ) {
+        storageKey = "gf";
+      } else {
+        const r16Match =
+          shortMatchId.match(
+            /^R16-(\d+)$/
+          );
+
+        storageKey =
+          r16Match
+            ? `r16m${r16Match[1]}`
+            : shortMatchId.toLowerCase();
+      }
 
       if (!storageKey) {
         throw new Error(
-          "Nexus could not determine the bracket match path."
+          "Could not determine the bracket match path."
         );
       }
-
-      /*
-       * Preview the newly saved winner so
-       * Up Next can immediately use it.
-       */
-      const nextSiteData = {
-        ...site,
-
-        [config.scoreA]:
-          String(
-            state.liveDraft
-              .teamAScore
-          ),
-
-        [config.scoreB]:
-          String(
-            state.liveDraft
-              .teamBScore
-          ),
-
-        [config.winner]:
-          winner || ""
-      };
-
-      const next =
-        getAutoLiveNextMatch(
-          nextSiteData
-        );
 
       const canonicalPath =
         `tournaments/${tournamentId}/bracket/${storageKey}`;
 
+      const next =
+        getAutoLiveNextMatch();
+
+      const scoreA =
+        Number(
+          state.liveDraft.teamAScore ||
+          0
+        );
+
+      const scoreB =
+        Number(
+          state.liveDraft.teamBScore ||
+          0
+        );
+
       const updates = {
         "site/currentMatch":
-          state.liveDraft
-            .currentMatchId,
+          matchId,
 
         [`site/${config.scoreA}`]:
-          String(
-            state.liveDraft
-              .teamAScore
-          ),
+          String(scoreA),
 
         [`site/${config.scoreB}`]:
-          String(
-            state.liveDraft
-              .teamBScore
-          ),
+          String(scoreB),
 
         [`site/${config.winner}`]:
           winner || null,
@@ -2450,12 +2403,10 @@ function clearLiveMatchResult(
           next,
 
         [`${canonicalPath}/scoreA`]:
-          state.liveDraft
-            .teamAScore,
+          scoreA,
 
         [`${canonicalPath}/scoreB`]:
-          state.liveDraft
-            .teamBScore,
+          scoreB,
 
         [`${canonicalPath}/winner`]:
           winner || "",
@@ -2475,42 +2426,43 @@ function clearLiveMatchResult(
           null
       };
 
-      /*
-       * If an earlier winner changes,
-       * remove every dependent result.
-       */
-      if (winnerChanged) {
-        descendants.forEach(
-          descendantId => {
-            clearLiveMatchResult(
-              updates,
-              tournamentId,
-              descendantId,
-              timestamp
-            );
-          }
-        );
-      }
-
       await database
         .ref()
         .update(updates);
 
-      state.liveDraft
-        .nextMatch =
-          next;
+      window.nexusSiteData = {
+        ...(
+          window.nexusSiteData ||
+          {}
+        ),
+
+        currentMatch:
+          matchId,
+
+        [config.scoreA]:
+          String(scoreA),
+
+        [config.scoreB]:
+          String(scoreB),
+
+        [config.winner]:
+          winner || ""
+      };
+
+      state.liveDraft.nextMatch =
+        next;
 
       state.liveDraft.dirty =
         false;
 
       setLiveSaveState(
-        "Saved to bracket and public site"
+        "Saved to Live Operations and bracket"
       );
 
       showToast(
         winner
-          ? `Result saved: ${winner} wins`
-          : "Scores saved"
+          ? `${winner} saved as ${shortMatchId} winner`
+          : `${shortMatchId} scores saved`
       );
     }
   );

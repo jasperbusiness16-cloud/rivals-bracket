@@ -1544,12 +1544,56 @@
           null;
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        context.showToast(
-          `${matchId} result saved.`
-        );
+const savedScoreA =
+  scoreA === ""
+    ? "—"
+    : scoreA;
+
+const savedScoreB =
+  scoreB === ""
+    ? "—"
+    : scoreB;
+
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "bracket.result_saved",
+
+    category:
+      "bracket",
+
+    summary:
+      nextWinner
+        ? `Saved ${matchId}: ${participantA.name} ${savedScoreA}–${savedScoreB} ${participantB.name}. Winner: ${nextWinner}.`
+        : `Saved ${matchId}: ${participantA.name} ${savedScoreA}–${savedScoreB} ${participantB.name}. No winner recorded.`,
+
+    severity:
+      nextWinner
+        ? "success"
+        : "info",
+
+    targetType:
+      "bracket_match",
+
+    targetId:
+      `${moduleState.tournamentId}:${matchId}`,
+
+    targetName:
+      `${moduleState.tournament.name || moduleState.tournamentId} — ${matchId}`
+  });
+
+context.showToast(
+  `${matchId} result saved.`
+);
       }
     );
   }
@@ -1650,12 +1694,44 @@
           null;
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        context.showToast(
-          `${matchId} and downstream results were reset.`
-        );
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "bracket.match_reset",
+
+    category:
+      "bracket",
+
+    summary:
+      `Reset ${matchId} and downstream results: ${affected.join(
+        ", "
+      )}.`,
+
+    severity:
+      "warning",
+
+    targetType:
+      "bracket_match",
+
+    targetId:
+      `${moduleState.tournamentId}:${matchId}`,
+
+    targetName:
+      `${moduleState.tournament.name || moduleState.tournamentId} — ${matchId}`
+  });
+
+context.showToast(
+  `${matchId} and downstream results were reset.`
+);
       }
     );
   }
@@ -1730,12 +1806,43 @@
           null;
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        context.showToast(
-          "All scores cleared. Winners were preserved."
-        );
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "bracket.all_scores_cleared",
+
+    category:
+      "bracket",
+
+    summary:
+      `Cleared every score for "${moduleState.tournament.name || moduleState.tournamentId}" while preserving saved winners.`,
+
+    severity:
+      "warning",
+
+    targetType:
+      "tournament_bracket",
+
+    targetId:
+      moduleState.tournamentId,
+
+    targetName:
+      moduleState.tournament.name ||
+      moduleState.tournamentId
+  });
+
+context.showToast(
+  "All scores cleared. Winners were preserved."
+);
       }
     );
   }
@@ -1801,12 +1908,42 @@
           null;
 
         await context.database
-          .ref()
-          .update(updates);
+  .ref()
+  .update(updates);
 
-        context.showToast(
-          "All bracket scores and winners cleared."
-        );
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "bracket.all_results_cleared",
+
+    category:
+      "bracket",
+
+    summary:
+      `Cleared every bracket score and winner for "${tournamentName}".`,
+
+    severity:
+      "critical",
+
+    targetType:
+      "tournament_bracket",
+
+    targetId:
+      moduleState.tournamentId,
+
+    targetName:
+      tournamentName
+  });
+
+context.showToast(
+  "All bracket scores and winners cleared."
+);
       }
     );
   }
@@ -1860,17 +1997,47 @@
       "Opening...",
       async () => {
         await context.database
-          .ref(
-            "site/currentMatch"
-          )
-          .set(
-            definition.currentMatchValue
-          );
+  .ref(
+    "site/currentMatch"
+  )
+  .set(
+    definition.currentMatchValue
+  );
 
-        sessionStorage.setItem(
-          "nexusLiveMatchId",
-          definition.id
-        );
+await window.NexusAuditLogger
+  ?.safeLog?.({
+    database:
+      context.database,
+
+    currentUser:
+      context.currentUser,
+
+    action:
+      "bracket.match_opened_live",
+
+    category:
+      "bracket",
+
+    summary:
+      `Opened ${definition.currentMatchValue} in Live Operations: ${participantA.name} vs ${participantB.name}.`,
+
+    severity:
+      "warning",
+
+    targetType:
+      "bracket_match",
+
+    targetId:
+      `${moduleState.tournamentId}:${matchId}`,
+
+    targetName:
+      `${participantA.name} vs ${participantB.name}`
+  });
+
+sessionStorage.setItem(
+  "nexusLiveMatchId",
+  definition.id
+);
 
         context.showToast(
           `${definition.currentMatchValue} is now current.`

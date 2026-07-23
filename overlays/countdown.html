@@ -3,116 +3,2848 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1920, initial-scale=1.0">
-
   <title>Rivals Gauntlet | Countdown</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="countdown.css?v=1">
+  <style>
+    :root{
+      --bg:#06060b;
+      --panel:rgba(13,12,21,.92);
+      --line:rgba(194,176,255,.13);
+      --text:#f8f5ff;
+      --soft:#c8c1d3;
+      --muted:#8e8799;
+      --dim:#625b6e;
+      --purple:#9a7cff;
+      --purple-bright:#c4b2ff;
+      --purple-rgb:154,124,255;
+      --green:#62e1a6;
+      --yellow:#f2c66c;
+      --progress:0deg;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+      margin:0;
+      overflow:hidden;
+      background:var(--bg);
+    }
+
+    body{
+      color:var(--text);
+      font-family:"Rajdhani",Arial,sans-serif;
+    }
+
+    .stage{
+      position:relative;
+      width:1920px;
+      height:1080px;
+      overflow:hidden;
+      isolation:isolate;
+
+      background:
+        radial-gradient(
+          circle at 50% 40%,
+          rgba(var(--purple-rgb),.12),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 12% 16%,
+          rgba(104,68,205,.1),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 88% 78%,
+          rgba(84,50,174,.08),
+          transparent 32%
+        ),
+        linear-gradient(
+          145deg,
+          #110d1d 0%,
+          #0a0911 44%,
+          #06060b 100%
+        );
+    }
+
+    .stage::before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      z-index:-5;
+
+      background:
+        linear-gradient(
+          115deg,
+          transparent 0 24%,
+          rgba(255,255,255,.012) 24.2% 24.45%,
+          transparent 24.7% 73%,
+          rgba(255,255,255,.01) 73.2% 73.45%,
+          transparent 73.7%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 94px,
+          rgba(255,255,255,.008) 95px,
+          transparent 96px 188px
+        );
+
+      animation:
+        bgDrift 34s ease-in-out infinite alternate;
+    }
+
+    .stage::after{
+      content:"RG";
+      position:absolute;
+      left:50%;
+      top:48%;
+      z-index:-4;
+
+      color:rgba(255,255,255,.012);
+      font-size:690px;
+      font-weight:800;
+      line-height:.72;
+      letter-spacing:-.12em;
+
+      transform:
+        translate(-48%,-50%);
+    }
+
+    .grid{
+      position:absolute;
+      inset:-100px;
+      z-index:-3;
+
+      opacity:.38;
+
+      background-image:
+        linear-gradient(
+          rgba(var(--purple-rgb),.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.04) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        80px 80px;
+
+      transform:
+        perspective(700px)
+        rotateX(68deg)
+        translateY(430px)
+        scale(1.28);
+
+      transform-origin:
+        center bottom;
+
+      mask-image:
+        linear-gradient(
+          to top,
+          black,
+          transparent 78%
+        );
+
+      animation:
+        gridMove 22s linear infinite;
+    }
+
+    .shard{
+      position:absolute;
+      z-index:-2;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.08);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.028),
+          transparent 70%
+        );
+
+      transform:
+        rotate(45deg);
+
+      opacity:.48;
+    }
+
+    .shard.one{
+      width:420px;
+      height:420px;
+      left:-165px;
+      top:240px;
+
+      animation:
+        floatA 20s ease-in-out
+        infinite alternate;
+    }
+
+    .shard.two{
+      width:520px;
+      height:520px;
+      right:-220px;
+      top:70px;
+
+      animation:
+        floatB 24s ease-in-out
+        infinite alternate;
+    }
+
+    .shard.three{
+      width:250px;
+      height:250px;
+      right:240px;
+      bottom:-150px;
+
+      opacity:.25;
+
+      animation:
+        floatA 28s ease-in-out
+        infinite alternate-reverse;
+    }
+
+    .frame{
+      position:absolute;
+      inset:28px;
+      z-index:20;
+
+      pointer-events:none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.1);
+
+      clip-path:polygon(
+        0 0,
+        18% 0,
+        19% 6px,
+        81% 6px,
+        82% 0,
+        100% 0,
+        100% 28%,
+        calc(100% - 6px) 29%,
+        calc(100% - 6px) 71%,
+        100% 72%,
+        100% 100%,
+        82% 100%,
+        81% calc(100% - 6px),
+        19% calc(100% - 6px),
+        18% 100%,
+        0 100%,
+        0 72%,
+        6px 71%,
+        6px 29%,
+        0 28%
+      );
+    }
+
+    .topbar{
+      position:absolute;
+      left:72px;
+      right:72px;
+      top:54px;
+      z-index:30;
+
+      display:grid;
+
+      grid-template-columns:
+        auto minmax(0,1fr) auto;
+
+      align-items:center;
+      gap:22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      min-width:0;
+    }
+
+    .mark{
+      position:relative;
+
+      width:54px;
+      height:54px;
+
+      display:grid;
+      place-items:center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.42);
+
+      border-radius:14px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.16),
+          rgba(8,7,13,.95) 68%
+        );
+
+      box-shadow:
+        inset 0 0 20px
+        rgba(var(--purple-rgb),.08),
+        0 0 26px
+        rgba(var(--purple-rgb),.11);
+
+      font-size:21px;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+
+    .mark::before{
+      content:"";
+      position:absolute;
+      inset:6px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.045);
+
+      border-radius:9px;
+    }
+
+    .brand-copy span,
+    .brand-copy strong{
+      display:block;
+    }
+
+    .brand-copy span{
+      color:var(--purple-bright);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .brand-copy strong{
+      max-width:700px;
+      margin-top:4px;
+      overflow:hidden;
+
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.055em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .top-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.35),
+          transparent 75%
+        );
+    }
+
+    .connection{
+      min-height:34px;
+
+      display:flex;
+      align-items:center;
+      gap:9px;
+
+      padding:0 13px;
+
+      border:
+        1px solid
+        rgba(242,198,108,.2);
+
+      border-radius:999px;
+
+      color:var(--yellow);
+
+      background:
+        rgba(242,198,108,.055);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+    }
+
+    .connection.online{
+      border-color:
+        rgba(98,225,166,.22);
+
+      color:var(--green);
+
+      background:
+        rgba(98,225,166,.055);
+    }
+
+    .connection-dot{
+      width:7px;
+      height:7px;
+
+      border-radius:50%;
+
+      background:
+        currentColor;
+
+      box-shadow:
+        0 0 11px currentColor;
+    }
+
+    .hero{
+      position:absolute;
+      left:50%;
+      top:44%;
+      z-index:10;
+
+      width:940px;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+
+      transform:
+        translate(-50%,-50%);
+
+      text-align:center;
+    }
+
+    .eyebrow{
+      display:flex;
+      align-items:center;
+      gap:13px;
+
+      color:var(--purple-bright);
+
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after{
+      content:"";
+
+      width:74px;
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.52)
+        );
+    }
+
+    .eyebrow::after{
+      transform:
+        scaleX(-1);
+    }
+
+    .timer-system{
+      position:relative;
+
+      width:630px;
+      height:430px;
+
+      display:grid;
+      place-items:center;
+
+      margin-top:6px;
+    }
+
+    .aura{
+      position:absolute;
+
+      width:390px;
+      height:390px;
+
+      border-radius:50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb),.15),
+          rgba(var(--purple-rgb),.035) 40%,
+          transparent 70%
+        );
+
+      filter:
+        blur(8px);
+
+      animation:
+        breathe 5.5s ease-in-out infinite;
+    }
+
+    .orbit{
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+    }
+
+    .orbit.outer{
+      width:402px;
+      height:402px;
+
+      background:
+        repeating-conic-gradient(
+          from 0deg,
+          rgba(var(--purple-rgb),.38)
+          0deg 1deg,
+          transparent 1deg 9deg
+        );
+
+      -webkit-mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.8%,
+          black 49.2% 50%,
+          transparent 50.4%
+        );
+
+      mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.8%,
+          black 49.2% 50%,
+          transparent 50.4%
+        );
+
+      animation:
+        rotate 46s linear infinite;
+
+      opacity:.65;
+    }
+
+    .orbit.middle{
+      width:342px;
+      height:342px;
+
+      background:
+        conic-gradient(
+          from 25deg,
+          transparent 0 17%,
+          rgba(var(--purple-rgb),.34) 18% 20%,
+          transparent 21% 48%,
+          rgba(224,215,255,.32) 49% 50%,
+          transparent 51% 79%,
+          rgba(var(--purple-rgb),.3) 80% 83%,
+          transparent 84%
+        );
+
+      -webkit-mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.5%,
+          black 49% 50%,
+          transparent 50.5%
+        );
+
+      mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.5%,
+          black 49% 50%,
+          transparent 50.5%
+        );
+
+      animation:
+        rotateBack 31s linear infinite;
+
+      opacity:.78;
+    }
+
+    .progress-ring{
+      position:absolute;
+
+      width:292px;
+      height:292px;
+
+      border-radius:50%;
+
+      background:
+        conic-gradient(
+          from -90deg,
+          rgba(211,198,255,.96) 0deg,
+          var(--purple) var(--progress),
+          rgba(var(--purple-rgb),.08)
+          var(--progress) 360deg
+        );
+
+      -webkit-mask:
+        radial-gradient(
+          circle,
+          transparent 0 47.2%,
+          black 47.7% 50%,
+          transparent 50.5%
+        );
+
+      mask:
+        radial-gradient(
+          circle,
+          transparent 0 47.2%,
+          black 47.7% 50%,
+          transparent 50.5%
+        );
+
+      filter:
+        drop-shadow(
+          0 0 8px
+          rgba(var(--purple-rgb),.32)
+        );
+    }
+
+    .ripple{
+      position:absolute;
+
+      width:260px;
+      height:260px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.28);
+
+      border-radius:50%;
+
+      opacity:0;
+
+      animation:
+        ripple 8s
+        cubic-bezier(.2,.7,.2,1)
+        infinite;
+    }
+
+    .ripple.two{
+      animation-delay:4s;
+    }
+
+    .timer-core{
+      position:relative;
+      z-index:4;
+
+      width:360px;
+      height:188px;
+
+      display:grid;
+      place-items:center;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.25);
+
+      border-radius:26px;
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(var(--purple-rgb),.12),
+          transparent 52%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(20,17,32,.96),
+          rgba(8,8,14,.97)
+        );
+
+      box-shadow:
+        0 26px 70px rgba(0,0,0,.5),
+        inset 0 1px 0
+        rgba(255,255,255,.035),
+        inset 0 0 42px
+        rgba(var(--purple-rgb),.045),
+        0 0 0 7px
+        rgba(var(--purple-rgb),.018);
+    }
+
+    .timer-core::before{
+      content:"";
+      position:absolute;
+      inset:7px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.04);
+
+      border-radius:19px;
+
+      clip-path:polygon(
+        0 0,
+        88% 0,
+        100% 24%,
+        100% 100%,
+        12% 100%,
+        0 76%
+      );
+    }
+
+    .timer-label{
+      position:absolute;
+      top:17px;
+      z-index:4;
+
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .timer{
+      position:relative;
+      z-index:3;
+
+      min-width:320px;
+
+      font-size:102px;
+      font-weight:800;
+      letter-spacing:.02em;
+      line-height:.88;
+
+      font-variant-numeric:
+        tabular-nums;
+
+      text-shadow:
+        0 0 34px
+        rgba(var(--purple-rgb),.17);
+
+      transition:
+        transform .16s ease,
+        color .25s ease,
+        text-shadow .25s ease;
+    }
+
+    .timer.tick{
+      transform:
+        scale(1.018);
+    }
+
+    .timer.long{
+      font-size:72px;
+    }
+
+    .schedule{
+      margin-top:-17px;
+
+      color:var(--soft);
+
+      font-size:17px;
+      font-weight:600;
+      letter-spacing:.03em;
+    }
+
+    .schedule strong{
+      color:var(--text);
+      font-weight:700;
+    }
+
+    .info-shell{
+      position:absolute;
+      left:50%;
+      bottom:105px;
+      z-index:12;
+
+      width:1120px;
+      min-height:220px;
+
+      overflow:hidden;
+
+      transform:
+        translateX(-50%);
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:22px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.012),
+          transparent 70px
+        ),
+        linear-gradient(
+          110deg,
+          rgba(23,18,38,.94),
+          rgba(8,8,14,.94)
+        );
+
+      box-shadow:
+        0 24px 70px rgba(0,0,0,.4),
+        inset 0 1px 0
+        rgba(255,255,255,.025);
+    }
+
+    .info-shell::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.45) 24%,
+          rgba(224,214,255,.72) 50%,
+          rgba(var(--purple-rgb),.45) 76%,
+          transparent
+        );
+
+      opacity:.7;
+    }
+
+    .info-head{
+      position:relative;
+
+      min-height:54px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+    }
+
+    .info-head h2{
+      margin:0;
+
+      color:var(--purple-bright);
+
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .slide-index{
+      position:absolute;
+      right:22px;
+
+      color:var(--dim);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.12em;
+    }
+
+    .info-body{
+      min-height:164px;
+
+      display:grid;
+      place-items:center;
+
+      padding:
+        20px 34px 25px;
+
+      transition:
+        opacity .22s ease,
+        transform .28s
+        cubic-bezier(.2,.8,.2,1),
+        filter .22s ease;
+    }
+
+    .info-body.changing{
+      opacity:0;
+
+      transform:
+        scale(.985)
+        translateY(7px);
+
+      filter:
+        blur(3px);
+    }
+
+    .info-body.entering{
+      animation:
+        infoIn .48s
+        cubic-bezier(.18,.86,.24,1);
+    }
+
+    .up-next{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1fr)
+        90px
+        minmax(0,1fr);
+
+      align-items:center;
+      gap:25px;
+
+      text-align:center;
+    }
+
+    .team-block{
+      min-width:0;
+
+      padding:15px 22px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.12);
+
+      border-radius:14px;
+
+      background:
+        rgba(255,255,255,.018);
+    }
+
+    .team-block span,
+    .team-block strong{
+      display:block;
+    }
+
+    .team-block span{
+      color:var(--dim);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .team-block strong{
+      margin-top:4px;
+      overflow:hidden;
+
+      font-size:27px;
+      font-weight:800;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .vs{
+      width:66px;
+      height:66px;
+
+      display:grid;
+      place-items:center;
+
+      margin:auto;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.34);
+
+      border-radius:50%;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.07);
+
+      box-shadow:
+        0 0 26px
+        rgba(var(--purple-rgb),.08);
+
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .matchups{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:10px 14px;
+    }
+
+    .match-row{
+      min-width:0;
+      min-height:56px;
+
+      display:grid;
+
+      grid-template-columns:
+        58px
+        minmax(0,1fr)
+        34px
+        minmax(0,1fr);
+
+      align-items:center;
+      gap:8px;
+
+      padding:0 14px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:12px;
+
+      background:
+        rgba(255,255,255,.014);
+    }
+
+    .match-row > span{
+      color:var(--purple-bright);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.1em;
+    }
+
+    .match-row p{
+      margin:0;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:15px;
+      font-weight:700;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .match-row strong{
+      color:var(--dim);
+      font-size:10px;
+      text-align:center;
+    }
+
+    .info-grid{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+      gap:12px;
+    }
+
+    .info-item{
+      min-width:0;
+      min-height:98px;
+
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+
+      padding:14px 16px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:13px;
+
+      background:
+        rgba(255,255,255,.014);
+
+      text-align:center;
+    }
+
+    .info-item small{
+      color:var(--dim);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .info-item strong{
+      margin-top:7px;
+      overflow:hidden;
+
+      font-size:18px;
+      font-weight:800;
+      line-height:1.1;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .goal{
+      width:100%;
+      height:5px;
+
+      margin-top:11px;
+
+      overflow:hidden;
+
+      border-radius:999px;
+
+      background:
+        rgba(255,255,255,.055);
+    }
+
+    .goal > span{
+      display:block;
+      height:100%;
+
+      border-radius:inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          #7955e8,
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 12px
+        rgba(var(--purple-rgb),.3);
+    }
+
+    .footer{
+      position:absolute;
+      left:72px;
+      right:72px;
+      bottom:53px;
+      z-index:30;
+
+      display:grid;
+
+      grid-template-columns:
+        1fr auto 1fr;
+
+      align-items:center;
+      gap:18px;
+    }
+
+    .footer-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.28)
+        );
+    }
+
+    .footer-line:last-child{
+      transform:
+        scaleX(-1);
+    }
+
+    .footer-copy{
+      display:flex;
+      align-items:center;
+      gap:13px;
+
+      color:var(--muted);
+
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .footer-dot{
+      width:5px;
+      height:5px;
+
+      border-radius:50%;
+
+      background:var(--purple);
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.6);
+    }
+
+    .starting{
+      position:absolute;
+      inset:0;
+      z-index:100;
+
+      display:grid;
+      place-items:center;
+
+      visibility:hidden;
+      opacity:0;
+
+      background:
+        radial-gradient(
+          circle at 50% 48%,
+          rgba(var(--purple-rgb),.18),
+          transparent 31%
+        ),
+        linear-gradient(
+          150deg,
+          #120e20,
+          #07070c 68%
+        );
+
+      transition:
+        opacity .9s ease,
+        visibility 0s linear .9s;
+    }
+
+    .starting.active{
+      visibility:visible;
+      opacity:1;
+      transition-delay:0s;
+    }
+
+    .starting-content{
+      text-align:center;
+      opacity:0;
+
+      transform:
+        translateY(18px)
+        scale(.96);
+    }
+
+    .starting.active .starting-content{
+      animation:
+        startIn 1s
+        cubic-bezier(.18,.86,.24,1)
+        .25s forwards;
+    }
+
+    .starting-mark{
+      width:105px;
+      height:105px;
+
+      display:grid;
+      place-items:center;
+
+      margin:
+        0 auto 26px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.46);
+
+      border-radius:26px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.18),
+          rgba(8,7,13,.96)
+        );
+
+      box-shadow:
+        inset 0 0 30px
+        rgba(var(--purple-rgb),.09),
+        0 0 46px
+        rgba(var(--purple-rgb),.14);
+
+      font-size:42px;
+      font-weight:800;
+      letter-spacing:-.06em;
+    }
+
+    .starting h1{
+      margin:0;
+
+      font-size:74px;
+      font-weight:800;
+      letter-spacing:.055em;
+      line-height:.95;
+      text-transform:uppercase;
+    }
+
+    .starting p{
+      margin:
+        17px 0 0;
+
+      color:var(--purple-bright);
+
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+    }
+
+    .stage.final-ten .timer-core{
+      animation:
+        urgentPulse 1s
+        ease-in-out infinite;
+    }
+
+    @keyframes bgDrift{
+      from{
+        transform:
+          translate3d(-18px,-8px,0)
+          scale(1.015);
+      }
+
+      to{
+        transform:
+          translate3d(20px,10px,0)
+          scale(1.03);
+      }
+    }
+
+    @keyframes gridMove{
+      to{
+        background-position:
+          0 80px,
+          80px 0;
+      }
+    }
+
+    @keyframes floatA{
+      from{
+        transform:
+          rotate(45deg)
+          translate(-8px,-8px);
+      }
+
+      to{
+        transform:
+          rotate(45deg)
+          translate(18px,16px);
+      }
+    }
+
+    @keyframes floatB{
+      from{
+        transform:
+          rotate(45deg)
+          translate(10px,-12px);
+      }
+
+      to{
+        transform:
+          rotate(45deg)
+          translate(-18px,20px);
+      }
+    }
+
+    @keyframes breathe{
+      0%,
+      100%{
+        opacity:.58;
+        transform:scale(.96);
+      }
+
+      50%{
+        opacity:1;
+        transform:scale(1.04);
+      }
+    }
+
+    @keyframes rotate{
+      to{
+        transform:
+          rotate(360deg);
+      }
+    }
+
+    @keyframes rotateBack{
+      to{
+        transform:
+          rotate(-360deg);
+      }
+    }
+
+    @keyframes ripple{
+      0%,
+      58%{
+        opacity:0;
+        transform:scale(.72);
+      }
+
+      63%{
+        opacity:.32;
+      }
+
+      82%{
+        opacity:0;
+        transform:scale(1.52);
+      }
+
+      100%{
+        opacity:0;
+        transform:scale(1.52);
+      }
+    }
+
+    @keyframes infoIn{
+      from{
+        opacity:0;
+
+        transform:
+          scale(.985)
+          translateY(-7px);
+
+        filter:
+          blur(3px);
+      }
+
+      to{
+        opacity:1;
+        transform:none;
+        filter:none;
+      }
+    }
+
+    @keyframes startIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes urgentPulse{
+      0%,
+      100%{
+        border-color:
+          rgba(var(--purple-rgb),.25);
+      }
+
+      50%{
+        border-color:
+          rgba(255,106,128,.42);
+
+        box-shadow:
+          0 26px 70px
+          rgba(0,0,0,.5),
+          0 0 34px
+          rgba(255,106,128,.11);
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+      }
+
+      .starting.active,
+      .starting.active .starting-content{
+        visibility:visible;
+        opacity:1;
+        transform:none;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main id="stage" class="stage">
+    <div class="grid" aria-hidden="true"></div>
+    <div class="shard one" aria-hidden="true"></div>
+    <div class="shard two" aria-hidden="true"></div>
+    <div class="shard three" aria-hidden="true"></div>
+    <div class="frame" aria-hidden="true"></div>
 
-  <main class="countdown-stage" id="countdownStage">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          RG
+        </div>
 
-    <div class="bg-grid"></div>
-    <div class="bg-orb orb-a"></div>
-    <div class="bg-orb orb-b"></div>
-    <div class="bg-sweep"></div>
-    <div class="light-beams"></div>
-    <div class="geo-lines"></div>
-    <div class="ambient-pulse"></div>
-    <div class="particle-layer dust-layer"></div>
-    <div class="particle-layer ember-layer"></div>
-    <div class="edge-frame"></div>
-
-    <section class="hero">
-
-      <div class="brand-row">
-        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
-        <span id="eventName">RIVALS GAUNTLET OPEN #1</span>
+        <div class="brand-copy">
+          <span>Rivals Gauntlet Broadcast</span>
+          <strong id="eventName">
+            RIVALS GAUNTLET
+          </strong>
+        </div>
       </div>
 
-      <div class="timer-wrap">
-  <div class="timer-ring">
-    <div class="ring-segment seg-1"></div>
-    <div class="ring-segment seg-2"></div>
-    <div class="ring-segment seg-3"></div>
-    <div class="ring-segment seg-4"></div>
-  </div>
+      <div
+        class="top-line"
+        aria-hidden="true"
+      ></div>
 
-  <div id="countdownTimer" class="countdown-timer">15:00</div>
-  <div class="timer-glow"></div>
-</div>
+      <div
+        id="connection"
+        class="connection"
+      >
+        <span class="connection-dot"></span>
+        <span id="connectionText">
+          Connecting
+        </span>
+      </div>
+    </header>
 
+    <section class="hero">
+      <div class="eyebrow">
+        Broadcast Begins In
+      </div>
+
+      <div class="timer-system">
+        <div
+          class="aura"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="orbit outer"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="orbit middle"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="progress-ring"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="ripple"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="ripple two"
+          aria-hidden="true"
+        ></div>
+
+        <div class="timer-core">
+          <span class="timer-label">
+            Pre-Show Countdown
+          </span>
+
+          <div
+            id="timer"
+            class="timer"
+          >
+            --:--
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="schedule"
+        class="schedule"
+      >
+        Waiting for the broadcast start time.
+      </div>
     </section>
 
     <section class="info-shell">
+      <header class="info-head">
+        <h2 id="rotationTitle">
+          UP NEXT
+        </h2>
 
-      <div class="info-topline"></div>
+        <span
+          id="slideIndex"
+          class="slide-index"
+        >
+          01 / 05
+        </span>
+      </header>
 
-      <div class="info-header">
-        <span id="rotationTitle">TODAY'S MATCHUPS</span>
-      </div>
-
-      <div class="info-body" id="rotationBody">
-
-        <div class="matchup-list">
-
-          <div class="matchup-row">
-            <span>QF1</span>
-            <p>TEAM ALPHA</p>
-            <strong>VS</strong>
-            <p>TEAM BRAVO</p>
-          </div>
-
-          <div class="matchup-row">
-            <span>QF2</span>
-            <p>TEAM GAMMA</p>
-            <strong>VS</strong>
-            <p>TEAM DELTA</p>
-          </div>
-
-          <div class="matchup-row">
-            <span>QF3</span>
-            <p>TEAM OMEGA</p>
-            <strong>VS</strong>
-            <p>TEAM SIGMA</p>
-          </div>
-
-          <div class="matchup-row">
-            <span>QF4</span>
-            <p>TEAM ECHO</p>
-            <strong>VS</strong>
-            <p>TEAM NOVA</p>
-          </div>
-
-        </div>
-
-      </div>
-
+      <div
+        id="rotationBody"
+        class="info-body"
+      ></div>
     </section>
 
-    <footer class="bottom-brand">
-      <span></span>
-      <p id="footerText">RIVALSGAUNTLET.COM</p>
-      <span></span>
+    <footer class="footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-copy">
+        <span id="website">
+          RIVALSGAUNTLET.COM
+        </span>
+
+        <span class="footer-dot"></span>
+
+        <span>
+          COMPETE • PREDICT • EARN
+        </span>
+      </div>
+
+      <span class="footer-line"></span>
     </footer>
 
-    <section class="broadcast-starting" id="broadcastStarting">
-      <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
-      <h1>RIVALS GAUNTLET</h1>
-      <p>BROADCAST STARTING</p>
-    </section>
+    <section
+      id="starting"
+      class="starting"
+    >
+      <div class="starting-content">
+        <div class="starting-mark">
+          RG
+        </div>
 
+        <h1>
+          Rivals Gauntlet
+        </h1>
+
+        <p>
+          Broadcast Starting
+        </p>
+      </div>
+    </section>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="../firebase.js"></script>
-  <script src="countdown.js?v=1"></script>
 
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const DEFAULT_ROTATION =
+        10000;
+
+      const DEFAULT_DURATION =
+        15 * 60 * 1000;
+
+      const data = {
+        countdown: {},
+        site: {},
+        donations: [],
+
+        cardIndex: 0,
+        cardTimer: null,
+        cardSpeed: DEFAULT_ROTATION,
+
+        tickTimer: null,
+        swapTimer: null,
+        pulseTimer: null,
+
+        startStamp: 0,
+        initialRemaining: 0,
+
+        lastText: "",
+        lastMinute: null,
+
+        ended: false
+      };
+
+      const stage =
+        document.getElementById("stage");
+
+      const timer =
+        document.getElementById("timer");
+
+      const schedule =
+        document.getElementById("schedule");
+
+      const eventName =
+        document.getElementById("eventName");
+
+      const website =
+        document.getElementById("website");
+
+      const title =
+        document.getElementById("rotationTitle");
+
+      const body =
+        document.getElementById("rotationBody");
+
+      const slideIndex =
+        document.getElementById("slideIndex");
+
+      const starting =
+        document.getElementById("starting");
+
+      const connection =
+        document.getElementById("connection");
+
+      const connectionText =
+        document.getElementById("connectionText");
+
+      const clean = (
+        value,
+        fallback = ""
+      ) => {
+        const result =
+          String(
+            value == null
+              ? ""
+              : value
+          ).trim();
+
+        return result || fallback;
+      };
+
+      const escapeHtml = value =>
+        clean(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+
+      const toNumber = (
+        value,
+        fallback = 0
+      ) => {
+        const parsed =
+          Number(value);
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : fallback;
+      };
+
+      const moneyNumber = (
+        value,
+        fallback = 0
+      ) => {
+        const parsed =
+          Number(
+            String(
+              value == null
+                ? ""
+                : value
+            ).replace(
+              /[^0-9.-]/g,
+              ""
+            )
+          );
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : fallback;
+      };
+
+      const money = value =>
+        new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }
+        ).format(
+          Math.max(
+            0,
+            toNumber(value)
+          )
+        );
+
+      function timestamp(value) {
+        if (!value) {
+          return 0;
+        }
+
+        if (
+          typeof value === "number"
+        ) {
+          return Number.isFinite(value)
+            ? value
+            : 0;
+        }
+
+        const numeric =
+          Number(value);
+
+        if (
+          Number.isFinite(numeric) &&
+          numeric > 0
+        ) {
+          return numeric;
+        }
+
+        const parsed =
+          new Date(value).getTime();
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : 0;
+      }
+
+      function startTime() {
+        return timestamp(
+          data.countdown.startTime ||
+          data.countdown.countdownDate ||
+          data.countdown.startTimeLocal ||
+          data.site.countdownDate
+        );
+      }
+
+      function eventTitle() {
+        return clean(
+          data.countdown.eventName ||
+          data.site.eventName,
+          "RIVALS GAUNTLET"
+        );
+      }
+
+      function siteName() {
+        return clean(
+          data.countdown.website ||
+          data.countdown.follow?.website ||
+          data.site.websiteUrl ||
+          data.site.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      function team(index) {
+        return clean(
+          data.site[`team${index}`],
+          `TEAM ${index}`
+        );
+      }
+
+      function matchups() {
+        const m =
+          data.countdown.matchups || {};
+
+        return [
+          {
+            label: clean(
+              m.match1Label,
+              "QF1"
+            ),
+            a: clean(
+              m.match1A,
+              team(1)
+            ),
+            b: clean(
+              m.match1B,
+              team(2)
+            )
+          },
+          {
+            label: clean(
+              m.match2Label,
+              "QF2"
+            ),
+            a: clean(
+              m.match2A,
+              team(3)
+            ),
+            b: clean(
+              m.match2B,
+              team(4)
+            )
+          },
+          {
+            label: clean(
+              m.match3Label,
+              "QF3"
+            ),
+            a: clean(
+              m.match3A,
+              team(5)
+            ),
+            b: clean(
+              m.match3B,
+              team(6)
+            )
+          },
+          {
+            label: clean(
+              m.match4Label,
+              "QF4"
+            ),
+            a: clean(
+              m.match4A,
+              team(7)
+            ),
+            b: clean(
+              m.match4B,
+              team(8)
+            )
+          }
+        ];
+      }
+
+      function cards() {
+        const first =
+          matchups()[0];
+
+        const next =
+          data.countdown.upNext || {};
+
+        const format =
+          data.countdown.format || {};
+
+        const follow =
+          data.countdown.follow || {};
+
+        const inferredTeams =
+          clean(
+            data.site.formatType,
+            "8_single_elim"
+          ).startsWith("16")
+            ? "16 TEAMS"
+            : "8 TEAMS";
+
+        const startingPool =
+          moneyNumber(
+            data.site.startingPrizePool
+          );
+
+        const publishedPool =
+          moneyNumber(
+            data.site.prizePool
+          );
+
+        const donationTotal =
+          data.donations.reduce(
+            (
+              sum,
+              item
+            ) =>
+              sum +
+              moneyNumber(
+                item?.amount
+              ),
+            0
+          );
+
+        const currentPool =
+          Math.max(
+            publishedPool,
+            startingPool +
+            donationTotal
+          );
+
+        const goal =
+          Math.max(
+            1,
+            moneyNumber(
+              data.site.donationGoal,
+              250
+            )
+          );
+
+        const percent =
+          Math.max(
+            0,
+            Math.min(
+              100,
+              Math.round(
+                (
+                  currentPool /
+                  goal
+                ) * 100
+              )
+            )
+          );
+
+        return [
+          {
+            title: "UP NEXT",
+
+            html: `
+              <div class="up-next">
+
+                <div class="team-block">
+                  <span>Team A</span>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        next.teamA,
+                        first.a
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div>
+                  <div class="vs">
+                    VS
+                  </div>
+
+                  <div style="
+                    margin-top:8px;
+                    color:var(--purple-bright);
+                    font-size:10px;
+                    font-weight:800;
+                    letter-spacing:.14em;
+                    text-transform:uppercase;
+                  ">
+                    ${escapeHtml(
+                      clean(
+                        next.label,
+                        first.label
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div class="team-block">
+                  <span>Team B</span>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        next.teamB,
+                        first.b
+                      )
+                    )}
+                  </strong>
+                </div>
+
+              </div>
+            `
+          },
+
+          {
+            title: "TODAY'S MATCHUPS",
+
+            html: `
+              <div class="matchups">
+
+                ${matchups()
+                  .map(
+                    match => `
+                      <div class="match-row">
+
+                        <span>
+                          ${escapeHtml(
+                            match.label
+                          )}
+                        </span>
+
+                        <p>
+                          ${escapeHtml(
+                            match.a
+                          )}
+                        </p>
+
+                        <strong>
+                          VS
+                        </strong>
+
+                        <p>
+                          ${escapeHtml(
+                            match.b
+                          )}
+                        </p>
+
+                      </div>
+                    `
+                  )
+                  .join("")}
+
+              </div>
+            `
+          },
+
+          {
+            title: "TOURNAMENT FORMAT",
+
+            html: `
+              <div class="info-grid">
+
+                <div class="info-item">
+                  <small>
+                    Format
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        format.type,
+                        "Single Elimination"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Field
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        format.teams,
+                        inferredTeams
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Early Rounds
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        format.earlyRounds,
+                        "BO3"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Grand Finals
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        format.grandFinals,
+                        "BO5"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+              </div>
+            `
+          },
+
+          {
+            title: "LIVE PRIZE POOL",
+
+            html: `
+              <div class="info-grid">
+
+                <div class="info-item">
+                  <small>
+                    Current Prize Pool
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      money(
+                        currentPool
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Community Added
+                  </small>
+
+                  <strong>
+                    +${escapeHtml(
+                      money(
+                        donationTotal
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Community Goal
+                  </small>
+
+                  <strong>
+                    ${percent}%
+                  </strong>
+
+                  <div class="goal">
+                    <span
+                      style="
+                        width:${percent}%;
+                      "
+                    ></span>
+                  </div>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Live Sync
+                  </small>
+
+                  <strong>
+                    AUTO-UPDATES
+                  </strong>
+                </div>
+
+              </div>
+            `
+          },
+
+          {
+            title: "JOIN THE GAUNTLET",
+
+            html: `
+              <div class="info-grid">
+
+                <div class="info-item">
+                  <small>
+                    Website
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        follow.website,
+                        siteName()
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Discord
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        follow.discord,
+                        "JOIN THE COMMUNITY"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    Twitch
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        follow.twitch,
+                        "LIVE BROADCASTS"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+                <div class="info-item">
+                  <small>
+                    YouTube
+                  </small>
+
+                  <strong>
+                    ${escapeHtml(
+                      clean(
+                        follow.youtube,
+                        "CLIPS & VODS"
+                      )
+                    )}
+                  </strong>
+                </div>
+
+              </div>
+            `
+          }
+        ];
+      }
+
+      function renderCard(
+        index = data.cardIndex,
+        animate = true
+      ) {
+        const list =
+          cards();
+
+        data.cardIndex =
+          (
+            (
+              index %
+              list.length
+            ) +
+            list.length
+          ) %
+          list.length;
+
+        const card =
+          list[
+            data.cardIndex
+          ];
+
+        const commit = () => {
+          title.textContent =
+            card.title;
+
+          body.innerHTML =
+            card.html;
+
+          slideIndex.textContent =
+            `${
+              String(
+                data.cardIndex + 1
+              ).padStart(
+                2,
+                "0"
+              )
+            } / ${
+              String(
+                list.length
+              ).padStart(
+                2,
+                "0"
+              )
+            }`;
+
+          body.classList.remove(
+            "changing",
+            "entering"
+          );
+
+          void body.offsetWidth;
+
+          body.classList.add(
+            "entering"
+          );
+        };
+
+        clearTimeout(
+          data.swapTimer
+        );
+
+        if (
+          !animate ||
+          !body.innerHTML
+        ) {
+          commit();
+          return;
+        }
+
+        body.classList.add(
+          "changing"
+        );
+
+        data.swapTimer =
+          setTimeout(
+            commit,
+            230
+          );
+      }
+
+      function rotationSpeed() {
+        const remaining =
+          startTime()
+            ? startTime() -
+              Date.now()
+            : Infinity;
+
+        if (
+          remaining <= 60000
+        ) {
+          return 6500;
+        }
+
+        return Math.max(
+          6500,
+          toNumber(
+            data.countdown.rotationMs,
+            DEFAULT_ROTATION
+          )
+        );
+      }
+
+      function ensureRotation() {
+        const nextSpeed =
+          rotationSpeed();
+
+        if (
+          data.cardTimer &&
+          data.cardSpeed ===
+          nextSpeed
+        ) {
+          return;
+        }
+
+        clearInterval(
+          data.cardTimer
+        );
+
+        data.cardSpeed =
+          nextSpeed;
+
+        data.cardTimer =
+          setInterval(
+            () =>
+              renderCard(
+                data.cardIndex + 1,
+                true
+              ),
+            nextSpeed
+          );
+      }
+
+      function formatTime(ms) {
+        const total =
+          Math.max(
+            0,
+            Math.ceil(
+              ms / 1000
+            )
+          );
+
+        const hours =
+          Math.floor(
+            total / 3600
+          );
+
+        const minutes =
+          Math.floor(
+            (
+              total % 3600
+            ) / 60
+          );
+
+        const seconds =
+          total % 60;
+
+        if (
+          hours > 0
+        ) {
+          return `${
+            String(hours)
+              .padStart(2,"0")
+          }:${
+            String(minutes)
+              .padStart(2,"0")
+          }:${
+            String(seconds)
+              .padStart(2,"0")
+          }`;
+        }
+
+        return `${
+          String(
+            Math.floor(
+              total / 60
+            )
+          ).padStart(
+            2,
+            "0"
+          )
+        }:${
+          String(seconds)
+            .padStart(
+              2,
+              "0"
+            )
+        }`;
+      }
+
+      function scheduledText(
+        stamp
+      ) {
+        return new Intl.DateTimeFormat(
+          "en-US",
+          {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            timeZoneName: "short"
+          }
+        ).format(
+          new Date(stamp)
+        );
+      }
+
+      function pulse(
+        remaining
+      ) {
+        timer.classList.remove(
+          "tick"
+        );
+
+        void timer.offsetWidth;
+
+        const minute =
+          Math.ceil(
+            remaining / 60000
+          );
+
+        if (
+          remaining <= 60000 ||
+          minute !==
+          data.lastMinute
+        ) {
+          data.lastMinute =
+            minute;
+
+          timer.classList.add(
+            "tick"
+          );
+
+          clearTimeout(
+            data.pulseTimer
+          );
+
+          data.pulseTimer =
+            setTimeout(
+              () =>
+                timer.classList.remove(
+                  "tick"
+                ),
+              170
+            );
+        }
+      }
+
+      function updateProgress(
+        remaining
+      ) {
+        const configured =
+          Math.max(
+            1000,
+            toNumber(
+              data.countdown.durationMs ||
+              data.countdown.countdownDurationMs,
+              DEFAULT_DURATION
+            )
+          );
+
+        const duration =
+          Math.max(
+            configured,
+            data.initialRemaining ||
+            0
+          );
+
+        const elapsed =
+          Math.max(
+            0,
+            duration -
+            Math.max(
+              0,
+              remaining
+            )
+          );
+
+        const angle =
+          Math.round(
+            Math.max(
+              0,
+              Math.min(
+                1,
+                elapsed /
+                duration
+              )
+            ) *
+            360
+          );
+
+        stage.style.setProperty(
+          "--progress",
+          `${angle}deg`
+        );
+      }
+
+      function updateTimer() {
+        const start =
+          startTime();
+
+        if (!start) {
+          timer.textContent =
+            "--:--";
+
+          timer.classList.remove(
+            "long"
+          );
+
+          schedule.textContent =
+            "Waiting for the broadcast start time.";
+
+          starting.classList.remove(
+            "active"
+          );
+
+          stage.classList.remove(
+            "final-ten"
+          );
+
+          stage.style.setProperty(
+            "--progress",
+            "0deg"
+          );
+
+          return;
+        }
+
+        if (
+          data.startStamp !==
+          start
+        ) {
+          data.startStamp =
+            start;
+
+          data.initialRemaining =
+            Math.max(
+              0,
+              start -
+              Date.now()
+            );
+
+          data.lastMinute =
+            null;
+
+          data.ended =
+            false;
+
+          starting.classList.remove(
+            "active"
+          );
+        }
+
+        const remaining =
+          start -
+          Date.now();
+
+        const text =
+          formatTime(
+            remaining
+          );
+
+        if (
+          text !==
+          data.lastText
+        ) {
+          data.lastText =
+            text;
+
+          timer.textContent =
+            text;
+
+          timer.classList.toggle(
+            "long",
+            text.length > 5
+          );
+
+          pulse(
+            remaining
+          );
+        }
+
+        schedule.innerHTML =
+          remaining > 0
+            ? `Scheduled for <strong>${
+                escapeHtml(
+                  scheduledText(
+                    start
+                  )
+                )
+              }</strong>`
+            : "The broadcast is beginning now.";
+
+        stage.classList.toggle(
+          "final-ten",
+          remaining > 0 &&
+          remaining <= 10000
+        );
+
+        updateProgress(
+          remaining
+        );
+
+        ensureRotation();
+
+        if (
+          remaining <= 0 &&
+          !data.ended
+        ) {
+          data.ended =
+            true;
+
+          timer.textContent =
+            "00:00";
+
+          starting.classList.add(
+            "active"
+          );
+        }
+      }
+
+      function refresh() {
+        eventName.textContent =
+          eventTitle()
+            .toUpperCase();
+
+        website.textContent =
+          siteName();
+
+        renderCard(
+          data.cardIndex,
+          false
+        );
+
+        ensureRotation();
+        updateTimer();
+      }
+
+      function connect() {
+        try {
+          if (
+            typeof firebase ===
+            "undefined" ||
+            !firebase.apps ||
+            firebase.apps.length === 0
+          ) {
+            throw new Error(
+              "Firebase is not initialized. Check ../firebase.js."
+            );
+          }
+
+          const db =
+            firebase.database();
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+            snapshot => {
+              const online =
+                snapshot.val() ===
+                true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connectionText.textContent =
+                online
+                  ? "Realtime Connected"
+                  : "Reconnecting";
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            snapshot => {
+              data.countdown =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            error => {
+              console.error(
+                "[RG COUNTDOWN] broadcastCountdown read failed:",
+                error
+              );
+
+              connectionText.textContent =
+                error.code ===
+                "PERMISSION_DENIED"
+                  ? "Countdown Read Blocked"
+                  : "Countdown Unavailable";
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            snapshot => {
+              data.site =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            error =>
+              console.error(
+                "[RG COUNTDOWN] site read failed:",
+                error
+              )
+          );
+
+          db.ref(
+            "donations"
+          ).on(
+            "value",
+
+            snapshot => {
+              data.donations =
+                Object.values(
+                  snapshot.val() || {}
+                ).filter(Boolean);
+
+              renderCard(
+                data.cardIndex,
+                false
+              );
+            },
+
+            error =>
+              console.error(
+                "[RG COUNTDOWN] donations read failed:",
+                error
+              )
+          );
+        } catch (error) {
+          console.error(
+            "[RG COUNTDOWN] startup failed:",
+            error
+          );
+
+          connectionText.textContent =
+            "Firebase Startup Error";
+
+          schedule.textContent =
+            error.message ||
+            "Countdown could not connect.";
+        }
+      }
+
+      renderCard(
+        0,
+        false
+      );
+
+      setInterval(
+        updateTimer,
+        250
+      );
+
+      connect();
+    })();
+  </script>
 </body>
 </html>

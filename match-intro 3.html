@@ -1,0 +1,3489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet | Match Intro</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #06060b;
+      --panel: rgba(13, 12, 21, 0.96);
+      --panel-soft: rgba(20, 17, 33, 0.9);
+      --text: #f8f5ff;
+      --soft: #c8c1d3;
+      --muted: #8d8798;
+      --dim: #625c6f;
+      --purple: #9a7cff;
+      --purple-bright: #c5b5ff;
+      --purple-rgb: 154, 124, 255;
+      --blue: #78a9ff;
+      --blue-rgb: 120, 169, 255;
+      --green: #62e1a6;
+      --yellow: #f2c66c;
+      --red: #ff718a;
+      --line: rgba(205, 191, 255, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      color: var(--text);
+      font-family: "Rajdhani", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      isolation: isolate;
+
+      background:
+        radial-gradient(
+          circle at 24% 42%,
+          rgba(var(--purple-rgb), 0.14),
+          transparent 31%
+        ),
+        radial-gradient(
+          circle at 76% 42%,
+          rgba(var(--blue-rgb), 0.11),
+          transparent 31%
+        ),
+        radial-gradient(
+          circle at 50% 50%,
+          rgba(255, 255, 255, 0.025),
+          transparent 25%
+        ),
+        linear-gradient(
+          145deg,
+          #110d1d 0%,
+          #0a0912 48%,
+          #06060b 100%
+        );
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: -70px;
+      z-index: -5;
+
+      background:
+        linear-gradient(
+          116deg,
+          transparent 0 22%,
+          rgba(255, 255, 255, 0.012) 22.15% 22.4%,
+          transparent 22.55% 75%,
+          rgba(255, 255, 255, 0.01) 75.15% 75.4%,
+          transparent 75.55%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 110px,
+          rgba(255, 255, 255, 0.008) 111px,
+          transparent 112px 220px
+        );
+
+      animation: backgroundDrift 34s ease-in-out infinite alternate;
+    }
+
+    .stage::after {
+      content: "RG";
+      position: absolute;
+      left: 50%;
+      top: 53%;
+      z-index: -4;
+
+      color: rgba(255, 255, 255, 0.014);
+      font-size: 700px;
+      font-weight: 800;
+      letter-spacing: -0.13em;
+      line-height: 0.72;
+
+      transform: translate(-48%, -50%);
+    }
+
+    .grid {
+      position: absolute;
+      inset: -120px;
+      z-index: -3;
+
+      opacity: 0.34;
+
+      background-image:
+        linear-gradient(
+          rgba(var(--purple-rgb), 0.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb), 0.04) 1px,
+          transparent 1px
+        );
+
+      background-size: 86px 86px;
+
+      transform:
+        perspective(760px)
+        rotateX(68deg)
+        translateY(470px)
+        scale(1.32);
+
+      transform-origin: center bottom;
+
+      mask-image:
+        linear-gradient(
+          to top,
+          black,
+          transparent 78%
+        );
+
+      animation: gridMove 24s linear infinite;
+    }
+
+    .ambient {
+      position: absolute;
+      z-index: -2;
+      border-radius: 50%;
+      filter: blur(18px);
+      opacity: 0.35;
+    }
+
+    .ambient.left {
+      width: 560px;
+      height: 560px;
+      left: -260px;
+      top: 180px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.18),
+          transparent 68%
+        );
+
+      animation: ambientFloat 14s ease-in-out infinite alternate;
+    }
+
+    .ambient.right {
+      width: 560px;
+      height: 560px;
+      right: -260px;
+      top: 180px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--blue-rgb), 0.15),
+          transparent 68%
+        );
+
+      animation: ambientFloat 17s ease-in-out infinite alternate-reverse;
+    }
+
+    .frame {
+      position: absolute;
+      inset: 28px;
+      z-index: 40;
+      pointer-events: none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.1);
+
+      clip-path: polygon(
+        0 0,
+        18% 0,
+        19% 6px,
+        81% 6px,
+        82% 0,
+        100% 0,
+        100% 28%,
+        calc(100% - 6px) 29%,
+        calc(100% - 6px) 71%,
+        100% 72%,
+        100% 100%,
+        82% 100%,
+        81% calc(100% - 6px),
+        19% calc(100% - 6px),
+        18% 100%,
+        0 100%,
+        0 72%,
+        6px 71%,
+        6px 29%,
+        0 28%
+      );
+    }
+
+    .header {
+      position: absolute;
+      left: 58px;
+      right: 58px;
+      top: 42px;
+      z-index: 30;
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+      align-items: center;
+      gap: 26px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 0;
+    }
+
+    .mark {
+      position: relative;
+
+      width: 58px;
+      height: 58px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.42);
+
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.16),
+          rgba(8, 7, 13, 0.96) 68%
+        );
+
+      box-shadow:
+        inset 0 0 22px
+        rgba(var(--purple-rgb), 0.08),
+        0 0 28px
+        rgba(var(--purple-rgb), 0.1);
+
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+
+      border-radius: 10px;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy span,
+    .brand-copy strong {
+      display: block;
+    }
+
+    .brand-copy span {
+      color: var(--purple-bright);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .brand-copy strong {
+      max-width: 640px;
+      margin-top: 4px;
+      overflow: hidden;
+
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .match-heading {
+      min-width: 520px;
+
+      padding: 12px 26px 13px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.018),
+          transparent
+        ),
+        rgba(10, 9, 17, 0.78);
+
+      box-shadow:
+        0 16px 38px
+        rgba(0, 0, 0, 0.28),
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.025);
+
+      text-align: center;
+    }
+
+    .match-heading span,
+    .match-heading strong {
+      display: block;
+    }
+
+    .match-heading span {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .match-heading strong {
+      margin-top: 3px;
+
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .status-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .connection {
+      min-height: 36px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+
+      padding: 0 14px;
+
+      border:
+        1px solid
+        rgba(242, 198, 108, 0.2);
+
+      border-radius: 999px;
+
+      color: var(--yellow);
+      background:
+        rgba(242, 198, 108, 0.055);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .connection.online {
+      border-color:
+        rgba(98, 225, 166, 0.22);
+
+      color: var(--green);
+      background:
+        rgba(98, 225, 166, 0.055);
+    }
+
+    .connection.limited {
+      border-color:
+        rgba(255, 113, 138, 0.22);
+
+      color: var(--red);
+      background:
+        rgba(255, 113, 138, 0.055);
+    }
+
+    .connection-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+
+      background: currentColor;
+
+      box-shadow:
+        0 0 11px currentColor;
+    }
+
+    .match-layout {
+      position: absolute;
+      left: 52px;
+      right: 52px;
+      top: 136px;
+      bottom: 88px;
+      z-index: 10;
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        214px
+        minmax(0, 1fr);
+
+      align-items: stretch;
+      gap: 23px;
+    }
+
+    .team-panel {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 25px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.014),
+          transparent 110px
+        ),
+        linear-gradient(
+          145deg,
+          rgba(23, 18, 38, 0.95),
+          rgba(8, 8, 14, 0.96)
+        );
+
+      box-shadow:
+        0 28px 74px
+        rgba(0, 0, 0, 0.42),
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.025);
+    }
+
+    .team-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+
+      width: 3px;
+    }
+
+    .team-panel.left::before {
+      left: 0;
+
+      background:
+        linear-gradient(
+          to bottom,
+          transparent,
+          rgba(var(--purple-rgb), 0.86) 25%,
+          rgba(var(--purple-rgb), 0.32) 76%,
+          transparent
+        );
+    }
+
+    .team-panel.right::before {
+      right: 0;
+
+      background:
+        linear-gradient(
+          to bottom,
+          transparent,
+          rgba(var(--blue-rgb), 0.82) 25%,
+          rgba(var(--blue-rgb), 0.3) 76%,
+          transparent
+        );
+    }
+
+    .team-panel.left,
+    .team-panel.right,
+    .vs-column {
+      opacity: 1;
+      transform: none;
+    }
+
+    .stage.intro-playing .team-panel.left {
+      animation:
+        teamLeftIn 0.96s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        0.12s both;
+    }
+
+    .stage.intro-playing .team-panel.right {
+      animation:
+        teamRightIn 0.96s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        1.28s both;
+    }
+
+    .stage.intro-playing .vs-column {
+      animation:
+        vsIn 0.72s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        2.22s both;
+    }
+
+    .team-header {
+      min-height: 104px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+
+      padding: 20px 26px;
+
+      border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+    }
+
+    .team-header-copy {
+      min-width: 0;
+    }
+
+    .team-header-copy span,
+    .team-header-copy h2 {
+      display: block;
+    }
+
+    .team-header-copy span {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .left .team-header-copy span {
+      color: var(--purple-bright);
+    }
+
+    .right .team-header-copy span {
+      color: #b9d1ff;
+    }
+
+    .team-header-copy h2 {
+      max-width: 560px;
+      margin: 5px 0 0;
+      overflow: hidden;
+
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: 0.035em;
+      line-height: 0.94;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .team-seed {
+      min-width: 62px;
+      height: 48px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+      border-radius: 12px;
+
+      background:
+        rgba(255, 255, 255, 0.018);
+    }
+
+    .team-seed small,
+    .team-seed strong {
+      display: block;
+    }
+
+    .team-seed small {
+      color: var(--dim);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .team-seed strong {
+      margin-top: 2px;
+
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .player-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      grid-auto-rows:
+        minmax(0, 1fr);
+
+      gap: 14px;
+
+      height:
+        calc(100% - 104px);
+
+      padding: 18px;
+    }
+
+    .player-card {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+
+      display: grid;
+      grid-template-columns:
+        118px minmax(0, 1fr);
+
+      align-items: center;
+      gap: 16px;
+
+      padding: 15px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.008)
+        );
+
+      opacity: 1;
+      transform: none;
+    }
+
+    .stage.intro-playing .player-card {
+      opacity: 0;
+
+      transform:
+        translateY(18px)
+        scale(0.982);
+
+      animation:
+        playerCardIn 0.58s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        forwards;
+    }
+
+    .stage.intro-playing .left .player-card {
+      animation-delay:
+        calc(
+          0.58s +
+          var(--delay, 0) *
+          0.075s
+        );
+    }
+
+    .stage.intro-playing .right .player-card {
+      animation-delay:
+        calc(
+          1.72s +
+          var(--delay, 0) *
+          0.075s
+        );
+    }
+
+    .left .player-card::after,
+    .right .player-card::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18%;
+      bottom: 18%;
+
+      width: 2px;
+      border-radius: 999px;
+    }
+
+    .left .player-card::after {
+      background:
+        rgba(var(--purple-rgb), 0.58);
+    }
+
+    .right .player-card::after {
+      background:
+        rgba(var(--blue-rgb), 0.54);
+    }
+
+    .roster-empty {
+      grid-column: 1 / -1;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      min-height: 260px;
+
+      border:
+        1px dashed
+        rgba(255, 255, 255, 0.08);
+
+      border-radius: 17px;
+
+      color: var(--muted);
+      background:
+        rgba(255, 255, 255, 0.01);
+
+      text-align: center;
+    }
+
+    .roster-empty strong {
+      color: var(--text);
+
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .roster-empty small {
+      max-width: 360px;
+
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .player-photo {
+      position: relative;
+
+      width: 112px;
+      height: 112px;
+
+      overflow: hidden;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.11),
+          rgba(8, 8, 14, 0.94)
+        );
+
+      box-shadow:
+        inset 0 0 25px
+        rgba(var(--purple-rgb), 0.04);
+    }
+
+    .right .player-photo {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--blue-rgb), 0.1),
+          rgba(8, 8, 14, 0.94)
+        );
+    }
+
+    .player-photo img {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+      object-position: center;
+
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    .player-photo img.loaded {
+      opacity: 1;
+    }
+
+    .player-initials {
+      position: absolute;
+      inset: 0;
+
+      display: grid;
+      place-items: center;
+
+      color: var(--purple-bright);
+
+      font-size: 31px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .right .player-initials {
+      color: #b9d1ff;
+    }
+
+    .player-copy {
+      min-width: 0;
+    }
+
+    .player-name {
+      display: block;
+      overflow: hidden;
+
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 0.025em;
+      line-height: 0.95;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .player-rgid {
+      display: block;
+      margin-top: 7px;
+      overflow: hidden;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .player-meta {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .meta-pill {
+      min-width: 0;
+      min-height: 43px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 7px 9px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.05);
+
+      border-radius: 9px;
+
+      background:
+        rgba(255, 255, 255, 0.014);
+    }
+
+    .meta-pill small,
+    .meta-pill strong {
+      display: block;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta-pill small {
+      color: var(--dim);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .meta-pill strong {
+      margin-top: 2px;
+
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .left .meta-pill strong {
+      color: var(--purple-bright);
+    }
+
+    .right .meta-pill strong {
+      color: #b9d1ff;
+    }
+
+    .vs-column {
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      animation:
+        vsIn 0.78s
+        cubic-bezier(0.18, 0.86, 0.24, 1)
+        0.12s both;
+    }
+
+    .vs-column::before,
+    .vs-column::after {
+      content: "";
+
+      width: 1px;
+      flex: 1;
+
+      background:
+        linear-gradient(
+          to bottom,
+          transparent,
+          rgba(var(--purple-rgb), 0.25),
+          transparent
+        );
+    }
+
+    .vs-core {
+      position: relative;
+
+      width: 154px;
+      height: 154px;
+
+      display: grid;
+      place-items: center;
+
+      margin: 22px 0;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.28);
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.11),
+          rgba(8, 8, 14, 0.96) 68%
+        );
+
+      box-shadow:
+        0 0 42px
+        rgba(var(--purple-rgb), 0.09),
+        inset 0 0 28px
+        rgba(var(--purple-rgb), 0.05);
+    }
+
+    .vs-core::before {
+      content: "";
+
+      position: absolute;
+      inset: 12px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.04);
+
+      border-radius: 50%;
+    }
+
+    .vs-core strong {
+      font-size: 50px;
+      font-weight: 800;
+      letter-spacing: -0.055em;
+    }
+
+    .vs-format {
+      min-width: 92px;
+
+      margin-top: -8px;
+      padding: 8px 13px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.18);
+
+      border-radius: 999px;
+
+      color: var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb), 0.04);
+
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .vs-label {
+      max-width: 190px;
+      margin-top: 15px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      position: absolute;
+      left: 58px;
+      right: 58px;
+      bottom: 30px;
+      z-index: 30;
+
+      display: grid;
+      grid-template-columns:
+        1fr auto 1fr;
+
+      align-items: center;
+      gap: 22px;
+    }
+
+    .footer-line {
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.3)
+        );
+    }
+
+    .footer-line:last-child {
+      transform: scaleX(-1);
+    }
+
+    .footer-copy {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      white-space: nowrap;
+    }
+
+    .footer-copy strong {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .footer-copy span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+
+      background: var(--purple);
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb), 0.6);
+    }
+
+    .footer-copy small {
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .stage.updating .team-panel,
+    .stage.updating .vs-column {
+      opacity: 0.3;
+      transform: scale(0.992);
+      transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    @keyframes backgroundDrift {
+      from {
+        transform:
+          translate3d(-16px, -8px, 0)
+          scale(1.015);
+      }
+
+      to {
+        transform:
+          translate3d(18px, 10px, 0)
+          scale(1.03);
+      }
+    }
+
+    @keyframes gridMove {
+      to {
+        background-position:
+          0 86px,
+          86px 0;
+      }
+    }
+
+    @keyframes ambientFloat {
+      from {
+        transform:
+          translate3d(-12px, -8px, 0)
+          scale(0.96);
+      }
+
+      to {
+        transform:
+          translate3d(18px, 12px, 0)
+          scale(1.05);
+      }
+    }
+
+    @keyframes teamLeftIn {
+      from {
+        opacity: 0;
+
+        transform:
+          translateX(-145px)
+          scale(0.985);
+
+        filter: blur(9px);
+      }
+
+      68% {
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    @keyframes teamRightIn {
+      from {
+        opacity: 0;
+
+        transform:
+          translateX(145px)
+          scale(0.985);
+
+        filter: blur(9px);
+      }
+
+      68% {
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    @keyframes vsIn {
+      from {
+        opacity: 0;
+
+        transform:
+          scale(0.62)
+          rotate(-8deg);
+
+        filter: blur(8px);
+      }
+
+      70% {
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
+    @keyframes playerCardIn {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .player-card {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="stage" class="stage">
+    <div class="grid" aria-hidden="true"></div>
+    <div class="ambient left" aria-hidden="true"></div>
+    <div class="ambient right" aria-hidden="true"></div>
+    <div class="frame" aria-hidden="true"></div>
+
+    <header class="header">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          RG
+        </div>
+
+        <div class="brand-copy">
+          <span>
+            Rivals Gauntlet Match Intro
+          </span>
+
+          <strong id="eventName">
+            RIVALS GAUNTLET
+          </strong>
+        </div>
+      </div>
+
+      <div class="match-heading">
+        <span>
+          Upcoming Match
+        </span>
+
+        <strong id="matchHeading">
+          QUARTERFINAL 1 • BO3
+        </strong>
+      </div>
+
+      <div class="status-wrap">
+        <div
+          id="connection"
+          class="connection"
+        >
+          <span class="connection-dot"></span>
+
+          <span id="connectionText">
+            Connecting
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <section class="match-layout">
+      <article class="team-panel left">
+        <header class="team-header">
+          <div class="team-header-copy">
+            <span>
+              Team A
+            </span>
+
+            <h2 id="teamAName">
+              TEAM ALPHA
+            </h2>
+          </div>
+
+          <div class="team-seed">
+            <small>
+              Seed
+            </small>
+
+            <strong id="teamASeed">
+              —
+            </strong>
+          </div>
+        </header>
+
+        <div
+          id="teamAPlayers"
+          class="player-grid"
+        ></div>
+      </article>
+
+      <div class="vs-column">
+        <div class="vs-core">
+          <strong>
+            VS
+          </strong>
+        </div>
+
+        <div
+          id="matchFormat"
+          class="vs-format"
+        >
+          BO3
+        </div>
+
+        <div
+          id="roundLabel"
+          class="vs-label"
+        >
+          QUARTERFINAL 1
+        </div>
+      </div>
+
+      <article class="team-panel right">
+        <header class="team-header">
+          <div class="team-header-copy">
+            <span>
+              Team B
+            </span>
+
+            <h2 id="teamBName">
+              TEAM BRAVO
+            </h2>
+          </div>
+
+          <div class="team-seed">
+            <small>
+              Seed
+            </small>
+
+            <strong id="teamBSeed">
+              —
+            </strong>
+          </div>
+        </header>
+
+        <div
+          id="teamBPlayers"
+          class="player-grid"
+        ></div>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-copy">
+        <strong id="website">
+          RIVALSGAUNTLET.COM
+        </strong>
+
+        <span></span>
+
+        <small>
+          Player Profiles • Rankings • Tournament History
+        </small>
+      </div>
+
+      <span class="footer-line"></span>
+    </footer>
+  </main>
+
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var connection =
+          document.getElementById(
+            "connection"
+          );
+
+        var connectionText =
+          document.getElementById(
+            "connectionText"
+          );
+
+        if (connection) {
+          connection.classList.add(
+            "limited"
+          );
+        }
+
+        if (connectionText) {
+          connectionText.textContent =
+            "SCRIPT ERROR";
+        }
+
+        console.error(
+          "[RG MATCH INTRO]",
+          event.message
+        );
+      }
+    );
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var state = {
+        site: {},
+        countdown: {},
+        intro: {},
+        players: {},
+        teamRoot: {},
+        teamNames: {},
+        teams: {}
+      };
+
+      var db = null;
+      var teamsRef = null;
+      var activeTournamentId = "";
+      var teamsLoaded = false;
+      var renderTimer = null;
+      var animationTimer = null;
+      var lastAnimatedKey = "";
+
+      var stage =
+        document.getElementById(
+          "stage"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var matchHeading =
+        document.getElementById(
+          "matchHeading"
+        );
+
+      var teamAName =
+        document.getElementById(
+          "teamAName"
+        );
+
+      var teamBName =
+        document.getElementById(
+          "teamBName"
+        );
+
+      var teamASeed =
+        document.getElementById(
+          "teamASeed"
+        );
+
+      var teamBSeed =
+        document.getElementById(
+          "teamBSeed"
+        );
+
+      var teamAPlayers =
+        document.getElementById(
+          "teamAPlayers"
+        );
+
+      var teamBPlayers =
+        document.getElementById(
+          "teamBPlayers"
+        );
+
+      var matchFormat =
+        document.getElementById(
+          "matchFormat"
+        );
+
+      var roundLabel =
+        document.getElementById(
+          "roundLabel"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text || fallback || "";
+      }
+
+      function normalize(value) {
+        return clean(value)
+          .toLowerCase()
+          .replace(
+            /[^a-z0-9]/g,
+            ""
+          );
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function objectValue(value) {
+        return (
+          value &&
+          typeof value === "object"
+        )
+          ? value
+          : {};
+      }
+
+      function firstValue(
+        object,
+        keys,
+        fallback
+      ) {
+        var source =
+          objectValue(object);
+
+        var index;
+        var value;
+
+        for (
+          index = 0;
+          index < keys.length;
+          index += 1
+        ) {
+          value =
+            source[keys[index]];
+
+          if (
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+          ) {
+            return value;
+          }
+        }
+
+        return fallback;
+      }
+
+      function numericValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(value);
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(fallback || 0);
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0, 2)
+            .toUpperCase();
+        }
+
+        return (
+          (parts[0][0] || "") +
+          (
+            parts[
+              parts.length - 1
+            ][0] || ""
+          )
+        ).toUpperCase();
+      }
+
+      function getFormat(value) {
+        return clean(value)
+          .toLowerCase()
+          .indexOf("bo5") !== -1
+            ? "BO5"
+            : "BO3";
+      }
+
+      function getRoundLabel(value) {
+        var text =
+          clean(value)
+            .toLowerCase();
+
+        if (
+          text.indexOf("grand") !== -1
+        ) {
+          return "GRAND FINALS";
+        }
+
+        if (
+          text.indexOf("sf1") !== -1
+        ) {
+          return "SEMIFINAL 1";
+        }
+
+        if (
+          text.indexOf("sf2") !== -1
+        ) {
+          return "SEMIFINAL 2";
+        }
+
+        var qfMatch =
+          text.match(/qf[-\s]?([1-4])/);
+
+        if (qfMatch) {
+          return (
+            "QUARTERFINAL " +
+            qfMatch[1]
+          );
+        }
+
+        var r16Match =
+          text.match(/r16[-\s]?([1-8])/);
+
+        if (r16Match) {
+          return (
+            "ROUND OF 16 • MATCH " +
+            r16Match[1]
+          );
+        }
+
+        return clean(
+          value,
+          "MATCH INTRO"
+        )
+          .replace(
+            /•\s*bo[35]/i,
+            ""
+          )
+          .trim()
+          .toUpperCase();
+      }
+
+      function validCurrentMatch() {
+        var current =
+          clean(
+            state.site.currentMatch
+          );
+
+        var key =
+          normalize(current);
+
+        if (
+          !current ||
+          key === "nomatch" ||
+          key === "nomatchlive"
+        ) {
+          return "";
+        }
+
+        return current;
+      }
+
+      function collectionValues(value) {
+        var output = [];
+
+        if (Array.isArray(value)) {
+          value.forEach(
+            function (item, index) {
+              if (
+                item !== null &&
+                item !== undefined
+              ) {
+                if (
+                  item &&
+                  typeof item === "object"
+                ) {
+                  item.__key =
+                    item.__key ||
+                    String(index);
+                }
+
+                output.push(item);
+              }
+            }
+          );
+
+          return output;
+        }
+
+        if (
+          value &&
+          typeof value === "object"
+        ) {
+          Object.keys(value)
+            .forEach(
+              function (key) {
+                var item =
+                  value[key];
+
+                if (
+                  item === null ||
+                  item === undefined ||
+                  item === false
+                ) {
+                  return;
+                }
+
+                if (item === true) {
+                  output.push(key);
+                  return;
+                }
+
+                if (
+                  item &&
+                  typeof item === "object"
+                ) {
+                  item.__key =
+                    item.__key ||
+                    key;
+                }
+
+                output.push(item);
+              }
+            );
+        }
+
+        return output;
+      }
+
+      function teamNameFromRecord(
+        record,
+        fallback
+      ) {
+        return clean(
+          firstValue(
+            record,
+            [
+              "name",
+              "teamName",
+              "displayName",
+              "title"
+            ],
+            fallback
+          ),
+          fallback
+        );
+      }
+
+      function hasTeamData(root) {
+        var source =
+          objectValue(root);
+
+        return (
+          Object.keys(
+            objectValue(
+              source.teams
+            )
+          ).length > 0 ||
+          Object.keys(
+            objectValue(
+              source.teamNames
+            )
+          ).length > 0 ||
+          Array.isArray(
+            source.teams
+          ) ||
+          Array.isArray(
+            source.teamNames
+          )
+        );
+      }
+
+      function chooseTournamentTeamRoot(
+        allTeams,
+        preferredId
+      ) {
+        var root =
+          objectValue(allTeams);
+
+        var preferred =
+          clean(preferredId);
+
+        if (
+          preferred &&
+          hasTeamData(
+            root[preferred]
+          )
+        ) {
+          return {
+            id: preferred,
+            value:
+              objectValue(
+                root[preferred]
+              )
+          };
+        }
+
+        if (
+          hasTeamData(
+            root.open1
+          )
+        ) {
+          return {
+            id: "open1",
+            value:
+              objectValue(
+                root.open1
+              )
+          };
+        }
+
+        var keys =
+          Object.keys(root)
+            .filter(
+              function (key) {
+                return hasTeamData(
+                  root[key]
+                );
+              }
+            )
+            .sort(
+              function (first, second) {
+                return (
+                  numericValue(
+                    root[second] &&
+                    (
+                      root[second].publishedAt ||
+                      root[second].updatedAt
+                    )
+                  ) -
+                  numericValue(
+                    root[first] &&
+                    (
+                      root[first].publishedAt ||
+                      root[first].updatedAt
+                    )
+                  )
+                );
+              }
+            );
+
+        if (keys.length) {
+          return {
+            id: keys[0],
+            value:
+              objectValue(
+                root[keys[0]]
+              )
+          };
+        }
+
+        return {
+          id:
+            preferred ||
+            "open1",
+          value: {}
+        };
+      }
+
+      function teamNameFromPublishedNames(
+        names,
+        key,
+        index
+      ) {
+        var source = names || {};
+        var value = "";
+
+        if (Array.isArray(source)) {
+          value =
+            source[index] ||
+            source[index + 1];
+
+        } else if (
+          source &&
+          typeof source ===
+            "object"
+        ) {
+          value =
+            source[key] ||
+            source[String(index)] ||
+            source[String(index + 1)] ||
+            source[
+              "team" +
+              (index + 1)
+            ];
+        }
+
+        if (
+          value &&
+          typeof value ===
+            "object"
+        ) {
+          value =
+            firstValue(
+              value,
+              [
+                "name",
+                "teamName",
+                "displayName",
+                "title"
+              ]
+            );
+        }
+
+        return clean(value);
+      }
+
+      function combinePublishedTeamData(root) {
+        var source =
+          objectValue(root);
+
+        var rawTeams =
+          source.teams || {};
+
+        var names =
+          source.teamNames || {};
+
+        var output = {};
+        var usedNames = {};
+
+        var teamEntries = [];
+
+        if (Array.isArray(rawTeams)) {
+          rawTeams.forEach(
+            function (record, index) {
+              if (
+                record !== null &&
+                record !== undefined
+              ) {
+                teamEntries.push({
+                  key: String(index),
+                  record:
+                    objectValue(record),
+                  index: index
+                });
+              }
+            }
+          );
+
+        } else {
+          Object.keys(
+            objectValue(rawTeams)
+          ).forEach(
+            function (key, index) {
+              teamEntries.push({
+                key: key,
+                record:
+                  objectValue(
+                    rawTeams[key]
+                  ),
+                index: index
+              });
+            }
+          );
+        }
+
+        teamEntries.forEach(
+          function (entry) {
+            var publishedName =
+              teamNameFromPublishedNames(
+                names,
+                entry.key,
+                entry.index
+              );
+
+            var recordName =
+              teamNameFromRecord(
+                entry.record,
+                ""
+              );
+
+            var finalName =
+              publishedName ||
+              recordName ||
+              entry.key;
+
+            var merged =
+              Object.assign(
+                {},
+                entry.record,
+                {
+                  name: finalName,
+                  teamName: finalName,
+                  slot:
+                    numericValue(
+                      firstValue(
+                        entry.record,
+                        [
+                          "slot",
+                          "teamNumber",
+                          "order",
+                          "position"
+                        ],
+                        entry.index + 1
+                      )
+                    ) ||
+                    entry.index + 1
+                }
+              );
+
+            output[entry.key] =
+              merged;
+
+            usedNames[
+              normalize(finalName)
+            ] = true;
+          }
+        );
+
+        var nameEntries = [];
+
+        if (Array.isArray(names)) {
+          names.forEach(
+            function (value, index) {
+              nameEntries.push({
+                key: String(index),
+                value: value,
+                index: index
+              });
+            }
+          );
+
+        } else {
+          Object.keys(
+            objectValue(names)
+          ).forEach(
+            function (key, index) {
+              nameEntries.push({
+                key: key,
+                value: names[key],
+                index: index
+              });
+            }
+          );
+        }
+
+        nameEntries.forEach(
+          function (entry) {
+            var name =
+              teamNameFromPublishedNames(
+                names,
+                entry.key,
+                entry.index
+              );
+
+            var normalizedName =
+              normalize(name);
+
+            if (
+              !name ||
+              usedNames[normalizedName]
+            ) {
+              return;
+            }
+
+            var matchingKey = "";
+
+            Object.keys(output)
+              .some(
+                function (key) {
+                  if (
+                    normalize(key) ===
+                      normalizedName ||
+                    normalize(
+                      teamNameFromRecord(
+                        output[key],
+                        key
+                      )
+                    ) === normalizedName
+                  ) {
+                    matchingKey = key;
+                    return true;
+                  }
+
+                  return false;
+                }
+              );
+
+            if (!matchingKey) {
+              matchingKey =
+                entry.key ||
+                (
+                  "team" +
+                  (entry.index + 1)
+                );
+
+              output[matchingKey] = {
+                name: name,
+                teamName: name,
+                slot: entry.index + 1,
+                players: {}
+              };
+            }
+
+            usedNames[normalizedName] =
+              true;
+          }
+        );
+
+        return output;
+      }
+
+      function teamOrderValue(
+        record,
+        key,
+        fallbackIndex
+      ) {
+        var explicit =
+          numericValue(
+            firstValue(
+              record,
+              [
+                "slot",
+                "teamNumber",
+                "order",
+                "position"
+              ],
+              0
+            )
+          );
+
+        if (explicit > 0) {
+          return explicit;
+        }
+
+        var keyMatch =
+          clean(key)
+            .match(/(\d+)/);
+
+        if (keyMatch) {
+          return Number(keyMatch[1]);
+        }
+
+        return fallbackIndex + 1000;
+      }
+
+      function publishedTeams() {
+        var output = [];
+        var raw =
+          state.teams || {};
+
+        if (Array.isArray(raw)) {
+          raw.forEach(
+            function (record, index) {
+              if (
+                record &&
+                typeof record === "object"
+              ) {
+                output.push({
+                  key: String(index),
+                  record: record,
+                  order:
+                    teamOrderValue(
+                      record,
+                      String(index),
+                      index
+                    ),
+                  sourceIndex: index
+                });
+              }
+            }
+          );
+
+        } else {
+          Object.keys(raw)
+            .forEach(
+              function (key, index) {
+                var record =
+                  objectValue(raw[key]);
+
+                if (
+                  Object.keys(record)
+                    .length
+                ) {
+                  output.push({
+                    key: key,
+                    record: record,
+                    order:
+                      teamOrderValue(
+                        record,
+                        key,
+                        index
+                      ),
+                    sourceIndex: index
+                  });
+                }
+              }
+            );
+        }
+
+        output.sort(
+          function (first, second) {
+            return (
+              first.order -
+                second.order ||
+              first.sourceIndex -
+                second.sourceIndex
+            );
+          }
+        );
+
+        return output;
+      }
+
+      function teamByName(name) {
+        var target =
+          normalize(name);
+
+        var teams =
+          publishedTeams();
+
+        var index;
+        var candidate;
+
+        if (!target) {
+          return null;
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          candidate =
+            normalize(
+              teamNameFromRecord(
+                teams[index].record,
+                teams[index].key
+              )
+            );
+
+          if (
+            candidate === target ||
+            normalize(
+              teams[index].key
+            ) === target
+          ) {
+            return teams[index];
+          }
+        }
+
+        return null;
+      }
+
+      function teamById(id) {
+        var key =
+          clean(id);
+
+        if (
+          key &&
+          state.teams &&
+          state.teams[key]
+        ) {
+          return {
+            key: key,
+            record:
+              objectValue(
+                state.teams[key]
+              ),
+            order: 0,
+            sourceIndex: 0
+          };
+        }
+
+        return null;
+      }
+
+      function teamBySlot(slot) {
+        var number =
+          Number(slot);
+
+        var teams =
+          publishedTeams();
+
+        var index;
+        var explicit;
+
+        if (
+          !number ||
+          number < 1
+        ) {
+          return null;
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          explicit =
+            numericValue(
+              firstValue(
+                teams[index].record,
+                [
+                  "slot",
+                  "teamNumber",
+                  "order",
+                  "position"
+                ],
+                0
+              )
+            );
+
+          if (explicit === number) {
+            return teams[index];
+          }
+        }
+
+        return teams[number - 1] || null;
+      }
+
+      function resolveTeam(
+        id,
+        name,
+        slot
+      ) {
+        return (
+          teamById(id) ||
+          teamByName(name) ||
+          teamBySlot(slot)
+        );
+      }
+
+      function bracketMatch(value) {
+        var current =
+          clean(value);
+
+        var text =
+          current.toLowerCase();
+
+        var r16Match =
+          text.match(/r16[-\s]?([1-8])/);
+
+        if (r16Match) {
+          var r16Number =
+            Number(r16Match[1]);
+
+          return {
+            label:
+              "ROUND OF 16 • MATCH " +
+              r16Number,
+
+            format:
+              getFormat(current),
+
+            aSlot:
+              (r16Number - 1) *
+              2 +
+              1,
+
+            bSlot:
+              (r16Number - 1) *
+              2 +
+              2
+          };
+        }
+
+        var qfMatch =
+          text.match(/qf[-\s]?([1-4])/);
+
+        if (qfMatch) {
+          var qfNumber =
+            Number(qfMatch[1]);
+
+          return {
+            label:
+              "QUARTERFINAL " +
+              qfNumber,
+
+            format:
+              getFormat(current),
+
+            aSlot:
+              (qfNumber - 1) *
+              2 +
+              1,
+
+            bSlot:
+              (qfNumber - 1) *
+              2 +
+              2
+          };
+        }
+
+        if (
+          text.indexOf("sf1") !== -1
+        ) {
+          return {
+            label: "SEMIFINAL 1",
+            format: getFormat(current),
+            aName:
+              clean(
+                state.site.qf1Winner,
+                "Winner QF1"
+              ),
+            bName:
+              clean(
+                state.site.qf2Winner,
+                "Winner QF2"
+              )
+          };
+        }
+
+        if (
+          text.indexOf("sf2") !== -1
+        ) {
+          return {
+            label: "SEMIFINAL 2",
+            format: getFormat(current),
+            aName:
+              clean(
+                state.site.qf3Winner,
+                "Winner QF3"
+              ),
+            bName:
+              clean(
+                state.site.qf4Winner,
+                "Winner QF4"
+              )
+          };
+        }
+
+        if (
+          text.indexOf("grand") !== -1
+        ) {
+          return {
+            label: "GRAND FINALS",
+            format: getFormat(current),
+            aName:
+              clean(
+                state.site.sf1Winner,
+                "Winner SF1"
+              ),
+            bName:
+              clean(
+                state.site.sf2Winner,
+                "Winner SF2"
+              )
+          };
+        }
+
+        return {
+          label:
+            getRoundLabel(current),
+          format:
+            getFormat(current),
+          aSlot: 1,
+          bSlot: 2
+        };
+      }
+
+      function getMatchData() {
+        var intro =
+          objectValue(
+            state.intro
+          );
+
+        var explicitLabel =
+          clean(
+            firstValue(
+              intro,
+              [
+                "label",
+                "matchLabel",
+                "round"
+              ]
+            )
+          );
+
+        var explicit =
+          clean(
+            firstValue(
+              intro,
+              [
+                "teamAId",
+                "teamBId",
+                "teamAName",
+                "teamBName",
+                "teamA",
+                "teamB"
+              ]
+            )
+          );
+
+        if (explicit) {
+          return {
+            label:
+              getRoundLabel(
+                explicitLabel ||
+                validCurrentMatch() ||
+                "MATCH INTRO"
+              ),
+
+            format:
+              clean(
+                intro.format,
+                getFormat(
+                  explicitLabel ||
+                  validCurrentMatch()
+                )
+              ).toUpperCase(),
+
+            aId:
+              clean(
+                intro.teamAId
+              ),
+
+            bId:
+              clean(
+                intro.teamBId
+              ),
+
+            aName:
+              clean(
+                intro.teamAName ||
+                intro.teamA
+              ),
+
+            bName:
+              clean(
+                intro.teamBName ||
+                intro.teamB
+              ),
+
+            aSlot:
+              numericValue(
+                intro.teamANumber ||
+                intro.teamAIndex
+              ),
+
+            bSlot:
+              numericValue(
+                intro.teamBNumber ||
+                intro.teamBIndex
+              ),
+
+            aSeed:
+              clean(
+                intro.teamASeed
+              ),
+
+            bSeed:
+              clean(
+                intro.teamBSeed
+              )
+          };
+        }
+
+        var current =
+          validCurrentMatch();
+
+        if (current) {
+          return bracketMatch(current);
+        }
+
+        var upNext =
+          objectValue(
+            state.countdown.upNext
+          );
+
+        if (
+          upNext.teamA &&
+          upNext.teamB
+        ) {
+          var upNextLabel =
+            clean(
+              upNext.label,
+              "MATCH INTRO"
+            );
+
+          return {
+            label:
+              getRoundLabel(
+                upNextLabel
+              ),
+            format:
+              getFormat(
+                upNextLabel
+              ),
+            aName:
+              clean(
+                upNext.teamA
+              ),
+            bName:
+              clean(
+                upNext.teamB
+              )
+          };
+        }
+
+        return bracketMatch(
+          "QF1 • BO3"
+        );
+      }
+
+      function profileForUid(uid) {
+        var key =
+          clean(uid);
+
+        return key &&
+          state.players &&
+          state.players[key]
+            ? objectValue(
+                state.players[key]
+              )
+            : {};
+      }
+
+      function rosterEntries(team) {
+        if (
+          !team ||
+          !team.record
+        ) {
+          return [];
+        }
+
+        var record =
+          team.record;
+
+        var fields = [
+          "players",
+          "roster",
+          "members"
+        ];
+
+        var index;
+        var entries;
+
+        for (
+          index = 0;
+          index < fields.length;
+          index += 1
+        ) {
+          entries =
+            collectionValues(
+              record[fields[index]]
+            );
+
+          if (entries.length) {
+            return entries.slice(0, 6);
+          }
+        }
+
+        return [];
+      }
+
+      function textFromObject(
+        value,
+        fallback
+      ) {
+        if (
+          value &&
+          typeof value === "object"
+        ) {
+          return clean(
+            firstValue(
+              value,
+              [
+                "name",
+                "label",
+                "title",
+                "tier",
+                "value"
+              ],
+              fallback
+            ),
+            fallback
+          );
+        }
+
+        return clean(
+          value,
+          fallback
+        );
+      }
+
+      function normalizeRosterPlayer(
+        entry,
+        index
+      ) {
+        var rosterEntry =
+          typeof entry === "string"
+            ? {
+                uid: entry
+              }
+            : objectValue(entry);
+
+        var uid =
+          clean(
+            firstValue(
+              rosterEntry,
+              [
+                "uid",
+                "playerUid",
+                "userId",
+                "id",
+                "__key"
+              ]
+            )
+          );
+
+        var profile =
+          profileForUid(uid);
+
+        var merged =
+          Object.assign(
+            {},
+            profile,
+            rosterEntry
+          );
+
+        var name =
+          clean(
+            firstValue(
+              merged,
+              [
+                "rivalsIgn",
+                "playerName",
+                "displayName",
+                "ign",
+                "username",
+                "name"
+              ],
+              "PLAYER " +
+              (index + 1)
+            )
+          );
+
+        var rgId =
+          clean(
+            firstValue(
+              merged,
+              [
+                "rgId",
+                "rgID",
+                "rivalsId",
+                "rivalsID"
+              ]
+            ),
+            "RG ID NOT SET"
+          );
+
+        var profileImage =
+          clean(
+            firstValue(
+              merged,
+              [
+                "profileImage",
+                "profilePhoto",
+                "profilePicture",
+                "avatar",
+                "avatarUrl",
+                "photoURL",
+                "image"
+              ]
+            )
+          );
+
+        var rank =
+          textFromObject(
+            firstValue(
+              merged,
+              [
+                "peakRank",
+                "rank",
+                "competitiveRank",
+                "marvelRivalsRank",
+                "currentRank"
+              ]
+            ),
+            "Rank Not Set"
+          );
+
+        var role =
+          textFromObject(
+            firstValue(
+              merged,
+              [
+                "mainRole",
+                "preferredRole",
+                "playerRole",
+                "role"
+              ]
+            ),
+            "Flex"
+          );
+
+        return {
+          name: name,
+          rgId: rgId.toUpperCase(),
+          profileImage: profileImage,
+          rank: rank,
+          role: role
+        };
+      }
+
+      function teamRoster(team) {
+        return rosterEntries(team)
+          .map(
+            function (entry, index) {
+              return normalizeRosterPlayer(
+                entry,
+                index
+              );
+            }
+          );
+      }
+
+      function playerCardHtml(
+        player,
+        index
+      ) {
+        var imageHtml = "";
+
+        if (player.profileImage) {
+          imageHtml =
+            '<img ' +
+              'src="' +
+              escapeHtml(
+                player.profileImage
+              ) +
+              '" ' +
+              'alt="' +
+              escapeHtml(
+                player.name
+              ) +
+              '" ' +
+              'onload="this.classList.add(\'loaded\')" ' +
+              'onerror="this.style.display=\'none\'"' +
+            '>';
+        }
+
+        return (
+          '<article class="player-card" style="--delay:' +
+            index +
+          '">' +
+
+            '<div class="player-photo">' +
+
+              '<span class="player-initials">' +
+                escapeHtml(
+                  initials(
+                    player.name
+                  )
+                ) +
+              '</span>' +
+
+              imageHtml +
+
+            '</div>' +
+
+            '<div class="player-copy">' +
+
+              '<strong class="player-name">' +
+                escapeHtml(
+                  player.name
+                ) +
+              '</strong>' +
+
+              '<span class="player-rgid">' +
+                escapeHtml(
+                  player.rgId
+                ) +
+              '</span>' +
+
+              '<div class="player-meta">' +
+
+                '<div class="meta-pill">' +
+                  '<small>Rank</small>' +
+                  '<strong>' +
+                    escapeHtml(
+                      player.rank
+                    ) +
+                  '</strong>' +
+                '</div>' +
+
+                '<div class="meta-pill">' +
+                  '<small>Preferred Role</small>' +
+                  '<strong>' +
+                    escapeHtml(
+                      player.role
+                    ) +
+                  '</strong>' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>' +
+
+          '</article>'
+        );
+      }
+
+      function renderPlayers(
+        container,
+        players,
+        teamName
+      ) {
+        if (!players.length) {
+          container.innerHTML =
+            '<div class="roster-empty">' +
+              '<strong>Roster Not Published</strong>' +
+              '<small>' +
+                escapeHtml(
+                  teamName
+                ) +
+                ' does not currently have a published roster on the Teams page.' +
+              '</small>' +
+            '</div>';
+
+          return;
+        }
+
+        container.innerHTML =
+          players
+            .slice(0, 6)
+            .map(playerCardHtml)
+            .join("");
+      }
+
+      function seedForTeam(team) {
+        if (
+          !team ||
+          !team.record
+        ) {
+          return "—";
+        }
+
+        return clean(
+          firstValue(
+            team.record,
+            [
+              "seed",
+              "tournamentSeed",
+              "slot",
+              "teamNumber"
+            ]
+          ),
+          "—"
+        );
+      }
+
+      function scheduleRender() {
+        clearTimeout(renderTimer);
+
+        renderTimer =
+          setTimeout(
+            render,
+            140
+          );
+      }
+
+      function playIntro(animationKey) {
+        if (
+          !teamsLoaded ||
+          animationKey ===
+            lastAnimatedKey
+        ) {
+          return;
+        }
+
+        lastAnimatedKey =
+          animationKey;
+
+        clearTimeout(
+          animationTimer
+        );
+
+        stage.classList.remove(
+          "intro-playing"
+        );
+
+        void stage.offsetWidth;
+
+        stage.classList.add(
+          "intro-playing"
+        );
+
+        animationTimer =
+          setTimeout(
+            function () {
+              stage.classList.remove(
+                "intro-playing"
+              );
+            },
+            3600
+          );
+      }
+
+      function render() {
+        var match =
+          getMatchData();
+
+        var teamA =
+          resolveTeam(
+            match.aId,
+            match.aName,
+            match.aSlot
+          );
+
+        var teamB =
+          resolveTeam(
+            match.bId,
+            match.bName,
+            match.bSlot
+          );
+
+        var aName =
+          teamA
+            ? teamNameFromRecord(
+                teamA.record,
+                teamA.key
+              )
+            : clean(
+                match.aName,
+                "TEAM DATA NOT PUBLISHED"
+              );
+
+        var bName =
+          teamB
+            ? teamNameFromRecord(
+                teamB.record,
+                teamB.key
+              )
+            : clean(
+                match.bName,
+                "TEAM DATA NOT PUBLISHED"
+              );
+
+        var round =
+          clean(
+            match.label,
+            "MATCH INTRO"
+          ).toUpperCase();
+
+        var format =
+          clean(
+            match.format,
+            "BO3"
+          ).toUpperCase();
+
+        var aRoster =
+          teamRoster(teamA);
+
+        var bRoster =
+          teamRoster(teamB);
+
+        eventName.textContent =
+          clean(
+            state.site.eventName,
+            "RIVALS GAUNTLET"
+          ).toUpperCase();
+
+        matchHeading.textContent =
+          round +
+          " • " +
+          format;
+
+        teamAName.textContent =
+          aName.toUpperCase();
+
+        teamBName.textContent =
+          bName.toUpperCase();
+
+        teamASeed.textContent =
+          clean(
+            match.aSeed,
+            seedForTeam(teamA)
+          );
+
+        teamBSeed.textContent =
+          clean(
+            match.bSeed,
+            seedForTeam(teamB)
+          );
+
+        matchFormat.textContent =
+          format;
+
+        roundLabel.textContent =
+          round;
+
+        website.textContent =
+          clean(
+            state.intro.website ||
+            state.countdown.website ||
+            (
+              state.countdown.follow &&
+              state.countdown.follow.website
+            ),
+            "RIVALSGAUNTLET.COM"
+          )
+            .replace(/^https?:\/\//i, "")
+            .replace(/^www\./i, "")
+            .replace(/\/+$/, "")
+            .toUpperCase();
+
+        renderPlayers(
+          teamAPlayers,
+          aRoster,
+          aName
+        );
+
+        renderPlayers(
+          teamBPlayers,
+          bRoster,
+          bName
+        );
+
+        var replayToken =
+          clean(
+            state.intro.replayToken ||
+            state.intro.updatedAt
+          );
+
+        var animationKey = [
+          activeTournamentId,
+          round,
+          format,
+          teamA ? teamA.key : aName,
+          teamB ? teamB.key : bName,
+          replayToken
+        ].join("|");
+
+        window.requestAnimationFrame(
+          function () {
+            playIntro(
+              animationKey
+            );
+          }
+        );
+      }
+
+      function subscribeTournamentTeams(
+        tournamentId
+      ) {
+        var requestedId =
+          clean(
+            tournamentId,
+            "open1"
+          );
+
+        if (teamsRef) {
+          return;
+        }
+
+        state.teamRoot = {};
+        state.teamNames = {};
+        state.teams = {};
+        teamsLoaded = false;
+        lastAnimatedKey = "";
+
+        /*
+         * The public Teams page publishes beneath:
+         * teams/{tournamentId}/published
+         * teams/{tournamentId}/teamNames
+         * teams/{tournamentId}/teams
+         *
+         * Read the teams root so the overlay can use the
+         * requested tournament, fall back to teams/open1,
+         * or select the newest published tournament.
+         */
+        teamsRef =
+          db.ref("teams");
+
+        teamsRef.on(
+          "value",
+
+          function (snapshot) {
+            var chosen =
+              chooseTournamentTeamRoot(
+                snapshot.val() || {},
+                requestedId
+              );
+
+            activeTournamentId =
+              chosen.id;
+
+            state.teamRoot =
+              chosen.value;
+
+            state.teamNames =
+              chosen.value.teamNames || {};
+
+            state.teams =
+              combinePublishedTeamData(
+                chosen.value
+              );
+
+            teamsLoaded =
+              Object.keys(
+                state.teams
+              ).length > 0;
+
+            connection.classList.toggle(
+              "limited",
+              !teamsLoaded
+            );
+
+            connectionText.textContent =
+              teamsLoaded
+                ? "REALTIME CONNECTED"
+                : "NO PUBLISHED TEAMS";
+
+            scheduleRender();
+          },
+
+          function (error) {
+            teamsLoaded = false;
+
+            connection.classList.add(
+              "limited"
+            );
+
+            connectionText.textContent =
+              error &&
+              error.code ===
+                "PERMISSION_DENIED"
+                ? "TEAM DATA BLOCKED"
+                : "TEAM DATA UNAVAILABLE";
+
+            console.error(
+              "[RG MATCH INTRO] teams root read failed:",
+              error
+            );
+
+            scheduleRender();
+          }
+        );
+      }
+
+      function connect() {
+        try {
+          if (
+            typeof firebase ===
+              "undefined" ||
+            !firebase.apps ||
+            firebase.apps.length === 0
+          ) {
+            throw new Error(
+              "Firebase is not initialized. Check ../firebase.js."
+            );
+          }
+
+          db =
+            firebase.database();
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() === true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              if (online) {
+                if (
+                  !connection.classList.contains(
+                    "limited"
+                  )
+                ) {
+                  connectionText.textContent =
+                    "REALTIME CONNECTED";
+                }
+
+              } else {
+                connectionText.textContent =
+                  "RECONNECTING";
+              }
+            }
+          );
+
+          db.ref("site").on(
+            "value",
+
+            function (snapshot) {
+              state.site =
+                snapshot.val() || {};
+
+              var requestedTournament =
+                clean(
+                  state.site.currentTournament,
+                  "open1"
+                );
+
+              if (
+                teamsRef &&
+                activeTournamentId &&
+                requestedTournament !==
+                  activeTournamentId &&
+                requestedTournament !==
+                  "open1"
+              ) {
+                teamsRef.off();
+                teamsRef = null;
+              }
+
+              subscribeTournamentTeams(
+                requestedTournament
+              );
+
+              scheduleRender();
+            },
+
+            function (error) {
+              connection.classList.add(
+                "limited"
+              );
+
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE DATA UNAVAILABLE";
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.countdown =
+                snapshot.val() || {};
+
+              scheduleRender();
+            }
+          );
+
+          db.ref(
+            "broadcastMatchIntro"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.intro =
+                snapshot.val() || {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              console.warn(
+                "[RG MATCH INTRO] Optional broadcastMatchIntro read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref("players").on(
+            "value",
+
+            function (snapshot) {
+              state.players =
+                snapshot.val() || {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              state.players = {};
+
+              console.warn(
+                "[RG MATCH INTRO] Optional players read failed. Published Teams-page roster data will still be used:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          connection.classList.add(
+            "limited"
+          );
+
+          connectionText.textContent =
+            "FIREBASE ERROR";
+
+          console.error(
+            "[RG MATCH INTRO] Startup failed:",
+            error
+          );
+        }
+      }
+
+      render();
+      connect();
+    })();
+  </script>
+</body>
+</html>

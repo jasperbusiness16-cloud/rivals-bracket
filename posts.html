@@ -10,9 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=6">
+  <link rel="stylesheet" href="global-header.css?v=10">
 
   <style>
     :root {
@@ -1088,167 +1086,580 @@
         padding: 14px 13px;
       }
     }
+  
+
+    /* =========================================================
+       POSTS V2 — SINGLE FEED + GLOBAL HEADER
+    ========================================================= */
+
+    html {
+      background: #08080c;
+    }
+
+    body.account-body {
+      margin: 0;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .rg-feed-main {
+      width: min(780px, calc(100% - 28px));
+      margin: 22px auto 84px;
+      padding: 0;
+    }
+
+    .rg-feed-shell {
+      display: block;
+    }
+
+    .rg-feed-column {
+      width: 100%;
+      border-radius: 20px;
+    }
+
+    .rg-feed-toolbar {
+      top: var(--rg-header-height, 82px);
+    }
+
+    .rg-feed-toolbar-top {
+      display: flex;
+      min-height: 66px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+    }
+
+    .rg-feed-toolbar-title {
+      min-width: 0;
+    }
+
+    .rg-feed-toolbar-title span,
+    .rg-feed-toolbar-title h1 {
+      display: block;
+      margin: 0;
+    }
+
+    .rg-feed-toolbar-title span {
+      color: var(--feed-accent-bright);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+    }
+
+    .rg-feed-toolbar-title h1 {
+      margin-top: 3px;
+      color: var(--feed-text);
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .rg-feed-toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rg-feed-icon-button,
+    .rg-feed-create-button {
+      min-height: 39px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--feed-border);
+      border-radius: 10px;
+      color: var(--feed-text);
+      background: rgba(255, 255, 255, 0.035);
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.18s ease;
+    }
+
+    .rg-feed-icon-button {
+      width: 39px;
+      padding: 0;
+    }
+
+    .rg-feed-create-button {
+      padding: 0 13px;
+      border-color: rgba(154, 124, 255, 0.42);
+      background: rgba(154, 124, 255, 0.13);
+      color: #e7e0ff;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .rg-feed-icon-button:hover,
+    .rg-feed-create-button:hover {
+      border-color: rgba(184, 164, 255, 0.68);
+      background: rgba(154, 124, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .rg-feed-create-button[hidden] {
+      display: none !important;
+    }
+
+    .rg-feed-tab-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .rg-feed-tabs {
+      padding: 0;
+    }
+
+    .rg-feed-filter-row {
+      justify-content: space-between;
+    }
+
+    .rg-feed-filter-row select {
+      min-width: 210px;
+    }
+
+    .rg-post-admin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0 2px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(255, 255, 255, 0.055);
+    }
+
+    .rg-post-admin-button {
+      min-height: 33px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 11px;
+      border: 1px solid rgba(154, 124, 255, 0.24);
+      border-radius: 9px;
+      color: #cdbfff;
+      background: rgba(154, 124, 255, 0.06);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: 0.16s ease;
+    }
+
+    .rg-post-admin-button:hover {
+      border-color: rgba(184, 164, 255, 0.58);
+      background: rgba(154, 124, 255, 0.13);
+    }
+
+    .rg-post-admin-button.danger {
+      border-color: rgba(255, 91, 117, 0.22);
+      color: #ff91a3;
+      background: rgba(255, 91, 117, 0.05);
+    }
+
+    .rg-post-admin-button.danger:hover {
+      border-color: rgba(255, 91, 117, 0.52);
+      background: rgba(255, 91, 117, 0.11);
+    }
+
+    .rg-post-draft-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 9px;
+      padding: 4px 8px;
+      border: 1px solid rgba(255, 203, 107, 0.27);
+      border-radius: 7px;
+      color: var(--feed-warning);
+      background: rgba(255, 203, 107, 0.06);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .post-editor-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 5200;
+      display: none;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .post-editor-modal.show {
+      display: grid;
+    }
+
+    .post-editor-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(3, 3, 8, 0.78);
+      backdrop-filter: blur(10px);
+    }
+
+    .post-editor-card {
+      position: relative;
+      z-index: 1;
+      width: min(660px, 100%);
+      max-height: calc(100dvh - 36px);
+      overflow: auto;
+      border: 1px solid rgba(184, 164, 255, 0.24);
+      border-radius: 20px;
+      color: var(--feed-text);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(154, 124, 255, 0.12), transparent 32%),
+        #101018;
+      box-shadow: 0 32px 110px rgba(0, 0, 0, 0.66);
+    }
+
+    .post-editor-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      min-height: 67px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--feed-border);
+      background: rgba(16, 16, 24, 0.96);
+      backdrop-filter: blur(16px);
+    }
+
+    .post-editor-header span,
+    .post-editor-header h2 {
+      display: block;
+      margin: 0;
+    }
+
+    .post-editor-header span {
+      color: var(--feed-accent-bright);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .post-editor-header h2 {
+      margin-top: 3px;
+      font-size: 22px;
+      text-transform: uppercase;
+    }
+
+    .post-editor-close {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--feed-border);
+      border-radius: 10px;
+      color: var(--feed-muted);
+      background: rgba(255, 255, 255, 0.035);
+      cursor: pointer;
+    }
+
+    .post-editor-form {
+      padding: 18px;
+    }
+
+    .post-editor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .post-editor-field {
+      min-width: 0;
+    }
+
+    .post-editor-field.wide {
+      grid-column: 1 / -1;
+    }
+
+    .post-editor-field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--feed-muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .post-editor-field input,
+    .post-editor-field select,
+    .post-editor-field textarea {
+      width: 100%;
+      border: 1px solid var(--feed-border);
+      border-radius: 11px;
+      outline: 0;
+      color: var(--feed-text);
+      background: rgba(255, 255, 255, 0.035);
+      transition: 0.16s ease;
+    }
+
+    .post-editor-field input,
+    .post-editor-field select {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+
+    .post-editor-field textarea {
+      min-height: 145px;
+      resize: vertical;
+      padding: 12px;
+      line-height: 1.5;
+    }
+
+    .post-editor-field input:focus,
+    .post-editor-field select:focus,
+    .post-editor-field textarea:focus {
+      border-color: rgba(184, 164, 255, 0.55);
+      box-shadow: 0 0 0 3px rgba(154, 124, 255, 0.08);
+    }
+
+    .post-editor-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .post-editor-check {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 48px;
+      padding: 0 12px;
+      border: 1px solid var(--feed-border);
+      border-radius: 10px;
+      color: var(--feed-muted);
+      background: rgba(255, 255, 255, 0.022);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .post-editor-check input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--feed-accent);
+    }
+
+    .post-editor-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 17px;
+      padding-top: 15px;
+      border-top: 1px solid var(--feed-border);
+    }
+
+    .post-editor-status {
+      min-height: 18px;
+      color: var(--feed-muted);
+      font-size: 11px;
+    }
+
+    .post-editor-save {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      border: 1px solid rgba(184, 164, 255, 0.52);
+      border-radius: 10px;
+      color: #fff;
+      background: rgba(154, 124, 255, 0.18);
+      cursor: pointer;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .post-editor-save:disabled {
+      cursor: wait;
+      opacity: 0.62;
+    }
+
+    .rg-signin-note {
+      margin: 0;
+      padding: 17px;
+      border-bottom: 1px solid var(--feed-border);
+      color: var(--feed-muted);
+      text-align: center;
+    }
+
+    .rg-signin-note a {
+      color: var(--feed-accent-bright);
+      font-weight: 800;
+    }
+
+    @media (max-width: 680px) {
+      .rg-feed-main {
+        width: min(100% - 18px, 780px);
+        margin-top: 10px;
+      }
+
+      .rg-feed-column {
+        border-radius: 15px;
+      }
+
+      .rg-feed-toolbar {
+        top: var(--rg-header-height, 68px);
+      }
+
+      .rg-feed-toolbar-top {
+        min-height: 58px;
+        padding: 0 11px;
+      }
+
+      .rg-feed-toolbar-title h1 {
+        font-size: 20px;
+      }
+
+      .rg-feed-create-button {
+        width: 39px;
+        padding: 0;
+      }
+
+      .rg-feed-create-button span {
+        display: none;
+      }
+
+      .rg-feed-filter-row {
+        padding: 10px 11px;
+      }
+
+      .rg-feed-filter-row select {
+        min-width: 0;
+      }
+
+      .post-editor-modal {
+        padding: 0;
+      }
+
+      .post-editor-card {
+        width: 100%;
+        height: 100dvh;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .post-editor-grid,
+      .post-editor-options {
+        grid-template-columns: 1fr;
+      }
+
+      .post-editor-footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .post-editor-save {
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 
 <body class="account-body">
 
-<div class="account-center-shell">
-  <div class="account-center">
+<div id="globalHeader"></div>
 
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>COMMUNITY FEED</h2>
-      </div>
+<main class="account-main rg-feed-main">
+  <section class="rg-feed-shell">
+    <div class="rg-feed-column">
+      <div class="rg-feed-toolbar">
+        <div class="rg-feed-toolbar-top">
+          <div class="rg-feed-toolbar-title">
+            <span>Rivals Gauntlet</span>
+            <h1>Community Feed</h1>
+          </div>
 
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="predictions.html">Predictions</a>
-        <a href="shop.html">Shop</a>
-        <a href="friends.html">Friends</a>
-        <a class="active" href="posts.html">Updates</a>
-        <a href="settings.html">Settings</a>
+          <div class="rg-feed-toolbar-actions">
+            <button
+              id="postsRefreshButton"
+              class="rg-feed-icon-button"
+              type="button"
+              aria-label="Refresh feed"
+              title="Refresh feed"
+            >
+              <i class="fa-solid fa-rotate"></i>
+            </button>
 
-        <button type="button" onclick="logoutUser()">
-          Sign Out
-        </button>
-      </nav>
-    </aside>
-
-    <main class="account-main rg-feed-main">
-      <section class="rg-feed-hero">
-        <div class="rg-feed-hero-copy">
-          <span class="rg-feed-eyebrow">Official Community Network</span>
-          <h1>Rivals Feed</h1>
-          <p>
-            Tournament announcements, registration alerts, results, shop rotations and official community discussion—all in one live feed.
-          </p>
+            <button
+              id="postsCreateButton"
+              class="rg-feed-create-button"
+              type="button"
+              hidden
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span>Create Post</span>
+            </button>
+          </div>
         </div>
 
-        <div class="rg-feed-hero-actions">
-          <div id="postsNotificationMount"></div>
-
-          <button id="postsRefreshButton" class="rg-feed-refresh" type="button">
-            <i class="fa-solid fa-rotate"></i>
-            Refresh
+        <div class="rg-feed-tabs" role="tablist" aria-label="Feed view">
+          <button class="rg-feed-tab active" type="button" data-feed-tab="latest">
+            Latest
           </button>
 
-          <a id="postsPublicProfileBtn" class="rg-feed-profile-link" href="#">
-            <i class="fa-regular fa-user"></i>
-            My Profile
-          </a>
-        </div>
-      </section>
-
-      <section class="rg-feed-shell">
-        <div class="rg-feed-column">
-          <div class="rg-feed-toolbar">
-            <div class="rg-feed-tabs" role="tablist" aria-label="Feed view">
-              <button class="rg-feed-tab active" type="button" data-feed-tab="latest">
-                Latest
-              </button>
-
-              <button class="rg-feed-tab" type="button" data-feed-tab="pinned">
-                Pinned
-              </button>
-            </div>
-
-            <div class="rg-feed-filter-row">
-              <label for="postCategoryFilter">
-                <i class="fa-solid fa-filter"></i>
-                Filter Feed
-              </label>
-
-              <select id="postCategoryFilter">
-                <option value="all">All Updates</option>
-                <option value="announcement">Announcements</option>
-                <option value="tournament">Tournaments</option>
-                <option value="registration">Registration</option>
-                <option value="results">Results</option>
-                <option value="shop">Shop Updates</option>
-                <option value="prediction">Predictions</option>
-                <option value="community">Community</option>
-                <option value="prize_pool">Prize Pool</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="officialPostsList">
-            <div class="rg-feed-loading">
-              <div>
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <strong>Loading the Rivals Feed</strong>
-                <span>Connecting to official posts and community activity.</span>
-              </div>
-            </div>
-          </div>
+          <button class="rg-feed-tab" type="button" data-feed-tab="pinned">
+            Pinned
+          </button>
         </div>
 
-        <aside class="rg-feed-sidebar">
-          <section class="rg-side-card">
-            <div class="rg-side-card-header">
-              <span>Feed Overview</span>
-              <h2>Official Network</h2>
-            </div>
+        <div class="rg-feed-filter-row">
+          <label for="postCategoryFilter">
+            <i class="fa-solid fa-filter"></i>
+            Filter Feed
+          </label>
 
-            <div class="rg-side-card-body">
-              Every feed post is published by Rivals Gauntlet staff. Signed-in players can like posts, join discussions and like community comments.
+          <select id="postCategoryFilter">
+            <option value="all">All Updates</option>
+            <option value="announcement">Announcements</option>
+            <option value="tournament">Tournaments</option>
+            <option value="registration">Registration</option>
+            <option value="results">Results</option>
+            <option value="shop">Shop Updates</option>
+            <option value="prediction">Predictions</option>
+            <option value="community">Community</option>
+            <option value="prize_pool">Prize Pool</option>
+          </select>
+        </div>
+      </div>
 
-              <div class="rg-feed-stat-grid">
-                <div class="rg-feed-stat">
-                  <strong id="feedPostCount">0</strong>
-                  <span>Posts</span>
-                </div>
+      <div id="officialPostsList">
+        <div class="rg-feed-loading">
+          <div>
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <strong>Loading the Rivals Feed</strong>
+            <span>Connecting to official posts and community activity.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                <div class="rg-feed-stat">
-                  <strong id="feedCommentCount">0</strong>
-                  <span>Comments</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="rg-side-card">
-            <div class="rg-side-card-header">
-              <span>Discover</span>
-              <h2>Categories</h2>
-            </div>
-
-            <div id="feedCategoryList" class="rg-category-list"></div>
-          </section>
-
-          <section class="rg-side-card">
-            <div class="rg-side-card-header">
-              <span>Community Standards</span>
-              <h2>Join the Discussion</h2>
-            </div>
-
-            <div class="rg-side-card-body rg-feed-guidelines">
-              <div class="rg-feed-guideline">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Keep discussion competitive, respectful and relevant.</span>
-              </div>
-
-              <div class="rg-feed-guideline">
-                <i class="fa-solid fa-heart"></i>
-                <span>One like per player. Tap again to remove it.</span>
-              </div>
-
-              <div class="rg-feed-guideline">
-                <i class="fa-solid fa-link"></i>
-                <span>Share buttons copy a direct link to the full conversation.</span>
-              </div>
-            </div>
-          </section>
-        </aside>
-      </section>
-
-      <p id="postsStatus" class="rg-feed-status" role="status" aria-live="polite"></p>
-    </main>
-
-  </div>
-</div>
+  <p id="postsStatus" class="rg-feed-status" role="status" aria-live="polite"></p>
+</main>
 
 <div id="postDiscussionModal" class="post-discussion-modal" aria-hidden="true">
   <div class="post-discussion-backdrop"></div>
@@ -1279,23 +1690,7 @@
           </div>
         </div>
 
-        <div id="postCommentComposerMount">
-          <form id="postCommentForm" class="post-comment-form">
-            <div id="postCommentComposerAvatar" class="post-comment-composer-avatar">RG</div>
-
-            <div class="post-comment-form-main">
-              <textarea id="postCommentInput" maxlength="500" placeholder="Join the discussion..."></textarea>
-
-              <div class="post-comment-form-footer">
-                <span id="postCommentCharacterCount">0/500</span>
-
-                <button id="postCommentSubmit" class="post-comment-submit" type="submit">
-                  Reply
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+        <div id="postCommentComposerMount"></div>
 
         <div id="postCommentsList">
           <div class="rg-comment-empty">Select a post to view its discussion.</div>
@@ -1305,13 +1700,90 @@
   </section>
 </div>
 
+<div id="postEditorModal" class="post-editor-modal" aria-hidden="true">
+  <div class="post-editor-backdrop"></div>
+
+  <section class="post-editor-card" role="dialog" aria-modal="true" aria-labelledby="postEditorTitle">
+    <header class="post-editor-header">
+      <div>
+        <span>Staff Publishing</span>
+        <h2 id="postEditorTitle">Create Post</h2>
+      </div>
+
+      <button id="postEditorClose" class="post-editor-close" type="button" aria-label="Close post editor">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+
+    <form id="postEditorForm" class="post-editor-form">
+      <div class="post-editor-grid">
+        <div class="post-editor-field wide">
+          <label for="postEditorPostTitle">Title</label>
+          <input id="postEditorPostTitle" type="text" maxlength="120" required placeholder="Official update title">
+        </div>
+
+        <div class="post-editor-field wide">
+          <label for="postEditorBody">Post</label>
+          <textarea id="postEditorBody" maxlength="2000" required placeholder="Write the Rivals Gauntlet update..."></textarea>
+        </div>
+
+        <div class="post-editor-field">
+          <label for="postEditorCategory">Category</label>
+          <select id="postEditorCategory">
+            <option value="announcement">Announcement</option>
+            <option value="tournament">Tournament</option>
+            <option value="registration">Registration</option>
+            <option value="results">Results</option>
+            <option value="shop">Shop Update</option>
+            <option value="prediction">Prediction</option>
+            <option value="community">Community</option>
+            <option value="prize_pool">Prize Pool</option>
+          </select>
+        </div>
+
+        <div class="post-editor-field">
+          <label for="postEditorImage">Image URL</label>
+          <input id="postEditorImage" type="url" maxlength="500" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="post-editor-options">
+        <label class="post-editor-check">
+          <input id="postEditorPinned" type="checkbox">
+          Pinned post
+        </label>
+
+        <label class="post-editor-check">
+          <input id="postEditorComments" type="checkbox" checked>
+          Comments enabled
+        </label>
+
+        <label class="post-editor-check">
+          <input id="postEditorPublished" type="checkbox" checked>
+          Published
+        </label>
+      </div>
+
+      <div class="post-editor-footer">
+        <span id="postEditorStatus" class="post-editor-status"></span>
+
+        <button id="postEditorSave" class="post-editor-save" type="submit">
+          <i class="fa-solid fa-paper-plane"></i>
+          Publish Post
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script src="firebase.js?v=2"></script>
 <script src="notifications.js?v=1"></script>
-<script src="notification-center.js?v=1"></script>
+<script src="friends.js?v=1"></script>
+<script src="global-header.js?v=10"></script>
 <script src="posts.js?v=1"></script>
 
 <script>
@@ -1319,12 +1791,15 @@
 
   let currentUser = null;
   let currentPlayer = null;
+  let currentRole = "player";
   let officialPosts = [];
   let selectedPost = null;
   let selectedPostComments = [];
+  let editingPostId = null;
   let stopSelectedPostComments = null;
   let stopSelectedCommentLikes = null;
   let stopPostLikes = null;
+  let stopPlayerListener = null;
   let activeFeedTab = "latest";
   let statusTimer = null;
 
@@ -1332,24 +1807,14 @@
   const likedPostIds = new Set();
   const selectedCommentLikeCounts = {};
   const likedCommentIds = new Set();
-
   const postsStatus = document.getElementById("postsStatus");
 
-  const categoryMeta = [
-    ["all", "All Updates"],
-    ["announcement", "Announcements"],
-    ["tournament", "Tournaments"],
-    ["registration", "Registration"],
-    ["results", "Results"],
-    ["shop", "Shop Updates"],
-    ["prediction", "Predictions"],
-    ["community", "Community"],
-    ["prize_pool", "Prize Pool"]
-  ];
+  function isStaff() {
+    return currentRole === "owner" || currentRole === "admin";
+  }
 
   function setPostsStatus(message, color = "#f7f5ff") {
     clearTimeout(statusTimer);
-
     postsStatus.textContent = message || "";
     postsStatus.style.color = color;
     postsStatus.classList.toggle("show", Boolean(message));
@@ -1357,7 +1822,7 @@
     if (message) {
       statusTimer = setTimeout(() => {
         postsStatus.classList.remove("show");
-      }, 3200);
+      }, 3300);
     }
   }
 
@@ -1371,22 +1836,24 @@
   }
 
   function pluralize(count, singular, plural = `${singular}s`) {
-    return `${Number(count || 0).toLocaleString()} ${Number(count || 0) === 1 ? singular : plural}`;
+    const number = Number(count || 0);
+    return `${number.toLocaleString()} ${number === 1 ? singular : plural}`;
   }
 
   function formatRelativeTime(timestamp) {
     const time = Number(timestamp || 0);
     if (!time) return "now";
 
-    const difference = Date.now() - time;
+    const difference = Math.max(0, Date.now() - time);
     const minute = 60 * 1000;
     const hour = 60 * minute;
     const day = 24 * hour;
+    const week = 7 * day;
 
     if (difference < minute) return "now";
     if (difference < hour) return `${Math.floor(difference / minute)}m`;
     if (difference < day) return `${Math.floor(difference / hour)}h`;
-    if (difference < 7 * day) return `${Math.floor(difference / day)}d`;
+    if (difference < week) return `${Math.floor(difference / day)}d`;
 
     return RGPosts.formatPostDate(time);
   }
@@ -1395,7 +1862,7 @@
     const filter = document.getElementById("postCategoryFilter")?.value || "all";
 
     return officialPosts
-      .filter(post => post.published !== false)
+      .filter(post => post.published !== false || isStaff())
       .filter(post => filter === "all" || post.category === filter)
       .filter(post => activeFeedTab !== "pinned" || post.pinned)
       .sort((a, b) => {
@@ -1424,6 +1891,13 @@
               <i class="fa-solid fa-thumbtack"></i>
               Pinned by Rivals Gauntlet
             </div>
+          ` : ""}
+
+          ${post.published === false ? `
+            <span class="rg-post-draft-badge">
+              <i class="fa-solid fa-eye-slash"></i>
+              Staff Draft
+            </span>
           ` : ""}
 
           <div class="rg-post-head">
@@ -1486,6 +1960,28 @@
               <span>Share</span>
             </button>
           </div>
+
+          ${isStaff() ? `
+            <div class="rg-post-admin-actions">
+              <button
+                class="rg-post-admin-button"
+                type="button"
+                data-edit-post="${escapePostHtml(post.id)}"
+              >
+                <i class="fa-solid fa-pen"></i>
+                Edit Post
+              </button>
+
+              <button
+                class="rg-post-admin-button danger"
+                type="button"
+                data-delete-post="${escapePostHtml(post.id)}"
+              >
+                <i class="fa-regular fa-trash-can"></i>
+                Delete Post
+              </button>
+            </div>
+          ` : ""}
         </div>
       </article>
     `;
@@ -1507,51 +2003,23 @@
           </div>
         </div>
       `;
-      updateFeedSidebar();
       return;
     }
 
     container.innerHTML = visiblePosts.map(post => postCardMarkup(post)).join("");
-    updateFeedSidebar();
-  }
-
-  function updateFeedSidebar() {
-    const publishedPosts = officialPosts.filter(post => post.published !== false);
-    const commentTotal = publishedPosts.reduce(
-      (total, post) => total + Number(post.commentCount || 0),
-      0
-    );
-
-    document.getElementById("feedPostCount").textContent = publishedPosts.length.toLocaleString();
-    document.getElementById("feedCommentCount").textContent = commentTotal.toLocaleString();
-
-    const selectedCategory = document.getElementById("postCategoryFilter")?.value || "all";
-    const categoryContainer = document.getElementById("feedCategoryList");
-
-    if (!categoryContainer) return;
-
-    categoryContainer.innerHTML = categoryMeta.map(([key, label]) => {
-      const count = key === "all"
-        ? publishedPosts.length
-        : publishedPosts.filter(post => post.category === key).length;
-
-      return `
-        <button
-          class="rg-category-button ${selectedCategory === key ? "active" : ""}"
-          type="button"
-          data-category-filter="${escapePostHtml(key)}"
-        >
-          <span>${escapePostHtml(label)}</span>
-          <small>${count.toLocaleString()}</small>
-        </button>
-      `;
-    }).join("");
   }
 
   function renderFeedTabs() {
     document.querySelectorAll("[data-feed-tab]").forEach(button => {
       button.classList.toggle("active", button.dataset.feedTab === activeFeedTab);
     });
+  }
+
+  function renderStaffControls() {
+    const createButton = document.getElementById("postsCreateButton");
+    if (createButton) createButton.hidden = !isStaff();
+    renderOfficialPosts();
+    if (selectedPost) renderSelectedPost();
   }
 
   function getCommentInitials(name) {
@@ -1592,7 +2060,6 @@
   function renderSelectedPost() {
     const container = document.getElementById("selectedPostContent");
     if (!container || !selectedPost) return;
-
     container.innerHTML = postCardMarkup(selectedPost, true);
   }
 
@@ -1601,7 +2068,9 @@
 
     return [...selectedPostComments].sort((a, b) => {
       if (sort === "top") {
-        const likeDifference = Number(selectedCommentLikeCounts[b.id] || 0) - Number(selectedCommentLikeCounts[a.id] || 0);
+        const likeDifference =
+          Number(selectedCommentLikeCounts[b.id] || 0) -
+          Number(selectedCommentLikeCounts[a.id] || 0);
         if (likeDifference !== 0) return likeDifference;
       }
 
@@ -1612,7 +2081,6 @@
   function renderPostComments() {
     const container = document.getElementById("postCommentsList");
     const count = document.getElementById("selectedPostCommentCount");
-
     if (!container || !count) return;
 
     const commentCount = selectedPostComments.length;
@@ -1632,6 +2100,7 @@
       const likeCount = Number(selectedCommentLikeCounts[comment.id] || 0);
       const liked = likedCommentIds.has(comment.id);
       const ownComment = currentUser && comment.userId === currentUser.uid;
+      const canDelete = ownComment || isStaff();
 
       return `
         <article class="post-comment-card" data-comment-id="${escapePostHtml(comment.id)}">
@@ -1663,7 +2132,7 @@
           </div>
 
           <div class="comment-menu">
-            ${ownComment ? `
+            ${canDelete ? `
               <button
                 class="post-comment-delete"
                 type="button"
@@ -1691,6 +2160,15 @@
           <i class="fa-solid fa-lock"></i>
           Comments are disabled for this post.
         </div>
+      `;
+      return;
+    }
+
+    if (!currentUser) {
+      mount.innerHTML = `
+        <p class="rg-signin-note">
+          <a href="login.html">Sign in</a> to join the discussion.
+        </p>
       `;
       return;
     }
@@ -1737,7 +2215,6 @@
     likedCommentIds.clear();
 
     const reference = database.ref(`postCommentLikes/${postId}`);
-
     const handler = snapshot => {
       Object.keys(selectedCommentLikeCounts).forEach(key => delete selectedCommentLikeCounts[key]);
       likedCommentIds.clear();
@@ -1748,7 +2225,6 @@
         commentSnapshot.forEach(userSnapshot => {
           if (userSnapshot.val() === true) {
             count += 1;
-
             if (currentUser && userSnapshot.key === currentUser.uid) {
               likedCommentIds.add(commentSnapshot.key);
             }
@@ -1762,13 +2238,13 @@
     };
 
     reference.on("value", handler, error => {
-      console.error("Comment likes listener failed:", error);
+      console.warn("Comment likes are unavailable:", error?.code || error?.message || error);
     });
 
     stopSelectedCommentLikes = () => reference.off("value", handler);
   }
 
-  function openPostDiscussion(postId, updateHistory = true) {
+  function openPostDiscussion(postId, updateUrl = true) {
     const post = officialPosts.find(item => item.id === postId);
 
     if (!post) {
@@ -1778,25 +2254,21 @@
 
     selectedPost = post;
     selectedPostComments = [];
-
     renderSelectedPost();
     renderCommentComposer();
     renderPostComments();
 
-    const modal = document.getElementById("postDiscussionModal");
-    modal?.classList.add("show");
-    modal?.setAttribute("aria-hidden", "false");
+    document.getElementById("postDiscussionModal")?.classList.add("show");
+    document.getElementById("postDiscussionModal")?.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
 
-    if (updateHistory) {
+    if (updateUrl) {
       const url = new URL(window.location.href);
       url.searchParams.set("post", postId);
-      window.history.pushState({ postId }, "", url);
+      history.pushState({ postId }, "", url);
     }
 
-    if (stopSelectedPostComments) {
-      stopSelectedPostComments();
-    }
+    if (stopSelectedPostComments) stopSelectedPostComments();
 
     stopSelectedPostComments = RGPosts.listenToComments(postId, comments => {
       selectedPostComments = comments;
@@ -1806,11 +2278,9 @@
     listenToSelectedCommentLikes(postId);
   }
 
-  function closePostDiscussion(updateHistory = true) {
-    const modal = document.getElementById("postDiscussionModal");
-
-    modal?.classList.remove("show");
-    modal?.setAttribute("aria-hidden", "true");
+  function closePostDiscussion(updateUrl = true) {
+    document.getElementById("postDiscussionModal")?.classList.remove("show");
+    document.getElementById("postDiscussionModal")?.setAttribute("aria-hidden", "true");
     document.body.classList.remove("modal-open");
 
     if (stopSelectedPostComments) {
@@ -1825,32 +2295,35 @@
 
     selectedPost = null;
     selectedPostComments = [];
-    likedCommentIds.clear();
-    Object.keys(selectedCommentLikeCounts).forEach(key => delete selectedCommentLikeCounts[key]);
 
-    if (updateHistory) {
+    if (updateUrl) {
       const url = new URL(window.location.href);
       url.searchParams.delete("post");
-      window.history.pushState({}, "", url);
+      history.pushState({}, "", url);
     }
   }
 
   async function handlePostCommentSubmit(event) {
     event.preventDefault();
 
-    if (!currentUser || !currentPlayer || !selectedPost) return;
+    if (!currentUser) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!currentPlayer || !selectedPost) return;
 
     const input = document.getElementById("postCommentInput");
     const button = document.getElementById("postCommentSubmit");
     const message = input?.value.trim() || "";
 
     if (!message) {
-      setPostsStatus("Enter a comment before posting.", "#ffcb6b");
+      setPostsStatus("Enter a comment first.", "#ffcb6b");
       return;
     }
 
     button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Posting';
+    button.textContent = "Posting...";
 
     try {
       await RGPosts.addComment(selectedPost.id, currentUser, currentPlayer, message);
@@ -1868,10 +2341,27 @@
   async function handleDeleteComment(commentId) {
     if (!currentUser || !selectedPost || !commentId) return;
 
+    const comment = selectedPostComments.find(item => item.id === commentId);
+    if (!comment) return;
+
     if (!window.confirm("Delete this comment?")) return;
 
     try {
-      await RGPosts.deleteOwnComment(selectedPost.id, commentId, currentUser.uid);
+      if (comment.userId === currentUser.uid) {
+        await RGPosts.deleteOwnComment(selectedPost.id, commentId, currentUser.uid);
+      } else if (isStaff()) {
+        await database.ref(`postComments/${selectedPost.id}/${commentId}`).remove();
+        await database.ref(`officialPosts/${selectedPost.id}/commentCount`).transaction(value => {
+          return Math.max(0, Number(value || 0) - 1);
+        });
+      }
+
+      try {
+        await database.ref(`postCommentLikes/${selectedPost.id}/${commentId}`).remove();
+      } catch (cleanupError) {
+        console.warn("Comment-like cleanup was skipped:", cleanupError);
+      }
+
       setPostsStatus("Comment deleted.", "#ffcb6b");
     } catch (error) {
       setPostsStatus(error.message || "The comment could not be deleted.", "#ff6a7f");
@@ -1879,37 +2369,32 @@
   }
 
   async function togglePostLike(postId) {
-    if (!currentUser || !postId) return;
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
 
     const wasLiked = likedPostIds.has(postId);
     const oldCount = Number(postLikeCounts[postId] || 0);
 
-    if (wasLiked) {
-      likedPostIds.delete(postId);
-      postLikeCounts[postId] = Math.max(0, oldCount - 1);
-    } else {
-      likedPostIds.add(postId);
-      postLikeCounts[postId] = oldCount + 1;
-    }
+    if (wasLiked) likedPostIds.delete(postId);
+    else likedPostIds.add(postId);
 
+    postLikeCounts[postId] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
     renderOfficialPosts();
     if (selectedPost?.id === postId) renderSelectedPost();
 
     try {
       await database.ref(`postLikes/${postId}/${currentUser.uid}`).set(wasLiked ? null : true);
     } catch (error) {
-      if (wasLiked) {
-        likedPostIds.add(postId);
-      } else {
-        likedPostIds.delete(postId);
-      }
-
+      if (wasLiked) likedPostIds.add(postId);
+      else likedPostIds.delete(postId);
       postLikeCounts[postId] = oldCount;
       renderOfficialPosts();
       if (selectedPost?.id === postId) renderSelectedPost();
 
       setPostsStatus(
-        error?.code === "PERMISSION_DENIED"
+        String(error?.code || "").toLowerCase().includes("permission")
           ? "Post-like permissions are not published yet."
           : error.message || "The post like could not be saved.",
         "#ff6a7f"
@@ -1918,19 +2403,20 @@
   }
 
   async function toggleCommentLike(commentId) {
-    if (!currentUser || !selectedPost || !commentId) return;
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    if (!selectedPost) return;
 
     const wasLiked = likedCommentIds.has(commentId);
     const oldCount = Number(selectedCommentLikeCounts[commentId] || 0);
 
-    if (wasLiked) {
-      likedCommentIds.delete(commentId);
-      selectedCommentLikeCounts[commentId] = Math.max(0, oldCount - 1);
-    } else {
-      likedCommentIds.add(commentId);
-      selectedCommentLikeCounts[commentId] = oldCount + 1;
-    }
+    if (wasLiked) likedCommentIds.delete(commentId);
+    else likedCommentIds.add(commentId);
 
+    selectedCommentLikeCounts[commentId] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
     renderPostComments();
 
     try {
@@ -1938,17 +2424,13 @@
         .ref(`postCommentLikes/${selectedPost.id}/${commentId}/${currentUser.uid}`)
         .set(wasLiked ? null : true);
     } catch (error) {
-      if (wasLiked) {
-        likedCommentIds.add(commentId);
-      } else {
-        likedCommentIds.delete(commentId);
-      }
-
+      if (wasLiked) likedCommentIds.add(commentId);
+      else likedCommentIds.delete(commentId);
       selectedCommentLikeCounts[commentId] = oldCount;
       renderPostComments();
 
       setPostsStatus(
-        error?.code === "PERMISSION_DENIED"
+        String(error?.code || "").toLowerCase().includes("permission")
           ? "Comment-like permissions are not published yet."
           : error.message || "The comment like could not be saved.",
         "#ff6a7f"
@@ -1986,7 +2468,6 @@
     if (stopPostLikes) stopPostLikes();
 
     const reference = database.ref("postLikes");
-
     const handler = snapshot => {
       Object.keys(postLikeCounts).forEach(key => delete postLikeCounts[key]);
       likedPostIds.clear();
@@ -1997,7 +2478,6 @@
         postSnapshot.forEach(userSnapshot => {
           if (userSnapshot.val() === true) {
             count += 1;
-
             if (currentUser && userSnapshot.key === currentUser.uid) {
               likedPostIds.add(postSnapshot.key);
             }
@@ -2012,7 +2492,7 @@
     };
 
     reference.on("value", handler, error => {
-      console.error("Post likes listener failed:", error);
+      console.warn("Post likes are unavailable:", error?.code || error?.message || error);
     });
 
     stopPostLikes = () => reference.off("value", handler);
@@ -2020,16 +2500,175 @@
 
   function refreshFeed() {
     const button = document.getElementById("postsRefreshButton");
+    if (!button) return;
+
     button.disabled = true;
-    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Refreshing';
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
     database.ref("officialPosts").once("value")
       .then(() => setPostsStatus("Feed refreshed.", "#4fd6a2"))
       .catch(error => setPostsStatus(error.message || "The feed could not refresh.", "#ff6a7f"))
       .finally(() => {
         button.disabled = false;
-        button.innerHTML = '<i class="fa-solid fa-rotate"></i> Refresh';
+        button.innerHTML = '<i class="fa-solid fa-rotate"></i>';
       });
+  }
+
+  function openPostEditor(postId = null) {
+    if (!isStaff()) return;
+
+    const post = postId ? officialPosts.find(item => item.id === postId) : null;
+    editingPostId = post?.id || null;
+
+    document.getElementById("postEditorTitle").textContent = post ? "Edit Post" : "Create Post";
+    document.getElementById("postEditorPostTitle").value = post?.title || "";
+    document.getElementById("postEditorBody").value = post?.body || "";
+    document.getElementById("postEditorCategory").value = post?.category || "announcement";
+    document.getElementById("postEditorImage").value = post?.image || "";
+    document.getElementById("postEditorPinned").checked = Boolean(post?.pinned);
+    document.getElementById("postEditorComments").checked = post ? post.commentsEnabled !== false : true;
+    document.getElementById("postEditorPublished").checked = post ? post.published !== false : true;
+    document.getElementById("postEditorStatus").textContent = "";
+    document.getElementById("postEditorSave").innerHTML = post
+      ? '<i class="fa-solid fa-floppy-disk"></i> Save Changes'
+      : '<i class="fa-solid fa-paper-plane"></i> Publish Post';
+
+    document.getElementById("postEditorModal").classList.add("show");
+    document.getElementById("postEditorModal").setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    setTimeout(() => document.getElementById("postEditorPostTitle")?.focus(), 50);
+  }
+
+  function closePostEditor() {
+    document.getElementById("postEditorModal")?.classList.remove("show");
+    document.getElementById("postEditorModal")?.setAttribute("aria-hidden", "true");
+    document.body.classList.toggle("modal-open", Boolean(selectedPost));
+    editingPostId = null;
+  }
+
+  async function savePostFromEditor(event) {
+    event.preventDefault();
+    if (!isStaff() || !currentUser) return;
+
+    const title = document.getElementById("postEditorPostTitle").value.trim();
+    const body = document.getElementById("postEditorBody").value.trim();
+    const category = document.getElementById("postEditorCategory").value;
+    const image = document.getElementById("postEditorImage").value.trim();
+    const pinned = document.getElementById("postEditorPinned").checked;
+    const commentsEnabled = document.getElementById("postEditorComments").checked;
+    const published = document.getElementById("postEditorPublished").checked;
+    const status = document.getElementById("postEditorStatus");
+    const button = document.getElementById("postEditorSave");
+
+    if (!title || !body) {
+      status.textContent = "Enter both a title and post message.";
+      status.style.color = "#ffcb6b";
+      return;
+    }
+
+    if (image) {
+      try {
+        const parsed = new URL(image);
+        if (!/^https?:$/.test(parsed.protocol)) throw new Error("Unsupported protocol");
+      } catch {
+        status.textContent = "Enter a valid HTTP or HTTPS image URL.";
+        status.style.color = "#ffcb6b";
+        return;
+      }
+    }
+
+    button.disabled = true;
+    status.textContent = editingPostId ? "Saving changes..." : "Publishing post...";
+    status.style.color = "#a7a3b3";
+
+    try {
+      const timestamp = firebase.database.ServerValue.TIMESTAMP;
+      const authorName = currentPlayer?.displayName || currentUser.displayName || "Rivals Gauntlet";
+
+      if (editingPostId) {
+        await database.ref(`officialPosts/${editingPostId}`).update({
+          title,
+          body,
+          category,
+          image,
+          pinned,
+          commentsEnabled,
+          published,
+          updatedAt: timestamp,
+          updatedBy: currentUser.uid
+        });
+
+        setPostsStatus("Post updated.", "#4fd6a2");
+      } else {
+        const postRef = database.ref("officialPosts").push();
+
+        await postRef.set({
+          authorId: currentUser.uid,
+          authorName,
+          title,
+          body,
+          category,
+          image,
+          pinned,
+          commentsEnabled,
+          published,
+          commentCount: 0,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          updatedBy: currentUser.uid
+        });
+
+        setPostsStatus(published ? "Post published." : "Draft created.", "#4fd6a2");
+      }
+
+      closePostEditor();
+    } catch (error) {
+      status.textContent = String(error?.code || "").toLowerCase().includes("permission")
+        ? "Firebase denied this staff post write."
+        : error.message || "The post could not be saved.";
+      status.style.color = "#ff6a7f";
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function deletePost(postId) {
+    if (!isStaff() || !currentUser) return;
+
+    const post = officialPosts.find(item => item.id === postId);
+    if (!post) return;
+
+    const confirmed = window.confirm(
+      `Delete “${post.title || "Official Update"}”?\n\nThis permanently removes the post and its comments.`
+    );
+    if (!confirmed) return;
+
+    try {
+      await database.ref().update({
+        [`officialPosts/${postId}`]: null,
+        [`postComments/${postId}`]: null
+      });
+
+      try {
+        await database.ref().update({
+          [`postLikes/${postId}`]: null,
+          [`postCommentLikes/${postId}`]: null
+        });
+      } catch (cleanupError) {
+        console.warn("Like cleanup will be available after like rules are published:", cleanupError);
+      }
+
+      if (selectedPost?.id === postId) closePostDiscussion();
+      setPostsStatus("Post deleted.", "#ffcb6b");
+    } catch (error) {
+      setPostsStatus(
+        String(error?.code || "").toLowerCase().includes("permission")
+          ? "Firebase denied this staff post deletion."
+          : error.message || "The post could not be deleted.",
+        "#ff6a7f"
+      );
+    }
   }
 
   document.addEventListener("click", event => {
@@ -2038,7 +2677,8 @@
     const shareButton = event.target.closest("[data-share-post]");
     const likeCommentButton = event.target.closest("[data-like-comment]");
     const deleteCommentButton = event.target.closest("[data-delete-comment]");
-    const categoryButton = event.target.closest("[data-category-filter]");
+    const editPostButton = event.target.closest("[data-edit-post]");
+    const deletePostButton = event.target.closest("[data-delete-post]");
     const feedTab = event.target.closest("[data-feed-tab]");
 
     if (openButton) openPostDiscussion(openButton.dataset.openPost);
@@ -2046,11 +2686,8 @@
     if (shareButton) sharePost(shareButton.dataset.sharePost);
     if (likeCommentButton) toggleCommentLike(likeCommentButton.dataset.likeComment);
     if (deleteCommentButton) handleDeleteComment(deleteCommentButton.dataset.deleteComment);
-
-    if (categoryButton) {
-      document.getElementById("postCategoryFilter").value = categoryButton.dataset.categoryFilter;
-      renderOfficialPosts();
-    }
+    if (editPostButton) openPostEditor(editPostButton.dataset.editPost);
+    if (deletePostButton) deletePost(deletePostButton.dataset.deletePost);
 
     if (feedTab) {
       activeFeedTab = feedTab.dataset.feedTab;
@@ -2060,9 +2697,8 @@
   });
 
   document.addEventListener("submit", event => {
-    if (event.target.id === "postCommentForm") {
-      handlePostCommentSubmit(event);
-    }
+    if (event.target.id === "postCommentForm") handlePostCommentSubmit(event);
+    if (event.target.id === "postEditorForm") savePostFromEditor(event);
   });
 
   document.addEventListener("input", event => {
@@ -2074,64 +2710,84 @@
 
   document.getElementById("postCategoryFilter")?.addEventListener("change", renderOfficialPosts);
   document.getElementById("postCommentSort")?.addEventListener("change", renderPostComments);
+  document.getElementById("postsRefreshButton")?.addEventListener("click", refreshFeed);
+  document.getElementById("postsCreateButton")?.addEventListener("click", () => openPostEditor());
   document.getElementById("postDiscussionClose")?.addEventListener("click", () => closePostDiscussion());
   document.querySelector(".post-discussion-backdrop")?.addEventListener("click", () => closePostDiscussion());
-  document.getElementById("postsRefreshButton")?.addEventListener("click", refreshFeed);
+  document.getElementById("postEditorClose")?.addEventListener("click", closePostEditor);
+  document.querySelector(".post-editor-backdrop")?.addEventListener("click", closePostEditor);
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && selectedPost) closePostDiscussion();
+    if (event.key !== "Escape") return;
+    if (document.getElementById("postEditorModal")?.classList.contains("show")) {
+      closePostEditor();
+    } else if (selectedPost) {
+      closePostDiscussion();
+    }
   });
 
   window.addEventListener("popstate", () => {
     const requestedPostId = new URLSearchParams(window.location.search).get("post");
+    if (requestedPostId) openPostDiscussion(requestedPostId, false);
+    else if (selectedPost) closePostDiscussion(false);
+  });
 
-    if (requestedPostId) {
-      openPostDiscussion(requestedPostId, false);
-    } else if (selectedPost) {
-      closePostDiscussion(false);
+  auth.onAuthStateChanged(async user => {
+    if (stopPlayerListener) {
+      stopPlayerListener();
+      stopPlayerListener = null;
+    }
+
+    currentUser = user || null;
+    currentPlayer = null;
+    currentRole = "player";
+
+    if (user) {
+      const playerRef = database.ref(`players/${user.uid}`);
+      const playerHandler = snapshot => {
+        currentPlayer = { uid: user.uid, ...(snapshot.val() || {}) };
+        if (selectedPost) renderCommentComposer();
+      };
+
+      playerRef.on("value", playerHandler);
+      stopPlayerListener = () => playerRef.off("value", playerHandler);
+
+      try {
+        const roleSnapshot = await database.ref(`users/${user.uid}/role`).once("value");
+        const role = String(roleSnapshot.val() || "player").toLowerCase();
+        currentRole = role === "owner" || role === "admin" ? role : "player";
+      } catch (error) {
+        console.warn("Post staff role could not be read:", error);
+        currentRole = "player";
+      }
+    }
+
+    attachPostLikesListener();
+    renderStaffControls();
+    if (selectedPost) {
+      renderCommentComposer();
+      listenToSelectedCommentLikes(selectedPost.id);
     }
   });
 
-  function logoutUser() {
-    auth.signOut().then(() => {
-      window.location.href = "login.html";
-    });
-  }
+  RGPosts.listenToPosts(posts => {
+    officialPosts = posts;
+    renderOfficialPosts();
 
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    currentUser = user;
-
-    RGNotificationCenter.init(user.uid, "#postsNotificationMount");
-    document.getElementById("postsPublicProfileBtn").href = `player.html?id=${user.uid}`;
-
-    database.ref(`players/${user.uid}`).on("value", snapshot => {
-      currentPlayer = {
-        uid: user.uid,
-        ...(snapshot.val() || {})
-      };
-
-      if (selectedPost) renderCommentComposer();
-    });
-
-    attachPostLikesListener();
-
-    RGPosts.listenToPosts(posts => {
-      officialPosts = posts;
-      renderOfficialPosts();
-
-      const requestedPostId = new URLSearchParams(window.location.search).get("post");
-
-      if (requestedPostId && !selectedPost) {
-        openPostDiscussion(requestedPostId, false);
+    const requestedPostId = new URLSearchParams(window.location.search).get("post");
+    if (requestedPostId && !selectedPost) {
+      openPostDiscussion(requestedPostId, false);
+    } else if (selectedPost) {
+      const refreshedPost = officialPosts.find(post => post.id === selectedPost.id);
+      if (refreshedPost) {
+        selectedPost = refreshedPost;
+        renderSelectedPost();
+        renderCommentComposer();
       }
-    });
+    }
   });
 </script>
 
 </body>
+
 </html>

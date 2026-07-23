@@ -1433,6 +1433,92 @@
       box-shadow: 0 0 0 3px rgba(154, 124, 255, 0.08);
     }
 
+    .post-editor-image-picker {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .post-editor-image-button,
+    .post-editor-image-remove {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 13px;
+      border: 1px solid rgba(184, 164, 255, 0.34);
+      border-radius: 10px;
+      color: #e7e0ff;
+      background: rgba(154, 124, 255, 0.09);
+      cursor: pointer;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: 0.16s ease;
+    }
+
+    .post-editor-image-button:hover {
+      border-color: rgba(184, 164, 255, 0.62);
+      background: rgba(154, 124, 255, 0.16);
+    }
+
+    .post-editor-image-remove {
+      border-color: rgba(255, 91, 117, 0.24);
+      color: #ff9bad;
+      background: rgba(255, 91, 117, 0.05);
+    }
+
+    .post-editor-image-remove:hover {
+      border-color: rgba(255, 91, 117, 0.52);
+      background: rgba(255, 91, 117, 0.11);
+    }
+
+    .post-editor-image-remove[hidden] {
+      display: none !important;
+    }
+
+    .post-editor-image-name {
+      min-width: 0;
+      flex: 1 1 160px;
+      overflow: hidden;
+      color: var(--feed-muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .post-editor-image-help {
+      display: block;
+      margin-top: 7px;
+      color: var(--feed-dim);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .post-editor-image-preview {
+      position: relative;
+      margin-top: 11px;
+      overflow: hidden;
+      border: 1px solid var(--feed-border);
+      border-radius: 13px;
+      background: #09090e;
+    }
+
+    .post-editor-image-preview[hidden] {
+      display: none !important;
+    }
+
+    .post-editor-image-preview img {
+      display: block;
+      width: 100%;
+      max-height: 330px;
+      object-fit: contain;
+      background: #09090e;
+    }
+
     .post-editor-options {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1742,9 +1828,39 @@
           </select>
         </div>
 
-        <div class="post-editor-field">
-          <label for="postEditorImage">Image URL</label>
-          <input id="postEditorImage" type="url" maxlength="500" placeholder="https://...">
+        <div class="post-editor-field wide">
+          <label>Post Image</label>
+
+          <input
+            id="postEditorImageFile"
+            type="file"
+            accept="image/*"
+            hidden
+          >
+
+          <input id="postEditorImage" type="hidden">
+
+          <div class="post-editor-image-picker">
+            <button id="postEditorImageChoose" class="post-editor-image-button" type="button">
+              <i class="fa-solid fa-image"></i>
+              Choose from Photos
+            </button>
+
+            <button id="postEditorImageRemove" class="post-editor-image-remove" type="button" hidden>
+              <i class="fa-solid fa-trash"></i>
+              Remove Image
+            </button>
+
+            <span id="postEditorImageName" class="post-editor-image-name">No image selected</span>
+          </div>
+
+          <small class="post-editor-image-help">
+            Select an image from your camera roll. It will be automatically resized and optimized before the post is saved.
+          </small>
+
+          <div id="postEditorImagePreview" class="post-editor-image-preview" hidden>
+            <img id="postEditorImagePreviewImage" alt="Selected post image preview">
+          </div>
         </div>
       </div>
 
@@ -2515,6 +2631,148 @@
       });
   }
 
+  function updatePostEditorImagePreview(imageValue = "", fileName = "") {
+    const hiddenInput = document.getElementById("postEditorImage");
+    const fileInput = document.getElementById("postEditorImageFile");
+    const preview = document.getElementById("postEditorImagePreview");
+    const previewImage = document.getElementById("postEditorImagePreviewImage");
+    const removeButton = document.getElementById("postEditorImageRemove");
+    const name = document.getElementById("postEditorImageName");
+
+    if (hiddenInput) hiddenInput.value = imageValue || "";
+
+    if (!imageValue) {
+      if (preview) preview.hidden = true;
+      if (previewImage) previewImage.removeAttribute("src");
+      if (removeButton) removeButton.hidden = true;
+      if (name) name.textContent = "No image selected";
+      return;
+    }
+
+    if (previewImage) previewImage.src = imageValue;
+    if (preview) preview.hidden = false;
+    if (removeButton) removeButton.hidden = false;
+    if (name) name.textContent = fileName || (imageValue.startsWith("data:image/") ? "Selected image" : "Current post image");
+
+    if (fileInput && !fileName) fileInput.value = "";
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("The selected image could not be read."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function loadPostImage(source) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error("The selected image format could not be opened."));
+      image.src = source;
+    });
+  }
+
+  async function optimizePostImage(file) {
+    if (!file || !String(file.type || "").startsWith("image/")) {
+      throw new Error("Choose an image file from your camera roll.");
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      throw new Error("Choose an image smaller than 20 MB.");
+    }
+
+    const source = await readFileAsDataUrl(file);
+    const image = await loadPostImage(source);
+    const maxDimension = 1600;
+    const width = Number(image.naturalWidth || image.width || 1);
+    const height = Number(image.naturalHeight || image.height || 1);
+    const scale = Math.min(1, maxDimension / Math.max(width, height));
+    const outputWidth = Math.max(1, Math.round(width * scale));
+    const outputHeight = Math.max(1, Math.round(height * scale));
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d", { alpha: false });
+
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+
+    if (!context) {
+      throw new Error("This browser could not prepare the selected image.");
+    }
+
+    context.fillStyle = "#09090e";
+    context.fillRect(0, 0, outputWidth, outputHeight);
+    context.drawImage(image, 0, 0, outputWidth, outputHeight);
+
+    let quality = 0.86;
+    let optimized = canvas.toDataURL("image/jpeg", quality);
+
+    while (optimized.length > 1500000 && quality > 0.58) {
+      quality -= 0.07;
+      optimized = canvas.toDataURL("image/jpeg", quality);
+    }
+
+    if (optimized.length > 1900000) {
+      throw new Error("The image is still too large after optimization. Choose a smaller image.");
+    }
+
+    return optimized;
+  }
+
+  async function handlePostImageSelection(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const chooseButton = document.getElementById("postEditorImageChoose");
+    const status = document.getElementById("postEditorStatus");
+
+    if (chooseButton) {
+      chooseButton.disabled = true;
+      chooseButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Optimizing';
+    }
+
+    if (status) {
+      status.textContent = "Preparing image...";
+      status.style.color = "#a7a3b3";
+    }
+
+    try {
+      const optimized = await optimizePostImage(file);
+      updatePostEditorImagePreview(optimized, file.name || "Selected image");
+
+      if (status) {
+        status.textContent = "Image ready.";
+        status.style.color = "#4fd6a2";
+      }
+    } catch (error) {
+      event.target.value = "";
+
+      if (status) {
+        status.textContent = error.message || "The image could not be prepared.";
+        status.style.color = "#ff6a7f";
+      }
+    } finally {
+      if (chooseButton) {
+        chooseButton.disabled = false;
+        chooseButton.innerHTML = '<i class="fa-solid fa-image"></i> Choose from Photos';
+      }
+    }
+  }
+
+  function removePostEditorImage() {
+    const fileInput = document.getElementById("postEditorImageFile");
+    if (fileInput) fileInput.value = "";
+    updatePostEditorImagePreview("");
+
+    const status = document.getElementById("postEditorStatus");
+    if (status) {
+      status.textContent = "Image removed from this post.";
+      status.style.color = "#ffcb6b";
+    }
+  }
+
   function openPostEditor(postId = null) {
     if (!isStaff()) return;
 
@@ -2525,7 +2783,8 @@
     document.getElementById("postEditorPostTitle").value = post?.title || "";
     document.getElementById("postEditorBody").value = post?.body || "";
     document.getElementById("postEditorCategory").value = post?.category || "announcement";
-    document.getElementById("postEditorImage").value = post?.image || "";
+    document.getElementById("postEditorImageFile").value = "";
+    updatePostEditorImagePreview(post?.image || "");
     document.getElementById("postEditorPinned").checked = Boolean(post?.pinned);
     document.getElementById("postEditorComments").checked = post ? post.commentsEnabled !== false : true;
     document.getElementById("postEditorPublished").checked = post ? post.published !== false : true;
@@ -2568,12 +2827,12 @@
       return;
     }
 
-    if (image) {
+    if (image && !image.startsWith("data:image/")) {
       try {
         const parsed = new URL(image);
         if (!/^https?:$/.test(parsed.protocol)) throw new Error("Unsupported protocol");
       } catch {
-        status.textContent = "Enter a valid HTTP or HTTPS image URL.";
+        status.textContent = "The selected post image is invalid.";
         status.style.color = "#ffcb6b";
         return;
       }
@@ -2717,6 +2976,11 @@
   document.querySelector(".post-discussion-backdrop")?.addEventListener("click", () => closePostDiscussion());
   document.getElementById("postEditorClose")?.addEventListener("click", closePostEditor);
   document.querySelector(".post-editor-backdrop")?.addEventListener("click", closePostEditor);
+  document.getElementById("postEditorImageChoose")?.addEventListener("click", () => {
+    document.getElementById("postEditorImageFile")?.click();
+  });
+  document.getElementById("postEditorImageFile")?.addEventListener("change", handlePostImageSelection);
+  document.getElementById("postEditorImageRemove")?.addEventListener("click", removePostEditorImage);
 
   document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;

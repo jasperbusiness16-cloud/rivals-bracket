@@ -3,78 +3,4311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1920, initial-scale=1.0">
-
-  <title>Rivals Gauntlet | Tournament Hub</title>
+  <title>Rivals Gauntlet | Intermission</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="tournament-hub.css?v=1">
+  <style>
+    :root{
+      --bg:#06060b;
+      --panel:rgba(13,12,21,.94);
+      --panel-2:rgba(18,15,29,.92);
+      --line:rgba(204,190,255,.13);
+      --line-strong:rgba(193,174,255,.3);
+      --text:#f8f5ff;
+      --soft:#c9c2d4;
+      --muted:#938b9f;
+      --dim:#655e70;
+      --purple:#9a7cff;
+      --purple-bright:#c7b7ff;
+      --purple-rgb:154,124,255;
+      --cyan:#79d9ff;
+      --cyan-rgb:121,217,255;
+      --green:#62e1a6;
+      --yellow:#f2c66c;
+      --red:#ff718a;
+      --break-progress:0deg;
+      --slide-duration:12000ms;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+      margin:0;
+      overflow:hidden;
+      background:var(--bg);
+    }
+
+    body{
+      color:var(--text);
+      font-family:"Rajdhani",Arial,sans-serif;
+    }
+
+    .stage{
+      position:relative;
+      width:1920px;
+      height:1080px;
+      overflow:hidden;
+      isolation:isolate;
+
+      background:
+        radial-gradient(
+          circle at 25% 38%,
+          rgba(var(--purple-rgb),.13),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 82% 38%,
+          rgba(var(--cyan-rgb),.075),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 52% 100%,
+          rgba(73,43,144,.12),
+          transparent 38%
+        ),
+        linear-gradient(
+          145deg,
+          #110d1d 0%,
+          #0a0912 48%,
+          #06060b 100%
+        );
+    }
+
+    .stage::before{
+      content:"";
+      position:absolute;
+      inset:-70px;
+      z-index:-6;
+
+      background:
+        linear-gradient(
+          116deg,
+          transparent 0 22%,
+          rgba(255,255,255,.012) 22.15% 22.42%,
+          transparent 22.58% 75%,
+          rgba(255,255,255,.01) 75.15% 75.42%,
+          transparent 75.58%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 106px,
+          rgba(255,255,255,.008) 107px,
+          transparent 108px 214px
+        );
+
+      animation:
+        bgDrift 36s ease-in-out
+        infinite alternate;
+    }
+
+    .stage::after{
+      content:"RG";
+      position:absolute;
+      left:51%;
+      top:51%;
+      z-index:-5;
+
+      color:rgba(255,255,255,.013);
+
+      font-size:690px;
+      font-weight:800;
+      letter-spacing:-.13em;
+      line-height:.72;
+
+      transform:
+        translate(-49%,-50%);
+    }
+
+    .grid{
+      position:absolute;
+      inset:-130px;
+      z-index:-4;
+
+      opacity:.34;
+
+      background-image:
+        linear-gradient(
+          rgba(var(--purple-rgb),.04) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.04) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        84px 84px;
+
+      transform:
+        perspective(760px)
+        rotateX(68deg)
+        translateY(470px)
+        scale(1.32);
+
+      transform-origin:
+        center bottom;
+
+      mask-image:
+        linear-gradient(
+          to top,
+          black,
+          transparent 78%
+        );
+
+      animation:
+        gridMove 24s linear infinite;
+    }
+
+    .ambient{
+      position:absolute;
+      z-index:-3;
+
+      width:520px;
+      height:520px;
+
+      border-radius:50%;
+
+      filter:blur(18px);
+      opacity:.33;
+    }
+
+    .ambient.left{
+      left:-250px;
+      top:180px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb),.19),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat 15s ease-in-out
+        infinite alternate;
+    }
+
+    .ambient.right{
+      right:-250px;
+      top:110px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--cyan-rgb),.12),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat 18s ease-in-out
+        infinite alternate-reverse;
+    }
+
+    .frame{
+      position:absolute;
+      inset:28px;
+      z-index:50;
+
+      pointer-events:none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.1);
+
+      clip-path:polygon(
+        0 0,
+        18% 0,
+        19% 6px,
+        81% 6px,
+        82% 0,
+        100% 0,
+        100% 28%,
+        calc(100% - 6px) 29%,
+        calc(100% - 6px) 71%,
+        100% 72%,
+        100% 100%,
+        82% 100%,
+        81% calc(100% - 6px),
+        19% calc(100% - 6px),
+        18% 100%,
+        0 100%,
+        0 72%,
+        6px 71%,
+        6px 29%,
+        0 28%
+      );
+    }
+
+    .header{
+      position:absolute;
+      left:58px;
+      right:58px;
+      top:42px;
+      z-index:30;
+
+      display:grid;
+
+      grid-template-columns:
+        auto
+        minmax(0,1fr)
+        auto;
+
+      align-items:center;
+      gap:22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      min-width:0;
+    }
+
+    .mark{
+      position:relative;
+
+      width:58px;
+      height:58px;
+
+      display:grid;
+      place-items:center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.42);
+
+      border-radius:15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.16),
+          rgba(8,7,13,.96) 68%
+        );
+
+      box-shadow:
+        inset 0 0 22px
+        rgba(var(--purple-rgb),.08),
+        0 0 28px
+        rgba(var(--purple-rgb),.1);
+
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+
+    .mark::before{
+      content:"";
+      position:absolute;
+      inset:6px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.045);
+
+      border-radius:10px;
+    }
+
+    .brand-copy span,
+    .brand-copy strong{
+      display:block;
+    }
+
+    .brand-copy span{
+      color:var(--purple-bright);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+    }
+
+    .brand-copy strong{
+      max-width:670px;
+      margin-top:4px;
+      overflow:hidden;
+
+      font-size:23px;
+      font-weight:800;
+      letter-spacing:.055em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .header-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.34),
+          transparent 76%
+        );
+    }
+
+    .header-status{
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+
+    .status-chip{
+      min-height:36px;
+
+      display:flex;
+      align-items:center;
+      gap:9px;
+
+      padding:0 14px;
+
+      border:
+        1px solid
+        rgba(242,198,108,.2);
+
+      border-radius:999px;
+
+      color:var(--yellow);
+
+      background:
+        rgba(242,198,108,.055);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .status-chip.online{
+      border-color:
+        rgba(98,225,166,.22);
+
+      color:var(--green);
+
+      background:
+        rgba(98,225,166,.055);
+    }
+
+    .status-chip.error{
+      border-color:
+        rgba(255,113,138,.23);
+
+      color:var(--red);
+
+      background:
+        rgba(255,113,138,.055);
+    }
+
+    .status-dot{
+      width:7px;
+      height:7px;
+
+      border-radius:50%;
+
+      background:currentColor;
+
+      box-shadow:
+        0 0 11px
+        currentColor;
+    }
+
+    .layout{
+      position:absolute;
+      left:56px;
+      right:56px;
+      top:132px;
+      bottom:92px;
+      z-index:10;
+
+      display:grid;
+
+      grid-template-rows:
+        510px
+        minmax(0,1fr);
+
+      gap:22px;
+    }
+
+    .top-grid{
+      min-height:0;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1.6fr)
+        minmax(440px,.8fr);
+
+      gap:22px;
+    }
+
+    .panel{
+      position:relative;
+      min-width:0;
+      overflow:hidden;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:25px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.014),
+          transparent 100px
+        ),
+        linear-gradient(
+          145deg,
+          rgba(23,18,38,.95),
+          rgba(8,8,14,.96)
+        );
+
+      box-shadow:
+        0 28px 74px
+        rgba(0,0,0,.42),
+        inset 0 1px 0
+        rgba(255,255,255,.025);
+    }
+
+    .panel::before{
+      content:"";
+
+      position:absolute;
+      left:7%;
+      right:7%;
+      top:0;
+
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.46) 24%,
+          rgba(224,214,255,.76) 50%,
+          rgba(var(--purple-rgb),.46) 76%,
+          transparent
+        );
+
+      opacity:.72;
+    }
+
+    .timer-panel{
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1fr)
+        430px;
+
+      align-items:center;
+      gap:10px;
+
+      padding:34px 40px;
+    }
+
+    .break-copy{
+      min-width:0;
+      padding-left:4px;
+    }
+
+    .break-eyebrow{
+      display:flex;
+      align-items:center;
+      gap:11px;
+
+      color:var(--purple-bright);
+
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .break-eyebrow::before{
+      content:"";
+
+      width:34px;
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 12px
+        rgba(var(--purple-rgb),.55);
+    }
+
+    .break-copy h1{
+      max-width:680px;
+
+      margin:15px 0 0;
+
+      font-size:70px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:.86;
+      text-transform:uppercase;
+    }
+
+    .break-copy p{
+      max-width:650px;
+
+      margin:18px 0 0;
+
+      color:var(--muted);
+
+      font-size:17px;
+      font-weight:600;
+      line-height:1.42;
+    }
+
+    .return-time{
+      width:max-content;
+      max-width:100%;
+      min-height:42px;
+
+      display:flex;
+      align-items:center;
+      gap:10px;
+
+      margin-top:23px;
+      padding:0 14px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.15);
+
+      border-radius:11px;
+
+      color:var(--soft);
+
+      background:
+        rgba(var(--purple-rgb),.035);
+
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .return-time b{
+      color:var(--purple-bright);
+    }
+
+    .timer-system{
+      position:relative;
+
+      width:400px;
+      height:400px;
+
+      display:grid;
+      place-items:center;
+
+      justify-self:end;
+    }
+
+    .timer-aura{
+      position:absolute;
+
+      width:380px;
+      height:380px;
+
+      border-radius:50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb),.16),
+          rgba(var(--purple-rgb),.035) 40%,
+          transparent 70%
+        );
+
+      filter:blur(7px);
+
+      animation:
+        breathe 5.8s
+        ease-in-out infinite;
+    }
+
+    .timer-ticks{
+      position:absolute;
+
+      width:364px;
+      height:364px;
+
+      border-radius:50%;
+
+      background:
+        repeating-conic-gradient(
+          from 0deg,
+          rgba(var(--purple-rgb),.38)
+          0deg 1deg,
+          transparent 1deg 8deg
+        );
+
+      -webkit-mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.6%,
+          black 49.1% 50%,
+          transparent 50.5%
+        );
+
+      mask:
+        radial-gradient(
+          circle,
+          transparent 0 48.6%,
+          black 49.1% 50%,
+          transparent 50.5%
+        );
+
+      animation:
+        rotate 52s linear infinite;
+
+      opacity:.62;
+    }
+
+    .timer-progress{
+      position:absolute;
+
+      width:312px;
+      height:312px;
+
+      border-radius:50%;
+
+      background:
+        conic-gradient(
+          from -90deg,
+          rgba(211,198,255,.96) 0deg,
+          var(--purple) var(--break-progress),
+          rgba(var(--purple-rgb),.08)
+          var(--break-progress) 360deg
+        );
+
+      -webkit-mask:
+        radial-gradient(
+          circle,
+          transparent 0 47.2%,
+          black 47.7% 50%,
+          transparent 50.5%
+        );
+
+      mask:
+        radial-gradient(
+          circle,
+          transparent 0 47.2%,
+          black 47.7% 50%,
+          transparent 50.5%
+        );
+
+      filter:
+        drop-shadow(
+          0 0 8px
+          rgba(var(--purple-rgb),.32)
+        );
+    }
+
+    .timer-core{
+      position:relative;
+      z-index:4;
+
+      width:286px;
+      height:210px;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.25);
+
+      border-radius:28px;
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(var(--purple-rgb),.13),
+          transparent 52%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(20,17,32,.97),
+          rgba(8,8,14,.98)
+        );
+
+      box-shadow:
+        0 28px 75px rgba(0,0,0,.52),
+        inset 0 1px 0 rgba(255,255,255,.04),
+        inset 0 0 50px rgba(var(--purple-rgb),.05),
+        0 0 0 8px rgba(var(--purple-rgb),.018);
+    }
+
+    .timer-core::before{
+      content:"";
+
+      position:absolute;
+      inset:8px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.04);
+
+      border-radius:20px;
+
+      clip-path:polygon(
+        0 0,
+        88% 0,
+        100% 24%,
+        100% 100%,
+        12% 100%,
+        0 76%
+      );
+    }
+
+    .timer-label{
+      position:relative;
+      z-index:2;
+
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+    }
+
+    .timer{
+      position:relative;
+      z-index:2;
+
+      min-width:260px;
+
+      margin-top:13px;
+
+      font-size:86px;
+      font-weight:800;
+      letter-spacing:.02em;
+      line-height:.82;
+
+      font-variant-numeric:
+        tabular-nums;
+
+      text-align:center;
+
+      text-shadow:
+        0 0 34px
+        rgba(var(--purple-rgb),.18);
+    }
+
+    .timer.returning{
+      font-size:39px;
+      letter-spacing:.08em;
+      line-height:.92;
+    }
+
+    .timer.tick{
+      animation:
+        timerTick .18s ease;
+    }
+
+    .stage.urgent .timer-core{
+      border-color:
+        rgba(242,198,108,.38);
+
+      box-shadow:
+        0 28px 75px rgba(0,0,0,.52),
+        0 0 38px rgba(242,198,108,.08);
+    }
+
+    .stage.final-ten .timer-core{
+      border-color:
+        rgba(255,113,138,.44);
+
+      animation:
+        urgentPulse 1s
+        ease-in-out infinite;
+    }
+
+    .up-next-panel{
+      display:grid;
+
+      grid-template-rows:
+        auto
+        minmax(0,1fr)
+        auto;
+    }
+
+    .panel-head{
+      min-height:66px;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+
+      padding:0 22px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+    }
+
+    .panel-head div span,
+    .panel-head div strong{
+      display:block;
+    }
+
+    .panel-head div span{
+      color:var(--purple-bright);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .panel-head div strong{
+      margin-top:3px;
+
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+
+    .panel-head small{
+      color:var(--dim);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+    }
+
+    .next-body{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+
+      padding:22px;
+    }
+
+    .next-round{
+      color:var(--purple-bright);
+
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.17em;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .next-team{
+      min-height:88px;
+
+      display:grid;
+
+      grid-template-columns:
+        62px
+        minmax(0,1fr);
+
+      align-items:center;
+      gap:14px;
+
+      margin-top:14px;
+      padding:12px 15px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.045),
+          rgba(255,255,255,.012)
+        );
+    }
+
+    .next-team.right{
+      grid-template-columns:
+        minmax(0,1fr)
+        62px;
+
+      text-align:right;
+    }
+
+    .team-logo{
+      width:62px;
+      height:62px;
+
+      display:grid;
+      place-items:center;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.24);
+
+      border-radius:14px;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.05);
+
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .right .team-logo{
+      border-color:
+        rgba(var(--cyan-rgb),.22);
+
+      color:#b9eaff;
+
+      background:
+        rgba(var(--cyan-rgb),.04);
+    }
+
+    .team-logo img{
+      width:100%;
+      height:100%;
+
+      object-fit:cover;
+    }
+
+    .next-team span,
+    .next-team strong{
+      display:block;
+    }
+
+    .next-team span{
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .next-team strong{
+      margin-top:4px;
+      overflow:hidden;
+
+      font-size:25px;
+      font-weight:800;
+      line-height:.96;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .next-vs{
+      width:58px;
+      height:58px;
+
+      display:grid;
+      place-items:center;
+
+      margin:12px auto 0;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.25);
+
+      border-radius:50%;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.055);
+
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .next-footer{
+      min-height:61px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+
+      padding:0 20px;
+
+      border-top:
+        1px solid
+        rgba(255,255,255,.055);
+
+      color:var(--muted);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .next-footer b{
+      color:var(--purple-bright);
+    }
+
+    .bottom-grid{
+      min-height:0;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1.55fr)
+        minmax(440px,.75fr);
+
+      gap:22px;
+    }
+
+    .feature-panel{
+      display:grid;
+
+      grid-template-rows:
+        62px
+        minmax(0,1fr);
+    }
+
+    .feature-head{
+      position:relative;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+    }
+
+    .feature-head h2{
+      margin:0;
+
+      color:var(--purple-bright);
+
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .slide-index{
+      position:absolute;
+      right:24px;
+
+      color:var(--dim);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.12em;
+    }
+
+    .slide-progress{
+      position:absolute;
+      left:0;
+      bottom:0;
+
+      width:0;
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.38);
+    }
+
+    .slide-progress.running{
+      animation:
+        slideProgress
+        var(--slide-duration)
+        linear forwards;
+    }
+
+    .feature-body{
+      min-height:0;
+
+      display:grid;
+      place-items:center;
+
+      padding:23px 28px 27px;
+
+      transition:
+        opacity .22s ease,
+        transform .28s
+        cubic-bezier(.2,.8,.2,1),
+        filter .22s ease;
+    }
+
+    .feature-body.changing{
+      opacity:0;
+
+      transform:
+        translateY(7px)
+        scale(.987);
+
+      filter:
+        blur(3px);
+    }
+
+    .feature-body.entering{
+      animation:
+        featureIn .48s
+        cubic-bezier(.18,.86,.24,1);
+    }
+
+    .feature-grid{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1.35fr)
+        minmax(310px,.65fr);
+
+      gap:16px;
+    }
+
+    .feature-copy,
+    .feature-side{
+      min-height:190px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:16px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.05),
+          rgba(255,255,255,.012)
+        );
+    }
+
+    .feature-copy{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+
+      padding:22px 27px;
+    }
+
+    .feature-kicker{
+      color:var(--purple-bright);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.19em;
+      text-transform:uppercase;
+    }
+
+    .feature-copy h3{
+      margin:8px 0 0;
+
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:.02em;
+      line-height:.96;
+      text-transform:uppercase;
+    }
+
+    .feature-copy p{
+      max-width:760px;
+
+      margin:11px 0 0;
+
+      color:var(--soft);
+
+      font-size:15px;
+      font-weight:600;
+      line-height:1.38;
+    }
+
+    .feature-pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+
+      margin-top:17px;
+    }
+
+    .feature-pills span{
+      min-height:34px;
+
+      display:flex;
+      align-items:center;
+      gap:7px;
+
+      padding:0 11px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.15);
+
+      border-radius:9px;
+
+      color:var(--soft);
+
+      background:
+        rgba(var(--purple-rgb),.032);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.055em;
+      text-transform:uppercase;
+    }
+
+    .feature-pills b{
+      color:var(--purple-bright);
+    }
+
+    .feature-side{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      padding:20px;
+
+      text-align:center;
+    }
+
+    .feature-side span{
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .feature-side strong{
+      margin-top:8px;
+
+      font-size:28px;
+      font-weight:800;
+      line-height:.98;
+      text-transform:uppercase;
+    }
+
+    .feature-url{
+      width:100%;
+
+      margin-top:17px;
+      padding:11px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.2);
+
+      border-radius:10px;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.045);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+    }
+
+    .progress-cards{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+      gap:12px;
+    }
+
+    .progress-card{
+      min-height:150px;
+
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+
+      padding:16px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:14px;
+
+      background:
+        rgba(255,255,255,.013);
+
+      text-align:center;
+    }
+
+    .progress-card span{
+      color:var(--dim);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .progress-card strong{
+      margin-top:8px;
+      overflow:hidden;
+
+      font-size:20px;
+      font-weight:800;
+      line-height:1.05;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .progress-card small{
+      margin-top:7px;
+
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+
+    .pool-slide{
+      width:100%;
+
+      display:grid;
+
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+      gap:12px;
+    }
+
+    .pool-stat{
+      min-height:154px;
+
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+
+      padding:17px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:14px;
+
+      background:
+        rgba(255,255,255,.013);
+
+      text-align:center;
+    }
+
+    .pool-stat span{
+      color:var(--dim);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+
+    .pool-stat strong{
+      margin-top:8px;
+
+      font-size:25px;
+      font-weight:800;
+      line-height:1;
+      text-transform:uppercase;
+    }
+
+    .goal-track{
+      width:100%;
+      height:6px;
+
+      margin-top:12px;
+
+      overflow:hidden;
+
+      border-radius:999px;
+
+      background:
+        rgba(255,255,255,.06);
+    }
+
+    .goal-fill{
+      height:100%;
+
+      border-radius:inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          #7955e8,
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 12px
+        rgba(var(--purple-rgb),.3);
+    }
+
+    .support-panel{
+      display:grid;
+
+      grid-template-rows:
+        62px
+        minmax(0,1fr);
+    }
+
+    .support-body{
+      min-height:0;
+
+      display:grid;
+
+      grid-template-rows:
+        1fr
+        1fr;
+
+      gap:0;
+    }
+
+    .support-section{
+      min-height:0;
+      padding:13px 15px;
+    }
+
+    .support-section + .support-section{
+      border-top:
+        1px solid
+        rgba(255,255,255,.055);
+    }
+
+    .support-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+
+      margin-bottom:8px;
+    }
+
+    .support-title strong{
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .support-title span{
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .support-list{
+      display:grid;
+      gap:5px;
+    }
+
+    .support-row{
+      min-height:43px;
+
+      display:grid;
+
+      grid-template-columns:
+        27px
+        minmax(0,1fr)
+        auto;
+
+      align-items:center;
+      gap:9px;
+
+      padding:7px 8px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.045);
+
+      border-radius:9px;
+
+      background:
+        rgba(255,255,255,.011);
+    }
+
+    .support-rank{
+      width:27px;
+      height:27px;
+
+      display:grid;
+      place-items:center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.16);
+
+      border-radius:8px;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.035);
+
+      font-size:9px;
+      font-weight:800;
+    }
+
+    .support-name{
+      min-width:0;
+      overflow:hidden;
+
+      font-size:11px;
+      font-weight:800;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .support-amount{
+      color:var(--purple-bright);
+
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .support-empty{
+      min-height:90px;
+
+      display:grid;
+      place-items:center;
+
+      padding:16px;
+
+      color:var(--muted);
+
+      font-size:11px;
+      font-weight:600;
+      text-align:center;
+    }
+
+    .footer{
+      position:absolute;
+      left:58px;
+      right:58px;
+      bottom:29px;
+      z-index:30;
+
+      display:grid;
+
+      grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+      align-items:center;
+      gap:22px;
+    }
+
+    .footer-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.3)
+        );
+    }
+
+    .footer-line:last-child{
+      transform:
+        scaleX(-1);
+    }
+
+    .footer-copy{
+      display:flex;
+      align-items:center;
+      gap:14px;
+
+      white-space:nowrap;
+    }
+
+    .footer-copy strong{
+      font-size:21px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .footer-copy i{
+      width:5px;
+      height:5px;
+
+      border-radius:50%;
+
+      background:var(--purple);
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.6);
+    }
+
+    .footer-copy span{
+      color:var(--muted);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+
+    @keyframes bgDrift{
+      from{
+        transform:
+          translate3d(-16px,-8px,0)
+          scale(1.015);
+      }
+
+      to{
+        transform:
+          translate3d(18px,10px,0)
+          scale(1.03);
+      }
+    }
+
+    @keyframes gridMove{
+      to{
+        background-position:
+          0 84px,
+          84px 0;
+      }
+    }
+
+    @keyframes ambientFloat{
+      from{
+        transform:
+          translate3d(-12px,-8px,0)
+          scale(.96);
+      }
+
+      to{
+        transform:
+          translate3d(18px,12px,0)
+          scale(1.05);
+      }
+    }
+
+    @keyframes breathe{
+      0%,
+      100%{
+        opacity:.58;
+        transform:scale(.96);
+      }
+
+      50%{
+        opacity:1;
+        transform:scale(1.04);
+      }
+    }
+
+    @keyframes rotate{
+      to{
+        transform:
+          rotate(360deg);
+      }
+    }
+
+    @keyframes timerTick{
+      50%{
+        transform:
+          scale(1.015);
+      }
+    }
+
+    @keyframes urgentPulse{
+      0%,
+      100%{
+        box-shadow:
+          0 28px 75px rgba(0,0,0,.52),
+          0 0 26px rgba(255,113,138,.05);
+      }
+
+      50%{
+        box-shadow:
+          0 28px 75px rgba(0,0,0,.52),
+          0 0 42px rgba(255,113,138,.13);
+      }
+    }
+
+    @keyframes featureIn{
+      from{
+        opacity:0;
+
+        transform:
+          translateY(-7px)
+          scale(.987);
+
+        filter:
+          blur(3px);
+      }
+
+      to{
+        opacity:1;
+        transform:none;
+        filter:none;
+      }
+    }
+
+    @keyframes slideProgress{
+      from{
+        width:0;
+      }
+
+      to{
+        width:100%;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <main class="hub-stage">
+  <main id="stage" class="stage">
+    <div class="grid" aria-hidden="true"></div>
+    <div class="ambient left" aria-hidden="true"></div>
+    <div class="ambient right" aria-hidden="true"></div>
+    <div class="frame" aria-hidden="true"></div>
 
-    <div class="hub-bg-grid"></div>
-    <div class="hub-red-core"></div>
-    <div class="hub-sweep"></div>
-    <div class="hub-particles dust-layer"></div>
-    <div class="hub-particles ember-layer"></div>
-    <div class="hub-frame"></div>
+    <header class="header">
+      <div class="brand">
+        <div
+          class="mark"
+          aria-hidden="true"
+        >
+          RG
+        </div>
 
-    <header class="hub-header">
-      <div class="brand-lockup">
-        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
-        <div>
-          <p>RIVALS GAUNTLET</p>
-          <h1 id="hubEventName">Rivals Gauntlet Open #1</h1>
+        <div class="brand-copy">
+          <span>
+            Rivals Gauntlet Intermission
+          </span>
+
+          <strong id="eventName">
+            RIVALS GAUNTLET
+          </strong>
         </div>
       </div>
 
-      <div class="hub-status">
-        <span></span>
-        <p>LIVE TOURNAMENT</p>
+      <div
+        class="header-line"
+        aria-hidden="true"
+      ></div>
+
+      <div class="header-status">
+        <div
+          id="connection"
+          class="status-chip"
+        >
+          <span class="status-dot"></span>
+
+          <span id="connectionText">
+            Connecting
+          </span>
+        </div>
       </div>
     </header>
 
-    <section class="hub-center">
-      <p class="hub-kicker" id="hubStatusText">WE’LL BE RIGHT BACK</p>
+    <section class="layout">
+      <div class="top-grid">
+        <section class="panel timer-panel">
+          <div class="break-copy">
+            <div
+              id="breakEyebrow"
+              class="break-eyebrow"
+            >
+              Live Tournament Break
+            </div>
 
-      <div class="timer-wrap">
-        <div class="timer-glow"></div>
-        <h2 id="hubTimer">03:00</h2>
-        <div class="timer-progress">
-          <div id="timerProgressFill"></div>
-        </div>
+            <h1 id="breakTitle">
+              We’ll Be Right Back
+            </h1>
+
+            <p id="breakDescription">
+              The next lobby is being prepared. Stay here for live tournament coverage, predictions and the next matchup.
+            </p>
+
+            <div
+              id="returnTime"
+              class="return-time"
+            >
+              <span>
+                Return Time
+              </span>
+
+              <b>
+                Waiting for Nexus break timer
+              </b>
+            </div>
+          </div>
+
+          <div class="timer-system">
+            <div
+              class="timer-aura"
+              aria-hidden="true"
+            ></div>
+
+            <div
+              class="timer-ticks"
+              aria-hidden="true"
+            ></div>
+
+            <div
+              class="timer-progress"
+              aria-hidden="true"
+            ></div>
+
+            <div class="timer-core">
+              <span
+                id="timerLabel"
+                class="timer-label"
+              >
+                Intermission Remaining
+              </span>
+
+              <div
+                id="timer"
+                class="timer"
+              >
+                --:--
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel up-next-panel">
+          <header class="panel-head">
+            <div>
+              <span>
+                Broadcast Queue
+              </span>
+
+              <strong>
+                Up Next
+              </strong>
+            </div>
+
+            <small id="nextFormat">
+              Awaiting Match
+            </small>
+          </header>
+
+          <div class="next-body">
+            <div
+              id="nextRound"
+              class="next-round"
+            >
+              NEXT MATCH
+            </div>
+
+            <div class="next-team">
+              <div
+                id="teamALogo"
+                class="team-logo"
+              >
+                A
+              </div>
+
+              <div>
+                <span>
+                  Team A
+                </span>
+
+                <strong id="teamAName">
+                  Awaiting Team
+                </strong>
+              </div>
+            </div>
+
+            <div class="next-vs">
+              VS
+            </div>
+
+            <div class="next-team right">
+              <div>
+                <span>
+                  Team B
+                </span>
+
+                <strong id="teamBName">
+                  Awaiting Team
+                </strong>
+              </div>
+
+              <div
+                id="teamBLogo"
+                class="team-logo"
+              >
+                B
+              </div>
+            </div>
+          </div>
+
+          <div class="next-footer">
+            <span id="nextFooterText">
+              Match queue updates from Nexus Live Operations
+            </span>
+          </div>
+        </section>
       </div>
 
-      <section class="feature-panel" id="featurePanel">
-        <div class="feature-content active" id="featureContent">
-          <!-- JS fills feature panel -->
-        </div>
-      </section>
-    </section>
+      <div class="bottom-grid">
+        <section class="panel feature-panel">
+          <header class="feature-head">
+            <h2 id="featureTitle">
+              Prediction Center
+            </h2>
 
-    <section class="info-strip">
-      <div class="info-card active" id="infoCard">
-        <!-- JS fills rotating info -->
+            <span
+              id="slideIndex"
+              class="slide-index"
+            >
+              01 / 05
+            </span>
+
+            <span
+              id="slideProgress"
+              class="slide-progress"
+            ></span>
+          </header>
+
+          <div
+            id="featureBody"
+            class="feature-body"
+          ></div>
+        </section>
+
+        <section class="panel support-panel">
+          <header class="feature-head">
+            <h2>
+              Prize Pool Supporters
+            </h2>
+          </header>
+
+          <div class="support-body">
+            <section class="support-section">
+              <div class="support-title">
+                <strong>
+                  Top Supporters
+                </strong>
+
+                <span>
+                  All Time
+                </span>
+              </div>
+
+              <div
+                id="topSupporters"
+                class="support-list"
+              ></div>
+            </section>
+
+            <section class="support-section">
+              <div class="support-title">
+                <strong>
+                  Recent Supporters
+                </strong>
+
+                <span>
+                  Newest
+                </span>
+              </div>
+
+              <div
+                id="recentSupporters"
+                class="support-list"
+              ></div>
+            </section>
+          </div>
+        </section>
       </div>
     </section>
 
-    <footer class="hub-footer">
-      <p id="hubWebsite">RIVALSGAUNTLET.COM</p>
-      <span></span>
-      <p>MARVEL RIVALS COMMUNITY TOURNAMENTS</p>
-      <span></span>
-      <p>JOIN THE DISCORD</p>
+    <footer class="footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-copy">
+        <strong id="website">
+          RIVALSGAUNTLET.COM
+        </strong>
+
+        <i></i>
+
+        <span>
+          Create Account • Predict Live • Follow The Tournament
+        </span>
+      </div>
+
+      <span class="footer-line"></span>
     </footer>
-
   </main>
+
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var connection =
+          document.getElementById(
+            "connection"
+          );
+
+        var connectionText =
+          document.getElementById(
+            "connectionText"
+          );
+
+        var timer =
+          document.getElementById(
+            "timer"
+          );
+
+        var breakDescription =
+          document.getElementById(
+            "breakDescription"
+          );
+
+        if (connection) {
+          connection.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionText) {
+          connectionText.textContent =
+            "SCRIPT ERROR";
+        }
+
+        if (timer) {
+          timer.textContent =
+            "ERROR";
+        }
+
+        if (breakDescription) {
+          breakDescription.textContent =
+            event.message ||
+            "The intermission overlay script stopped.";
+        }
+      }
+    );
+  </script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="../firebase.js"></script>
-  <script src="tournament-hub.js?v=1"></script>
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var DEFAULT_SLIDE_MS =
+        12000;
+
+      var state = {
+        site: {},
+        countdown: {},
+        donations: [],
+        teamData: {},
+        tournamentId: "open1"
+      };
+
+      var slideIndexValue = 0;
+      var slideTimer = null;
+      var slideSwapTimer = null;
+      var renderTimer = null;
+      var lastTimerText = "";
+
+      var teamsListenerRef = null;
+      var teamsListenerCallback = null;
+
+      var stage =
+        document.getElementById(
+          "stage"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      var breakEyebrow =
+        document.getElementById(
+          "breakEyebrow"
+        );
+
+      var breakTitle =
+        document.getElementById(
+          "breakTitle"
+        );
+
+      var breakDescription =
+        document.getElementById(
+          "breakDescription"
+        );
+
+      var returnTime =
+        document.getElementById(
+          "returnTime"
+        );
+
+      var timerLabel =
+        document.getElementById(
+          "timerLabel"
+        );
+
+      var timer =
+        document.getElementById(
+          "timer"
+        );
+
+      var nextRound =
+        document.getElementById(
+          "nextRound"
+        );
+
+      var nextFormat =
+        document.getElementById(
+          "nextFormat"
+        );
+
+      var teamAName =
+        document.getElementById(
+          "teamAName"
+        );
+
+      var teamBName =
+        document.getElementById(
+          "teamBName"
+        );
+
+      var teamALogo =
+        document.getElementById(
+          "teamALogo"
+        );
+
+      var teamBLogo =
+        document.getElementById(
+          "teamBLogo"
+        );
+
+      var nextFooterText =
+        document.getElementById(
+          "nextFooterText"
+        );
+
+      var featureTitle =
+        document.getElementById(
+          "featureTitle"
+        );
+
+      var featureBody =
+        document.getElementById(
+          "featureBody"
+        );
+
+      var slideIndex =
+        document.getElementById(
+          "slideIndex"
+        );
+
+      var slideProgress =
+        document.getElementById(
+          "slideProgress"
+        );
+
+      var topSupporters =
+        document.getElementById(
+          "topSupporters"
+        );
+
+      var recentSupporters =
+        document.getElementById(
+          "recentSupporters"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text ||
+          fallback ||
+          "";
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(
+            /&/g,
+            "&amp;"
+          )
+          .replace(
+            /</g,
+            "&lt;"
+          )
+          .replace(
+            />/g,
+            "&gt;"
+          )
+          .replace(
+            /"/g,
+            "&quot;"
+          )
+          .replace(
+            /'/g,
+            "&#039;"
+          );
+      }
+
+      function numberValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(value);
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function moneyValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(
+            String(
+              value == null
+                ? ""
+                : value
+            ).replace(
+              /[^0-9.-]/g,
+              ""
+            )
+          );
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function formatMoney(
+        value,
+        cents
+      ) {
+        return new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+
+            minimumFractionDigits:
+              cents
+                ? 2
+                : 0,
+
+            maximumFractionDigits:
+              cents
+                ? 2
+                : 0
+          }
+        ).format(
+          Math.max(
+            0,
+            numberValue(value)
+          )
+        );
+      }
+
+      function parseTimestamp(value) {
+        if (!value) {
+          return 0;
+        }
+
+        if (
+          typeof value === "number" &&
+          Number.isFinite(value)
+        ) {
+          return value;
+        }
+
+        var numeric =
+          Number(value);
+
+        if (
+          Number.isFinite(numeric) &&
+          numeric > 0
+        ) {
+          return numeric;
+        }
+
+        var parsed =
+          new Date(value).getTime();
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : 0;
+      }
+
+      function normalize(value) {
+        return clean(value)
+          .toLowerCase()
+          .replace(
+            /[^a-z0-9]/g,
+            ""
+          );
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0,2)
+            .toUpperCase();
+        }
+
+        return (
+          (
+            parts[0][0] ||
+            ""
+          ) +
+          (
+            parts[
+              parts.length - 1
+            ][0] ||
+            ""
+          )
+        ).toUpperCase();
+      }
+
+      function normalizeMatchLabel(value) {
+        return clean(value)
+          .replace(
+            /Grand Finals?/i,
+            "GRAND"
+          )
+          .split("•")[0]
+          .trim()
+          .toUpperCase();
+      }
+
+      function getRoundLabel(value) {
+        var label =
+          normalizeMatchLabel(value);
+
+        if (label === "GRAND") {
+          return "GRAND FINALS";
+        }
+
+        if (
+          /^SF[12]$/.test(label)
+        ) {
+          return (
+            "SEMIFINAL " +
+            label.slice(-1)
+          );
+        }
+
+        if (
+          /^QF[1-4]$/.test(label)
+        ) {
+          return (
+            "QUARTERFINAL " +
+            label.slice(-1)
+          );
+        }
+
+        var r16 =
+          label.match(
+            /^R16-?([1-8])$/
+          );
+
+        if (r16) {
+          return (
+            "ROUND OF 16 • MATCH " +
+            r16[1]
+          );
+        }
+
+        return label ||
+          "NEXT MATCH";
+      }
+
+      function getFormat(value) {
+        return clean(value)
+          .toLowerCase()
+          .indexOf(
+            "bo5"
+          ) !== -1
+            ? "BO5"
+            : "BO3";
+      }
+
+      function getTeamsArray() {
+        var teams =
+          state.teamData.teams ||
+          {};
+
+        var names =
+          state.teamData.teamNames ||
+          {};
+
+        var logos =
+          state.teamData.teamLogos ||
+          state.teamData.logos ||
+          {};
+
+        return Object.keys(teams)
+          .sort(
+            function (a,b) {
+              return (
+                Number(
+                  a.replace(
+                    /\D/g,
+                    ""
+                  )
+                ) -
+                Number(
+                  b.replace(
+                    /\D/g,
+                    ""
+                  )
+                )
+              );
+            }
+          )
+          .map(
+            function (
+              teamKey,
+              index
+            ) {
+              return {
+                teamKey: teamKey,
+
+                seed:
+                  index + 1,
+
+                teamName:
+                  clean(
+                    names[teamKey],
+                    "Team " +
+                    (
+                      index + 1
+                    )
+                  ),
+
+                logo:
+                  clean(
+                    logos[teamKey]
+                  ),
+
+                players:
+                  Array.isArray(
+                    teams[teamKey]
+                  )
+                    ? teams[
+                        teamKey
+                      ].filter(
+                        Boolean
+                      )
+                    : []
+              };
+            }
+          );
+      }
+
+      function getTeam(teamKey) {
+        var teams =
+          getTeamsArray();
+
+        var index;
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            teams[index].teamKey ===
+            teamKey
+          ) {
+            return teams[index];
+          }
+        }
+
+        return null;
+      }
+
+      function resolveTeam(value) {
+        var raw =
+          clean(value);
+
+        var teams =
+          getTeamsArray();
+
+        var index;
+        var match;
+
+        if (!raw) {
+          return null;
+        }
+
+        if (getTeam(raw)) {
+          return getTeam(raw);
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            normalize(
+              teams[index].teamName
+            ) ===
+            normalize(raw)
+          ) {
+            return teams[index];
+          }
+        }
+
+        match =
+          raw.match(
+            /^Team\s+(\d+)$/i
+          );
+
+        if (
+          match &&
+          teams[
+            Number(match[1]) - 1
+          ]
+        ) {
+          return teams[
+            Number(match[1]) - 1
+          ];
+        }
+
+        return {
+          teamKey: "",
+          teamName: raw,
+          logo: "",
+          seed: ""
+        };
+      }
+
+      function winnerTeam(field) {
+        return resolveTeam(
+          state.site[field]
+        );
+      }
+
+      function publishedMatchTeams(label) {
+        var key =
+          normalizeMatchLabel(label);
+
+        var teams =
+          getTeamsArray();
+
+        var match;
+        var number;
+
+        match =
+          key.match(
+            /^R16-?([1-8])$/
+          );
+
+        if (match) {
+          number =
+            Number(match[1]);
+
+          return [
+            teams[
+              (
+                number - 1
+              ) * 2
+            ] || null,
+
+            teams[
+              (
+                number - 1
+              ) * 2 + 1
+            ] || null
+          ];
+        }
+
+        match =
+          key.match(
+            /^QF([1-4])$/
+          );
+
+        if (match) {
+          number =
+            Number(match[1]);
+
+          if (
+            teams.length >= 16
+          ) {
+            return [
+              winnerTeam(
+                "r16m" +
+                (
+                  (
+                    number - 1
+                  ) * 2 + 1
+                ) +
+                "Winner"
+              ),
+
+              winnerTeam(
+                "r16m" +
+                (
+                  (
+                    number - 1
+                  ) * 2 + 2
+                ) +
+                "Winner"
+              )
+            ];
+          }
+
+          return [
+            teams[
+              (
+                number - 1
+              ) * 2
+            ] || null,
+
+            teams[
+              (
+                number - 1
+              ) * 2 + 1
+            ] || null
+          ];
+        }
+
+        if (key === "SF1") {
+          return [
+            winnerTeam(
+              "qf1Winner"
+            ),
+
+            winnerTeam(
+              "qf2Winner"
+            )
+          ];
+        }
+
+        if (key === "SF2") {
+          return [
+            winnerTeam(
+              "qf3Winner"
+            ),
+
+            winnerTeam(
+              "qf4Winner"
+            )
+          ];
+        }
+
+        if (key === "GRAND") {
+          return [
+            winnerTeam(
+              "sf1Winner"
+            ),
+
+            winnerTeam(
+              "sf2Winner"
+            )
+          ];
+        }
+
+        return [
+          null,
+          null
+        ];
+      }
+
+      function getNextMatch() {
+        var upNext =
+          state.countdown.upNext ||
+          {};
+
+        var label =
+          clean(
+            upNext.label,
+            "NO MATCH"
+          );
+
+        var published =
+          publishedMatchTeams(
+            label
+          );
+
+        var teamA =
+          published[0] ||
+          resolveTeam(
+            upNext.teamA
+          );
+
+        var teamB =
+          published[1] ||
+          resolveTeam(
+            upNext.teamB
+          );
+
+        return {
+          label: label,
+
+          round:
+            getRoundLabel(
+              label
+            ),
+
+          format:
+            getFormat(
+              label
+            ),
+
+          teamA: teamA,
+          teamB: teamB
+        };
+      }
+
+      function logoMarkup(
+        element,
+        team,
+        fallback
+      ) {
+        if (
+          team &&
+          team.logo
+        ) {
+          element.innerHTML =
+            '<img src="' +
+            escapeHtml(
+              team.logo
+            ) +
+            '" alt="' +
+            escapeHtml(
+              team.teamName
+            ) +
+            ' logo">';
+
+        } else {
+          element.textContent =
+            initials(
+              team &&
+              team.teamName
+                ? team.teamName
+                : fallback
+            );
+        }
+      }
+
+      function renderNextMatch() {
+        var match =
+          getNextMatch();
+
+        var hasTeams =
+          match.teamA &&
+          match.teamB;
+
+        nextRound.textContent =
+          match.round;
+
+        nextFormat.textContent =
+          hasTeams
+            ? match.format
+            : "Awaiting Match";
+
+        teamAName.textContent =
+          hasTeams
+            ? match.teamA
+                .teamName
+                .toUpperCase()
+            : "AWAITING TEAM";
+
+        teamBName.textContent =
+          hasTeams
+            ? match.teamB
+                .teamName
+                .toUpperCase()
+            : "AWAITING TEAM";
+
+        logoMarkup(
+          teamALogo,
+          match.teamA,
+          "A"
+        );
+
+        logoMarkup(
+          teamBLogo,
+          match.teamB,
+          "B"
+        );
+
+        nextFooterText.innerHTML =
+          hasTeams
+            ? '<b>' +
+              escapeHtml(
+                match.format
+              ) +
+              '</b> • Players entering lobby and broadcast setup in progress'
+            : 'Set Up Next from Nexus Live Operations';
+      }
+
+      function getBreakEndTime() {
+        return parseTimestamp(
+          state.countdown
+            .hubEndTime
+        );
+      }
+
+      function formatTimer(ms) {
+        var total =
+          Math.max(
+            0,
+            Math.ceil(
+              ms / 1000
+            )
+          );
+
+        var hours =
+          Math.floor(
+            total / 3600
+          );
+
+        var minutes =
+          Math.floor(
+            (
+              total % 3600
+            ) / 60
+          );
+
+        var seconds =
+          total % 60;
+
+        if (hours > 0) {
+          return (
+            String(hours)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(minutes)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(seconds)
+              .padStart(
+                2,
+                "0"
+              )
+          );
+        }
+
+        return (
+          String(minutes)
+            .padStart(
+              2,
+              "0"
+            ) +
+          ":" +
+          String(seconds)
+            .padStart(
+              2,
+              "0"
+            )
+        );
+      }
+
+      function formatReturnTime(stamp) {
+        try {
+          return new Intl.DateTimeFormat(
+            "en-US",
+            {
+              hour: "numeric",
+              minute: "2-digit",
+              second: "2-digit"
+            }
+          ).format(
+            new Date(stamp)
+          );
+
+        } catch (error) {
+          return new Date(
+            stamp
+          ).toLocaleTimeString();
+        }
+      }
+
+      function updateTimer() {
+        var endTime =
+          getBreakEndTime();
+
+        var duration =
+          Math.max(
+            1000,
+
+            numberValue(
+              state.countdown
+                .hubDurationMs,
+              0
+            )
+          );
+
+        var now =
+          Date.now();
+
+        var remaining;
+        var elapsed;
+        var ratio;
+        var text;
+
+        stage.classList.remove(
+          "urgent",
+          "final-ten"
+        );
+
+        if (
+          !endTime ||
+          !duration
+        ) {
+          timer.textContent =
+            "--:--";
+
+          timer.classList.remove(
+            "returning",
+            "tick"
+          );
+
+          timerLabel.textContent =
+            "Intermission Timer Ready";
+
+          breakEyebrow.textContent =
+            "Live Tournament Break";
+
+          breakTitle.textContent =
+            "We’ll Be Right Back";
+
+          breakDescription.textContent =
+            "Start a 3, 5 or 10 minute break from Nexus Live Operations. The timer will sync here instantly.";
+
+          returnTime.innerHTML =
+            '<span>Nexus Timer</span>' +
+            '<b>Waiting for break selection</b>';
+
+          stage.style.setProperty(
+            "--break-progress",
+            "0deg"
+          );
+
+          lastTimerText = "";
+
+          return;
+        }
+
+        remaining =
+          endTime -
+          now;
+
+        elapsed =
+          Math.max(
+            0,
+
+            duration -
+            Math.max(
+              0,
+              remaining
+            )
+          );
+
+        ratio =
+          Math.max(
+            0,
+
+            Math.min(
+              1,
+              elapsed /
+              duration
+            )
+          );
+
+        stage.style.setProperty(
+          "--break-progress",
+
+          Math.round(
+            ratio * 360
+          ) +
+          "deg"
+        );
+
+        if (remaining <= 0) {
+          timer.textContent =
+            "RETURNING";
+
+          timer.classList.add(
+            "returning"
+          );
+
+          timerLabel.textContent =
+            "Break Complete";
+
+          breakEyebrow.textContent =
+            "Broadcast Returning";
+
+          breakTitle.textContent =
+            "Back To The Gauntlet";
+
+          breakDescription.textContent =
+            "The break timer has ended. Tournament coverage is returning now.";
+
+          returnTime.innerHTML =
+            '<span>Status</span>' +
+            '<b>Return to broadcast</b>';
+
+          lastTimerText =
+            "RETURNING";
+
+          return;
+        }
+
+        text =
+          formatTimer(
+            remaining
+          );
+
+        timer.classList.remove(
+          "returning"
+        );
+
+        if (
+          text !==
+          lastTimerText
+        ) {
+          lastTimerText =
+            text;
+
+          timer.textContent =
+            text;
+
+          timer.classList.remove(
+            "tick"
+          );
+
+          void timer.offsetWidth;
+
+          timer.classList.add(
+            "tick"
+          );
+        }
+
+        timerLabel.textContent =
+          "Intermission Remaining";
+
+        breakEyebrow.textContent =
+          "Live Tournament Break";
+
+        breakTitle.textContent =
+          "We’ll Be Right Back";
+
+        breakDescription.textContent =
+          "The next lobby is being prepared. Stay here for live tournament coverage, predictions and the next matchup.";
+
+        returnTime.innerHTML =
+          '<span>Broadcast Returns</span>' +
+          '<b>' +
+          escapeHtml(
+            formatReturnTime(
+              endTime
+            )
+          ) +
+          '</b>';
+
+        if (
+          remaining <= 60000
+        ) {
+          stage.classList.add(
+            "urgent"
+          );
+        }
+
+        if (
+          remaining <= 10000
+        ) {
+          stage.classList.add(
+            "final-ten"
+          );
+        }
+      }
+
+      function normalizeDonations(raw) {
+        return Object.keys(
+          raw || {}
+        )
+          .map(
+            function (id) {
+              var record =
+                raw[id] ||
+                {};
+
+              return {
+                id: id,
+
+                name:
+                  clean(
+                    record.name ||
+                    record.displayName ||
+                    record.donorName ||
+                    record.fromName ||
+                    record.from_name,
+                    "Anonymous"
+                  ),
+
+                amount:
+                  moneyValue(
+                    record.amount ||
+                    record.amount_value
+                  ),
+
+                createdAt:
+                  parseTimestamp(
+                    record.createdAt ||
+                    record.timestamp ||
+                    record.receivedAt ||
+                    record.date
+                  )
+              };
+            }
+          )
+          .filter(
+            function (record) {
+              return (
+                record.amount >
+                0
+              );
+            }
+          )
+          .sort(
+            function (a,b) {
+              return (
+                b.createdAt -
+                a.createdAt
+              );
+            }
+          );
+      }
+
+      function groupedSupporters() {
+        var totals = {};
+
+        state.donations.forEach(
+          function (donation) {
+            var key =
+              donation.name
+                .toLowerCase();
+
+            if (!totals[key]) {
+              totals[key] = {
+                name:
+                  donation.name,
+
+                amount:0,
+                latest:0
+              };
+            }
+
+            totals[key].amount +=
+              donation.amount;
+
+            totals[key].latest =
+              Math.max(
+                totals[key].latest,
+                donation.createdAt
+              );
+          }
+        );
+
+        return Object.keys(totals)
+          .map(
+            function (key) {
+              return totals[key];
+            }
+          )
+          .sort(
+            function (a,b) {
+              return (
+                b.amount -
+                a.amount ||
+                b.latest -
+                a.latest
+              );
+            }
+          )
+          .slice(
+            0,
+            3
+          );
+      }
+
+      function supporterRow(
+        supporter,
+        rank,
+        recent
+      ) {
+        return (
+          '<div class="support-row">' +
+
+            '<span class="support-rank">' +
+              escapeHtml(
+                recent
+                  ? "+"
+                  : "#" + rank
+              ) +
+            '</span>' +
+
+            '<strong class="support-name">' +
+              escapeHtml(
+                supporter.name
+              ) +
+            '</strong>' +
+
+            '<strong class="support-amount">' +
+              (
+                recent
+                  ? "+"
+                  : ""
+              ) +
+              escapeHtml(
+                formatMoney(
+                  supporter.amount,
+                  false
+                )
+              ) +
+            '</strong>' +
+
+          '</div>'
+        );
+      }
+
+      function renderSupporters() {
+        var top =
+          groupedSupporters();
+
+        var recent =
+          state.donations.slice(
+            0,
+            3
+          );
+
+        topSupporters.innerHTML =
+          top.length
+            ? top
+                .map(
+                  function (
+                    supporter,
+                    index
+                  ) {
+                    return supporterRow(
+                      supporter,
+                      index + 1,
+                      false
+                    );
+                  }
+                )
+                .join("")
+            : '<div class="support-empty">Confirmed prize-pool supporters will appear here.</div>';
+
+        recentSupporters.innerHTML =
+          recent.length
+            ? recent
+                .map(
+                  function (
+                    supporter
+                  ) {
+                    return supporterRow(
+                      supporter,
+                      0,
+                      true
+                    );
+                  }
+                )
+                .join("")
+            : '<div class="support-empty">New prize-pool contributions will appear here.</div>';
+      }
+
+      function prizeTotals() {
+        var starting =
+          Math.max(
+            0,
+
+            moneyValue(
+              state.site
+                .startingPrizePool,
+
+              moneyValue(
+                state.site
+                  .prizePool,
+                0
+              )
+            )
+          );
+
+        var community =
+          state.donations.reduce(
+            function (
+              sum,
+              donation
+            ) {
+              return (
+                sum +
+                donation.amount
+              );
+            },
+            0
+          );
+
+        var published =
+          Math.max(
+            0,
+
+            moneyValue(
+              state.site
+                .prizePool,
+              0
+            )
+          );
+
+        var current =
+          Math.max(
+            published,
+            starting +
+            community
+          );
+
+        var goal =
+          Math.max(
+            1,
+
+            moneyValue(
+              state.site
+                .donationGoal,
+              250
+            )
+          );
+
+        var percent =
+          Math.max(
+            0,
+
+            Math.min(
+              100,
+
+              Math.round(
+                current /
+                goal *
+                100
+              )
+            )
+          );
+
+        return {
+          starting:starting,
+          community:community,
+          current:current,
+          goal:goal,
+          percent:percent
+        };
+      }
+
+      function currentStageLabel() {
+        var current =
+          clean(
+            state.site
+              .currentMatch,
+            "No Match Live"
+          );
+
+        if (
+          normalize(current) ===
+          "nomatchlive"
+        ) {
+          return "INTERMISSION";
+        }
+
+        return getRoundLabel(
+          current
+        );
+      }
+
+      function resultName(
+        field,
+        fallback
+      ) {
+        var team =
+          resolveTeam(
+            state.site[field]
+          );
+
+        return team
+          ? team.teamName
+          : fallback;
+      }
+
+      function makePredictionSlide() {
+        var current =
+          normalize(
+            state.site
+              .currentMatch
+          );
+
+        var bracketOpen =
+          !current ||
+          current ===
+            "nomatchlive";
+
+        return {
+          title:
+            "PREDICTION CENTER",
+
+          duration:
+            15000,
+
+          html:
+            '<div class="feature-grid">' +
+
+              '<div class="feature-copy">' +
+
+                '<span class="feature-kicker">' +
+                  'Bracket Pick’em + Live Predictions' +
+                '</span>' +
+
+                '<h3>' +
+                  'Make Every Match Matter' +
+                '</h3>' +
+
+                '<p>' +
+                  'Complete your bracket before the first match begins, then return throughout the tournament for live predictions that open before upcoming matchups.' +
+                '</p>' +
+
+                '<div class="feature-pills">' +
+                  '<span><b>01</b>Predict</span>' +
+                  '<span><b>02</b>Earn RP</span>' +
+                  '<span><b>03</b>Increase Predictor Ranking</span>' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="feature-side">' +
+
+                '<span>' +
+
+                  (
+                    bracketOpen
+                      ? 'Bracket Pick’em'
+                      : 'Live Prediction System'
+                  ) +
+
+                '</span>' +
+
+                '<strong>' +
+
+                  (
+                    bracketOpen
+                      ? 'Fill Out Your Bracket'
+                      : 'Return Before Every Match'
+                  ) +
+
+                '</strong>' +
+
+                '<div class="feature-url">' +
+                  'RIVALSGAUNTLET.COM/PREDICTIONS' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeAccountSlide() {
+        return {
+          title:
+            "CREATE YOUR RG ACCOUNT",
+
+          duration:
+            14000,
+
+          html:
+            '<div class="feature-grid">' +
+
+              '<div class="feature-copy">' +
+
+                '<span class="feature-kicker">' +
+                  'Your Tournament Profile' +
+                '</span>' +
+
+                '<h3>' +
+                  'One Account. Every Gauntlet.' +
+                '</h3>' +
+
+                '<p>' +
+                  'Create a free account to join predictions, earn RG Points, build your Predictor Rank and keep your tournament activity connected to one profile.' +
+                '</p>' +
+
+                '<div class="feature-pills">' +
+                  '<span><b>RG</b>Player Profile</span>' +
+                  '<span><b>RP</b>Rewards</span>' +
+                  '<span><b>PR</b>Predictor Rank</span>' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="feature-side">' +
+
+                '<span>' +
+                  'Join Rivals Gauntlet' +
+                '</span>' +
+
+                '<strong>' +
+                  'Create Your Account' +
+                '</strong>' +
+
+                '<div class="feature-url">' +
+                  'RIVALSGAUNTLET.COM/LOGIN' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeProgressSlide() {
+        var match =
+          getNextMatch();
+
+        return {
+          title:
+            "TOURNAMENT PROGRESS",
+
+          duration:
+            12000,
+
+          html:
+            '<div class="progress-cards">' +
+
+              '<div class="progress-card">' +
+                '<span>Current Stage</span>' +
+                '<strong>' +
+                  escapeHtml(
+                    currentStageLabel()
+                  ) +
+                '</strong>' +
+                '<small>Live tournament state</small>' +
+              '</div>' +
+
+              '<div class="progress-card">' +
+                '<span>QF Leaders</span>' +
+                '<strong>' +
+                  escapeHtml(
+                    resultName(
+                      "qf1Winner",
+                      "Results Pending"
+                    )
+                  ) +
+                '</strong>' +
+                '<small>Bracket updates live</small>' +
+              '</div>' +
+
+              '<div class="progress-card">' +
+                '<span>Next Match</span>' +
+                '<strong>' +
+                  escapeHtml(
+                    match.round
+                  ) +
+                '</strong>' +
+                '<small>' +
+                  escapeHtml(
+                    match.format
+                  ) +
+                '</small>' +
+              '</div>' +
+
+              '<div class="progress-card">' +
+                '<span>Grand Finals</span>' +
+                '<strong>Best Of 5</strong>' +
+                '<small>Championship series</small>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makePrizeSlide() {
+        var totals =
+          prizeTotals();
+
+        return {
+          title:
+            "LIVE PRIZE POOL",
+
+          duration:
+            12500,
+
+          html:
+            '<div class="pool-slide">' +
+
+              '<div class="pool-stat">' +
+                '<span>Current Prize Pool</span>' +
+                '<strong>' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.current,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="pool-stat">' +
+                '<span>Community Added</span>' +
+                '<strong>+' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.community,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="pool-stat">' +
+                '<span>Community Goal</span>' +
+                '<strong>' +
+                  totals.percent +
+                  '%' +
+                '</strong>' +
+
+                '<div class="goal-track">' +
+                  '<div class="goal-fill" style="width:' +
+                    totals.percent +
+                    '%">' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="pool-stat">' +
+                '<span>Add To The Pool</span>' +
+                '<strong>DONATE</strong>' +
+                '<div class="feature-url">' +
+                  'RIVALSGAUNTLET.COM/DONATE' +
+                '</div>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeWebsiteSlide() {
+        return {
+          title:
+            "RIVALSGAUNTLET.COM",
+
+          duration:
+            13500,
+
+          html:
+            '<div class="feature-grid">' +
+
+              '<div class="feature-copy">' +
+
+                '<span class="feature-kicker">' +
+                  'Follow The Entire Tournament' +
+                '</span>' +
+
+                '<h3>' +
+                  'The Broadcast Is Only Part Of The Gauntlet' +
+                '</h3>' +
+
+                '<p>' +
+                  'Visit the website for the live bracket, tournament information, predictions, prize-pool updates, official posts and your personal RG account.' +
+                '</p>' +
+
+                '<div class="feature-pills">' +
+                  '<span>Tournament</span>' +
+                  '<span>Predictions</span>' +
+                  '<span>Leaderboard</span>' +
+                  '<span>Account Center</span>' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="feature-side">' +
+
+                '<span>' +
+                  'The Home Of Rivals Gauntlet' +
+                '</span>' +
+
+                '<strong>' +
+                  'Stay Connected' +
+                '</strong>' +
+
+                '<div class="feature-url">' +
+                  'RIVALSGAUNTLET.COM' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function getSlides() {
+        return [
+          makePredictionSlide(),
+          makeAccountSlide(),
+          makeProgressSlide(),
+          makePrizeSlide(),
+          makeWebsiteSlide()
+        ];
+      }
+
+      function restartSlideProgress(
+        duration
+      ) {
+        slideProgress.classList.remove(
+          "running"
+        );
+
+        slideProgress.style.setProperty(
+          "--slide-duration",
+          duration + "ms"
+        );
+
+        void slideProgress.offsetWidth;
+
+        slideProgress.classList.add(
+          "running"
+        );
+      }
+
+      function scheduleNextSlide(
+        duration
+      ) {
+        clearTimeout(
+          slideTimer
+        );
+
+        slideTimer =
+          setTimeout(
+            function () {
+              renderSlide(
+                slideIndexValue + 1,
+                true,
+                true
+              );
+            },
+            duration
+          );
+      }
+
+      function renderSlide(
+        requestedIndex,
+        animate,
+        resetTimer
+      ) {
+        var slides =
+          getSlides();
+
+        var slide;
+
+        if (!slides.length) {
+          return;
+        }
+
+        slideIndexValue =
+          (
+            (
+              requestedIndex %
+              slides.length
+            ) +
+            slides.length
+          ) %
+          slides.length;
+
+        slide =
+          slides[
+            slideIndexValue
+          ];
+
+        function commit() {
+          featureTitle.textContent =
+            slide.title;
+
+          featureBody.innerHTML =
+            slide.html;
+
+          slideIndex.textContent =
+            String(
+              slideIndexValue + 1
+            ).padStart(
+              2,
+              "0"
+            ) +
+            " / " +
+            String(
+              slides.length
+            ).padStart(
+              2,
+              "0"
+            );
+
+          featureBody.classList.remove(
+            "changing",
+            "entering"
+          );
+
+          void featureBody.offsetWidth;
+
+          featureBody.classList.add(
+            "entering"
+          );
+
+          if (
+            resetTimer !== false
+          ) {
+            restartSlideProgress(
+              slide.duration ||
+              DEFAULT_SLIDE_MS
+            );
+
+            scheduleNextSlide(
+              slide.duration ||
+              DEFAULT_SLIDE_MS
+            );
+          }
+        }
+
+        clearTimeout(
+          slideSwapTimer
+        );
+
+        if (
+          animate === false ||
+          !featureBody.innerHTML
+        ) {
+          commit();
+          return;
+        }
+
+        featureBody.classList.add(
+          "changing"
+        );
+
+        slideSwapTimer =
+          setTimeout(
+            commit,
+            230
+          );
+      }
+
+      function getWebsite() {
+        var follow =
+          state.countdown.follow ||
+          {};
+
+        return clean(
+          state.countdown.website ||
+          follow.website ||
+          state.site.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      function scheduleRender() {
+        clearTimeout(
+          renderTimer
+        );
+
+        renderTimer =
+          setTimeout(
+            render,
+            100
+          );
+      }
+
+      function render() {
+        eventName.textContent =
+          clean(
+            state.site.eventName ||
+            state.countdown.eventName,
+            "RIVALS GAUNTLET"
+          )
+            .toUpperCase();
+
+        website.textContent =
+          getWebsite();
+
+        renderNextMatch();
+        renderSupporters();
+
+        renderSlide(
+          slideIndexValue,
+          false,
+          false
+        );
+
+        updateTimer();
+      }
+
+      function attachTeamsListener(
+        db,
+        tournamentId
+      ) {
+        if (
+          teamsListenerRef &&
+          teamsListenerCallback
+        ) {
+          teamsListenerRef.off(
+            "value",
+            teamsListenerCallback
+          );
+        }
+
+        state.tournamentId =
+          clean(
+            tournamentId,
+            "open1"
+          );
+
+        state.teamData = {};
+
+        teamsListenerRef =
+          db.ref(
+            "teams/" +
+            state.tournamentId
+          );
+
+        teamsListenerCallback =
+          function (snapshot) {
+            state.teamData =
+              snapshot.val() ||
+              {};
+
+            scheduleRender();
+          };
+
+        teamsListenerRef.on(
+          "value",
+          teamsListenerCallback,
+
+          function (error) {
+            console.warn(
+              "[RG INTERMISSION] Team data read failed:",
+              error
+            );
+          }
+        );
+      }
+
+      function connect() {
+        var db;
+
+        try {
+          if (
+            typeof firebase ===
+              "undefined" ||
+            !firebase.apps ||
+            firebase.apps.length === 0
+          ) {
+            throw new Error(
+              "Firebase is not initialized. Check ../firebase.js."
+            );
+          }
+
+          db =
+            firebase.database();
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() ===
+                true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connection.classList.remove(
+                "error"
+              );
+
+              connectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var nextSite =
+                snapshot.val() ||
+                {};
+
+              var nextTournament =
+                clean(
+                  nextSite.currentTournament,
+                  "open1"
+                );
+
+              var tournamentChanged =
+                nextTournament !==
+                state.tournamentId;
+
+              state.site =
+                nextSite;
+
+              if (
+                tournamentChanged ||
+                !teamsListenerRef
+              ) {
+                attachTeamsListener(
+                  db,
+                  nextTournament
+                );
+              }
+
+              scheduleRender();
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.countdown =
+                snapshot.val() ||
+                {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "BREAK DATA BLOCKED"
+                  : "BREAK DATA UNAVAILABLE";
+            }
+          );
+
+          db.ref(
+            "donations"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.donations =
+                normalizeDonations(
+                  snapshot.val()
+                );
+
+              scheduleRender();
+            },
+
+            function (error) {
+              state.donations = [];
+
+              renderSupporters();
+
+              console.warn(
+                "[RG INTERMISSION] Donations read failed:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          connection.classList.add(
+            "error"
+          );
+
+          connectionText.textContent =
+            "FIREBASE ERROR";
+
+          timer.textContent =
+            "ERROR";
+
+          breakDescription.textContent =
+            error.message ||
+            "Intermission startup failed.";
+        }
+      }
+
+      renderSupporters();
+
+      renderSlide(
+        0,
+        false,
+        true
+      );
+
+      updateTimer();
+
+      setInterval(
+        updateTimer,
+        250
+      );
+
+      connect();
+    })();
+  </script>
 </body>
 </html>

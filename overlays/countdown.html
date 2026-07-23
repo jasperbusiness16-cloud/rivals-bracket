@@ -1608,1318 +1608,1458 @@
     </section>
   </main>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+  window.addEventListener("error", function (event) {
+    var timer =
+      document.getElementById("timer");
 
-  <script src="../firebase.js?v=2"></script>
+    var schedule =
+      document.getElementById("schedule");
 
-  <script>
-    (() => {
-      "use strict";
+    var connection =
+      document.getElementById("connection");
 
-      const DEFAULT_ROTATION =
-        10000;
+    var connectionText =
+      document.getElementById("connectionText");
 
-      const DEFAULT_DURATION =
-        15 * 60 * 1000;
+    var body =
+      document.getElementById("rotationBody");
 
-      const data = {
-        countdown: {},
-        site: {},
-        donations: [],
+    if (connection) {
+      connection.classList.add("error");
+    }
 
-        cardIndex: 0,
-        cardTimer: null,
-        cardSpeed: DEFAULT_ROTATION,
+    if (connectionText) {
+      connectionText.textContent =
+        "SCRIPT ERROR";
+    }
 
-        tickTimer: null,
-        swapTimer: null,
-        pulseTimer: null,
+    if (timer) {
+      timer.textContent = "ERROR";
+    }
 
-        startStamp: 0,
-        initialRemaining: 0,
+    if (schedule) {
+      schedule.textContent =
+        event.message ||
+        "The countdown script stopped.";
+    }
 
-        lastText: "",
-        lastMinute: null,
+    if (body) {
+      body.innerHTML =
+        '<div style="' +
+          'width:100%;' +
+          'min-height:110px;' +
+          'display:flex;' +
+          'flex-direction:column;' +
+          'align-items:center;' +
+          'justify-content:center;' +
+          'gap:8px;' +
+          'text-align:center;' +
+        '">' +
+          '<small style="' +
+            'color:#ff718a;' +
+            'font-weight:800;' +
+            'letter-spacing:.14em;' +
+            'text-transform:uppercase;' +
+          '">' +
+            'JavaScript Error' +
+          '</small>' +
 
-        ended: false
-        countdownArmed: false,
-        };
-
-      const stage =
-        document.getElementById("stage");
-
-      const timer =
-        document.getElementById("timer");
-
-      const schedule =
-        document.getElementById("schedule");
-
-      const eventName =
-        document.getElementById("eventName");
-
-      const website =
-        document.getElementById("website");
-
-      const title =
-        document.getElementById("rotationTitle");
-
-      const body =
-        document.getElementById("rotationBody");
-
-      const slideIndex =
-        document.getElementById("slideIndex");
-
-      const starting =
-        document.getElementById("starting");
-
-      const connection =
-        document.getElementById("connection");
-
-      const connectionText =
-        document.getElementById("connectionText");
-
-      const clean = (
-        value,
-        fallback = ""
-      ) => {
-        const result =
-          String(
-            value == null
-              ? ""
-              : value
-          ).trim();
-
-        return result || fallback;
-      };
-
-      const escapeHtml = value =>
-        clean(value)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-
-      const toNumber = (
-        value,
-        fallback = 0
-      ) => {
-        const parsed =
-          Number(value);
-
-        return Number.isFinite(parsed)
-          ? parsed
-          : fallback;
-      };
-
-      const moneyNumber = (
-        value,
-        fallback = 0
-      ) => {
-        const parsed =
-          Number(
+          '<strong style="' +
+            'font-size:20px;' +
+            'text-transform:uppercase;' +
+          '">' +
             String(
-              value == null
-                ? ""
-                : value
-            ).replace(
-              /[^0-9.-]/g,
-              ""
+              event.message ||
+              "Unknown script error"
             )
-          );
-
-        return Number.isFinite(parsed)
-          ? parsed
-          : fallback;
-      };
-
-      const money = value =>
-        new Intl.NumberFormat(
-          "en-US",
-          {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-          }
-        ).format(
-          Math.max(
-            0,
-            toNumber(value)
-          )
-        );
-
-      function timestamp(value) {
-        if (!value) {
-          return 0;
-        }
-
-        if (
-          typeof value === "number"
-        ) {
-          return Number.isFinite(value)
-            ? value
-            : 0;
-        }
-
-        const numeric =
-          Number(value);
-
-        if (
-          Number.isFinite(numeric) &&
-          numeric > 0
-        ) {
-          return numeric;
-        }
-
-        const parsed =
-          new Date(value).getTime();
-
-        return Number.isFinite(parsed)
-          ? parsed
-          : 0;
-      }
-
-      function startTime() {
-  const now = Date.now();
-
-  const possibleTimes = [
-    data.countdown.startTime,
-    data.countdown.countdownDate,
-    data.site.countdownDate,
-    data.countdown.startTimeLocal
-  ];
-
-  /*
-   * Use the first future timestamp.
-   * Expired values are skipped instead of immediately
-   * triggering the Broadcast Starting screen.
-   */
-  for (const value of possibleTimes) {
-    const stamp = timestamp(value);
-
-    if (stamp > now) {
-      return stamp;
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;") +
+          '</strong>' +
+        '</div>';
     }
-  }
+  });
+</script>
 
-  /*
-   * Allow the starting screen to survive a browser refresh
-   * for ten minutes after a real countdown finishes.
-   */
-  for (const value of possibleTimes) {
-    const stamp = timestamp(value);
-    const age = now - stamp;
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    if (
-      stamp > 0 &&
-      age >= 0 &&
-      age <= 10 * 60 * 1000
-    ) {
-      return stamp;
-    }
-  }
+<script src="../firebase.js?v=2"></script>
 
-  return 0;
-}
+<script>
+(function () {
+  "use strict";
 
-      function eventTitle() {
-        return clean(
-          data.countdown.eventName ||
-          data.site.eventName,
-          "RIVALS GAUNTLET"
-        );
-      }
+  var DEFAULT_ROTATION_MS =
+    10000;
 
-      function siteName() {
-        return clean(
-          data.countdown.website ||
-          data.countdown.follow?.website ||
-          data.site.websiteUrl ||
-          data.site.website,
-          "RIVALSGAUNTLET.COM"
-        )
-          .replace(
-            /^https?:\/\//i,
-            ""
-          )
-          .replace(
-            /^www\./i,
-            ""
-          )
-          .replace(
-            /\/+$/,
-            ""
-          )
-          .toUpperCase();
-      }
+  var DEFAULT_COUNTDOWN_MS =
+    15 * 60 * 1000;
 
-      function team(index) {
-        return clean(
-          data.site[`team${index}`],
-          `TEAM ${index}`
-        );
-      }
+  var countdownData = {};
+  var siteData = {};
+  var donationsData = [];
 
-      function matchups() {
-        const m =
-          data.countdown.matchups || {};
+  var cardIndex = 0;
+  var cardTimer = null;
+  var cardSpeed = 0;
+  var cardSwapTimer = null;
 
-        return [
-          {
-            label: clean(
-              m.match1Label,
-              "QF1"
-            ),
-            a: clean(
-              m.match1A,
-              team(1)
-            ),
-            b: clean(
-              m.match1B,
-              team(2)
-            )
-          },
-          {
-            label: clean(
-              m.match2Label,
-              "QF2"
-            ),
-            a: clean(
-              m.match2A,
-              team(3)
-            ),
-            b: clean(
-              m.match2B,
-              team(4)
-            )
-          },
-          {
-            label: clean(
-              m.match3Label,
-              "QF3"
-            ),
-            a: clean(
-              m.match3A,
-              team(5)
-            ),
-            b: clean(
-              m.match3B,
-              team(6)
-            )
-          },
-          {
-            label: clean(
-              m.match4Label,
-              "QF4"
-            ),
-            a: clean(
-              m.match4A,
-              team(7)
-            ),
-            b: clean(
-              m.match4B,
-              team(8)
-            )
-          }
-        ];
-      }
+  var activeStartStamp = 0;
+  var initialRemaining = 0;
+  var lastTimerText = "";
+  var countdownEnded = false;
+  var countdownWasActive = false;
 
-      function cards() {
-        const first =
-          matchups()[0];
+  var stage =
+    document.getElementById("stage");
 
-        const next =
-          data.countdown.upNext || {};
+  var timer =
+    document.getElementById("timer");
 
-        const format =
-          data.countdown.format || {};
+  var schedule =
+    document.getElementById("schedule");
 
-        const follow =
-          data.countdown.follow || {};
+  var eventName =
+    document.getElementById("eventName");
 
-        const inferredTeams =
-          clean(
-            data.site.formatType,
-            "8_single_elim"
-          ).startsWith("16")
-            ? "16 TEAMS"
-            : "8 TEAMS";
+  var website =
+    document.getElementById("website");
 
-        const startingPool =
-          moneyNumber(
-            data.site.startingPrizePool
-          );
-
-        const publishedPool =
-          moneyNumber(
-            data.site.prizePool
-          );
-
-        const donationTotal =
-          data.donations.reduce(
-            (
-              sum,
-              item
-            ) =>
-              sum +
-              moneyNumber(
-                item?.amount
-              ),
-            0
-          );
-
-        const currentPool =
-          Math.max(
-            publishedPool,
-            startingPool +
-            donationTotal
-          );
-
-        const goal =
-          Math.max(
-            1,
-            moneyNumber(
-              data.site.donationGoal,
-              250
-            )
-          );
-
-        const percent =
-          Math.max(
-            0,
-            Math.min(
-              100,
-              Math.round(
-                (
-                  currentPool /
-                  goal
-                ) * 100
-              )
-            )
-          );
-
-        return [
-          {
-            title: "UP NEXT",
-
-            html: `
-              <div class="up-next">
-
-                <div class="team-block">
-                  <span>Team A</span>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        next.teamA,
-                        first.a
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div>
-                  <div class="vs">
-                    VS
-                  </div>
-
-                  <div style="
-                    margin-top:8px;
-                    color:var(--purple-bright);
-                    font-size:10px;
-                    font-weight:800;
-                    letter-spacing:.14em;
-                    text-transform:uppercase;
-                  ">
-                    ${escapeHtml(
-                      clean(
-                        next.label,
-                        first.label
-                      )
-                    )}
-                  </div>
-                </div>
-
-                <div class="team-block">
-                  <span>Team B</span>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        next.teamB,
-                        first.b
-                      )
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-            `
-          },
-
-          {
-            title: "TODAY'S MATCHUPS",
-
-            html: `
-              <div class="matchups">
-
-                ${matchups()
-                  .map(
-                    match => `
-                      <div class="match-row">
-
-                        <span>
-                          ${escapeHtml(
-                            match.label
-                          )}
-                        </span>
-
-                        <p>
-                          ${escapeHtml(
-                            match.a
-                          )}
-                        </p>
-
-                        <strong>
-                          VS
-                        </strong>
-
-                        <p>
-                          ${escapeHtml(
-                            match.b
-                          )}
-                        </p>
-
-                      </div>
-                    `
-                  )
-                  .join("")}
-
-              </div>
-            `
-          },
-
-          {
-            title: "TOURNAMENT FORMAT",
-
-            html: `
-              <div class="info-grid">
-
-                <div class="info-item">
-                  <small>
-                    Format
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        format.type,
-                        "Single Elimination"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Field
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        format.teams,
-                        inferredTeams
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Early Rounds
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        format.earlyRounds,
-                        "BO3"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Grand Finals
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        format.grandFinals,
-                        "BO5"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-            `
-          },
-
-          {
-            title: "LIVE PRIZE POOL",
-
-            html: `
-              <div class="info-grid">
-
-                <div class="info-item">
-                  <small>
-                    Current Prize Pool
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      money(
-                        currentPool
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Community Added
-                  </small>
-
-                  <strong>
-                    +${escapeHtml(
-                      money(
-                        donationTotal
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Community Goal
-                  </small>
-
-                  <strong>
-                    ${percent}%
-                  </strong>
-
-                  <div class="goal">
-                    <span
-                      style="
-                        width:${percent}%;
-                      "
-                    ></span>
-                  </div>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Live Sync
-                  </small>
-
-                  <strong>
-                    AUTO-UPDATES
-                  </strong>
-                </div>
-
-              </div>
-            `
-          },
-
-          {
-            title: "JOIN THE GAUNTLET",
-
-            html: `
-              <div class="info-grid">
-
-                <div class="info-item">
-                  <small>
-                    Website
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        follow.website,
-                        siteName()
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Discord
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        follow.discord,
-                        "JOIN THE COMMUNITY"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    Twitch
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        follow.twitch,
-                        "LIVE BROADCASTS"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-                <div class="info-item">
-                  <small>
-                    YouTube
-                  </small>
-
-                  <strong>
-                    ${escapeHtml(
-                      clean(
-                        follow.youtube,
-                        "CLIPS & VODS"
-                      )
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-            `
-          }
-        ];
-      }
-
-      function renderCard(
-        index = data.cardIndex,
-        animate = true
-      ) {
-        const list =
-          cards();
-
-        data.cardIndex =
-          (
-            (
-              index %
-              list.length
-            ) +
-            list.length
-          ) %
-          list.length;
-
-        const card =
-          list[
-            data.cardIndex
-          ];
-
-        const commit = () => {
-          title.textContent =
-            card.title;
-
-          body.innerHTML =
-            card.html;
-
-          slideIndex.textContent =
-            `${
-              String(
-                data.cardIndex + 1
-              ).padStart(
-                2,
-                "0"
-              )
-            } / ${
-              String(
-                list.length
-              ).padStart(
-                2,
-                "0"
-              )
-            }`;
-
-          body.classList.remove(
-            "changing",
-            "entering"
-          );
-
-          void body.offsetWidth;
-
-          body.classList.add(
-            "entering"
-          );
-        };
-
-        clearTimeout(
-          data.swapTimer
-        );
-
-        if (
-          !animate ||
-          !body.innerHTML
-        ) {
-          commit();
-          return;
-        }
-
-        body.classList.add(
-          "changing"
-        );
-
-        data.swapTimer =
-          setTimeout(
-            commit,
-            230
-          );
-      }
-
-      function rotationSpeed() {
-        const remaining =
-          startTime()
-            ? startTime() -
-              Date.now()
-            : Infinity;
-
-        if (
-          remaining <= 60000
-        ) {
-          return 6500;
-        }
-
-        return Math.max(
-          6500,
-          toNumber(
-            data.countdown.rotationMs,
-            DEFAULT_ROTATION
-          )
-        );
-      }
-
-      function ensureRotation() {
-        const nextSpeed =
-          rotationSpeed();
-
-        if (
-          data.cardTimer &&
-          data.cardSpeed ===
-          nextSpeed
-        ) {
-          return;
-        }
-
-        clearInterval(
-          data.cardTimer
-        );
-
-        data.cardSpeed =
-          nextSpeed;
-
-        data.cardTimer =
-          setInterval(
-            () =>
-              renderCard(
-                data.cardIndex + 1,
-                true
-              ),
-            nextSpeed
-          );
-      }
-
-      function formatTime(ms) {
-        const total =
-          Math.max(
-            0,
-            Math.ceil(
-              ms / 1000
-            )
-          );
-
-        const hours =
-          Math.floor(
-            total / 3600
-          );
-
-        const minutes =
-          Math.floor(
-            (
-              total % 3600
-            ) / 60
-          );
-
-        const seconds =
-          total % 60;
-
-        if (
-          hours > 0
-        ) {
-          return `${
-            String(hours)
-              .padStart(2,"0")
-          }:${
-            String(minutes)
-              .padStart(2,"0")
-          }:${
-            String(seconds)
-              .padStart(2,"0")
-          }`;
-        }
-
-        return `${
-          String(
-            Math.floor(
-              total / 60
-            )
-          ).padStart(
-            2,
-            "0"
-          )
-        }:${
-          String(seconds)
-            .padStart(
-              2,
-              "0"
-            )
-        }`;
-      }
-
-      function scheduledText(
-        stamp
-      ) {
-        return new Intl.DateTimeFormat(
-          "en-US",
-          {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit",
-            timeZoneName: "short"
-          }
-        ).format(
-          new Date(stamp)
-        );
-      }
-
-      function pulse(
-        remaining
-      ) {
-        timer.classList.remove(
-          "tick"
-        );
-
-        void timer.offsetWidth;
-
-        const minute =
-          Math.ceil(
-            remaining / 60000
-          );
-
-        if (
-          remaining <= 60000 ||
-          minute !==
-          data.lastMinute
-        ) {
-          data.lastMinute =
-            minute;
-
-          timer.classList.add(
-            "tick"
-          );
-
-          clearTimeout(
-            data.pulseTimer
-          );
-
-          data.pulseTimer =
-            setTimeout(
-              () =>
-                timer.classList.remove(
-                  "tick"
-                ),
-              170
-            );
-        }
-      }
-
-      function updateProgress(
-        remaining
-      ) {
-        const configured =
-          Math.max(
-            1000,
-            toNumber(
-              data.countdown.durationMs ||
-              data.countdown.countdownDurationMs,
-              DEFAULT_DURATION
-            )
-          );
-
-        const duration =
-          Math.max(
-            configured,
-            data.initialRemaining ||
-            0
-          );
-
-        const elapsed =
-          Math.max(
-            0,
-            duration -
-            Math.max(
-              0,
-              remaining
-            )
-          );
-
-        const angle =
-          Math.round(
-            Math.max(
-              0,
-              Math.min(
-                1,
-                elapsed /
-                duration
-              )
-            ) *
-            360
-          );
-
-        stage.style.setProperty(
-          "--progress",
-          `${angle}deg`
-        );
-      }
-
-      function updateTimer() {
-  const start = startTime();
-
-  if (!start) {
-    data.startStamp = 0;
-    data.initialRemaining = 0;
-    data.lastText = "";
-    data.lastMinute = null;
-    data.ended = false;
-    data.countdownArmed = false;
-
-    timer.textContent = "--:--";
-    timer.classList.remove("long", "tick");
-
-    schedule.textContent =
-      "Waiting for the broadcast start time.";
-
-    starting.classList.remove("active");
-    stage.classList.remove("final-ten");
-
-    stage.style.setProperty(
-      "--progress",
-      "0deg"
+  var rotationTitle =
+    document.getElementById(
+      "rotationTitle"
     );
 
-    return;
-  }
-
-  const now = Date.now();
-  const remaining = start - now;
-
-  if (data.startStamp !== start) {
-    data.startStamp = start;
-
-    data.initialRemaining = Math.max(
-      0,
-      remaining
+  var rotationBody =
+    document.getElementById(
+      "rotationBody"
     );
 
-    data.lastText = "";
-    data.lastMinute = null;
-    data.ended = false;
-
-    /*
-     * Records that this page actually observed an
-     * active countdown before reaching zero.
-     */
-    data.countdownArmed = remaining > 0;
-
-    starting.classList.remove("active");
-  }
-
-  if (remaining > 0) {
-    data.countdownArmed = true;
-  }
-
-  const text = formatTime(remaining);
-
-  if (text !== data.lastText) {
-    data.lastText = text;
-
-    timer.textContent = text;
-
-    timer.classList.toggle(
-      "long",
-      text.length > 5
+  var slideIndex =
+    document.getElementById(
+      "slideIndex"
     );
 
-    pulse(remaining);
+  var starting =
+    document.getElementById("starting");
+
+  var connection =
+    document.getElementById(
+      "connection"
+    );
+
+  var connectionText =
+    document.getElementById(
+      "connectionText"
+    );
+
+  function clean(
+    value,
+    fallback
+  ) {
+    var text =
+      value == null
+        ? ""
+        : String(value).trim();
+
+    return text || fallback || "";
   }
 
-  schedule.innerHTML =
-    remaining > 0
-      ? `Scheduled for <strong>${
-          escapeHtml(
-            scheduledText(start)
-          )
-        }</strong>`
-      : "The broadcast is beginning now.";
+  function escapeHtml(value) {
+    return clean(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-  stage.classList.toggle(
-    "final-ten",
-    remaining > 0 &&
-    remaining <= 10000
-  );
+  function numberValue(
+    value,
+    fallback
+  ) {
+    var parsed = Number(value);
 
-  updateProgress(remaining);
-  ensureRotation();
+    return Number.isFinite(parsed)
+      ? parsed
+      : Number(fallback || 0);
+  }
 
-  if (remaining <= 0) {
-    timer.textContent = "00:00";
-
-    const recentlyFinished =
-      now - start <=
-      10 * 60 * 1000;
-
-    if (
-      !data.ended &&
-      (
-        data.countdownArmed ||
-        recentlyFinished
+  function moneyValue(
+    value,
+    fallback
+  ) {
+    var parsed = Number(
+      String(
+        value == null
+          ? ""
+          : value
+      ).replace(
+        /[^0-9.-]/g,
+        ""
       )
-    ) {
-      data.ended = true;
-      starting.classList.add("active");
-    }
+    );
+
+    return Number.isFinite(parsed)
+      ? parsed
+      : Number(fallback || 0);
   }
-}
 
-      function refresh() {
-        eventName.textContent =
-          eventTitle()
-            .toUpperCase();
+  function formatMoney(value) {
+    return new Intl.NumberFormat(
+      "en-US",
+      {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }
+    ).format(
+      Math.max(
+        0,
+        numberValue(value)
+      )
+    );
+  }
 
-        website.textContent =
-          siteName();
+  function parseTimestamp(value) {
+    if (!value) {
+      return 0;
+    }
 
-        renderCard(
-          data.cardIndex,
-          false
+    if (
+      typeof value === "number" &&
+      Number.isFinite(value)
+    ) {
+      return value;
+    }
+
+    var numeric =
+      Number(value);
+
+    if (
+      Number.isFinite(numeric) &&
+      numeric > 0
+    ) {
+      return numeric;
+    }
+
+    var parsed =
+      new Date(value).getTime();
+
+    return Number.isFinite(parsed)
+      ? parsed
+      : 0;
+  }
+
+  function getStartTime() {
+    var now = Date.now();
+
+    var values = [
+      countdownData.startTime,
+      countdownData.countdownDate,
+      siteData.countdownDate,
+      countdownData.startTimeLocal
+    ];
+
+    var index;
+    var stamp;
+
+    /*
+     * First use the first valid future value.
+     */
+    for (
+      index = 0;
+      index < values.length;
+      index += 1
+    ) {
+      stamp =
+        parseTimestamp(
+          values[index]
         );
 
-        ensureRotation();
-        updateTimer();
+      if (stamp > now) {
+        return stamp;
       }
+    }
 
-      function connect() {
-  try {
     /*
-     * Use window.firebase directly so this overlay never
-     * touches a global variable named "database".
+     * A countdown that ended within ten minutes
+     * can still display Broadcast Starting.
      */
-    if (
-      typeof window.firebase === "undefined" ||
-      !window.firebase.apps ||
-      window.firebase.apps.length === 0
+    for (
+      index = 0;
+      index < values.length;
+      index += 1
     ) {
-      throw new Error(
-        "Firebase is not initialized. Check ../firebase.js."
+      stamp =
+        parseTimestamp(
+          values[index]
+        );
+
+      if (
+        stamp > 0 &&
+        now - stamp >= 0 &&
+        now - stamp <=
+          10 * 60 * 1000
+      ) {
+        return stamp;
+      }
+    }
+
+    return 0;
+  }
+
+  function getEventName() {
+    return clean(
+      countdownData.eventName ||
+      siteData.eventName,
+      "RIVALS GAUNTLET"
+    );
+  }
+
+  function getWebsite() {
+    var follow =
+      countdownData.follow || {};
+
+    return clean(
+      countdownData.website ||
+      follow.website ||
+      siteData.websiteUrl ||
+      siteData.website,
+      "RIVALSGAUNTLET.COM"
+    )
+      .replace(
+        /^https?:\/\//i,
+        ""
+      )
+      .replace(
+        /^www\./i,
+        ""
+      )
+      .replace(
+        /\/+$/,
+        ""
+      )
+      .toUpperCase();
+  }
+
+  function getTeam(number) {
+    return clean(
+      siteData[
+        "team" + number
+      ],
+      "TEAM " + number
+    );
+  }
+
+  function getMatchups() {
+    var matchups =
+      countdownData.matchups || {};
+
+    return [
+      {
+        label: clean(
+          matchups.match1Label,
+          "QF1"
+        ),
+
+        teamA: clean(
+          matchups.match1A,
+          getTeam(1)
+        ),
+
+        teamB: clean(
+          matchups.match1B,
+          getTeam(2)
+        )
+      },
+
+      {
+        label: clean(
+          matchups.match2Label,
+          "QF2"
+        ),
+
+        teamA: clean(
+          matchups.match2A,
+          getTeam(3)
+        ),
+
+        teamB: clean(
+          matchups.match2B,
+          getTeam(4)
+        )
+      },
+
+      {
+        label: clean(
+          matchups.match3Label,
+          "QF3"
+        ),
+
+        teamA: clean(
+          matchups.match3A,
+          getTeam(5)
+        ),
+
+        teamB: clean(
+          matchups.match3B,
+          getTeam(6)
+        )
+      },
+
+      {
+        label: clean(
+          matchups.match4Label,
+          "QF4"
+        ),
+
+        teamA: clean(
+          matchups.match4A,
+          getTeam(7)
+        ),
+
+        teamB: clean(
+          matchups.match4B,
+          getTeam(8)
+        )
+      }
+    ];
+  }
+
+  function getDonationTotal() {
+    return donationsData.reduce(
+      function (
+        total,
+        donation
+      ) {
+        return total +
+          moneyValue(
+            donation &&
+            donation.amount
+          );
+      },
+      0
+    );
+  }
+
+  function makeUpNextCard() {
+    var matches =
+      getMatchups();
+
+    var first =
+      matches[0];
+
+    var next =
+      countdownData.upNext || {};
+
+    var label =
+      clean(
+        next.label,
+        first.label
+      );
+
+    var teamA =
+      clean(
+        next.teamA,
+        first.teamA
+      );
+
+    var teamB =
+      clean(
+        next.teamB,
+        first.teamB
+      );
+
+    return {
+      title: "UP NEXT",
+
+      html:
+        '<div class="up-next">' +
+
+          '<div class="team-block">' +
+            '<span>Team A</span>' +
+            '<strong>' +
+              escapeHtml(teamA) +
+            '</strong>' +
+          '</div>' +
+
+          '<div>' +
+            '<div class="vs">' +
+              'VS' +
+            '</div>' +
+
+            '<div style="' +
+              'margin-top:8px;' +
+              'color:var(--purple-bright);' +
+              'font-size:10px;' +
+              'font-weight:800;' +
+              'letter-spacing:.14em;' +
+              'text-transform:uppercase;' +
+            '">' +
+              escapeHtml(label) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="team-block">' +
+            '<span>Team B</span>' +
+            '<strong>' +
+              escapeHtml(teamB) +
+            '</strong>' +
+          '</div>' +
+
+        '</div>'
+    };
+  }
+
+  function makeMatchupsCard() {
+    var rows =
+      getMatchups()
+        .map(
+          function (match) {
+            return (
+              '<div class="match-row">' +
+
+                '<span>' +
+                  escapeHtml(
+                    match.label
+                  ) +
+                '</span>' +
+
+                '<p>' +
+                  escapeHtml(
+                    match.teamA
+                  ) +
+                '</p>' +
+
+                '<strong>' +
+                  'VS' +
+                '</strong>' +
+
+                '<p>' +
+                  escapeHtml(
+                    match.teamB
+                  ) +
+                '</p>' +
+
+              '</div>'
+            );
+          }
+        )
+        .join("");
+
+    return {
+      title: "TODAY'S MATCHUPS",
+
+      html:
+        '<div class="matchups">' +
+          rows +
+        '</div>'
+    };
+  }
+
+  function makeFormatCard() {
+    var format =
+      countdownData.format || {};
+
+    var formatType =
+      clean(
+        siteData.formatType,
+        "8_single_elim"
+      );
+
+    var teamCount =
+      formatType.indexOf("16") === 0
+        ? "16 TEAMS"
+        : "8 TEAMS";
+
+    return {
+      title: "TOURNAMENT FORMAT",
+
+      html:
+        '<div class="info-grid">' +
+
+          '<div class="info-item">' +
+            '<small>Format</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  format.type,
+                  "Single Elimination"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Field</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  format.teams,
+                  teamCount
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Early Rounds</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  format.earlyRounds,
+                  "BO3"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Grand Finals</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  format.grandFinals,
+                  "BO5"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+        '</div>'
+    };
+  }
+
+  function makePrizeCard() {
+    var startingPool =
+      moneyValue(
+        siteData.startingPrizePool
+      );
+
+    var publishedPool =
+      moneyValue(
+        siteData.prizePool
+      );
+
+    var donationTotal =
+      getDonationTotal();
+
+    var currentPool =
+      Math.max(
+        publishedPool,
+        startingPool +
+        donationTotal
+      );
+
+    var goal =
+      Math.max(
+        1,
+        moneyValue(
+          siteData.donationGoal,
+          250
+        )
+      );
+
+    var percent =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          Math.round(
+            currentPool /
+            goal *
+            100
+          )
+        )
+      );
+
+    return {
+      title: "LIVE PRIZE POOL",
+
+      html:
+        '<div class="info-grid">' +
+
+          '<div class="info-item">' +
+            '<small>Current Prize Pool</small>' +
+            '<strong>' +
+              escapeHtml(
+                formatMoney(
+                  currentPool
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Community Added</small>' +
+            '<strong>+' +
+              escapeHtml(
+                formatMoney(
+                  donationTotal
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Community Goal</small>' +
+            '<strong>' +
+              percent +
+              '%' +
+            '</strong>' +
+
+            '<div class="goal">' +
+              '<span style="width:' +
+                percent +
+                '%"></span>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Prize Pool Sync</small>' +
+            '<strong>AUTO-UPDATES</strong>' +
+          '</div>' +
+
+        '</div>'
+    };
+  }
+
+  function makeCommunityCard() {
+    var follow =
+      countdownData.follow || {};
+
+    return {
+      title: "JOIN THE GAUNTLET",
+
+      html:
+        '<div class="info-grid">' +
+
+          '<div class="info-item">' +
+            '<small>Website</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  follow.website,
+                  getWebsite()
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Discord</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  follow.discord,
+                  "JOIN THE COMMUNITY"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>Twitch</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  follow.twitch,
+                  "LIVE BROADCASTS"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+          '<div class="info-item">' +
+            '<small>YouTube</small>' +
+            '<strong>' +
+              escapeHtml(
+                clean(
+                  follow.youtube,
+                  "CLIPS & VODS"
+                )
+              ) +
+            '</strong>' +
+          '</div>' +
+
+        '</div>'
+    };
+  }
+
+  function getCards() {
+    return [
+      makeUpNextCard(),
+      makeMatchupsCard(),
+      makeFormatCard(),
+      makePrizeCard(),
+      makeCommunityCard()
+    ];
+  }
+
+  function renderCard(
+    requestedIndex,
+    animate
+  ) {
+    var cards =
+      getCards();
+
+    if (!cards.length) {
+      return;
+    }
+
+    cardIndex =
+      (
+        (
+          requestedIndex %
+          cards.length
+        ) +
+        cards.length
+      ) %
+      cards.length;
+
+    var card =
+      cards[cardIndex];
+
+    function commit() {
+      rotationTitle.textContent =
+        card.title;
+
+      rotationBody.innerHTML =
+        card.html;
+
+      slideIndex.textContent =
+        String(
+          cardIndex + 1
+        ).padStart(
+          2,
+          "0"
+        ) +
+        " / " +
+        String(
+          cards.length
+        ).padStart(
+          2,
+          "0"
+        );
+
+      rotationBody.classList.remove(
+        "changing",
+        "entering"
+      );
+
+      void rotationBody.offsetWidth;
+
+      rotationBody.classList.add(
+        "entering"
       );
     }
 
-    const db =
-      window.firebase.database();
-
-    db.ref(".info/connected").on(
-      "value",
-
-      snapshot => {
-        const online =
-          snapshot.val() === true;
-
-        connection.classList.toggle(
-          "online",
-          online
-        );
-
-        connectionText.textContent =
-          online
-            ? "Realtime Connected"
-            : "Reconnecting";
-      },
-
-      error => {
-        console.error(
-          "[RG COUNTDOWN] Connection listener failed:",
-          error
-        );
-
-        connectionText.textContent =
-          "Connection Unavailable";
-      }
+    clearTimeout(
+      cardSwapTimer
     );
 
-    db.ref("broadcastCountdown").on(
-      "value",
+    if (
+      animate === false ||
+      !rotationBody.innerHTML
+    ) {
+      commit();
+      return;
+    }
 
-      snapshot => {
-        data.countdown =
-          snapshot.val() || {};
-
-        console.log(
-          "[RG COUNTDOWN] Countdown data:",
-          data.countdown
-        );
-
-        refresh();
-      },
-
-      error => {
-        console.error(
-          "[RG COUNTDOWN] broadcastCountdown read failed:",
-          error
-        );
-
-        connectionText.textContent =
-          error &&
-          error.code === "PERMISSION_DENIED"
-            ? "Countdown Read Blocked"
-            : "Countdown Unavailable";
-      }
+    rotationBody.classList.add(
+      "changing"
     );
 
-    db.ref("site").on(
-      "value",
+    cardSwapTimer =
+      setTimeout(
+        commit,
+        230
+      );
+  }
 
-      snapshot => {
-        data.site =
-          snapshot.val() || {};
+  function getRotationSpeed() {
+    var start =
+      getStartTime();
 
-        console.log(
-          "[RG COUNTDOWN] Site countdown date:",
-          data.site.countdownDate
-        );
+    var remaining =
+      start
+        ? start - Date.now()
+        : Infinity;
 
-        refresh();
-      },
+    if (
+      remaining > 0 &&
+      remaining <= 60000
+    ) {
+      return 6500;
+    }
 
-      error => {
-        console.error(
-          "[RG COUNTDOWN] site read failed:",
-          error
-        );
+    return Math.max(
+      6500,
+      numberValue(
+        countdownData.rotationMs,
+        DEFAULT_ROTATION_MS
+      )
+    );
+  }
 
-        connectionText.textContent =
-          error &&
-          error.code === "PERMISSION_DENIED"
-            ? "Site Read Blocked"
-            : "Site Data Unavailable";
-      }
+  function ensureRotation() {
+    var speed =
+      getRotationSpeed();
+
+    if (
+      cardTimer &&
+      cardSpeed === speed
+    ) {
+      return;
+    }
+
+    clearInterval(
+      cardTimer
     );
 
-    db.ref("donations").on(
-      "value",
+    cardSpeed =
+      speed;
 
-      snapshot => {
-        const raw =
-          snapshot.val() || {};
+    cardTimer =
+      setInterval(
+        function () {
+          renderCard(
+            cardIndex + 1,
+            true
+          );
+        },
+        speed
+      );
+  }
 
-        data.donations =
-          Object.keys(raw)
-            .map(key => raw[key])
-            .filter(Boolean);
+  function formatCountdown(ms) {
+    var totalSeconds =
+      Math.max(
+        0,
+        Math.ceil(
+          ms / 1000
+        )
+      );
 
-        renderCard(
-          data.cardIndex,
-          false
+    var hours =
+      Math.floor(
+        totalSeconds / 3600
+      );
+
+    var minutes =
+      Math.floor(
+        (
+          totalSeconds % 3600
+        ) / 60
+      );
+
+    var seconds =
+      totalSeconds % 60;
+
+    if (hours > 0) {
+      return (
+        String(hours)
+          .padStart(2, "0") +
+        ":" +
+        String(minutes)
+          .padStart(2, "0") +
+        ":" +
+        String(seconds)
+          .padStart(2, "0")
+      );
+    }
+
+    return (
+      String(
+        Math.floor(
+          totalSeconds / 60
+        )
+      ).padStart(2, "0") +
+      ":" +
+      String(seconds)
+        .padStart(2, "0")
+    );
+  }
+
+  function formatStartDate(stamp) {
+    try {
+      return new Intl.DateTimeFormat(
+        "en-US",
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short"
+        }
+      ).format(
+        new Date(stamp)
+      );
+    } catch (error) {
+      return new Date(
+        stamp
+      ).toLocaleString();
+    }
+  }
+
+  function updateProgress(
+    remaining
+  ) {
+    var configured =
+      Math.max(
+        1000,
+        numberValue(
+          countdownData.durationMs ||
+          countdownData.countdownDurationMs,
+          DEFAULT_COUNTDOWN_MS
+        )
+      );
+
+    var duration =
+      Math.max(
+        configured,
+        initialRemaining || 0
+      );
+
+    var elapsed =
+      Math.max(
+        0,
+        duration -
+        Math.max(
+          0,
+          remaining
+        )
+      );
+
+    var ratio =
+      Math.max(
+        0,
+        Math.min(
+          1,
+          elapsed / duration
+        )
+      );
+
+    stage.style.setProperty(
+      "--progress",
+      Math.round(
+        ratio * 360
+      ) + "deg"
+    );
+  }
+
+  function updateTimer() {
+    var start =
+      getStartTime();
+
+    if (!start) {
+      activeStartStamp = 0;
+      initialRemaining = 0;
+      lastTimerText = "";
+      countdownEnded = false;
+      countdownWasActive = false;
+
+      timer.textContent =
+        "--:--";
+
+      timer.classList.remove(
+        "long",
+        "tick"
+      );
+
+      schedule.textContent =
+        "Waiting for the broadcast start time.";
+
+      starting.classList.remove(
+        "active"
+      );
+
+      stage.classList.remove(
+        "final-ten"
+      );
+
+      stage.style.setProperty(
+        "--progress",
+        "0deg"
+      );
+
+      return;
+    }
+
+    var now =
+      Date.now();
+
+    var remaining =
+      start - now;
+
+    if (
+      activeStartStamp !== start
+    ) {
+      activeStartStamp =
+        start;
+
+      initialRemaining =
+        Math.max(
+          0,
+          remaining
         );
-      },
 
-      error => {
-        console.warn(
-          "[RG COUNTDOWN] donations read failed:",
-          error
-        );
+      lastTimerText = "";
+      countdownEnded = false;
+      countdownWasActive =
+        remaining > 0;
 
-        /*
-         * Donations are optional. A blocked donation read
-         * must not prevent the countdown from working.
-         */
-        data.donations = [];
+      starting.classList.remove(
+        "active"
+      );
+    }
 
-        renderCard(
-          data.cardIndex,
-          false
-        );
-      }
+    if (remaining > 0) {
+      countdownWasActive = true;
+    }
+
+    var text =
+      formatCountdown(
+        remaining
+      );
+
+    if (
+      text !==
+      lastTimerText
+    ) {
+      lastTimerText =
+        text;
+
+      timer.textContent =
+        text;
+
+      timer.classList.toggle(
+        "long",
+        text.length > 5
+      );
+
+      timer.classList.remove(
+        "tick"
+      );
+
+      void timer.offsetWidth;
+
+      timer.classList.add(
+        "tick"
+      );
+
+      setTimeout(
+        function () {
+          timer.classList.remove(
+            "tick"
+          );
+        },
+        170
+      );
+    }
+
+    if (remaining > 0) {
+      schedule.innerHTML =
+        "Scheduled for <strong>" +
+        escapeHtml(
+          formatStartDate(start)
+        ) +
+        "</strong>";
+    } else {
+      schedule.textContent =
+        "The broadcast is beginning now.";
+    }
+
+    stage.classList.toggle(
+      "final-ten",
+      remaining > 0 &&
+      remaining <= 10000
     );
 
-  } catch (error) {
-    console.error(
-      "[RG COUNTDOWN] startup failed:",
-      error
+    updateProgress(
+      remaining
+    );
+
+    ensureRotation();
+
+    if (
+      remaining <= 0 &&
+      !countdownEnded &&
+      countdownWasActive
+    ) {
+      countdownEnded = true;
+
+      timer.textContent =
+        "00:00";
+
+      starting.classList.add(
+        "active"
+      );
+    }
+  }
+
+  function refresh() {
+    eventName.textContent =
+      getEventName()
+        .toUpperCase();
+
+    website.textContent =
+      getWebsite();
+
+    renderCard(
+      cardIndex,
+      false
+    );
+
+    ensureRotation();
+    updateTimer();
+  }
+
+  function showStartupError(
+    message
+  ) {
+    connection.classList.remove(
+      "online"
     );
 
     connectionText.textContent =
-      "Firebase Startup Error";
+      "FIREBASE ERROR";
+
+    timer.textContent =
+      "ERROR";
 
     schedule.textContent =
-      error.message ||
-      "Countdown could not connect.";
+      message;
+
+    rotationBody.innerHTML =
+      '<div style="' +
+        'width:100%;' +
+        'min-height:110px;' +
+        'display:flex;' +
+        'flex-direction:column;' +
+        'align-items:center;' +
+        'justify-content:center;' +
+        'gap:8px;' +
+        'text-align:center;' +
+      '">' +
+
+        '<small style="' +
+          'color:#ff718a;' +
+          'font-weight:800;' +
+          'letter-spacing:.14em;' +
+          'text-transform:uppercase;' +
+        '">' +
+          'Overlay Startup Error' +
+        '</small>' +
+
+        '<strong style="' +
+          'font-size:20px;' +
+          'text-transform:uppercase;' +
+        '">' +
+          escapeHtml(message) +
+        '</strong>' +
+
+      '</div>';
   }
-}
+
+  function connect() {
+    var db = null;
+
+    try {
+      connectionText.textContent =
+        "CONNECTING";
 
       /*
- * Draw the first information card immediately.
- */
-renderCard(
-  0,
-  false
-);
+       * First try the exact database object created
+       * by the working firebase.js file.
+       */
+      try {
+        db = database;
+      } catch (
+        globalDatabaseError
+      ) {
+        db = null;
+      }
 
-/*
- * Run the timer once immediately so the page
- * does not wait for the first interval.
- */
-updateTimer();
+      /*
+       * Fall back to Firebase directly.
+       */
+      if (
+        !db &&
+        typeof firebase !==
+          "undefined" &&
+        firebase.apps &&
+        firebase.apps.length > 0
+      ) {
+        db =
+          firebase.database();
+      }
 
-/*
- * Keep the countdown display smooth.
- */
-setInterval(
-  updateTimer,
-  250
-);
+      if (
+        !db ||
+        typeof db.ref !==
+          "function"
+      ) {
+        throw new Error(
+          "firebase.js did not expose a usable Realtime Database connection."
+        );
+      }
 
-/*
- * Start all Firebase listeners.
- * This line is required.
- */
-connect();
+      db.ref(
+        ".info/connected"
+      ).on(
+        "value",
+
+        function (snapshot) {
+          var online =
+            snapshot.val() ===
+              true;
+
+          connection.classList.toggle(
+            "online",
+            online
+          );
+
+          connectionText.textContent =
+            online
+              ? "REALTIME CONNECTED"
+              : "RECONNECTING";
+        },
+
+        function (error) {
+          connectionText.textContent =
+            "CONNECTION ERROR";
+
+          console.error(
+            "[RG COUNTDOWN] Connection listener failed:",
+            error
+          );
+        }
+      );
+
+      db.ref(
+        "broadcastCountdown"
+      ).on(
+        "value",
+
+        function (snapshot) {
+          countdownData =
+            snapshot.val() || {};
+
+          refresh();
+        },
+
+        function (error) {
+          connectionText.textContent =
+            error &&
+            error.code ===
+              "PERMISSION_DENIED"
+              ? "COUNTDOWN READ BLOCKED"
+              : "COUNTDOWN UNAVAILABLE";
+
+          console.error(
+            "[RG COUNTDOWN] Countdown read failed:",
+            error
+          );
+        }
+      );
+
+      db.ref("site").on(
+        "value",
+
+        function (snapshot) {
+          siteData =
+            snapshot.val() || {};
+
+          refresh();
+        },
+
+        function (error) {
+          connectionText.textContent =
+            error &&
+            error.code ===
+              "PERMISSION_DENIED"
+              ? "SITE READ BLOCKED"
+              : "SITE UNAVAILABLE";
+
+          console.error(
+            "[RG COUNTDOWN] Site read failed:",
+            error
+          );
+        }
+      );
+
+      db.ref("donations").on(
+        "value",
+
+        function (snapshot) {
+          var raw =
+            snapshot.val() || {};
+
+          donationsData =
+            Object.keys(raw)
+              .map(
+                function (key) {
+                  return raw[key];
+                }
+              )
+              .filter(Boolean);
+
+          renderCard(
+            cardIndex,
+            false
+          );
+        },
+
+        function (error) {
+          donationsData = [];
+
+          console.warn(
+            "[RG COUNTDOWN] Donations read failed:",
+            error
+          );
+        }
+      );
+
+    } catch (error) {
+      console.error(
+        "[RG COUNTDOWN] Startup failed:",
+        error
+      );
+
+      showStartupError(
+        error.message ||
+        "Countdown startup failed."
+      );
+    }
+  }
+
+  /*
+   * These run immediately even before Firebase.
+   *
+   * Therefore, the panel should show TEAM 1 VS TEAM 2
+   * even if Firebase is unavailable.
+   */
+  renderCard(
+    0,
+    false
+  );
+
+  updateTimer();
+
+  setInterval(
+    updateTimer,
+    250
+  );
+
+  connect();
 
 })();
-  </script>
+</script>
+
 </body>
 </html>

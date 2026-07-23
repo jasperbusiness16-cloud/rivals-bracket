@@ -40,7 +40,7 @@
       height: 1080px;
       margin: 0;
       overflow: hidden;
-      background: transparent;
+      background: #06060b;
     }
 
     body {
@@ -54,36 +54,86 @@
       height: 1080px;
       overflow: hidden;
       isolation: isolate;
-      background: transparent;
+
+      background:
+        radial-gradient(
+          circle at 50% 38%,
+          rgba(var(--purple-rgb), 0.16),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 8% 18%,
+          rgba(91, 57, 183, 0.1),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 92% 72%,
+          rgba(91, 57, 183, 0.08),
+          transparent 30%
+        ),
+        linear-gradient(
+          145deg,
+          #120e20 0%,
+          #0b0913 46%,
+          #06060b 100%
+        );
     }
 
-    /*
-     * Only the upper and lower edges are shaded. The center stays
-     * transparent so webcam sources and a custom studio background can
-     * be arranged freely in OBS.
-     */
+    /* Full opaque studio environment. */
     .studio-stage::before {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: -40px;
       z-index: -4;
       pointer-events: none;
 
       background:
         linear-gradient(
-          180deg,
-          rgba(6, 6, 11, 0.96) 0,
-          rgba(8, 7, 14, 0.86) 96px,
-          rgba(8, 7, 14, 0.34) 172px,
-          transparent 270px
+          115deg,
+          transparent 0 22%,
+          rgba(255, 255, 255, 0.012) 22.2% 22.45%,
+          transparent 22.7% 74%,
+          rgba(255, 255, 255, 0.01) 74.2% 74.45%,
+          transparent 74.7%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 104px,
+          rgba(var(--purple-rgb), 0.018) 105px,
+          transparent 106px 210px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent 0 84px,
+          rgba(var(--purple-rgb), 0.012) 85px,
+          transparent 86px 170px
         ),
         linear-gradient(
-          0deg,
-          rgba(6, 6, 11, 0.98) 0,
-          rgba(8, 7, 14, 0.9) 105px,
-          rgba(8, 7, 14, 0.34) 205px,
-          transparent 330px
+          180deg,
+          rgba(6, 6, 11, 0.18) 0%,
+          transparent 27%,
+          transparent 68%,
+          rgba(4, 4, 8, 0.58) 100%
         );
+
+      opacity: 0.78;
+    }
+
+    .studio-stage::after {
+      content: "RG";
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      z-index: -3;
+      pointer-events: none;
+
+      color: rgba(255, 255, 255, 0.018);
+      font-size: 620px;
+      font-weight: 800;
+      line-height: 0.72;
+      letter-spacing: -0.12em;
+
+      transform: translate(-48%, -50%);
     }
 
     .ambient-left,
@@ -122,6 +172,34 @@
           rgba(var(--purple-rgb), 0.13),
           transparent 70%
         );
+    }
+
+    .studio-horizon {
+      position: absolute;
+      left: 180px;
+      right: 180px;
+      top: 58%;
+      z-index: -2;
+      height: 260px;
+      pointer-events: none;
+
+      border-top:
+        1px solid
+        rgba(var(--purple-rgb), 0.08);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(var(--purple-rgb), 0.035),
+          transparent 70%
+        );
+
+      clip-path: polygon(
+        7% 0,
+        93% 0,
+        100% 100%,
+        0 100%
+      );
     }
 
     .edge-frame {
@@ -423,8 +501,8 @@
     }
 
     /*
-     * The entire central area is intentionally empty. Webcam sources can be
-     * positioned in OBS, and the plates below can be aligned beneath them.
+     * The center stays visually open so webcam sources can be positioned
+     * freely in OBS, but the overlay itself now has a complete studio background.
      */
     .caster-zone {
       position: absolute;
@@ -825,6 +903,7 @@
 
 <body>
   <main class="studio-stage">
+    <div class="studio-horizon" aria-hidden="true"></div>
     <div class="ambient-left" aria-hidden="true"></div>
     <div class="ambient-right" aria-hidden="true"></div>
     <div class="edge-frame" aria-hidden="true"></div>

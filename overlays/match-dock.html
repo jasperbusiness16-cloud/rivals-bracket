@@ -21,23 +21,21 @@
   <style>
     :root {
       --dock-width: 650px;
-      --dock-height: 94px;
+      --dock-height: 96px;
 
-      --dock-bg-0: rgba(8, 8, 14, 0.965);
-      --dock-bg-1: rgba(17, 14, 27, 0.965);
-      --dock-bg-2: rgba(28, 20, 48, 0.94);
+      --bg-0: rgba(7, 7, 12, 0.97);
+      --bg-1: rgba(14, 12, 22, 0.97);
+      --bg-2: rgba(24, 18, 42, 0.95);
 
-      --dock-text: #f8f5ff;
-      --dock-soft: #c8c1d4;
-      --dock-muted: #847d91;
-      --dock-dim: #5f586b;
+      --text: #f8f5ff;
+      --muted: #8e8799;
 
-      --dock-purple: #9a7cff;
-      --dock-purple-bright: #c1adff;
-      --dock-purple-rgb: 154, 124, 255;
+      --purple: #9a7cff;
+      --purple-bright: #c2afff;
+      --purple-rgb: 154, 124, 255;
 
-      --dock-border: rgba(195, 176, 255, 0.18);
-      --dock-border-strong: rgba(195, 176, 255, 0.34);
+      --border: rgba(194, 174, 255, 0.2);
+      --border-strong: rgba(194, 174, 255, 0.4);
     }
 
     * {
@@ -55,7 +53,7 @@
 
     body {
       position: relative;
-      color: var(--dock-text);
+      color: var(--text);
       font-family: "Rajdhani", Arial, sans-serif;
     }
 
@@ -63,8 +61,10 @@
       position: fixed;
       left: 50%;
       bottom: 24px;
+
       width: var(--dock-width);
       height: var(--dock-height);
+
       transform: translateX(-50%);
       pointer-events: none;
       isolation: isolate;
@@ -72,18 +72,18 @@
       opacity: 0;
 
       animation:
-        dockIntro 900ms cubic-bezier(0.18, 0.86, 0.24, 1)
-        100ms forwards;
+        dockIntro 850ms cubic-bezier(0.18, 0.86, 0.24, 1)
+        80ms forwards;
     }
 
     .dock-shadow {
       position: absolute;
-      inset: 13px 20px -10px;
+      inset: 20px 28px -11px;
       z-index: -2;
+
       border-radius: 50%;
-      background: rgba(0, 0, 0, 0.64);
+      background: rgba(0, 0, 0, 0.68);
       filter: blur(22px);
-      opacity: 0.8;
     }
 
     .dock-shell {
@@ -92,38 +92,41 @@
       height: 100%;
 
       display: grid;
-      grid-template-columns: 102px 1px minmax(0, 1fr);
-      align-items: center;
+      place-items: center;
 
       overflow: hidden;
 
-      border: 1px solid var(--dock-border);
-      border-radius: 17px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
 
       background:
         radial-gradient(
-          circle at 13% 34%,
-          rgba(var(--dock-purple-rgb), 0.12),
-          transparent 27%
+          circle at 50% -30%,
+          rgba(var(--purple-rgb), 0.15),
+          transparent 46%
         ),
         radial-gradient(
-          circle at 90% 15%,
-          rgba(var(--dock-purple-rgb), 0.08),
-          transparent 32%
+          circle at 8% 30%,
+          rgba(var(--purple-rgb), 0.08),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 92% 30%,
+          rgba(var(--purple-rgb), 0.08),
+          transparent 30%
         ),
         linear-gradient(
-          110deg,
-          var(--dock-bg-2) 0%,
-          var(--dock-bg-1) 19%,
-          var(--dock-bg-0) 53%,
-          rgba(13, 12, 21, 0.975) 100%
+          180deg,
+          var(--bg-2) 0%,
+          var(--bg-1) 34%,
+          var(--bg-0) 100%
         );
 
       box-shadow:
-        0 18px 44px rgba(0, 0, 0, 0.5),
+        0 18px 44px rgba(0, 0, 0, 0.52),
         inset 0 1px 0 rgba(255, 255, 255, 0.035),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.76),
-        0 0 0 1px rgba(var(--dock-purple-rgb), 0.035);
+        inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(var(--purple-rgb), 0.035);
     }
 
     .dock-shell::before {
@@ -135,16 +138,18 @@
 
       background:
         linear-gradient(
-          115deg,
-          transparent 0 22%,
-          rgba(255, 255, 255, 0.018) 22.2% 22.7%,
-          transparent 22.9% 100%
+          116deg,
+          transparent 0 29%,
+          rgba(255, 255, 255, 0.018) 29.2% 29.6%,
+          transparent 29.8% 70%,
+          rgba(255, 255, 255, 0.014) 70.2% 70.6%,
+          transparent 70.8%
         ),
         repeating-linear-gradient(
           90deg,
-          transparent 0 45px,
-          rgba(255, 255, 255, 0.012) 46px,
-          transparent 47px 88px
+          transparent 0 50px,
+          rgba(255, 255, 255, 0.01) 51px,
+          transparent 52px 100px
         );
 
       opacity: 0.58;
@@ -153,333 +158,71 @@
     .dock-shell::after {
       content: "";
       position: absolute;
-      left: 17%;
-      right: 4%;
+      left: 8%;
+      right: 8%;
       bottom: 0;
       z-index: 4;
+
       height: 1px;
-      pointer-events: none;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(var(--dock-purple-rgb), 0.35) 22%,
-          rgba(218, 207, 255, 0.72) 50%,
-          rgba(var(--dock-purple-rgb), 0.35) 78%,
+          rgba(var(--purple-rgb), 0.3) 23%,
+          rgba(224, 215, 255, 0.72) 50%,
+          rgba(var(--purple-rgb), 0.3) 77%,
           transparent
         );
 
       opacity: 0.72;
+      pointer-events: none;
     }
 
-    .dock-frame {
+    .dock-inner-frame {
       position: absolute;
       inset: 5px;
       z-index: 1;
-      pointer-events: none;
 
       border: 1px solid rgba(255, 255, 255, 0.035);
-      border-radius: 12px;
+      border-radius: 13px;
 
       clip-path: polygon(
-        0 0,
-        94% 0,
-        100% 35%,
-        100% 100%,
-        6% 100%,
-        0 65%
+        4% 0,
+        96% 0,
+        100% 32%,
+        100% 68%,
+        96% 100%,
+        4% 100%,
+        0 68%,
+        0 32%
       );
+
+      pointer-events: none;
     }
 
-    .dock-logo-wrap {
-      position: relative;
+    .dock-side-mark {
+      position: absolute;
+      top: 50%;
       z-index: 5;
-      width: 102px;
-      height: 100%;
 
-      display: grid;
-      place-items: center;
-    }
+      width: 16px;
+      height: 48px;
 
-    .dock-logo-wrap::after {
-      content: "";
-      position: absolute;
-      left: 14px;
-      right: 7px;
-      bottom: 9px;
-      height: 1px;
-
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          rgba(var(--dock-purple-rgb), 0.5),
-          transparent
-        );
-
-      opacity: 0.65;
-    }
-
-    .dock-logo-glow {
-      position: absolute;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(var(--dock-purple-rgb), 0.26),
-          transparent 68%
-        );
-
-      filter: blur(9px);
-      opacity: 0.62;
-    }
-
-    .dock-logo {
-      position: relative;
-      width: 66px;
-      height: 66px;
-
-      display: grid;
-      place-items: center;
-
-      overflow: hidden;
-
-      border: 1px solid rgba(var(--dock-purple-rgb), 0.35);
-      border-radius: 15px;
-
-      background:
-        linear-gradient(
-          145deg,
-          rgba(var(--dock-purple-rgb), 0.14),
-          rgba(7, 7, 12, 0.92) 58%
-        );
-
-      box-shadow:
-        inset 0 0 18px rgba(var(--dock-purple-rgb), 0.08),
-        0 0 18px rgba(var(--dock-purple-rgb), 0.1);
-
-      transform: translateY(13px) scale(0.84);
-      opacity: 0;
-
-      animation:
-        dockLogoIntro 650ms cubic-bezier(0.18, 0.86, 0.24, 1)
-        520ms forwards;
-    }
-
-    .dock-logo::before {
-      content: "";
-      position: absolute;
-      inset: 5px;
-
-      border: 1px solid rgba(255, 255, 255, 0.045);
-      border-radius: 10px;
-    }
-
-    .dock-logo img {
-      position: relative;
-      z-index: 2;
-
-      width: 53px;
-      height: 53px;
-
-      display: block;
-      object-fit: contain;
-
-      filter:
-        drop-shadow(
-          0 0 7px rgba(var(--dock-purple-rgb), 0.26)
-        );
-    }
-
-    .dock-logo-fallback {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-
-      display: grid;
-      place-items: center;
-
-      color: var(--dock-text);
-      font-size: 25px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-    }
-
-    .dock-logo img:not([src]),
-    .dock-logo img[src=""] {
-      display: none;
-    }
-
-    .dock-divider {
-      position: relative;
-      z-index: 4;
-
-      width: 1px;
-      height: 58px;
+      border: 1px solid rgba(var(--purple-rgb), 0.24);
 
       background:
         linear-gradient(
           180deg,
-          transparent,
-          rgba(204, 189, 255, 0.36) 22%,
-          rgba(255, 255, 255, 0.09) 50%,
-          rgba(204, 189, 255, 0.28) 78%,
-          transparent
-        );
-    }
-
-    .dock-divider span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-
-      width: 5px;
-      height: 5px;
-
-      border: 1px solid rgba(var(--dock-purple-rgb), 0.5);
-      background: #151020;
-
-      transform:
-        translate(-50%, -50%)
-        rotate(45deg);
-    }
-
-    .dock-content {
-      position: relative;
-      z-index: 3;
-
-      min-width: 0;
-      height: 100%;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      padding: 8px 48px 7px 26px;
-
-      opacity: 0;
-      transform: translateX(-14px);
-
-      animation:
-        dockContentIntro 620ms cubic-bezier(0.18, 0.86, 0.24, 1)
-        430ms forwards;
-    }
-
-    .dock-kicker {
-      color: var(--dock-purple-bright);
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.22em;
-      line-height: 1;
-      text-transform: uppercase;
-
-      opacity: 0.78;
-    }
-
-    .dock-match {
-      min-width: 0;
-      margin-top: 4px;
-      overflow: hidden;
-
-      color: var(--dock-text);
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 0.025em;
-      line-height: 1;
-
-      text-overflow: ellipsis;
-      text-transform: uppercase;
-      white-space: nowrap;
-
-      text-shadow:
-        0 0 18px rgba(var(--dock-purple-rgb), 0.11);
-
-      transform-origin: left center;
-      will-change: opacity, transform, filter;
-    }
-
-    .dock-match.is-leaving {
-      animation:
-        dockLabelLeave 170ms ease forwards;
-    }
-
-    .dock-match.is-entering {
-      animation:
-        dockLabelEnter 360ms cubic-bezier(0.18, 0.86, 0.24, 1)
-        forwards;
-    }
-
-    .dock-url-row {
-      min-width: 0;
-
-      display: grid;
-      grid-template-columns:
-        minmax(25px, 1fr)
-        auto
-        minmax(25px, 1fr);
-
-      align-items: center;
-      gap: 10px;
-
-      margin-top: 8px;
-    }
-
-    .dock-url-line {
-      height: 1px;
-
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          rgba(var(--dock-purple-rgb), 0.38)
-        );
-    }
-
-    .dock-url-line:last-child {
-      background:
-        linear-gradient(
-          90deg,
-          rgba(var(--dock-purple-rgb), 0.38),
-          transparent
-        );
-    }
-
-    .dock-url {
-      color: var(--dock-muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      line-height: 1;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .dock-endcap {
-      position: absolute;
-      top: 50%;
-      z-index: 6;
-
-      width: 18px;
-      height: 46px;
-
-      border: 1px solid rgba(var(--dock-purple-rgb), 0.23);
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(var(--dock-purple-rgb), 0.14),
-          rgba(11, 10, 17, 0.92)
+          rgba(var(--purple-rgb), 0.13),
+          rgba(9, 8, 14, 0.94)
         );
 
       transform: translateY(-50%);
     }
 
-    .dock-endcap-left {
-      left: -8px;
+    .dock-side-mark.left {
+      left: -7px;
 
       clip-path: polygon(
         42% 0,
@@ -491,8 +234,8 @@
       );
     }
 
-    .dock-endcap-right {
-      right: -8px;
+    .dock-side-mark.right {
+      right: -7px;
 
       clip-path: polygon(
         0 20%,
@@ -502,6 +245,184 @@
         58% 100%,
         0 80%
       );
+    }
+
+    .dock-content {
+      position: relative;
+      z-index: 3;
+
+      width: 100%;
+      min-width: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      padding: 10px 48px 9px;
+
+      text-align: center;
+
+      opacity: 0;
+      transform: translateY(8px);
+
+      animation:
+        dockContentIntro 600ms cubic-bezier(0.18, 0.86, 0.24, 1)
+        370ms forwards;
+    }
+
+    .dock-kicker-row {
+      width: min(360px, 78%);
+
+      display: grid;
+      grid-template-columns:
+        minmax(28px, 1fr)
+        auto
+        minmax(28px, 1fr);
+
+      align-items: center;
+      gap: 11px;
+    }
+
+    .dock-kicker-line {
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.42)
+        );
+    }
+
+    .dock-kicker-line:last-child {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb), 0.42),
+          transparent
+        );
+    }
+
+    .dock-kicker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      color: var(--purple-bright);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.19em;
+      line-height: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .dock-kicker strong {
+      width: 21px;
+      height: 21px;
+
+      display: grid;
+      place-items: center;
+
+      border: 1px solid rgba(var(--purple-rgb), 0.34);
+      border-radius: 6px;
+
+      color: var(--text);
+      background: rgba(var(--purple-rgb), 0.08);
+
+      font-size: 9px;
+      letter-spacing: 0;
+
+      transform: rotate(45deg);
+    }
+
+    .dock-kicker strong span {
+      transform: rotate(-45deg);
+    }
+
+    .dock-match {
+      width: 100%;
+      min-width: 0;
+      margin-top: 5px;
+
+      overflow: hidden;
+
+      color: var(--text);
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: 0.025em;
+      line-height: 1;
+
+      text-align: center;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+
+      text-shadow:
+        0 0 18px rgba(var(--purple-rgb), 0.12);
+
+      transform-origin: center center;
+      will-change: opacity, transform, filter;
+    }
+
+    .dock-match.is-leaving {
+      animation:
+        dockLabelLeave 170ms ease forwards;
+    }
+
+    .dock-match.is-entering {
+      animation:
+        dockLabelEnter 340ms cubic-bezier(0.18, 0.86, 0.24, 1)
+        forwards;
+    }
+
+    .dock-url-row {
+      width: min(440px, 88%);
+      min-width: 0;
+
+      display: grid;
+      grid-template-columns:
+        minmax(30px, 1fr)
+        auto
+        minmax(30px, 1fr);
+
+      align-items: center;
+      gap: 12px;
+
+      margin-top: 9px;
+    }
+
+    .dock-url-line {
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.34)
+        );
+    }
+
+    .dock-url-line:last-child {
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb), 0.34),
+          transparent
+        );
+    }
+
+    .dock-url {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .dock-energy {
@@ -517,45 +438,66 @@
       position: absolute;
       top: -1px;
 
-      width: 92px;
+      width: 96px;
       height: 2px;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(232, 225, 255, 0.96),
-          rgba(var(--dock-purple-rgb), 0.72),
+          rgba(234, 228, 255, 0.96),
+          rgba(var(--purple-rgb), 0.75),
           transparent
         );
 
       filter:
         drop-shadow(
-          0 0 5px rgba(var(--dock-purple-rgb), 0.72)
+          0 0 5px rgba(var(--purple-rgb), 0.72)
         );
 
       opacity: 0;
     }
 
-    .dock-energy-left {
+    .dock-energy .left {
       right: 50%;
-      transform: translateX(0);
 
       animation:
-        dockEnergyLeft 7.8s linear 1.2s infinite;
+        dockEnergyLeft 7.6s linear 1.1s infinite;
     }
 
-    .dock-energy-right {
+    .dock-energy .right {
       left: 50%;
-      transform: translateX(0);
 
       animation:
-        dockEnergyRight 7.8s linear 1.2s infinite;
+        dockEnergyRight 7.6s linear 1.1s infinite;
+    }
+
+    .dock-center-pulse {
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      z-index: 9;
+
+      width: 8px;
+      height: 8px;
+
+      border: 1px solid rgba(var(--purple-rgb), 0.56);
+      background: rgba(20, 14, 34, 0.96);
+
+      transform:
+        translateX(-50%)
+        rotate(45deg);
+
+      box-shadow:
+        0 0 10px rgba(var(--purple-rgb), 0.24);
+
+      animation:
+        dockCenterPulse 3.8s ease-in-out infinite;
     }
 
     .dock-glass-sweep {
       position: absolute;
-      inset: -18px -90px;
+      inset: -20px -100px;
       z-index: 7;
 
       pointer-events: none;
@@ -564,22 +506,22 @@
         linear-gradient(
           106deg,
           transparent 36%,
-          rgba(255, 255, 255, 0.025) 45%,
-          rgba(216, 205, 255, 0.105) 50%,
+          rgba(255, 255, 255, 0.022) 45%,
+          rgba(216, 205, 255, 0.1) 50%,
           rgba(255, 255, 255, 0.018) 55%,
           transparent 64%
         );
 
-      transform: translateX(-116%);
+      transform: translateX(-118%);
 
       animation:
-        dockGlassSweep 9.6s ease-in-out 2.6s infinite;
+        dockGlassSweep 9.4s ease-in-out 2.5s infinite;
     }
 
     .dock-data-flash {
       position: absolute;
       inset: 0;
-      z-index: 9;
+      z-index: 10;
 
       pointer-events: none;
 
@@ -587,9 +529,9 @@
         linear-gradient(
           90deg,
           transparent,
-          rgba(var(--dock-purple-rgb), 0.13),
+          rgba(var(--purple-rgb), 0.13),
           rgba(234, 228, 255, 0.18),
-          rgba(var(--dock-purple-rgb), 0.13),
+          rgba(var(--purple-rgb), 0.13),
           transparent
         );
 
@@ -598,12 +540,7 @@
 
     .match-dock.is-refreshing .dock-data-flash {
       animation:
-        dockDataFlash 520ms ease;
-    }
-
-    .match-dock.is-refreshing .dock-logo {
-      animation:
-        dockLogoDataPulse 520ms ease;
+        dockDataFlash 500ms ease;
     }
 
     @keyframes dockIntro {
@@ -612,13 +549,13 @@
 
         transform:
           translateX(-50%)
-          translateY(24px)
-          scaleX(0.82);
+          translateY(22px)
+          scaleX(0.84);
 
-        filter: blur(5px);
+        filter: blur(4px);
       }
 
-      55% {
+      58% {
         opacity: 1;
         filter: blur(0);
       }
@@ -635,33 +572,15 @@
       }
     }
 
-    @keyframes dockLogoIntro {
-      from {
-        opacity: 0;
-
-        transform:
-          translateY(13px)
-          scale(0.84);
-      }
-
-      to {
-        opacity: 1;
-
-        transform:
-          translateY(0)
-          scale(1);
-      }
-    }
-
     @keyframes dockContentIntro {
       from {
         opacity: 0;
-        transform: translateX(-14px);
+        transform: translateY(8px);
       }
 
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
       }
     }
 
@@ -701,54 +620,71 @@
 
     @keyframes dockEnergyLeft {
       0%,
-      68% {
+      67% {
         right: 50%;
         opacity: 0;
       }
 
-      70% {
+      69% {
         opacity: 0.9;
       }
 
       81% {
-        right: calc(100% - 84px);
-        opacity: 0.72;
+        right: calc(100% - 88px);
+        opacity: 0.7;
       }
 
       84%,
       100% {
-        right: calc(100% - 84px);
+        right: calc(100% - 88px);
         opacity: 0;
       }
     }
 
     @keyframes dockEnergyRight {
       0%,
-      68% {
+      67% {
         left: 50%;
         opacity: 0;
       }
 
-      70% {
+      69% {
         opacity: 0.9;
       }
 
       81% {
-        left: calc(100% - 84px);
-        opacity: 0.72;
+        left: calc(100% - 88px);
+        opacity: 0.7;
       }
 
       84%,
       100% {
-        left: calc(100% - 84px);
+        left: calc(100% - 88px);
         opacity: 0;
+      }
+    }
+
+    @keyframes dockCenterPulse {
+      0%,
+      100% {
+        opacity: 0.45;
+
+        box-shadow:
+          0 0 8px rgba(var(--purple-rgb), 0.2);
+      }
+
+      50% {
+        opacity: 1;
+
+        box-shadow:
+          0 0 16px rgba(var(--purple-rgb), 0.5);
       }
     }
 
     @keyframes dockGlassSweep {
       0%,
       70% {
-        transform: translateX(-116%);
+        transform: translateX(-118%);
         opacity: 0;
       }
 
@@ -762,7 +698,7 @@
 
       86%,
       100% {
-        transform: translateX(116%);
+        transform: translateX(118%);
         opacity: 0;
       }
     }
@@ -783,33 +719,14 @@
       }
     }
 
-    @keyframes dockLogoDataPulse {
-      0%,
-      100% {
-        transform: scale(1);
-
-        box-shadow:
-          inset 0 0 18px rgba(var(--dock-purple-rgb), 0.08),
-          0 0 18px rgba(var(--dock-purple-rgb), 0.1);
-      }
-
-      45% {
-        transform: scale(1.045);
-
-        box-shadow:
-          inset 0 0 22px rgba(var(--dock-purple-rgb), 0.16),
-          0 0 28px rgba(var(--dock-purple-rgb), 0.25);
-      }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .match-dock,
-      .dock-logo,
       .dock-content,
+      .dock-match,
       .dock-energy span,
+      .dock-center-pulse,
       .dock-glass-sweep,
-      .dock-data-flash,
-      .dock-match {
+      .dock-data-flash {
         animation: none !important;
         transition: none !important;
       }
@@ -820,11 +737,9 @@
         filter: none !important;
       }
 
-      .dock-logo,
       .dock-content {
         opacity: 1 !important;
         transform: none !important;
-        filter: none !important;
       }
     }
   </style>
@@ -841,9 +756,19 @@
       aria-hidden="true"
     ></div>
 
-    <div class="dock-shell">
+    <section class="dock-shell">
       <div
-        class="dock-frame"
+        class="dock-inner-frame"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="dock-side-mark left"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        class="dock-side-mark right"
         aria-hidden="true"
       ></div>
 
@@ -851,41 +776,28 @@
         class="dock-energy"
         aria-hidden="true"
       >
-        <span class="dock-energy-left"></span>
-        <span class="dock-energy-right"></span>
-      </div>
-
-      <div class="dock-logo-wrap">
-        <div
-          class="dock-logo-glow"
-          aria-hidden="true"
-        ></div>
-
-        <div class="dock-logo">
-          <img
-            src="assets/logos/clean%20logo.PNG"
-            alt="Rivals Gauntlet"
-          >
-
-          <span
-            class="dock-logo-fallback"
-            aria-hidden="true"
-          >
-            RG
-          </span>
-        </div>
+        <span class="left"></span>
+        <span class="right"></span>
       </div>
 
       <div
-        class="dock-divider"
+        class="dock-center-pulse"
         aria-hidden="true"
-      >
-        <span></span>
-      </div>
+      ></div>
 
-      <section class="dock-content">
-        <div class="dock-kicker">
-          Current Series
+      <div class="dock-content">
+        <div class="dock-kicker-row">
+          <span class="dock-kicker-line"></span>
+
+          <div class="dock-kicker">
+            <strong>
+              <span>RG</span>
+            </strong>
+
+            <span>Current Series</span>
+          </div>
+
+          <span class="dock-kicker-line"></span>
         </div>
 
         <div
@@ -893,32 +805,19 @@
           class="dock-match"
           aria-live="polite"
         >
-          LOADING MATCH
+          CONNECTING TO LIVE MATCH
         </div>
 
         <div class="dock-url-row">
           <span class="dock-url-line"></span>
 
-          <div
-            id="dockUrl"
-            class="dock-url"
-          >
+          <div class="dock-url">
             RIVALSGAUNTLET.COM
           </div>
 
           <span class="dock-url-line"></span>
         </div>
-      </section>
-
-      <div
-        class="dock-endcap dock-endcap-left"
-        aria-hidden="true"
-      ></div>
-
-      <div
-        class="dock-endcap dock-endcap-right"
-        aria-hidden="true"
-      ></div>
+      </div>
 
       <div
         class="dock-data-flash"
@@ -929,266 +828,278 @@
         class="dock-glass-sweep"
         aria-hidden="true"
       ></div>
-    </div>
+    </section>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <script src="../firebase.js"></script>
+  <script src="/firebase.js?v=2"></script>
 
   <script>
-    const siteRef = database.ref("site");
+    (() => {
+      "use strict";
 
-    const matchLabel =
-      document.getElementById("matchLabel");
+      const matchLabel =
+        document.getElementById("matchLabel");
 
-    const dockUrl =
-      document.getElementById("dockUrl");
+      const dock =
+        document.getElementById("matchDock");
 
-    const dock =
-      document.getElementById("matchDock");
+      let lastLabel = "";
+      let labelSwapTimer = null;
+      let refreshTimer = null;
+      let receivedFirebaseValue = false;
 
-    let lastLabel = "";
-    let labelSwapTimer = null;
-    let refreshTimer = null;
-
-    function clean(value = "") {
-      return String(value ?? "").trim();
-    }
-
-    function getCurrentMatchText(value) {
-      if (typeof value === "string") {
-        return clean(value);
+      function clean(value = "") {
+        return String(value ?? "").trim();
       }
 
-      if (value && typeof value === "object") {
-        return clean(
-          value.fullMatchId ||
-          value.label ||
-          value.name ||
-          value.matchId
+      function getCurrentMatchText(value) {
+        if (typeof value === "string") {
+          return clean(value);
+        }
+
+        if (value && typeof value === "object") {
+          return clean(
+            value.fullMatchId ||
+            value.label ||
+            value.name ||
+            value.matchId ||
+            value.id
+          );
+        }
+
+        return "";
+      }
+
+      function prettyStage(match = "") {
+        const text = clean(match).toLowerCase();
+
+        if (
+          !text ||
+          text.includes("no match")
+        ) {
+          return "AWAITING NEXT SERIES";
+        }
+
+        if (
+          text.includes("grand") ||
+          text.includes("finals")
+        ) {
+          return "GRAND FINALS";
+        }
+
+        if (
+          text.includes("semifinal 1") ||
+          text.includes("semi-final 1") ||
+          text.includes("sf1")
+        ) {
+          return "SEMIFINAL 1";
+        }
+
+        if (
+          text.includes("semifinal 2") ||
+          text.includes("semi-final 2") ||
+          text.includes("sf2")
+        ) {
+          return "SEMIFINAL 2";
+        }
+
+        if (
+          text.includes("quarterfinal 1") ||
+          text.includes("quarter-final 1") ||
+          text.includes("qf1")
+        ) {
+          return "QUARTERFINAL 1";
+        }
+
+        if (
+          text.includes("quarterfinal 2") ||
+          text.includes("quarter-final 2") ||
+          text.includes("qf2")
+        ) {
+          return "QUARTERFINAL 2";
+        }
+
+        if (
+          text.includes("quarterfinal 3") ||
+          text.includes("quarter-final 3") ||
+          text.includes("qf3")
+        ) {
+          return "QUARTERFINAL 3";
+        }
+
+        if (
+          text.includes("quarterfinal 4") ||
+          text.includes("quarter-final 4") ||
+          text.includes("qf4")
+        ) {
+          return "QUARTERFINAL 4";
+        }
+
+        const roundOf16Match = text.match(
+          /(?:round\s*of\s*16|r16)[\s\-•:_]*(\d+)/
         );
+
+        if (roundOf16Match) {
+          return `ROUND OF 16 • MATCH ${roundOf16Match[1]}`;
+        }
+
+        if (
+          text.includes("round of 16") ||
+          text.includes("r16")
+        ) {
+          return "ROUND OF 16";
+        }
+
+        return "CURRENT MATCH";
       }
 
-      return "";
-    }
+      function prettyFormat(match = "") {
+        const text = clean(match).toLowerCase();
 
-    function prettyStage(match = "") {
-      const text = clean(match).toLowerCase();
+        if (
+          text.includes("bo5") ||
+          text.includes("best of 5") ||
+          text.includes("best-of-5")
+        ) {
+          return "BO5";
+        }
 
-      if (
-        !text ||
-        text.includes("no match")
-      ) {
-        return "AWAITING NEXT SERIES";
-      }
+        if (
+          text.includes("bo3") ||
+          text.includes("best of 3") ||
+          text.includes("best-of-3")
+        ) {
+          return "BO3";
+        }
 
-      if (
-        text.includes("grand") ||
-        text.includes("finals")
-      ) {
-        return "GRAND FINALS";
-      }
+        if (
+          text.includes("grand") ||
+          text.includes("finals")
+        ) {
+          return "BO5";
+        }
 
-      if (
-        text.includes("semifinal 1") ||
-        text.includes("semi-final 1") ||
-        text.includes("sf1")
-      ) {
-        return "SEMIFINAL 1";
-      }
-
-      if (
-        text.includes("semifinal 2") ||
-        text.includes("semi-final 2") ||
-        text.includes("sf2")
-      ) {
-        return "SEMIFINAL 2";
-      }
-
-      if (
-        text.includes("quarterfinal 1") ||
-        text.includes("quarter-final 1") ||
-        text.includes("qf1")
-      ) {
-        return "QUARTERFINAL 1";
-      }
-
-      if (
-        text.includes("quarterfinal 2") ||
-        text.includes("quarter-final 2") ||
-        text.includes("qf2")
-      ) {
-        return "QUARTERFINAL 2";
-      }
-
-      if (
-        text.includes("quarterfinal 3") ||
-        text.includes("quarter-final 3") ||
-        text.includes("qf3")
-      ) {
-        return "QUARTERFINAL 3";
-      }
-
-      if (
-        text.includes("quarterfinal 4") ||
-        text.includes("quarter-final 4") ||
-        text.includes("qf4")
-      ) {
-        return "QUARTERFINAL 4";
-      }
-
-      const roundOf16Match = text.match(
-        /(?:round\s*of\s*16|r16)[\s\-•:_]*(\d+)/
-      );
-
-      if (roundOf16Match) {
-        return `ROUND OF 16 • MATCH ${roundOf16Match[1]}`;
-      }
-
-      if (
-        text.includes("round of 16") ||
-        text.includes("r16")
-      ) {
-        return "ROUND OF 16";
-      }
-
-      return "CURRENT MATCH";
-    }
-
-    function prettyFormat(match = "") {
-      const text = clean(match).toLowerCase();
-
-      if (
-        text.includes("bo5") ||
-        text.includes("best of 5") ||
-        text.includes("best-of-5")
-      ) {
-        return "BO5";
-      }
-
-      if (
-        text.includes("bo3") ||
-        text.includes("best of 3") ||
-        text.includes("best-of-3")
-      ) {
         return "BO3";
       }
 
-      if (
-        text.includes("grand") ||
-        text.includes("finals")
-      ) {
-        return "BO5";
+      function buildDockLabel(currentMatch) {
+        const stage = prettyStage(currentMatch);
+
+        if (stage === "AWAITING NEXT SERIES") {
+          return stage;
+        }
+
+        return `${stage} • ${prettyFormat(currentMatch)}`;
       }
 
-      return "BO3";
-    }
-
-    function buildDockLabel(currentMatch) {
-      const stage = prettyStage(currentMatch);
-
-      if (stage === "AWAITING NEXT SERIES") {
-        return stage;
-      }
-
-      return `${stage} • ${prettyFormat(currentMatch)}`;
-    }
-
-    function normalizeWebsite(value = "") {
-      const text = clean(value)
-        .replace(/^https?:\/\//i, "")
-        .replace(/^www\./i, "")
-        .replace(/\/+$/, "");
-
-      return text || "RIVALSGAUNTLET.COM";
-    }
-
-    function replayRefreshPulse() {
-      dock.classList.remove("is-refreshing");
-
-      void dock.offsetWidth;
-
-      dock.classList.add("is-refreshing");
-
-      window.clearTimeout(refreshTimer);
-
-      refreshTimer = window.setTimeout(() => {
+      function replayRefreshPulse() {
         dock.classList.remove("is-refreshing");
-      }, 560);
-    }
 
-    function updateDock(label) {
-      const nextLabel =
-        clean(label) || "AWAITING NEXT SERIES";
+        void dock.offsetWidth;
 
-      if (nextLabel === lastLabel) {
-        return;
+        dock.classList.add("is-refreshing");
+
+        window.clearTimeout(refreshTimer);
+
+        refreshTimer = window.setTimeout(() => {
+          dock.classList.remove("is-refreshing");
+        }, 540);
       }
 
-      window.clearTimeout(labelSwapTimer);
+      function updateDock(label) {
+        const nextLabel =
+          clean(label) || "AWAITING NEXT SERIES";
 
-      if (!lastLabel) {
+        if (nextLabel === lastLabel) {
+          return;
+        }
+
+        window.clearTimeout(labelSwapTimer);
+
+        if (!lastLabel) {
+          lastLabel = nextLabel;
+          matchLabel.textContent = nextLabel;
+          replayRefreshPulse();
+          return;
+        }
+
         lastLabel = nextLabel;
-        matchLabel.textContent = nextLabel;
-        replayRefreshPulse();
-        return;
+
+        matchLabel.classList.remove("is-entering");
+        matchLabel.classList.add("is-leaving");
+
+        labelSwapTimer = window.setTimeout(() => {
+          matchLabel.textContent = nextLabel;
+
+          matchLabel.classList.remove("is-leaving");
+
+          void matchLabel.offsetWidth;
+
+          matchLabel.classList.add("is-entering");
+
+          replayRefreshPulse();
+
+          window.setTimeout(() => {
+            matchLabel.classList.remove("is-entering");
+          }, 370);
+        }, 170);
       }
 
-      lastLabel = nextLabel;
+      function connectToCurrentMatch() {
+        if (typeof database === "undefined") {
+          updateDock("FIREBASE CONNECTION ERROR");
 
-      matchLabel.classList.remove("is-entering");
-      matchLabel.classList.add("is-leaving");
+          console.error(
+            "RG Match Dock: database is undefined. " +
+            "Check that /firebase.js exists at the website root."
+          );
 
-      labelSwapTimer = window.setTimeout(() => {
-        matchLabel.textContent = nextLabel;
+          return;
+        }
 
-        matchLabel.classList.remove("is-leaving");
+        const currentMatchRef =
+          database.ref("site/currentMatch");
 
-        void matchLabel.offsetWidth;
+        currentMatchRef.on(
+          "value",
 
-        matchLabel.classList.add("is-entering");
+          snapshot => {
+            receivedFirebaseValue = true;
 
-        replayRefreshPulse();
+            const currentMatch =
+              getCurrentMatchText(snapshot.val());
+
+            updateDock(
+              buildDockLabel(currentMatch)
+            );
+          },
+
+          error => {
+            receivedFirebaseValue = true;
+
+            console.error(
+              "RG Match Dock could not read site/currentMatch:",
+              error
+            );
+
+            updateDock("MATCH DATA UNAVAILABLE");
+          }
+        );
+      }
+
+      window.addEventListener("load", () => {
+        connectToCurrentMatch();
 
         window.setTimeout(() => {
-          matchLabel.classList.remove("is-entering");
-        }, 390);
-      }, 170);
-    }
-
-    siteRef.on(
-      "value",
-
-      snapshot => {
-        const data = snapshot.val() || {};
-
-        const currentMatch =
-          getCurrentMatchText(data.currentMatch);
-
-        updateDock(
-          buildDockLabel(currentMatch)
-        );
-
-        dockUrl.textContent = normalizeWebsite(
-          data.websiteUrl ||
-          data.website ||
-          data.siteUrl
-        );
-      },
-
-      error => {
-        console.error(
-          "Match Dock could not read site data:",
-          error
-        );
-
-        updateDock(
-          "RIVALS GAUNTLET • LIVE BROADCAST"
-        );
-      }
-    );
+          if (!receivedFirebaseValue) {
+            updateDock("WAITING FOR MATCH DATA");
+          }
+        }, 5000);
+      });
+    })();
   </script>
 </body>
 </html>

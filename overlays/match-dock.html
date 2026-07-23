@@ -831,275 +831,356 @@
     </section>
   </main>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <script src="/firebase.js?v=2"></script>
+<script src="../firebase.js?v=2"></script>
 
-  <script>
-    (() => {
-      "use strict";
+<script>
+(() => {
+  "use strict";
 
-      const matchLabel =
-        document.getElementById("matchLabel");
+  const matchLabel =
+    document.getElementById("matchLabel");
 
-      const dock =
-        document.getElementById("matchDock");
+  const dock =
+    document.getElementById("matchDock");
 
-      let lastLabel = "";
-      let labelSwapTimer = null;
-      let refreshTimer = null;
-      let receivedFirebaseValue = false;
+  let lastLabel = "";
+  let labelSwapTimer = null;
+  let refreshTimer = null;
+  let receivedMatchData = false;
+  let listenerAttached = false;
 
-      function clean(value = "") {
-        return String(value ?? "").trim();
-      }
+  function clean(value = "") {
+    return String(value == null ? "" : value).trim();
+  }
 
-      function getCurrentMatchText(value) {
-        if (typeof value === "string") {
-          return clean(value);
-        }
+  function getCurrentMatchText(value) {
+    if (typeof value === "string") {
+      return clean(value);
+    }
 
-        if (value && typeof value === "object") {
-          return clean(
-            value.fullMatchId ||
-            value.label ||
-            value.name ||
-            value.matchId ||
-            value.id
-          );
-        }
+    if (value && typeof value === "object") {
+      return clean(
+        value.fullMatchId ||
+        value.label ||
+        value.name ||
+        value.matchId ||
+        value.id ||
+        ""
+      );
+    }
 
-        return "";
-      }
+    return "";
+  }
 
-      function prettyStage(match = "") {
-        const text = clean(match).toLowerCase();
+  function prettyStage(match = "") {
+    const text = clean(match).toLowerCase();
 
-        if (
-          !text ||
-          text.includes("no match")
-        ) {
-          return "AWAITING NEXT SERIES";
-        }
+    if (
+      !text ||
+      text.includes("no match")
+    ) {
+      return "AWAITING NEXT SERIES";
+    }
 
-        if (
-          text.includes("grand") ||
-          text.includes("finals")
-        ) {
-          return "GRAND FINALS";
-        }
+    if (
+      text.includes("grand") ||
+      text.includes("finals")
+    ) {
+      return "GRAND FINALS";
+    }
 
-        if (
-          text.includes("semifinal 1") ||
-          text.includes("semi-final 1") ||
-          text.includes("sf1")
-        ) {
-          return "SEMIFINAL 1";
-        }
+    if (
+      text.includes("semifinal 1") ||
+      text.includes("semi-final 1") ||
+      text.includes("sf1")
+    ) {
+      return "SEMIFINAL 1";
+    }
 
-        if (
-          text.includes("semifinal 2") ||
-          text.includes("semi-final 2") ||
-          text.includes("sf2")
-        ) {
-          return "SEMIFINAL 2";
-        }
+    if (
+      text.includes("semifinal 2") ||
+      text.includes("semi-final 2") ||
+      text.includes("sf2")
+    ) {
+      return "SEMIFINAL 2";
+    }
 
-        if (
-          text.includes("quarterfinal 1") ||
-          text.includes("quarter-final 1") ||
-          text.includes("qf1")
-        ) {
-          return "QUARTERFINAL 1";
-        }
+    if (
+      text.includes("quarterfinal 1") ||
+      text.includes("quarter-final 1") ||
+      text.includes("qf1")
+    ) {
+      return "QUARTERFINAL 1";
+    }
 
-        if (
-          text.includes("quarterfinal 2") ||
-          text.includes("quarter-final 2") ||
-          text.includes("qf2")
-        ) {
-          return "QUARTERFINAL 2";
-        }
+    if (
+      text.includes("quarterfinal 2") ||
+      text.includes("quarter-final 2") ||
+      text.includes("qf2")
+    ) {
+      return "QUARTERFINAL 2";
+    }
 
-        if (
-          text.includes("quarterfinal 3") ||
-          text.includes("quarter-final 3") ||
-          text.includes("qf3")
-        ) {
-          return "QUARTERFINAL 3";
-        }
+    if (
+      text.includes("quarterfinal 3") ||
+      text.includes("quarter-final 3") ||
+      text.includes("qf3")
+    ) {
+      return "QUARTERFINAL 3";
+    }
 
-        if (
-          text.includes("quarterfinal 4") ||
-          text.includes("quarter-final 4") ||
-          text.includes("qf4")
-        ) {
-          return "QUARTERFINAL 4";
-        }
+    if (
+      text.includes("quarterfinal 4") ||
+      text.includes("quarter-final 4") ||
+      text.includes("qf4")
+    ) {
+      return "QUARTERFINAL 4";
+    }
 
-        const roundOf16Match = text.match(
-          /(?:round\s*of\s*16|r16)[\s\-•:_]*(\d+)/
-        );
+    const roundOf16Match = text.match(
+      /(?:round\s*of\s*16|r16)[\s\-•:_]*(\d+)/
+    );
 
-        if (roundOf16Match) {
-          return `ROUND OF 16 • MATCH ${roundOf16Match[1]}`;
-        }
+    if (roundOf16Match) {
+      return `ROUND OF 16 • MATCH ${roundOf16Match[1]}`;
+    }
 
-        if (
-          text.includes("round of 16") ||
-          text.includes("r16")
-        ) {
-          return "ROUND OF 16";
-        }
+    if (
+      text.includes("round of 16") ||
+      text.includes("r16")
+    ) {
+      return "ROUND OF 16";
+    }
 
-        return "CURRENT MATCH";
-      }
+    return "CURRENT MATCH";
+  }
 
-      function prettyFormat(match = "") {
-        const text = clean(match).toLowerCase();
+  function prettyFormat(match = "") {
+    const text = clean(match).toLowerCase();
 
-        if (
-          text.includes("bo5") ||
-          text.includes("best of 5") ||
-          text.includes("best-of-5")
-        ) {
-          return "BO5";
-        }
+    if (
+      text.includes("bo5") ||
+      text.includes("best of 5") ||
+      text.includes("best-of-5") ||
+      text.includes("best-of-five")
+    ) {
+      return "BO5";
+    }
 
-        if (
-          text.includes("bo3") ||
-          text.includes("best of 3") ||
-          text.includes("best-of-3")
-        ) {
-          return "BO3";
-        }
+    if (
+      text.includes("bo3") ||
+      text.includes("best of 3") ||
+      text.includes("best-of-3") ||
+      text.includes("best-of-three")
+    ) {
+      return "BO3";
+    }
 
-        if (
-          text.includes("grand") ||
-          text.includes("finals")
-        ) {
-          return "BO5";
-        }
+    if (
+      text.includes("grand") ||
+      text.includes("finals")
+    ) {
+      return "BO5";
+    }
 
-        return "BO3";
-      }
+    return "BO3";
+  }
 
-      function buildDockLabel(currentMatch) {
-        const stage = prettyStage(currentMatch);
+  function buildDockLabel(currentMatch) {
+    const stage = prettyStage(currentMatch);
 
-        if (stage === "AWAITING NEXT SERIES") {
-          return stage;
-        }
+    if (stage === "AWAITING NEXT SERIES") {
+      return stage;
+    }
 
-        return `${stage} • ${prettyFormat(currentMatch)}`;
-      }
+    return `${stage} • ${prettyFormat(currentMatch)}`;
+  }
 
-      function replayRefreshPulse() {
-        dock.classList.remove("is-refreshing");
+  function replayRefreshPulse() {
+    dock.classList.remove("is-refreshing");
 
-        void dock.offsetWidth;
+    void dock.offsetWidth;
 
-        dock.classList.add("is-refreshing");
+    dock.classList.add("is-refreshing");
 
-        window.clearTimeout(refreshTimer);
+    window.clearTimeout(refreshTimer);
 
-        refreshTimer = window.setTimeout(() => {
-          dock.classList.remove("is-refreshing");
-        }, 540);
-      }
+    refreshTimer = window.setTimeout(() => {
+      dock.classList.remove("is-refreshing");
+    }, 540);
+  }
 
-      function updateDock(label) {
-        const nextLabel =
-          clean(label) || "AWAITING NEXT SERIES";
+  function updateDock(label) {
+    const nextLabel =
+      clean(label) || "AWAITING NEXT SERIES";
 
-        if (nextLabel === lastLabel) {
-          return;
-        }
+    if (nextLabel === lastLabel) {
+      return;
+    }
 
-        window.clearTimeout(labelSwapTimer);
+    window.clearTimeout(labelSwapTimer);
 
-        if (!lastLabel) {
-          lastLabel = nextLabel;
-          matchLabel.textContent = nextLabel;
-          replayRefreshPulse();
-          return;
-        }
+    if (!lastLabel) {
+      lastLabel = nextLabel;
+      matchLabel.textContent = nextLabel;
+      replayRefreshPulse();
+      return;
+    }
 
-        lastLabel = nextLabel;
+    lastLabel = nextLabel;
 
+    matchLabel.classList.remove("is-entering");
+    matchLabel.classList.add("is-leaving");
+
+    labelSwapTimer = window.setTimeout(() => {
+      matchLabel.textContent = nextLabel;
+
+      matchLabel.classList.remove("is-leaving");
+
+      void matchLabel.offsetWidth;
+
+      matchLabel.classList.add("is-entering");
+
+      replayRefreshPulse();
+
+      window.setTimeout(() => {
         matchLabel.classList.remove("is-entering");
-        matchLabel.classList.add("is-leaving");
+      }, 370);
+    }, 170);
+  }
 
-        labelSwapTimer = window.setTimeout(() => {
-          matchLabel.textContent = nextLabel;
+  function connectMatchDock() {
+    if (listenerAttached) {
+      return;
+    }
 
-          matchLabel.classList.remove("is-leaving");
+    matchLabel.textContent =
+      "INITIALIZING MATCH DATA";
 
-          void matchLabel.offsetWidth;
-
-          matchLabel.classList.add("is-entering");
-
-          replayRefreshPulse();
-
-          window.setTimeout(() => {
-            matchLabel.classList.remove("is-entering");
-          }, 370);
-        }, 170);
+    try {
+      if (typeof firebase === "undefined") {
+        throw new Error(
+          "Firebase SDK did not load."
+        );
       }
 
-      function connectToCurrentMatch() {
-        if (typeof database === "undefined") {
-          updateDock("FIREBASE CONNECTION ERROR");
+      if (
+        !firebase.apps ||
+        firebase.apps.length === 0
+      ) {
+        throw new Error(
+          "firebase.js did not initialize Firebase."
+        );
+      }
+
+      const db = firebase.database();
+
+      listenerAttached = true;
+
+      /*
+       * Listen to the full site record, matching the
+       * original overlay implementation.
+       */
+      db.ref("site").on(
+        "value",
+
+        snapshot => {
+          receivedMatchData = true;
+
+          const siteData =
+            snapshot.val() || {};
+
+          const currentMatch =
+            getCurrentMatchText(
+              siteData.currentMatch
+            );
+
+          console.log(
+            "[RG Match Dock] currentMatch:",
+            siteData.currentMatch
+          );
+
+          updateDock(
+            buildDockLabel(currentMatch)
+          );
+        },
+
+        error => {
+          receivedMatchData = true;
 
           console.error(
-            "RG Match Dock: database is undefined. " +
-            "Check that /firebase.js exists at the website root."
+            "[RG Match Dock] Firebase read failed:",
+            error
           );
 
-          return;
+          updateDock(
+            error && error.code === "PERMISSION_DENIED"
+              ? "MATCH DATA PERMISSION BLOCKED"
+              : "MATCH DATA UNAVAILABLE"
+          );
         }
+      );
 
-        const currentMatchRef =
-          database.ref("site/currentMatch");
+      db.ref(".info/connected").on(
+        "value",
 
-        currentMatchRef.on(
-          "value",
+        snapshot => {
+          const connected =
+            snapshot.val() === true;
 
-          snapshot => {
-            receivedFirebaseValue = true;
+          console.log(
+            "[RG Match Dock] connected:",
+            connected
+          );
 
-            const currentMatch =
-              getCurrentMatchText(snapshot.val());
-
-            updateDock(
-              buildDockLabel(currentMatch)
-            );
-          },
-
-          error => {
-            receivedFirebaseValue = true;
-
-            console.error(
-              "RG Match Dock could not read site/currentMatch:",
-              error
-            );
-
-            updateDock("MATCH DATA UNAVAILABLE");
+          if (
+            !connected &&
+            !receivedMatchData
+          ) {
+            matchLabel.textContent =
+              "CONNECTING TO FIREBASE";
           }
-        );
-      }
+        }
+      );
 
-      window.addEventListener("load", () => {
-        connectToCurrentMatch();
+      window.setTimeout(() => {
+        if (!receivedMatchData) {
+          updateDock(
+            "WAITING FOR MATCH DATA"
+          );
+        }
+      }, 5000);
 
-        window.setTimeout(() => {
-          if (!receivedFirebaseValue) {
-            updateDock("WAITING FOR MATCH DATA");
-          }
-        }, 5000);
-      });
-    })();
-  </script>
+    } catch (error) {
+      console.error(
+        "[RG Match Dock] startup failed:",
+        error
+      );
+
+      updateDock(
+        "FIREBASE STARTUP ERROR"
+      );
+    }
+  }
+
+  /*
+   * Start immediately. The scripts above are
+   * parser-blocking, so Firebase should already exist.
+   */
+  connectMatchDock();
+
+  /*
+   * Also retry when Safari restores the page from cache.
+   */
+  window.addEventListener(
+    "pageshow",
+    connectMatchDock
+  );
+})();
+</script>
+
 </body>
 </html>

@@ -928,6 +928,7 @@
     }
 
     .post-comment-reply-button,
+    .post-reply-reply,
     .post-reply-like,
     .post-reply-delete,
     .post-reply-cancel {
@@ -947,6 +948,7 @@
     }
 
     .post-comment-reply-button:hover,
+    .post-reply-reply:hover,
     .post-reply-like:hover,
     .post-reply-like.liked {
       color: var(--feed-accent-bright);
@@ -961,6 +963,32 @@
     .post-comment-replies {
       margin: 0 18px 0 70px;
       border-left: 2px solid rgba(154, 124, 255, 0.16);
+    }
+
+    .post-reply-node {
+      min-width: 0;
+    }
+
+    .post-reply-children {
+      margin-left: 34px;
+      border-left: 1px solid rgba(154, 124, 255, 0.14);
+    }
+
+    .post-reply-node.is-nested > .post-reply-card {
+      background: rgba(154, 124, 255, 0.018);
+    }
+
+    .post-reply-target-label {
+      display: inline-flex;
+      margin: 1px 0 4px;
+      color: var(--feed-dim);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .post-reply-target-label strong {
+      margin-left: 4px;
+      color: var(--feed-accent-bright);
     }
 
     .post-reply-card {
@@ -1274,6 +1302,10 @@
 
       .post-comment-replies {
         margin: 0 10px 0 48px;
+      }
+
+      .post-reply-children {
+        margin-left: 16px;
       }
 
       .post-reply-card {
@@ -2118,7 +2150,7 @@
   let selectedPostComments = [];
   let selectedCommentReplies = {};
   let editingPostId = null;
-  let activeReplyCommentId = null;
+  let activeReplyTarget = null;
   let stopSelectedPostComments = null;
   let stopSelectedCommentLikes = null;
   let stopSelectedReplies = null;
@@ -2251,7 +2283,8 @@
               class="rg-post-media"
               src="${escapePostHtml(post.image)}"
               alt="${escapePostHtml(post.title || "Official Rivals Gauntlet post")}" 
-              loading="lazy"
+              loading="${threadMode ? "eager" : "lazy"}"
+              decoding="async"
             >
           ` : ""}
 
@@ -2263,7 +2296,7 @@
               aria-label="Open discussion"
             >
               <span class="rg-action-icon"><i class="fa-regular fa-comment"></i></span>
-              <span>${Number(commentCount || 0).toLocaleString()}</span>
+              <span data-post-comment-count="${escapePostHtml(post.id)}">${Number(commentCount || 0).toLocaleString()}</span>
             </button>
 
             <button
@@ -2401,6 +2434,7 @@
             class="post-reply-avatar"
             src="${escapePostHtml(reply.profileImage)}"
             alt="${escapePostHtml(reply.displayName || "Player")}" 
+            decoding="async"
             onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
           >
           <div class="post-reply-avatar-fallback" style="display:none;">
@@ -2417,76 +2451,161 @@
     `;
   }
 
-  function replyCardMarkup(commentId, reply) {
+  function getReplyById(commentId, replyId) {
+    return getRepliesForComment(commentId).find(reply => reply.id === replyId) || null;
+  }
+
+  function replyCardMarkup(commentId, reply, depth = 0, childrenMarkup = "") {
     const key = replyLikeKey(commentId, reply.id);
     const likeCount = Number(selectedReplyLikeCounts[key] || 0);
     const liked = likedReplyKeys.has(key);
     const canDelete = Boolean(
       currentUser && (reply.userId === currentUser.uid || isStaff())
     );
+    const parentReply = reply.parentReplyId
+      ? getReplyById(commentId, reply.parentReplyId)
+      : null;
 
     return `
-      <article
-        class="post-reply-card"
-        data-comment-id="${escapePostHtml(commentId)}"
-        data-reply-id="${escapePostHtml(reply.id)}"
+      <div
+        class="post-reply-node ${depth > 0 ? "is-nested" : ""}"
+        data-reply-node="${escapePostHtml(reply.id)}"
       >
-        ${getReplyAvatarHtml(reply)}
+        <article
+          class="post-reply-card"
+          data-comment-id="${escapePostHtml(commentId)}"
+          data-reply-id="${escapePostHtml(reply.id)}"
+        >
+          ${getReplyAvatarHtml(reply)}
 
-        <div class="post-reply-main">
-          <div class="post-reply-name-row">
-            <strong>${escapePostHtml(reply.displayName || "Player")}</strong>
-            <small>
-              ${reply.rgId ? `${escapePostHtml(reply.rgId)} · ` : ""}
-              ${escapePostHtml(formatRelativeTime(reply.createdAt))}
-            </small>
+          <div class="post-reply-main">
+            <div class="post-reply-name-row">
+              <strong>${escapePostHtml(reply.displayName || "Player")}</strong>
+              <small>
+                ${reply.rgId ? `${escapePostHtml(reply.rgId)} · ` : ""}
+                ${escapePostHtml(formatRelativeTime(reply.createdAt))}
+              </small>
+            </div>
+
+            ${parentReply ? `
+              <span class="post-reply-target-label">
+                Replying to <strong>${escapePostHtml(parentReply.displayName || "Player")}</strong>
+              </span>
+            ` : ""}
+
+            <p>${escapePostHtml(reply.message || "")}</p>
+
+            <div class="post-reply-actions">
+              <button
+                class="post-reply-like ${liked ? "liked" : ""}"
+                type="button"
+                data-like-reply="${escapePostHtml(reply.id)}"
+                data-reply-comment="${escapePostHtml(commentId)}"
+                aria-label="${liked ? "Unlike" : "Like"} this reply"
+                aria-pressed="${liked}"
+              >
+                <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
+                <span data-reply-like-count>${likeCount.toLocaleString()}</span>
+              </button>
+
+              <button
+                class="post-reply-reply"
+                type="button"
+                data-start-reply="${escapePostHtml(commentId)}"
+                data-parent-reply="${escapePostHtml(reply.id)}"
+                data-reply-name="${escapePostHtml(reply.displayName || "Player")}"
+              >
+                <i class="fa-regular fa-comment-dots"></i>
+                Reply
+              </button>
+            </div>
           </div>
 
-          <p>${escapePostHtml(reply.message || "")}</p>
-
-          <div class="post-reply-actions">
-            <button
-              class="post-reply-like ${liked ? "liked" : ""}"
-              type="button"
-              data-like-reply="${escapePostHtml(reply.id)}"
-              data-reply-comment="${escapePostHtml(commentId)}"
-              aria-label="${liked ? "Unlike" : "Like"} this reply"
-              aria-pressed="${liked}"
-            >
-              <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
-              ${likeCount.toLocaleString()}
-            </button>
+          <div class="comment-menu">
+            ${canDelete ? `
+              <button
+                class="post-reply-delete"
+                type="button"
+                data-delete-reply="${escapePostHtml(reply.id)}"
+                data-reply-comment="${escapePostHtml(commentId)}"
+              >
+                <i class="fa-regular fa-trash-can"></i>
+                Delete
+              </button>
+            ` : ""}
           </div>
-        </div>
+        </article>
 
-        <div class="comment-menu">
-          ${canDelete ? `
-            <button
-              class="post-reply-delete"
-              type="button"
-              data-delete-reply="${escapePostHtml(reply.id)}"
-              data-reply-comment="${escapePostHtml(commentId)}"
-            >
-              <i class="fa-regular fa-trash-can"></i>
-              Delete
-            </button>
-          ` : ""}
-        </div>
-      </article>
+        ${childrenMarkup ? `
+          <div class="post-reply-children">
+            ${childrenMarkup}
+          </div>
+        ` : ""}
+      </div>
     `;
   }
 
+  function renderReplyTree(commentId) {
+    const replies = getRepliesForComment(commentId);
+    if (!replies.length) return "";
+
+    const replyIds = new Set(replies.map(reply => reply.id));
+    const grouped = new Map();
+    const rendered = new Set();
+
+    replies.forEach(reply => {
+      const requestedParent = String(reply.parentReplyId || "");
+      const validParent =
+        requestedParent &&
+        requestedParent !== reply.id &&
+        replyIds.has(requestedParent)
+          ? requestedParent
+          : "";
+
+      if (!grouped.has(validParent)) grouped.set(validParent, []);
+      grouped.get(validParent).push(reply);
+    });
+
+    const renderBranch = (parentId = "", depth = 0, path = new Set()) => {
+      return (grouped.get(parentId) || []).map(reply => {
+        if (path.has(reply.id)) return "";
+
+        rendered.add(reply.id);
+        const nextPath = new Set(path);
+        nextPath.add(reply.id);
+        const children = renderBranch(reply.id, depth + 1, nextPath);
+        return replyCardMarkup(commentId, reply, depth, children);
+      }).join("");
+    };
+
+    let markup = renderBranch("", 0, new Set());
+
+    // Malformed/circular records are promoted to the root instead of disappearing.
+    replies.forEach(reply => {
+      if (rendered.has(reply.id)) return;
+      rendered.add(reply.id);
+      markup += replyCardMarkup(commentId, reply, 0, "");
+    });
+
+    return markup;
+  }
+
   function replyComposerMarkup(comment) {
+    const targetName =
+      activeReplyTarget?.name ||
+      comment.displayName ||
+      "Player";
+
     return `
       <form class="post-reply-form" data-reply-form="${escapePostHtml(comment.id)}">
         <div class="post-reply-context">
-          Replying to <strong>${escapePostHtml(comment.displayName || "Player")}</strong>
+          Replying to <strong>${escapePostHtml(targetName)}</strong>
         </div>
 
         <textarea
           maxlength="500"
           data-reply-input
-          placeholder="Write a reply..."
+          placeholder="Write a reply to ${escapePostHtml(targetName)}..."
         ></textarea>
 
         <div class="post-reply-form-footer">
@@ -2514,6 +2633,106 @@
     const container = document.getElementById("selectedPostContent");
     if (!container || !selectedPost) return;
     container.innerHTML = postCardMarkup(selectedPost, true);
+  }
+
+  function updatePostLikeButtons(postId) {
+    const liked = likedPostIds.has(postId);
+    const count = Number(postLikeCounts[postId] || 0);
+
+    document.querySelectorAll("[data-like-post]").forEach(button => {
+      if (button.dataset.likePost !== postId) return;
+      button.classList.toggle("liked", liked);
+      button.setAttribute("aria-pressed", String(liked));
+      button.setAttribute("aria-label", `${liked ? "Unlike" : "Like"} this post`);
+
+      const icon = button.querySelector("i.fa-heart");
+      if (icon) {
+        icon.classList.toggle("fa-solid", liked);
+        icon.classList.toggle("fa-regular", !liked);
+      }
+
+      const value = button.querySelector("span:last-child");
+      if (value) value.textContent = count.toLocaleString();
+    });
+  }
+
+  function updateAllPostLikeButtons() {
+    document.querySelectorAll("[data-like-post]").forEach(button => {
+      updatePostLikeButtons(button.dataset.likePost);
+    });
+  }
+
+  function updateCommentLikeButton(commentId) {
+    const liked = likedCommentIds.has(commentId);
+    const count = Number(selectedCommentLikeCounts[commentId] || 0);
+
+    document.querySelectorAll("[data-like-comment]").forEach(button => {
+      if (button.dataset.likeComment !== commentId) return;
+      button.classList.toggle("liked", liked);
+      button.setAttribute("aria-pressed", String(liked));
+      button.setAttribute("aria-label", `${liked ? "Unlike" : "Like"} this comment`);
+
+      const icon = button.querySelector("i.fa-heart");
+      if (icon) {
+        icon.classList.toggle("fa-solid", liked);
+        icon.classList.toggle("fa-regular", !liked);
+      }
+
+      const value = button.querySelector("[data-comment-like-count]");
+      if (value) value.textContent = count.toLocaleString();
+    });
+  }
+
+  function updateAllCommentLikeButtons() {
+    document.querySelectorAll("[data-like-comment]").forEach(button => {
+      updateCommentLikeButton(button.dataset.likeComment);
+    });
+  }
+
+  function updateReplyLikeButton(commentId, replyId) {
+    const key = replyLikeKey(commentId, replyId);
+    const liked = likedReplyKeys.has(key);
+    const count = Number(selectedReplyLikeCounts[key] || 0);
+
+    document.querySelectorAll("[data-like-reply]").forEach(button => {
+      if (
+        button.dataset.replyComment !== commentId ||
+        button.dataset.likeReply !== replyId
+      ) return;
+
+      button.classList.toggle("liked", liked);
+      button.setAttribute("aria-pressed", String(liked));
+      button.setAttribute("aria-label", `${liked ? "Unlike" : "Like"} this reply`);
+
+      const icon = button.querySelector("i.fa-heart");
+      if (icon) {
+        icon.classList.toggle("fa-solid", liked);
+        icon.classList.toggle("fa-regular", !liked);
+      }
+
+      const value = button.querySelector("[data-reply-like-count]");
+      if (value) value.textContent = count.toLocaleString();
+    });
+  }
+
+  function updateAllReplyLikeButtons() {
+    document.querySelectorAll("[data-like-reply]").forEach(button => {
+      updateReplyLikeButton(
+        button.dataset.replyComment,
+        button.dataset.likeReply
+      );
+    });
+  }
+
+  function updateSelectedPostCommentCount() {
+    if (!selectedPost) return;
+    const count = selectedPostComments.length;
+
+    document
+      .querySelectorAll(`[data-post-comment-count="${CSS.escape(selectedPost.id)}"]`)
+      .forEach(element => {
+        element.textContent = count.toLocaleString();
+      });
   }
 
   function sortedComments() {
@@ -2597,7 +2816,7 @@
           No comments yet. Be the first player to join this discussion.
         </div>
       `;
-      renderSelectedPost();
+      updateSelectedPostCommentCount();
       restoreCommentScrollState(scrollState);
       return;
     }
@@ -2608,7 +2827,7 @@
       const replies = getRepliesForComment(comment.id);
       const ownComment = currentUser && comment.userId === currentUser.uid;
       const canDelete = ownComment || isStaff();
-      const replyComposerOpen = activeReplyCommentId === comment.id;
+      const replyComposerOpen = activeReplyTarget?.commentId === comment.id;
 
       return `
         <section class="post-comment-thread" data-comment-thread="${escapePostHtml(comment.id)}">
@@ -2635,13 +2854,15 @@
                   aria-pressed="${liked}"
                 >
                   <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
-                  ${likeCount.toLocaleString()}
+                  <span data-comment-like-count>${likeCount.toLocaleString()}</span>
                 </button>
 
                 <button
                   class="post-comment-reply-button"
                   type="button"
-                  data-reply-comment="${escapePostHtml(comment.id)}"
+                  data-start-reply="${escapePostHtml(comment.id)}"
+                  data-parent-reply=""
+                  data-reply-name="${escapePostHtml(comment.displayName || "Player")}"
                 >
                   <i class="fa-regular fa-comment-dots"></i>
                   ${replies.length ? pluralize(replies.length, "Reply", "Replies") : "Reply"}
@@ -2665,7 +2886,7 @@
 
           ${replies.length || replyComposerOpen ? `
             <div class="post-comment-replies">
-              ${replies.map(reply => replyCardMarkup(comment.id, reply)).join("")}
+              ${renderReplyTree(comment.id)}
               ${replyComposerOpen ? replyComposerMarkup(comment) : ""}
             </div>
           ` : ""}
@@ -2673,14 +2894,14 @@
       `;
     }).join("");
 
-    renderSelectedPost();
+    updateSelectedPostCommentCount();
     restoreCommentScrollState(scrollState);
 
-    if (activeReplyCommentId) {
+    if (activeReplyTarget?.commentId) {
       requestAnimationFrame(() => {
         document
-          .querySelector(`[data-reply-form="${CSS.escape(activeReplyCommentId)}"] [data-reply-input]`)
-          ?.focus();
+          .querySelector(`[data-reply-form="${CSS.escape(activeReplyTarget.commentId)}"] [data-reply-input]`)
+          ?.focus({ preventScroll: true });
       });
     }
   }
@@ -2769,7 +2990,7 @@
         selectedCommentLikeCounts[commentSnapshot.key] = count;
       });
 
-      renderPostComments();
+      updateAllCommentLikeButtons();
     };
 
     reference.on("value", handler, error => {
@@ -2848,7 +3069,7 @@
         });
       });
 
-      renderPostComments();
+      updateAllReplyLikeButtons();
     };
 
     reference.on("value", handler, error => {
@@ -2869,7 +3090,7 @@
     selectedPost = post;
     selectedPostComments = [];
     selectedCommentReplies = {};
-    activeReplyCommentId = null;
+    activeReplyTarget = null;
     renderSelectedPost();
     renderCommentComposer();
     renderPostComments();
@@ -2924,7 +3145,7 @@
     selectedPost = null;
     selectedPostComments = [];
     selectedCommentReplies = {};
-    activeReplyCommentId = null;
+    activeReplyTarget = null;
     Object.keys(selectedReplyLikeCounts).forEach(key => delete selectedReplyLikeCounts[key]);
     likedReplyKeys.clear();
 
@@ -2991,14 +3212,14 @@
         return Math.max(0, Number(value || 0) - 1);
       });
 
-      if (activeReplyCommentId === commentId) activeReplyCommentId = null;
+      if (activeReplyTarget?.commentId === commentId) activeReplyTarget = null;
       setPostsStatus("Comment deleted.", "#ffcb6b");
     } catch (error) {
       setPostsStatus(error.message || "The comment could not be deleted.", "#ff6a7f");
     }
   }
 
-  function openReplyComposer(commentId) {
+  function openReplyComposer(commentId, parentReplyId = "", name = "") {
     if (!currentUser) {
       window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
       return;
@@ -3006,12 +3227,25 @@
 
     if (!selectedPost || selectedPost.commentsEnabled === false) return;
 
-    activeReplyCommentId = activeReplyCommentId === commentId ? null : commentId;
+    const sameTarget = Boolean(
+      activeReplyTarget &&
+      activeReplyTarget.commentId === commentId &&
+      String(activeReplyTarget.parentReplyId || "") === String(parentReplyId || "")
+    );
+
+    activeReplyTarget = sameTarget
+      ? null
+      : {
+          commentId,
+          parentReplyId: parentReplyId || "",
+          name: name || "Player"
+        };
+
     renderPostComments();
   }
 
   function closeReplyComposer() {
-    activeReplyCommentId = null;
+    activeReplyTarget = null;
     renderPostComments();
   }
 
@@ -3048,7 +3282,7 @@
         .ref(`postCommentReplies/${selectedPost.id}/${commentId}`)
         .push();
 
-      await replyRef.set({
+      const replyRecord = {
         userId: currentUser.uid,
         displayName:
           currentPlayer.displayName ||
@@ -3059,9 +3293,15 @@
         profileImage: currentPlayer.profileImage || "",
         message,
         createdAt: firebase.database.ServerValue.TIMESTAMP
-      });
+      };
 
-      activeReplyCommentId = null;
+      if (activeReplyTarget?.parentReplyId) {
+        replyRecord.parentReplyId = activeReplyTarget.parentReplyId;
+      }
+
+      await replyRef.set(replyRecord);
+
+      activeReplyTarget = null;
       setPostsStatus("Reply posted.", "#4fd6a2");
     } catch (error) {
       setPostsStatus(
@@ -3113,7 +3353,7 @@
     else likedReplyKeys.add(key);
 
     selectedReplyLikeCounts[key] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
-    renderPostComments();
+    updateReplyLikeButton(commentId, replyId);
 
     try {
       await database
@@ -3124,7 +3364,7 @@
       else likedReplyKeys.delete(key);
 
       selectedReplyLikeCounts[key] = oldCount;
-      renderPostComments();
+      updateReplyLikeButton(commentId, replyId);
 
       setPostsStatus(
         String(error?.code || "").toLowerCase().includes("permission")
@@ -3148,8 +3388,7 @@
     else likedPostIds.add(postId);
 
     postLikeCounts[postId] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
-    renderOfficialPosts();
-    if (selectedPost?.id === postId) renderSelectedPost();
+    updatePostLikeButtons(postId);
 
     try {
       await database.ref(`postLikes/${postId}/${currentUser.uid}`).set(wasLiked ? null : true);
@@ -3157,8 +3396,7 @@
       if (wasLiked) likedPostIds.add(postId);
       else likedPostIds.delete(postId);
       postLikeCounts[postId] = oldCount;
-      renderOfficialPosts();
-      if (selectedPost?.id === postId) renderSelectedPost();
+      updatePostLikeButtons(postId);
 
       setPostsStatus(
         String(error?.code || "").toLowerCase().includes("permission")
@@ -3184,7 +3422,7 @@
     else likedCommentIds.add(commentId);
 
     selectedCommentLikeCounts[commentId] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
-    renderPostComments();
+    updateCommentLikeButton(commentId);
 
     try {
       await database
@@ -3194,7 +3432,7 @@
       if (wasLiked) likedCommentIds.add(commentId);
       else likedCommentIds.delete(commentId);
       selectedCommentLikeCounts[commentId] = oldCount;
-      renderPostComments();
+      updateCommentLikeButton(commentId);
 
       setPostsStatus(
         String(error?.code || "").toLowerCase().includes("permission")
@@ -3254,8 +3492,7 @@
         postLikeCounts[postSnapshot.key] = count;
       });
 
-      renderOfficialPosts();
-      if (selectedPost) renderSelectedPost();
+      updateAllPostLikeButtons();
     };
 
     reference.on("value", handler, error => {
@@ -3589,7 +3826,7 @@
     const shareButton = event.target.closest("[data-share-post]");
     const likeCommentButton = event.target.closest("[data-like-comment]");
     const deleteCommentButton = event.target.closest("[data-delete-comment]");
-    const replyCommentButton = event.target.closest("[data-reply-comment]:not([data-like-reply]):not([data-delete-reply])");
+    const startReplyButton = event.target.closest("[data-start-reply]");
     const cancelReplyButton = event.target.closest("[data-cancel-reply]");
     const likeReplyButton = event.target.closest("[data-like-reply]");
     const deleteReplyButton = event.target.closest("[data-delete-reply]");
@@ -3602,7 +3839,13 @@
     if (shareButton) sharePost(shareButton.dataset.sharePost);
     if (likeCommentButton) toggleCommentLike(likeCommentButton.dataset.likeComment);
     if (deleteCommentButton) handleDeleteComment(deleteCommentButton.dataset.deleteComment);
-    if (replyCommentButton) openReplyComposer(replyCommentButton.dataset.replyComment);
+    if (startReplyButton) {
+      openReplyComposer(
+        startReplyButton.dataset.startReply,
+        startReplyButton.dataset.parentReply || "",
+        startReplyButton.dataset.replyName || "Player"
+      );
+    }
     if (cancelReplyButton) closeReplyComposer();
     if (likeReplyButton) {
       toggleReplyLike(

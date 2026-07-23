@@ -663,6 +663,31 @@ if (
 ) {
   window.NexusAudit.cleanup();
 }
+if (
+  state.activeModule === "settings" &&
+  window.NexusSettings &&
+  typeof window.NexusSettings
+    .hasUnsavedChanges === "function" &&
+  window.NexusSettings
+    .hasUnsavedChanges()
+) {
+  const confirmed =
+    window.confirm(
+      "Discard the unsaved Nexus Settings changes?"
+    );
+
+  if (!confirmed) {
+    return;
+  }
+}
+
+if (
+  window.NexusSettings &&
+  typeof window.NexusSettings.cleanup ===
+    "function"
+) {
+  window.NexusSettings.cleanup();
+}
 state.activeModule = moduleId;
 
     elements.pageTitle.textContent =
@@ -935,6 +960,42 @@ if (moduleId === "audit") {
   }
 
   window.NexusAudit.render({
+    database,
+
+    content:
+      elements.content,
+
+    currentUser:
+      auth.currentUser,
+
+    roleId:
+      state.roleId,
+
+    showToast,
+    escapeHtml,
+    isPermissionDenied
+  });
+
+  return;
+}
+if (moduleId === "settings") {
+  if (
+    !window.NexusSettings ||
+    typeof window.NexusSettings.render !==
+      "function"
+  ) {
+    showToast(
+      "The Nexus Settings module failed to load."
+    );
+
+    renderModulePlaceholder(
+      moduleId
+    );
+
+    return;
+  }
+
+  window.NexusSettings.render({
     database,
 
     content:

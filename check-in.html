@@ -1434,7 +1434,6 @@
         if (!value) return "Not scheduled";
 
         return new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/Chicago",
           month: "short",
           day: "numeric",
           hour: "numeric",
@@ -2304,7 +2303,7 @@
             ? "Tournament Check-In Has Not Opened Yet"
             : "The Check-In Window Is Closed",
           description: upcoming
-            ? `Check-in opens at ${formatDateTime(windowState.opensAt)}. This page will unlock automatically when the window begins.`
+            ? `Check-in opens one hour before the tournament at ${formatDateTime(windowState.opensAt)}. This page will unlock automatically when the window begins.`
             : "Tournament staff has closed player check-in for the active event.",
           note: upcoming
             ? "You can report that you are unavailable at any time. Otherwise, return when the countdown reaches zero."

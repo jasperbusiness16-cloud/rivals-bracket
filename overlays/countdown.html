@@ -2891,18 +2891,35 @@
   }
 }
 
-      renderCard(
-        0,
-        false
-      );
+      /*
+ * Draw the first information card immediately.
+ */
+renderCard(
+  0,
+  false
+);
 
-      setInterval(
-        updateTimer,
-        250
-      );
+/*
+ * Run the timer once immediately so the page
+ * does not wait for the first interval.
+ */
+updateTimer();
 
-      connect();
-    })();
+/*
+ * Keep the countdown display smooth.
+ */
+setInterval(
+  updateTimer,
+  250
+);
+
+/*
+ * Start all Firebase listeners.
+ * This line is required.
+ */
+connect();
+
+})();
   </script>
 </body>
 </html>

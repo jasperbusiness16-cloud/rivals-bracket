@@ -1474,6 +1474,8 @@
         countdown: {},
         intro: {},
         players: {},
+        teamRoot: {},
+        teamNames: {},
         teams: {}
       };
 
@@ -1833,6 +1835,360 @@
           ),
           fallback
         );
+      }
+
+      function hasTeamData(root) {
+        var source =
+          objectValue(root);
+
+        return (
+          Object.keys(
+            objectValue(
+              source.teams
+            )
+          ).length > 0 ||
+          Object.keys(
+            objectValue(
+              source.teamNames
+            )
+          ).length > 0 ||
+          Array.isArray(
+            source.teams
+          ) ||
+          Array.isArray(
+            source.teamNames
+          )
+        );
+      }
+
+      function chooseTournamentTeamRoot(
+        allTeams,
+        preferredId
+      ) {
+        var root =
+          objectValue(allTeams);
+
+        var preferred =
+          clean(preferredId);
+
+        if (
+          preferred &&
+          hasTeamData(
+            root[preferred]
+          )
+        ) {
+          return {
+            id: preferred,
+            value:
+              objectValue(
+                root[preferred]
+              )
+          };
+        }
+
+        if (
+          hasTeamData(
+            root.open1
+          )
+        ) {
+          return {
+            id: "open1",
+            value:
+              objectValue(
+                root.open1
+              )
+          };
+        }
+
+        var keys =
+          Object.keys(root)
+            .filter(
+              function (key) {
+                return hasTeamData(
+                  root[key]
+                );
+              }
+            )
+            .sort(
+              function (first, second) {
+                return (
+                  numericValue(
+                    root[second] &&
+                    (
+                      root[second].publishedAt ||
+                      root[second].updatedAt
+                    )
+                  ) -
+                  numericValue(
+                    root[first] &&
+                    (
+                      root[first].publishedAt ||
+                      root[first].updatedAt
+                    )
+                  )
+                );
+              }
+            );
+
+        if (keys.length) {
+          return {
+            id: keys[0],
+            value:
+              objectValue(
+                root[keys[0]]
+              )
+          };
+        }
+
+        return {
+          id:
+            preferred ||
+            "open1",
+          value: {}
+        };
+      }
+
+      function teamNameFromPublishedNames(
+        names,
+        key,
+        index
+      ) {
+        var source = names || {};
+        var value = "";
+
+        if (Array.isArray(source)) {
+          value =
+            source[index] ||
+            source[index + 1];
+
+        } else if (
+          source &&
+          typeof source ===
+            "object"
+        ) {
+          value =
+            source[key] ||
+            source[String(index)] ||
+            source[String(index + 1)] ||
+            source[
+              "team" +
+              (index + 1)
+            ];
+        }
+
+        if (
+          value &&
+          typeof value ===
+            "object"
+        ) {
+          value =
+            firstValue(
+              value,
+              [
+                "name",
+                "teamName",
+                "displayName",
+                "title"
+              ]
+            );
+        }
+
+        return clean(value);
+      }
+
+      function combinePublishedTeamData(root) {
+        var source =
+          objectValue(root);
+
+        var rawTeams =
+          source.teams || {};
+
+        var names =
+          source.teamNames || {};
+
+        var output = {};
+        var usedNames = {};
+
+        var teamEntries = [];
+
+        if (Array.isArray(rawTeams)) {
+          rawTeams.forEach(
+            function (record, index) {
+              if (
+                record !== null &&
+                record !== undefined
+              ) {
+                teamEntries.push({
+                  key: String(index),
+                  record:
+                    objectValue(record),
+                  index: index
+                });
+              }
+            }
+          );
+
+        } else {
+          Object.keys(
+            objectValue(rawTeams)
+          ).forEach(
+            function (key, index) {
+              teamEntries.push({
+                key: key,
+                record:
+                  objectValue(
+                    rawTeams[key]
+                  ),
+                index: index
+              });
+            }
+          );
+        }
+
+        teamEntries.forEach(
+          function (entry) {
+            var publishedName =
+              teamNameFromPublishedNames(
+                names,
+                entry.key,
+                entry.index
+              );
+
+            var recordName =
+              teamNameFromRecord(
+                entry.record,
+                ""
+              );
+
+            var finalName =
+              publishedName ||
+              recordName ||
+              entry.key;
+
+            var merged =
+              Object.assign(
+                {},
+                entry.record,
+                {
+                  name: finalName,
+                  teamName: finalName,
+                  slot:
+                    numericValue(
+                      firstValue(
+                        entry.record,
+                        [
+                          "slot",
+                          "teamNumber",
+                          "order",
+                          "position"
+                        ],
+                        entry.index + 1
+                      )
+                    ) ||
+                    entry.index + 1
+                }
+              );
+
+            output[entry.key] =
+              merged;
+
+            usedNames[
+              normalize(finalName)
+            ] = true;
+          }
+        );
+
+        var nameEntries = [];
+
+        if (Array.isArray(names)) {
+          names.forEach(
+            function (value, index) {
+              nameEntries.push({
+                key: String(index),
+                value: value,
+                index: index
+              });
+            }
+          );
+
+        } else {
+          Object.keys(
+            objectValue(names)
+          ).forEach(
+            function (key, index) {
+              nameEntries.push({
+                key: key,
+                value: names[key],
+                index: index
+              });
+            }
+          );
+        }
+
+        nameEntries.forEach(
+          function (entry) {
+            var name =
+              teamNameFromPublishedNames(
+                names,
+                entry.key,
+                entry.index
+              );
+
+            var normalizedName =
+              normalize(name);
+
+            if (
+              !name ||
+              usedNames[normalizedName]
+            ) {
+              return;
+            }
+
+            var matchingKey = "";
+
+            Object.keys(output)
+              .some(
+                function (key) {
+                  if (
+                    normalize(key) ===
+                      normalizedName ||
+                    normalize(
+                      teamNameFromRecord(
+                        output[key],
+                        key
+                      )
+                    ) === normalizedName
+                  ) {
+                    matchingKey = key;
+                    return true;
+                  }
+
+                  return false;
+                }
+              );
+
+            if (!matchingKey) {
+              matchingKey =
+                entry.key ||
+                (
+                  "team" +
+                  (entry.index + 1)
+                );
+
+              output[matchingKey] = {
+                name: name,
+                teamName: name,
+                slot: entry.index + 1,
+                players: {}
+              };
+            }
+
+            usedNames[normalizedName] =
+              true;
+          }
+        );
+
+        return output;
       }
 
       function teamOrderValue(
@@ -2869,52 +3225,73 @@
       function subscribeTournamentTeams(
         tournamentId
       ) {
-        var nextId =
+        var requestedId =
           clean(
             tournamentId,
             "open1"
           );
 
-        if (
-          teamsRef &&
-          activeTournamentId === nextId
-        ) {
+        if (teamsRef) {
           return;
         }
 
-        if (teamsRef) {
-          teamsRef.off();
-        }
-
-        activeTournamentId =
-          nextId;
-
+        state.teamRoot = {};
+        state.teamNames = {};
         state.teams = {};
         teamsLoaded = false;
         lastAnimatedKey = "";
 
+        /*
+         * The public Teams page publishes beneath:
+         * teams/{tournamentId}/published
+         * teams/{tournamentId}/teamNames
+         * teams/{tournamentId}/teams
+         *
+         * Read the teams root so the overlay can use the
+         * requested tournament, fall back to teams/open1,
+         * or select the newest published tournament.
+         */
         teamsRef =
-          db.ref(
-            "teams/" +
-            nextId +
-            "/teams"
-          );
+          db.ref("teams");
 
         teamsRef.on(
           "value",
 
           function (snapshot) {
+            var chosen =
+              chooseTournamentTeamRoot(
+                snapshot.val() || {},
+                requestedId
+              );
+
+            activeTournamentId =
+              chosen.id;
+
+            state.teamRoot =
+              chosen.value;
+
+            state.teamNames =
+              chosen.value.teamNames || {};
+
             state.teams =
-              snapshot.val() || {};
+              combinePublishedTeamData(
+                chosen.value
+              );
 
-            teamsLoaded = true;
+            teamsLoaded =
+              Object.keys(
+                state.teams
+              ).length > 0;
 
-            connection.classList.remove(
-              "limited"
+            connection.classList.toggle(
+              "limited",
+              !teamsLoaded
             );
 
             connectionText.textContent =
-              "REALTIME CONNECTED";
+              teamsLoaded
+                ? "REALTIME CONNECTED"
+                : "NO PUBLISHED TEAMS";
 
             scheduleRender();
           },
@@ -2934,9 +3311,7 @@
                 : "TEAM DATA UNAVAILABLE";
 
             console.error(
-              "[RG MATCH INTRO] teams/" +
-              nextId +
-              "/teams read failed:",
+              "[RG MATCH INTRO] teams root read failed:",
               error
             );
 
@@ -2999,9 +3374,26 @@
               state.site =
                 snapshot.val() || {};
 
+              var requestedTournament =
+                clean(
+                  state.site.currentTournament,
+                  "open1"
+                );
+
+              if (
+                teamsRef &&
+                activeTournamentId &&
+                requestedTournament !==
+                  activeTournamentId &&
+                requestedTournament !==
+                  "open1"
+              ) {
+                teamsRef.off();
+                teamsRef = null;
+              }
+
               subscribeTournamentTeams(
-                state.site.currentTournament ||
-                "open1"
+                requestedTournament
               );
 
               scheduleRender();

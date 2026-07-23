@@ -10,62 +10,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg:#06060b;
-      --panel:rgba(13,12,21,.92);
-      --line:rgba(194,176,255,.13);
-      --text:#f8f5ff;
-      --soft:#c8c1d3;
-      --muted:#8e8799;
-      --dim:#625b6e;
-      --purple:#9a7cff;
-      --purple-bright:#c4b2ff;
-      --purple-rgb:154,124,255;
-      --green:#62e1a6;
-      --yellow:#f2c66c;
-      --progress:0deg;
+    :root {
+      --bg: #06060b;
+      --panel: rgba(13, 12, 21, 0.94);
+      --panel-soft: rgba(20, 16, 34, 0.88);
+      --line: rgba(194, 176, 255, 0.14);
+      --line-strong: rgba(194, 176, 255, 0.3);
+      --text: #f8f5ff;
+      --soft: #c8c1d3;
+      --muted: #8e8799;
+      --dim: #625b6e;
+      --purple: #9a7cff;
+      --purple-bright: #c4b2ff;
+      --purple-rgb: 154, 124, 255;
+      --green: #62e1a6;
+      --yellow: #f2c66c;
+      --red: #ff718a;
+      --progress: 0deg;
     }
 
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
     html,
-    body{
-      width:1920px;
-      height:1080px;
-      margin:0;
-      overflow:hidden;
-      background:var(--bg);
+    body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
     }
 
-    body{
-      color:var(--text);
-      font-family:"Rajdhani",Arial,sans-serif;
+    body {
+      color: var(--text);
+      font-family: "Rajdhani", Arial, sans-serif;
     }
 
-    .stage{
-      position:relative;
-      width:1920px;
-      height:1080px;
-      overflow:hidden;
-      isolation:isolate;
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      isolation: isolate;
 
       background:
         radial-gradient(
-          circle at 50% 40%,
-          rgba(var(--purple-rgb),.12),
-          transparent 28%
+          circle at 50% 35%,
+          rgba(var(--purple-rgb), 0.13),
+          transparent 27%
         ),
         radial-gradient(
-          circle at 12% 16%,
-          rgba(104,68,205,.1),
+          circle at 12% 18%,
+          rgba(104, 68, 205, 0.1),
           transparent 30%
         ),
         radial-gradient(
-          circle at 88% 78%,
-          rgba(84,50,174,.08),
-          transparent 32%
+          circle at 88% 76%,
+          rgba(84, 50, 174, 0.09),
+          transparent 31%
         ),
         linear-gradient(
           145deg,
@@ -75,69 +78,66 @@
         );
     }
 
-    .stage::before{
-      content:"";
-      position:absolute;
-      inset:-40px;
-      z-index:-5;
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      z-index: -5;
 
       background:
         linear-gradient(
           115deg,
           transparent 0 24%,
-          rgba(255,255,255,.012) 24.2% 24.45%,
+          rgba(255, 255, 255, 0.012) 24.2% 24.45%,
           transparent 24.7% 73%,
-          rgba(255,255,255,.01) 73.2% 73.45%,
+          rgba(255, 255, 255, 0.01) 73.2% 73.45%,
           transparent 73.7%
         ),
         repeating-linear-gradient(
           90deg,
           transparent 0 94px,
-          rgba(255,255,255,.008) 95px,
+          rgba(255, 255, 255, 0.008) 95px,
           transparent 96px 188px
         );
 
-      animation:
-        bgDrift 34s ease-in-out infinite alternate;
+      animation: bgDrift 34s ease-in-out infinite alternate;
     }
 
-    .stage::after{
-      content:"RG";
-      position:absolute;
-      left:50%;
-      top:48%;
-      z-index:-4;
+    .stage::after {
+      content: "RG";
+      position: absolute;
+      left: 50%;
+      top: 45%;
+      z-index: -4;
 
-      color:rgba(255,255,255,.012);
-      font-size:690px;
-      font-weight:800;
-      line-height:.72;
-      letter-spacing:-.12em;
+      color: rgba(255, 255, 255, 0.012);
+      font-size: 650px;
+      font-weight: 800;
+      line-height: 0.72;
+      letter-spacing: -0.12em;
 
-      transform:
-        translate(-48%,-50%);
+      transform: translate(-48%, -50%);
     }
 
-    .grid{
-      position:absolute;
-      inset:-100px;
-      z-index:-3;
+    .grid {
+      position: absolute;
+      inset: -100px;
+      z-index: -3;
 
-      opacity:.38;
+      opacity: 0.36;
 
       background-image:
         linear-gradient(
-          rgba(var(--purple-rgb),.04) 1px,
+          rgba(var(--purple-rgb), 0.04) 1px,
           transparent 1px
         ),
         linear-gradient(
           90deg,
-          rgba(var(--purple-rgb),.04) 1px,
+          rgba(var(--purple-rgb), 0.04) 1px,
           transparent 1px
         );
 
-      background-size:
-        80px 80px;
+      background-size: 80px 80px;
 
       transform:
         perspective(700px)
@@ -145,8 +145,7 @@
         translateY(430px)
         scale(1.28);
 
-      transform-origin:
-        center bottom;
+      transform-origin: center bottom;
 
       mask-image:
         linear-gradient(
@@ -155,78 +154,75 @@
           transparent 78%
         );
 
-      animation:
-        gridMove 22s linear infinite;
+      animation: gridMove 22s linear infinite;
     }
 
-    .shard{
-      position:absolute;
-      z-index:-2;
+    .shard {
+      position: absolute;
+      z-index: -2;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.08);
+        rgba(var(--purple-rgb), 0.08);
 
       background:
         linear-gradient(
           145deg,
-          rgba(var(--purple-rgb),.028),
+          rgba(var(--purple-rgb), 0.028),
           transparent 70%
         );
 
-      transform:
-        rotate(45deg);
-
-      opacity:.48;
+      transform: rotate(45deg);
+      opacity: 0.48;
     }
 
-    .shard.one{
-      width:420px;
-      height:420px;
-      left:-165px;
-      top:240px;
+    .shard.one {
+      width: 420px;
+      height: 420px;
+      left: -165px;
+      top: 240px;
 
       animation:
         floatA 20s ease-in-out
         infinite alternate;
     }
 
-    .shard.two{
-      width:520px;
-      height:520px;
-      right:-220px;
-      top:70px;
+    .shard.two {
+      width: 520px;
+      height: 520px;
+      right: -220px;
+      top: 70px;
 
       animation:
         floatB 24s ease-in-out
         infinite alternate;
     }
 
-    .shard.three{
-      width:250px;
-      height:250px;
-      right:240px;
-      bottom:-150px;
+    .shard.three {
+      width: 250px;
+      height: 250px;
+      right: 240px;
+      bottom: -150px;
 
-      opacity:.25;
+      opacity: 0.25;
 
       animation:
         floatA 28s ease-in-out
         infinite alternate-reverse;
     }
 
-    .frame{
-      position:absolute;
-      inset:28px;
-      z-index:20;
+    .frame {
+      position: absolute;
+      inset: 28px;
+      z-index: 20;
 
-      pointer-events:none;
+      pointer-events: none;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.1);
+        rgba(var(--purple-rgb), 0.1);
 
-      clip-path:polygon(
+      clip-path: polygon(
         0 0,
         18% 0,
         19% 6px,
@@ -250,261 +246,753 @@
       );
     }
 
-    .topbar{
-      position:absolute;
-      left:72px;
-      right:72px;
-      top:54px;
-      z-index:30;
+    .topbar {
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      top: 42px;
+      z-index: 30;
 
-      display:grid;
-
+      display: grid;
       grid-template-columns:
-        auto minmax(0,1fr) auto;
+        auto minmax(0, 1fr) auto;
 
-      align-items:center;
-      gap:22px;
+      align-items: center;
+      gap: 22px;
     }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:15px;
-      min-width:0;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      min-width: 0;
     }
 
-    .mark{
-      position:relative;
+    .mark {
+      position: relative;
 
-      width:54px;
-      height:54px;
+      width: 56px;
+      height: 56px;
 
-      display:grid;
-      place-items:center;
+      display: grid;
+      place-items: center;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.42);
+        rgba(var(--purple-rgb), 0.42);
 
-      border-radius:14px;
+      border-radius: 15px;
 
       background:
         linear-gradient(
           145deg,
-          rgba(var(--purple-rgb),.16),
-          rgba(8,7,13,.95) 68%
+          rgba(var(--purple-rgb), 0.16),
+          rgba(8, 7, 13, 0.95) 68%
         );
 
       box-shadow:
         inset 0 0 20px
-        rgba(var(--purple-rgb),.08),
+        rgba(var(--purple-rgb), 0.08),
         0 0 26px
-        rgba(var(--purple-rgb),.11);
+        rgba(var(--purple-rgb), 0.11);
 
-      font-size:21px;
-      font-weight:800;
-      letter-spacing:-.05em;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
     }
 
-    .mark::before{
-      content:"";
-      position:absolute;
-      inset:6px;
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
 
       border:
         1px solid
-        rgba(255,255,255,.045);
+        rgba(255, 255, 255, 0.045);
 
-      border-radius:9px;
+      border-radius: 10px;
     }
 
     .brand-copy span,
-    .brand-copy strong{
-      display:block;
+    .brand-copy strong {
+      display: block;
     }
 
-    .brand-copy span{
-      color:var(--purple-bright);
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.22em;
-      text-transform:uppercase;
+    .brand-copy span {
+      color: var(--purple-bright);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
     }
 
-    .brand-copy strong{
-      max-width:700px;
-      margin-top:4px;
-      overflow:hidden;
+    .brand-copy strong {
+      max-width: 680px;
+      margin-top: 4px;
+      overflow: hidden;
 
-      font-size:22px;
-      font-weight:800;
-      letter-spacing:.055em;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: 0.055em;
 
-      text-overflow:ellipsis;
-      text-transform:uppercase;
-      white-space:nowrap;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .top-line{
-      height:1px;
+    .top-line {
+      height: 1px;
 
       background:
         linear-gradient(
           90deg,
-          rgba(var(--purple-rgb),.35),
+          rgba(var(--purple-rgb), 0.35),
           transparent 75%
         );
     }
 
-    .connection{
-      min-height:34px;
+    .connection {
+      min-height: 36px;
 
-      display:flex;
-      align-items:center;
-      gap:9px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
 
-      padding:0 13px;
+      padding: 0 14px;
 
       border:
         1px solid
-        rgba(242,198,108,.2);
+        rgba(242, 198, 108, 0.2);
 
-      border-radius:999px;
+      border-radius: 999px;
 
-      color:var(--yellow);
+      color: var(--yellow);
 
       background:
-        rgba(242,198,108,.055);
+        rgba(242, 198, 108, 0.055);
 
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.09em;
-      text-transform:uppercase;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
     }
 
-    .connection.online{
+    .connection.online {
       border-color:
-        rgba(98,225,166,.22);
+        rgba(98, 225, 166, 0.22);
 
-      color:var(--green);
+      color: var(--green);
 
       background:
-        rgba(98,225,166,.055);
+        rgba(98, 225, 166, 0.055);
     }
 
-    .connection-dot{
-      width:7px;
-      height:7px;
+    .connection.error {
+      border-color:
+        rgba(255, 113, 138, 0.25);
 
-      border-radius:50%;
+      color: var(--red);
 
       background:
-        currentColor;
+        rgba(255, 113, 138, 0.06);
+    }
+
+    .connection-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: currentColor;
 
       box-shadow:
         0 0 11px currentColor;
     }
 
-    .hero{
-      position:absolute;
-      left:50%;
-      top:44%;
-      z-index:10;
+    .broadcast-layout {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 126px;
+      bottom: 88px;
+      z-index: 10;
 
-      width:940px;
+      display: grid;
 
-      display:flex;
-      flex-direction:column;
-      align-items:center;
+      grid-template-columns:
+        292px
+        minmax(0, 1fr)
+        292px;
 
-      transform:
-        translate(-50%,-50%);
-
-      text-align:center;
+      gap: 24px;
     }
 
-    .eyebrow{
-      display:flex;
-      align-items:center;
-      gap:13px;
+    .support-rail {
+      min-width: 0;
 
-      color:var(--purple-bright);
+      display: grid;
 
-      font-size:13px;
-      font-weight:800;
-      letter-spacing:.25em;
-      text-transform:uppercase;
+      grid-template-rows:
+        minmax(0, 1fr)
+        220px;
+
+      gap: 18px;
     }
 
-    .eyebrow::before,
-    .eyebrow::after{
-      content:"";
+    .side-panel,
+    .side-cta,
+    .countdown-zone,
+    .info-shell {
+      border:
+        1px solid
+        var(--line);
 
-      width:74px;
-      height:1px;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.012),
+          transparent 76px
+        ),
+        linear-gradient(
+          145deg,
+          rgba(23, 18, 38, 0.94),
+          rgba(8, 8, 14, 0.94)
+        );
+
+      box-shadow:
+        0 24px 70px
+        rgba(0, 0, 0, 0.4),
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.025);
+    }
+
+    .side-panel,
+    .side-cta {
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .panel-heading {
+      position: relative;
+
+      min-height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      padding: 0 18px;
+
+      border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+    }
+
+    .panel-heading::before {
+      content: "";
+
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 0;
+
+      height: 1px;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(var(--purple-rgb),.52)
+          rgba(var(--purple-rgb), 0.46),
+          transparent
         );
     }
 
-    .eyebrow::after{
-      transform:
-        scaleX(-1);
+    .panel-heading div {
+      min-width: 0;
     }
 
-    .timer-system{
-      position:relative;
-
-      width:630px;
-      height:430px;
-
-      display:grid;
-      place-items:center;
-
-      margin-top:6px;
+    .panel-heading span,
+    .panel-heading strong {
+      display: block;
     }
 
-    .aura{
-      position:absolute;
+    .panel-heading span {
+      color: var(--purple-bright);
 
-      width:390px;
-      height:390px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
 
-      border-radius:50%;
+    .panel-heading strong {
+      margin-top: 3px;
+      overflow: hidden;
+
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .panel-heading em {
+      color: var(--dim);
+
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .support-list {
+      height:
+        calc(100% - 58px);
+
+      display: flex;
+      flex-direction: column;
+
+      padding: 10px;
+    }
+
+    .support-row {
+      min-height: 74px;
+
+      display: grid;
+
+      grid-template-columns:
+        30px
+        42px
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+      gap: 10px;
+
+      padding: 10px 9px;
+
+      border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+
+      transition:
+        background 0.25s ease,
+        border-color 0.25s ease;
+    }
+
+    .support-row:last-child {
+      border-bottom: 0;
+    }
+
+    .support-row.featured {
+      border-color:
+        rgba(var(--purple-rgb), 0.12);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb), 0.07),
+          transparent
+        );
+    }
+
+    .support-rank {
+      color: var(--purple-bright);
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .support-avatar {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.23);
+
+      border-radius: 11px;
+
+      color: var(--text);
+
+      background:
+        rgba(var(--purple-rgb), 0.055);
+
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .support-copy {
+      min-width: 0;
+    }
+
+    .support-copy strong,
+    .support-copy small {
+      display: block;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .support-copy strong {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .support-copy small {
+      margin-top: 3px;
+
+      color: var(--dim);
+
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .support-amount {
+      color: var(--purple-bright);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .support-empty {
+      flex: 1;
+
+      display: grid;
+      place-items: center;
+
+      padding: 24px;
+
+      color: var(--muted);
+
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .side-cta {
+      position: relative;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 23px;
+    }
+
+    .side-cta::before {
+      content: "";
+
+      position: absolute;
+
+      width: 230px;
+      height: 230px;
+
+      right: -80px;
+      bottom: -100px;
+
+      border-radius: 50%;
 
       background:
         radial-gradient(
           circle,
-          rgba(var(--purple-rgb),.15),
-          rgba(var(--purple-rgb),.035) 40%,
+          rgba(var(--purple-rgb), 0.18),
           transparent 70%
         );
 
-      filter:
-        blur(8px);
+      filter: blur(4px);
+    }
+
+    .side-cta > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .side-kicker {
+      color: var(--purple-bright);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .side-cta h3 {
+      margin: 8px 0 0;
+
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 0.98;
+      text-transform: uppercase;
+    }
+
+    .side-cta p {
+      margin: 10px 0 0;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .side-url {
+      margin-top: 17px;
+
+      padding: 10px 11px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.2);
+
+      border-radius: 10px;
+
+      color: var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb), 0.045);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .pool-total {
+      margin-top: 8px;
+
+      font-size: 45px;
+      font-weight: 800;
+      line-height: 0.95;
+    }
+
+    .pool-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-top: 12px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .mini-goal {
+      width: 100%;
+      height: 6px;
+
+      margin-top: 10px;
+
+      overflow: hidden;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.06);
+    }
+
+    .mini-goal span {
+      display: block;
+
+      width: 0;
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          #7955e8,
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 14px
+        rgba(var(--purple-rgb), 0.35);
+
+      transition:
+        width 0.7s
+        cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .center-stack {
+      min-width: 0;
+
+      display: grid;
+
+      grid-template-rows:
+        500px
+        minmax(0, 1fr);
+
+      gap: 22px;
+    }
+
+    .countdown-zone {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+    }
+
+    .countdown-zone::before {
+      content: "";
+
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      top: 0;
+
+      height: 2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.44) 24%,
+          rgba(224, 214, 255, 0.74) 50%,
+          rgba(var(--purple-rgb), 0.44) 76%,
+          transparent
+        );
+
+      opacity: 0.75;
+    }
+
+    .countdown-zone::after {
+      content: "";
+
+      position: absolute;
+      inset: 12px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.03);
+
+      border-radius: 18px;
+
+      pointer-events: none;
+
+      clip-path: polygon(
+        0 0,
+        92% 0,
+        100% 20%,
+        100% 100%,
+        8% 100%,
+        0 80%
+      );
+    }
+
+    .hero {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      padding-top: 2px;
+
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      color: var(--purple-bright);
+
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "";
+
+      width: 86px;
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.54)
+        );
+    }
+
+    .eyebrow::after {
+      transform: scaleX(-1);
+    }
+
+    .timer-system {
+      position: relative;
+
+      width: 720px;
+      height: 350px;
+
+      display: grid;
+      place-items: center;
+
+      margin-top: 4px;
+    }
+
+    .aura {
+      position: absolute;
+
+      width: 460px;
+      height: 460px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.15),
+          rgba(var(--purple-rgb), 0.035) 40%,
+          transparent 70%
+        );
+
+      filter: blur(8px);
 
       animation:
-        breathe 5.5s ease-in-out infinite;
+        breathe 5.5s
+        ease-in-out infinite;
     }
 
-    .orbit{
-      position:absolute;
-      border-radius:50%;
-      pointer-events:none;
+    .orbit {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
     }
 
-    .orbit.outer{
-      width:402px;
-      height:402px;
+    .orbit.outer {
+      width: 420px;
+      height: 420px;
 
       background:
         repeating-conic-gradient(
           from 0deg,
-          rgba(var(--purple-rgb),.38)
+          rgba(var(--purple-rgb), 0.38)
           0deg 1deg,
           transparent 1deg 9deg
         );
@@ -526,24 +1014,25 @@
         );
 
       animation:
-        rotate 46s linear infinite;
+        rotate 48s
+        linear infinite;
 
-      opacity:.65;
+      opacity: 0.64;
     }
 
-    .orbit.middle{
-      width:342px;
-      height:342px;
+    .orbit.middle {
+      width: 360px;
+      height: 360px;
 
       background:
         conic-gradient(
           from 25deg,
           transparent 0 17%,
-          rgba(var(--purple-rgb),.34) 18% 20%,
+          rgba(var(--purple-rgb), 0.34) 18% 20%,
           transparent 21% 48%,
-          rgba(224,215,255,.32) 49% 50%,
+          rgba(224, 215, 255, 0.32) 49% 50%,
           transparent 51% 79%,
-          rgba(var(--purple-rgb),.3) 80% 83%,
+          rgba(var(--purple-rgb), 0.3) 80% 83%,
           transparent 84%
         );
 
@@ -564,25 +1053,26 @@
         );
 
       animation:
-        rotateBack 31s linear infinite;
+        rotateBack 33s
+        linear infinite;
 
-      opacity:.78;
+      opacity: 0.78;
     }
 
-    .progress-ring{
-      position:absolute;
+    .progress-ring {
+      position: absolute;
 
-      width:292px;
-      height:292px;
+      width: 310px;
+      height: 310px;
 
-      border-radius:50%;
+      border-radius: 50%;
 
       background:
         conic-gradient(
           from -90deg,
-          rgba(211,198,255,.96) 0deg,
+          rgba(211, 198, 255, 0.96) 0deg,
           var(--purple) var(--progress),
-          rgba(var(--purple-rgb),.08)
+          rgba(var(--purple-rgb), 0.08)
           var(--progress) 360deg
         );
 
@@ -605,86 +1095,88 @@
       filter:
         drop-shadow(
           0 0 8px
-          rgba(var(--purple-rgb),.32)
+          rgba(var(--purple-rgb), 0.32)
         );
     }
 
-    .ripple{
-      position:absolute;
+    .ripple {
+      position: absolute;
 
-      width:260px;
-      height:260px;
+      width: 285px;
+      height: 285px;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.28);
+        rgba(var(--purple-rgb), 0.28);
 
-      border-radius:50%;
+      border-radius: 50%;
 
-      opacity:0;
+      opacity: 0;
 
       animation:
         ripple 8s
-        cubic-bezier(.2,.7,.2,1)
+        cubic-bezier(0.2, 0.7, 0.2, 1)
         infinite;
     }
 
-    .ripple.two{
-      animation-delay:4s;
+    .ripple.two {
+      animation-delay: 4s;
     }
 
-    .timer-core{
-      position:relative;
-      z-index:4;
+    .timer-core {
+      position: relative;
+      z-index: 4;
 
-      width:360px;
-      height:188px;
+      width: 520px;
+      height: 244px;
 
-      display:grid;
-      place-items:center;
+      display: grid;
+      place-items: center;
 
-      overflow:hidden;
+      overflow: hidden;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.25);
+        rgba(var(--purple-rgb), 0.27);
 
-      border-radius:26px;
+      border-radius: 31px;
 
       background:
         radial-gradient(
           circle at 50% 0%,
-          rgba(var(--purple-rgb),.12),
+          rgba(var(--purple-rgb), 0.13),
           transparent 52%
         ),
         linear-gradient(
           180deg,
-          rgba(20,17,32,.96),
-          rgba(8,8,14,.97)
+          rgba(20, 17, 32, 0.97),
+          rgba(8, 8, 14, 0.98)
         );
 
       box-shadow:
-        0 26px 70px rgba(0,0,0,.5),
+        0 28px 75px
+        rgba(0, 0, 0, 0.52),
         inset 0 1px 0
-        rgba(255,255,255,.035),
-        inset 0 0 42px
-        rgba(var(--purple-rgb),.045),
-        0 0 0 7px
-        rgba(var(--purple-rgb),.018);
+        rgba(255, 255, 255, 0.04),
+        inset 0 0 50px
+        rgba(var(--purple-rgb), 0.05),
+        0 0 0 8px
+        rgba(var(--purple-rgb), 0.018);
     }
 
-    .timer-core::before{
-      content:"";
-      position:absolute;
-      inset:7px;
+    .timer-core::before {
+      content: "";
+
+      position: absolute;
+      inset: 8px;
 
       border:
         1px solid
-        rgba(255,255,255,.04);
+        rgba(255, 255, 255, 0.04);
 
-      border-radius:19px;
+      border-radius: 22px;
 
-      clip-path:polygon(
+      clip-path: polygon(
         0 0,
         88% 0,
         100% 24%,
@@ -694,421 +1186,491 @@
       );
     }
 
-    .timer-label{
-      position:absolute;
-      top:17px;
-      z-index:4;
+    .timer-label {
+      position: absolute;
+      top: 23px;
+      z-index: 4;
 
-      color:var(--muted);
+      color: var(--muted);
 
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.22em;
-      text-transform:uppercase;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
     }
 
-    .timer{
-      position:relative;
-      z-index:3;
+    .timer {
+      position: relative;
+      z-index: 3;
 
-      min-width:320px;
+      min-width: 470px;
 
-      font-size:102px;
-      font-weight:800;
-      letter-spacing:.02em;
-      line-height:.88;
+      font-size: 136px;
+      font-weight: 800;
+      letter-spacing: 0.012em;
+      line-height: 0.88;
 
       font-variant-numeric:
         tabular-nums;
 
       text-shadow:
-        0 0 34px
-        rgba(var(--purple-rgb),.17);
+        0 0 38px
+        rgba(var(--purple-rgb), 0.19);
 
       transition:
-        transform .16s ease,
-        color .25s ease,
-        text-shadow .25s ease;
+        transform 0.16s ease,
+        color 0.25s ease,
+        text-shadow 0.25s ease;
     }
 
-    .timer.tick{
-      transform:
-        scale(1.018);
+    .timer.tick {
+      transform: scale(1.012);
     }
 
-    .timer.long{
-      font-size:72px;
+    .timer.long {
+      font-size: 91px;
     }
 
-    .schedule{
-      margin-top:-17px;
+    .schedule {
+      position: relative;
+      z-index: 6;
 
-      color:var(--soft);
+      min-width: 520px;
 
-      font-size:17px;
-      font-weight:600;
-      letter-spacing:.03em;
-    }
-
-    .schedule strong{
-      color:var(--text);
-      font-weight:700;
-    }
-
-    .info-shell{
-      position:absolute;
-      left:50%;
-      bottom:105px;
-      z-index:12;
-
-      width:1120px;
-      min-height:220px;
-
-      overflow:hidden;
-
-      transform:
-        translateX(-50%);
+      margin-top: -5px;
+      padding: 12px 22px;
 
       border:
         1px solid
-        var(--line);
+        rgba(var(--purple-rgb), 0.12);
 
-      border-radius:22px;
+      border-radius: 999px;
+
+      color: var(--soft);
 
       background:
-        linear-gradient(
-          180deg,
-          rgba(255,255,255,.012),
-          transparent 70px
-        ),
-        linear-gradient(
-          110deg,
-          rgba(23,18,38,.94),
-          rgba(8,8,14,.94)
-        );
+        rgba(6, 6, 11, 0.58);
 
-      box-shadow:
-        0 24px 70px rgba(0,0,0,.4),
-        inset 0 1px 0
-        rgba(255,255,255,.025);
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-align: center;
+
+      backdrop-filter:
+        blur(8px);
     }
 
-    .info-shell::before{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      top:0;
+    .schedule strong {
+      color: var(--text);
+      font-weight: 800;
+    }
 
-      height:2px;
+    .info-shell {
+      position: relative;
+      min-width: 0;
+
+      overflow: hidden;
+
+      border-radius: 24px;
+    }
+
+    .info-shell::before {
+      content: "";
+
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      top: 0;
+
+      height: 2px;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(var(--purple-rgb),.45) 24%,
-          rgba(224,214,255,.72) 50%,
-          rgba(var(--purple-rgb),.45) 76%,
+          rgba(var(--purple-rgb), 0.45) 24%,
+          rgba(224, 214, 255, 0.74) 50%,
+          rgba(var(--purple-rgb), 0.45) 76%,
           transparent
         );
 
-      opacity:.7;
+      opacity: 0.76;
     }
 
-    .info-head{
-      position:relative;
+    .info-head {
+      position: relative;
 
-      min-height:54px;
+      min-height: 60px;
 
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       border-bottom:
         1px solid
-        rgba(255,255,255,.055);
+        rgba(255, 255, 255, 0.055);
     }
 
-    .info-head h2{
-      margin:0;
+    .info-head h2 {
+      margin: 0;
 
-      color:var(--purple-bright);
+      color: var(--purple-bright);
 
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.22em;
-      text-transform:uppercase;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
     }
 
-    .slide-index{
-      position:absolute;
-      right:22px;
+    .slide-index {
+      position: absolute;
+      right: 25px;
 
-      color:var(--dim);
+      color: var(--dim);
 
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.12em;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
     }
 
-    .info-body{
-      min-height:164px;
+    .slide-progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
 
-      display:grid;
-      place-items:center;
+      width: 0;
+      height: 2px;
 
-      padding:
-        20px 34px 25px;
+      background:
+        linear-gradient(
+          90deg,
+          var(--purple),
+          var(--purple-bright)
+        );
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb), 0.38);
+    }
+
+    .slide-progress.running {
+      animation:
+        slideProgress
+        var(--slide-duration, 10000ms)
+        linear forwards;
+    }
+
+    .info-body {
+      min-height: 282px;
+
+      display: grid;
+      place-items: center;
+
+      padding: 24px 30px 28px;
 
       transition:
-        opacity .22s ease,
-        transform .28s
-        cubic-bezier(.2,.8,.2,1),
-        filter .22s ease;
+        opacity 0.22s ease,
+        transform 0.28s
+        cubic-bezier(0.2, 0.8, 0.2, 1),
+        filter 0.22s ease;
     }
 
-    .info-body.changing{
-      opacity:0;
+    .info-body.changing {
+      opacity: 0;
 
       transform:
-        scale(.985)
+        scale(0.987)
         translateY(7px);
 
       filter:
         blur(3px);
     }
 
-    .info-body.entering{
+    .info-body.entering {
       animation:
-        infoIn .48s
-        cubic-bezier(.18,.86,.24,1);
+        infoIn 0.48s
+        cubic-bezier(0.18, 0.86, 0.24, 1);
     }
 
-    .up-next{
-      width:100%;
+    .up-next {
+      width: 100%;
 
-      display:grid;
+      display: grid;
 
       grid-template-columns:
-        minmax(0,1fr)
-        90px
-        minmax(0,1fr);
+        minmax(0, 1fr)
+        96px
+        minmax(0, 1fr);
 
-      align-items:center;
-      gap:25px;
+      align-items: center;
+      gap: 25px;
 
-      text-align:center;
+      text-align: center;
     }
 
-    .team-block{
-      min-width:0;
+    .team-block {
+      min-width: 0;
+      min-height: 126px;
 
-      padding:15px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 20px 28px;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.12);
+        rgba(var(--purple-rgb), 0.12);
 
-      border-radius:14px;
+      border-radius: 17px;
 
       background:
-        rgba(255,255,255,.018);
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.05),
+          rgba(255, 255, 255, 0.014)
+        );
     }
 
     .team-block span,
-    .team-block strong{
-      display:block;
+    .team-block strong {
+      display: block;
     }
 
-    .team-block span{
-      color:var(--dim);
+    .team-block span {
+      color: var(--dim);
 
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.14em;
-      text-transform:uppercase;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
-    .team-block strong{
-      margin-top:4px;
-      overflow:hidden;
+    .team-block strong {
+      margin-top: 7px;
+      overflow: hidden;
 
-      font-size:27px;
-      font-weight:800;
+      font-size: 34px;
+      font-weight: 800;
 
-      text-overflow:ellipsis;
-      text-transform:uppercase;
-      white-space:nowrap;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .vs{
-      width:66px;
-      height:66px;
+    .vs {
+      width: 78px;
+      height: 78px;
 
-      display:grid;
-      place-items:center;
+      display: grid;
+      place-items: center;
 
-      margin:auto;
+      margin: auto;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.34);
+        rgba(var(--purple-rgb), 0.34);
 
-      border-radius:50%;
+      border-radius: 50%;
 
-      color:var(--purple-bright);
+      color: var(--purple-bright);
 
       background:
-        rgba(var(--purple-rgb),.07);
+        rgba(var(--purple-rgb), 0.07);
 
       box-shadow:
-        0 0 26px
-        rgba(var(--purple-rgb),.08);
+        0 0 28px
+        rgba(var(--purple-rgb), 0.09);
 
-      font-size:18px;
-      font-weight:800;
+      font-size: 21px;
+      font-weight: 800;
     }
 
-    .matchups{
-      width:100%;
+    .up-next-label {
+      margin-top: 10px;
 
-      display:grid;
+      color: var(--purple-bright);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .round-slide {
+      width: 100%;
+    }
+
+    .round-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+
+      margin-bottom: 15px;
+      padding: 0 4px;
+    }
+
+    .round-heading span {
+      color: var(--text);
+
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .round-heading p {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.035em;
+      text-align: right;
+    }
+
+    .matchups {
+      width: 100%;
+
+      display: grid;
 
       grid-template-columns:
         1fr 1fr;
 
-      gap:10px 14px;
+      gap: 12px 16px;
     }
 
-    .match-row{
-      min-width:0;
-      min-height:56px;
+    .match-row {
+      min-width: 0;
+      min-height: 74px;
 
-      display:grid;
+      display: grid;
 
       grid-template-columns:
-        58px
-        minmax(0,1fr)
-        34px
-        minmax(0,1fr);
+        64px
+        minmax(0, 1fr)
+        38px
+        minmax(0, 1fr);
 
-      align-items:center;
-      gap:8px;
+      align-items: center;
+      gap: 8px;
 
-      padding:0 14px;
+      padding: 0 18px;
 
       border:
         1px solid
-        rgba(255,255,255,.055);
+        rgba(255, 255, 255, 0.055);
 
-      border-radius:12px;
+      border-radius: 14px;
 
       background:
-        rgba(255,255,255,.014);
+        rgba(255, 255, 255, 0.014);
     }
 
-    .match-row > span{
-      color:var(--purple-bright);
+    .match-row > span {
+      color: var(--purple-bright);
 
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.1em;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
     }
 
-    .match-row p{
-      margin:0;
-      overflow:hidden;
+    .match-row p {
+      margin: 0;
+      overflow: hidden;
 
-      color:var(--soft);
+      color: var(--soft);
 
-      font-size:15px;
-      font-weight:700;
+      font-size: 18px;
+      font-weight: 700;
 
-      text-overflow:ellipsis;
-      text-transform:uppercase;
-      white-space:nowrap;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    .match-row strong{
-      color:var(--dim);
-      font-size:10px;
-      text-align:center;
+    .match-row strong {
+      color: var(--dim);
+      font-size: 10px;
+      text-align: center;
     }
 
-    .info-grid{
-      width:100%;
+    .info-grid {
+      width: 100%;
 
-      display:grid;
+      display: grid;
 
       grid-template-columns:
-        repeat(4,minmax(0,1fr));
+        repeat(4, minmax(0, 1fr));
 
-      gap:12px;
+      gap: 14px;
     }
 
-    .info-item{
-      min-width:0;
-      min-height:98px;
+    .info-item {
+      min-width: 0;
+      min-height: 145px;
 
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
-      padding:14px 16px;
+      padding: 18px;
 
       border:
         1px solid
-        rgba(255,255,255,.055);
+        rgba(255, 255, 255, 0.055);
 
-      border-radius:13px;
-
-      background:
-        rgba(255,255,255,.014);
-
-      text-align:center;
-    }
-
-    .info-item small{
-      color:var(--dim);
-
-      font-size:9px;
-      font-weight:800;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-    }
-
-    .info-item strong{
-      margin-top:7px;
-      overflow:hidden;
-
-      font-size:18px;
-      font-weight:800;
-      line-height:1.1;
-
-      text-overflow:ellipsis;
-      text-transform:uppercase;
-      white-space:nowrap;
-    }
-
-    .goal{
-      width:100%;
-      height:5px;
-
-      margin-top:11px;
-
-      overflow:hidden;
-
-      border-radius:999px;
+      border-radius: 15px;
 
       background:
-        rgba(255,255,255,.055);
+        rgba(255, 255, 255, 0.014);
+
+      text-align: center;
     }
 
-    .goal > span{
-      display:block;
-      height:100%;
+    .info-item small {
+      color: var(--dim);
 
-      border-radius:inherit;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .info-item strong {
+      margin-top: 9px;
+      overflow: hidden;
+
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 1.08;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .goal {
+      width: 100%;
+      height: 6px;
+
+      margin-top: 13px;
+
+      overflow: hidden;
+
+      border-radius: 999px;
+
+      background:
+        rgba(255, 255, 255, 0.055);
+    }
+
+    .goal > span {
+      display: block;
+      height: 100%;
+
+      border-radius: inherit;
 
       background:
         linear-gradient(
@@ -1119,82 +1681,549 @@
 
       box-shadow:
         0 0 12px
-        rgba(var(--purple-rgb),.3);
+        rgba(var(--purple-rgb), 0.3);
     }
 
-    .footer{
-      position:absolute;
-      left:72px;
-      right:72px;
-      bottom:53px;
-      z-index:30;
+    .prediction-card {
+      position: relative;
+      width: 100%;
 
-      display:grid;
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.48fr)
+        minmax(330px, 0.72fr);
+
+      align-items: stretch;
+      gap: 18px;
+
+      overflow: hidden;
+    }
+
+    .prediction-card::before {
+      content: "";
+
+      position: absolute;
+      left: 8%;
+      top: 50%;
+
+      width: 460px;
+      height: 230px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.13),
+          transparent 68%
+        );
+
+      filter:
+        blur(16px);
+
+      transform:
+        translateY(-50%)
+        scale(0.92);
+
+      opacity: 0.65;
+
+      animation:
+        predictionAura 6s
+        ease-in-out infinite;
+    }
+
+    .prediction-main,
+    .prediction-cta {
+      position: relative;
+      z-index: 2;
+
+      min-height: 208px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.055),
+          rgba(255, 255, 255, 0.012)
+        );
+    }
+
+    .prediction-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 24px 29px;
+    }
+
+    .prediction-kicker {
+      color: var(--purple-bright);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.19em;
+      text-transform: uppercase;
+    }
+
+    .prediction-main h3 {
+      margin: 8px 0 4px;
+
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0.035em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .prediction-main p {
+      max-width: 720px;
+
+      margin: 9px 0 0;
+
+      color: var(--soft);
+
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.38;
+    }
+
+    .prediction-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+
+      margin-top: 18px;
+    }
+
+    .prediction-pill-row span {
+      min-height: 36px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      padding: 0 13px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.16);
+
+      border-radius: 9px;
+
+      color: var(--soft);
+
+      background:
+        rgba(var(--purple-rgb), 0.035);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .prediction-pill-row b {
+      color: var(--purple-bright);
+      font-size: 10px;
+    }
+
+    .prediction-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      padding: 21px 24px;
+
+      text-align: center;
+    }
+
+    .prediction-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 13px;
+
+      color: var(--green);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .prediction-status i {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: currentColor;
+
+      box-shadow:
+        0 0 12px currentColor;
+
+      animation:
+        predictionStatusPulse 2.4s
+        ease-in-out infinite;
+    }
+
+    .prediction-cta strong {
+      max-width: 300px;
+
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.02;
+      text-transform: uppercase;
+    }
+
+    .prediction-cta small {
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .prediction-url {
+      width: 100%;
+
+      margin-top: 17px;
+      padding: 11px 12px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.2);
+
+      border-radius: 10px;
+
+      color: var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb), 0.045);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .account-slide,
+    .website-slide {
+      width: 100%;
+
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(330px, 0.65fr);
+
+      gap: 18px;
+    }
+
+    .account-copy,
+    .account-actions,
+    .website-copy,
+    .website-route-grid {
+      min-height: 208px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.055),
+          rgba(255, 255, 255, 0.012)
+        );
+    }
+
+    .account-copy,
+    .website-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 25px 30px;
+    }
+
+    .account-copy span,
+    .website-copy span {
+      color: var(--purple-bright);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .account-copy h3,
+    .website-copy h3 {
+      margin: 8px 0 0;
+
+      font-size: 35px;
+      font-weight: 800;
+      line-height: 0.98;
+      text-transform: uppercase;
+    }
+
+    .account-copy p,
+    .website-copy p {
+      max-width: 720px;
+
+      margin: 11px 0 0;
+
+      color: var(--soft);
+
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.38;
+    }
+
+    .account-actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 22px;
+    }
+
+    .account-feature {
+      display: grid;
+
+      grid-template-columns:
+        36px minmax(0, 1fr);
+
+      align-items: center;
+      gap: 11px;
+
+      padding: 10px 0;
+
+      border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+    }
+
+    .account-feature:last-of-type {
+      border-bottom: 0;
+    }
+
+    .account-feature b {
+      width: 32px;
+      height: 32px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.2);
+
+      border-radius: 9px;
+
+      color: var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb), 0.045);
+
+      font-size: 10px;
+    }
+
+    .account-feature strong,
+    .account-feature small {
+      display: block;
+    }
+
+    .account-feature strong {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .account-feature small {
+      margin-top: 2px;
+
+      color: var(--dim);
+
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .account-url {
+      margin-top: 12px;
+      padding: 11px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.22);
+
+      border-radius: 10px;
+
+      color: var(--text);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb), 0.12),
+          rgba(var(--purple-rgb), 0.04)
+        );
+
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .website-route-grid {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 10px;
+
+      padding: 16px;
+    }
+
+    .website-route {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 13px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.12);
+
+      border-radius: 12px;
+
+      background:
+        rgba(var(--purple-rgb), 0.028);
+    }
+
+    .website-route strong,
+    .website-route small {
+      display: block;
+    }
+
+    .website-route strong {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .website-route small {
+      margin-top: 4px;
+
+      color: var(--dim);
+
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      bottom: 26px;
+      z-index: 30;
+
+      display: grid;
 
       grid-template-columns:
         1fr auto 1fr;
 
-      align-items:center;
-      gap:18px;
+      align-items: center;
+      gap: 22px;
     }
 
-    .footer-line{
-      height:1px;
+    .footer-line {
+      height: 1px;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(var(--purple-rgb),.28)
+          rgba(var(--purple-rgb), 0.3)
         );
     }
 
-    .footer-line:last-child{
-      transform:
-        scaleX(-1);
+    .footer-line:last-child {
+      transform: scaleX(-1);
     }
 
-    .footer-copy{
-      display:flex;
-      align-items:center;
-      gap:13px;
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
 
-      color:var(--muted);
-
-      font-size:11px;
-      font-weight:800;
-      letter-spacing:.18em;
-      text-transform:uppercase;
+      white-space: nowrap;
     }
 
-    .footer-dot{
-      width:5px;
-      height:5px;
+    .footer-brand strong {
+      color: var(--text);
 
-      border-radius:50%;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
 
-      background:var(--purple);
+    .footer-brand span {
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background: var(--purple);
 
       box-shadow:
         0 0 10px
-        rgba(var(--purple-rgb),.6);
+        rgba(var(--purple-rgb), 0.6);
     }
 
-    .starting{
-      position:absolute;
-      inset:0;
-      z-index:100;
+    .footer-brand small {
+      color: var(--muted);
 
-      display:grid;
-      place-items:center;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
 
-      visibility:hidden;
-      opacity:0;
+    .starting {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+
+      display: grid;
+      place-items: center;
+
+      visibility: hidden;
+      opacity: 0;
 
       background:
         radial-gradient(
           circle at 50% 48%,
-          rgba(var(--purple-rgb),.18),
+          rgba(var(--purple-rgb), 0.18),
           transparent 31%
         ),
         linear-gradient(
@@ -1204,709 +2233,292 @@
         );
 
       transition:
-        opacity .9s ease,
-        visibility 0s linear .9s;
+        opacity 0.9s ease,
+        visibility 0s linear 0.9s;
     }
 
-    .starting.active{
-      visibility:visible;
-      opacity:1;
-      transition-delay:0s;
+    .starting.active {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
     }
 
-    .starting-content{
-      text-align:center;
-      opacity:0;
+    .starting-content {
+      text-align: center;
+
+      opacity: 0;
 
       transform:
         translateY(18px)
-        scale(.96);
+        scale(0.96);
     }
 
-    .starting.active .starting-content{
+    .starting.active .starting-content {
       animation:
         startIn 1s
-        cubic-bezier(.18,.86,.24,1)
-        .25s forwards;
+        cubic-bezier(0.18, 0.86, 0.24, 1)
+        0.25s forwards;
     }
 
-    .starting-mark{
-      width:105px;
-      height:105px;
+    .starting-mark {
+      width: 108px;
+      height: 108px;
 
-      display:grid;
-      place-items:center;
+      display: grid;
+      place-items: center;
 
-      margin:
-        0 auto 26px;
+      margin: 0 auto 26px;
 
       border:
         1px solid
-        rgba(var(--purple-rgb),.46);
+        rgba(var(--purple-rgb), 0.46);
 
-      border-radius:26px;
+      border-radius: 27px;
 
       background:
         linear-gradient(
           145deg,
-          rgba(var(--purple-rgb),.18),
-          rgba(8,7,13,.96)
+          rgba(var(--purple-rgb), 0.18),
+          rgba(8, 7, 13, 0.96)
         );
 
       box-shadow:
         inset 0 0 30px
-        rgba(var(--purple-rgb),.09),
+        rgba(var(--purple-rgb), 0.09),
         0 0 46px
-        rgba(var(--purple-rgb),.14);
+        rgba(var(--purple-rgb), 0.14);
 
-      font-size:42px;
-      font-weight:800;
-      letter-spacing:-.06em;
+      font-size: 43px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
     }
 
-    .starting h1{
-      margin:0;
+    .starting h1 {
+      margin: 0;
 
-      font-size:74px;
-      font-weight:800;
-      letter-spacing:.055em;
-      line-height:.95;
-      text-transform:uppercase;
+      font-size: 76px;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+      line-height: 0.95;
+      text-transform: uppercase;
     }
 
-    .starting p{
-      margin:
-        17px 0 0;
+    .starting p {
+      margin: 18px 0 0;
 
-      color:var(--purple-bright);
+      color: var(--purple-bright);
 
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:.28em;
-      text-transform:uppercase;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
     }
 
-    .stage.final-ten .timer-core{
+    .stage.final-ten .timer-core {
       animation:
         urgentPulse 1s
         ease-in-out infinite;
     }
 
-    @keyframes bgDrift{
-      from{
+    @keyframes bgDrift {
+      from {
         transform:
-          translate3d(-18px,-8px,0)
+          translate3d(-18px, -8px, 0)
           scale(1.015);
       }
 
-      to{
+      to {
         transform:
-          translate3d(20px,10px,0)
+          translate3d(20px, 10px, 0)
           scale(1.03);
       }
     }
 
-    @keyframes gridMove{
-      to{
+    @keyframes gridMove {
+      to {
         background-position:
           0 80px,
           80px 0;
       }
     }
 
-    @keyframes floatA{
-      from{
+    @keyframes floatA {
+      from {
         transform:
           rotate(45deg)
-          translate(-8px,-8px);
+          translate(-8px, -8px);
       }
 
-      to{
+      to {
         transform:
           rotate(45deg)
-          translate(18px,16px);
-      }
-    }
-
-    @keyframes floatB{
-      from{
-        transform:
-          rotate(45deg)
-          translate(10px,-12px);
-      }
-
-      to{
-        transform:
-          rotate(45deg)
-          translate(-18px,20px);
+          translate(18px, 16px);
       }
     }
 
-    @keyframes breathe{
+    @keyframes floatB {
+      from {
+        transform:
+          rotate(45deg)
+          translate(10px, -12px);
+      }
+
+      to {
+        transform:
+          rotate(45deg)
+          translate(-18px, 20px);
+      }
+    }
+
+    @keyframes breathe {
       0%,
-      100%{
-        opacity:.58;
-        transform:scale(.96);
+      100% {
+        opacity: 0.58;
+        transform: scale(0.96);
       }
 
-      50%{
-        opacity:1;
-        transform:scale(1.04);
-      }
-    }
-
-    @keyframes rotate{
-      to{
-        transform:
-          rotate(360deg);
+      50% {
+        opacity: 1;
+        transform: scale(1.04);
       }
     }
 
-    @keyframes rotateBack{
-      to{
-        transform:
-          rotate(-360deg);
+    @keyframes rotate {
+      to {
+        transform: rotate(360deg);
       }
     }
 
-    @keyframes ripple{
+    @keyframes rotateBack {
+      to {
+        transform: rotate(-360deg);
+      }
+    }
+
+    @keyframes ripple {
       0%,
-      58%{
-        opacity:0;
-        transform:scale(.72);
+      58% {
+        opacity: 0;
+        transform: scale(0.72);
       }
 
-      63%{
-        opacity:.32;
+      63% {
+        opacity: 0.32;
       }
 
-      82%{
-        opacity:0;
-        transform:scale(1.52);
+      82% {
+        opacity: 0;
+        transform: scale(1.52);
       }
 
-      100%{
-        opacity:0;
-        transform:scale(1.52);
+      100% {
+        opacity: 0;
+        transform: scale(1.52);
       }
     }
 
-    @keyframes infoIn{
-      from{
-        opacity:0;
+    @keyframes infoIn {
+      from {
+        opacity: 0;
 
         transform:
-          scale(.985)
+          scale(0.985)
           translateY(-7px);
 
-        filter:
-          blur(3px);
+        filter: blur(3px);
       }
 
-      to{
-        opacity:1;
-        transform:none;
-        filter:none;
-      }
-    }
-
-    @keyframes startIn{
-      to{
-        opacity:1;
-        transform:none;
+      to {
+        opacity: 1;
+        transform: none;
+        filter: none;
       }
     }
 
-    @keyframes urgentPulse{
+    @keyframes predictionAura {
       0%,
-      100%{
-        border-color:
-          rgba(var(--purple-rgb),.25);
+      100% {
+        opacity: 0.42;
+
+        transform:
+          translateY(-50%)
+          scale(0.9);
       }
 
-      50%{
+      50% {
+        opacity: 0.78;
+
+        transform:
+          translateY(-50%)
+          scale(1.06);
+      }
+    }
+
+    @keyframes predictionStatusPulse {
+      0%,
+      100% {
+        opacity: 0.55;
+        transform: scale(0.88);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.12);
+      }
+    }
+
+    @keyframes slideProgress {
+      from {
+        width: 0;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    @keyframes startIn {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes urgentPulse {
+      0%,
+      100% {
         border-color:
-          rgba(255,106,128,.42);
+          rgba(var(--purple-rgb), 0.27);
+      }
+
+      50% {
+        border-color:
+          rgba(255, 106, 128, 0.42);
 
         box-shadow:
-          0 26px 70px
-          rgba(0,0,0,.5),
+          0 28px 75px
+          rgba(0, 0, 0, 0.52),
           0 0 34px
-          rgba(255,106,128,.11);
+          rgba(255, 106, 128, 0.11);
       }
     }
 
-    @media (prefers-reduced-motion:reduce){
+    @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
-      *::after{
-        animation:none !important;
-        transition:none !important;
+      *::after {
+        animation: none !important;
+        transition: none !important;
       }
 
       .starting.active,
-      .starting.active .starting-content{
-        visibility:visible;
-        opacity:1;
-        transform:none;
+      .starting.active .starting-content {
+        visibility: visible;
+        opacity: 1;
+        transform: none;
       }
     }
- /* =========================================================
-   COUNTDOWN REFINEMENT
-   ========================================================= */
-
-.hero {
-  top: 41%;
-  width: 1080px;
-}
-
-.timer-system {
-  width: 740px;
-  height: 480px;
-  margin-top: 10px;
-}
-
-.aura {
-  width: 440px;
-  height: 440px;
-}
-
-.orbit.outer {
-  width: 440px;
-  height: 440px;
-}
-
-.orbit.middle {
-  width: 378px;
-  height: 378px;
-}
-
-.progress-ring {
-  width: 322px;
-  height: 322px;
-}
-
-.ripple {
-  width: 285px;
-  height: 285px;
-}
-
-.timer-core {
-  width: 430px;
-  height: 210px;
-  border-radius: 29px;
-}
-
-.timer-core::before {
-  border-radius: 21px;
-}
-
-.timer-label {
-  top: 19px;
-  font-size: 10px;
-}
-
-.timer {
-  min-width: 390px;
-  font-size: 120px;
-  letter-spacing: 0.015em;
-}
-
-.timer.long {
-  font-size: 82px;
-}
-
-.schedule {
-  margin-top: -9px;
-  font-size: 20px;
-}
-
-
-/* =========================================================
-   LARGER ROTATING INFORMATION PANEL
-   ========================================================= */
-
-.info-shell {
-  width: 1260px;
-  min-height: 265px;
-  bottom: 72px;
-  border-radius: 24px;
-}
-
-.info-head {
-  min-height: 60px;
-}
-
-.info-head h2 {
-  font-size: 14px;
-}
-
-.slide-index {
-  right: 28px;
-  font-size: 11px;
-}
-
-.info-body {
-  min-height: 204px;
-  padding: 24px 40px 30px;
-}
-
-.team-block {
-  min-height: 92px;
-  padding: 18px 26px;
-}
-
-.team-block strong {
-  font-size: 31px;
-}
-
-.vs {
-  width: 72px;
-  height: 72px;
-  font-size: 20px;
-}
-
-.matchups {
-  gap: 12px 16px;
-}
-
-.match-row {
-  min-height: 64px;
-  grid-template-columns:
-    64px
-    minmax(0, 1fr)
-    38px
-    minmax(0, 1fr);
-
-  padding: 0 18px;
-}
-
-.match-row > span {
-  font-size: 11px;
-}
-
-.match-row p {
-  font-size: 17px;
-}
-
-.info-item {
-  min-height: 112px;
-  padding: 17px 18px;
-}
-
-.info-item small {
-  font-size: 10px;
-}
-
-.info-item strong {
-  font-size: 20px;
-}
-
-
-/* =========================================================
-   OPENING ROUND SLIDE
-   ========================================================= */
-
-.round-slide {
-  width: 100%;
-}
-
-.round-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-
-  margin-bottom: 14px;
-  padding: 0 4px;
-}
-
-.round-heading span {
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.round-heading p {
-  margin: 0;
-
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.035em;
-  text-align: right;
-}
-
-
-/* =========================================================
-   PREDICTION CENTER SLIDE
-   ========================================================= */
-
-.prediction-card {
-  position: relative;
-  width: 100%;
-
-  display: grid;
-  grid-template-columns:
-    minmax(0, 1.45fr)
-    minmax(320px, 0.72fr);
-
-  align-items: stretch;
-  gap: 18px;
-
-  overflow: hidden;
-}
-
-.prediction-card::before {
-  content: "";
-
-  position: absolute;
-  left: 8%;
-  top: 50%;
-
-  width: 430px;
-  height: 220px;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(var(--purple-rgb), 0.13),
-      transparent 68%
-    );
-
-  filter: blur(16px);
-
-  transform:
-    translateY(-50%)
-    scale(0.92);
-
-  opacity: 0.65;
-
-  animation:
-    predictionAura 6s ease-in-out infinite;
-}
-
-.prediction-main,
-.prediction-cta {
-  position: relative;
-  z-index: 2;
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.06);
-
-  border-radius: 16px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(var(--purple-rgb), 0.055),
-      rgba(255, 255, 255, 0.012)
-    );
-}
-
-.prediction-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  padding: 22px 27px;
-}
-
-.prediction-kicker {
-  color: var(--purple-bright);
-
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.19em;
-  text-transform: uppercase;
-}
-
-.prediction-main h3 {
-  margin:
-    7px 0 4px;
-
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: 0.035em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.prediction-main p {
-  max-width: 690px;
-
-  margin:
-    8px 0 0;
-
-  color: var(--soft);
-
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.prediction-pill-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-
-  margin-top: 17px;
-}
-
-.prediction-pill-row span {
-  min-height: 34px;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  padding:
-    0 12px;
-
-  border:
-    1px solid
-    rgba(var(--purple-rgb), 0.16);
-
-  border-radius: 9px;
-
-  color: var(--soft);
-
-  background:
-    rgba(var(--purple-rgb), 0.035);
-
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-}
-
-.prediction-pill-row b {
-  color: var(--purple-bright);
-  font-size: 10px;
-}
-
-.prediction-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  padding: 19px 23px;
-
-  text-align: center;
-}
-
-.prediction-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  margin-bottom: 12px;
-
-  color: var(--green);
-
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.prediction-status i {
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: currentColor;
-
-  box-shadow:
-    0 0 12px currentColor;
-
-  animation:
-    predictionStatusPulse 2.4s ease-in-out infinite;
-}
-
-.prediction-cta strong {
-  max-width: 290px;
-
-  font-size: 23px;
-  font-weight: 800;
-  line-height: 1.02;
-  text-transform: uppercase;
-}
-
-.prediction-cta small {
-  margin-top: 7px;
-
-  color: var(--muted);
-
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-}
-
-.prediction-url {
-  width: 100%;
-
-  margin-top: 16px;
-  padding:
-    10px 12px;
-
-  border:
-    1px solid
-    rgba(var(--purple-rgb), 0.2);
-
-  border-radius: 9px;
-
-  color: var(--purple-bright);
-
-  background:
-    rgba(var(--purple-rgb), 0.045);
-
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-}
-
-@keyframes predictionAura {
-  0%,
-  100% {
-    opacity: 0.42;
-
-    transform:
-      translateY(-50%)
-      scale(0.9);
-  }
-
-  50% {
-    opacity: 0.78;
-
-    transform:
-      translateY(-50%)
-      scale(1.06);
-  }
-}
-
-@keyframes predictionStatusPulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.88);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1.12);
-  }
-}
-   </style>
+  </style>
 </head>
 
 <body>
@@ -1924,7 +2536,10 @@
         </div>
 
         <div class="brand-copy">
-          <span>Rivals Gauntlet Broadcast</span>
+          <span>
+            Rivals Gauntlet Broadcast
+          </span>
+
           <strong id="eventName">
             RIVALS GAUNTLET
           </strong>
@@ -1941,103 +2556,222 @@
         class="connection"
       >
         <span class="connection-dot"></span>
+
         <span id="connectionText">
           Connecting
         </span>
       </div>
     </header>
 
-    <section class="hero">
-      <div class="eyebrow">
-        Broadcast Begins In
-      </div>
+    <section class="broadcast-layout">
+      <aside class="support-rail">
+        <section class="side-panel">
+          <header class="panel-heading">
+            <div>
+              <span>
+                Community Leaderboard
+              </span>
 
-      <div class="timer-system">
-        <div
-          class="aura"
-          aria-hidden="true"
-        ></div>
+              <strong>
+                Top Prize Pool Supporters
+              </strong>
+            </div>
 
-        <div
-          class="orbit outer"
-          aria-hidden="true"
-        ></div>
+            <em>
+              All Time
+            </em>
+          </header>
 
-        <div
-          class="orbit middle"
-          aria-hidden="true"
-        ></div>
+          <div
+            id="topSupportersList"
+            class="support-list"
+          >
+            <div class="support-empty">
+              Waiting for confirmed prize pool contributions.
+            </div>
+          </div>
+        </section>
 
-        <div
-          class="progress-ring"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="ripple"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="ripple two"
-          aria-hidden="true"
-        ></div>
-
-        <div class="timer-core">
-          <span class="timer-label">
-            Pre-Show Countdown
+        <section class="side-cta">
+          <span class="side-kicker">
+            Live Community Funding
           </span>
 
           <div
-            id="timer"
-            class="timer"
+            id="sidePrizePool"
+            class="pool-total"
           >
-            --:--
+            $0
           </div>
-        </div>
+
+          <div class="pool-meta">
+            <span id="sidePoolGoalText">
+              $0 / $250
+            </span>
+
+            <span id="sidePoolPercent">
+              0%
+            </span>
+          </div>
+
+          <div class="mini-goal">
+            <span id="sidePoolGoalFill"></span>
+          </div>
+
+          <div class="side-url">
+            RIVALSGAUNTLET.COM/DONATE
+          </div>
+        </section>
+      </aside>
+
+      <div class="center-stack">
+        <section class="countdown-zone">
+          <div class="hero">
+            <div class="eyebrow">
+              Broadcast Begins In
+            </div>
+
+            <div class="timer-system">
+              <div
+                class="aura"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="orbit outer"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="orbit middle"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="progress-ring"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="ripple"
+                aria-hidden="true"
+              ></div>
+
+              <div
+                class="ripple two"
+                aria-hidden="true"
+              ></div>
+
+              <div class="timer-core">
+                <span class="timer-label">
+                  Pre-Show Countdown
+                </span>
+
+                <div
+                  id="timer"
+                  class="timer"
+                >
+                  --:--
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="schedule"
+              class="schedule"
+            >
+              Waiting for the broadcast start time.
+            </div>
+          </div>
+        </section>
+
+        <section class="info-shell">
+          <header class="info-head">
+            <h2 id="rotationTitle">
+              UP NEXT
+            </h2>
+
+            <span
+              id="slideIndex"
+              class="slide-index"
+            >
+              01 / 07
+            </span>
+
+            <span
+              id="slideProgress"
+              class="slide-progress"
+            ></span>
+          </header>
+
+          <div
+            id="rotationBody"
+            class="info-body"
+          ></div>
+        </section>
       </div>
 
-      <div
-        id="schedule"
-        class="schedule"
-      >
-        Waiting for the broadcast start time.
-      </div>
-    </section>
+      <aside class="support-rail">
+        <section class="side-panel">
+          <header class="panel-heading">
+            <div>
+              <span>
+                Live Contribution Feed
+              </span>
 
-    <section class="info-shell">
-      <header class="info-head">
-        <h2 id="rotationTitle">
-          UP NEXT
-        </h2>
+              <strong>
+                Recent Prize Pool Supporters
+              </strong>
+            </div>
 
-        <span
-          id="slideIndex"
-          class="slide-index"
-        >
-          01 / 05
-        </span>
-      </header>
+            <em>
+              Newest
+            </em>
+          </header>
 
-      <div
-        id="rotationBody"
-        class="info-body"
-      ></div>
+          <div
+            id="recentSupportersList"
+            class="support-list"
+          >
+            <div class="support-empty">
+              New confirmed supporters will appear here automatically.
+            </div>
+          </div>
+        </section>
+
+        <section class="side-cta">
+          <span class="side-kicker">
+            Your Rivals Gauntlet Profile
+          </span>
+
+          <h3>
+            Create Your Account
+          </h3>
+
+          <p>
+            Submit predictions, earn RG Points, track your rank and build your tournament history.
+          </p>
+
+          <div class="side-url">
+            RIVALSGAUNTLET.COM/LOGIN
+          </div>
+        </section>
+      </aside>
     </section>
 
     <footer class="footer">
       <span class="footer-line"></span>
 
-      <div class="footer-copy">
-        <span id="website">
+      <div class="footer-brand">
+        <strong id="website">
           RIVALSGAUNTLET.COM
-        </span>
+        </strong>
 
-        <span class="footer-dot"></span>
+        <span></span>
 
-        <span>
-          COMPETE • PREDICT • EARN
-        </span>
+        <small>
+          Create Account • Fill Your Bracket • Follow Live Predictions
+        </small>
       </div>
 
       <span class="footer-line"></span>
@@ -2063,1541 +2797,2231 @@
     </section>
   </main>
 
-<script>
-  window.addEventListener("error", function (event) {
-    var timer =
-      document.getElementById("timer");
-
-    var schedule =
-      document.getElementById("schedule");
-
-    var connection =
-      document.getElementById("connection");
-
-    var connectionText =
-      document.getElementById("connectionText");
-
-    var body =
-      document.getElementById("rotationBody");
-
-    if (connection) {
-      connection.classList.add("error");
-    }
-
-    if (connectionText) {
-      connectionText.textContent =
-        "SCRIPT ERROR";
-    }
-
-    if (timer) {
-      timer.textContent = "ERROR";
-    }
-
-    if (schedule) {
-      schedule.textContent =
-        event.message ||
-        "The countdown script stopped.";
-    }
-
-    if (body) {
-      body.innerHTML =
-        '<div style="' +
-          'width:100%;' +
-          'min-height:110px;' +
-          'display:flex;' +
-          'flex-direction:column;' +
-          'align-items:center;' +
-          'justify-content:center;' +
-          'gap:8px;' +
-          'text-align:center;' +
-        '">' +
-          '<small style="' +
-            'color:#ff718a;' +
-            'font-weight:800;' +
-            'letter-spacing:.14em;' +
-            'text-transform:uppercase;' +
-          '">' +
-            'JavaScript Error' +
-          '</small>' +
-
-          '<strong style="' +
-            'font-size:20px;' +
-            'text-transform:uppercase;' +
-          '">' +
-            String(
-              event.message ||
-              "Unknown script error"
-            )
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;") +
-          '</strong>' +
-        '</div>';
-    }
-  });
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script src="../firebase.js?v=2"></script>
-
-<script>
-(function () {
-  "use strict";
-
-  var DEFAULT_ROTATION_MS =
-    10000;
-
-  var DEFAULT_COUNTDOWN_MS =
-    15 * 60 * 1000;
-
-  var countdownData = {};
-  var siteData = {};
-  var donationsData = [];
-
-  var cardIndex = 0;
-  var cardTimer = null;
-  var cardSpeed = 0;
-  var cardSwapTimer = null;
-
-  var activeStartStamp = 0;
-  var initialRemaining = 0;
-  var lastTimerText = "";
-  var countdownEnded = false;
-  var countdownWasActive = false;
-
-  var stage =
-    document.getElementById("stage");
-
-  var timer =
-    document.getElementById("timer");
-
-  var schedule =
-    document.getElementById("schedule");
-
-  var eventName =
-    document.getElementById("eventName");
-
-  var website =
-    document.getElementById("website");
-
-  var rotationTitle =
-    document.getElementById(
-      "rotationTitle"
-    );
-
-  var rotationBody =
-    document.getElementById(
-      "rotationBody"
-    );
-
-  var slideIndex =
-    document.getElementById(
-      "slideIndex"
-    );
-
-  var starting =
-    document.getElementById("starting");
-
-  var connection =
-    document.getElementById(
-      "connection"
-    );
-
-  var connectionText =
-    document.getElementById(
-      "connectionText"
-    );
-
-  function clean(
-    value,
-    fallback
-  ) {
-    var text =
-      value == null
-        ? ""
-        : String(value).trim();
-
-    return text || fallback || "";
-  }
-
-  function escapeHtml(value) {
-    return clean(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function numberValue(
-    value,
-    fallback
-  ) {
-    var parsed = Number(value);
-
-    return Number.isFinite(parsed)
-      ? parsed
-      : Number(fallback || 0);
-  }
-
-  function moneyValue(
-    value,
-    fallback
-  ) {
-    var parsed = Number(
-      String(
-        value == null
-          ? ""
-          : value
-      ).replace(
-        /[^0-9.-]/g,
-        ""
-      )
-    );
-
-    return Number.isFinite(parsed)
-      ? parsed
-      : Number(fallback || 0);
-  }
-
-  function formatMoney(value) {
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }
-    ).format(
-      Math.max(
-        0,
-        numberValue(value)
-      )
-    );
-  }
-
-  function parseTimestamp(value) {
-    if (!value) {
-      return 0;
-    }
-
-    if (
-      typeof value === "number" &&
-      Number.isFinite(value)
-    ) {
-      return value;
-    }
-
-    var numeric =
-      Number(value);
-
-    if (
-      Number.isFinite(numeric) &&
-      numeric > 0
-    ) {
-      return numeric;
-    }
-
-    var parsed =
-      new Date(value).getTime();
-
-    return Number.isFinite(parsed)
-      ? parsed
-      : 0;
-  }
-
-  function getStartTime() {
-    var now = Date.now();
-
-    var values = [
-      countdownData.startTime,
-      countdownData.countdownDate,
-      siteData.countdownDate,
-      countdownData.startTimeLocal
-    ];
-
-    var index;
-    var stamp;
-
-    /*
-     * First use the first valid future value.
-     */
-    for (
-      index = 0;
-      index < values.length;
-      index += 1
-    ) {
-      stamp =
-        parseTimestamp(
-          values[index]
-        );
-
-      if (stamp > now) {
-        return stamp;
-      }
-    }
-
-    /*
-     * A countdown that ended within ten minutes
-     * can still display Broadcast Starting.
-     */
-    for (
-      index = 0;
-      index < values.length;
-      index += 1
-    ) {
-      stamp =
-        parseTimestamp(
-          values[index]
-        );
-
-      if (
-        stamp > 0 &&
-        now - stamp >= 0 &&
-        now - stamp <=
-          10 * 60 * 1000
-      ) {
-        return stamp;
-      }
-    }
-
-    return 0;
-  }
-
-  function getEventName() {
-    return clean(
-      countdownData.eventName ||
-      siteData.eventName,
-      "RIVALS GAUNTLET"
-    );
-  }
-
-  function getWebsite() {
-    var follow =
-      countdownData.follow || {};
-
-    return clean(
-      countdownData.website ||
-      follow.website ||
-      siteData.websiteUrl ||
-      siteData.website,
-      "RIVALSGAUNTLET.COM"
-    )
-      .replace(
-        /^https?:\/\//i,
-        ""
-      )
-      .replace(
-        /^www\./i,
-        ""
-      )
-      .replace(
-        /\/+$/,
-        ""
-      )
-      .toUpperCase();
-  }
-
-  function getTeam(number) {
-    return clean(
-      siteData[
-        "team" + number
-      ],
-      "TEAM " + number
-    );
-  }
-
-  function getMatchups() {
-    var matchups =
-      countdownData.matchups || {};
-
-    return [
-      {
-        label: clean(
-          matchups.match1Label,
-          "QF1"
-        ),
-
-        teamA: clean(
-          matchups.match1A,
-          getTeam(1)
-        ),
-
-        teamB: clean(
-          matchups.match1B,
-          getTeam(2)
-        )
-      },
-
-      {
-        label: clean(
-          matchups.match2Label,
-          "QF2"
-        ),
-
-        teamA: clean(
-          matchups.match2A,
-          getTeam(3)
-        ),
-
-        teamB: clean(
-          matchups.match2B,
-          getTeam(4)
-        )
-      },
-
-      {
-        label: clean(
-          matchups.match3Label,
-          "QF3"
-        ),
-
-        teamA: clean(
-          matchups.match3A,
-          getTeam(5)
-        ),
-
-        teamB: clean(
-          matchups.match3B,
-          getTeam(6)
-        )
-      },
-
-      {
-        label: clean(
-          matchups.match4Label,
-          "QF4"
-        ),
-
-        teamA: clean(
-          matchups.match4A,
-          getTeam(7)
-        ),
-
-        teamB: clean(
-          matchups.match4B,
-          getTeam(8)
-        )
-      }
-    ];
-  }
-
-  function getDonationTotal() {
-    return donationsData.reduce(
-      function (
-        total,
-        donation
-      ) {
-        return total +
-          moneyValue(
-            donation &&
-            donation.amount
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var timerElement =
+          document.getElementById("timer");
+
+        var scheduleElement =
+          document.getElementById("schedule");
+
+        var connectionElement =
+          document.getElementById("connection");
+
+        var connectionTextElement =
+          document.getElementById(
+            "connectionText"
           );
-      },
-      0
+
+        var bodyElement =
+          document.getElementById(
+            "rotationBody"
+          );
+
+        if (connectionElement) {
+          connectionElement.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionTextElement) {
+          connectionTextElement.textContent =
+            "SCRIPT ERROR";
+        }
+
+        if (timerElement) {
+          timerElement.textContent =
+            "ERROR";
+        }
+
+        if (scheduleElement) {
+          scheduleElement.textContent =
+            event.message ||
+            "The countdown script stopped.";
+        }
+
+        if (bodyElement) {
+          bodyElement.innerHTML =
+            '<div class="support-empty">' +
+
+              String(
+                event.message ||
+                "Unknown script error"
+              )
+                .replace(
+                  /&/g,
+                  "&amp;"
+                )
+                .replace(
+                  /</g,
+                  "&lt;"
+                )
+                .replace(
+                  />/g,
+                  "&gt;"
+                ) +
+
+            '</div>';
+        }
+      }
     );
-  }
+  </script>
 
-  function makeUpNextCard() {
-    var matches =
-      getMatchups();
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    var first =
-      matches[0];
+  <script src="../firebase.js?v=2"></script>
 
-    var next =
-      countdownData.upNext || {};
+  <script>
+    (function () {
+      "use strict";
 
-    var label =
-      clean(
-        next.label,
-        first.label
-      );
+      var DEFAULT_ROTATION_MS =
+        10000;
 
-    var teamA =
-      clean(
-        next.teamA,
-        first.teamA
-      );
+      var DEFAULT_COUNTDOWN_MS =
+        15 * 60 * 1000;
 
-    var teamB =
-      clean(
-        next.teamB,
-        first.teamB
-      );
+      var DEFAULT_STARTING_POOL =
+        60;
 
-    return {
-      title: "UP NEXT",
+      var DEFAULT_GOAL =
+        250;
 
-      html:
-        '<div class="up-next">' +
+      var countdownData = {};
+      var siteData = {};
+      var donationsData = [];
 
-          '<div class="team-block">' +
-            '<span>Team A</span>' +
-            '<strong>' +
-              escapeHtml(teamA) +
-            '</strong>' +
-          '</div>' +
+      var cardIndex = 0;
+      var cardTimer = null;
+      var cardSwapTimer = null;
 
-          '<div>' +
-            '<div class="vs">' +
-              'VS' +
-            '</div>' +
+      var activeStartStamp = 0;
+      var initialRemaining = 0;
+      var lastTimerText = "";
 
-            '<div style="' +
-              'margin-top:8px;' +
-              'color:var(--purple-bright);' +
-              'font-size:10px;' +
-              'font-weight:800;' +
-              'letter-spacing:.14em;' +
-              'text-transform:uppercase;' +
-            '">' +
-              escapeHtml(label) +
-            '</div>' +
-          '</div>' +
+      var countdownEnded = false;
+      var countdownWasActive = false;
 
-          '<div class="team-block">' +
-            '<span>Team B</span>' +
-            '<strong>' +
-              escapeHtml(teamB) +
-            '</strong>' +
-          '</div>' +
+      var stage =
+        document.getElementById(
+          "stage"
+        );
 
-        '</div>'
-    };
-  }
+      var timer =
+        document.getElementById(
+          "timer"
+        );
 
-  function makeMatchupsCard() {
-  var rows =
-    getMatchups()
-      .map(
-        function (match) {
+      var schedule =
+        document.getElementById(
+          "schedule"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      var rotationTitle =
+        document.getElementById(
+          "rotationTitle"
+        );
+
+      var rotationBody =
+        document.getElementById(
+          "rotationBody"
+        );
+
+      var slideIndex =
+        document.getElementById(
+          "slideIndex"
+        );
+
+      var slideProgress =
+        document.getElementById(
+          "slideProgress"
+        );
+
+      var starting =
+        document.getElementById(
+          "starting"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      var topSupportersList =
+        document.getElementById(
+          "topSupportersList"
+        );
+
+      var recentSupportersList =
+        document.getElementById(
+          "recentSupportersList"
+        );
+
+      var sidePrizePool =
+        document.getElementById(
+          "sidePrizePool"
+        );
+
+      var sidePoolGoalText =
+        document.getElementById(
+          "sidePoolGoalText"
+        );
+
+      var sidePoolPercent =
+        document.getElementById(
+          "sidePoolPercent"
+        );
+
+      var sidePoolGoalFill =
+        document.getElementById(
+          "sidePoolGoalFill"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text || fallback || "";
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(
+            /&/g,
+            "&amp;"
+          )
+          .replace(
+            /</g,
+            "&lt;"
+          )
+          .replace(
+            />/g,
+            "&gt;"
+          )
+          .replace(
+            /"/g,
+            "&quot;"
+          )
+          .replace(
+            /'/g,
+            "&#039;"
+          );
+      }
+
+      function numberValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(value);
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function moneyValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(
+            String(
+              value == null
+                ? ""
+                : value
+            ).replace(
+              /[^0-9.-]/g,
+              ""
+            )
+          );
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function formatMoney(
+        value,
+        showCents
+      ) {
+        return new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits:
+              showCents
+                ? 2
+                : 0,
+
+            maximumFractionDigits:
+              showCents
+                ? 2
+                : 0
+          }
+        ).format(
+          Math.max(
+            0,
+            numberValue(value)
+          )
+        );
+      }
+
+      function parseTimestamp(value) {
+        if (!value) {
+          return 0;
+        }
+
+        if (
+          typeof value === "number" &&
+          Number.isFinite(value)
+        ) {
+          return value;
+        }
+
+        var numeric =
+          Number(value);
+
+        if (
+          Number.isFinite(numeric) &&
+          numeric > 0
+        ) {
+          return numeric;
+        }
+
+        var parsed =
+          new Date(value).getTime();
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : 0;
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0, 2)
+            .toUpperCase();
+        }
+
+        return (
+          (
+            parts[0][0] ||
+            ""
+          ) +
+          (
+            parts[
+              parts.length - 1
+            ][0] ||
+            ""
+          )
+        ).toUpperCase();
+      }
+
+      function relativeTime(timestamp) {
+        var value =
+          numberValue(timestamp);
+
+        if (!value) {
+          return "Recently";
+        }
+
+        var difference =
+          Date.now() - value;
+
+        var absolute =
+          Math.abs(difference);
+
+        if (
+          absolute <
+          60 * 1000
+        ) {
+          return "Just now";
+        }
+
+        if (
+          absolute <
+          60 * 60 * 1000
+        ) {
           return (
-            '<div class="match-row">' +
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  60 * 1000
+                )
+              )
+            ) +
+            "m ago"
+          );
+        }
 
-              '<span>' +
-                escapeHtml(
-                  match.label
-                ) +
-              '</span>' +
+        if (
+          absolute <
+          24 * 60 * 60 * 1000
+        ) {
+          return (
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  60 *
+                  60 *
+                  1000
+                )
+              )
+            ) +
+            "h ago"
+          );
+        }
 
-              '<p>' +
-                escapeHtml(
-                  match.teamA
-                ) +
-              '</p>' +
+        if (
+          absolute <
+          7 *
+          24 *
+          60 *
+          60 *
+          1000
+        ) {
+          return (
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  24 *
+                  60 *
+                  60 *
+                  1000
+                )
+              )
+            ) +
+            "d ago"
+          );
+        }
 
-              '<strong>' +
-                'VS' +
-              '</strong>' +
+        return new Intl.DateTimeFormat(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric"
+          }
+        ).format(
+          new Date(value)
+        );
+      }
 
-              '<p>' +
-                escapeHtml(
-                  match.teamB
-                ) +
-              '</p>' +
+      function normalizeDonations(raw) {
+        return Object.keys(
+          raw || {}
+        )
+          .map(
+            function (id) {
+              var record =
+                raw[id] || {};
+
+              var name =
+                clean(
+                  record.name ||
+                  record.displayName ||
+                  record.donorName ||
+                  record.fromName ||
+                  record.from_name,
+                  "Anonymous"
+                );
+
+              return {
+                id: id,
+                name: name,
+
+                amount:
+                  moneyValue(
+                    record.amount
+                  ),
+
+                message:
+                  clean(
+                    record.message
+                  ),
+
+                createdAt:
+                  parseTimestamp(
+                    record.createdAt ||
+                    record.timestamp ||
+                    record.receivedAt ||
+                    record.date
+                  ),
+
+                uid:
+                  clean(
+                    record.uid ||
+                    record.userId
+                  )
+              };
+            }
+          )
+          .filter(
+            function (record) {
+              return record.amount > 0;
+            }
+          )
+          .sort(
+            function (
+              first,
+              second
+            ) {
+              return (
+                second.createdAt -
+                first.createdAt
+              );
+            }
+          );
+      }
+
+      function getStartTime() {
+        var now =
+          Date.now();
+
+        var values = [
+          countdownData.startTime,
+          countdownData.countdownDate,
+          siteData.countdownDate,
+          countdownData.startTimeLocal
+        ];
+
+        var index;
+        var stamp;
+
+        for (
+          index = 0;
+          index < values.length;
+          index += 1
+        ) {
+          stamp =
+            parseTimestamp(
+              values[index]
+            );
+
+          if (stamp > now) {
+            return stamp;
+          }
+        }
+
+        for (
+          index = 0;
+          index < values.length;
+          index += 1
+        ) {
+          stamp =
+            parseTimestamp(
+              values[index]
+            );
+
+          if (
+            stamp > 0 &&
+            now - stamp >= 0 &&
+            now - stamp <=
+              10 * 60 * 1000
+          ) {
+            return stamp;
+          }
+        }
+
+        return 0;
+      }
+
+      function getEventName() {
+        return clean(
+          countdownData.eventName ||
+          siteData.eventName,
+          "RIVALS GAUNTLET"
+        );
+      }
+
+      function getWebsite() {
+        var follow =
+          countdownData.follow || {};
+
+        return clean(
+          countdownData.website ||
+          follow.website ||
+          siteData.websiteUrl ||
+          siteData.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      function getTeam(number) {
+        return clean(
+          siteData[
+            "team" + number
+          ],
+          "TEAM " + number
+        );
+      }
+
+      function getMatchups() {
+        var matchups =
+          countdownData.matchups || {};
+
+        return [
+          {
+            label:
+              clean(
+                matchups.match1Label,
+                "QF1"
+              ),
+
+            teamA:
+              clean(
+                matchups.match1A,
+                getTeam(1)
+              ),
+
+            teamB:
+              clean(
+                matchups.match1B,
+                getTeam(2)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match2Label,
+                "QF2"
+              ),
+
+            teamA:
+              clean(
+                matchups.match2A,
+                getTeam(3)
+              ),
+
+            teamB:
+              clean(
+                matchups.match2B,
+                getTeam(4)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match3Label,
+                "QF3"
+              ),
+
+            teamA:
+              clean(
+                matchups.match3A,
+                getTeam(5)
+              ),
+
+            teamB:
+              clean(
+                matchups.match3B,
+                getTeam(6)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match4Label,
+                "QF4"
+              ),
+
+            teamA:
+              clean(
+                matchups.match4A,
+                getTeam(7)
+              ),
+
+            teamB:
+              clean(
+                matchups.match4B,
+                getTeam(8)
+              )
+          }
+        ];
+      }
+
+      function donationTotals() {
+        var starting =
+          Math.max(
+            0,
+
+            moneyValue(
+              siteData.startingPrizePool,
+
+              moneyValue(
+                siteData.prizePool,
+                DEFAULT_STARTING_POOL
+              )
+            )
+          );
+
+        var community =
+          donationsData.reduce(
+            function (
+              sum,
+              donation
+            ) {
+              return (
+                sum +
+                donation.amount
+              );
+            },
+            0
+          );
+
+        var current =
+          starting + community;
+
+        var goal =
+          Math.max(
+            1,
+
+            moneyValue(
+              siteData.donationGoal,
+              DEFAULT_GOAL
+            )
+          );
+
+        var percent =
+          Math.max(
+            0,
+
+            Math.min(
+              100,
+
+              Math.round(
+                (
+                  current /
+                  goal
+                ) *
+                100
+              )
+            )
+          );
+
+        return {
+          starting: starting,
+          community: community,
+          current: current,
+          goal: goal,
+          percent: percent
+        };
+      }
+
+      function groupedSupporters() {
+        var map = {};
+
+        donationsData.forEach(
+          function (donation) {
+            var key =
+              donation.uid
+                ? "uid:" +
+                  donation.uid
+                : "name:" +
+                  donation.name
+                    .toLowerCase();
+
+            if (!map[key]) {
+              map[key] = {
+                name:
+                  donation.name,
+
+                total: 0,
+                count: 0,
+                latest: 0
+              };
+            }
+
+            map[key].total +=
+              donation.amount;
+
+            map[key].count += 1;
+
+            map[key].latest =
+              Math.max(
+                map[key].latest,
+                donation.createdAt
+              );
+          }
+        );
+
+        return Object.keys(map)
+          .map(
+            function (key) {
+              return map[key];
+            }
+          )
+          .sort(
+            function (
+              first,
+              second
+            ) {
+              return (
+                second.total -
+                first.total ||
+                second.latest -
+                first.latest
+              );
+            }
+          )
+          .slice(0, 6);
+      }
+
+      function renderSupporterPanels() {
+        var top =
+          groupedSupporters();
+
+        var recent =
+          donationsData.slice(
+            0,
+            6
+          );
+
+        var totals =
+          donationTotals();
+
+        sidePrizePool.textContent =
+          formatMoney(
+            totals.current,
+            false
+          );
+
+        sidePoolGoalText.textContent =
+          formatMoney(
+            totals.current,
+            false
+          ) +
+          " / " +
+          formatMoney(
+            totals.goal,
+            false
+          );
+
+        sidePoolPercent.textContent =
+          totals.percent + "%";
+
+        sidePoolGoalFill.style.width =
+          totals.percent + "%";
+
+        if (!top.length) {
+          topSupportersList.innerHTML =
+            '<div class="support-empty">' +
+              'Be the first supporter featured on the broadcast leaderboard.' +
+            '</div>';
+        } else {
+          topSupportersList.innerHTML =
+            top
+              .map(
+                function (
+                  supporter,
+                  index
+                ) {
+                  return (
+                    '<article class="support-row' +
+                      (
+                        index === 0
+                          ? ' featured'
+                          : ''
+                      ) +
+                    '">' +
+
+                      '<span class="support-rank">' +
+                        '#' +
+                        (
+                          index + 1
+                        ) +
+                      '</span>' +
+
+                      '<span class="support-avatar">' +
+                        escapeHtml(
+                          initials(
+                            supporter.name
+                          )
+                        ) +
+                      '</span>' +
+
+                      '<div class="support-copy">' +
+
+                        '<strong>' +
+                          escapeHtml(
+                            supporter.name
+                          ) +
+                        '</strong>' +
+
+                        '<small>' +
+                          supporter.count +
+                          (
+                            supporter.count === 1
+                              ? ' contribution'
+                              : ' contributions'
+                          ) +
+                        '</small>' +
+
+                      '</div>' +
+
+                      '<strong class="support-amount">' +
+                        escapeHtml(
+                          formatMoney(
+                            supporter.total,
+                            false
+                          )
+                        ) +
+                      '</strong>' +
+
+                    '</article>'
+                  );
+                }
+              )
+              .join("");
+        }
+
+        if (!recent.length) {
+          recentSupportersList.innerHTML =
+            '<div class="support-empty">' +
+              'New confirmed supporters will appear here automatically.' +
+            '</div>';
+        } else {
+          recentSupportersList.innerHTML =
+            recent
+              .map(
+                function (donation) {
+                  return (
+                    '<article class="support-row">' +
+
+                      '<span class="support-rank">' +
+                        '+' +
+                      '</span>' +
+
+                      '<span class="support-avatar">' +
+                        escapeHtml(
+                          initials(
+                            donation.name
+                          )
+                        ) +
+                      '</span>' +
+
+                      '<div class="support-copy">' +
+
+                        '<strong>' +
+                          escapeHtml(
+                            donation.name
+                          ) +
+                        '</strong>' +
+
+                        '<small>' +
+                          escapeHtml(
+                            relativeTime(
+                              donation.createdAt
+                            )
+                          ) +
+                        '</small>' +
+
+                      '</div>' +
+
+                      '<strong class="support-amount">' +
+                        '+' +
+                        escapeHtml(
+                          formatMoney(
+                            donation.amount,
+                            false
+                          )
+                        ) +
+                      '</strong>' +
+
+                    '</article>'
+                  );
+                }
+              )
+              .join("");
+        }
+      }
+
+      function baseRotationDuration() {
+        return Math.max(
+          9000,
+
+          numberValue(
+            countdownData.rotationMs,
+            DEFAULT_ROTATION_MS
+          )
+        );
+      }
+
+      function makeUpNextCard() {
+        var matches =
+          getMatchups();
+
+        var first =
+          matches[0];
+
+        var next =
+          countdownData.upNext || {};
+
+        return {
+          title: "UP NEXT",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              11000
+            ),
+
+          html:
+            '<div class="up-next">' +
+
+              '<div class="team-block">' +
+                '<span>Team A</span>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      next.teamA,
+                      first.teamA
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div>' +
+                '<div class="vs">' +
+                  'VS' +
+                '</div>' +
+
+                '<div class="up-next-label">' +
+                  escapeHtml(
+                    clean(
+                      next.label,
+                      first.label
+                    )
+                  ) +
+                '</div>' +
+              '</div>' +
+
+              '<div class="team-block">' +
+                '<span>Team B</span>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      next.teamB,
+                      first.teamB
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
 
             '</div>'
+        };
+      }
+
+      function makePredictionsCard() {
+        var currentMatch =
+          clean(
+            siteData.currentMatch
+          ).toLowerCase();
+
+        var bracketOpen =
+          !currentMatch ||
+          currentMatch.indexOf(
+            "no match"
+          ) !== -1;
+
+        return {
+          title:
+            "PREDICTION CENTER",
+
+          duration:
+            16000,
+
+          html:
+            '<div class="prediction-card">' +
+
+              '<div class="prediction-main">' +
+
+                '<div class="prediction-kicker">' +
+                  'Bracket Pick’em + Live Predictions' +
+                '</div>' +
+
+                '<h3>' +
+                  'Make Every Match Matter' +
+                '</h3>' +
+
+                '<p>' +
+                  'Fill out your tournament bracket before the first match goes live, then return throughout the entire event for live predictions that open before upcoming matches.' +
+                '</p>' +
+
+                '<div class="prediction-pill-row">' +
+                  '<span><b>01</b>Predict</span>' +
+                  '<span><b>02</b>Earn RP</span>' +
+                  '<span><b>03</b>Increase Predictor Ranking</span>' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="prediction-cta">' +
+
+                '<span class="prediction-status">' +
+                  '<i></i>' +
+
+                  (
+                    bracketOpen
+                      ? 'Bracket Open'
+                      : 'Live Predictions Active'
+                  ) +
+
+                '</span>' +
+
+                '<strong>' +
+
+                  (
+                    bracketOpen
+                      ? 'Fill Out Your Bracket'
+                      : 'Return For Live Predictions'
+                  ) +
+
+                '</strong>' +
+
+                '<small>' +
+
+                  (
+                    bracketOpen
+                      ? 'Submit before the first match begins'
+                      : 'Predictions open before upcoming matches'
+                  ) +
+
+                '</small>' +
+
+                '<div class="prediction-url">' +
+                  'RIVALSGAUNTLET.COM/PREDICTIONS' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeAccountCard() {
+        return {
+          title:
+            "CREATE YOUR RG ACCOUNT",
+
+          duration:
+            14500,
+
+          html:
+            '<div class="account-slide">' +
+
+              '<div class="account-copy">' +
+
+                '<span>' +
+                  'Your Rivals Gauntlet Career Starts Here' +
+                '</span>' +
+
+                '<h3>' +
+                  'One Account. Every Tournament.' +
+                '</h3>' +
+
+                '<p>' +
+                  'Create a free account to join predictions, earn RG Points, build your Predictor Rank and keep your tournament activity connected to one profile.' +
+                '</p>' +
+
+              '</div>' +
+
+              '<div class="account-actions">' +
+
+                '<div class="account-feature">' +
+                  '<b>RP</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Earn RG Points' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Predictions, rewards and future cosmetics' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-feature">' +
+                  '<b>PR</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Build Predictor Rank' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Track accuracy, streaks and career progress' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-feature">' +
+                  '<b>RG</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Keep Your History' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Your profile follows every Rivals Gauntlet event' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-url">' +
+                  'RIVALSGAUNTLET.COM/LOGIN' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeMatchupsCard() {
+        var rows =
+          getMatchups()
+            .map(
+              function (match) {
+                return (
+                  '<div class="match-row">' +
+
+                    '<span>' +
+                      escapeHtml(
+                        match.label
+                      ) +
+                    '</span>' +
+
+                    '<p>' +
+                      escapeHtml(
+                        match.teamA
+                      ) +
+                    '</p>' +
+
+                    '<strong>' +
+                      'VS' +
+                    '</strong>' +
+
+                    '<p>' +
+                      escapeHtml(
+                        match.teamB
+                      ) +
+                    '</p>' +
+
+                  '</div>'
+                );
+              }
+            )
+            .join("");
+
+        return {
+          title:
+            "OPENING ROUND",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              12000
+            ),
+
+          html:
+            '<div class="round-slide">' +
+
+              '<div class="round-heading">' +
+
+                '<span>' +
+                  'Quarterfinal Matchups' +
+                '</span>' +
+
+                '<p>' +
+                  'Winners advance to the Semifinals • Grand Finals follows live' +
+                '</p>' +
+
+              '</div>' +
+
+              '<div class="matchups">' +
+                rows +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeFormatCard() {
+        var format =
+          countdownData.format || {};
+
+        var formatType =
+          clean(
+            siteData.formatType,
+            "8_single_elim"
           );
-        }
-      )
-      .join("");
 
-  return {
-    title: "OPENING ROUND",
-
-    html:
-      '<div class="round-slide">' +
-
-        '<div class="round-heading">' +
-
-          '<span>' +
-            'Quarterfinal Matchups' +
-          '</span>' +
-
-          '<p>' +
-            'Winners advance to the Semifinals • Grand Finals follows live' +
-          '</p>' +
-
-        '</div>' +
-
-        '<div class="matchups">' +
-          rows +
-        '</div>' +
-
-      '</div>'
-  };
-}
-function makePredictionsCard() {
-  return {
-    title: "PREDICTION CENTER",
-
-    html:
-      '<div class="prediction-card">' +
-
-        '<div class="prediction-main">' +
-
-          '<div class="prediction-kicker">' +
-            'Bracket Pick’em + Live Predictions' +
-          '</div>' +
-
-          '<h3>' +
-            'Make Every Match Matter' +
-          '</h3>' +
-
-          '<p>' +
-            'Fill out your tournament bracket before the first match goes live, ' +
-            'then return throughout the entire event for live predictions.' +
-          '</p>' +
-
-          '<div class="prediction-pill-row">' +
-
-            '<span>' +
-              '<b>01</b>' +
-              'Predict' +
-            '</span>' +
-
-            '<span>' +
-              '<b>02</b>' +
-              'Earn RP' +
-            '</span>' +
-
-            '<span>' +
-              '<b>03</b>' +
-              'Increase Predictor Ranking' +
-            '</span>' +
-
-          '</div>' +
-
-        '</div>' +
-
-        '<div class="prediction-cta">' +
-
-          '<span class="prediction-status">' +
-            '<i></i>' +
-            'Bracket Open' +
-          '</span>' +
-
-          '<strong>' +
-            'Fill Out Your Bracket' +
-          '</strong>' +
-
-          '<small>' +
-            'Before the broadcast begins' +
-          '</small>' +
-
-          '<div class="prediction-url">' +
-            'RIVALSGAUNTLET.COM/PREDICTIONS' +
-          '</div>' +
-
-        '</div>' +
-
-      '</div>'
-  };
-}
-  function makeFormatCard() {
-    var format =
-      countdownData.format || {};
-
-    var formatType =
-      clean(
-        siteData.formatType,
-        "8_single_elim"
-      );
-
-    var teamCount =
-      formatType.indexOf("16") === 0
-        ? "16 TEAMS"
-        : "8 TEAMS";
-
-    return {
-      title: "TOURNAMENT FORMAT",
-
-      html:
-        '<div class="info-grid">' +
-
-          '<div class="info-item">' +
-            '<small>Format</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  format.type,
-                  "Single Elimination"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Field</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  format.teams,
-                  teamCount
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Early Rounds</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  format.earlyRounds,
-                  "BO3"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Grand Finals</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  format.grandFinals,
-                  "BO5"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-        '</div>'
-    };
-  }
-
-  function makePrizeCard() {
-    var startingPool =
-      moneyValue(
-        siteData.startingPrizePool
-      );
-
-    var publishedPool =
-      moneyValue(
-        siteData.prizePool
-      );
-
-    var donationTotal =
-      getDonationTotal();
-
-    var currentPool =
-      Math.max(
-        publishedPool,
-        startingPool +
-        donationTotal
-      );
-
-    var goal =
-      Math.max(
-        1,
-        moneyValue(
-          siteData.donationGoal,
-          250
-        )
-      );
-
-    var percent =
-      Math.max(
-        0,
-        Math.min(
-          100,
-          Math.round(
-            currentPool /
-            goal *
-            100
-          )
-        )
-      );
-
-    return {
-      title: "LIVE PRIZE POOL",
-
-      html:
-        '<div class="info-grid">' +
-
-          '<div class="info-item">' +
-            '<small>Current Prize Pool</small>' +
-            '<strong>' +
-              escapeHtml(
-                formatMoney(
-                  currentPool
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Community Added</small>' +
-            '<strong>+' +
-              escapeHtml(
-                formatMoney(
-                  donationTotal
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Community Goal</small>' +
-            '<strong>' +
-              percent +
-              '%' +
-            '</strong>' +
-
-            '<div class="goal">' +
-              '<span style="width:' +
-                percent +
-                '%"></span>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Prize Pool Sync</small>' +
-            '<strong>AUTO-UPDATES</strong>' +
-          '</div>' +
-
-        '</div>'
-    };
-  }
-
-  function makeCommunityCard() {
-    var follow =
-      countdownData.follow || {};
-
-    return {
-      title: "JOIN THE GAUNTLET",
-
-      html:
-        '<div class="info-grid">' +
-
-          '<div class="info-item">' +
-            '<small>Website</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  follow.website,
-                  getWebsite()
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Discord</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  follow.discord,
-                  "JOIN THE COMMUNITY"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>Twitch</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  follow.twitch,
-                  "LIVE BROADCASTS"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-          '<div class="info-item">' +
-            '<small>YouTube</small>' +
-            '<strong>' +
-              escapeHtml(
-                clean(
-                  follow.youtube,
-                  "CLIPS & VODS"
-                )
-              ) +
-            '</strong>' +
-          '</div>' +
-
-        '</div>'
-    };
-  }
-
-  function getCards() {
-  return [
-    makeUpNextCard(),
-    makePredictionsCard(),
-    makeMatchupsCard(),
-    makeFormatCard(),
-    makePrizeCard(),
-    makeCommunityCard()
-  ];
-}
-
-  function renderCard(
-    requestedIndex,
-    animate
-  ) {
-    var cards =
-      getCards();
-
-    if (!cards.length) {
-      return;
-    }
-
-    cardIndex =
-      (
-        (
-          requestedIndex %
-          cards.length
-        ) +
-        cards.length
-      ) %
-      cards.length;
-
-    var card =
-      cards[cardIndex];
-
-    function commit() {
-      rotationTitle.textContent =
-        card.title;
-
-      rotationBody.innerHTML =
-        card.html;
-
-      slideIndex.textContent =
-        String(
-          cardIndex + 1
-        ).padStart(
-          2,
-          "0"
-        ) +
-        " / " +
-        String(
-          cards.length
-        ).padStart(
-          2,
-          "0"
+        var teamCount =
+          formatType.indexOf(
+            "16"
+          ) === 0
+            ? "16 TEAMS"
+            : "8 TEAMS";
+
+        return {
+          title:
+            "TOURNAMENT FORMAT",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              10500
+            ),
+
+          html:
+            '<div class="info-grid">' +
+
+              '<div class="info-item">' +
+                '<small>Format</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.type,
+                      "Single Elimination"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Field</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.teams,
+                      teamCount
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Early Rounds</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.earlyRounds,
+                      "BO3"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Grand Finals</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.grandFinals,
+                      "BO5"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makePrizeCard() {
+        var totals =
+          donationTotals();
+
+        return {
+          title:
+            "LIVE PRIZE POOL",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              12000
+            ),
+
+          html:
+            '<div class="info-grid">' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Current Prize Pool' +
+                '</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.current,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Community Added' +
+                '</small>' +
+
+                '<strong>' +
+                  '+' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.community,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Community Goal' +
+                '</small>' +
+
+                '<strong>' +
+                  totals.percent +
+                  '%' +
+                '</strong>' +
+
+                '<div class="goal">' +
+                  '<span style="width:' +
+                    totals.percent +
+                    '%">' +
+                  '</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Add To The Prize Pool' +
+                '</small>' +
+
+                '<strong>' +
+                  'RIVALSGAUNTLET.COM/DONATE' +
+                '</strong>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeWebsiteCard() {
+        return {
+          title:
+            "RIVALSGAUNTLET.COM",
+
+          duration:
+            13500,
+
+          html:
+            '<div class="website-slide">' +
+
+              '<div class="website-copy">' +
+
+                '<span>' +
+                  'The Home Of Rivals Gauntlet' +
+                '</span>' +
+
+                '<h3>' +
+                  'Follow The Entire Tournament' +
+                '</h3>' +
+
+                '<p>' +
+                  'Visit the website for the live bracket, tournament information, predictions, prize pool updates, official posts and your personal RG account.' +
+                '</p>' +
+
+                '<div class="account-url">' +
+                  'RIVALSGAUNTLET.COM' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="website-route-grid">' +
+
+                '<div class="website-route">' +
+                  '<strong>Predictions</strong>' +
+                  '<small>' +
+                    'Bracket Pick’em + Live Questions' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Tournament</strong>' +
+                  '<small>' +
+                    'Bracket, teams and event information' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Prize Pool</strong>' +
+                  '<small>' +
+                    'Live community contribution tracking' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Account Center</strong>' +
+                  '<small>' +
+                    'RG Points, rank and tournament history' +
+                  '</small>' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function getCards() {
+        return [
+          makeUpNextCard(),
+          makePredictionsCard(),
+          makeAccountCard(),
+          makeMatchupsCard(),
+          makeFormatCard(),
+          makePrizeCard(),
+          makeWebsiteCard()
+        ];
+      }
+
+      function restartSlideProgress(
+        duration
+      ) {
+        slideProgress.classList.remove(
+          "running"
         );
 
-      rotationBody.classList.remove(
-        "changing",
-        "entering"
-      );
-
-      void rotationBody.offsetWidth;
-
-      rotationBody.classList.add(
-        "entering"
-      );
-    }
-
-    clearTimeout(
-      cardSwapTimer
-    );
-
-    if (
-      animate === false ||
-      !rotationBody.innerHTML
-    ) {
-      commit();
-      return;
-    }
-
-    rotationBody.classList.add(
-      "changing"
-    );
-
-    cardSwapTimer =
-      setTimeout(
-        commit,
-        230
-      );
-  }
-
-  function getRotationSpeed() {
-    var start =
-      getStartTime();
-
-    var remaining =
-      start
-        ? start - Date.now()
-        : Infinity;
-
-    if (
-      remaining > 0 &&
-      remaining <= 60000
-    ) {
-      return 6500;
-    }
-
-    return Math.max(
-      6500,
-      numberValue(
-        countdownData.rotationMs,
-        DEFAULT_ROTATION_MS
-      )
-    );
-  }
-
-  function ensureRotation() {
-    var speed =
-      getRotationSpeed();
-
-    if (
-      cardTimer &&
-      cardSpeed === speed
-    ) {
-      return;
-    }
-
-    clearInterval(
-      cardTimer
-    );
-
-    cardSpeed =
-      speed;
-
-    cardTimer =
-      setInterval(
-        function () {
-          renderCard(
-            cardIndex + 1,
-            true
-          );
-        },
-        speed
-      );
-  }
-
-  function formatCountdown(ms) {
-    var totalSeconds =
-      Math.max(
-        0,
-        Math.ceil(
-          ms / 1000
-        )
-      );
-
-    var hours =
-      Math.floor(
-        totalSeconds / 3600
-      );
-
-    var minutes =
-      Math.floor(
-        (
-          totalSeconds % 3600
-        ) / 60
-      );
-
-    var seconds =
-      totalSeconds % 60;
-
-    if (hours > 0) {
-      return (
-        String(hours)
-          .padStart(2, "0") +
-        ":" +
-        String(minutes)
-          .padStart(2, "0") +
-        ":" +
-        String(seconds)
-          .padStart(2, "0")
-      );
-    }
-
-    return (
-      String(
-        Math.floor(
-          totalSeconds / 60
-        )
-      ).padStart(2, "0") +
-      ":" +
-      String(seconds)
-        .padStart(2, "0")
-    );
-  }
-
-  function formatStartDate(stamp) {
-    try {
-      return new Intl.DateTimeFormat(
-        "en-US",
-        {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-          timeZoneName: "short"
-        }
-      ).format(
-        new Date(stamp)
-      );
-    } catch (error) {
-      return new Date(
-        stamp
-      ).toLocaleString();
-    }
-  }
-
-  function updateProgress(
-    remaining
-  ) {
-    var configured =
-      Math.max(
-        1000,
-        numberValue(
-          countdownData.durationMs ||
-          countdownData.countdownDurationMs,
-          DEFAULT_COUNTDOWN_MS
-        )
-      );
-
-    var duration =
-      Math.max(
-        configured,
-        initialRemaining || 0
-      );
-
-    var elapsed =
-      Math.max(
-        0,
-        duration -
-        Math.max(
-          0,
-          remaining
-        )
-      );
-
-    var ratio =
-      Math.max(
-        0,
-        Math.min(
-          1,
-          elapsed / duration
-        )
-      );
-
-    stage.style.setProperty(
-      "--progress",
-      Math.round(
-        ratio * 360
-      ) + "deg"
-    );
-  }
-
-  function updateTimer() {
-    var start =
-      getStartTime();
-
-    if (!start) {
-      activeStartStamp = 0;
-      initialRemaining = 0;
-      lastTimerText = "";
-      countdownEnded = false;
-      countdownWasActive = false;
-
-      timer.textContent =
-        "--:--";
-
-      timer.classList.remove(
-        "long",
-        "tick"
-      );
-
-      schedule.textContent =
-        "Waiting for the broadcast start time.";
-
-      starting.classList.remove(
-        "active"
-      );
-
-      stage.classList.remove(
-        "final-ten"
-      );
-
-      stage.style.setProperty(
-        "--progress",
-        "0deg"
-      );
-
-      return;
-    }
-
-    var now =
-      Date.now();
-
-    var remaining =
-      start - now;
-
-    if (
-      activeStartStamp !== start
-    ) {
-      activeStartStamp =
-        start;
-
-      initialRemaining =
-        Math.max(
-          0,
-          remaining
+        slideProgress.style.setProperty(
+          "--slide-duration",
+          duration + "ms"
         );
 
-      lastTimerText = "";
-      countdownEnded = false;
-      countdownWasActive =
-        remaining > 0;
+        void slideProgress.offsetWidth;
 
-      starting.classList.remove(
-        "active"
-      );
-    }
+        slideProgress.classList.add(
+          "running"
+        );
+      }
 
-    if (remaining > 0) {
-      countdownWasActive = true;
-    }
+      function scheduleNextCard(
+        duration
+      ) {
+        clearTimeout(cardTimer);
 
-    var text =
-      formatCountdown(
+        cardTimer =
+          setTimeout(
+            function () {
+              renderCard(
+                cardIndex + 1,
+                true,
+                true
+              );
+            },
+            duration
+          );
+      }
+
+      function renderCard(
+        requestedIndex,
+        animate,
+        resetTimer
+      ) {
+        var cards =
+          getCards();
+
+        if (!cards.length) {
+          return;
+        }
+
+        cardIndex =
+          (
+            (
+              requestedIndex %
+              cards.length
+            ) +
+            cards.length
+          ) %
+          cards.length;
+
+        var card =
+          cards[cardIndex];
+
+        function commit() {
+          rotationTitle.textContent =
+            card.title;
+
+          rotationBody.innerHTML =
+            card.html;
+
+          slideIndex.textContent =
+            String(
+              cardIndex + 1
+            ).padStart(
+              2,
+              "0"
+            ) +
+            " / " +
+            String(
+              cards.length
+            ).padStart(
+              2,
+              "0"
+            );
+
+          rotationBody.classList.remove(
+            "changing",
+            "entering"
+          );
+
+          void rotationBody.offsetWidth;
+
+          rotationBody.classList.add(
+            "entering"
+          );
+
+          if (
+            resetTimer !== false
+          ) {
+            restartSlideProgress(
+              card.duration
+            );
+
+            scheduleNextCard(
+              card.duration
+            );
+          }
+        }
+
+        clearTimeout(
+          cardSwapTimer
+        );
+
+        if (
+          animate === false ||
+          !rotationBody.innerHTML
+        ) {
+          commit();
+          return;
+        }
+
+        rotationBody.classList.add(
+          "changing"
+        );
+
+        cardSwapTimer =
+          setTimeout(
+            commit,
+            230
+          );
+      }
+
+      function formatCountdown(ms) {
+        var totalSeconds =
+          Math.max(
+            0,
+            Math.ceil(
+              ms / 1000
+            )
+          );
+
+        var hours =
+          Math.floor(
+            totalSeconds / 3600
+          );
+
+        var minutes =
+          Math.floor(
+            (
+              totalSeconds %
+              3600
+            ) /
+            60
+          );
+
+        var seconds =
+          totalSeconds % 60;
+
+        if (hours > 0) {
+          return (
+            String(hours)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(minutes)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(seconds)
+              .padStart(
+                2,
+                "0"
+              )
+          );
+        }
+
+        return (
+          String(
+            Math.floor(
+              totalSeconds /
+              60
+            )
+          ).padStart(
+            2,
+            "0"
+          ) +
+          ":" +
+          String(seconds)
+            .padStart(
+              2,
+              "0"
+            )
+        );
+      }
+
+      function formatStartDate(stamp) {
+        try {
+          return new Intl.DateTimeFormat(
+            "en-US",
+            {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              timeZoneName: "short"
+            }
+          ).format(
+            new Date(stamp)
+          );
+
+        } catch (error) {
+          return new Date(
+            stamp
+          ).toLocaleString();
+        }
+      }
+
+      function updateProgress(
         remaining
-      );
+      ) {
+        var configured =
+          Math.max(
+            1000,
 
-    if (
-      text !==
-      lastTimerText
-    ) {
-      lastTimerText =
-        text;
+            numberValue(
+              countdownData.durationMs ||
+              countdownData.countdownDurationMs,
+              DEFAULT_COUNTDOWN_MS
+            )
+          );
 
-      timer.textContent =
-        text;
+        var duration =
+          Math.max(
+            configured,
+            initialRemaining || 0
+          );
 
-      timer.classList.toggle(
-        "long",
-        text.length > 5
-      );
+        var elapsed =
+          Math.max(
+            0,
 
-      timer.classList.remove(
-        "tick"
-      );
+            duration -
+            Math.max(
+              0,
+              remaining
+            )
+          );
 
-      void timer.offsetWidth;
+        var ratio =
+          Math.max(
+            0,
 
-      timer.classList.add(
-        "tick"
-      );
+            Math.min(
+              1,
+              elapsed /
+              duration
+            )
+          );
 
-      setTimeout(
-        function () {
+        stage.style.setProperty(
+          "--progress",
+
+          Math.round(
+            ratio * 360
+          ) +
+          "deg"
+        );
+      }
+
+      function updateTimer() {
+        var start =
+          getStartTime();
+
+        if (!start) {
+          activeStartStamp = 0;
+          initialRemaining = 0;
+          lastTimerText = "";
+          countdownEnded = false;
+          countdownWasActive = false;
+
+          timer.textContent =
+            "--:--";
+
+          timer.classList.remove(
+            "long",
+            "tick"
+          );
+
+          schedule.textContent =
+            "Waiting for the broadcast start time.";
+
+          starting.classList.remove(
+            "active"
+          );
+
+          stage.classList.remove(
+            "final-ten"
+          );
+
+          stage.style.setProperty(
+            "--progress",
+            "0deg"
+          );
+
+          return;
+        }
+
+        var now =
+          Date.now();
+
+        var remaining =
+          start - now;
+
+        if (
+          activeStartStamp !== start
+        ) {
+          activeStartStamp =
+            start;
+
+          initialRemaining =
+            Math.max(
+              0,
+              remaining
+            );
+
+          lastTimerText = "";
+          countdownEnded = false;
+
+          countdownWasActive =
+            remaining > 0;
+
+          starting.classList.remove(
+            "active"
+          );
+        }
+
+        if (remaining > 0) {
+          countdownWasActive = true;
+        }
+
+        var text =
+          formatCountdown(
+            remaining
+          );
+
+        if (
+          text !==
+          lastTimerText
+        ) {
+          lastTimerText =
+            text;
+
+          timer.textContent =
+            text;
+
+          timer.classList.toggle(
+            "long",
+            text.length > 5
+          );
+
           timer.classList.remove(
             "tick"
           );
-        },
-        170
-      );
-    }
 
-    if (remaining > 0) {
-      schedule.innerHTML =
-        "Scheduled for <strong>" +
-        escapeHtml(
-          formatStartDate(start)
-        ) +
-        "</strong>";
-    } else {
-      schedule.textContent =
-        "The broadcast is beginning now.";
-    }
+          void timer.offsetWidth;
 
-    stage.classList.toggle(
-      "final-ten",
-      remaining > 0 &&
-      remaining <= 10000
-    );
-
-    updateProgress(
-      remaining
-    );
-
-    ensureRotation();
-
-    if (
-      remaining <= 0 &&
-      !countdownEnded &&
-      countdownWasActive
-    ) {
-      countdownEnded = true;
-
-      timer.textContent =
-        "00:00";
-
-      starting.classList.add(
-        "active"
-      );
-    }
-  }
-
-  function refresh() {
-    eventName.textContent =
-      getEventName()
-        .toUpperCase();
-
-    website.textContent =
-      getWebsite();
-
-    renderCard(
-      cardIndex,
-      false
-    );
-
-    ensureRotation();
-    updateTimer();
-  }
-
-  function showStartupError(
-    message
-  ) {
-    connection.classList.remove(
-      "online"
-    );
-
-    connectionText.textContent =
-      "FIREBASE ERROR";
-
-    timer.textContent =
-      "ERROR";
-
-    schedule.textContent =
-      message;
-
-    rotationBody.innerHTML =
-      '<div style="' +
-        'width:100%;' +
-        'min-height:110px;' +
-        'display:flex;' +
-        'flex-direction:column;' +
-        'align-items:center;' +
-        'justify-content:center;' +
-        'gap:8px;' +
-        'text-align:center;' +
-      '">' +
-
-        '<small style="' +
-          'color:#ff718a;' +
-          'font-weight:800;' +
-          'letter-spacing:.14em;' +
-          'text-transform:uppercase;' +
-        '">' +
-          'Overlay Startup Error' +
-        '</small>' +
-
-        '<strong style="' +
-          'font-size:20px;' +
-          'text-transform:uppercase;' +
-        '">' +
-          escapeHtml(message) +
-        '</strong>' +
-
-      '</div>';
-  }
-
-  function connect() {
-    var db = null;
-
-    try {
-      connectionText.textContent =
-        "CONNECTING";
-
-      /*
-       * First try the exact database object created
-       * by the working firebase.js file.
-       */
-      try {
-        db = database;
-      } catch (
-        globalDatabaseError
-      ) {
-        db = null;
-      }
-
-      /*
-       * Fall back to Firebase directly.
-       */
-      if (
-        !db &&
-        typeof firebase !==
-          "undefined" &&
-        firebase.apps &&
-        firebase.apps.length > 0
-      ) {
-        db =
-          firebase.database();
-      }
-
-      if (
-        !db ||
-        typeof db.ref !==
-          "function"
-      ) {
-        throw new Error(
-          "firebase.js did not expose a usable Realtime Database connection."
-        );
-      }
-
-      db.ref(
-        ".info/connected"
-      ).on(
-        "value",
-
-        function (snapshot) {
-          var online =
-            snapshot.val() ===
-              true;
-
-          connection.classList.toggle(
-            "online",
-            online
+          timer.classList.add(
+            "tick"
           );
 
-          connectionText.textContent =
-            online
-              ? "REALTIME CONNECTED"
-              : "RECONNECTING";
-        },
-
-        function (error) {
-          connectionText.textContent =
-            "CONNECTION ERROR";
-
-          console.error(
-            "[RG COUNTDOWN] Connection listener failed:",
-            error
+          setTimeout(
+            function () {
+              timer.classList.remove(
+                "tick"
+              );
+            },
+            170
           );
         }
-      );
 
-      db.ref(
-        "broadcastCountdown"
-      ).on(
-        "value",
-
-        function (snapshot) {
-          countdownData =
-            snapshot.val() || {};
-
-          refresh();
-        },
-
-        function (error) {
-          connectionText.textContent =
-            error &&
-            error.code ===
-              "PERMISSION_DENIED"
-              ? "COUNTDOWN READ BLOCKED"
-              : "COUNTDOWN UNAVAILABLE";
-
-          console.error(
-            "[RG COUNTDOWN] Countdown read failed:",
-            error
-          );
-        }
-      );
-
-      db.ref("site").on(
-        "value",
-
-        function (snapshot) {
-          siteData =
-            snapshot.val() || {};
-
-          refresh();
-        },
-
-        function (error) {
-          connectionText.textContent =
-            error &&
-            error.code ===
-              "PERMISSION_DENIED"
-              ? "SITE READ BLOCKED"
-              : "SITE UNAVAILABLE";
-
-          console.error(
-            "[RG COUNTDOWN] Site read failed:",
-            error
-          );
-        }
-      );
-
-      db.ref("donations").on(
-        "value",
-
-        function (snapshot) {
-          var raw =
-            snapshot.val() || {};
-
-          donationsData =
-            Object.keys(raw)
-              .map(
-                function (key) {
-                  return raw[key];
-                }
+        if (remaining > 0) {
+          schedule.innerHTML =
+            "Scheduled for <strong>" +
+            escapeHtml(
+              formatStartDate(
+                start
               )
-              .filter(Boolean);
+            ) +
+            "</strong>";
 
-          renderCard(
-            cardIndex,
-            false
-          );
-        },
+        } else {
+          schedule.textContent =
+            "The broadcast is beginning now.";
+        }
 
-        function (error) {
-          donationsData = [];
+        stage.classList.toggle(
+          "final-ten",
 
-          console.warn(
-            "[RG COUNTDOWN] Donations read failed:",
-            error
+          remaining > 0 &&
+          remaining <= 10000
+        );
+
+        updateProgress(
+          remaining
+        );
+
+        if (
+          remaining <= 0 &&
+          !countdownEnded &&
+          countdownWasActive
+        ) {
+          countdownEnded = true;
+
+          timer.textContent =
+            "00:00";
+
+          starting.classList.add(
+            "active"
           );
         }
+      }
+
+      function refresh() {
+        eventName.textContent =
+          getEventName()
+            .toUpperCase();
+
+        website.textContent =
+          getWebsite();
+
+        renderSupporterPanels();
+
+        renderCard(
+          cardIndex,
+          false,
+          false
+        );
+
+        updateTimer();
+      }
+
+      function showStartupError(
+        message
+      ) {
+        connection.classList.remove(
+          "online"
+        );
+
+        connection.classList.add(
+          "error"
+        );
+
+        connectionText.textContent =
+          "FIREBASE ERROR";
+
+        timer.textContent =
+          "ERROR";
+
+        schedule.textContent =
+          message;
+
+        rotationBody.innerHTML =
+          '<div class="support-empty">' +
+            escapeHtml(message) +
+          '</div>';
+      }
+
+      function connect() {
+        var db = null;
+
+        try {
+          connectionText.textContent =
+            "CONNECTING";
+
+          try {
+            db = database;
+
+          } catch (
+            globalDatabaseError
+          ) {
+            db = null;
+          }
+
+          if (
+            !db &&
+            typeof firebase !==
+              "undefined" &&
+            firebase.apps &&
+            firebase.apps.length > 0
+          ) {
+            db =
+              firebase.database();
+          }
+
+          if (
+            !db ||
+            typeof db.ref !==
+              "function"
+          ) {
+            throw new Error(
+              "firebase.js did not expose a usable Realtime Database connection."
+            );
+          }
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() === true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connection.classList.remove(
+                "error"
+              );
+
+              connectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                "CONNECTION ERROR";
+
+              console.error(
+                "[RG COUNTDOWN] Connection listener failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              countdownData =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            function (error) {
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "COUNTDOWN READ BLOCKED"
+                  : "COUNTDOWN UNAVAILABLE";
+
+              console.error(
+                "[RG COUNTDOWN] Countdown read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              siteData =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            function (error) {
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+
+              console.error(
+                "[RG COUNTDOWN] Site read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "donations"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              donationsData =
+                normalizeDonations(
+                  snapshot.val()
+                );
+
+              renderSupporterPanels();
+
+              renderCard(
+                cardIndex,
+                false,
+                false
+              );
+            },
+
+            function (error) {
+              donationsData = [];
+
+              renderSupporterPanels();
+
+              console.warn(
+                "[RG COUNTDOWN] Donations read failed:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          console.error(
+            "[RG COUNTDOWN] Startup failed:",
+            error
+          );
+
+          showStartupError(
+            error.message ||
+            "Countdown startup failed."
+          );
+        }
+      }
+
+      renderSupporterPanels();
+
+      renderCard(
+        0,
+        false,
+        true
       );
 
-    } catch (error) {
-      console.error(
-        "[RG COUNTDOWN] Startup failed:",
-        error
+      updateTimer();
+
+      setInterval(
+        updateTimer,
+        250
       );
 
-      showStartupError(
-        error.message ||
-        "Countdown startup failed."
-      );
-    }
-  }
-
-  /*
-   * These run immediately even before Firebase.
-   *
-   * Therefore, the panel should show TEAM 1 VS TEAM 2
-   * even if Firebase is unavailable.
-   */
-  renderCard(
-    0,
-    false
-  );
-
-  updateTimer();
-
-  setInterval(
-    updateTimer,
-    250
-  );
-
-  connect();
-
-})();
-</script>
-
+      connect();
+    })();
+  </script>
 </body>
 </html>

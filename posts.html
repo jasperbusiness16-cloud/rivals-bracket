@@ -2,14 +2,1093 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <title>Community Updates | Rivals Gauntlet</title>
+  <title>Community Feed | Rivals Gauntlet</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <link rel="stylesheet" href="style.css?v=51">
   <link rel="stylesheet" href="account.css?v=6">
+
+  <style>
+    :root {
+      --feed-bg: #09090d;
+      --feed-panel: rgba(18, 18, 27, 0.9);
+      --feed-panel-solid: #12121b;
+      --feed-panel-soft: rgba(255, 255, 255, 0.035);
+      --feed-border: rgba(255, 255, 255, 0.09);
+      --feed-border-strong: rgba(154, 124, 255, 0.32);
+      --feed-text: #f7f5ff;
+      --feed-muted: #a7a3b3;
+      --feed-dim: #777281;
+      --feed-accent: #9a7cff;
+      --feed-accent-bright: #b8a4ff;
+      --feed-accent-soft: rgba(154, 124, 255, 0.12);
+      --feed-danger: #ff5b75;
+      --feed-success: #4fd6a2;
+      --feed-warning: #ffcb6b;
+      --feed-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body.account-body {
+      min-height: 100vh;
+      color: var(--feed-text);
+      background:
+        radial-gradient(circle at 68% 0%, rgba(123, 83, 255, 0.14), transparent 32%),
+        radial-gradient(circle at 12% 24%, rgba(93, 51, 180, 0.11), transparent 28%),
+        linear-gradient(180deg, #09090e 0%, #0b0b11 45%, #08080c 100%);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .account-center-shell {
+      min-height: 100vh;
+    }
+
+    .account-main.rg-feed-main {
+      min-width: 0;
+      padding-bottom: 80px;
+    }
+
+    .rg-feed-hero {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: flex-end;
+      margin-bottom: 22px;
+      padding: 28px 30px;
+      border: 1px solid var(--feed-border);
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(154, 124, 255, 0.14), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.015)),
+        var(--feed-panel);
+      box-shadow: var(--feed-shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .rg-feed-hero::before {
+      content: "RG";
+      position: absolute;
+      right: -18px;
+      bottom: -55px;
+      color: rgba(255, 255, 255, 0.025);
+      font-size: 210px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -18px;
+      pointer-events: none;
+    }
+
+    .rg-feed-hero-copy,
+    .rg-feed-hero-actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .rg-feed-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--feed-accent-bright);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .rg-feed-eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--feed-accent);
+      box-shadow: 0 0 14px rgba(154, 124, 255, 0.7);
+    }
+
+    .rg-feed-hero h1 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 58px);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      text-transform: uppercase;
+    }
+
+    .rg-feed-hero p {
+      max-width: 680px;
+      margin: 14px 0 0;
+      color: var(--feed-muted);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .rg-feed-hero-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .rg-feed-profile-link,
+    .rg-feed-refresh {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 16px;
+      border: 1px solid var(--feed-border);
+      border-radius: 12px;
+      color: var(--feed-text);
+      background: rgba(255, 255, 255, 0.045);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .rg-feed-profile-link:hover,
+    .rg-feed-refresh:hover {
+      border-color: var(--feed-border-strong);
+      background: var(--feed-accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .rg-feed-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .rg-feed-column {
+      min-width: 0;
+      border: 1px solid var(--feed-border);
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--feed-panel);
+      box-shadow: var(--feed-shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .rg-feed-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      border-bottom: 1px solid var(--feed-border);
+      background: rgba(15, 15, 23, 0.92);
+      backdrop-filter: blur(18px);
+    }
+
+    .rg-feed-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 18px;
+    }
+
+    .rg-feed-tab {
+      position: relative;
+      min-height: 58px;
+      border: 0;
+      color: var(--feed-muted);
+      background: transparent;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+    }
+
+    .rg-feed-tab::after {
+      content: "";
+      position: absolute;
+      left: 26%;
+      right: 26%;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px 999px 0 0;
+      background: transparent;
+      transition: 0.2s ease;
+    }
+
+    .rg-feed-tab.active {
+      color: var(--feed-text);
+    }
+
+    .rg-feed-tab.active::after {
+      background: var(--feed-accent);
+      box-shadow: 0 0 18px rgba(154, 124, 255, 0.72);
+    }
+
+    .rg-feed-filter-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 13px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.045);
+    }
+
+    .rg-feed-filter-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--feed-dim);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    #postCategoryFilter,
+    #postCommentSort {
+      min-height: 38px;
+      border: 1px solid var(--feed-border);
+      border-radius: 10px;
+      outline: none;
+      color: var(--feed-text);
+      background: rgba(255, 255, 255, 0.045);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 0 36px 0 12px;
+    }
+
+    #postCategoryFilter:focus,
+    #postCommentSort:focus {
+      border-color: var(--feed-border-strong);
+    }
+
+    .rg-feed-loading,
+    .rg-feed-empty {
+      display: grid;
+      min-height: 280px;
+      place-items: center;
+      padding: 44px 24px;
+      text-align: center;
+    }
+
+    .rg-feed-empty-inner {
+      max-width: 390px;
+    }
+
+    .rg-feed-empty i,
+    .rg-feed-loading i {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--feed-accent-bright);
+      font-size: 28px;
+    }
+
+    .rg-feed-empty strong,
+    .rg-feed-loading strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .rg-feed-empty span,
+    .rg-feed-loading span {
+      color: var(--feed-muted);
+      line-height: 1.5;
+    }
+
+    .rg-post-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 13px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--feed-border);
+      transition: background 0.18s ease;
+    }
+
+    .rg-post-card:last-child {
+      border-bottom: 0;
+    }
+
+    .rg-post-card:hover {
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .rg-post-card.pinned {
+      background: linear-gradient(90deg, rgba(154, 124, 255, 0.075), transparent 58%);
+    }
+
+    .rg-post-avatar,
+    .rg-thread-avatar {
+      display: grid;
+      width: 50px;
+      height: 50px;
+      place-items: center;
+      border: 1px solid rgba(184, 164, 255, 0.48);
+      border-radius: 15px;
+      color: #fff;
+      background:
+        linear-gradient(145deg, rgba(184, 164, 255, 0.33), rgba(86, 56, 171, 0.19)),
+        #171421;
+      box-shadow: inset 0 0 18px rgba(154, 124, 255, 0.12), 0 8px 28px rgba(0, 0, 0, 0.28);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .rg-post-main {
+      min-width: 0;
+    }
+
+    .rg-post-pinned-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin: -2px 0 8px;
+      color: var(--feed-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .rg-post-head {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      min-width: 0;
+      color: var(--feed-muted);
+      font-size: 14px;
+    }
+
+    .rg-post-head strong {
+      overflow: hidden;
+      color: var(--feed-text);
+      font-size: 16px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rg-verified {
+      display: inline-grid;
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      color: #0d0c12;
+      background: var(--feed-accent-bright);
+      font-size: 9px;
+    }
+
+    .rg-post-handle,
+    .rg-post-separator,
+    .rg-post-time {
+      color: var(--feed-dim);
+      white-space: nowrap;
+    }
+
+    .rg-post-category {
+      display: inline-flex;
+      align-items: center;
+      margin: 11px 0 8px;
+      padding: 4px 8px;
+      border: 1px solid rgba(154, 124, 255, 0.22);
+      border-radius: 7px;
+      color: var(--feed-accent-bright);
+      background: rgba(154, 124, 255, 0.08);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .rg-post-title {
+      margin: 0 0 7px;
+      color: var(--feed-text);
+      font-size: clamp(19px, 2vw, 23px);
+      line-height: 1.15;
+      letter-spacing: -0.012em;
+    }
+
+    .rg-post-body {
+      margin: 0;
+      color: #dedbe6;
+      font-size: 16px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .rg-post-media {
+      display: block;
+      width: 100%;
+      max-height: 560px;
+      margin-top: 14px;
+      border: 1px solid var(--feed-border);
+      border-radius: 17px;
+      object-fit: cover;
+      background: #0a0a0f;
+    }
+
+    .rg-post-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 470px;
+      margin-top: 13px;
+    }
+
+    .rg-post-action {
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      border: 0;
+      color: var(--feed-dim);
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.18s ease;
+    }
+
+    .rg-post-action .rg-action-icon {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border-radius: 50%;
+      transition: 0.18s ease;
+    }
+
+    .rg-post-action:hover,
+    .rg-post-action.liked {
+      color: var(--feed-accent-bright);
+    }
+
+    .rg-post-action:hover .rg-action-icon,
+    .rg-post-action.liked .rg-action-icon {
+      background: var(--feed-accent-soft);
+    }
+
+    .rg-post-action.comment-action:hover {
+      color: #6fb8ff;
+    }
+
+    .rg-post-action.comment-action:hover .rg-action-icon {
+      background: rgba(87, 164, 255, 0.12);
+    }
+
+    .rg-feed-sidebar {
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .rg-side-card {
+      overflow: hidden;
+      border: 1px solid var(--feed-border);
+      border-radius: 19px;
+      background: var(--feed-panel);
+      box-shadow: var(--feed-shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .rg-side-card-header {
+      padding: 18px 18px 12px;
+    }
+
+    .rg-side-card-header span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--feed-accent-bright);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .rg-side-card-header h2 {
+      margin: 0;
+      font-size: 22px;
+      text-transform: uppercase;
+    }
+
+    .rg-side-card-body {
+      padding: 0 18px 18px;
+      color: var(--feed-muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .rg-feed-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 15px;
+    }
+
+    .rg-feed-stat {
+      padding: 12px;
+      border: 1px solid var(--feed-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.028);
+    }
+
+    .rg-feed-stat strong {
+      display: block;
+      color: var(--feed-text);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .rg-feed-stat span {
+      display: block;
+      margin-top: 5px;
+      color: var(--feed-dim);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .rg-category-list {
+      display: grid;
+      gap: 3px;
+      padding: 0 8px 10px;
+    }
+
+    .rg-category-button {
+      display: flex;
+      width: 100%;
+      min-height: 42px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--feed-muted);
+      background: transparent;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .rg-category-button:hover,
+    .rg-category-button.active {
+      color: var(--feed-text);
+      background: var(--feed-accent-soft);
+    }
+
+    .rg-category-button small {
+      color: var(--feed-dim);
+      font-size: 12px;
+    }
+
+    .rg-feed-guidelines {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rg-feed-guideline {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .rg-feed-guideline i {
+      width: 18px;
+      margin-top: 3px;
+      color: var(--feed-accent-bright);
+      text-align: center;
+    }
+
+    .rg-feed-status {
+      position: fixed;
+      left: 50%;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      z-index: 1000;
+      max-width: min(92vw, 520px);
+      margin: 0;
+      padding: 12px 16px;
+      border: 1px solid var(--feed-border);
+      border-radius: 12px;
+      color: var(--feed-text);
+      background: rgba(15, 15, 23, 0.96);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.48);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+      transition: 0.2s ease;
+    }
+
+    .rg-feed-status.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .post-discussion-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      padding: 22px;
+    }
+
+    .post-discussion-modal.show {
+      display: grid;
+      place-items: center;
+    }
+
+    .post-discussion-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(3, 3, 7, 0.76);
+      backdrop-filter: blur(8px);
+    }
+
+    .post-discussion-card {
+      position: relative;
+      z-index: 1;
+      width: min(760px, 100%);
+      max-height: min(920px, calc(100vh - 44px));
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 23px;
+      background: #111119;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, 0.68);
+    }
+
+    .post-discussion-topbar {
+      display: flex;
+      min-height: 60px;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--feed-border);
+      background: rgba(17, 17, 25, 0.94);
+    }
+
+    .post-discussion-close {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: var(--feed-text);
+      background: transparent;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .post-discussion-close:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .post-discussion-topbar h2 {
+      margin: 0;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .post-discussion-scroll {
+      max-height: calc(min(920px, 100vh - 44px) - 60px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    #selectedPostContent .rg-post-card {
+      border-bottom: 1px solid var(--feed-border);
+    }
+
+    .post-comments-section {
+      padding-bottom: 12px;
+    }
+
+    .post-comments-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--feed-border);
+    }
+
+    .post-comments-header h2 {
+      margin: 0;
+      font-size: 19px;
+      text-transform: uppercase;
+    }
+
+    .post-comments-header-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #selectedPostCommentCount {
+      color: var(--feed-muted);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .post-comment-form {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 11px;
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--feed-border);
+    }
+
+    .post-comment-composer-avatar,
+    .post-comment-avatar,
+    .post-comment-avatar-fallback {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(154, 124, 255, 0.3);
+      border-radius: 12px;
+      object-fit: cover;
+      background: #191622;
+    }
+
+    .post-comment-avatar-fallback,
+    .post-comment-composer-avatar {
+      display: grid;
+      place-items: center;
+      color: var(--feed-text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .post-comment-form-main {
+      min-width: 0;
+    }
+
+    .post-comment-form textarea {
+      display: block;
+      width: 100%;
+      min-height: 82px;
+      resize: vertical;
+      border: 0;
+      outline: none;
+      color: var(--feed-text);
+      background: transparent;
+      font-family: inherit;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .post-comment-form textarea::placeholder {
+      color: var(--feed-dim);
+    }
+
+    .post-comment-form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(255, 255, 255, 0.055);
+    }
+
+    #postCommentCharacterCount {
+      color: var(--feed-dim);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .post-comment-submit {
+      min-height: 38px;
+      padding: 0 17px;
+      border: 0;
+      border-radius: 999px;
+      color: #0d0b12;
+      background: linear-gradient(135deg, #b8a4ff, #8c6cf2);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(115, 78, 222, 0.28);
+    }
+
+    .post-comment-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .post-comments-disabled {
+      padding: 22px;
+      border-bottom: 1px solid var(--feed-border);
+      color: var(--feed-muted);
+      text-align: center;
+    }
+
+    .post-comment-card {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 11px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--feed-border);
+    }
+
+    .post-comment-card:last-child {
+      border-bottom: 0;
+    }
+
+    .post-comment-main {
+      min-width: 0;
+    }
+
+    .post-comment-name-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .post-comment-name-row strong {
+      color: var(--feed-text);
+      font-size: 15px;
+    }
+
+    .post-comment-name-row small {
+      color: var(--feed-dim);
+      font-size: 12px;
+    }
+
+    .post-comment-main p {
+      margin: 5px 0 7px;
+      color: #dcd9e4;
+      font-size: 15px;
+      line-height: 1.48;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .post-comment-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .post-comment-like,
+    .post-comment-delete {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--feed-dim);
+      background: transparent;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .post-comment-like:hover,
+    .post-comment-like.liked {
+      color: var(--feed-accent-bright);
+      background: var(--feed-accent-soft);
+    }
+
+    .post-comment-delete:hover {
+      color: var(--feed-danger);
+      background: rgba(255, 91, 117, 0.09);
+    }
+
+    .comment-menu {
+      align-self: start;
+    }
+
+    .rg-comment-empty {
+      padding: 34px 20px;
+      color: var(--feed-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 1120px) {
+      .rg-feed-shell {
+        grid-template-columns: minmax(0, 1fr) 270px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .rg-feed-hero {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .rg-feed-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .rg-feed-sidebar {
+        position: static;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .rg-feed-sidebar .rg-side-card:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .account-main.rg-feed-main {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .rg-feed-hero {
+        margin-bottom: 12px;
+        padding: 22px 18px;
+        border-radius: 17px;
+      }
+
+      .rg-feed-hero::before {
+        right: -12px;
+        bottom: -35px;
+        font-size: 125px;
+      }
+
+      .rg-feed-hero p {
+        font-size: 15px;
+      }
+
+      .rg-feed-hero-actions {
+        width: 100%;
+      }
+
+      .rg-feed-profile-link,
+      .rg-feed-refresh {
+        flex: 1;
+      }
+
+      .rg-feed-column,
+      .rg-side-card {
+        border-radius: 16px;
+      }
+
+      .rg-feed-filter-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      #postCategoryFilter {
+        width: 100%;
+      }
+
+      .rg-post-card {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 10px;
+        padding: 16px 13px 12px;
+      }
+
+      .rg-post-avatar,
+      .rg-thread-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        font-size: 15px;
+      }
+
+      .rg-post-handle {
+        display: none;
+      }
+
+      .rg-post-title {
+        font-size: 19px;
+      }
+
+      .rg-post-body {
+        font-size: 15px;
+      }
+
+      .rg-post-actions {
+        max-width: none;
+      }
+
+      .rg-post-action {
+        justify-content: center;
+      }
+
+      .rg-feed-sidebar {
+        grid-template-columns: 1fr;
+      }
+
+      .rg-feed-sidebar .rg-side-card:last-child {
+        grid-column: auto;
+      }
+
+      .post-discussion-modal {
+        padding: 0;
+      }
+
+      .post-discussion-card {
+        width: 100%;
+        height: 100dvh;
+        max-height: none;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .post-discussion-scroll {
+        max-height: calc(100dvh - 60px);
+      }
+
+      .post-comments-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .post-comments-header-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .post-comment-card {
+        grid-template-columns: 38px minmax(0, 1fr);
+        padding: 14px 13px;
+      }
+
+      .comment-menu {
+        grid-column: 2;
+        margin-left: -8px;
+      }
+
+      .post-comment-avatar,
+      .post-comment-avatar-fallback,
+      .post-comment-composer-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+      }
+
+      .post-comment-form {
+        grid-template-columns: 38px minmax(0, 1fr);
+        padding: 14px 13px;
+      }
+    }
+  </style>
 </head>
 
 <body class="account-body">
@@ -18,7 +1097,6 @@
   <div class="account-center">
 
     <aside class="account-sidebar">
-
       <div class="account-brand">
         <p>RIVALS GAUNTLET</p>
         <h2>COMMUNITY FEED</h2>
@@ -32,168 +1110,200 @@
         <a class="active" href="posts.html">Updates</a>
         <a href="settings.html">Settings</a>
 
-        <button onclick="logoutUser()">
+        <button type="button" onclick="logoutUser()">
           Sign Out
         </button>
       </nav>
-
     </aside>
 
-    <main class="account-main">
-
-      <div class="account-topbar">
-
-        <div>
-          <p>OFFICIAL RIVALS GAUNTLET POSTS</p>
-
-          <h1>Community Updates</h1>
-
-          <span>
-            Tournament announcements, registrations, results, shop updates, and community discussion.
-          </span>
+    <main class="account-main rg-feed-main">
+      <section class="rg-feed-hero">
+        <div class="rg-feed-hero-copy">
+          <span class="rg-feed-eyebrow">Official Community Network</span>
+          <h1>Rivals Feed</h1>
+          <p>
+            Tournament announcements, registration alerts, results, shop rotations and official community discussion—all in one live feed.
+          </p>
         </div>
 
-        <div class="dashboard-top-actions">
-
+        <div class="rg-feed-hero-actions">
           <div id="postsNotificationMount"></div>
 
-          <a
-            id="postsPublicProfileBtn"
-            class="account-secondary"
-            href="#"
-          >
-            View Public Profile
+          <button id="postsRefreshButton" class="rg-feed-refresh" type="button">
+            <i class="fa-solid fa-rotate"></i>
+            Refresh
+          </button>
+
+          <a id="postsPublicProfileBtn" class="rg-feed-profile-link" href="#">
+            <i class="fa-regular fa-user"></i>
+            My Profile
           </a>
-
         </div>
+      </section>
 
-      </div>
+      <section class="rg-feed-shell">
+        <div class="rg-feed-column">
+          <div class="rg-feed-toolbar">
+            <div class="rg-feed-tabs" role="tablist" aria-label="Feed view">
+              <button class="rg-feed-tab active" type="button" data-feed-tab="latest">
+                Latest
+              </button>
 
-      <section class="official-posts-layout">
-
-        <div class="official-posts-feed">
-
-          <div class="official-posts-feed-header">
-            <div>
-              <span>OFFICIAL FEED</span>
-              <h2>Latest Posts</h2>
+              <button class="rg-feed-tab" type="button" data-feed-tab="pinned">
+                Pinned
+              </button>
             </div>
 
-            <select id="postCategoryFilter">
-              <option value="all">All Updates</option>
-              <option value="announcement">Announcements</option>
-              <option value="tournament">Tournaments</option>
-              <option value="registration">Registration</option>
-              <option value="results">Results</option>
-              <option value="shop">Shop Updates</option>
-              <option value="prediction">Predictions</option>
-              <option value="community">Community</option>
-              <option value="prize_pool">Prize Pool</option>
-            </select>
+            <div class="rg-feed-filter-row">
+              <label for="postCategoryFilter">
+                <i class="fa-solid fa-filter"></i>
+                Filter Feed
+              </label>
+
+              <select id="postCategoryFilter">
+                <option value="all">All Updates</option>
+                <option value="announcement">Announcements</option>
+                <option value="tournament">Tournaments</option>
+                <option value="registration">Registration</option>
+                <option value="results">Results</option>
+                <option value="shop">Shop Updates</option>
+                <option value="prediction">Predictions</option>
+                <option value="community">Community</option>
+                <option value="prize_pool">Prize Pool</option>
+              </select>
+            </div>
           </div>
 
           <div id="officialPostsList">
-            <div class="friends-empty">
-              Loading official posts...
+            <div class="rg-feed-loading">
+              <div>
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <strong>Loading the Rivals Feed</strong>
+                <span>Connecting to official posts and community activity.</span>
+              </div>
             </div>
           </div>
-
         </div>
 
-        <aside class="official-posts-sidebar">
+        <aside class="rg-feed-sidebar">
+          <section class="rg-side-card">
+            <div class="rg-side-card-header">
+              <span>Feed Overview</span>
+              <h2>Official Network</h2>
+            </div>
 
-          <section class="official-posts-info-card">
-            <span>ABOUT THIS FEED</span>
+            <div class="rg-side-card-body">
+              Every feed post is published by Rivals Gauntlet staff. Signed-in players can like posts, join discussions and like community comments.
 
-            <h2>Official Discussions</h2>
+              <div class="rg-feed-stat-grid">
+                <div class="rg-feed-stat">
+                  <strong id="feedPostCount">0</strong>
+                  <span>Posts</span>
+                </div>
 
-            <p>
-              Rivals Gauntlet staff publish every post. Signed-in players may comment underneath official updates.
-            </p>
+                <div class="rg-feed-stat">
+                  <strong id="feedCommentCount">0</strong>
+                  <span>Comments</span>
+                </div>
+              </div>
+            </div>
           </section>
 
-          <section class="official-posts-info-card">
-            <span>COMING SOON</span>
+          <section class="rg-side-card">
+            <div class="rg-side-card-header">
+              <span>Discover</span>
+              <h2>Categories</h2>
+            </div>
 
-            <h2>Community Features</h2>
-
-            <p>
-              Pinned posts, comment replies, reactions, polls, and event reminders can be added later.
-            </p>
+            <div id="feedCategoryList" class="rg-category-list"></div>
           </section>
 
+          <section class="rg-side-card">
+            <div class="rg-side-card-header">
+              <span>Community Standards</span>
+              <h2>Join the Discussion</h2>
+            </div>
+
+            <div class="rg-side-card-body rg-feed-guidelines">
+              <div class="rg-feed-guideline">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Keep discussion competitive, respectful and relevant.</span>
+              </div>
+
+              <div class="rg-feed-guideline">
+                <i class="fa-solid fa-heart"></i>
+                <span>One like per player. Tap again to remove it.</span>
+              </div>
+
+              <div class="rg-feed-guideline">
+                <i class="fa-solid fa-link"></i>
+                <span>Share buttons copy a direct link to the full conversation.</span>
+              </div>
+            </div>
+          </section>
         </aside>
-
       </section>
 
-      <p id="postsStatus" class="account-status"></p>
-
+      <p id="postsStatus" class="rg-feed-status" role="status" aria-live="polite"></p>
     </main>
 
   </div>
 </div>
 
-
-<div
-  id="postDiscussionModal"
-  class="post-discussion-modal"
-  aria-hidden="true"
->
+<div id="postDiscussionModal" class="post-discussion-modal" aria-hidden="true">
   <div class="post-discussion-backdrop"></div>
 
-  <div class="post-discussion-card">
+  <section class="post-discussion-card" role="dialog" aria-modal="true" aria-labelledby="postDiscussionTitle">
+    <header class="post-discussion-topbar">
+      <button id="postDiscussionClose" class="post-discussion-close" type="button" aria-label="Close discussion">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
 
-    <button
-      id="postDiscussionClose"
-      class="post-discussion-close"
-      type="button"
-      aria-label="Close discussion"
-    >
-      ×
-    </button>
+      <h2 id="postDiscussionTitle">Conversation</h2>
+    </header>
 
-    <article id="selectedPostContent"></article>
+    <div class="post-discussion-scroll">
+      <article id="selectedPostContent"></article>
 
-    <section class="post-comments-section">
+      <section class="post-comments-section">
+        <div class="post-comments-header">
+          <h2>Discussion</h2>
 
-      <div class="post-comments-header">
-        <h2>Discussion</h2>
-        <span id="selectedPostCommentCount">0 Comments</span>
-      </div>
+          <div class="post-comments-header-controls">
+            <span id="selectedPostCommentCount">0 Comments</span>
 
-      <form id="postCommentForm" class="post-comment-form">
-
-        <textarea
-          id="postCommentInput"
-          maxlength="500"
-          placeholder="Join the discussion..."
-        ></textarea>
-
-        <div class="post-comment-form-footer">
-          <span id="postCommentCharacterCount">0/500</span>
-
-          <button
-            id="postCommentSubmit"
-            class="account-primary"
-            type="submit"
-          >
-            Post Comment
-          </button>
+            <select id="postCommentSort" aria-label="Sort comments">
+              <option value="top">Top</option>
+              <option value="latest">Latest</option>
+            </select>
+          </div>
         </div>
 
-      </form>
+        <div id="postCommentComposerMount">
+          <form id="postCommentForm" class="post-comment-form">
+            <div id="postCommentComposerAvatar" class="post-comment-composer-avatar">RG</div>
 
-      <div id="postCommentsList">
-        <div class="friends-empty">
-          Select a post to view comments.
+            <div class="post-comment-form-main">
+              <textarea id="postCommentInput" maxlength="500" placeholder="Join the discussion..."></textarea>
+
+              <div class="post-comment-form-footer">
+                <span id="postCommentCharacterCount">0/500</span>
+
+                <button id="postCommentSubmit" class="post-comment-submit" type="submit">
+                  Reply
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-      </div>
 
-    </section>
-
-  </div>
+        <div id="postCommentsList">
+          <div class="rg-comment-empty">Select a post to view its discussion.</div>
+        </div>
+      </section>
+    </div>
+  </section>
 </div>
-
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -205,545 +1315,822 @@
 <script src="posts.js?v=1"></script>
 
 <script>
-let currentUser = null;
-let currentPlayer = null;
+  "use strict";
 
-let officialPosts = [];
-let selectedPost = null;
-let selectedPostComments = [];
-let stopSelectedPostComments = null;
+  let currentUser = null;
+  let currentPlayer = null;
+  let officialPosts = [];
+  let selectedPost = null;
+  let selectedPostComments = [];
+  let stopSelectedPostComments = null;
+  let stopSelectedCommentLikes = null;
+  let stopPostLikes = null;
+  let activeFeedTab = "latest";
+  let statusTimer = null;
 
-const postsStatus =
-  document.getElementById("postsStatus");
+  const postLikeCounts = {};
+  const likedPostIds = new Set();
+  const selectedCommentLikeCounts = {};
+  const likedCommentIds = new Set();
 
-function setPostsStatus(
-  message,
-  color = "#c9d1d9"
-) {
-  postsStatus.innerText = message || "";
-  postsStatus.style.color = color;
-}
+  const postsStatus = document.getElementById("postsStatus");
 
-function escapePostHtml(value) {
-  return String(value || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+  const categoryMeta = [
+    ["all", "All Updates"],
+    ["announcement", "Announcements"],
+    ["tournament", "Tournaments"],
+    ["registration", "Registration"],
+    ["results", "Results"],
+    ["shop", "Shop Updates"],
+    ["prediction", "Predictions"],
+    ["community", "Community"],
+    ["prize_pool", "Prize Pool"]
+  ];
 
-function renderOfficialPosts() {
-  const container = document.getElementById(
-    "officialPostsList"
-  );
+  function setPostsStatus(message, color = "#f7f5ff") {
+    clearTimeout(statusTimer);
 
-  const filter = document.getElementById(
-    "postCategoryFilter"
-  )?.value || "all";
+    postsStatus.textContent = message || "";
+    postsStatus.style.color = color;
+    postsStatus.classList.toggle("show", Boolean(message));
 
-  if (!container) return;
-
-  const visiblePosts = officialPosts.filter(post =>
-    filter === "all" || post.category === filter
-  );
-
-  if (!visiblePosts.length) {
-    container.innerHTML = `
-      <div class="friends-empty">
-        No official posts are available in this category yet.
-      </div>
-    `;
-    return;
+    if (message) {
+      statusTimer = setTimeout(() => {
+        postsStatus.classList.remove("show");
+      }, 3200);
+    }
   }
 
-  container.innerHTML = visiblePosts.map(post => `
-    <article
-      class="official-post-card ${post.pinned ? "pinned" : ""}"
-    >
-      <div class="official-post-meta">
-        <span class="official-post-category">
-          ${escapePostHtml(
-            RGPosts.getPostCategoryLabel(post.category)
-          )}
-        </span>
-
-        <time class="official-post-date">
-          ${escapePostHtml(
-            RGPosts.formatPostDate(post.createdAt)
-          )}
-        </time>
-      </div>
-
-      <h3>${escapePostHtml(post.title || "Official Update")}</h3>
-
-      <p>${escapePostHtml(post.body || "")}</p>
-
-      ${
-        post.image
-          ? `
-            <img
-              class="official-post-image"
-              src="${escapePostHtml(post.image)}"
-              alt="${escapePostHtml(post.title || "Official Post")}"
-            >
-          `
-          : ""
-      }
-
-      <div class="official-post-footer">
-        <span class="official-post-author">
-          ${post.pinned ? "📌 Pinned • " : ""}
-          Posted by ${escapePostHtml(
-            post.authorName || "Rivals Gauntlet"
-          )}
-        </span>
-
-        <button
-          class="official-post-discussion-button"
-          type="button"
-          onclick="openPostDiscussion('${post.id}')"
-        >
-          💬 ${Number(post.commentCount || 0)} Comments
-        </button>
-      </div>
-    </article>
-  `).join("");
-}
-
-document
-  .getElementById("postCategoryFilter")
-  ?.addEventListener(
-    "change",
-    renderOfficialPosts
-  );
-
-document
-  .getElementById("postDiscussionClose")
-  ?.addEventListener(
-    "click",
-    closePostDiscussion
-  );
-
-document
-  .querySelector(".post-discussion-backdrop")
-  ?.addEventListener(
-    "click",
-    closePostDiscussion
-  );
-
-document
-  .getElementById("postCommentForm")
-  ?.addEventListener(
-    "submit",
-    handlePostCommentSubmit
-  );
-
-document
-  .getElementById("postCommentInput")
-  ?.addEventListener("input", event => {
-    document.getElementById(
-      "postCommentCharacterCount"
-    ).innerText =
-      `${event.target.value.length}/500`;
-  });
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closePostDiscussion();
+  function escapePostHtml(value) {
+    return String(value == null ? "" : value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
-});
 
-function getCommentInitials(name) {
-  return String(name || "RG")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0])
-    .join("")
-    .toUpperCase();
-}
+  function pluralize(count, singular, plural = `${singular}s`) {
+    return `${Number(count || 0).toLocaleString()} ${Number(count || 0) === 1 ? singular : plural}`;
+  }
 
-function getCommentAvatarHtml(comment) {
-  if (comment.profileImage) {
+  function formatRelativeTime(timestamp) {
+    const time = Number(timestamp || 0);
+    if (!time) return "now";
+
+    const difference = Date.now() - time;
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+
+    if (difference < minute) return "now";
+    if (difference < hour) return `${Math.floor(difference / minute)}m`;
+    if (difference < day) return `${Math.floor(difference / hour)}h`;
+    if (difference < 7 * day) return `${Math.floor(difference / day)}d`;
+
+    return RGPosts.formatPostDate(time);
+  }
+
+  function getVisiblePosts() {
+    const filter = document.getElementById("postCategoryFilter")?.value || "all";
+
+    return officialPosts
+      .filter(post => post.published !== false)
+      .filter(post => filter === "all" || post.category === filter)
+      .filter(post => activeFeedTab !== "pinned" || post.pinned)
+      .sort((a, b) => {
+        if (activeFeedTab === "latest" && Boolean(a.pinned) !== Boolean(b.pinned)) {
+          return a.pinned ? -1 : 1;
+        }
+
+        return Number(b.createdAt || 0) - Number(a.createdAt || 0);
+      });
+  }
+
+  function postCardMarkup(post, threadMode = false) {
+    const likeCount = Number(postLikeCounts[post.id] || 0);
+    const liked = likedPostIds.has(post.id);
+    const commentCount = threadMode
+      ? selectedPostComments.length
+      : Number(post.commentCount || 0);
+
     return `
-      <img
-        class="post-comment-avatar"
-        src="${escapePostHtml(comment.profileImage)}"
-        alt="${escapePostHtml(comment.displayName || "Player")}"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-      >
+      <article class="rg-post-card ${post.pinned ? "pinned" : ""}" data-post-id="${escapePostHtml(post.id)}">
+        <div class="rg-post-avatar" aria-hidden="true">RG</div>
 
-      <div
-        class="post-comment-avatar-fallback"
-        style="display:none;"
-      >
-        ${getCommentInitials(comment.displayName)}
-      </div>
+        <div class="rg-post-main">
+          ${post.pinned ? `
+            <div class="rg-post-pinned-label">
+              <i class="fa-solid fa-thumbtack"></i>
+              Pinned by Rivals Gauntlet
+            </div>
+          ` : ""}
+
+          <div class="rg-post-head">
+            <strong>${escapePostHtml(post.authorName || "Rivals Gauntlet")}</strong>
+            <span class="rg-verified" title="Official Rivals Gauntlet account">
+              <i class="fa-solid fa-check"></i>
+            </span>
+            <span class="rg-post-handle">@RivalsGauntlet</span>
+            <span class="rg-post-separator">·</span>
+            <time class="rg-post-time" title="${escapePostHtml(RGPosts.formatPostDate(post.createdAt))}">
+              ${escapePostHtml(formatRelativeTime(post.createdAt))}
+            </time>
+          </div>
+
+          <span class="rg-post-category">
+            ${escapePostHtml(RGPosts.getPostCategoryLabel(post.category))}
+          </span>
+
+          <h2 class="rg-post-title">${escapePostHtml(post.title || "Official Update")}</h2>
+          <p class="rg-post-body">${escapePostHtml(post.body || "")}</p>
+
+          ${post.image ? `
+            <img
+              class="rg-post-media"
+              src="${escapePostHtml(post.image)}"
+              alt="${escapePostHtml(post.title || "Official Rivals Gauntlet post")}" 
+              loading="lazy"
+            >
+          ` : ""}
+
+          <div class="rg-post-actions">
+            <button
+              class="rg-post-action comment-action"
+              type="button"
+              data-open-post="${escapePostHtml(post.id)}"
+              aria-label="Open discussion"
+            >
+              <span class="rg-action-icon"><i class="fa-regular fa-comment"></i></span>
+              <span>${Number(commentCount || 0).toLocaleString()}</span>
+            </button>
+
+            <button
+              class="rg-post-action ${liked ? "liked" : ""}"
+              type="button"
+              data-like-post="${escapePostHtml(post.id)}"
+              aria-label="${liked ? "Unlike" : "Like"} this post"
+              aria-pressed="${liked}"
+            >
+              <span class="rg-action-icon"><i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i></span>
+              <span>${likeCount.toLocaleString()}</span>
+            </button>
+
+            <button
+              class="rg-post-action"
+              type="button"
+              data-share-post="${escapePostHtml(post.id)}"
+              aria-label="Share this post"
+            >
+              <span class="rg-action-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></span>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+      </article>
     `;
   }
 
-  return `
-    <div class="post-comment-avatar-fallback">
-      ${getCommentInitials(comment.displayName)}
-    </div>
-  `;
-}
+  function renderOfficialPosts() {
+    const container = document.getElementById("officialPostsList");
+    if (!container) return;
 
-function renderSelectedPost() {
-  const container = document.getElementById(
-    "selectedPostContent"
-  );
+    const visiblePosts = getVisiblePosts();
 
-  if (!container || !selectedPost) return;
-
-  container.innerHTML = `
-    <div class="official-post-meta">
-      <span class="official-post-category">
-        ${escapePostHtml(
-          RGPosts.getPostCategoryLabel(
-            selectedPost.category
-          )
-        )}
-      </span>
-
-      <time class="official-post-date">
-        ${escapePostHtml(
-          RGPosts.formatPostDate(
-            selectedPost.createdAt
-          )
-        )}
-      </time>
-    </div>
-
-    <h2>
-      ${escapePostHtml(
-        selectedPost.title || "Official Update"
-      )}
-    </h2>
-
-    <p>
-      ${escapePostHtml(selectedPost.body || "")}
-    </p>
-
-    ${
-      selectedPost.image
-        ? `
-          <img
-            class="official-post-image"
-            src="${escapePostHtml(selectedPost.image)}"
-            alt="${escapePostHtml(
-              selectedPost.title || "Official Post"
-            )}"
-          >
-        `
-        : ""
+    if (!visiblePosts.length) {
+      container.innerHTML = `
+        <div class="rg-feed-empty">
+          <div class="rg-feed-empty-inner">
+            <i class="fa-regular fa-message"></i>
+            <strong>No posts found</strong>
+            <span>There are no official updates in this feed view yet.</span>
+          </div>
+        </div>
+      `;
+      updateFeedSidebar();
+      return;
     }
 
-    <div class="official-post-footer">
-      <span class="official-post-author">
-        Posted by ${escapePostHtml(
-          selectedPost.authorName ||
-          "Rivals Gauntlet"
-        )}
-      </span>
-    </div>
-  `;
-}
-
-function renderPostComments() {
-  const container = document.getElementById(
-    "postCommentsList"
-  );
-
-  const count = document.getElementById(
-    "selectedPostCommentCount"
-  );
-
-  if (!container || !count) return;
-
-  const commentCount =
-    selectedPostComments.length;
-
-  count.innerText =
-    `${commentCount} ${
-      commentCount === 1
-        ? "Comment"
-        : "Comments"
-    }`;
-
-  if (!selectedPostComments.length) {
-    container.innerHTML = `
-      <div class="friends-empty">
-        No comments yet. Be the first to join the discussion.
-      </div>
-    `;
-    return;
+    container.innerHTML = visiblePosts.map(post => postCardMarkup(post)).join("");
+    updateFeedSidebar();
   }
 
-  container.innerHTML = selectedPostComments
-    .map(comment => `
-      <article class="post-comment-card">
+  function updateFeedSidebar() {
+    const publishedPosts = officialPosts.filter(post => post.published !== false);
+    const commentTotal = publishedPosts.reduce(
+      (total, post) => total + Number(post.commentCount || 0),
+      0
+    );
 
-        ${getCommentAvatarHtml(comment)}
+    document.getElementById("feedPostCount").textContent = publishedPosts.length.toLocaleString();
+    document.getElementById("feedCommentCount").textContent = commentTotal.toLocaleString();
 
-        <div class="post-comment-main">
-          <strong>
-            ${escapePostHtml(
-              comment.displayName || "Player"
-            )}
-          </strong>
+    const selectedCategory = document.getElementById("postCategoryFilter")?.value || "all";
+    const categoryContainer = document.getElementById("feedCategoryList");
 
-          <small>
-            ${
-              comment.rgId
-                ? `${escapePostHtml(comment.rgId)} • `
-                : ""
-            }
-            ${escapePostHtml(
-              RGPosts.formatPostDate(
-                comment.createdAt
-              )
-            )}
-          </small>
+    if (!categoryContainer) return;
 
-          <p>
-            ${escapePostHtml(comment.message || "")}
-          </p>
+    categoryContainer.innerHTML = categoryMeta.map(([key, label]) => {
+      const count = key === "all"
+        ? publishedPosts.length
+        : publishedPosts.filter(post => post.category === key).length;
+
+      return `
+        <button
+          class="rg-category-button ${selectedCategory === key ? "active" : ""}"
+          type="button"
+          data-category-filter="${escapePostHtml(key)}"
+        >
+          <span>${escapePostHtml(label)}</span>
+          <small>${count.toLocaleString()}</small>
+        </button>
+      `;
+    }).join("");
+  }
+
+  function renderFeedTabs() {
+    document.querySelectorAll("[data-feed-tab]").forEach(button => {
+      button.classList.toggle("active", button.dataset.feedTab === activeFeedTab);
+    });
+  }
+
+  function getCommentInitials(name) {
+    return String(name || "RG")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0])
+      .join("")
+      .toUpperCase();
+  }
+
+  function getCommentAvatarHtml(comment) {
+    if (comment.profileImage) {
+      return `
+        <div>
+          <img
+            class="post-comment-avatar"
+            src="${escapePostHtml(comment.profileImage)}"
+            alt="${escapePostHtml(comment.displayName || "Player")}" 
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+          >
+          <div class="post-comment-avatar-fallback" style="display:none;">
+            ${escapePostHtml(getCommentInitials(comment.displayName))}
+          </div>
         </div>
+      `;
+    }
 
-        ${
-          currentUser &&
-          comment.userId === currentUser.uid
-            ? `
+    return `
+      <div class="post-comment-avatar-fallback">
+        ${escapePostHtml(getCommentInitials(comment.displayName))}
+      </div>
+    `;
+  }
+
+  function renderSelectedPost() {
+    const container = document.getElementById("selectedPostContent");
+    if (!container || !selectedPost) return;
+
+    container.innerHTML = postCardMarkup(selectedPost, true);
+  }
+
+  function sortedComments() {
+    const sort = document.getElementById("postCommentSort")?.value || "top";
+
+    return [...selectedPostComments].sort((a, b) => {
+      if (sort === "top") {
+        const likeDifference = Number(selectedCommentLikeCounts[b.id] || 0) - Number(selectedCommentLikeCounts[a.id] || 0);
+        if (likeDifference !== 0) return likeDifference;
+      }
+
+      return Number(b.createdAt || 0) - Number(a.createdAt || 0);
+    });
+  }
+
+  function renderPostComments() {
+    const container = document.getElementById("postCommentsList");
+    const count = document.getElementById("selectedPostCommentCount");
+
+    if (!container || !count) return;
+
+    const commentCount = selectedPostComments.length;
+    count.textContent = pluralize(commentCount, "Comment");
+
+    if (!commentCount) {
+      container.innerHTML = `
+        <div class="rg-comment-empty">
+          No comments yet. Be the first player to join this discussion.
+        </div>
+      `;
+      renderSelectedPost();
+      return;
+    }
+
+    container.innerHTML = sortedComments().map(comment => {
+      const likeCount = Number(selectedCommentLikeCounts[comment.id] || 0);
+      const liked = likedCommentIds.has(comment.id);
+      const ownComment = currentUser && comment.userId === currentUser.uid;
+
+      return `
+        <article class="post-comment-card" data-comment-id="${escapePostHtml(comment.id)}">
+          ${getCommentAvatarHtml(comment)}
+
+          <div class="post-comment-main">
+            <div class="post-comment-name-row">
+              <strong>${escapePostHtml(comment.displayName || "Player")}</strong>
+              <small>
+                ${comment.rgId ? `${escapePostHtml(comment.rgId)} · ` : ""}
+                ${escapePostHtml(formatRelativeTime(comment.createdAt))}
+              </small>
+            </div>
+
+            <p>${escapePostHtml(comment.message || "")}</p>
+
+            <div class="post-comment-actions">
+              <button
+                class="post-comment-like ${liked ? "liked" : ""}"
+                type="button"
+                data-like-comment="${escapePostHtml(comment.id)}"
+                aria-label="${liked ? "Unlike" : "Like"} this comment"
+                aria-pressed="${liked}"
+              >
+                <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
+                ${likeCount.toLocaleString()}
+              </button>
+            </div>
+          </div>
+
+          <div class="comment-menu">
+            ${ownComment ? `
               <button
                 class="post-comment-delete"
                 type="button"
-                onclick="handleDeleteComment('${comment.id}')"
+                data-delete-comment="${escapePostHtml(comment.id)}"
               >
+                <i class="fa-regular fa-trash-can"></i>
                 Delete
               </button>
-            `
-            : ""
-        }
+            ` : ""}
+          </div>
+        </article>
+      `;
+    }).join("");
 
-      </article>
-    `)
-    .join("");
-}
-
-function openPostDiscussion(postId) {
-  const post = officialPosts.find(
-    item => item.id === postId
-  );
-
-  if (!post) {
-    setPostsStatus(
-      "This post could not be found.",
-      "#ef4444"
-    );
-    return;
+    renderSelectedPost();
   }
 
-  selectedPost = post;
-  selectedPostComments = [];
+  function renderCommentComposer() {
+    const mount = document.getElementById("postCommentComposerMount");
+    if (!mount || !selectedPost) return;
 
-  renderSelectedPost();
-  renderPostComments();
+    if (selectedPost.commentsEnabled === false) {
+      mount.innerHTML = `
+        <div class="post-comments-disabled">
+          <i class="fa-solid fa-lock"></i>
+          Comments are disabled for this post.
+        </div>
+      `;
+      return;
+    }
 
-  const modal = document.getElementById(
-    "postDiscussionModal"
-  );
+    mount.innerHTML = `
+      <form id="postCommentForm" class="post-comment-form">
+        <div id="postCommentComposerAvatar" class="post-comment-composer-avatar">
+          ${escapePostHtml(getCommentInitials(currentPlayer?.displayName || currentUser?.displayName || "RG"))}
+        </div>
 
-  modal?.classList.add("show");
-  modal?.setAttribute("aria-hidden", "false");
+        <div class="post-comment-form-main">
+          <textarea id="postCommentInput" maxlength="500" placeholder="Join the discussion..."></textarea>
 
-  if (stopSelectedPostComments) {
-    stopSelectedPostComments();
+          <div class="post-comment-form-footer">
+            <span id="postCommentCharacterCount">0/500</span>
+
+            <button id="postCommentSubmit" class="post-comment-submit" type="submit">
+              Reply
+            </button>
+          </div>
+        </div>
+      </form>
+    `;
+
+    const avatar = document.getElementById("postCommentComposerAvatar");
+    if (avatar && currentPlayer?.profileImage) {
+      avatar.innerHTML = `
+        <img
+          class="post-comment-avatar"
+          src="${escapePostHtml(currentPlayer.profileImage)}"
+          alt="${escapePostHtml(currentPlayer.displayName || "Player")}" 
+        >
+      `;
+    }
   }
 
-  stopSelectedPostComments =
-    RGPosts.listenToComments(
-      postId,
-      comments => {
-        selectedPostComments = comments;
-        renderPostComments();
+  function listenToSelectedCommentLikes(postId) {
+    if (stopSelectedCommentLikes) {
+      stopSelectedCommentLikes();
+      stopSelectedCommentLikes = null;
+    }
+
+    Object.keys(selectedCommentLikeCounts).forEach(key => delete selectedCommentLikeCounts[key]);
+    likedCommentIds.clear();
+
+    const reference = database.ref(`postCommentLikes/${postId}`);
+
+    const handler = snapshot => {
+      Object.keys(selectedCommentLikeCounts).forEach(key => delete selectedCommentLikeCounts[key]);
+      likedCommentIds.clear();
+
+      snapshot.forEach(commentSnapshot => {
+        let count = 0;
+
+        commentSnapshot.forEach(userSnapshot => {
+          if (userSnapshot.val() === true) {
+            count += 1;
+
+            if (currentUser && userSnapshot.key === currentUser.uid) {
+              likedCommentIds.add(commentSnapshot.key);
+            }
+          }
+        });
+
+        selectedCommentLikeCounts[commentSnapshot.key] = count;
+      });
+
+      renderPostComments();
+    };
+
+    reference.on("value", handler, error => {
+      console.error("Comment likes listener failed:", error);
+    });
+
+    stopSelectedCommentLikes = () => reference.off("value", handler);
+  }
+
+  function openPostDiscussion(postId, updateHistory = true) {
+    const post = officialPosts.find(item => item.id === postId);
+
+    if (!post) {
+      setPostsStatus("This post could not be found.", "#ff6a7f");
+      return;
+    }
+
+    selectedPost = post;
+    selectedPostComments = [];
+
+    renderSelectedPost();
+    renderCommentComposer();
+    renderPostComments();
+
+    const modal = document.getElementById("postDiscussionModal");
+    modal?.classList.add("show");
+    modal?.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    if (updateHistory) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("post", postId);
+      window.history.pushState({ postId }, "", url);
+    }
+
+    if (stopSelectedPostComments) {
+      stopSelectedPostComments();
+    }
+
+    stopSelectedPostComments = RGPosts.listenToComments(postId, comments => {
+      selectedPostComments = comments;
+      renderPostComments();
+    });
+
+    listenToSelectedCommentLikes(postId);
+  }
+
+  function closePostDiscussion(updateHistory = true) {
+    const modal = document.getElementById("postDiscussionModal");
+
+    modal?.classList.remove("show");
+    modal?.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+
+    if (stopSelectedPostComments) {
+      stopSelectedPostComments();
+      stopSelectedPostComments = null;
+    }
+
+    if (stopSelectedCommentLikes) {
+      stopSelectedCommentLikes();
+      stopSelectedCommentLikes = null;
+    }
+
+    selectedPost = null;
+    selectedPostComments = [];
+    likedCommentIds.clear();
+    Object.keys(selectedCommentLikeCounts).forEach(key => delete selectedCommentLikeCounts[key]);
+
+    if (updateHistory) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("post");
+      window.history.pushState({}, "", url);
+    }
+  }
+
+  async function handlePostCommentSubmit(event) {
+    event.preventDefault();
+
+    if (!currentUser || !currentPlayer || !selectedPost) return;
+
+    const input = document.getElementById("postCommentInput");
+    const button = document.getElementById("postCommentSubmit");
+    const message = input?.value.trim() || "";
+
+    if (!message) {
+      setPostsStatus("Enter a comment before posting.", "#ffcb6b");
+      return;
+    }
+
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Posting';
+
+    try {
+      await RGPosts.addComment(selectedPost.id, currentUser, currentPlayer, message);
+      input.value = "";
+      document.getElementById("postCommentCharacterCount").textContent = "0/500";
+      setPostsStatus("Comment posted.", "#4fd6a2");
+    } catch (error) {
+      setPostsStatus(error.message || "The comment could not be posted.", "#ff6a7f");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Reply";
+    }
+  }
+
+  async function handleDeleteComment(commentId) {
+    if (!currentUser || !selectedPost || !commentId) return;
+
+    if (!window.confirm("Delete this comment?")) return;
+
+    try {
+      await RGPosts.deleteOwnComment(selectedPost.id, commentId, currentUser.uid);
+      setPostsStatus("Comment deleted.", "#ffcb6b");
+    } catch (error) {
+      setPostsStatus(error.message || "The comment could not be deleted.", "#ff6a7f");
+    }
+  }
+
+  async function togglePostLike(postId) {
+    if (!currentUser || !postId) return;
+
+    const wasLiked = likedPostIds.has(postId);
+    const oldCount = Number(postLikeCounts[postId] || 0);
+
+    if (wasLiked) {
+      likedPostIds.delete(postId);
+      postLikeCounts[postId] = Math.max(0, oldCount - 1);
+    } else {
+      likedPostIds.add(postId);
+      postLikeCounts[postId] = oldCount + 1;
+    }
+
+    renderOfficialPosts();
+    if (selectedPost?.id === postId) renderSelectedPost();
+
+    try {
+      await database.ref(`postLikes/${postId}/${currentUser.uid}`).set(wasLiked ? null : true);
+    } catch (error) {
+      if (wasLiked) {
+        likedPostIds.add(postId);
+      } else {
+        likedPostIds.delete(postId);
       }
-    );
-}
 
-function closePostDiscussion() {
-  const modal = document.getElementById(
-    "postDiscussionModal"
-  );
+      postLikeCounts[postId] = oldCount;
+      renderOfficialPosts();
+      if (selectedPost?.id === postId) renderSelectedPost();
 
-  modal?.classList.remove("show");
-  modal?.setAttribute("aria-hidden", "true");
-
-  if (stopSelectedPostComments) {
-    stopSelectedPostComments();
-    stopSelectedPostComments = null;
+      setPostsStatus(
+        error?.code === "PERMISSION_DENIED"
+          ? "Post-like permissions are not published yet."
+          : error.message || "The post like could not be saved.",
+        "#ff6a7f"
+      );
+    }
   }
 
-  selectedPost = null;
-  selectedPostComments = [];
+  async function toggleCommentLike(commentId) {
+    if (!currentUser || !selectedPost || !commentId) return;
 
-  document.getElementById(
-    "postCommentInput"
-  ).value = "";
+    const wasLiked = likedCommentIds.has(commentId);
+    const oldCount = Number(selectedCommentLikeCounts[commentId] || 0);
 
-  document.getElementById(
-    "postCommentCharacterCount"
-  ).innerText = "0/500";
-}
+    if (wasLiked) {
+      likedCommentIds.delete(commentId);
+      selectedCommentLikeCounts[commentId] = Math.max(0, oldCount - 1);
+    } else {
+      likedCommentIds.add(commentId);
+      selectedCommentLikeCounts[commentId] = oldCount + 1;
+    }
 
-function handlePostCommentSubmit(event) {
-  event.preventDefault();
+    renderPostComments();
 
-  if (
-    !currentUser ||
-    !currentPlayer ||
-    !selectedPost
-  ) {
-    return;
+    try {
+      await database
+        .ref(`postCommentLikes/${selectedPost.id}/${commentId}/${currentUser.uid}`)
+        .set(wasLiked ? null : true);
+    } catch (error) {
+      if (wasLiked) {
+        likedCommentIds.add(commentId);
+      } else {
+        likedCommentIds.delete(commentId);
+      }
+
+      selectedCommentLikeCounts[commentId] = oldCount;
+      renderPostComments();
+
+      setPostsStatus(
+        error?.code === "PERMISSION_DENIED"
+          ? "Comment-like permissions are not published yet."
+          : error.message || "The comment like could not be saved.",
+        "#ff6a7f"
+      );
+    }
   }
 
-  const input = document.getElementById(
-    "postCommentInput"
-  );
+  async function sharePost(postId) {
+    const post = officialPosts.find(item => item.id === postId);
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("post", postId);
 
-  const button = document.getElementById(
-    "postCommentSubmit"
-  );
+    const shareData = {
+      title: post?.title || "Rivals Gauntlet Update",
+      text: post?.body || "View this Rivals Gauntlet update.",
+      url: url.toString()
+    };
 
-  const message = input.value.trim();
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(url.toString());
+        setPostsStatus("Post link copied.", "#4fd6a2");
+      }
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        setPostsStatus("The post link could not be shared.", "#ff6a7f");
+      }
+    }
+  }
 
-  button.disabled = true;
-  button.innerText = "Posting...";
+  function attachPostLikesListener() {
+    if (stopPostLikes) stopPostLikes();
 
-  RGPosts.addComment(
-    selectedPost.id,
-    currentUser,
-    currentPlayer,
-    message
-  )
-  .then(() => {
-    input.value = "";
+    const reference = database.ref("postLikes");
 
-    document.getElementById(
-      "postCommentCharacterCount"
-    ).innerText = "0/500";
+    const handler = snapshot => {
+      Object.keys(postLikeCounts).forEach(key => delete postLikeCounts[key]);
+      likedPostIds.clear();
 
-    setPostsStatus(
-      "✓ Comment posted.",
-      "#22c55e"
-    );
-  })
-  .catch(error => {
-    setPostsStatus(
-      error.message,
-      "#ef4444"
-    );
-  })
-  .finally(() => {
-    button.disabled = false;
-    button.innerText = "Post Comment";
+      snapshot.forEach(postSnapshot => {
+        let count = 0;
+
+        postSnapshot.forEach(userSnapshot => {
+          if (userSnapshot.val() === true) {
+            count += 1;
+
+            if (currentUser && userSnapshot.key === currentUser.uid) {
+              likedPostIds.add(postSnapshot.key);
+            }
+          }
+        });
+
+        postLikeCounts[postSnapshot.key] = count;
+      });
+
+      renderOfficialPosts();
+      if (selectedPost) renderSelectedPost();
+    };
+
+    reference.on("value", handler, error => {
+      console.error("Post likes listener failed:", error);
+    });
+
+    stopPostLikes = () => reference.off("value", handler);
+  }
+
+  function refreshFeed() {
+    const button = document.getElementById("postsRefreshButton");
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Refreshing';
+
+    database.ref("officialPosts").once("value")
+      .then(() => setPostsStatus("Feed refreshed.", "#4fd6a2"))
+      .catch(error => setPostsStatus(error.message || "The feed could not refresh.", "#ff6a7f"))
+      .finally(() => {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-rotate"></i> Refresh';
+      });
+  }
+
+  document.addEventListener("click", event => {
+    const openButton = event.target.closest("[data-open-post]");
+    const likePostButton = event.target.closest("[data-like-post]");
+    const shareButton = event.target.closest("[data-share-post]");
+    const likeCommentButton = event.target.closest("[data-like-comment]");
+    const deleteCommentButton = event.target.closest("[data-delete-comment]");
+    const categoryButton = event.target.closest("[data-category-filter]");
+    const feedTab = event.target.closest("[data-feed-tab]");
+
+    if (openButton) openPostDiscussion(openButton.dataset.openPost);
+    if (likePostButton) togglePostLike(likePostButton.dataset.likePost);
+    if (shareButton) sharePost(shareButton.dataset.sharePost);
+    if (likeCommentButton) toggleCommentLike(likeCommentButton.dataset.likeComment);
+    if (deleteCommentButton) handleDeleteComment(deleteCommentButton.dataset.deleteComment);
+
+    if (categoryButton) {
+      document.getElementById("postCategoryFilter").value = categoryButton.dataset.categoryFilter;
+      renderOfficialPosts();
+    }
+
+    if (feedTab) {
+      activeFeedTab = feedTab.dataset.feedTab;
+      renderFeedTabs();
+      renderOfficialPosts();
+    }
   });
-}
 
-function handleDeleteComment(commentId) {
-  if (
-    !currentUser ||
-    !selectedPost ||
-    !commentId
-  ) {
-    return;
+  document.addEventListener("submit", event => {
+    if (event.target.id === "postCommentForm") {
+      handlePostCommentSubmit(event);
+    }
+  });
+
+  document.addEventListener("input", event => {
+    if (event.target.id === "postCommentInput") {
+      const count = document.getElementById("postCommentCharacterCount");
+      if (count) count.textContent = `${event.target.value.length}/500`;
+    }
+  });
+
+  document.getElementById("postCategoryFilter")?.addEventListener("change", renderOfficialPosts);
+  document.getElementById("postCommentSort")?.addEventListener("change", renderPostComments);
+  document.getElementById("postDiscussionClose")?.addEventListener("click", () => closePostDiscussion());
+  document.querySelector(".post-discussion-backdrop")?.addEventListener("click", () => closePostDiscussion());
+  document.getElementById("postsRefreshButton")?.addEventListener("click", refreshFeed);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && selectedPost) closePostDiscussion();
+  });
+
+  window.addEventListener("popstate", () => {
+    const requestedPostId = new URLSearchParams(window.location.search).get("post");
+
+    if (requestedPostId) {
+      openPostDiscussion(requestedPostId, false);
+    } else if (selectedPost) {
+      closePostDiscussion(false);
+    }
+  });
+
+  function logoutUser() {
+    auth.signOut().then(() => {
+      window.location.href = "login.html";
+    });
   }
 
-  RGPosts.deleteOwnComment(
-    selectedPost.id,
-    commentId,
-    currentUser.uid
-  )
-  .then(() => {
-    setPostsStatus(
-      "Comment deleted.",
-      "#facc15"
-    );
-  })
-  .catch(error => {
-    setPostsStatus(
-      error.message,
-      "#ef4444"
-    );
-  });
-}
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
 
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
+    currentUser = user;
 
-auth.onAuthStateChanged(user => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+    RGNotificationCenter.init(user.uid, "#postsNotificationMount");
+    document.getElementById("postsPublicProfileBtn").href = `player.html?id=${user.uid}`;
 
-  currentUser = user;
-
-  RGNotificationCenter.init(
-    user.uid,
-    "#postsNotificationMount"
-  );
-
-  document.getElementById(
-    "postsPublicProfileBtn"
-  ).href = `player.html?id=${user.uid}`;
-
-  database
-    .ref(`players/${user.uid}`)
-    .once("value")
-    .then(snapshot => {
+    database.ref(`players/${user.uid}`).on("value", snapshot => {
       currentPlayer = {
         uid: user.uid,
         ...(snapshot.val() || {})
       };
+
+      if (selectedPost) renderCommentComposer();
     });
 
-RGPosts.listenToPosts(posts => {
-  officialPosts = posts;
-  renderOfficialPosts();
+    attachPostLikesListener();
 
-  const params = new URLSearchParams(window.location.search);
-  const requestedPostId = params.get("post");
+    RGPosts.listenToPosts(posts => {
+      officialPosts = posts;
+      renderOfficialPosts();
 
-  if (
-    requestedPostId &&
-    officialPosts.some(post => post.id === requestedPostId)
-  ) {
-    openPostDiscussion(requestedPostId);
+      const requestedPostId = new URLSearchParams(window.location.search).get("post");
 
-    params.delete("post");
-
-    const cleanUrl =
-      `${window.location.pathname}${
-        params.toString()
-          ? `?${params.toString()}`
-          : ""
-      }`;
-
-    window.history.replaceState(
-      {},
-      "",
-      cleanUrl
-    );
-  }
-});
-
-});
+      if (requestedPostId && !selectedPost) {
+        openPostDiscussion(requestedPostId, false);
+      }
+    });
+  });
 </script>
 
 </body>

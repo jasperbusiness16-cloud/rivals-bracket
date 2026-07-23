@@ -915,6 +915,191 @@
       background: rgba(255, 91, 117, 0.09);
     }
 
+    .post-comment-thread {
+      border-bottom: 1px solid var(--feed-border);
+    }
+
+    .post-comment-thread:last-child {
+      border-bottom: 0;
+    }
+
+    .post-comment-thread > .post-comment-card {
+      border-bottom: 0;
+    }
+
+    .post-comment-reply-button,
+    .post-reply-like,
+    .post-reply-delete,
+    .post-reply-cancel {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--feed-dim);
+      background: transparent;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .post-comment-reply-button:hover,
+    .post-reply-like:hover,
+    .post-reply-like.liked {
+      color: var(--feed-accent-bright);
+      background: var(--feed-accent-soft);
+    }
+
+    .post-reply-delete:hover {
+      color: var(--feed-danger);
+      background: rgba(255, 91, 117, 0.09);
+    }
+
+    .post-comment-replies {
+      margin: 0 18px 0 70px;
+      border-left: 2px solid rgba(154, 124, 255, 0.16);
+    }
+
+    .post-reply-card {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 13px 12px 13px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.055);
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    .post-reply-avatar,
+    .post-reply-avatar-fallback {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(154, 124, 255, 0.25);
+      border-radius: 10px;
+      object-fit: cover;
+      background: #17141f;
+    }
+
+    .post-reply-avatar-fallback {
+      display: grid;
+      place-items: center;
+      color: var(--feed-text);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .post-reply-main {
+      min-width: 0;
+    }
+
+    .post-reply-name-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-reply-name-row strong {
+      color: var(--feed-text);
+      font-size: 14px;
+    }
+
+    .post-reply-name-row small {
+      color: var(--feed-dim);
+      font-size: 11px;
+    }
+
+    .post-reply-main p {
+      margin: 4px 0 6px;
+      color: #d9d5e1;
+      font-size: 14px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .post-reply-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .post-reply-form {
+      padding: 13px 12px 13px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(154, 124, 255, 0.035);
+    }
+
+    .post-reply-context {
+      margin-bottom: 8px;
+      color: var(--feed-dim);
+      font-size: 12px;
+    }
+
+    .post-reply-context strong {
+      color: var(--feed-accent-bright);
+    }
+
+    .post-reply-form textarea {
+      width: 100%;
+      min-height: 68px;
+      resize: vertical;
+      padding: 11px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 11px;
+      outline: none;
+      color: var(--feed-text);
+      background: rgba(7, 7, 12, 0.72);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .post-reply-form textarea:focus {
+      border-color: rgba(154, 124, 255, 0.45);
+      box-shadow: 0 0 0 3px rgba(154, 124, 255, 0.08);
+    }
+
+    .post-reply-form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 9px;
+    }
+
+    .post-reply-character-count {
+      color: var(--feed-dim);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .post-reply-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .post-reply-submit {
+      min-height: 34px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 999px;
+      color: #0d0b12;
+      background: linear-gradient(135deg, #b8a4ff, #8c6cf2);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .post-reply-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
     .comment-menu {
       align-self: start;
     }
@@ -1085,6 +1270,25 @@
       .post-comment-form {
         grid-template-columns: 38px minmax(0, 1fr);
         padding: 14px 13px;
+      }
+
+      .post-comment-replies {
+        margin: 0 10px 0 48px;
+      }
+
+      .post-reply-card {
+        grid-template-columns: 32px minmax(0, 1fr);
+        padding: 12px 10px 12px 12px;
+      }
+
+      .post-reply-card .comment-menu {
+        grid-column: 2;
+      }
+
+      .post-reply-avatar,
+      .post-reply-avatar-fallback {
+        width: 32px;
+        height: 32px;
       }
     }
   
@@ -1912,9 +2116,13 @@
   let officialPosts = [];
   let selectedPost = null;
   let selectedPostComments = [];
+  let selectedCommentReplies = {};
   let editingPostId = null;
+  let activeReplyCommentId = null;
   let stopSelectedPostComments = null;
   let stopSelectedCommentLikes = null;
+  let stopSelectedReplies = null;
+  let stopSelectedReplyLikes = null;
   let stopPostLikes = null;
   let stopPlayerListener = null;
   let activeFeedTab = "latest";
@@ -1924,6 +2132,8 @@
   const likedPostIds = new Set();
   const selectedCommentLikeCounts = {};
   const likedCommentIds = new Set();
+  const selectedReplyLikeCounts = {};
+  const likedReplyKeys = new Set();
   const postsStatus = document.getElementById("postsStatus");
 
   function isStaff() {
@@ -2174,6 +2384,132 @@
     `;
   }
 
+  function replyLikeKey(commentId, replyId) {
+    return `${commentId}/${replyId}`;
+  }
+
+  function getRepliesForComment(commentId) {
+    return [...(selectedCommentReplies[commentId] || [])]
+      .sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+  }
+
+  function getReplyAvatarHtml(reply) {
+    if (reply.profileImage) {
+      return `
+        <div>
+          <img
+            class="post-reply-avatar"
+            src="${escapePostHtml(reply.profileImage)}"
+            alt="${escapePostHtml(reply.displayName || "Player")}" 
+            onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+          >
+          <div class="post-reply-avatar-fallback" style="display:none;">
+            ${escapePostHtml(getCommentInitials(reply.displayName))}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="post-reply-avatar-fallback">
+        ${escapePostHtml(getCommentInitials(reply.displayName))}
+      </div>
+    `;
+  }
+
+  function replyCardMarkup(commentId, reply) {
+    const key = replyLikeKey(commentId, reply.id);
+    const likeCount = Number(selectedReplyLikeCounts[key] || 0);
+    const liked = likedReplyKeys.has(key);
+    const canDelete = Boolean(
+      currentUser && (reply.userId === currentUser.uid || isStaff())
+    );
+
+    return `
+      <article
+        class="post-reply-card"
+        data-comment-id="${escapePostHtml(commentId)}"
+        data-reply-id="${escapePostHtml(reply.id)}"
+      >
+        ${getReplyAvatarHtml(reply)}
+
+        <div class="post-reply-main">
+          <div class="post-reply-name-row">
+            <strong>${escapePostHtml(reply.displayName || "Player")}</strong>
+            <small>
+              ${reply.rgId ? `${escapePostHtml(reply.rgId)} · ` : ""}
+              ${escapePostHtml(formatRelativeTime(reply.createdAt))}
+            </small>
+          </div>
+
+          <p>${escapePostHtml(reply.message || "")}</p>
+
+          <div class="post-reply-actions">
+            <button
+              class="post-reply-like ${liked ? "liked" : ""}"
+              type="button"
+              data-like-reply="${escapePostHtml(reply.id)}"
+              data-reply-comment="${escapePostHtml(commentId)}"
+              aria-label="${liked ? "Unlike" : "Like"} this reply"
+              aria-pressed="${liked}"
+            >
+              <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
+              ${likeCount.toLocaleString()}
+            </button>
+          </div>
+        </div>
+
+        <div class="comment-menu">
+          ${canDelete ? `
+            <button
+              class="post-reply-delete"
+              type="button"
+              data-delete-reply="${escapePostHtml(reply.id)}"
+              data-reply-comment="${escapePostHtml(commentId)}"
+            >
+              <i class="fa-regular fa-trash-can"></i>
+              Delete
+            </button>
+          ` : ""}
+        </div>
+      </article>
+    `;
+  }
+
+  function replyComposerMarkup(comment) {
+    return `
+      <form class="post-reply-form" data-reply-form="${escapePostHtml(comment.id)}">
+        <div class="post-reply-context">
+          Replying to <strong>${escapePostHtml(comment.displayName || "Player")}</strong>
+        </div>
+
+        <textarea
+          maxlength="500"
+          data-reply-input
+          placeholder="Write a reply..."
+        ></textarea>
+
+        <div class="post-reply-form-footer">
+          <span class="post-reply-character-count" data-reply-count>0/500</span>
+
+          <div class="post-reply-form-actions">
+            <button
+              class="post-reply-cancel"
+              type="button"
+              data-cancel-reply
+            >
+              Cancel
+            </button>
+
+            <button class="post-reply-submit" type="submit">
+              Reply
+            </button>
+          </div>
+        </div>
+      </form>
+    `;
+  }
+
   function renderSelectedPost() {
     const container = document.getElementById("selectedPostContent");
     if (!container || !selectedPost) return;
@@ -2201,7 +2537,12 @@
     if (!container || !count) return;
 
     const commentCount = selectedPostComments.length;
-    count.textContent = pluralize(commentCount, "Comment");
+    const replyCount = Object.values(selectedCommentReplies)
+      .reduce((total, replies) => total + replies.length, 0);
+
+    count.textContent = replyCount
+      ? `${pluralize(commentCount, "Comment")} · ${pluralize(replyCount, "Reply", "Replies")}`
+      : pluralize(commentCount, "Comment");
 
     if (!commentCount) {
       container.innerHTML = `
@@ -2216,55 +2557,83 @@
     container.innerHTML = sortedComments().map(comment => {
       const likeCount = Number(selectedCommentLikeCounts[comment.id] || 0);
       const liked = likedCommentIds.has(comment.id);
+      const replies = getRepliesForComment(comment.id);
       const ownComment = currentUser && comment.userId === currentUser.uid;
       const canDelete = ownComment || isStaff();
+      const replyComposerOpen = activeReplyCommentId === comment.id;
 
       return `
-        <article class="post-comment-card" data-comment-id="${escapePostHtml(comment.id)}">
-          ${getCommentAvatarHtml(comment)}
+        <section class="post-comment-thread" data-comment-thread="${escapePostHtml(comment.id)}">
+          <article class="post-comment-card" data-comment-id="${escapePostHtml(comment.id)}">
+            ${getCommentAvatarHtml(comment)}
 
-          <div class="post-comment-main">
-            <div class="post-comment-name-row">
-              <strong>${escapePostHtml(comment.displayName || "Player")}</strong>
-              <small>
-                ${comment.rgId ? `${escapePostHtml(comment.rgId)} · ` : ""}
-                ${escapePostHtml(formatRelativeTime(comment.createdAt))}
-              </small>
+            <div class="post-comment-main">
+              <div class="post-comment-name-row">
+                <strong>${escapePostHtml(comment.displayName || "Player")}</strong>
+                <small>
+                  ${comment.rgId ? `${escapePostHtml(comment.rgId)} · ` : ""}
+                  ${escapePostHtml(formatRelativeTime(comment.createdAt))}
+                </small>
+              </div>
+
+              <p>${escapePostHtml(comment.message || "")}</p>
+
+              <div class="post-comment-actions">
+                <button
+                  class="post-comment-like ${liked ? "liked" : ""}"
+                  type="button"
+                  data-like-comment="${escapePostHtml(comment.id)}"
+                  aria-label="${liked ? "Unlike" : "Like"} this comment"
+                  aria-pressed="${liked}"
+                >
+                  <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
+                  ${likeCount.toLocaleString()}
+                </button>
+
+                <button
+                  class="post-comment-reply-button"
+                  type="button"
+                  data-reply-comment="${escapePostHtml(comment.id)}"
+                >
+                  <i class="fa-regular fa-comment-dots"></i>
+                  ${replies.length ? pluralize(replies.length, "Reply", "Replies") : "Reply"}
+                </button>
+              </div>
             </div>
 
-            <p>${escapePostHtml(comment.message || "")}</p>
-
-            <div class="post-comment-actions">
-              <button
-                class="post-comment-like ${liked ? "liked" : ""}"
-                type="button"
-                data-like-comment="${escapePostHtml(comment.id)}"
-                aria-label="${liked ? "Unlike" : "Like"} this comment"
-                aria-pressed="${liked}"
-              >
-                <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
-                ${likeCount.toLocaleString()}
-              </button>
+            <div class="comment-menu">
+              ${canDelete ? `
+                <button
+                  class="post-comment-delete"
+                  type="button"
+                  data-delete-comment="${escapePostHtml(comment.id)}"
+                >
+                  <i class="fa-regular fa-trash-can"></i>
+                  Delete
+                </button>
+              ` : ""}
             </div>
-          </div>
+          </article>
 
-          <div class="comment-menu">
-            ${canDelete ? `
-              <button
-                class="post-comment-delete"
-                type="button"
-                data-delete-comment="${escapePostHtml(comment.id)}"
-              >
-                <i class="fa-regular fa-trash-can"></i>
-                Delete
-              </button>
-            ` : ""}
-          </div>
-        </article>
+          ${replies.length || replyComposerOpen ? `
+            <div class="post-comment-replies">
+              ${replies.map(reply => replyCardMarkup(comment.id, reply)).join("")}
+              ${replyComposerOpen ? replyComposerMarkup(comment) : ""}
+            </div>
+          ` : ""}
+        </section>
       `;
     }).join("");
 
     renderSelectedPost();
+
+    if (activeReplyCommentId) {
+      requestAnimationFrame(() => {
+        document
+          .querySelector(`[data-reply-form="${CSS.escape(activeReplyCommentId)}"] [data-reply-input]`)
+          ?.focus();
+      });
+    }
   }
 
   function renderCommentComposer() {
@@ -2361,6 +2730,85 @@
     stopSelectedCommentLikes = () => reference.off("value", handler);
   }
 
+  function listenToSelectedReplies(postId) {
+    if (stopSelectedReplies) {
+      stopSelectedReplies();
+      stopSelectedReplies = null;
+    }
+
+    selectedCommentReplies = {};
+
+    const reference = database.ref(`postCommentReplies/${postId}`);
+    const handler = snapshot => {
+      const nextReplies = {};
+
+      snapshot.forEach(commentSnapshot => {
+        const replies = [];
+
+        commentSnapshot.forEach(replySnapshot => {
+          replies.push({
+            id: replySnapshot.key,
+            ...(replySnapshot.val() || {})
+          });
+        });
+
+        nextReplies[commentSnapshot.key] = replies;
+      });
+
+      selectedCommentReplies = nextReplies;
+      renderPostComments();
+    };
+
+    reference.on("value", handler, error => {
+      console.warn("Comment replies are unavailable:", error?.code || error?.message || error);
+    });
+
+    stopSelectedReplies = () => reference.off("value", handler);
+  }
+
+  function listenToSelectedReplyLikes(postId) {
+    if (stopSelectedReplyLikes) {
+      stopSelectedReplyLikes();
+      stopSelectedReplyLikes = null;
+    }
+
+    Object.keys(selectedReplyLikeCounts).forEach(key => delete selectedReplyLikeCounts[key]);
+    likedReplyKeys.clear();
+
+    const reference = database.ref(`postCommentReplyLikes/${postId}`);
+    const handler = snapshot => {
+      Object.keys(selectedReplyLikeCounts).forEach(key => delete selectedReplyLikeCounts[key]);
+      likedReplyKeys.clear();
+
+      snapshot.forEach(commentSnapshot => {
+        commentSnapshot.forEach(replySnapshot => {
+          const key = replyLikeKey(commentSnapshot.key, replySnapshot.key);
+          let count = 0;
+
+          replySnapshot.forEach(userSnapshot => {
+            if (userSnapshot.val() === true) {
+              count += 1;
+
+              if (currentUser && userSnapshot.key === currentUser.uid) {
+                likedReplyKeys.add(key);
+              }
+            }
+          });
+
+          selectedReplyLikeCounts[key] = count;
+        });
+      });
+
+      renderPostComments();
+    };
+
+    reference.on("value", handler, error => {
+      console.warn("Reply likes are unavailable:", error?.code || error?.message || error);
+    });
+
+    stopSelectedReplyLikes = () => reference.off("value", handler);
+  }
+
   function openPostDiscussion(postId, updateUrl = true) {
     const post = officialPosts.find(item => item.id === postId);
 
@@ -2371,6 +2819,8 @@
 
     selectedPost = post;
     selectedPostComments = [];
+    selectedCommentReplies = {};
+    activeReplyCommentId = null;
     renderSelectedPost();
     renderCommentComposer();
     renderPostComments();
@@ -2393,6 +2843,8 @@
     });
 
     listenToSelectedCommentLikes(postId);
+    listenToSelectedReplies(postId);
+    listenToSelectedReplyLikes(postId);
   }
 
   function closePostDiscussion(updateUrl = true) {
@@ -2410,8 +2862,22 @@
       stopSelectedCommentLikes = null;
     }
 
+    if (stopSelectedReplies) {
+      stopSelectedReplies();
+      stopSelectedReplies = null;
+    }
+
+    if (stopSelectedReplyLikes) {
+      stopSelectedReplyLikes();
+      stopSelectedReplyLikes = null;
+    }
+
     selectedPost = null;
     selectedPostComments = [];
+    selectedCommentReplies = {};
+    activeReplyCommentId = null;
+    Object.keys(selectedReplyLikeCounts).forEach(key => delete selectedReplyLikeCounts[key]);
+    likedReplyKeys.clear();
 
     if (updateUrl) {
       const url = new URL(window.location.href);
@@ -2461,27 +2927,162 @@
     const comment = selectedPostComments.find(item => item.id === commentId);
     if (!comment) return;
 
-    if (!window.confirm("Delete this comment?")) return;
+    if (comment.userId !== currentUser.uid && !isStaff()) return;
+    if (!window.confirm("Delete this comment and all of its replies?")) return;
 
     try {
-      if (comment.userId === currentUser.uid) {
-        await RGPosts.deleteOwnComment(selectedPost.id, commentId, currentUser.uid);
-      } else if (isStaff()) {
-        await database.ref(`postComments/${selectedPost.id}/${commentId}`).remove();
-        await database.ref(`officialPosts/${selectedPost.id}/commentCount`).transaction(value => {
-          return Math.max(0, Number(value || 0) - 1);
-        });
-      }
+      await database.ref().update({
+        [`postComments/${selectedPost.id}/${commentId}`]: null,
+        [`postCommentLikes/${selectedPost.id}/${commentId}`]: null,
+        [`postCommentReplies/${selectedPost.id}/${commentId}`]: null,
+        [`postCommentReplyLikes/${selectedPost.id}/${commentId}`]: null
+      });
 
-      try {
-        await database.ref(`postCommentLikes/${selectedPost.id}/${commentId}`).remove();
-      } catch (cleanupError) {
-        console.warn("Comment-like cleanup was skipped:", cleanupError);
-      }
+      await database.ref(`officialPosts/${selectedPost.id}/commentCount`).transaction(value => {
+        return Math.max(0, Number(value || 0) - 1);
+      });
 
+      if (activeReplyCommentId === commentId) activeReplyCommentId = null;
       setPostsStatus("Comment deleted.", "#ffcb6b");
     } catch (error) {
       setPostsStatus(error.message || "The comment could not be deleted.", "#ff6a7f");
+    }
+  }
+
+  function openReplyComposer(commentId) {
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    if (!selectedPost || selectedPost.commentsEnabled === false) return;
+
+    activeReplyCommentId = activeReplyCommentId === commentId ? null : commentId;
+    renderPostComments();
+  }
+
+  function closeReplyComposer() {
+    activeReplyCommentId = null;
+    renderPostComments();
+  }
+
+  async function handleReplySubmit(event, commentId) {
+    event.preventDefault();
+
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    if (!currentPlayer || !selectedPost || selectedPost.commentsEnabled === false) return;
+
+    const form = event.target;
+    const input = form.querySelector("[data-reply-input]");
+    const button = form.querySelector(".post-reply-submit");
+    const message = input?.value.trim() || "";
+
+    if (!message) {
+      setPostsStatus("Enter a reply first.", "#ffcb6b");
+      return;
+    }
+
+    if (message.length > 500) {
+      setPostsStatus("Replies are limited to 500 characters.", "#ffcb6b");
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Posting...";
+
+    try {
+      const replyRef = database
+        .ref(`postCommentReplies/${selectedPost.id}/${commentId}`)
+        .push();
+
+      await replyRef.set({
+        userId: currentUser.uid,
+        displayName:
+          currentPlayer.displayName ||
+          currentPlayer.rivalsIgn ||
+          currentUser.displayName ||
+          "Player",
+        rgId: currentPlayer.rgId || "",
+        profileImage: currentPlayer.profileImage || "",
+        message,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      });
+
+      activeReplyCommentId = null;
+      setPostsStatus("Reply posted.", "#4fd6a2");
+    } catch (error) {
+      setPostsStatus(
+        String(error?.code || "").toLowerCase().includes("permission")
+          ? "Reply permissions are not published yet."
+          : error.message || "The reply could not be posted.",
+        "#ff6a7f"
+      );
+    } finally {
+      button.disabled = false;
+      button.textContent = "Reply";
+    }
+  }
+
+  async function handleDeleteReply(commentId, replyId) {
+    if (!currentUser || !selectedPost || !commentId || !replyId) return;
+
+    const reply = getRepliesForComment(commentId).find(item => item.id === replyId);
+    if (!reply) return;
+
+    if (reply.userId !== currentUser.uid && !isStaff()) return;
+    if (!window.confirm("Delete this reply?")) return;
+
+    try {
+      await database.ref().update({
+        [`postCommentReplies/${selectedPost.id}/${commentId}/${replyId}`]: null,
+        [`postCommentReplyLikes/${selectedPost.id}/${commentId}/${replyId}`]: null
+      });
+
+      setPostsStatus("Reply deleted.", "#ffcb6b");
+    } catch (error) {
+      setPostsStatus(error.message || "The reply could not be deleted.", "#ff6a7f");
+    }
+  }
+
+  async function toggleReplyLike(commentId, replyId) {
+    if (!currentUser) {
+      window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+      return;
+    }
+
+    if (!selectedPost) return;
+
+    const key = replyLikeKey(commentId, replyId);
+    const wasLiked = likedReplyKeys.has(key);
+    const oldCount = Number(selectedReplyLikeCounts[key] || 0);
+
+    if (wasLiked) likedReplyKeys.delete(key);
+    else likedReplyKeys.add(key);
+
+    selectedReplyLikeCounts[key] = Math.max(0, oldCount + (wasLiked ? -1 : 1));
+    renderPostComments();
+
+    try {
+      await database
+        .ref(`postCommentReplyLikes/${selectedPost.id}/${commentId}/${replyId}/${currentUser.uid}`)
+        .set(wasLiked ? null : true);
+    } catch (error) {
+      if (wasLiked) likedReplyKeys.add(key);
+      else likedReplyKeys.delete(key);
+
+      selectedReplyLikeCounts[key] = oldCount;
+      renderPostComments();
+
+      setPostsStatus(
+        String(error?.code || "").toLowerCase().includes("permission")
+          ? "Reply-like permissions are not published yet."
+          : error.message || "The reply like could not be saved.",
+        "#ff6a7f"
+      );
     }
   }
 
@@ -2913,7 +3514,9 @@
       try {
         await database.ref().update({
           [`postLikes/${postId}`]: null,
-          [`postCommentLikes/${postId}`]: null
+          [`postCommentLikes/${postId}`]: null,
+          [`postCommentReplies/${postId}`]: null,
+          [`postCommentReplyLikes/${postId}`]: null
         });
       } catch (cleanupError) {
         console.warn("Like cleanup will be available after like rules are published:", cleanupError);
@@ -2937,6 +3540,10 @@
     const shareButton = event.target.closest("[data-share-post]");
     const likeCommentButton = event.target.closest("[data-like-comment]");
     const deleteCommentButton = event.target.closest("[data-delete-comment]");
+    const replyCommentButton = event.target.closest("[data-reply-comment]:not([data-like-reply]):not([data-delete-reply])");
+    const cancelReplyButton = event.target.closest("[data-cancel-reply]");
+    const likeReplyButton = event.target.closest("[data-like-reply]");
+    const deleteReplyButton = event.target.closest("[data-delete-reply]");
     const editPostButton = event.target.closest("[data-edit-post]");
     const deletePostButton = event.target.closest("[data-delete-post]");
     const feedTab = event.target.closest("[data-feed-tab]");
@@ -2946,6 +3553,20 @@
     if (shareButton) sharePost(shareButton.dataset.sharePost);
     if (likeCommentButton) toggleCommentLike(likeCommentButton.dataset.likeComment);
     if (deleteCommentButton) handleDeleteComment(deleteCommentButton.dataset.deleteComment);
+    if (replyCommentButton) openReplyComposer(replyCommentButton.dataset.replyComment);
+    if (cancelReplyButton) closeReplyComposer();
+    if (likeReplyButton) {
+      toggleReplyLike(
+        likeReplyButton.dataset.replyComment,
+        likeReplyButton.dataset.likeReply
+      );
+    }
+    if (deleteReplyButton) {
+      handleDeleteReply(
+        deleteReplyButton.dataset.replyComment,
+        deleteReplyButton.dataset.deleteReply
+      );
+    }
     if (editPostButton) openPostEditor(editPostButton.dataset.editPost);
     if (deletePostButton) deletePost(deletePostButton.dataset.deletePost);
 
@@ -2959,11 +3580,22 @@
   document.addEventListener("submit", event => {
     if (event.target.id === "postCommentForm") handlePostCommentSubmit(event);
     if (event.target.id === "postEditorForm") savePostFromEditor(event);
+
+    const replyForm = event.target.closest("[data-reply-form]");
+    if (replyForm) handleReplySubmit(event, replyForm.dataset.replyForm);
   });
 
   document.addEventListener("input", event => {
     if (event.target.id === "postCommentInput") {
       const count = document.getElementById("postCommentCharacterCount");
+      if (count) count.textContent = `${event.target.value.length}/500`;
+    }
+
+    if (event.target.matches("[data-reply-input]")) {
+      const count = event.target
+        .closest("[data-reply-form]")
+        ?.querySelector("[data-reply-count]");
+
       if (count) count.textContent = `${event.target.value.length}/500`;
     }
   });
@@ -3032,6 +3664,7 @@
     if (selectedPost) {
       renderCommentComposer();
       listenToSelectedCommentLikes(selectedPost.id);
+      listenToSelectedReplyLikes(selectedPost.id);
     }
   });
 

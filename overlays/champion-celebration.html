@@ -795,8 +795,8 @@
       height:25px;
     }
 
-    .champion-kicker{
-      margin-top:-4px;
+  .champion-kicker{
+  margin-top:18px;
 
       color:var(--champ);
 
@@ -819,16 +819,16 @@
         1.1s forwards;
     }
 
-    .team-lockup{
-      min-height:126px;
+.team-lockup{
+  width:100%;
+  min-height:auto;
 
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-      margin-top:10px;
-    }
+  margin-top:18px;
+}
 
     .champion-logo{
       width:98px;
@@ -887,15 +887,15 @@
       object-fit:cover;
     }
 
-    .team-name-wrap{
-      min-width:0;
-      text-align:left;
+  .team-name-wrap{
+  width:100%;
+  min-width:0;
 
-      opacity:0;
+  text-align:center;
 
-      transform:
-        translateX(24px);
-    }
+  opacity:0;
+  transform:translateY(24px);
+}
 
     .stage.ready .team-name-wrap{
       animation:
@@ -905,44 +905,47 @@
         1.42s forwards;
     }
 
-    .team-name{
-      max-width:1220px;
-      margin:0;
-      overflow:hidden;
+  .team-name{
+  max-width:1400px;
 
-      font-size:88px;
-      font-weight:800;
-      letter-spacing:-.035em;
-      line-height:.82;
+  margin:0 auto;
+  overflow:hidden;
 
-      text-overflow:ellipsis;
-      text-transform:uppercase;
-      white-space:nowrap;
+  font-size:88px;
+  font-weight:800;
+  letter-spacing:-.035em;
+  line-height:.82;
 
-      text-shadow:
-        0 0 42px
-        rgba(var(--champ-rgb),.09);
-    }
+  text-align:center;
+  text-overflow:ellipsis;
+  text-transform:uppercase;
+  white-space:nowrap;
 
-    .claim-line{
-      display:flex;
-      align-items:center;
-      gap:13px;
+  text-shadow:
+    0 0 42px
+    rgba(var(--champ-rgb),.09);
+}
 
-      margin-top:14px;
+  .claim-line{
+  width:100%;
 
-      color:var(--champ-bright);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:13px;
 
-      font-size:19px;
-      font-weight:800;
-      letter-spacing:.24em;
-      text-transform:uppercase;
+  margin-top:14px;
 
-      opacity:0;
+  color:var(--champ-bright);
 
-      transform:
-        translateY(10px);
-    }
+  font-size:19px;
+  font-weight:800;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+
+  opacity:0;
+  transform:translateY(10px);
+}
 
     .claim-line::before,
     .claim-line::after{
@@ -1747,32 +1750,7 @@
     </header>
 
     <section class="main">
-      <div class="emblem-system">
-        <div
-          class="emblem-aura"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="emblem-ring"
-          aria-hidden="true"
-        ></div>
-
-        <div
-          class="crown-points"
-          aria-hidden="true"
-        >
-          <span class="crown-point"></span>
-          <span class="crown-point"></span>
-          <span class="crown-point"></span>
-        </div>
-
-        <div class="emblem-core">
-          <strong>
-            RG
-          </strong>
-        </div>
-      </div>
+    
 
       <div
         id="championKicker"
@@ -1781,30 +1759,23 @@
         Tournament Champions
       </div>
 
-      <div class="team-lockup">
-        <div
-          id="championLogo"
-          class="champion-logo"
-        >
-          RG
-        </div>
+    <div class="team-lockup">
+  <div class="team-name-wrap">
+    <h1
+      id="teamName"
+      class="team-name"
+    >
+      AWAITING CHAMPION
+    </h1>
 
-        <div class="team-name-wrap">
-          <h1
-            id="teamName"
-            class="team-name"
-          >
-            AWAITING CHAMPION
-          </h1>
-
-          <div
-            id="claimLine"
-            class="claim-line"
-          >
-            Claimed The Gauntlet
-          </div>
-        </div>
-      </div>
+    <div
+      id="claimLine"
+      class="claim-line"
+    >
+      Claimed The Gauntlet
+    </div>
+  </div>
+</div>
 
       <section class="stats">
         <article class="stat">
@@ -1972,10 +1943,7 @@
           "championKicker"
         );
 
-      var championLogo =
-        document.getElementById(
-          "championLogo"
-        );
+      
 
       var teamName =
         document.getElementById(
@@ -2689,56 +2657,7 @@
           .toUpperCase();
       }
 
-      function logoMarkup(team, record) {
-        var logo =
-          clean(
-            (
-              team &&
-              team.logo
-            ) ||
-            (
-              record &&
-              (
-                record.teamLogo ||
-                record.logo
-              )
-            )
-          );
-
-        var displayName =
-          clean(
-            (
-              team &&
-              team.teamName
-            ) ||
-            (
-              record &&
-              record.teamName
-            ),
-            "Champion"
-          );
-
-        if (logo) {
-          championLogo.innerHTML =
-            '<img ' +
-              'src="' +
-              escapeHtml(logo) +
-              '" ' +
-              'alt="' +
-              escapeHtml(
-                displayName
-              ) +
-              ' logo"' +
-            '>';
-
-        } else {
-          championLogo.textContent =
-            initials(
-              displayName
-            );
-        }
-      }
-
+      
       function playerCard(
         player,
         index
@@ -2982,8 +2901,7 @@
         claimLine.textContent =
           "The Gauntlet Has Not Yet Been Claimed";
 
-        championLogo.textContent =
-          "RG";
+        
 
         statEvent.textContent =
           clean(
@@ -3137,10 +3055,7 @@
         claimLine.textContent =
           "Claimed The Gauntlet";
 
-        logoMarkup(
-          team,
-          record
-        );
+        
 
         statEvent.textContent =
           clean(

@@ -2,341 +2,2978 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Check-In | Rivals Gauntlet</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=51">
-  <link rel="stylesheet" href="account.css?v=2">
+  <title>Tournament Check-In | Rivals Gauntlet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+  <link rel="stylesheet" href="global-header.css?v=10">
+
+  <style>
+    :root {
+      --bg: #08080d;
+      --panel: rgba(16, 15, 24, 0.92);
+      --panel-solid: #11101a;
+      --panel-soft: rgba(255, 255, 255, 0.025);
+      --line: rgba(255, 255, 255, 0.085);
+      --line-strong: rgba(173, 147, 255, 0.28);
+      --text: #f8f6ff;
+      --soft: #c1bbcf;
+      --muted: #918a9f;
+      --dim: #6d6678;
+      --purple: #9a7cff;
+      --purple-bright: #b8a4ff;
+      --purple-rgb: 154, 124, 255;
+      --green: #5ce0a4;
+      --green-rgb: 92, 224, 164;
+      --yellow: #f2c96f;
+      --yellow-rgb: 242, 201, 111;
+      --red: #ff667d;
+      --red-rgb: 255, 102, 125;
+      --blue: #70cbff;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.4);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 0;
+      background: var(--bg);
+    }
+
+    body {
+      min-width: 0;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: "Rajdhani", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 74% 4%, rgba(112, 73, 246, 0.14), transparent 31%),
+        radial-gradient(circle at 12% 40%, rgba(82, 50, 162, 0.09), transparent 29%),
+        linear-gradient(180deg, #09090f 0%, #0b0a11 45%, #08080d 100%);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .checkin-page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 86px;
+    }
+
+    .checkin-hero {
+      position: relative;
+      min-height: 250px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.65fr);
+      align-items: stretch;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 25px;
+      background:
+        linear-gradient(100deg, rgba(14, 12, 23, 0.98) 0%, rgba(18, 14, 31, 0.96) 52%, rgba(35, 24, 70, 0.82) 100%);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .checkin-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      opacity: 0.48;
+      background:
+        linear-gradient(120deg, transparent 0 56%, rgba(var(--purple-rgb), 0.11) 56.2% 56.6%, transparent 56.8%),
+        linear-gradient(120deg, transparent 0 68%, rgba(var(--purple-rgb), 0.09) 68.2% 68.7%, transparent 68.9%);
+    }
+
+    .checkin-hero::after {
+      content: "RG";
+      position: absolute;
+      right: 3%;
+      bottom: -52px;
+      z-index: -1;
+      color: rgba(255, 255, 255, 0.024);
+      font-size: clamp(180px, 24vw, 340px);
+      font-weight: 800;
+      line-height: 0.8;
+      letter-spacing: -0.11em;
+      pointer-events: none;
+    }
+
+    .hero-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(28px, 4vw, 52px);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 12px;
+      color: var(--purple-bright);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 2px;
+      background: var(--purple);
+      box-shadow: 0 0 12px rgba(var(--purple-rgb), 0.62);
+    }
+
+    .hero-copy h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(34px, 5vw, 62px);
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 0.94;
+      text-transform: uppercase;
+    }
+
+    .hero-copy > p {
+      max-width: 680px;
+      margin: 18px 0 0;
+      color: var(--soft);
+      font-size: clamp(15px, 1.7vw, 18px);
+      line-height: 1.55;
+    }
+
+    .hero-event {
+      align-self: end;
+      width: fit-content;
+      max-width: 100%;
+      margin-top: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero-event i {
+      color: var(--purple-bright);
+    }
+
+    .hero-event strong {
+      overflow: hidden;
+      color: var(--text);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hero-status {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+      padding: 30px;
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
+      background:
+        linear-gradient(180deg, rgba(var(--purple-rgb), 0.11), transparent),
+        rgba(5, 5, 10, 0.25);
+    }
+
+    .connection-pill {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 29px;
+      padding: 0 10px;
+      border: 1px solid rgba(var(--yellow-rgb), 0.23);
+      border-radius: 999px;
+      color: var(--yellow);
+      background: rgba(var(--yellow-rgb), 0.07);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .connection-pill.online {
+      border-color: rgba(var(--green-rgb), 0.25);
+      color: var(--green);
+      background: rgba(var(--green-rgb), 0.07);
+    }
+
+    .connection-pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .status-label {
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-status strong {
+      display: block;
+      margin-top: 7px;
+      font-size: clamp(25px, 3vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .hero-status p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .window-countdown {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .countdown-unit {
+      min-width: 0;
+      padding: 11px 7px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.025);
+      text-align: center;
+    }
+
+    .countdown-unit b {
+      display: block;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .countdown-unit span {
+      display: block;
+      margin-top: 5px;
+      color: var(--dim);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .readiness-track {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(12, 11, 18, 0.8);
+    }
+
+    .readiness-step {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 11px;
+      padding: 15px 16px;
+      border-right: 1px solid var(--line);
+    }
+
+    .readiness-step:last-child {
+      border-right: 0;
+    }
+
+    .step-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--dim);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .readiness-step.complete .step-icon {
+      border-color: rgba(var(--green-rgb), 0.25);
+      color: var(--green);
+      background: rgba(var(--green-rgb), 0.075);
+    }
+
+    .readiness-step.current .step-icon {
+      border-color: rgba(var(--purple-rgb), 0.42);
+      color: var(--purple-bright);
+      background: rgba(var(--purple-rgb), 0.11);
+      box-shadow: 0 0 24px rgba(var(--purple-rgb), 0.1);
+    }
+
+    .readiness-step.blocked .step-icon {
+      color: var(--red);
+      border-color: rgba(var(--red-rgb), 0.22);
+      background: rgba(var(--red-rgb), 0.06);
+    }
+
+    .readiness-step span,
+    .readiness-step strong {
+      display: block;
+    }
+
+    .readiness-step span {
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .readiness-step strong {
+      margin-top: 3px;
+      overflow: hidden;
+      color: var(--soft);
+      font-size: 13px;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .readiness-step.complete strong,
+    .readiness-step.current strong {
+      color: var(--text);
+    }
+
+    .checkin-workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .checkin-command,
+    .intel-panel,
+    .next-panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 110px),
+        var(--panel);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.24);
+    }
+
+    .checkin-command {
+      overflow: hidden;
+    }
+
+    .command-topline {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .command-topline span {
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .state-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 0 10px;
+      border: 1px solid rgba(var(--purple-rgb), 0.24);
+      border-radius: 999px;
+      color: var(--purple-bright);
+      background: rgba(var(--purple-rgb), 0.07);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .state-badge.success {
+      border-color: rgba(var(--green-rgb), 0.25);
+      color: var(--green);
+      background: rgba(var(--green-rgb), 0.07);
+    }
+
+    .state-badge.warning {
+      border-color: rgba(var(--yellow-rgb), 0.25);
+      color: var(--yellow);
+      background: rgba(var(--yellow-rgb), 0.07);
+    }
+
+    .state-badge.danger {
+      border-color: rgba(var(--red-rgb), 0.25);
+      color: var(--red);
+      background: rgba(var(--red-rgb), 0.07);
+    }
+
+    .command-body {
+      min-height: 410px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(24px, 4vw, 42px);
+    }
+
+    .command-symbol {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(var(--purple-rgb), 0.3);
+      border-radius: 18px;
+      color: var(--purple-bright);
+      background:
+        linear-gradient(145deg, rgba(var(--purple-rgb), 0.13), rgba(var(--purple-rgb), 0.03));
+      box-shadow:
+        inset 0 0 24px rgba(var(--purple-rgb), 0.07),
+        0 14px 38px rgba(0, 0, 0, 0.27);
+      font-size: 23px;
+    }
+
+    .command-symbol.success {
+      border-color: rgba(var(--green-rgb), 0.3);
+      color: var(--green);
+      background: rgba(var(--green-rgb), 0.08);
+    }
+
+    .command-symbol.warning {
+      border-color: rgba(var(--yellow-rgb), 0.3);
+      color: var(--yellow);
+      background: rgba(var(--yellow-rgb), 0.075);
+    }
+
+    .command-symbol.danger {
+      border-color: rgba(var(--red-rgb), 0.3);
+      color: var(--red);
+      background: rgba(var(--red-rgb), 0.07);
+    }
+
+    .command-body h2 {
+      max-width: 680px;
+      margin: 23px 0 0;
+      font-size: clamp(28px, 4vw, 45px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .command-description {
+      max-width: 690px;
+      margin: 16px 0 0;
+      color: var(--soft);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .command-note {
+      max-width: 720px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 12px 14px;
+      border: 1px solid rgba(var(--purple-rgb), 0.16);
+      border-radius: 13px;
+      color: var(--muted);
+      background: rgba(var(--purple-rgb), 0.045);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .command-note i {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--purple-bright);
+      background: rgba(var(--purple-rgb), 0.08);
+    }
+
+    .command-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.025);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.045em;
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        transform 0.16s ease,
+        border-color 0.16s ease,
+        background 0.16s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button.primary {
+      border-color: rgba(var(--purple-rgb), 0.58);
+      background:
+        linear-gradient(135deg, #a084ff, #7753ec);
+      box-shadow: 0 12px 32px rgba(93, 61, 204, 0.28);
+    }
+
+    .button.success {
+      border-color: rgba(var(--green-rgb), 0.45);
+      color: #07140f;
+      background: var(--green);
+      box-shadow: 0 12px 30px rgba(var(--green-rgb), 0.17);
+    }
+
+    .button.danger {
+      border-color: rgba(var(--red-rgb), 0.35);
+      color: #ffc5ce;
+      background: rgba(var(--red-rgb), 0.08);
+    }
+
+    .button.discord {
+      border-color: rgba(116, 136, 255, 0.34);
+      background: rgba(88, 101, 242, 0.13);
+    }
+
+    .action-status {
+      min-height: 20px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .action-status.success {
+      color: var(--green);
+    }
+
+    .action-status.error {
+      color: var(--red);
+    }
+
+    .checkin-side {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+
+    .panel-head {
+      min-height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 17px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h3 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .panel-head span {
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intel-list {
+      display: grid;
+      gap: 0;
+      padding: 6px 16px 13px;
+    }
+
+    .intel-row {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(90px, 0.7fr) minmax(0, 1.3fr);
+      align-items: center;
+      gap: 13px;
+      min-height: 49px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+    }
+
+    .intel-row:last-child {
+      border-bottom: 0;
+    }
+
+    .intel-row span {
+      color: var(--dim);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .intel-row strong {
+      overflow: hidden;
+      color: var(--soft);
+      font-size: 12px;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .next-panel {
+      padding-bottom: 16px;
+    }
+
+    .next-copy {
+      padding: 17px 17px 0;
+    }
+
+    .next-copy strong {
+      display: block;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .next-copy p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .next-links {
+      display: grid;
+      gap: 8px;
+      margin-top: 15px;
+      padding: 0 17px;
+    }
+
+    .next-link {
+      min-height: 46px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.02);
+      text-decoration: none;
+      transition: border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .next-link:hover {
+      border-color: var(--line-strong);
+      background: rgba(var(--purple-rgb), 0.045);
+    }
+
+    .next-link > i:first-child {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--purple-bright);
+      background: rgba(var(--purple-rgb), 0.075);
+    }
+
+    .next-link strong,
+    .next-link span {
+      display: block;
+    }
+
+    .next-link strong {
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .next-link span {
+      margin-top: 2px;
+      color: var(--dim);
+      font-size: 9px;
+    }
+
+    .next-link > i:last-child {
+      color: var(--dim);
+      font-size: 10px;
+    }
+
+    .loading-shell {
+      min-height: 410px;
+      display: grid;
+      place-items: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .loading-shell i {
+      color: var(--purple-bright);
+      font-size: 28px;
+    }
+
+    .loading-shell strong {
+      display: block;
+      margin-top: 14px;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .loading-shell span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .checkin-footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 calc(32px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .unavailable-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9400;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(3, 3, 7, 0.82);
+      backdrop-filter: blur(12px);
+    }
+
+    .unavailable-card {
+      width: min(520px, 100%);
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      background: #12101b;
+      box-shadow: 0 38px 110px rgba(0, 0, 0, 0.67);
+    }
+
+    .modal-head {
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 17px;
+      text-transform: uppercase;
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.035);
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-body p {
+      margin: 0;
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .modal-warning {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 11px;
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid rgba(var(--red-rgb), 0.18);
+      border-radius: 12px;
+      color: #d8aab2;
+      background: rgba(var(--red-rgb), 0.05);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .modal-warning i {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--red);
+      background: rgba(var(--red-rgb), 0.08);
+    }
+
+    .reason-field {
+      display: block;
+      margin-top: 17px;
+    }
+
+    .reason-field span {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .reason-field textarea {
+      width: 100%;
+      min-height: 105px;
+      resize: vertical;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      outline: 0;
+      color: var(--text);
+      background: #0c0b12;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .reason-field textarea:focus {
+      border-color: rgba(var(--purple-rgb), 0.54);
+      box-shadow: 0 0 0 3px rgba(var(--purple-rgb), 0.07);
+    }
+
+    .reason-count {
+      display: block;
+      margin-top: 6px;
+      color: var(--dim);
+      font-size: 9px;
+      text-align: right;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .checkin-page {
+        width: min(100% - 24px, 760px);
+        padding-top: 20px;
+      }
+
+      .checkin-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-status {
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+        border-left: 0;
+      }
+
+      .checkin-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .checkin-side {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .checkin-page {
+        width: min(100% - 18px, 560px);
+        padding: 12px 0 64px;
+      }
+
+      .checkin-hero {
+        border-radius: 18px;
+      }
+
+      .hero-copy {
+        padding: 25px 19px 27px;
+      }
+
+      .hero-copy h1 {
+        font-size: 37px;
+      }
+
+      .hero-status {
+        padding: 21px 18px;
+      }
+
+      .readiness-track {
+        grid-template-columns: 1fr;
+      }
+
+      .readiness-step {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .readiness-step:last-child {
+        border-bottom: 0;
+      }
+
+      .checkin-side {
+        grid-template-columns: 1fr;
+      }
+
+      .command-topline {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding: 13px 15px;
+      }
+
+      .command-body {
+        min-height: 390px;
+        padding: 25px 17px;
+      }
+
+      .command-body h2 {
+        font-size: 31px;
+      }
+
+      .command-actions,
+      .modal-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .intel-row {
+        grid-template-columns: 1fr;
+        gap: 3px;
+        padding: 10px 0;
+      }
+
+      .intel-row strong {
+        text-align: left;
+      }
+
+      .unavailable-modal {
+        align-items: end;
+        padding: max(10px, env(safe-area-inset-top)) 0 0;
+      }
+
+      .unavailable-card {
+        width: 100%;
+        max-height: calc(100dvh - max(10px, env(safe-area-inset-top)));
+        overflow-y: auto;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        border-radius: 18px 18px 0 0;
+      }
+
+      .modal-body {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
 </head>
 
-<body class="account-body">
+<body>
+  <div id="globalHeader"></div>
 
-<div class="account-center-shell">
-  <div class="account-center">
+  <main class="checkin-page">
+    <section class="checkin-hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Tournament Attendance</div>
+        <h1>Confirm Your Place in the Gauntlet</h1>
+        <p>
+          Tournament check-in tells staff that you are present, available and
+          ready to compete. Your dashboard and the Nexus Check-In Desk update
+          as soon as your status is confirmed.
+        </p>
 
-    <aside class="account-sidebar">
-      <div class="account-brand">
-        <p>RIVALS GAUNTLET</p>
-        <h2>PLAYER CHECK-IN</h2>
-      </div>
-
-      <nav class="account-nav">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="teams.html">Teams</a>
-        <a class="active" href="check-in.html">Check-In</a>
-        <a href="settings.html">Settings</a>
-        <button onclick="logoutUser()">Sign Out</button>
-      </nav>
-    </aside>
-
-    <main class="account-main">
-      <div class="account-topbar">
-        <div>
-          <p>TOURNAMENT DAY</p>
-          <h1>Player Check-In</h1>
-          <span>Confirm that you are present and ready for Rivals Gauntlet Open #1.</span>
+        <div class="hero-event">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Active Event</span>
+          <strong id="heroEventName">Loading tournament...</strong>
         </div>
       </div>
 
-      <section class="account-panel full">
-        <h2 id="checkInTitle">Loading...</h2>
-        <p id="checkInDescription">Checking your tournament status...</p>
+      <aside class="hero-status">
+        <div
+          id="connectionPill"
+          class="connection-pill"
+          aria-live="polite"
+        >
+          <span class="dot"></span>
+          <span id="connectionText">Connecting</span>
+        </div>
 
-        <div id="checkInDetails"></div>
+        <div>
+          <span class="status-label" id="windowLabel">Check-In Window</span>
+          <strong id="windowState">Loading</strong>
+          <p id="windowDescription">Reading tournament schedule...</p>
+        </div>
 
-        <div id="checkInActions" class="account-actions"></div>
+        <div
+          id="windowCountdown"
+          class="window-countdown"
+          aria-label="Check-in countdown"
+        >
+          <div class="countdown-unit">
+            <b id="countHours">--</b>
+            <span>Hours</span>
+          </div>
+          <div class="countdown-unit">
+            <b id="countMinutes">--</b>
+            <span>Minutes</span>
+          </div>
+          <div class="countdown-unit">
+            <b id="countSeconds">--</b>
+            <span>Seconds</span>
+          </div>
+        </div>
+      </aside>
+    </section>
 
-        <p id="checkInStatus" class="account-status"></p>
-      </section>
-    </main>
+    <section
+      id="readinessTrack"
+      class="readiness-track"
+      aria-label="Tournament readiness"
+    >
+      <article id="applicationStep" class="readiness-step">
+        <div class="step-icon">
+          <i class="fa-solid fa-file-signature"></i>
+        </div>
+        <div>
+          <span>Step 01</span>
+          <strong id="applicationStepText">Application</strong>
+        </div>
+      </article>
 
-  </div>
-</div>
+      <article id="teamStep" class="readiness-step">
+        <div class="step-icon">
+          <i class="fa-solid fa-people-group"></i>
+        </div>
+        <div>
+          <span>Step 02</span>
+          <strong id="teamStepText">Team Assignment</strong>
+        </div>
+      </article>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="firebase.js?v=2"></script>
+      <article id="checkInStep" class="readiness-step">
+        <div class="step-icon">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+        <div>
+          <span>Step 03</span>
+          <strong id="checkInStepText">Tournament Check-In</strong>
+        </div>
+      </article>
+    </section>
 
-<script>
-let tournamentId = "open1";
+    <section class="checkin-workspace">
+      <article class="checkin-command">
+        <header class="command-topline">
+          <span>Player Readiness Command</span>
+          <div id="stateBadge" class="state-badge">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            Loading Status
+          </div>
+        </header>
 
-let currentUser = null;
-let currentApplication = null;
-let currentCheckIn = null;
-let currentAvailability = null;
-let currentTeams = {};
-let siteData = {};
+        <div id="commandBody" class="loading-shell">
+          <div>
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <strong>Loading Check-In Status</strong>
+            <span>Connecting your application, roster and tournament records.</span>
+          </div>
+        </div>
+      </article>
 
-function findMyTeam(uid) {
-  const teamsObj = currentTeams.teams || currentTeams || {};
+      <aside class="checkin-side">
+        <article class="intel-panel">
+          <header class="panel-head">
+            <h3>Player Intel</h3>
+            <span>Live Record</span>
+          </header>
 
-  for (const teamKey in teamsObj) {
-    const players = teamsObj[teamKey] || [];
-    const found = players.find(player => player.uid === uid);
+          <div class="intel-list">
+            <div class="intel-row">
+              <span>Competitor</span>
+              <strong id="intelPlayer">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>RG ID</span>
+              <strong id="intelRgId">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>Roster Status</span>
+              <strong id="intelRoster">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>Team</span>
+              <strong id="intelTeam">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>Role / Rank</span>
+              <strong id="intelCompetitive">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>Event Time</span>
+              <strong id="intelEventTime">Loading...</strong>
+            </div>
+            <div class="intel-row">
+              <span>Last Update</span>
+              <strong id="intelUpdated">Awaiting status</strong>
+            </div>
+          </div>
+        </article>
 
-    if (found) {
-      return {
-        teamKey,
-        teamName: teamKey.replace("team", "Team "),
-        players
-      };
-    }
-  }
+        <article class="next-panel">
+          <header class="panel-head">
+            <h3>Tournament Command</h3>
+            <span>Next Steps</span>
+          </header>
 
-  return null;
-}
+          <div class="next-copy">
+            <strong id="nextStepTitle">Stay Ready</strong>
+            <p id="nextStepDescription">
+              Tournament instructions will remain connected to your player
+              dashboard and the official Discord.
+            </p>
+          </div>
 
-function isCheckInOpen() {
-  if (!siteData.countdownDate) return false;
+          <div class="next-links">
+            <a class="next-link" href="dashboard.html">
+              <i class="fa-solid fa-grid-2"></i>
+              <span>
+                <strong>Player Dashboard</strong>
+                <span>View your complete tournament status</span>
+              </span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
 
-  const eventStart = new Date(siteData.countdownDate).getTime();
-  const now = Date.now();
+            <a class="next-link" href="tournament.html">
+              <i class="fa-solid fa-diagram-project"></i>
+              <span>
+                <strong>Tournament</strong>
+                <span>Follow the bracket and active event</span>
+              </span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
 
-  const oneHourBefore = eventStart - (60 * 60 * 1000);
+            <a
+              id="discordLink"
+              class="next-link"
+              href="https://discord.gg/82HPpfkhQN"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <i class="fa-brands fa-discord"></i>
+              <span>
+                <strong>Official Discord</strong>
+                <span>Receive lobby and staff instructions</span>
+              </span>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </main>
 
-  return now >= oneHourBefore;
-}
-  
-function renderCheckIn() {
-  const title = document.getElementById("checkInTitle");
-  const description = document.getElementById("checkInDescription");
-  const details = document.getElementById("checkInDetails");
-  const actions = document.getElementById("checkInActions");
+  <footer class="checkin-footer">
+    © 2026 Rivals Gauntlet. Tournament check-in confirms attendance for the
+    active event and is separate from the daily reward check-in.
+  </footer>
 
-  if (!currentApplication) {
-    title.innerText = "Not Registered";
-    description.innerText = "You have not submitted an application for this event.";
-    details.innerHTML = "";
-    actions.innerHTML = `<a class="account-primary" href="apply.html">Apply Now</a>`;
-    return;
-  }
-
-  if (currentApplication.status === "pending") {
-    title.innerText = "Application Pending";
-    description.innerText = "Your application is still waiting for review.";
-    details.innerHTML = "";
-    actions.innerHTML = "";
-    return;
-  }
-
-  if (currentApplication.status === "declined") {
-    title.innerText = "Not Selected";
-    description.innerText = "You were not selected for this event.";
-    details.innerHTML = "";
-    actions.innerHTML = "";
-    return;
-  }
-
-  const isSubstitute =
-    currentApplication.status === "waitlist" &&
-    currentApplication.wantsSub === "Yes";
-
-  const isMainRoster = currentApplication.status === "accepted";
-  const myTeam = currentUser ? findMyTeam(currentUser.uid) : null;
-  const alreadyCheckedIn = currentCheckIn && currentCheckIn.checkedIn;
-  const markedUnavailable =
-  currentAvailability && currentAvailability.status === "not_available";
-  const checkInOpen = isCheckInOpen();
-  
-  if (!isMainRoster && !isSubstitute) {
-    title.innerText = "Waitlisted";
-    description.innerText = "You are currently waitlisted for this event.";
-    details.innerHTML = "";
-    actions.innerHTML = "";
-    return;
-  }
-
-  title.innerText = isSubstitute ? "Substitute Check-In" : "Main Roster Check-In";
-
-  description.innerText = alreadyCheckedIn
-    ? "You are checked in and ready."
-    : "Confirm that you are present and ready for tournament staff.";
-
-  details.innerHTML = `
-    <div class="dashboard-event-status">
-  ${
-    markedUnavailable
-      ? "✕ NOT AVAILABLE"
-      : alreadyCheckedIn
-        ? "✓ CHECKED IN"
-        : "○ NOT CHECKED IN"
-  }
-</div>
-
-    <div class="dashboard-event-team">
-      <span>${isSubstitute ? "Status" : "Your Team"}</span>
-      <strong>${isSubstitute ? "Substitute Player" : (myTeam ? myTeam.teamName : "Team Pending")}</strong>
-    </div>
-
-    <div class="dashboard-next-step">
-      <span>Player Info</span>
-      <strong>${currentApplication.displayName || "Player"}</strong><br>
-      ${currentApplication.peakRank || "No Rank"} • Preferred: ${currentApplication.mainRole || "No Role"}
-    </div>
-  `;
-
-  if (markedUnavailable) {
-
-  actions.innerHTML = `
-    <button class="account-secondary" onclick="markAvailable()">
-      Mark Available Again
-    </button>
-  `;
-
-} else {
-
-  let html = "";
-
-  if (checkInOpen) {
-
-    if (alreadyCheckedIn) {
-
-      html += `
-        <button class="account-secondary" onclick="undoCheckIn()">
-          Undo Check-In
+  <div
+    id="unavailableModal"
+    class="unavailable-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="unavailableTitle"
+    hidden
+  >
+    <section class="unavailable-card">
+      <header class="modal-head">
+        <h2 id="unavailableTitle">Mark Yourself Unavailable</h2>
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close"
+          onclick="closeUnavailableModal()"
+        >
+          <i class="fa-solid fa-xmark"></i>
         </button>
-      `;
+      </header>
 
-    } else {
+      <div class="modal-body">
+        <p>
+          Use this when you can no longer compete in the active tournament.
+          Staff will see the update in the Nexus Check-In Desk.
+        </p>
 
-      html += `
-        <button class="account-primary"
-                onclick="checkInPlayer('${isSubstitute ? "substitute" : "main"}')">
-          ${isSubstitute ? "Check In as Substitute" : "Check In"}
-        </button>
-      `;
+        <div class="modal-warning">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>
+            This removes your current check-in. Tournament staff may offer
+            your position to an available substitute.
+          </span>
+        </div>
 
-    }
+        <label class="reason-field">
+          <span>Reason — Optional</span>
+          <textarea
+            id="unavailableReason"
+            maxlength="300"
+            placeholder="Add useful context for tournament staff..."
+          ></textarea>
+        </label>
 
-  } else {
+        <span id="reasonCount" class="reason-count">0 / 300</span>
 
-    html += `
-      <div class="dashboard-next-step" style="margin-bottom:16px;">
-        <strong>Check-In Closed</strong><br>
-        Check-In opens automatically 1 hour before the tournament begins.
+        <div class="modal-actions">
+          <button
+            class="button"
+            type="button"
+            onclick="closeUnavailableModal()"
+          >
+            Keep My Spot
+          </button>
+
+          <button
+            id="confirmUnavailableButton"
+            class="button danger"
+            type="button"
+            onclick="confirmNotAvailable()"
+          >
+            <i class="fa-solid fa-user-xmark"></i>
+            Confirm Unavailable
+          </button>
+        </div>
       </div>
-    `;
+    </section>
+  </div>
 
-  }
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  html += `
-    <button class="account-secondary" onclick="markNotAvailable()">
-      I'm Not Available
-    </button>
-  `;
+  <script src="firebase.js?v=2"></script>
+  <script src="notifications.js?v=1"></script>
+  <script src="friends.js?v=1"></script>
+  <script src="global-header.js?v=10"></script>
 
-  actions.innerHTML = html;
+  <script>
+    (() => {
+      "use strict";
 
-}
-}
+      const DEFAULT_TOURNAMENT_ID = "open1";
+      const DEFAULT_DISCORD =
+        "https://discord.gg/82HPpfkhQN";
+      const DEFAULT_WINDOW_MINUTES = 60;
 
-function checkInPlayer(type) {
-  if (!currentUser || !currentApplication) return;
+      let tournamentId = DEFAULT_TOURNAMENT_ID;
+      let currentUser = null;
+      let currentApplication = null;
+      let currentCheckIn = null;
+      let currentAvailability = null;
+      let currentTeams = {};
+      let siteData = {};
+      let tournamentData = {};
+      let listenersAttached = false;
+      let countdownTimer = null;
+      let actionInProgress = false;
 
-  const status = document.getElementById("checkInStatus");
+      function clean(value, fallback = "") {
+        const result = String(value ?? "").trim();
+        return result || fallback;
+      }
 
-  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).set({
-    uid: currentUser.uid,
-    rgId: currentApplication.rgId || "",
-    displayName: currentApplication.displayName || "",
-    rivalsIgn: currentApplication.rivalsIgn || "",
-    discordUsername: currentApplication.discordUsername || "",
-    peakRank: currentApplication.peakRank || "",
-    mainRole: currentApplication.mainRole || "",
-    region: currentApplication.region || "",
-    platform: currentApplication.platform || "",
-    type,
-    checkedIn: true,
-    checkedInAt: Date.now()
-  }).then(() => {
-    status.innerText = "✓ Check-in confirmed.";
-    status.style.color = "#22c55e";
-  }).catch(error => {
-    status.innerText = error.message;
-    status.style.color = "#ef4444";
-  });
-}
+      function normalize(value) {
+        return clean(value).toLowerCase();
+      }
 
-function undoCheckIn() {
-  if (!currentUser) return;
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
 
-  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).remove();
-}
+      function asNumber(value, fallback = 0) {
+        const result = Number(value);
+        return Number.isFinite(result) ? result : fallback;
+      }
 
-function markNotAvailable() {
-  if (!currentUser || !currentApplication) return;
+      function parseTimestamp(value) {
+        if (!value) return 0;
 
-  const reason = prompt("Optional: Tell staff why you are unavailable.");
+        if (typeof value === "number") {
+          return Number.isFinite(value) ? value : 0;
+        }
 
-  database.ref(`checkIns/${tournamentId}/${currentUser.uid}`).remove();
-  database.ref(`availability/${tournamentId}/${currentUser.uid}`).set({
-    uid: currentUser.uid,
-    rgId: currentApplication.rgId || "",
-    displayName: currentApplication.displayName || "",
-    rivalsIgn: currentApplication.rivalsIgn || "",
-    discordUsername: currentApplication.discordUsername || "",
-    peakRank: currentApplication.peakRank || "",
-    mainRole: currentApplication.mainRole || "",
-    region: currentApplication.region || "",
-    platform: currentApplication.platform || "",
-    status: "not_available",
-    reason: reason || "",
-    reportedAt: Date.now()
-  });
-}
+        const numeric = Number(value);
 
-function markAvailable() {
-  if (!currentUser) return;
+        if (Number.isFinite(numeric) && numeric > 0) {
+          return numeric;
+        }
 
-  database.ref(`availability/${tournamentId}/${currentUser.uid}`).remove();
-}
-  
-auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+        const parsed = new Date(value).getTime();
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
 
-  currentUser = user;
+      function formatDateTime(timestamp) {
+        const value = parseTimestamp(timestamp);
 
-  database.ref("site/currentTournament").once("value").then(activeTournament => {
-    tournamentId = activeTournament.val() || "open1";
+        if (!value) return "Not scheduled";
 
-    database.ref(`applications/${tournamentId}/${user.uid}`).on("value", snapshot => {
-      currentApplication = snapshot.val();
-      renderCheckIn();
-    });
+        return new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Chicago",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short"
+        }).format(new Date(value));
+      }
 
-    database.ref(`checkIns/${tournamentId}/${user.uid}`).on("value", snapshot => {
-      currentCheckIn = snapshot.val();
-      renderCheckIn();
-    });
+      function formatRelativeUpdate(timestamp) {
+        const value = parseTimestamp(timestamp);
 
-    database.ref(`availability/${tournamentId}/${user.uid}`).on("value", snapshot => {
-      currentAvailability = snapshot.val();
-      renderCheckIn();
-    });
+        if (!value) return "Awaiting status";
 
-    database.ref(`teams/${tournamentId}`).on("value", snapshot => {
-      currentTeams = snapshot.val() || {};
-      renderCheckIn();
-    });
+        const seconds = Math.max(
+          0,
+          Math.floor((Date.now() - value) / 1000)
+        );
 
-    database.ref("site").on("value", snapshot => {
-      siteData = snapshot.val() || {};
-      renderCheckIn();
-    });
-  });
-});
+        if (seconds < 10) return "Updated just now";
+        if (seconds < 60) return `Updated ${seconds}s ago`;
 
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
-</script>
+        const minutes = Math.floor(seconds / 60);
 
+        if (minutes < 60) {
+          return `Updated ${minutes}m ago`;
+        }
+
+        return formatDateTime(value);
+      }
+
+      function getEventName() {
+        return clean(
+          tournamentData.name ||
+          tournamentData.eventName ||
+          siteData.eventName,
+          "Rivals Gauntlet Tournament"
+        );
+      }
+
+      function getEventStart() {
+        return parseTimestamp(
+          tournamentData.countdownDate ||
+          tournamentData.startAt ||
+          tournamentData.startDate ||
+          siteData.countdownDate
+        );
+      }
+
+      function getDiscordInvite() {
+        return clean(
+          tournamentData.discordInvite ||
+          siteData.discordInvite,
+          DEFAULT_DISCORD
+        );
+      }
+
+      function getCheckInWindow() {
+        const eventStart = getEventStart();
+
+        const explicitOpen =
+          typeof tournamentData.checkInOpen === "boolean"
+            ? tournamentData.checkInOpen
+            : typeof siteData.checkInOpen === "boolean"
+              ? siteData.checkInOpen
+              : null;
+
+        const windowMinutes = Math.max(
+          1,
+          asNumber(
+            tournamentData.checkInWindowMinutes ||
+            siteData.checkInWindowMinutes,
+            DEFAULT_WINDOW_MINUTES
+          )
+        );
+
+        const opensAt =
+          parseTimestamp(
+            tournamentData.checkInOpensAt ||
+            tournamentData.checkInStartAt ||
+            siteData.checkInOpensAt
+          ) ||
+          (eventStart
+            ? eventStart - windowMinutes * 60 * 1000
+            : 0);
+
+        const closesAt = parseTimestamp(
+          tournamentData.checkInDeadline ||
+          tournamentData.checkInClosesAt ||
+          siteData.checkInDeadline ||
+          siteData.checkInClosesAt
+        );
+
+        const now = Date.now();
+
+        if (
+          currentCheckIn?.checkedIn &&
+          currentAvailability?.status !== "not_available"
+        ) {
+          return {
+            phase: "complete",
+            open: false,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        if (explicitOpen === true) {
+          if (closesAt && now > closesAt) {
+            return {
+              phase: "closed",
+              open: false,
+              opensAt,
+              closesAt,
+              eventStart
+            };
+          }
+
+          return {
+            phase: "open",
+            open: true,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        if (explicitOpen === false) {
+          return {
+            phase:
+              opensAt && now < opensAt
+                ? "upcoming"
+                : "closed",
+            open: false,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        if (!opensAt) {
+          return {
+            phase: "unscheduled",
+            open: false,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        if (now < opensAt) {
+          return {
+            phase: "upcoming",
+            open: false,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        if (closesAt && now > closesAt) {
+          return {
+            phase: "closed",
+            open: false,
+            opensAt,
+            closesAt,
+            eventStart
+          };
+        }
+
+        return {
+          phase: "open",
+          open: true,
+          opensAt,
+          closesAt,
+          eventStart
+        };
+      }
+
+      function normalizeRoster(teamValue) {
+        if (Array.isArray(teamValue)) {
+          return teamValue.filter(Boolean);
+        }
+
+        if (!teamValue || typeof teamValue !== "object") {
+          return [];
+        }
+
+        const roster =
+          teamValue.players ||
+          teamValue.roster ||
+          teamValue.members ||
+          teamValue.lineup;
+
+        if (Array.isArray(roster)) {
+          return roster.filter(Boolean);
+        }
+
+        if (roster && typeof roster === "object") {
+          return Object.values(roster).filter(Boolean);
+        }
+
+        return Object.values(teamValue).filter(value => {
+          return (
+            value &&
+            typeof value === "object" &&
+            (value.uid || value.userId || value.id)
+          );
+        });
+      }
+
+      function teamDisplayName(teamKey, teamValue) {
+        return clean(
+          teamValue?.teamName ||
+          teamValue?.name ||
+          currentTeams.teamNames?.[teamKey],
+          teamKey
+            .replace(/^team/i, "Team ")
+            .replace(/[_-]+/g, " ")
+        );
+      }
+
+      function findMyTeam(uid) {
+        if (!uid) return null;
+
+        const teamsObject =
+          currentTeams.teams ||
+          currentTeams.rosters ||
+          currentTeams ||
+          {};
+
+        for (const [teamKey, teamValue] of Object.entries(teamsObject)) {
+          if (
+            ["teamNames", "voiceChannels", "published", "updatedAt"].includes(
+              teamKey
+            )
+          ) {
+            continue;
+          }
+
+          const players = normalizeRoster(teamValue);
+
+          const found = players.find(player => {
+            const playerUid = clean(
+              player?.uid ||
+              player?.userId ||
+              player?.id
+            );
+
+            return playerUid === uid;
+          });
+
+          if (found) {
+            return {
+              teamKey,
+              teamName: teamDisplayName(teamKey, teamValue),
+              players,
+              player: found
+            };
+          }
+        }
+
+        return null;
+      }
+
+      function applicationStatus() {
+        return normalize(
+          currentApplication?.status ||
+          currentApplication?.applicationStatus
+        );
+      }
+
+      function wantsSubstituteRole() {
+        const value = normalize(
+          currentApplication?.wantsSub ||
+          currentApplication?.wantsSubstitute
+        );
+
+        return ["yes", "true", "1"].includes(value);
+      }
+
+      function isAssignedSubstitute() {
+        return Boolean(
+          currentApplication?.addedAsSubstitute ||
+          currentApplication?.substitutedInto ||
+          currentApplication?.substituteTeam
+        );
+      }
+
+      function getEligibility() {
+        const status = applicationStatus();
+        const myTeam = currentUser
+          ? findMyTeam(currentUser.uid)
+          : null;
+
+        const accepted = [
+          "accepted",
+          "approved",
+          "selected"
+        ].includes(status);
+
+        const substitute =
+          isAssignedSubstitute() ||
+          (status === "waitlist" && wantsSubstituteRole());
+
+        return {
+          status,
+          accepted,
+          substitute,
+          eligible: accepted || substitute,
+          myTeam
+        };
+      }
+
+      function setStep(elementId, textId, state, text) {
+        const element = document.getElementById(elementId);
+        const textElement = document.getElementById(textId);
+
+        element.className = `readiness-step ${state || ""}`;
+        textElement.textContent = text;
+      }
+
+      function badgeMarkup(label, tone, icon) {
+        const badge = document.getElementById("stateBadge");
+        badge.className = `state-badge ${tone || ""}`;
+        badge.innerHTML = `
+          <i class="fa-solid ${escapeHtml(icon)}"></i>
+          ${escapeHtml(label)}
+        `;
+      }
+
+      function commandMarkup({
+        icon,
+        tone = "",
+        title,
+        description,
+        note = "",
+        actions = ""
+      }) {
+        document.getElementById("commandBody").className = "command-body";
+        document.getElementById("commandBody").innerHTML = `
+          <div class="command-symbol ${escapeHtml(tone)}">
+            <i class="fa-solid ${escapeHtml(icon)}"></i>
+          </div>
+
+          <h2>${escapeHtml(title)}</h2>
+
+          <p class="command-description">
+            ${escapeHtml(description)}
+          </p>
+
+          ${
+            note
+              ? `
+                <div class="command-note">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <span>${escapeHtml(note)}</span>
+                </div>
+              `
+              : ""
+          }
+
+          <div class="command-actions">
+            ${actions}
+          </div>
+
+          <p id="checkInStatus" class="action-status" aria-live="polite"></p>
+        `;
+      }
+
+      function actionLink(label, href, icon, classes = "") {
+        return `
+          <a
+            class="button ${escapeHtml(classes)}"
+            href="${escapeHtml(href)}"
+          >
+            <i class="fa-solid ${escapeHtml(icon)}"></i>
+            ${escapeHtml(label)}
+          </a>
+        `;
+      }
+
+      function actionButton(
+        label,
+        handler,
+        icon,
+        classes = "",
+        id = ""
+      ) {
+        return `
+          <button
+            ${id ? `id="${escapeHtml(id)}"` : ""}
+            class="button ${escapeHtml(classes)}"
+            type="button"
+            onclick="${escapeHtml(handler)}"
+          >
+            <i class="fa-solid ${escapeHtml(icon)}"></i>
+            ${escapeHtml(label)}
+          </button>
+        `;
+      }
+
+      function renderReadiness() {
+        const eligibility = getEligibility();
+        const status = eligibility.status;
+        const unavailable =
+          currentAvailability?.status === "not_available";
+        const checkedIn =
+          Boolean(currentCheckIn?.checkedIn) && !unavailable;
+
+        let applicationState = "";
+        let applicationText = "Application Required";
+
+        if (currentApplication) {
+          if (["declined", "rejected"].includes(status)) {
+            applicationState = "blocked";
+            applicationText = "Application Declined";
+          } else if (
+            ["pending", "submitted", "under_review"].includes(status)
+          ) {
+            applicationState = "current";
+            applicationText = "Application Under Review";
+          } else if (
+            eligibility.eligible ||
+            status === "waitlist"
+          ) {
+            applicationState = "complete";
+            applicationText =
+              status === "waitlist"
+                ? "Waitlist Recorded"
+                : "Application Approved";
+          }
+        } else {
+          applicationState = "current";
+        }
+
+        let teamState = "";
+        let teamText = "Team Pending";
+
+        if (eligibility.myTeam) {
+          teamState = "complete";
+          teamText = eligibility.myTeam.teamName;
+        } else if (eligibility.substitute) {
+          teamState = "current";
+          teamText = isAssignedSubstitute()
+            ? "Substitute Assignment"
+            : "Substitute Pool";
+        } else if (eligibility.accepted) {
+          teamState = "current";
+          teamText = "Assignment Pending";
+        }
+
+        let checkState = "";
+        let checkText = "Tournament Check-In";
+
+        if (unavailable) {
+          checkState = "blocked";
+          checkText = "Unavailable";
+        } else if (checkedIn) {
+          checkState = "complete";
+          checkText = "Checked In";
+        } else if (eligibility.eligible) {
+          checkState = "current";
+          checkText = "Check-In Pending";
+        }
+
+        setStep(
+          "applicationStep",
+          "applicationStepText",
+          applicationState,
+          applicationText
+        );
+
+        setStep(
+          "teamStep",
+          "teamStepText",
+          teamState,
+          teamText
+        );
+
+        setStep(
+          "checkInStep",
+          "checkInStepText",
+          checkState,
+          checkText
+        );
+      }
+
+      function renderIntel() {
+        const eligibility = getEligibility();
+        const app = currentApplication || {};
+        const myTeam = eligibility.myTeam;
+
+        const displayName = clean(
+          app.displayName ||
+          myTeam?.player?.displayName ||
+          currentUser?.displayName,
+          "Rivals Gauntlet Player"
+        );
+
+        const rgId = clean(
+          app.rgId ||
+          myTeam?.player?.rgId,
+          "Not assigned"
+        );
+
+        const rosterStatus = eligibility.substitute
+          ? isAssignedSubstitute()
+            ? "Assigned Substitute"
+            : "Substitute Pool"
+          : eligibility.accepted
+            ? "Main Roster"
+            : currentApplication
+              ? clean(app.status, "Application Recorded")
+              : "Not Registered";
+
+        const teamName =
+          myTeam?.teamName ||
+          clean(
+            app.substitutedInto ||
+            app.substituteTeam,
+            eligibility.substitute
+              ? "Awaiting Substitute Call"
+              : "Team Pending"
+          ).replace(/^team/i, "Team ");
+
+        const role = clean(
+          app.mainRole ||
+          app.preferredRole,
+          "Role not set"
+        );
+
+        const rank = clean(
+          app.peakRank,
+          "Rank not set"
+        );
+
+        const updatedAt =
+          currentAvailability?.reportedAt ||
+          currentCheckIn?.checkedInAt ||
+          currentCheckIn?.updatedAt ||
+          0;
+
+        document.getElementById("intelPlayer").textContent =
+          displayName;
+        document.getElementById("intelRgId").textContent =
+          rgId;
+        document.getElementById("intelRoster").textContent =
+          rosterStatus;
+        document.getElementById("intelTeam").textContent =
+          teamName;
+        document.getElementById("intelCompetitive").textContent =
+          `${role} • ${rank}`;
+        document.getElementById("intelEventTime").textContent =
+          formatDateTime(getEventStart());
+        document.getElementById("intelUpdated").textContent =
+          formatRelativeUpdate(updatedAt);
+      }
+
+      function renderNextStep() {
+        const eligibility = getEligibility();
+        const unavailable =
+          currentAvailability?.status === "not_available";
+        const checkedIn =
+          Boolean(currentCheckIn?.checkedIn) && !unavailable;
+
+        let title = "Stay Ready";
+        let description =
+          "Tournament instructions remain connected to your dashboard and the official Discord.";
+
+        if (!currentApplication) {
+          title = "Submit an Application";
+          description =
+            "Tournament check-in becomes available after your event application is approved.";
+        } else if (unavailable) {
+          title = "Staff Has Been Notified";
+          description =
+            "Restore your availability here if your situation changes before staff finalizes the roster.";
+        } else if (checkedIn) {
+          title = "Monitor Your Dashboard";
+          description =
+            "You are confirmed. Watch your dashboard and Discord for team, lobby and match instructions.";
+        } else if (eligibility.eligible) {
+          title = "Complete Check-In";
+          description =
+            "Confirm attendance during the active window, then remain available for tournament instructions.";
+        }
+
+        document.getElementById("nextStepTitle").textContent =
+          title;
+        document.getElementById("nextStepDescription").textContent =
+          description;
+      }
+
+      function renderCommand() {
+        const eligibility = getEligibility();
+        const status = eligibility.status;
+        const unavailable =
+          currentAvailability?.status === "not_available";
+        const checkedIn =
+          Boolean(currentCheckIn?.checkedIn) && !unavailable;
+        const windowState = getCheckInWindow();
+
+        if (!currentApplication) {
+          badgeMarkup(
+            "Application Required",
+            "warning",
+            "fa-file-circle-plus"
+          );
+
+          commandMarkup({
+            icon: "fa-file-signature",
+            tone: "warning",
+            title: "You Are Not Registered for This Event",
+            description:
+              "Submit a tournament application before player check-in can be completed.",
+            note:
+              "Your application, team assignment and tournament-day instructions will appear on the player dashboard.",
+            actions:
+              actionLink(
+                "Apply for Tournament",
+                "apply.html",
+                "fa-file-signature",
+                "primary"
+              ) +
+              actionLink(
+                "View Tournament",
+                "tournament.html",
+                "fa-trophy"
+              )
+          });
+
+          return;
+        }
+
+        if (
+          ["pending", "submitted", "under_review"].includes(status)
+        ) {
+          badgeMarkup(
+            "Application Under Review",
+            "",
+            "fa-hourglass-half"
+          );
+
+          commandMarkup({
+            icon: "fa-clock",
+            title: "Your Application Is Being Reviewed",
+            description:
+              "Tournament staff has received your application. Check-in becomes available if you are accepted or approved as a substitute.",
+            note:
+              "Keep your Discord and player profile information current while selections are reviewed.",
+            actions:
+              actionLink(
+                "View Dashboard",
+                "dashboard.html",
+                "fa-grid-2",
+                "primary"
+              ) +
+              actionLink(
+                "Edit Profile",
+                "settings.html",
+                "fa-user-pen"
+              )
+          });
+
+          return;
+        }
+
+        if (["declined", "rejected"].includes(status)) {
+          badgeMarkup(
+            "Not Selected",
+            "danger",
+            "fa-circle-xmark"
+          );
+
+          commandMarkup({
+            icon: "fa-user-xmark",
+            tone: "danger",
+            title: "This Tournament Application Is Complete",
+            description:
+              "You were not selected for the active event. Your Rivals Gauntlet account remains ready for future tournaments.",
+            actions:
+              actionLink(
+                "View Tournament",
+                "tournament.html",
+                "fa-trophy",
+                "primary"
+              ) +
+              actionLink(
+                "Return to Dashboard",
+                "dashboard.html",
+                "fa-grid-2"
+              )
+          });
+
+          return;
+        }
+
+        if (!eligibility.eligible) {
+          badgeMarkup(
+            "Waitlist Status",
+            "",
+            "fa-list"
+          );
+
+          commandMarkup({
+            icon: "fa-user-clock",
+            title: "You Are Currently on the Waitlist",
+            description:
+              "Tournament staff may contact you if a roster or substitute position becomes available.",
+            note:
+              "Remain available in Discord. Your check-in options will update automatically if your status changes.",
+            actions:
+              actionLink(
+                "Open Dashboard",
+                "dashboard.html",
+                "fa-grid-2",
+                "primary"
+              ) +
+              `
+                <a
+                  class="button discord"
+                  href="${escapeHtml(getDiscordInvite())}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class="fa-brands fa-discord"></i>
+                  Open Discord
+                </a>
+              `
+          });
+
+          return;
+        }
+
+        if (unavailable) {
+          badgeMarkup(
+            "Marked Unavailable",
+            "danger",
+            "fa-user-xmark"
+          );
+
+          commandMarkup({
+            icon: "fa-triangle-exclamation",
+            tone: "danger",
+            title: "Tournament Staff Has Been Notified",
+            description:
+              "Your attendance status is unavailable and any previous check-in has been removed.",
+            note:
+              currentAvailability?.reason
+                ? `Reason provided: ${clean(currentAvailability.reason)}`
+                : "Restore your availability immediately if your situation changes.",
+            actions:
+              actionButton(
+                "Mark Available Again",
+                "markAvailable()",
+                "fa-user-check",
+                "primary",
+                "markAvailableButton"
+              ) +
+              actionLink(
+                "Open Dashboard",
+                "dashboard.html",
+                "fa-grid-2"
+              )
+          });
+
+          return;
+        }
+
+        if (checkedIn) {
+          badgeMarkup(
+            "Check-In Confirmed",
+            "success",
+            "fa-circle-check"
+          );
+
+          commandMarkup({
+            icon: "fa-circle-check",
+            tone: "success",
+            title: "You Are Checked In and Ready",
+            description:
+              "Your attendance is confirmed. The player dashboard and Nexus Check-In Desk have updated with your ready status.",
+            note:
+              "Stay available in the official Discord and monitor your dashboard for lobby, team and match instructions.",
+            actions:
+              actionLink(
+                "Open Player Dashboard",
+                "dashboard.html",
+                "fa-grid-2",
+                "primary"
+              ) +
+              actionButton(
+                "Undo Check-In",
+                "undoCheckIn()",
+                "fa-rotate-left",
+                "",
+                "undoCheckInButton"
+              ) +
+              actionButton(
+                "I'm Not Available",
+                "openUnavailableModal()",
+                "fa-user-xmark",
+                "danger"
+              )
+          });
+
+          return;
+        }
+
+        if (windowState.open) {
+          const substituteLabel = eligibility.substitute
+            ? "Check In as Substitute"
+            : "Confirm Tournament Check-In";
+
+          badgeMarkup(
+            "Action Required",
+            "warning",
+            "fa-circle-exclamation"
+          );
+
+          commandMarkup({
+            icon: "fa-user-check",
+            tone: "warning",
+            title: eligibility.substitute
+              ? "Confirm Substitute Availability"
+              : "Confirm That You Are Ready to Compete",
+            description:
+              eligibility.substitute
+                ? "Check in to let tournament staff know that you are present and available if a roster opening occurs."
+                : "Check in now to confirm that you are present, available and ready for tournament staff.",
+            note:
+              "Missing the check-in window may cause your position to be offered to an available substitute.",
+            actions:
+              actionButton(
+                substituteLabel,
+                `checkInPlayer('${eligibility.substitute ? "substitute" : "main"}')`,
+                "fa-circle-check",
+                "success",
+                "checkInButton"
+              ) +
+              actionButton(
+                "I'm Not Available",
+                "openUnavailableModal()",
+                "fa-user-xmark",
+                "danger"
+              )
+          });
+
+          return;
+        }
+
+        const upcoming = windowState.phase === "upcoming";
+
+        badgeMarkup(
+          upcoming
+            ? "Window Not Open"
+            : "Check-In Closed",
+          upcoming ? "" : "warning",
+          upcoming ? "fa-lock" : "fa-clock"
+        );
+
+        commandMarkup({
+          icon: upcoming ? "fa-lock" : "fa-clock",
+          tone: upcoming ? "" : "warning",
+          title: upcoming
+            ? "Tournament Check-In Has Not Opened Yet"
+            : "The Check-In Window Is Closed",
+          description: upcoming
+            ? `Check-in opens at ${formatDateTime(windowState.opensAt)}. This page will unlock automatically when the window begins.`
+            : "Tournament staff has closed player check-in for the active event.",
+          note: upcoming
+            ? "You can report that you are unavailable at any time. Otherwise, return when the countdown reaches zero."
+            : "Contact tournament staff through Discord if you believe your attendance status needs to be corrected.",
+          actions:
+            actionButton(
+              "I'm Not Available",
+              "openUnavailableModal()",
+              "fa-user-xmark",
+              "danger"
+            ) +
+            `
+              <a
+                class="button discord"
+                href="${escapeHtml(getDiscordInvite())}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fa-brands fa-discord"></i>
+                Contact Staff
+              </a>
+            `
+        });
+      }
+
+      function renderWindow() {
+        const windowState = getCheckInWindow();
+        const label = document.getElementById("windowLabel");
+        const state = document.getElementById("windowState");
+        const description =
+          document.getElementById("windowDescription");
+        const countdown =
+          document.getElementById("windowCountdown");
+
+        if (windowState.phase === "complete") {
+          label.textContent = "Attendance Status";
+          state.textContent = "Confirmed";
+          description.textContent =
+            "Your tournament check-in is complete.";
+          countdown.hidden = true;
+          return;
+        }
+
+        if (windowState.phase === "open") {
+          label.textContent = "Check-In Window";
+          state.textContent = "Open Now";
+
+          description.textContent = windowState.closesAt
+            ? `Closes ${formatDateTime(windowState.closesAt)}`
+            : windowState.eventStart
+              ? `Tournament begins ${formatDateTime(windowState.eventStart)}`
+              : "Confirm your attendance now.";
+
+          countdown.hidden = false;
+
+          const target =
+            windowState.closesAt ||
+            windowState.eventStart;
+
+          updateCountdownUnits(target);
+          return;
+        }
+
+        if (windowState.phase === "upcoming") {
+          label.textContent = "Check-In Opens";
+          state.textContent = formatDateTime(
+            windowState.opensAt
+          );
+          description.textContent =
+            "This page unlocks automatically when the window begins.";
+          countdown.hidden = false;
+          updateCountdownUnits(windowState.opensAt);
+          return;
+        }
+
+        if (windowState.phase === "closed") {
+          label.textContent = "Check-In Window";
+          state.textContent = "Closed";
+          description.textContent =
+            "Contact tournament staff if you need assistance.";
+          countdown.hidden = true;
+          return;
+        }
+
+        label.textContent = "Check-In Window";
+        state.textContent = "Not Scheduled";
+        description.textContent =
+          "Tournament staff has not published a check-in time.";
+        countdown.hidden = true;
+      }
+
+      function updateCountdownUnits(target) {
+        const timestamp = parseTimestamp(target);
+
+        if (!timestamp) {
+          document.getElementById("windowCountdown").hidden = true;
+          return;
+        }
+
+        const totalSeconds = Math.max(
+          0,
+          Math.floor((timestamp - Date.now()) / 1000)
+        );
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor(
+          (totalSeconds % 3600) / 60
+        );
+        const seconds = totalSeconds % 60;
+
+        document.getElementById("countHours").textContent =
+          String(hours).padStart(2, "0");
+        document.getElementById("countMinutes").textContent =
+          String(minutes).padStart(2, "0");
+        document.getElementById("countSeconds").textContent =
+          String(seconds).padStart(2, "0");
+      }
+
+      function renderAll() {
+        document.getElementById("heroEventName").textContent =
+          getEventName();
+
+        document.getElementById("discordLink").href =
+          getDiscordInvite();
+
+        renderWindow();
+        renderReadiness();
+        renderCommand();
+        renderIntel();
+        renderNextStep();
+      }
+
+      function startCountdown() {
+        clearInterval(countdownTimer);
+
+        countdownTimer = window.setInterval(() => {
+          const before = getCheckInWindow().phase;
+          renderWindow();
+          renderIntel();
+
+          const after = getCheckInWindow().phase;
+
+          if (before !== after) {
+            renderAll();
+          }
+        }, 1000);
+      }
+
+      function setActionStatus(message, tone = "") {
+        const status = document.getElementById("checkInStatus");
+
+        if (!status) return;
+
+        status.className = `action-status ${tone}`;
+        status.textContent = message;
+      }
+
+      function friendlyError(error, fallback) {
+        const code = normalize(error?.code);
+
+        if (code.includes("permission")) {
+          return "Firebase denied this attendance update. Your check-in rules may not allow writes to your own record.";
+        }
+
+        if (
+          code.includes("network") ||
+          code.includes("disconnected")
+        ) {
+          return "The realtime connection is unavailable. Reconnect and try again.";
+        }
+
+        return error?.message || fallback;
+      }
+
+      function playerRecord(type) {
+        const app = currentApplication || {};
+        const myTeam = currentUser
+          ? findMyTeam(currentUser.uid)
+          : null;
+
+        return {
+          uid: currentUser.uid,
+          rgId: clean(
+            app.rgId ||
+            myTeam?.player?.rgId
+          ),
+          displayName: clean(
+            app.displayName ||
+            myTeam?.player?.displayName ||
+            currentUser.displayName
+          ),
+          rivalsIgn: clean(
+            app.rivalsIgn ||
+            myTeam?.player?.rivalsIgn
+          ),
+          discordUsername: clean(app.discordUsername),
+          peakRank: clean(app.peakRank),
+          mainRole: clean(
+            app.mainRole ||
+            app.preferredRole
+          ),
+          region: clean(app.region),
+          platform: clean(app.platform),
+          teamKey: clean(myTeam?.teamKey),
+          teamName: clean(myTeam?.teamName),
+          type,
+          checkedIn: true,
+          checkedInAt:
+            firebase.database.ServerValue.TIMESTAMP,
+          updatedAt:
+            firebase.database.ServerValue.TIMESTAMP
+        };
+      }
+
+      async function runAction(
+        buttonId,
+        loadingLabel,
+        action
+      ) {
+        if (actionInProgress) return;
+
+        const button = document.getElementById(buttonId);
+        const originalHtml = button?.innerHTML || "";
+
+        actionInProgress = true;
+
+        if (button) {
+          button.disabled = true;
+          button.innerHTML = `
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            ${escapeHtml(loadingLabel)}
+          `;
+        }
+
+        try {
+          await action();
+        } finally {
+          actionInProgress = false;
+
+          if (button && document.body.contains(button)) {
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+          }
+        }
+      }
+
+      window.checkInPlayer = async type => {
+        if (!currentUser || !currentApplication) return;
+
+        const windowState = getCheckInWindow();
+
+        if (!windowState.open) {
+          setActionStatus(
+            "The tournament check-in window is not open.",
+            "error"
+          );
+          return;
+        }
+
+        await runAction(
+          "checkInButton",
+          "Confirming...",
+          async () => {
+            setActionStatus("Confirming your attendance...");
+
+            try {
+              const updates = {};
+              updates[
+                `checkIns/${tournamentId}/${currentUser.uid}`
+              ] = playerRecord(type);
+              updates[
+                `availability/${tournamentId}/${currentUser.uid}`
+              ] = null;
+
+              await database.ref().update(updates);
+
+              setActionStatus(
+                "✓ Check-in confirmed. Your dashboard and the staff Check-In Desk have updated.",
+                "success"
+              );
+            } catch (error) {
+              console.error(
+                "Tournament check-in failed:",
+                error
+              );
+
+              setActionStatus(
+                friendlyError(
+                  error,
+                  "Tournament check-in could not be saved."
+                ),
+                "error"
+              );
+            }
+          }
+        );
+      };
+
+      window.undoCheckIn = async () => {
+        if (!currentUser) return;
+
+        const confirmed = window.confirm(
+          "Undo your tournament check-in?\n\nStaff will see your status return to pending."
+        );
+
+        if (!confirmed) return;
+
+        await runAction(
+          "undoCheckInButton",
+          "Undoing...",
+          async () => {
+            setActionStatus("Updating your attendance...");
+
+            try {
+              await database
+                .ref(
+                  `checkIns/${tournamentId}/${currentUser.uid}`
+                )
+                .remove();
+
+              setActionStatus(
+                "Your tournament check-in has been undone.",
+                "success"
+              );
+            } catch (error) {
+              console.error(
+                "Undo check-in failed:",
+                error
+              );
+
+              setActionStatus(
+                friendlyError(
+                  error,
+                  "Your check-in could not be undone."
+                ),
+                "error"
+              );
+            }
+          }
+        );
+      };
+
+      window.openUnavailableModal = () => {
+        const modal =
+          document.getElementById("unavailableModal");
+        const input =
+          document.getElementById("unavailableReason");
+
+        input.value = clean(
+          currentAvailability?.reason
+        );
+
+        document.getElementById("reasonCount").textContent =
+          `${input.value.length} / 300`;
+
+        modal.hidden = false;
+        document.body.classList.add("modal-open");
+
+        window.setTimeout(() => input.focus(), 40);
+      };
+
+      window.closeUnavailableModal = () => {
+        document.getElementById(
+          "unavailableModal"
+        ).hidden = true;
+        document.body.classList.remove("modal-open");
+      };
+
+      window.confirmNotAvailable = async () => {
+        if (!currentUser || !currentApplication) return;
+
+        const reason = clean(
+          document.getElementById("unavailableReason").value
+        );
+
+        await runAction(
+          "confirmUnavailableButton",
+          "Updating...",
+          async () => {
+            try {
+              const app = currentApplication || {};
+              const myTeam = findMyTeam(currentUser.uid);
+              const updates = {};
+
+              updates[
+                `checkIns/${tournamentId}/${currentUser.uid}`
+              ] = null;
+
+              updates[
+                `availability/${tournamentId}/${currentUser.uid}`
+              ] = {
+                uid: currentUser.uid,
+                rgId: clean(
+                  app.rgId ||
+                  myTeam?.player?.rgId
+                ),
+                displayName: clean(
+                  app.displayName ||
+                  myTeam?.player?.displayName ||
+                  currentUser.displayName
+                ),
+                rivalsIgn: clean(
+                  app.rivalsIgn ||
+                  myTeam?.player?.rivalsIgn
+                ),
+                discordUsername: clean(
+                  app.discordUsername
+                ),
+                peakRank: clean(app.peakRank),
+                mainRole: clean(
+                  app.mainRole ||
+                  app.preferredRole
+                ),
+                region: clean(app.region),
+                platform: clean(app.platform),
+                teamKey: clean(myTeam?.teamKey),
+                teamName: clean(myTeam?.teamName),
+                status: "not_available",
+                reason,
+                reportedAt:
+                  firebase.database.ServerValue.TIMESTAMP,
+                updatedAt:
+                  firebase.database.ServerValue.TIMESTAMP
+              };
+
+              await database.ref().update(updates);
+              closeUnavailableModal();
+            } catch (error) {
+              console.error(
+                "Unavailable status failed:",
+                error
+              );
+
+              window.alert(
+                friendlyError(
+                  error,
+                  "Your availability could not be updated."
+                )
+              );
+            }
+          }
+        );
+      };
+
+      window.markAvailable = async () => {
+        if (!currentUser) return;
+
+        await runAction(
+          "markAvailableButton",
+          "Restoring...",
+          async () => {
+            setActionStatus("Restoring your availability...");
+
+            try {
+              await database
+                .ref(
+                  `availability/${tournamentId}/${currentUser.uid}`
+                )
+                .remove();
+
+              setActionStatus(
+                "✓ Your availability has been restored. Complete check-in when the window is open.",
+                "success"
+              );
+            } catch (error) {
+              console.error(
+                "Restore availability failed:",
+                error
+              );
+
+              setActionStatus(
+                friendlyError(
+                  error,
+                  "Your availability could not be restored."
+                ),
+                "error"
+              );
+            }
+          }
+        );
+      };
+
+      function attachRealtimeListeners() {
+        if (!currentUser || listenersAttached) return;
+
+        listenersAttached = true;
+
+        database
+          .ref(
+            `applications/${tournamentId}/${currentUser.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentApplication = snapshot.val();
+              renderAll();
+            },
+            error => {
+              console.error(
+                "Application listener failed:",
+                error
+              );
+            }
+          );
+
+        database
+          .ref(
+            `checkIns/${tournamentId}/${currentUser.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentCheckIn = snapshot.val();
+              renderAll();
+            },
+            error => {
+              console.error(
+                "Check-in listener failed:",
+                error
+              );
+            }
+          );
+
+        database
+          .ref(
+            `availability/${tournamentId}/${currentUser.uid}`
+          )
+          .on(
+            "value",
+            snapshot => {
+              currentAvailability = snapshot.val();
+              renderAll();
+            },
+            error => {
+              console.error(
+                "Availability listener failed:",
+                error
+              );
+            }
+          );
+
+        database
+          .ref(`teams/${tournamentId}`)
+          .on(
+            "value",
+            snapshot => {
+              currentTeams = snapshot.val() || {};
+              renderAll();
+            },
+            error => {
+              console.error(
+                "Teams listener failed:",
+                error
+              );
+            }
+          );
+
+        database
+          .ref(`tournaments/${tournamentId}`)
+          .on(
+            "value",
+            snapshot => {
+              tournamentData = snapshot.val() || {};
+              renderAll();
+            },
+            error => {
+              console.warn(
+                "Tournament configuration unavailable:",
+                error
+              );
+            }
+          );
+
+        database.ref("site").on(
+          "value",
+          snapshot => {
+            siteData = snapshot.val() || {};
+            renderAll();
+          },
+          error => {
+            console.error(
+              "Site listener failed:",
+              error
+            );
+          }
+        );
+
+        startCountdown();
+      }
+
+      document
+        .getElementById("unavailableReason")
+        .addEventListener("input", event => {
+          document.getElementById(
+            "reasonCount"
+          ).textContent =
+            `${event.target.value.length} / 300`;
+        });
+
+      document
+        .getElementById("unavailableModal")
+        .addEventListener("click", event => {
+          if (event.target.id === "unavailableModal") {
+            closeUnavailableModal();
+          }
+        });
+
+      document.addEventListener("keydown", event => {
+        if (
+          event.key === "Escape" &&
+          !document.getElementById(
+            "unavailableModal"
+          ).hidden
+        ) {
+          closeUnavailableModal();
+        }
+      });
+
+      database.ref(".info/connected").on(
+        "value",
+        snapshot => {
+          const online = snapshot.val() === true;
+          const pill =
+            document.getElementById("connectionPill");
+
+          pill.classList.toggle("online", online);
+
+          document.getElementById(
+            "connectionText"
+          ).textContent =
+            online
+              ? "Realtime Connected"
+              : "Reconnecting";
+        }
+      );
+
+      auth.onAuthStateChanged(async user => {
+        if (!user) {
+          window.location.replace(
+            "login.html?redirect=check-in.html"
+          );
+          return;
+        }
+
+        currentUser = user;
+
+        try {
+          const activeTournament = await database
+            .ref("site/currentTournament")
+            .once("value");
+
+          tournamentId =
+            clean(
+              activeTournament.val(),
+              DEFAULT_TOURNAMENT_ID
+            );
+
+          attachRealtimeListeners();
+        } catch (error) {
+          console.error(
+            "Active tournament lookup failed:",
+            error
+          );
+
+          tournamentId = DEFAULT_TOURNAMENT_ID;
+          attachRealtimeListeners();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

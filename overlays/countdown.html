@@ -1643,7 +1643,8 @@
         lastMinute: null,
 
         ended: false
-      };
+        countdownArmed: false,
+        };
 
       const stage =
         document.getElementById("stage");
@@ -1781,13 +1782,47 @@
       }
 
       function startTime() {
-        return timestamp(
-          data.countdown.startTime ||
-          data.countdown.countdownDate ||
-          data.countdown.startTimeLocal ||
-          data.site.countdownDate
-        );
-      }
+  const now = Date.now();
+
+  const possibleTimes = [
+    data.countdown.startTime,
+    data.countdown.countdownDate,
+    data.site.countdownDate,
+    data.countdown.startTimeLocal
+  ];
+
+  /*
+   * Use the first future timestamp.
+   * Expired values are skipped instead of immediately
+   * triggering the Broadcast Starting screen.
+   */
+  for (const value of possibleTimes) {
+    const stamp = timestamp(value);
+
+    if (stamp > now) {
+      return stamp;
+    }
+  }
+
+  /*
+   * Allow the starting screen to survive a browser refresh
+   * for ten minutes after a real countdown finishes.
+   */
+  for (const value of possibleTimes) {
+    const stamp = timestamp(value);
+    const age = now - stamp;
+
+    if (
+      stamp > 0 &&
+      age >= 0 &&
+      age <= 10 * 60 * 1000
+    ) {
+      return stamp;
+    }
+  }
+
+  return 0;
+}
 
       function eventTitle() {
         return clean(
@@ -2573,128 +2608,113 @@
       }
 
       function updateTimer() {
-        const start =
-          startTime();
+  const start = startTime();
 
-        if (!start) {
-          timer.textContent =
-            "--:--";
+  if (!start) {
+    data.startStamp = 0;
+    data.initialRemaining = 0;
+    data.lastText = "";
+    data.lastMinute = null;
+    data.ended = false;
+    data.countdownArmed = false;
 
-          timer.classList.remove(
-            "long"
-          );
+    timer.textContent = "--:--";
+    timer.classList.remove("long", "tick");
 
-          schedule.textContent =
-            "Waiting for the broadcast start time.";
+    schedule.textContent =
+      "Waiting for the broadcast start time.";
 
-          starting.classList.remove(
-            "active"
-          );
+    starting.classList.remove("active");
+    stage.classList.remove("final-ten");
 
-          stage.classList.remove(
-            "final-ten"
-          );
+    stage.style.setProperty(
+      "--progress",
+      "0deg"
+    );
 
-          stage.style.setProperty(
-            "--progress",
-            "0deg"
-          );
+    return;
+  }
 
-          return;
-        }
+  const now = Date.now();
+  const remaining = start - now;
 
-        if (
-          data.startStamp !==
-          start
-        ) {
-          data.startStamp =
-            start;
+  if (data.startStamp !== start) {
+    data.startStamp = start;
 
-          data.initialRemaining =
-            Math.max(
-              0,
-              start -
-              Date.now()
-            );
+    data.initialRemaining = Math.max(
+      0,
+      remaining
+    );
 
-          data.lastMinute =
-            null;
+    data.lastText = "";
+    data.lastMinute = null;
+    data.ended = false;
 
-          data.ended =
-            false;
+    /*
+     * Records that this page actually observed an
+     * active countdown before reaching zero.
+     */
+    data.countdownArmed = remaining > 0;
 
-          starting.classList.remove(
-            "active"
-          );
-        }
+    starting.classList.remove("active");
+  }
 
-        const remaining =
-          start -
-          Date.now();
+  if (remaining > 0) {
+    data.countdownArmed = true;
+  }
 
-        const text =
-          formatTime(
-            remaining
-          );
+  const text = formatTime(remaining);
 
-        if (
-          text !==
-          data.lastText
-        ) {
-          data.lastText =
-            text;
+  if (text !== data.lastText) {
+    data.lastText = text;
 
-          timer.textContent =
-            text;
+    timer.textContent = text;
 
-          timer.classList.toggle(
-            "long",
-            text.length > 5
-          );
+    timer.classList.toggle(
+      "long",
+      text.length > 5
+    );
 
-          pulse(
-            remaining
-          );
-        }
+    pulse(remaining);
+  }
 
-        schedule.innerHTML =
-          remaining > 0
-            ? `Scheduled for <strong>${
-                escapeHtml(
-                  scheduledText(
-                    start
-                  )
-                )
-              }</strong>`
-            : "The broadcast is beginning now.";
+  schedule.innerHTML =
+    remaining > 0
+      ? `Scheduled for <strong>${
+          escapeHtml(
+            scheduledText(start)
+          )
+        }</strong>`
+      : "The broadcast is beginning now.";
 
-        stage.classList.toggle(
-          "final-ten",
-          remaining > 0 &&
-          remaining <= 10000
-        );
+  stage.classList.toggle(
+    "final-ten",
+    remaining > 0 &&
+    remaining <= 10000
+  );
 
-        updateProgress(
-          remaining
-        );
+  updateProgress(remaining);
+  ensureRotation();
 
-        ensureRotation();
+  if (remaining <= 0) {
+    timer.textContent = "00:00";
 
-        if (
-          remaining <= 0 &&
-          !data.ended
-        ) {
-          data.ended =
-            true;
+    const recentlyFinished =
+      now - start <=
+      10 * 60 * 1000;
 
-          timer.textContent =
-            "00:00";
-
-          starting.classList.add(
-            "active"
-          );
-        }
-      }
+    if (
+      !data.ended &&
+      (
+        data.countdownArmed ||
+        recentlyFinished
+      )
+    ) {
+      data.ended = true;
+      starting.classList.add("active");
+    }
+  }
+}
 
       function refresh() {
         eventName.textContent =

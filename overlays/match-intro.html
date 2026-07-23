@@ -523,18 +523,32 @@
         );
     }
 
-    .team-panel.left {
-      animation:
-        teamLeftIn 0.85s
-        cubic-bezier(0.18, 0.86, 0.24, 1)
-        both;
+    .team-panel.left,
+    .team-panel.right,
+    .vs-column {
+      opacity: 1;
+      transform: none;
     }
 
-    .team-panel.right {
+    .stage.intro-playing .team-panel.left {
       animation:
-        teamRightIn 0.85s
-        cubic-bezier(0.18, 0.86, 0.24, 1)
-        both;
+        teamLeftIn 0.96s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        0.12s both;
+    }
+
+    .stage.intro-playing .team-panel.right {
+      animation:
+        teamRightIn 0.96s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        1.28s both;
+    }
+
+    .stage.intro-playing .vs-column {
+      animation:
+        vsIn 0.72s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
+        2.22s both;
     }
 
     .team-header {
@@ -674,22 +688,38 @@
           rgba(255, 255, 255, 0.008)
         );
 
+      opacity: 1;
+      transform: none;
+    }
+
+    .stage.intro-playing .player-card {
       opacity: 0;
 
       transform:
-        translateY(13px)
-        scale(0.986);
+        translateY(18px)
+        scale(0.982);
 
       animation:
-        playerCardIn 0.62s
-        cubic-bezier(0.18, 0.86, 0.24, 1)
+        playerCardIn 0.58s
+        cubic-bezier(0.16, 0.9, 0.2, 1)
         forwards;
+    }
 
+    .stage.intro-playing .left .player-card {
       animation-delay:
         calc(
-          0.2s +
+          0.58s +
           var(--delay, 0) *
-          0.08s
+          0.075s
+        );
+    }
+
+    .stage.intro-playing .right .player-card {
+      animation-delay:
+        calc(
+          1.72s +
+          var(--delay, 0) *
+          0.075s
         );
     }
 
@@ -713,6 +743,49 @@
     .right .player-card::after {
       background:
         rgba(var(--blue-rgb), 0.54);
+    }
+
+    .roster-empty {
+      grid-column: 1 / -1;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      min-height: 260px;
+
+      border:
+        1px dashed
+        rgba(255, 255, 255, 0.08);
+
+      border-radius: 17px;
+
+      color: var(--muted);
+      background:
+        rgba(255, 255, 255, 0.01);
+
+      text-align: center;
+    }
+
+    .roster-empty strong {
+      color: var(--text);
+
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .roster-empty small {
+      max-width: 360px;
+
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+      text-transform: uppercase;
     }
 
     .player-photo {
@@ -1116,36 +1189,69 @@
     @keyframes teamLeftIn {
       from {
         opacity: 0;
-        transform: translateX(-34px);
+
+        transform:
+          translateX(-145px)
+          scale(0.985);
+
+        filter: blur(9px);
+      }
+
+      68% {
+        opacity: 1;
+        filter: blur(0);
       }
 
       to {
         opacity: 1;
         transform: none;
+        filter: none;
       }
     }
 
     @keyframes teamRightIn {
       from {
         opacity: 0;
-        transform: translateX(34px);
+
+        transform:
+          translateX(145px)
+          scale(0.985);
+
+        filter: blur(9px);
+      }
+
+      68% {
+        opacity: 1;
+        filter: blur(0);
       }
 
       to {
         opacity: 1;
         transform: none;
+        filter: none;
       }
     }
 
     @keyframes vsIn {
       from {
         opacity: 0;
-        transform: scale(0.92);
+
+        transform:
+          scale(0.62)
+          rotate(-8deg);
+
+        filter: blur(8px);
+      }
+
+      70% {
+        opacity: 1;
+        filter: blur(0);
       }
 
       to {
         opacity: 1;
         transform: none;
+        filter: none;
       }
     }
 
@@ -1368,19 +1474,16 @@
         countdown: {},
         intro: {},
         players: {},
-        publicPlayers: {},
-        publicProfiles: {},
         teams: {}
       };
 
-      var readState = {
-        players: true,
-        publicPlayers: true,
-        publicProfiles: true,
-        teams: true
-      };
-
+      var db = null;
+      var teamsRef = null;
+      var activeTournamentId = "";
+      var teamsLoaded = false;
       var renderTimer = null;
+      var animationTimer = null;
+      var lastAnimatedKey = "";
 
       var stage =
         document.getElementById(
@@ -1475,26 +1578,11 @@
 
       function escapeHtml(value) {
         return clean(value)
-          .replace(
-            /&/g,
-            "&amp;"
-          )
-          .replace(
-            /</g,
-            "&lt;"
-          )
-          .replace(
-            />/g,
-            "&gt;"
-          )
-          .replace(
-            /"/g,
-            "&quot;"
-          )
-          .replace(
-            /'/g,
-            "&#039;"
-          );
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
       }
 
       function objectValue(value) {
@@ -1537,26 +1625,16 @@
         return fallback;
       }
 
-      function formatRgId(value) {
-        var raw =
-          clean(value);
+      function numericValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(value);
 
-        if (!raw) {
-          return "RG ID NOT SET";
-        }
-
-        if (
-          normalize(raw).indexOf(
-            "rg"
-          ) === 0
-        ) {
-          return raw.toUpperCase();
-        }
-
-        return (
-          "RG ID • " +
-          raw.toUpperCase()
-        );
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(fallback || 0);
       }
 
       function initials(value) {
@@ -1579,29 +1657,21 @@
         }
 
         return (
-          (
-            parts[0][0] ||
-            ""
-          ) +
+          (parts[0][0] || "") +
           (
             parts[
               parts.length - 1
-            ][0] ||
-            ""
+            ][0] || ""
           )
         ).toUpperCase();
       }
 
       function getFormat(value) {
-        var text =
-          clean(value)
-            .toLowerCase();
-
-        return text.indexOf(
-          "bo5"
-        ) !== -1
-          ? "BO5"
-          : "BO3";
+        return clean(value)
+          .toLowerCase()
+          .indexOf("bo5") !== -1
+            ? "BO5"
+            : "BO3";
       }
 
       function getRoundLabel(value) {
@@ -1610,65 +1680,35 @@
             .toLowerCase();
 
         if (
-          text.indexOf(
-            "grand"
-          ) !== -1
+          text.indexOf("grand") !== -1
         ) {
           return "GRAND FINALS";
         }
 
         if (
-          text.indexOf(
-            "sf1"
-          ) !== -1
+          text.indexOf("sf1") !== -1
         ) {
           return "SEMIFINAL 1";
         }
 
         if (
-          text.indexOf(
-            "sf2"
-          ) !== -1
+          text.indexOf("sf2") !== -1
         ) {
           return "SEMIFINAL 2";
         }
 
-        if (
-          text.indexOf(
-            "qf1"
-          ) !== -1
-        ) {
-          return "QUARTERFINAL 1";
-        }
+        var qfMatch =
+          text.match(/qf[-\s]?([1-4])/);
 
-        if (
-          text.indexOf(
-            "qf2"
-          ) !== -1
-        ) {
-          return "QUARTERFINAL 2";
-        }
-
-        if (
-          text.indexOf(
-            "qf3"
-          ) !== -1
-        ) {
-          return "QUARTERFINAL 3";
-        }
-
-        if (
-          text.indexOf(
-            "qf4"
-          ) !== -1
-        ) {
-          return "QUARTERFINAL 4";
+        if (qfMatch) {
+          return (
+            "QUARTERFINAL " +
+            qfMatch[1]
+          );
         }
 
         var r16Match =
-          text.match(
-            /r16[-\s]?([1-8])/
-          );
+          text.match(/r16[-\s]?([1-8])/);
 
         if (r16Match) {
           return (
@@ -1695,18 +1735,13 @@
             state.site.currentMatch
           );
 
-        if (!current) {
-          return "";
-        }
-
-        var normalized =
+        var key =
           normalize(current);
 
         if (
-          normalized ===
-            "nomatchlive" ||
-          normalized ===
-            "nomatch"
+          !current ||
+          key === "nomatch" ||
+          key === "nomatchlive"
         ) {
           return "";
         }
@@ -1714,53 +1749,322 @@
         return current;
       }
 
-      function siteTeamName(number) {
+      function collectionValues(value) {
+        var output = [];
+
+        if (Array.isArray(value)) {
+          value.forEach(
+            function (item, index) {
+              if (
+                item !== null &&
+                item !== undefined
+              ) {
+                if (
+                  item &&
+                  typeof item === "object"
+                ) {
+                  item.__key =
+                    item.__key ||
+                    String(index);
+                }
+
+                output.push(item);
+              }
+            }
+          );
+
+          return output;
+        }
+
+        if (
+          value &&
+          typeof value === "object"
+        ) {
+          Object.keys(value)
+            .forEach(
+              function (key) {
+                var item =
+                  value[key];
+
+                if (
+                  item === null ||
+                  item === undefined ||
+                  item === false
+                ) {
+                  return;
+                }
+
+                if (item === true) {
+                  output.push(key);
+                  return;
+                }
+
+                if (
+                  item &&
+                  typeof item === "object"
+                ) {
+                  item.__key =
+                    item.__key ||
+                    key;
+                }
+
+                output.push(item);
+              }
+            );
+        }
+
+        return output;
+      }
+
+      function teamNameFromRecord(
+        record,
+        fallback
+      ) {
         return clean(
-          state.site[
-            "team" + number
-          ],
-          "Team " + number
+          firstValue(
+            record,
+            [
+              "name",
+              "teamName",
+              "displayName",
+              "title"
+            ],
+            fallback
+          ),
+          fallback
         );
       }
 
-      function teamNumberByName(name) {
+      function teamOrderValue(
+        record,
+        key,
+        fallbackIndex
+      ) {
+        var explicit =
+          numericValue(
+            firstValue(
+              record,
+              [
+                "slot",
+                "teamNumber",
+                "order",
+                "position"
+              ],
+              0
+            )
+          );
+
+        if (explicit > 0) {
+          return explicit;
+        }
+
+        var keyMatch =
+          clean(key)
+            .match(/(\d+)/);
+
+        if (keyMatch) {
+          return Number(keyMatch[1]);
+        }
+
+        return fallbackIndex + 1000;
+      }
+
+      function publishedTeams() {
+        var output = [];
+        var raw =
+          state.teams || {};
+
+        if (Array.isArray(raw)) {
+          raw.forEach(
+            function (record, index) {
+              if (
+                record &&
+                typeof record === "object"
+              ) {
+                output.push({
+                  key: String(index),
+                  record: record,
+                  order:
+                    teamOrderValue(
+                      record,
+                      String(index),
+                      index
+                    ),
+                  sourceIndex: index
+                });
+              }
+            }
+          );
+
+        } else {
+          Object.keys(raw)
+            .forEach(
+              function (key, index) {
+                var record =
+                  objectValue(raw[key]);
+
+                if (
+                  Object.keys(record)
+                    .length
+                ) {
+                  output.push({
+                    key: key,
+                    record: record,
+                    order:
+                      teamOrderValue(
+                        record,
+                        key,
+                        index
+                      ),
+                    sourceIndex: index
+                  });
+                }
+              }
+            );
+        }
+
+        output.sort(
+          function (first, second) {
+            return (
+              first.order -
+                second.order ||
+              first.sourceIndex -
+                second.sourceIndex
+            );
+          }
+        );
+
+        return output;
+      }
+
+      function teamByName(name) {
         var target =
           normalize(name);
 
-        var number;
+        var teams =
+          publishedTeams();
+
+        var index;
+        var candidate;
 
         if (!target) {
           return null;
         }
 
         for (
-          number = 1;
-          number <= 16;
-          number += 1
+          index = 0;
+          index < teams.length;
+          index += 1
         ) {
-          if (
+          candidate =
             normalize(
-              siteTeamName(number)
+              teamNameFromRecord(
+                teams[index].record,
+                teams[index].key
+              )
+            );
+
+          if (
+            candidate === target ||
+            normalize(
+              teams[index].key
             ) === target
           ) {
-            return number;
+            return teams[index];
           }
         }
 
         return null;
       }
 
-      function bracketMatch(matchValue) {
+      function teamById(id) {
+        var key =
+          clean(id);
+
+        if (
+          key &&
+          state.teams &&
+          state.teams[key]
+        ) {
+          return {
+            key: key,
+            record:
+              objectValue(
+                state.teams[key]
+              ),
+            order: 0,
+            sourceIndex: 0
+          };
+        }
+
+        return null;
+      }
+
+      function teamBySlot(slot) {
+        var number =
+          Number(slot);
+
+        var teams =
+          publishedTeams();
+
+        var index;
+        var explicit;
+
+        if (
+          !number ||
+          number < 1
+        ) {
+          return null;
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          explicit =
+            numericValue(
+              firstValue(
+                teams[index].record,
+                [
+                  "slot",
+                  "teamNumber",
+                  "order",
+                  "position"
+                ],
+                0
+              )
+            );
+
+          if (explicit === number) {
+            return teams[index];
+          }
+        }
+
+        return teams[number - 1] || null;
+      }
+
+      function resolveTeam(
+        id,
+        name,
+        slot
+      ) {
+        return (
+          teamById(id) ||
+          teamByName(name) ||
+          teamBySlot(slot)
+        );
+      }
+
+      function bracketMatch(value) {
         var current =
-          clean(matchValue);
+          clean(value);
 
         var text =
           current.toLowerCase();
 
         var r16Match =
-          text.match(
-            /r16[-\s]?([1-8])/
-          );
+          text.match(/r16[-\s]?([1-8])/);
 
         if (r16Match) {
           var r16Number =
@@ -1774,26 +2078,20 @@
             format:
               getFormat(current),
 
-            aNum:
-              (
-                r16Number - 1
-              ) *
+            aSlot:
+              (r16Number - 1) *
               2 +
               1,
 
-            bNum:
-              (
-                r16Number - 1
-              ) *
+            bSlot:
+              (r16Number - 1) *
               2 +
               2
           };
         }
 
         var qfMatch =
-          text.match(
-            /qf[-\s]?([1-4])/
-          );
+          text.match(/qf[-\s]?([1-4])/);
 
         if (qfMatch) {
           var qfNumber =
@@ -1807,40 +2105,29 @@
             format:
               getFormat(current),
 
-            aNum:
-              (
-                qfNumber - 1
-              ) *
+            aSlot:
+              (qfNumber - 1) *
               2 +
               1,
 
-            bNum:
-              (
-                qfNumber - 1
-              ) *
+            bSlot:
+              (qfNumber - 1) *
               2 +
               2
           };
         }
 
         if (
-          text.indexOf(
-            "sf1"
-          ) !== -1
+          text.indexOf("sf1") !== -1
         ) {
           return {
-            label:
-              "SEMIFINAL 1",
-
-            format:
-              getFormat(current),
-
+            label: "SEMIFINAL 1",
+            format: getFormat(current),
             aName:
               clean(
                 state.site.qf1Winner,
                 "Winner QF1"
               ),
-
             bName:
               clean(
                 state.site.qf2Winner,
@@ -1850,23 +2137,16 @@
         }
 
         if (
-          text.indexOf(
-            "sf2"
-          ) !== -1
+          text.indexOf("sf2") !== -1
         ) {
           return {
-            label:
-              "SEMIFINAL 2",
-
-            format:
-              getFormat(current),
-
+            label: "SEMIFINAL 2",
+            format: getFormat(current),
             aName:
               clean(
                 state.site.qf3Winner,
                 "Winner QF3"
               ),
-
             bName:
               clean(
                 state.site.qf4Winner,
@@ -1876,23 +2156,16 @@
         }
 
         if (
-          text.indexOf(
-            "grand"
-          ) !== -1
+          text.indexOf("grand") !== -1
         ) {
           return {
-            label:
-              "GRAND FINALS",
-
-            format:
-              getFormat(current),
-
+            label: "GRAND FINALS",
+            format: getFormat(current),
             aName:
               clean(
                 state.site.sf1Winner,
                 "Winner SF1"
               ),
-
             bName:
               clean(
                 state.site.sf2Winner,
@@ -1904,12 +2177,10 @@
         return {
           label:
             getRoundLabel(current),
-
           format:
             getFormat(current),
-
-          aNum: 1,
-          bNum: 2
+          aSlot: 1,
+          bSlot: 2
         };
       }
 
@@ -1919,100 +2190,84 @@
             state.intro
           );
 
-        var explicitA =
+        var explicitLabel =
           clean(
             firstValue(
               intro,
               [
+                "label",
+                "matchLabel",
+                "round"
+              ]
+            )
+          );
+
+        var explicit =
+          clean(
+            firstValue(
+              intro,
+              [
+                "teamAId",
+                "teamBId",
                 "teamAName",
-                "teamA",
-                "leftTeam"
-              ]
-            )
-          );
-
-        var explicitB =
-          clean(
-            firstValue(
-              intro,
-              [
                 "teamBName",
-                "teamB",
-                "rightTeam"
+                "teamA",
+                "teamB"
               ]
             )
           );
 
-        var explicitANum =
-          Number(
-            firstValue(
-              intro,
-              [
-                "teamANumber",
-                "teamAIndex"
-              ],
-              0
-            )
-          ) || null;
-
-        var explicitBNum =
-          Number(
-            firstValue(
-              intro,
-              [
-                "teamBNumber",
-                "teamBIndex"
-              ],
-              0
-            )
-          ) || null;
-
-        if (
-          explicitA ||
-          explicitB ||
-          explicitANum ||
-          explicitBNum
-        ) {
-          var explicitLabel =
-            clean(
-              firstValue(
-                intro,
-                [
-                  "label",
-                  "matchLabel",
-                  "round"
-                ],
-                validCurrentMatch()
-              ),
-              "MATCH INTRO"
-            );
-
+        if (explicit) {
           return {
             label:
               getRoundLabel(
-                explicitLabel
+                explicitLabel ||
+                validCurrentMatch() ||
+                "MATCH INTRO"
               ),
 
             format:
               clean(
                 intro.format,
                 getFormat(
-                  explicitLabel
+                  explicitLabel ||
+                  validCurrentMatch()
                 )
-              )
-                .toUpperCase(),
+              ).toUpperCase(),
 
-            aNum:
-              explicitANum,
+            aId:
+              clean(
+                intro.teamAId
+              ),
 
-            bNum:
-              explicitBNum,
+            bId:
+              clean(
+                intro.teamBId
+              ),
 
             aName:
-              explicitA,
+              clean(
+                intro.teamAName ||
+                intro.teamA
+              ),
 
             bName:
-              explicitB,
+              clean(
+                intro.teamBName ||
+                intro.teamB
+              ),
+
+            aSlot:
+              numericValue(
+                intro.teamANumber ||
+                intro.teamAIndex
+              ),
+
+            bSlot:
+              numericValue(
+                intro.teamBNumber ||
+                intro.teamBIndex
+              ),
 
             aSeed:
               clean(
@@ -2030,9 +2285,7 @@
           validCurrentMatch();
 
         if (current) {
-          return bracketMatch(
-            current
-          );
+          return bracketMatch(current);
         }
 
         var upNext =
@@ -2055,17 +2308,14 @@
               getRoundLabel(
                 upNextLabel
               ),
-
             format:
               getFormat(
                 upNextLabel
               ),
-
             aName:
               clean(
                 upNext.teamA
               ),
-
             bName:
               clean(
                 upNext.teamB
@@ -2078,462 +2328,58 @@
         );
       }
 
-      function teamRecordByName(name) {
-        var target =
-          normalize(name);
+      function profileForUid(uid) {
+        var key =
+          clean(uid);
 
-        var key;
-        var record;
-        var candidate;
-
-        if (!target) {
-          return null;
-        }
-
-        for (
-          key in state.teams
-        ) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              state.teams,
-              key
-            )
-          ) {
-            record =
-              objectValue(
-                state.teams[key]
-              );
-
-            candidate =
-              normalize(
-                firstValue(
-                  record,
-                  [
-                    "name",
-                    "teamName",
-                    "displayName",
-                    "title",
-                    "slug"
-                  ],
-                  key
-                )
-              );
-
-            if (
-              candidate === target ||
-              normalize(key) === target
-            ) {
-              return {
-                key: key,
-                value: record
-              };
-            }
-          }
-        }
-
-        return null;
+        return key &&
+          state.players &&
+          state.players[key]
+            ? objectValue(
+                state.players[key]
+              )
+            : {};
       }
 
-      function arrayFromCollection(
-        value
-      ) {
-        var output = [];
-
+      function rosterEntries(team) {
         if (
-          Array.isArray(value)
+          !team ||
+          !team.record
         ) {
-          return value.slice();
+          return [];
         }
 
-        if (
-          value &&
-          typeof value === "object"
-        ) {
-          Object.keys(value)
-            .forEach(
-              function (key) {
-                var item =
-                  value[key];
+        var record =
+          team.record;
 
-                if (
-                  item === true
-                ) {
-                  output.push(
-                    key
-                  );
-
-                } else if (
-                  item !== false &&
-                  item !== null &&
-                  item !== undefined
-                ) {
-                  if (
-                    typeof item ===
-                    "object"
-                  ) {
-                    item.__key =
-                      item.__key ||
-                      key;
-                  }
-
-                  output.push(item);
-                }
-              }
-            );
-        }
-
-        return output;
-      }
-
-      function teamRosterReferences(
-        teamNumber,
-        teamName
-      ) {
-        var references = [];
-        var index;
-        var value;
-
-        var directCollections = [
-          state.site[
-            "team" +
-            teamNumber +
-            "Players"
-          ],
-
-          state.site[
-            "team" +
-            teamNumber +
-            "Roster"
-          ]
+        var fields = [
+          "players",
+          "roster",
+          "members"
         ];
 
-        directCollections.forEach(
-          function (collection) {
-            references =
-              references.concat(
-                arrayFromCollection(
-                  collection
-                )
-              );
-          }
-        );
+        var index;
+        var entries;
 
         for (
-          index = 1;
-          index <= 6;
+          index = 0;
+          index < fields.length;
           index += 1
         ) {
-          value =
-            firstValue(
-              state.site,
-              [
-                "team" +
-                  teamNumber +
-                  "Player" +
-                  index +
-                  "Uid",
-
-                "team" +
-                  teamNumber +
-                  "Player" +
-                  index +
-                  "UID",
-
-                "team" +
-                  teamNumber +
-                  "Player" +
-                  index +
-                  "Id",
-
-                "team" +
-                  teamNumber +
-                  "Player" +
-                  index +
-                  "RgId",
-
-                "team" +
-                  teamNumber +
-                  "Player" +
-                  index
-              ]
+          entries =
+            collectionValues(
+              record[fields[index]]
             );
 
-          if (
-            value !== undefined &&
-            value !== null &&
-            String(value).trim() !== ""
-          ) {
-            references.push(value);
+          if (entries.length) {
+            return entries.slice(0, 6);
           }
         }
 
-        var teamRecord =
-          teamRecordByName(
-            teamName
-          );
-
-        if (teamRecord) {
-          var record =
-            teamRecord.value;
-
-          [
-            "playerUids",
-            "memberUids",
-            "rosterUids",
-            "players",
-            "members",
-            "roster"
-          ].forEach(
-            function (field) {
-              references =
-                references.concat(
-                  arrayFromCollection(
-                    record[field]
-                  )
-                );
-            }
-          );
-
-          [
-            "captainUid",
-            "ownerUid"
-          ].forEach(
-            function (field) {
-              if (record[field]) {
-                references.push(
-                  record[field]
-                );
-              }
-            }
-          );
-        }
-
-        var unique = [];
-        var seen = {};
-
-        references.forEach(
-          function (reference) {
-            var signature;
-
-            if (
-              reference &&
-              typeof reference ===
-              "object"
-            ) {
-              signature =
-                clean(
-                  firstValue(
-                    reference,
-                    [
-                      "uid",
-                      "playerUid",
-                      "userId",
-                      "id",
-                      "rgId",
-                      "rivalsIgn",
-                      "displayName",
-                      "name",
-                      "__key"
-                    ]
-                  )
-                );
-
-            } else {
-              signature =
-                clean(reference);
-            }
-
-            signature =
-              normalize(signature);
-
-            if (
-              signature &&
-              !seen[signature]
-            ) {
-              seen[signature] = true;
-              unique.push(reference);
-            }
-          }
-        );
-
-        return unique.slice(
-          0,
-          6
-        );
+        return [];
       }
 
-      function mergedProfiles() {
-        var output = {};
-
-        [
-          state.players,
-          state.publicPlayers,
-          state.publicProfiles
-        ].forEach(
-          function (collection) {
-            Object.keys(
-              collection || {}
-            )
-              .forEach(
-                function (uid) {
-                  output[uid] =
-                    Object.assign(
-                      {},
-                      output[uid] || {},
-                      objectValue(
-                        collection[uid]
-                      ),
-                      {
-                        __uid: uid
-                      }
-                    );
-                }
-              );
-          }
-        );
-
-        return output;
-      }
-
-      function findProfile(
-        reference,
-        profiles
-      ) {
-        var referenceObject =
-          objectValue(reference);
-
-        var directUid =
-          clean(
-            firstValue(
-              referenceObject,
-              [
-                "uid",
-                "playerUid",
-                "userId",
-                "id",
-                "__key"
-              ],
-
-              typeof reference ===
-                "string"
-                ? reference
-                : ""
-            )
-          );
-
-        if (
-          directUid &&
-          profiles[directUid]
-        ) {
-          return Object.assign(
-            {},
-            referenceObject,
-            profiles[directUid]
-          );
-        }
-
-        var searchValues = [
-          directUid,
-
-          firstValue(
-            referenceObject,
-            [
-              "rgId",
-              "rgID",
-              "rivalsId"
-            ]
-          ),
-
-          firstValue(
-            referenceObject,
-            [
-              "rivalsIgn",
-              "playerName",
-              "displayName",
-              "ign",
-              "username",
-              "name"
-            ]
-          ),
-
-          typeof reference ===
-            "string"
-            ? reference
-            : ""
-        ]
-          .map(normalize)
-          .filter(Boolean);
-
-        var uid;
-        var profile;
-        var profileValues;
-
-        for (
-          uid in profiles
-        ) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              profiles,
-              uid
-            )
-          ) {
-            profile =
-              profiles[uid];
-
-            profileValues = [
-              uid,
-
-              firstValue(
-                profile,
-                [
-                  "rgId",
-                  "rgID",
-                  "rivalsId"
-                ]
-              ),
-
-              firstValue(
-                profile,
-                [
-                  "rivalsIgn",
-                  "playerName",
-                  "displayName",
-                  "ign",
-                  "username",
-                  "name"
-                ]
-              )
-            ]
-              .map(normalize)
-              .filter(Boolean);
-
-            if (
-              searchValues.some(
-                function (value) {
-                  return (
-                    profileValues.indexOf(
-                      value
-                    ) !== -1
-                  );
-                }
-              )
-            ) {
-              return Object.assign(
-                {},
-                referenceObject,
-                profile
-              );
-            }
-          }
-        }
-
-        return Object.assign(
-          {},
-          referenceObject
-        );
-      }
-
-      function textFromPossibleObject(
+      function textFromObject(
         value,
         fallback
       ) {
@@ -2563,46 +2409,76 @@
         );
       }
 
-      function normalizePlayer(
-        source,
-        fallbackName,
-        slot
+      function normalizeRosterPlayer(
+        entry,
+        index
       ) {
-        var player =
-          objectValue(source);
+        var rosterEntry =
+          typeof entry === "string"
+            ? {
+                uid: entry
+              }
+            : objectValue(entry);
 
-        var playerName =
+        var uid =
           clean(
             firstValue(
-              player,
+              rosterEntry,
+              [
+                "uid",
+                "playerUid",
+                "userId",
+                "id",
+                "__key"
+              ]
+            )
+          );
+
+        var profile =
+          profileForUid(uid);
+
+        var merged =
+          Object.assign(
+            {},
+            profile,
+            rosterEntry
+          );
+
+        var name =
+          clean(
+            firstValue(
+              merged,
               [
                 "rivalsIgn",
                 "playerName",
-                "ign",
                 "displayName",
+                "ign",
                 "username",
                 "name"
               ],
-              fallbackName
-            ),
-            "PLAYER " + slot
+              "PLAYER " +
+              (index + 1)
+            )
           );
 
         var rgId =
-          firstValue(
-            player,
-            [
-              "rgId",
-              "rgID",
-              "rivalsId",
-              "rivalsID"
-            ]
+          clean(
+            firstValue(
+              merged,
+              [
+                "rgId",
+                "rgID",
+                "rivalsId",
+                "rivalsID"
+              ]
+            ),
+            "RG ID NOT SET"
           );
 
         var profileImage =
           clean(
             firstValue(
-              player,
+              merged,
               [
                 "profileImage",
                 "profilePhoto",
@@ -2616,13 +2492,13 @@
           );
 
         var rank =
-          textFromPossibleObject(
+          textFromObject(
             firstValue(
-              player,
+              merged,
               [
+                "peakRank",
                 "rank",
                 "competitiveRank",
-                "peakRank",
                 "marvelRivalsRank",
                 "currentRank"
               ]
@@ -2630,13 +2506,13 @@
             "Rank Not Set"
           );
 
-        var preferredRole =
-          textFromPossibleObject(
+        var role =
+          textFromObject(
             firstValue(
-              player,
+              merged,
               [
-                "preferredRole",
                 "mainRole",
+                "preferredRole",
                 "playerRole",
                 "role"
               ]
@@ -2645,74 +2521,24 @@
           );
 
         return {
-          name: playerName,
-          rgId: formatRgId(rgId),
+          name: name,
+          rgId: rgId.toUpperCase(),
           profileImage: profileImage,
           rank: rank,
-          preferredRole: preferredRole
+          role: role
         };
       }
 
-      function rosterForTeam(
-        teamNumber,
-        teamName
-      ) {
-        var references =
-          teamRosterReferences(
-            teamNumber,
-            teamName
+      function teamRoster(team) {
+        return rosterEntries(team)
+          .map(
+            function (entry, index) {
+              return normalizeRosterPlayer(
+                entry,
+                index
+              );
+            }
           );
-
-        var profiles =
-          mergedProfiles();
-
-        var output = [];
-        var index;
-        var reference;
-        var profile;
-        var fallbackName;
-
-        for (
-          index = 0;
-          index < 6;
-          index += 1
-        ) {
-          reference =
-            references[index];
-
-          fallbackName =
-            clean(
-              state.site[
-                "team" +
-                teamNumber +
-                "Player" +
-                (
-                  index + 1
-                )
-              ],
-              "Player " +
-              (
-                index + 1
-              )
-            );
-
-          profile =
-            findProfile(
-              reference ||
-              fallbackName,
-              profiles
-            );
-
-          output.push(
-            normalizePlayer(
-              profile,
-              fallbackName,
-              index + 1
-            )
-          );
-        }
-
-        return output;
       }
 
       function playerCardHtml(
@@ -2776,7 +2602,6 @@
 
                 '<div class="meta-pill">' +
                   '<small>Rank</small>' +
-
                   '<strong>' +
                     escapeHtml(
                       player.rank
@@ -2786,10 +2611,9 @@
 
                 '<div class="meta-pill">' +
                   '<small>Preferred Role</small>' +
-
                   '<strong>' +
                     escapeHtml(
-                      player.preferredRole
+                      player.role
                     ) +
                   '</strong>' +
                 '</div>' +
@@ -2804,68 +2628,97 @@
 
       function renderPlayers(
         container,
-        players
+        players,
+        teamName
       ) {
+        if (!players.length) {
+          container.innerHTML =
+            '<div class="roster-empty">' +
+              '<strong>Roster Not Published</strong>' +
+              '<small>' +
+                escapeHtml(
+                  teamName
+                ) +
+                ' does not currently have a published roster on the Teams page.' +
+              '</small>' +
+            '</div>';
+
+          return;
+        }
+
         container.innerHTML =
           players
+            .slice(0, 6)
             .map(playerCardHtml)
             .join("");
       }
 
-      function seedForTeam(
-        teamNumber,
-        teamName
-      ) {
-        var teamRecord =
-          teamRecordByName(
-            teamName
-          );
-
+      function seedForTeam(team) {
         if (
-          teamRecord &&
-          teamRecord.value
+          !team ||
+          !team.record
         ) {
-          return clean(
-            firstValue(
-              teamRecord.value,
-              [
-                "seed",
-                "tournamentSeed"
-              ]
-            ),
-            "—"
-          );
+          return "—";
         }
 
         return clean(
-          state.site[
-            "team" +
-            teamNumber +
-            "Seed"
-          ],
+          firstValue(
+            team.record,
+            [
+              "seed",
+              "tournamentSeed",
+              "slot",
+              "teamNumber"
+            ]
+          ),
           "—"
         );
       }
 
       function scheduleRender() {
-        clearTimeout(
-          renderTimer
-        );
-
-        stage.classList.add(
-          "updating"
-        );
+        clearTimeout(renderTimer);
 
         renderTimer =
           setTimeout(
-            function () {
-              render();
+            render,
+            140
+          );
+      }
 
+      function playIntro(animationKey) {
+        if (
+          !teamsLoaded ||
+          animationKey ===
+            lastAnimatedKey
+        ) {
+          return;
+        }
+
+        lastAnimatedKey =
+          animationKey;
+
+        clearTimeout(
+          animationTimer
+        );
+
+        stage.classList.remove(
+          "intro-playing"
+        );
+
+        void stage.offsetWidth;
+
+        stage.classList.add(
+          "intro-playing"
+        );
+
+        animationTimer =
+          setTimeout(
+            function () {
               stage.classList.remove(
-                "updating"
+                "intro-playing"
               );
             },
-            150
+            3600
           );
       }
 
@@ -2873,56 +2726,65 @@
         var match =
           getMatchData();
 
-        var aNum =
-          match.aNum ||
-          teamNumberByName(
-            match.aName
-          ) ||
-          1;
+        var teamA =
+          resolveTeam(
+            match.aId,
+            match.aName,
+            match.aSlot
+          );
 
-        var bNum =
-          match.bNum ||
-          teamNumberByName(
-            match.bName
-          ) ||
-          2;
+        var teamB =
+          resolveTeam(
+            match.bId,
+            match.bName,
+            match.bSlot
+          );
 
         var aName =
-          clean(
-            match.aName,
-            siteTeamName(
-              aNum
-            )
-          );
+          teamA
+            ? teamNameFromRecord(
+                teamA.record,
+                teamA.key
+              )
+            : clean(
+                match.aName,
+                "TEAM DATA NOT PUBLISHED"
+              );
 
         var bName =
-          clean(
-            match.bName,
-            siteTeamName(
-              bNum
-            )
-          );
+          teamB
+            ? teamNameFromRecord(
+                teamB.record,
+                teamB.key
+              )
+            : clean(
+                match.bName,
+                "TEAM DATA NOT PUBLISHED"
+              );
 
         var round =
           clean(
             match.label,
             "MATCH INTRO"
-          )
-            .toUpperCase();
+          ).toUpperCase();
 
         var format =
           clean(
             match.format,
             "BO3"
-          )
-            .toUpperCase();
+          ).toUpperCase();
+
+        var aRoster =
+          teamRoster(teamA);
+
+        var bRoster =
+          teamRoster(teamB);
 
         eventName.textContent =
           clean(
             state.site.eventName,
             "RIVALS GAUNTLET"
-          )
-            .toUpperCase();
+          ).toUpperCase();
 
         matchHeading.textContent =
           round +
@@ -2938,19 +2800,13 @@
         teamASeed.textContent =
           clean(
             match.aSeed,
-            seedForTeam(
-              aNum,
-              aName
-            )
+            seedForTeam(teamA)
           );
 
         teamBSeed.textContent =
           clean(
             match.bSeed,
-            seedForTeam(
-              bNum,
-              bName
-            )
+            seedForTeam(teamB)
           );
 
         matchFormat.textContent =
@@ -2969,81 +2825,127 @@
             ),
             "RIVALSGAUNTLET.COM"
           )
-            .replace(
-              /^https?:\/\//i,
-              ""
-            )
-            .replace(
-              /^www\./i,
-              ""
-            )
-            .replace(
-              /\/+$/,
-              ""
-            )
+            .replace(/^https?:\/\//i, "")
+            .replace(/^www\./i, "")
+            .replace(/\/+$/, "")
             .toUpperCase();
 
         renderPlayers(
           teamAPlayers,
-          rosterForTeam(
-            aNum,
-            aName
-          )
+          aRoster,
+          aName
         );
 
         renderPlayers(
           teamBPlayers,
-          rosterForTeam(
-            bNum,
-            bName
-          )
+          bRoster,
+          bName
+        );
+
+        var replayToken =
+          clean(
+            state.intro.replayToken ||
+            state.intro.updatedAt
+          );
+
+        var animationKey = [
+          activeTournamentId,
+          round,
+          format,
+          teamA ? teamA.key : aName,
+          teamB ? teamB.key : bName,
+          replayToken
+        ].join("|");
+
+        window.requestAnimationFrame(
+          function () {
+            playIntro(
+              animationKey
+            );
+          }
         );
       }
 
-      function updateConnectionLabel() {
-        var profileDataAvailable =
-          Object.keys(
-            state.players || {}
-          ).length > 0 ||
-          Object.keys(
-            state.publicPlayers || {}
-          ).length > 0 ||
-          Object.keys(
-            state.publicProfiles || {}
-          ).length > 0;
-
-        var profileReadAttempted =
-          readState.players ||
-          readState.publicPlayers ||
-          readState.publicProfiles;
-
-        if (
-          profileReadAttempted &&
-          !profileDataAvailable &&
-          (
-            !readState.players &&
-            !readState.publicPlayers &&
-            !readState.publicProfiles
-          )
-        ) {
-          connection.classList.add(
-            "limited"
+      function subscribeTournamentTeams(
+        tournamentId
+      ) {
+        var nextId =
+          clean(
+            tournamentId,
+            "open1"
           );
 
-          connectionText.textContent =
-            "PROFILE DATA LIMITED";
-
+        if (
+          teamsRef &&
+          activeTournamentId === nextId
+        ) {
           return;
         }
 
-        connection.classList.remove(
-          "limited"
+        if (teamsRef) {
+          teamsRef.off();
+        }
+
+        activeTournamentId =
+          nextId;
+
+        state.teams = {};
+        teamsLoaded = false;
+        lastAnimatedKey = "";
+
+        teamsRef =
+          db.ref(
+            "teams/" +
+            nextId +
+            "/teams"
+          );
+
+        teamsRef.on(
+          "value",
+
+          function (snapshot) {
+            state.teams =
+              snapshot.val() || {};
+
+            teamsLoaded = true;
+
+            connection.classList.remove(
+              "limited"
+            );
+
+            connectionText.textContent =
+              "REALTIME CONNECTED";
+
+            scheduleRender();
+          },
+
+          function (error) {
+            teamsLoaded = false;
+
+            connection.classList.add(
+              "limited"
+            );
+
+            connectionText.textContent =
+              error &&
+              error.code ===
+                "PERMISSION_DENIED"
+                ? "TEAM DATA BLOCKED"
+                : "TEAM DATA UNAVAILABLE";
+
+            console.error(
+              "[RG MATCH INTRO] teams/" +
+              nextId +
+              "/teams read failed:",
+              error
+            );
+
+            scheduleRender();
+          }
         );
       }
 
       function connect() {
-        var db;
-
         try {
           if (
             typeof firebase ===
@@ -3066,8 +2968,7 @@
 
             function (snapshot) {
               var online =
-                snapshot.val() ===
-                true;
+                snapshot.val() === true;
 
               connection.classList.toggle(
                 "online",
@@ -3075,10 +2976,14 @@
               );
 
               if (online) {
-                connectionText.textContent =
-                  "REALTIME CONNECTED";
-
-                updateConnectionLabel();
+                if (
+                  !connection.classList.contains(
+                    "limited"
+                  )
+                ) {
+                  connectionText.textContent =
+                    "REALTIME CONNECTED";
+                }
 
               } else {
                 connectionText.textContent =
@@ -3087,119 +2992,84 @@
             }
           );
 
-          [
-            {
-              path: "site",
-              key: "site",
-              required: true
+          db.ref("site").on(
+            "value",
+
+            function (snapshot) {
+              state.site =
+                snapshot.val() || {};
+
+              subscribeTournamentTeams(
+                state.site.currentTournament ||
+                "open1"
+              );
+
+              scheduleRender();
             },
 
-            {
-              path:
-                "broadcastCountdown",
-              key: "countdown",
-              required: true
-            },
+            function (error) {
+              connection.classList.add(
+                "limited"
+              );
 
-            {
-              path:
-                "broadcastMatchIntro",
-              key: "intro",
-              required: false
-            },
-
-            {
-              path: "players",
-              key: "players",
-              required: false
-            },
-
-            {
-              path:
-                "publicPlayers",
-              key:
-                "publicPlayers",
-              required: false
-            },
-
-            {
-              path:
-                "publicProfiles",
-              key:
-                "publicProfiles",
-              required: false
-            },
-
-            {
-              path: "teams",
-              key: "teams",
-              required: false
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE DATA UNAVAILABLE";
             }
-          ].forEach(
-            function (listener) {
-              db.ref(
-                listener.path
-              ).on(
-                "value",
+          );
 
-                function (snapshot) {
-                  state[
-                    listener.key
-                  ] =
-                    snapshot.val() || {};
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
 
-                  if (
-                    Object.prototype.hasOwnProperty.call(
-                      readState,
-                      listener.key
-                    )
-                  ) {
-                    readState[
-                      listener.key
-                    ] = true;
-                  }
+            function (snapshot) {
+              state.countdown =
+                snapshot.val() || {};
 
-                  updateConnectionLabel();
-                  scheduleRender();
-                },
+              scheduleRender();
+            }
+          );
 
-                function (error) {
-                  if (
-                    Object.prototype.hasOwnProperty.call(
-                      readState,
-                      listener.key
-                    )
-                  ) {
-                    readState[
-                      listener.key
-                    ] = false;
-                  }
+          db.ref(
+            "broadcastMatchIntro"
+          ).on(
+            "value",
 
-                  if (
-                    listener.required
-                  ) {
-                    connection.classList.add(
-                      "limited"
-                    );
+            function (snapshot) {
+              state.intro =
+                snapshot.val() || {};
 
-                    connectionText.textContent =
-                      error &&
-                      error.code ===
-                        "PERMISSION_DENIED"
-                        ? "READ BLOCKED"
-                        : "DATA UNAVAILABLE";
+              scheduleRender();
+            },
 
-                  } else {
-                    updateConnectionLabel();
-                  }
+            function (error) {
+              console.warn(
+                "[RG MATCH INTRO] Optional broadcastMatchIntro read failed:",
+                error
+              );
+            }
+          );
 
-                  console.warn(
-                    "[RG MATCH INTRO] " +
-                    listener.path +
-                    " read failed:",
-                    error
-                  );
-                }
+          db.ref("players").on(
+            "value",
+
+            function (snapshot) {
+              state.players =
+                snapshot.val() || {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              state.players = {};
+
+              console.warn(
+                "[RG MATCH INTRO] Optional players read failed. Published Teams-page roster data will still be used:",
+                error
               );
             }
           );

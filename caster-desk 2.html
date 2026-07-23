@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet | Caster Desk</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --text: #f8f5ff;
+      --soft: #c9c2d5;
+      --muted: #8e8799;
+      --dim: #625b6e;
+
+      --purple: #9a7cff;
+      --purple-bright: #c4b2ff;
+      --purple-rgb: 154, 124, 255;
+
+      --green: #62e1a6;
+      --yellow: #f2c66c;
+      --red: #ff718a;
+
+      --line: rgba(194, 176, 255, 0.14);
+      --line-strong: rgba(194, 176, 255, 0.3);
+      --panel: rgba(12, 10, 20, 0.94);
+      --panel-deep: rgba(6, 6, 11, 0.97);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      color: var(--text);
+      font-family: "Rajdhani", Arial, sans-serif;
+    }
+
+    .studio-stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      isolation: isolate;
+      background: transparent;
+    }
+
+    /*
+     * Only the upper and lower edges are shaded. The center stays
+     * transparent so webcam sources and a custom studio background can
+     * be arranged freely in OBS.
+     */
+    .studio-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -4;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(6, 6, 11, 0.96) 0,
+          rgba(8, 7, 14, 0.86) 96px,
+          rgba(8, 7, 14, 0.34) 172px,
+          transparent 270px
+        ),
+        linear-gradient(
+          0deg,
+          rgba(6, 6, 11, 0.98) 0,
+          rgba(8, 7, 14, 0.9) 105px,
+          rgba(8, 7, 14, 0.34) 205px,
+          transparent 330px
+        );
+    }
+
+    .ambient-left,
+    .ambient-right {
+      position: absolute;
+      z-index: -3;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(22px);
+      opacity: 0.42;
+    }
+
+    .ambient-left {
+      width: 430px;
+      height: 430px;
+      left: -230px;
+      bottom: -105px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.16),
+          transparent 68%
+        );
+    }
+
+    .ambient-right {
+      width: 480px;
+      height: 480px;
+      right: -250px;
+      top: -180px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb), 0.13),
+          transparent 70%
+        );
+    }
+
+    .edge-frame {
+      position: absolute;
+      inset: 28px;
+      z-index: 40;
+      pointer-events: none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.09);
+
+      clip-path: polygon(
+        0 0,
+        17% 0,
+        18% 6px,
+        82% 6px,
+        83% 0,
+        100% 0,
+        100% 25%,
+        calc(100% - 6px) 26%,
+        calc(100% - 6px) 74%,
+        100% 75%,
+        100% 100%,
+        83% 100%,
+        82% calc(100% - 6px),
+        18% calc(100% - 6px),
+        17% 100%,
+        0 100%,
+        0 75%,
+        6px 74%,
+        6px 26%,
+        0 25%
+      );
+    }
+
+    .studio-header {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 42px;
+      z-index: 30;
+
+      display: grid;
+      grid-template-columns:
+        minmax(350px, 1fr)
+        minmax(540px, 1.3fr)
+        minmax(350px, 1fr);
+
+      align-items: center;
+      gap: 24px;
+
+      opacity: 0;
+      transform: translateY(-9px);
+      animation:
+        calmEnter 520ms
+        cubic-bezier(0.2, 0.8, 0.2, 1)
+        70ms forwards;
+    }
+
+    .studio-brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .studio-mark {
+      position: relative;
+      width: 56px;
+      height: 56px;
+
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.4);
+
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb), 0.15),
+          rgba(8, 7, 13, 0.96) 68%
+        );
+
+      box-shadow:
+        inset 0 0 20px
+        rgba(var(--purple-rgb), 0.07),
+        0 0 24px
+        rgba(var(--purple-rgb), 0.09);
+
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .studio-mark::before {
+      content: "";
+      position: absolute;
+      inset: 6px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.045);
+
+      border-radius: 10px;
+    }
+
+    .studio-brand-copy {
+      min-width: 0;
+    }
+
+    .studio-brand-copy span,
+    .studio-brand-copy strong {
+      display: block;
+    }
+
+    .studio-brand-copy span {
+      color: var(--purple-bright);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.21em;
+      text-transform: uppercase;
+    }
+
+    .studio-brand-copy strong {
+      max-width: 530px;
+      margin-top: 4px;
+      overflow: hidden;
+
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .studio-center-card {
+      position: relative;
+      min-width: 0;
+      min-height: 60px;
+
+      display: grid;
+      place-items: center;
+      padding: 8px 62px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.15);
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(var(--purple-rgb), 0.065),
+          rgba(8, 8, 14, 0.84)
+        );
+
+      box-shadow:
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.025),
+        0 14px 38px
+        rgba(0, 0, 0, 0.22);
+
+      text-align: center;
+    }
+
+    .studio-center-card::before,
+    .studio-center-card::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 36px;
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.45)
+        );
+    }
+
+    .studio-center-card::before {
+      left: 15px;
+    }
+
+    .studio-center-card::after {
+      right: 15px;
+      transform: scaleX(-1);
+    }
+
+    .studio-center-card span,
+    .studio-center-card strong {
+      display: block;
+      max-width: 100%;
+    }
+
+    .studio-center-card span {
+      color: var(--purple-bright);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .studio-center-card strong {
+      margin-top: 4px;
+      overflow: hidden;
+
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.045em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .studio-meta {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .connection {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px;
+
+      border:
+        1px solid
+        rgba(242, 198, 108, 0.2);
+
+      border-radius: 999px;
+      color: var(--yellow);
+      background: rgba(242, 198, 108, 0.055);
+
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .connection.online {
+      border-color:
+        rgba(98, 225, 166, 0.22);
+
+      color: var(--green);
+      background: rgba(98, 225, 166, 0.055);
+    }
+
+    .connection.error {
+      border-color:
+        rgba(255, 113, 138, 0.25);
+
+      color: var(--red);
+      background: rgba(255, 113, 138, 0.06);
+    }
+
+    .connection-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .website-pill {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.15);
+
+      border-radius: 999px;
+      color: var(--soft);
+      background: rgba(var(--purple-rgb), 0.035);
+
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /*
+     * The entire central area is intentionally empty. Webcam sources can be
+     * positioned in OBS, and the plates below can be aligned beneath them.
+     */
+    .caster-zone {
+      position: absolute;
+      left: 64px;
+      right: 64px;
+      top: 156px;
+      bottom: 126px;
+      z-index: 10;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .caster-layout {
+      width: 100%;
+      min-height: 122px;
+
+      display: grid;
+      align-items: end;
+      justify-content: center;
+      gap: 24px;
+
+      transition:
+        opacity 0.24s ease,
+        transform 0.3s
+        cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .caster-layout.is-changing {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    .caster-layout.is-hidden {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .caster-layout[data-count="1"] {
+      grid-template-columns: 760px;
+    }
+
+    .caster-layout[data-count="2"] {
+      grid-template-columns:
+        repeat(2, 720px);
+    }
+
+    .caster-layout[data-count="3"] {
+      grid-template-columns:
+        repeat(3, 520px);
+      gap: 20px;
+    }
+
+    .caster-layout[data-count="4"] {
+      grid-template-columns:
+        repeat(4, 395px);
+      gap: 18px;
+    }
+
+    .caster-slot {
+      position: relative;
+      min-width: 0;
+
+      opacity: 0;
+      transform: translateY(10px);
+
+      animation:
+        plateEnter 460ms
+        cubic-bezier(0.2, 0.8, 0.2, 1)
+        var(--plate-delay, 100ms)
+        forwards;
+    }
+
+    .plate-anchor {
+      position: absolute;
+      left: 50%;
+      top: -15px;
+      width: 58px;
+      height: 16px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .plate-anchor::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 1px;
+      height: 8px;
+
+      background:
+        rgba(var(--purple-rgb), 0.52);
+    }
+
+    .plate-anchor::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.48),
+          transparent
+        );
+    }
+
+    .caster-nameplate {
+      position: relative;
+      min-width: 0;
+      min-height: 104px;
+
+      display: grid;
+      grid-template-columns:
+        54px minmax(0, 1fr) auto;
+
+      align-items: center;
+      gap: 16px;
+      padding: 15px 20px;
+      overflow: hidden;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.23);
+
+      border-radius: 18px;
+
+      background:
+        radial-gradient(
+          circle at 12% 0%,
+          rgba(var(--purple-rgb), 0.13),
+          transparent 40%
+        ),
+        linear-gradient(
+          110deg,
+          rgba(25, 19, 43, 0.97),
+          rgba(7, 7, 13, 0.98)
+        );
+
+      box-shadow:
+        0 22px 54px
+        rgba(0, 0, 0, 0.44),
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.03);
+    }
+
+    .caster-nameplate::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 14px;
+      bottom: 14px;
+      width: 3px;
+      border-radius: 999px;
+
+      background:
+        linear-gradient(
+          180deg,
+          transparent,
+          var(--purple),
+          transparent
+        );
+
+      box-shadow:
+        0 0 11px
+        rgba(var(--purple-rgb), 0.32);
+    }
+
+    .caster-nameplate::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      top: 0;
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.48),
+          rgba(225, 216, 255, 0.62),
+          rgba(var(--purple-rgb), 0.48),
+          transparent
+        );
+    }
+
+    .plate-number {
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb), 0.22);
+
+      border-radius: 12px;
+      color: var(--purple-bright);
+      background: rgba(var(--purple-rgb), 0.05);
+
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .plate-copy {
+      min-width: 0;
+    }
+
+    .plate-copy strong,
+    .plate-copy small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .plate-copy strong {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0.035em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .plate-copy small {
+      margin-top: 6px;
+      color: var(--purple-bright);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .plate-handle {
+      max-width: 205px;
+      overflow: hidden;
+      padding-left: 15px;
+
+      border-left:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .caster-layout[data-count="3"] .caster-nameplate,
+    .caster-layout[data-count="4"] .caster-nameplate {
+      min-height: 96px;
+      grid-template-columns:
+        46px minmax(0, 1fr);
+      gap: 12px;
+      padding: 13px 15px;
+    }
+
+    .caster-layout[data-count="3"] .plate-number,
+    .caster-layout[data-count="4"] .plate-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+
+    .caster-layout[data-count="3"] .plate-copy strong {
+      font-size: 24px;
+    }
+
+    .caster-layout[data-count="4"] .plate-copy strong {
+      font-size: 21px;
+    }
+
+    .caster-layout[data-count="3"] .plate-copy small,
+    .caster-layout[data-count="4"] .plate-copy small {
+      margin-top: 5px;
+      font-size: 9px;
+    }
+
+    .caster-layout[data-count="3"] .plate-handle,
+    .caster-layout[data-count="4"] .plate-handle {
+      display: none;
+    }
+
+    .studio-footer {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      bottom: 34px;
+      z-index: 30;
+
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 22px;
+
+      opacity: 0;
+      transform: translateY(8px);
+
+      animation:
+        calmEnter 500ms
+        cubic-bezier(0.2, 0.8, 0.2, 1)
+        240ms forwards;
+    }
+
+    .footer-line {
+      height: 1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb), 0.3)
+        );
+    }
+
+    .footer-line:last-child {
+      transform: scaleX(-1);
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      white-space: nowrap;
+    }
+
+    .footer-content strong {
+      color: var(--text);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .footer-node {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--purple);
+      box-shadow:
+        0 0 9px
+        rgba(var(--purple-rgb), 0.52);
+    }
+
+    .footer-item {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    @keyframes calmEnter {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes plateEnter {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .studio-header,
+      .caster-slot,
+      .studio-footer {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="studio-stage">
+    <div class="ambient-left" aria-hidden="true"></div>
+    <div class="ambient-right" aria-hidden="true"></div>
+    <div class="edge-frame" aria-hidden="true"></div>
+
+    <header class="studio-header">
+      <div class="studio-brand">
+        <div class="studio-mark" aria-hidden="true">
+          RG
+        </div>
+
+        <div class="studio-brand-copy">
+          <span>Rivals Gauntlet Studio</span>
+
+          <strong id="studioEventName">
+            RIVALS GAUNTLET
+          </strong>
+        </div>
+      </div>
+
+      <div class="studio-center-card">
+        <span id="studioStatusLabel">
+          Caster Desk
+        </span>
+
+        <strong id="studioMatchLabel">
+          Tournament Coverage
+        </strong>
+      </div>
+
+      <div class="studio-meta">
+        <div
+          id="studioConnection"
+          class="connection"
+        >
+          <span class="connection-dot"></span>
+
+          <span id="studioConnectionText">
+            Connecting
+          </span>
+        </div>
+
+        <div
+          id="studioWebsiteTop"
+          class="website-pill"
+        >
+          RIVALSGAUNTLET.COM
+        </div>
+      </div>
+    </header>
+
+    <section class="caster-zone">
+      <div
+        id="casterLayout"
+        class="caster-layout"
+        data-count="2"
+      ></div>
+    </section>
+
+    <footer class="studio-footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-content">
+        <strong id="studioWebsite">
+          RIVALSGAUNTLET.COM
+        </strong>
+
+        <span class="footer-node"></span>
+
+        <span
+          id="studioFooterMatch"
+          class="footer-item"
+        >
+          TOURNAMENT COVERAGE
+        </span>
+
+        <span class="footer-node"></span>
+
+        <span
+          id="studioPrizePool"
+          class="footer-item"
+        >
+          LIVE PRIZE POOL
+        </span>
+
+        <span class="footer-node"></span>
+
+        <span class="footer-item">
+          PREDICTIONS • BRACKET • RG POINTS
+        </span>
+      </div>
+
+      <span class="footer-line"></span>
+    </footer>
+  </main>
+
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var connection =
+          document.getElementById(
+            "studioConnection"
+          );
+
+        var connectionText =
+          document.getElementById(
+            "studioConnectionText"
+          );
+
+        if (connection) {
+          connection.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionText) {
+          connectionText.textContent =
+            "SCRIPT ERROR";
+        }
+
+        console.error(
+          "[RG CASTER DESK] Script error:",
+          event.message
+        );
+      }
+    );
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var DEFAULT_WEBSITE =
+        "RIVALSGAUNTLET.COM";
+
+      var DEFAULT_CASTERS = [
+        {
+          id: "caster1",
+          active: true,
+          name: "JASPER HARVEY",
+          role: "HOST",
+          handle: ""
+        },
+        {
+          id: "caster2",
+          active: true,
+          name: "CASTER TWO",
+          role: "ANALYST",
+          handle: ""
+        },
+        {
+          id: "caster3",
+          active: false,
+          name: "GUEST CASTER",
+          role: "GUEST",
+          handle: ""
+        },
+        {
+          id: "caster4",
+          active: false,
+          name: "CASTER FOUR",
+          role: "ANALYST",
+          handle: ""
+        }
+      ];
+
+      var studioData = {};
+      var siteData = {};
+      var countdownData = {};
+      var donationsData = [];
+
+      var lastCasterSignature = "";
+      var renderTimer = null;
+
+      var studioEventName =
+        document.getElementById(
+          "studioEventName"
+        );
+
+      var studioStatusLabel =
+        document.getElementById(
+          "studioStatusLabel"
+        );
+
+      var studioMatchLabel =
+        document.getElementById(
+          "studioMatchLabel"
+        );
+
+      var studioWebsite =
+        document.getElementById(
+          "studioWebsite"
+        );
+
+      var studioWebsiteTop =
+        document.getElementById(
+          "studioWebsiteTop"
+        );
+
+      var studioFooterMatch =
+        document.getElementById(
+          "studioFooterMatch"
+        );
+
+      var studioPrizePool =
+        document.getElementById(
+          "studioPrizePool"
+        );
+
+      var casterLayout =
+        document.getElementById(
+          "casterLayout"
+        );
+
+      var studioConnection =
+        document.getElementById(
+          "studioConnection"
+        );
+
+      var studioConnectionText =
+        document.getElementById(
+          "studioConnectionText"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text || fallback || "";
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function moneyValue(value) {
+        var parsed =
+          Number(
+            String(
+              value == null
+                ? ""
+                : value
+            ).replace(
+              /[^0-9.-]/g,
+              ""
+            )
+          );
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : 0;
+      }
+
+      function formatMoney(value) {
+        return new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }
+        ).format(
+          Math.max(
+            0,
+            Number(value) || 0
+          )
+        );
+      }
+
+      function normalizeWebsite(value) {
+        return clean(
+          value,
+          DEFAULT_WEBSITE
+        )
+          .replace(/^https?:\/\//i, "")
+          .replace(/^www\./i, "")
+          .replace(/\/+$/, "")
+          .toUpperCase();
+      }
+
+      function getCurrentMatchText(value) {
+        if (
+          typeof value === "string"
+        ) {
+          return clean(value);
+        }
+
+        if (
+          value &&
+          typeof value === "object"
+        ) {
+          return clean(
+            value.fullMatchId ||
+            value.label ||
+            value.name ||
+            value.matchId ||
+            value.id
+          );
+        }
+
+        return "";
+      }
+
+      function prettyMatch(value) {
+        var match =
+          getCurrentMatchText(value);
+
+        var text =
+          match.toLowerCase();
+
+        if (
+          !text ||
+          text.indexOf(
+            "no match"
+          ) !== -1
+        ) {
+          return "TOURNAMENT COVERAGE";
+        }
+
+        if (
+          text.indexOf("grand") !== -1 ||
+          text.indexOf("finals") !== -1
+        ) {
+          return "GRAND FINALS • BO5";
+        }
+
+        if (
+          text.indexOf("sf1") !== -1 ||
+          text.indexOf("semifinal 1") !== -1
+        ) {
+          return "SEMIFINAL 1 • BO3";
+        }
+
+        if (
+          text.indexOf("sf2") !== -1 ||
+          text.indexOf("semifinal 2") !== -1
+        ) {
+          return "SEMIFINAL 2 • BO3";
+        }
+
+        if (text.indexOf("qf1") !== -1) {
+          return "QUARTERFINAL 1 • BO3";
+        }
+
+        if (text.indexOf("qf2") !== -1) {
+          return "QUARTERFINAL 2 • BO3";
+        }
+
+        if (text.indexOf("qf3") !== -1) {
+          return "QUARTERFINAL 3 • BO3";
+        }
+
+        if (text.indexOf("qf4") !== -1) {
+          return "QUARTERFINAL 4 • BO3";
+        }
+
+        return match.toUpperCase();
+      }
+
+      function hasOwn(object, key) {
+        return Object.prototype
+          .hasOwnProperty.call(
+            object || {},
+            key
+          );
+      }
+
+      function oldSiteCaster(index) {
+        var enabledKey =
+          "caster" +
+          index +
+          "Enabled";
+
+        var nameKey =
+          "caster" +
+          index +
+          "Name";
+
+        var roleKey =
+          "caster" +
+          index +
+          "Role";
+
+        var handleKey =
+          "caster" +
+          index +
+          "Handle";
+
+        var hasEnabled =
+          hasOwn(
+            siteData,
+            enabledKey
+          );
+
+        var hasName =
+          clean(
+            siteData[nameKey]
+          ) !== "";
+
+        var active;
+
+        if (index === 1) {
+          active = true;
+
+        } else if (hasEnabled) {
+          active =
+            siteData[enabledKey] === true;
+
+        } else if (hasName) {
+          active = true;
+
+        } else {
+          active =
+            index === 2;
+        }
+
+        return {
+          id: "caster" + index,
+          active: active,
+
+          name:
+            clean(
+              siteData[nameKey],
+              DEFAULT_CASTERS[
+                index - 1
+              ].name
+            ),
+
+          role:
+            clean(
+              siteData[roleKey],
+              DEFAULT_CASTERS[
+                index - 1
+              ].role
+            ),
+
+          handle:
+            clean(
+              siteData[handleKey]
+            )
+        };
+      }
+
+      function newStudioCasters() {
+        var source =
+          studioData.casters;
+
+        if (!source) {
+          return [];
+        }
+
+        var list = [];
+
+        if (Array.isArray(source)) {
+          source.forEach(
+            function (caster, index) {
+              if (index >= 4) {
+                return;
+              }
+
+              caster =
+                caster || {};
+
+              list.push({
+                id:
+                  clean(
+                    caster.id,
+                    "caster" +
+                    (
+                      index + 1
+                    )
+                  ),
+
+                active:
+                  caster.active !== false,
+
+                name:
+                  clean(
+                    caster.name,
+                    DEFAULT_CASTERS[index].name
+                  ),
+
+                role:
+                  clean(
+                    caster.role,
+                    DEFAULT_CASTERS[index].role
+                  ),
+
+                handle:
+                  clean(
+                    caster.handle
+                  )
+              });
+            }
+          );
+
+        } else {
+          for (
+            var index = 1;
+            index <= 4;
+            index += 1
+          ) {
+            var key =
+              "caster" + index;
+
+            var caster =
+              source[key];
+
+            if (!caster) {
+              continue;
+            }
+
+            list.push({
+              id: key,
+
+              active:
+                caster.active !== false,
+
+              name:
+                clean(
+                  caster.name,
+                  DEFAULT_CASTERS[
+                    index - 1
+                  ].name
+                ),
+
+              role:
+                clean(
+                  caster.role,
+                  DEFAULT_CASTERS[
+                    index - 1
+                  ].role
+                ),
+
+              handle:
+                clean(
+                  caster.handle
+                )
+            });
+          }
+        }
+
+        return list;
+      }
+
+      function getActiveCasters() {
+        var configured =
+          newStudioCasters();
+
+        var list;
+
+        if (configured.length) {
+          list = configured;
+
+        } else {
+          list = [
+            oldSiteCaster(1),
+            oldSiteCaster(2),
+            oldSiteCaster(3),
+            oldSiteCaster(4)
+          ];
+        }
+
+        list =
+          list
+            .filter(
+              function (caster) {
+                return caster.active;
+              }
+            )
+            .slice(0, 4);
+
+        if (
+          !list.length &&
+          studioData.visible !== false
+        ) {
+          list = [
+            DEFAULT_CASTERS[0]
+          ];
+        }
+
+        return list;
+      }
+
+      function renderCasterMarkup(
+        caster,
+        index
+      ) {
+        var handle =
+          clean(caster.handle);
+
+        return (
+          '<article ' +
+            'class="caster-slot" ' +
+            'style="' +
+              '--plate-delay:' +
+              (
+                80 +
+                index * 75
+              ) +
+              'ms;' +
+            '"' +
+          '>' +
+
+            '<span class="plate-anchor"></span>' +
+
+            '<div class="caster-nameplate">' +
+
+              '<span class="plate-number">' +
+                'C' +
+                String(
+                  index + 1
+                ).padStart(
+                  2,
+                  "0"
+                ) +
+              '</span>' +
+
+              '<div class="plate-copy">' +
+
+                '<strong>' +
+                  escapeHtml(
+                    caster.name
+                  ) +
+                '</strong>' +
+
+                '<small>' +
+                  escapeHtml(
+                    caster.role
+                  ) +
+                '</small>' +
+
+              '</div>' +
+
+              '<span class="plate-handle">' +
+                escapeHtml(
+                  handle ||
+                  "RIVALS GAUNTLET"
+                ) +
+              '</span>' +
+
+            '</div>' +
+
+          '</article>'
+        );
+      }
+
+      function casterSignature(casters) {
+        return JSON.stringify({
+          visible:
+            studioData.visible !== false,
+          casters: casters
+        });
+      }
+
+      function renderCasterLayout() {
+        var casters =
+          getActiveCasters();
+
+        var visible =
+          studioData.visible !== false;
+
+        var signature =
+          casterSignature(casters);
+
+        if (
+          signature ===
+          lastCasterSignature
+        ) {
+          return;
+        }
+
+        lastCasterSignature =
+          signature;
+
+        clearTimeout(renderTimer);
+
+        casterLayout.classList.add(
+          "is-changing"
+        );
+
+        renderTimer =
+          setTimeout(
+            function () {
+              if (
+                !visible ||
+                !casters.length
+              ) {
+                casterLayout.innerHTML =
+                  "";
+
+                casterLayout.classList.add(
+                  "is-hidden"
+                );
+
+              } else {
+                casterLayout.classList.remove(
+                  "is-hidden"
+                );
+
+                casterLayout.setAttribute(
+                  "data-count",
+                  String(casters.length)
+                );
+
+                casterLayout.innerHTML =
+                  casters
+                    .map(
+                      renderCasterMarkup
+                    )
+                    .join("");
+              }
+
+              casterLayout.classList.remove(
+                "is-changing"
+              );
+            },
+            150
+          );
+      }
+
+      function donationTotal() {
+        return donationsData.reduce(
+          function (sum, donation) {
+            return (
+              sum +
+              moneyValue(
+                donation &&
+                donation.amount
+              )
+            );
+          },
+          0
+        );
+      }
+
+      function renderStudioCopy() {
+        var eventTitle =
+          clean(
+            studioData.eventName ||
+            siteData.eventName,
+            "RIVALS GAUNTLET"
+          ).toUpperCase();
+
+        var websiteText =
+          normalizeWebsite(
+            studioData.website ||
+            countdownData.website ||
+            siteData.websiteUrl ||
+            siteData.website
+          );
+
+        var matchText =
+          prettyMatch(
+            siteData.currentMatch
+          );
+
+        var statusText =
+          clean(
+            studioData.statusLabel,
+            "CASTER DESK"
+          ).toUpperCase();
+
+        var startingPool =
+          moneyValue(
+            siteData.startingPrizePool
+          );
+
+        var publishedPool =
+          moneyValue(
+            siteData.prizePool
+          );
+
+        var pool =
+          Math.max(
+            publishedPool,
+            startingPool +
+            donationTotal()
+          );
+
+        studioEventName.textContent =
+          eventTitle;
+
+        studioWebsite.textContent =
+          websiteText;
+
+        studioWebsiteTop.textContent =
+          websiteText;
+
+        studioStatusLabel.textContent =
+          statusText;
+
+        studioMatchLabel.textContent =
+          matchText;
+
+        studioFooterMatch.textContent =
+          matchText;
+
+        studioPrizePool.textContent =
+          pool > 0
+            ? formatMoney(pool) +
+              " LIVE PRIZE POOL"
+            : "LIVE PRIZE POOL";
+      }
+
+      function renderAll() {
+        renderStudioCopy();
+        renderCasterLayout();
+      }
+
+      function connect() {
+        var db = null;
+
+        try {
+          studioConnectionText.textContent =
+            "CONNECTING";
+
+          if (
+            typeof window.firebase ===
+              "undefined" ||
+            !window.firebase.apps ||
+            window.firebase.apps.length === 0
+          ) {
+            throw new Error(
+              "Firebase is not initialized. Check ../firebase.js."
+            );
+          }
+
+          db =
+            window.firebase.database();
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() === true;
+
+              studioConnection.classList.toggle(
+                "online",
+                online
+              );
+
+              studioConnection.classList.remove(
+                "error"
+              );
+
+              studioConnectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            },
+
+            function (error) {
+              studioConnection.classList.add(
+                "error"
+              );
+
+              studioConnectionText.textContent =
+                "CONNECTION ERROR";
+
+              console.error(
+                "[RG CASTER DESK] Connection listener failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "broadcastCasters"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              studioData =
+                snapshot.val() || {};
+
+              renderAll();
+            },
+
+            function (error) {
+              console.warn(
+                "[RG CASTER DESK] broadcastCasters read failed. Using legacy site caster fields:",
+                error
+              );
+
+              studioData = {};
+              renderAll();
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              siteData =
+                snapshot.val() || {};
+
+              renderAll();
+            },
+
+            function (error) {
+              studioConnection.classList.add(
+                "error"
+              );
+
+              studioConnectionText.textContent =
+                error &&
+                error.code ===
+                "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+
+              console.error(
+                "[RG CASTER DESK] Site read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              countdownData =
+                snapshot.val() || {};
+
+              renderStudioCopy();
+            },
+
+            function (error) {
+              console.warn(
+                "[RG CASTER DESK] Countdown read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "donations"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var raw =
+                snapshot.val() || {};
+
+              donationsData =
+                Object.keys(raw)
+                  .map(
+                    function (key) {
+                      return raw[key];
+                    }
+                  )
+                  .filter(Boolean);
+
+              renderStudioCopy();
+            },
+
+            function (error) {
+              donationsData = [];
+
+              console.warn(
+                "[RG CASTER DESK] Donations read failed:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          studioConnection.classList.add(
+            "error"
+          );
+
+          studioConnectionText.textContent =
+            "FIREBASE ERROR";
+
+          console.error(
+            "[RG CASTER DESK] Startup failed:",
+            error
+          );
+        }
+      }
+
+      renderAll();
+      connect();
+    })();
+  </script>
+</body>
+</html>

@@ -2531,10 +2531,57 @@
     });
   }
 
+  function captureCommentScrollState() {
+    const scrollContainer = document.querySelector(".post-discussion-scroll");
+    const commentsList = document.getElementById("postCommentsList");
+
+    if (!scrollContainer || !commentsList) return null;
+
+    const scrollRect = scrollContainer.getBoundingClientRect();
+    const visibleThread = [...commentsList.querySelectorAll("[data-comment-thread]")].find(thread => {
+      const rect = thread.getBoundingClientRect();
+      return rect.bottom > scrollRect.top + 4 && rect.top < scrollRect.bottom - 4;
+    });
+
+    return {
+      scrollTop: scrollContainer.scrollTop,
+      anchorId: visibleThread?.dataset.commentThread || "",
+      anchorOffset: visibleThread
+        ? visibleThread.getBoundingClientRect().top - scrollRect.top
+        : 0
+    };
+  }
+
+  function restoreCommentScrollState(state) {
+    if (!state) return;
+
+    requestAnimationFrame(() => {
+      const scrollContainer = document.querySelector(".post-discussion-scroll");
+      if (!scrollContainer) return;
+
+      if (state.anchorId) {
+        const anchor = document.querySelector(
+          `[data-comment-thread="${CSS.escape(state.anchorId)}"]`
+        );
+
+        if (anchor) {
+          const scrollRect = scrollContainer.getBoundingClientRect();
+          const currentOffset = anchor.getBoundingClientRect().top - scrollRect.top;
+          scrollContainer.scrollTop += currentOffset - state.anchorOffset;
+          return;
+        }
+      }
+
+      scrollContainer.scrollTop = state.scrollTop;
+    });
+  }
+
   function renderPostComments() {
     const container = document.getElementById("postCommentsList");
     const count = document.getElementById("selectedPostCommentCount");
     if (!container || !count) return;
+
+    const scrollState = captureCommentScrollState();
 
     const commentCount = selectedPostComments.length;
     const replyCount = Object.values(selectedCommentReplies)
@@ -2551,6 +2598,7 @@
         </div>
       `;
       renderSelectedPost();
+      restoreCommentScrollState(scrollState);
       return;
     }
 
@@ -2626,6 +2674,7 @@
     }).join("");
 
     renderSelectedPost();
+    restoreCommentScrollState(scrollState);
 
     if (activeReplyCommentId) {
       requestAnimationFrame(() => {

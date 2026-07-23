@@ -1,0 +1,89 @@
+.nexus-settings-intro{align-items:center}
+.nexus-settings-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.nexus-settings-metric{min-width:0;display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:11px;min-height:100px;padding:14px;border:1px solid var(--border);border-radius:13px;background:linear-gradient(135deg,rgba(var(--purple-rgb),.045),transparent 55%),var(--panel)}
+.nexus-settings-metric.protected{border-color:rgba(89,231,171,.17)}
+.nexus-settings-metric.active{border-color:rgba(var(--purple-rgb),.27)}
+.nexus-settings-metric-icon{width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(var(--purple-rgb),.2);border-radius:11px;background:rgba(var(--purple-rgb),.065);color:var(--purple-bright);font-size:15px}
+.nexus-settings-metric>div{min-width:0}
+.nexus-settings-metric span,.nexus-settings-metric strong,.nexus-settings-metric small{display:block}
+.nexus-settings-metric>div>span{color:var(--dim);font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.nexus-settings-metric strong{margin-top:4px;overflow:hidden;color:var(--text);font-size:15px;line-height:1.05;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.nexus-settings-metric small{margin-top:5px;overflow:hidden;color:var(--dim);font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.nexus-settings-scope-note{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;margin-top:12px;padding:13px 15px;border-color:rgba(var(--purple-rgb),.18);background:linear-gradient(90deg,rgba(var(--purple-rgb),.055),transparent),var(--panel)}
+.nexus-settings-scope-note>i{width:42px;height:42px;display:grid;place-items:center;border-radius:11px;background:rgba(var(--purple-rgb),.08);color:var(--purple-bright)}
+.nexus-settings-scope-note strong{display:block;color:var(--text);font-size:11px;text-transform:uppercase}
+.nexus-settings-scope-note p{margin:4px 0 0;color:var(--dim);font-size:9px;line-height:1.45}
+.nexus-settings-scope-note code{color:#d7c5ff}
+.nexus-settings-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:13px}
+.nexus-settings-panel,.nexus-settings-data-panel{min-width:0}
+.nexus-settings-banner-panel,.nexus-settings-data-panel{grid-column:1/-1}
+.nexus-settings-panel-header{align-items:center}
+.nexus-settings-panel-header>div>span{display:block;margin-top:4px;color:var(--dim);font-size:8px;font-weight:700;letter-spacing:.05em}
+.nexus-settings-save-state,.nexus-settings-live-badge{min-height:28px;display:inline-flex;align-items:center;gap:6px;padding:0 9px;border:1px solid rgba(88,229,170,.2);border-radius:999px;background:rgba(88,229,170,.045);color:#83e9bd;font-size:8px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.nexus-settings-save-state.dirty{border-color:rgba(245,201,91,.25);background:rgba(245,201,91,.05);color:#f5c95b}
+.nexus-settings-live-badge{border-color:var(--border);background:rgba(255,255,255,.015);color:var(--dim)}
+.nexus-settings-live-badge.enabled{border-color:rgba(var(--purple-rgb),.3);background:rgba(var(--purple-rgb),.06);color:var(--purple-bright)}
+.nexus-settings-panel-body{padding:16px}
+.nexus-settings-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.nexus-settings-field{min-width:0;display:grid;gap:6px}
+.nexus-settings-field-wide{grid-column:1/-1}
+.nexus-settings-field>span{color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.nexus-settings-field input,.nexus-settings-field select,.nexus-settings-field textarea{width:100%;min-width:0;min-height:42px;padding:0 10px;border:1px solid rgba(255,255,255,.105);border-radius:9px;outline:none;background:#151220;color:var(--text);font-family:"Rajdhani",sans-serif;font-size:11px}
+.nexus-settings-field textarea{min-height:92px;padding:10px;line-height:1.4;resize:vertical}
+.nexus-settings-field input:focus,.nexus-settings-field select:focus,.nexus-settings-field textarea:focus{border-color:rgba(var(--purple-rgb),.55);box-shadow:0 0 0 3px rgba(var(--purple-rgb),.07)}
+.nexus-settings-field small{color:var(--dim);font-size:8px;line-height:1.3}
+.nexus-settings-actions,.nexus-settings-publish-row{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid var(--border)}
+.nexus-settings-feature-list{display:grid;gap:8px}
+.nexus-settings-feature,.nexus-settings-switch-row{min-width:0;display:grid;grid-template-columns:40px minmax(0,1fr) auto 42px;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.012);cursor:pointer}
+.nexus-settings-feature.enabled{border-color:rgba(var(--purple-rgb),.24);background:rgba(var(--purple-rgb),.035)}
+.nexus-settings-feature-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:10px;background:rgba(var(--purple-rgb),.06);color:var(--purple-bright)}
+.nexus-settings-feature-copy,.nexus-settings-switch-row>span:first-child{min-width:0}
+.nexus-settings-feature-copy strong,.nexus-settings-feature-copy small,.nexus-settings-switch-row strong,.nexus-settings-switch-row small{display:block}
+.nexus-settings-feature-copy strong,.nexus-settings-switch-row strong{color:var(--text);font-size:10px;text-transform:uppercase}
+.nexus-settings-feature-copy small,.nexus-settings-switch-row small{margin-top:3px;color:var(--dim);font-size:8px;line-height:1.35}
+.nexus-settings-feature input,.nexus-settings-switch-row input{position:absolute;opacity:0;pointer-events:none}
+.nexus-settings-switch{position:relative;width:40px;height:22px;display:block;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(255,255,255,.055);transition:background .18s ease,border-color .18s ease}
+.nexus-settings-switch::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#85808e;transition:transform .18s ease,background .18s ease}
+.nexus-settings-feature input:checked+.nexus-settings-switch,.nexus-settings-switch-row input:checked+.nexus-settings-switch{border-color:rgba(var(--purple-rgb),.5);background:rgba(var(--purple-rgb),.24)}
+.nexus-settings-feature input:checked+.nexus-settings-switch::after,.nexus-settings-switch-row input:checked+.nexus-settings-switch::after{transform:translateX(18px);background:#d5bdff}
+.nexus-settings-public-warning{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;margin-top:11px;padding:9px 10px;border:1px solid rgba(245,201,91,.16);border-radius:9px;color:#d5c28c;font-size:8px;line-height:1.4}
+.nexus-settings-public-warning>i{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:rgba(245,201,91,.055)}
+.nexus-settings-banner-layout{display:grid;grid-template-columns:minmax(520px,1.1fr) minmax(350px,.9fr);gap:13px;padding:16px}
+.nexus-settings-banner-editor,.nexus-settings-banner-preview{min-width:0;padding:13px;border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,.01)}
+.nexus-settings-switch-row{grid-template-columns:minmax(0,1fr) auto 42px;margin-bottom:12px}
+.nexus-settings-banner-preview{background:radial-gradient(circle at 50% 0%,rgba(var(--purple-rgb),.13),transparent 46%),rgba(11,9,18,.72)}
+.nexus-settings-banner-preview>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.nexus-settings-banner-preview>header span,.nexus-settings-banner-preview>header strong{color:var(--dim);font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.nexus-settings-banner-preview>header span{color:var(--purple-bright)}
+#nexusSettingsBannerPreview{min-height:190px;display:grid;align-items:center;padding-top:12px}
+.nexus-settings-banner-card{display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 12px;border:1px solid rgba(117,178,255,.25);border-radius:10px;background:rgba(117,178,255,.055)}
+.nexus-settings-banner-card.disabled{opacity:.48}
+.nexus-settings-banner-card.tone-success{border-color:rgba(88,229,170,.25);background:rgba(88,229,170,.055)}
+.nexus-settings-banner-card.tone-warning{border-color:rgba(245,201,91,.25);background:rgba(245,201,91,.055)}
+.nexus-settings-banner-card.tone-critical{border-color:rgba(255,100,125,.25);background:rgba(255,100,125,.055)}
+.nexus-settings-banner-card>i{width:32px;height:32px;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.045);color:var(--text)}
+.nexus-settings-banner-card>div{min-width:0}
+.nexus-settings-banner-card strong,.nexus-settings-banner-card span{display:block}
+.nexus-settings-banner-card strong{color:var(--text);font-size:10px;text-transform:uppercase}
+.nexus-settings-banner-card>div>span{margin-top:3px;color:var(--muted);font-size:8px;line-height:1.35}
+.nexus-settings-banner-link{display:inline-flex!important;align-items:center;gap:6px;color:var(--text);font-size:8px;font-weight:800;text-transform:uppercase;white-space:nowrap}
+.nexus-settings-banner-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--dim);text-align:center}
+.nexus-settings-banner-empty>i{color:var(--purple-bright);font-size:22px}
+.nexus-settings-banner-empty strong{color:var(--text);font-size:11px;text-transform:uppercase}
+.nexus-settings-banner-empty span{max-width:270px;font-size:8px;line-height:1.4}
+.nexus-settings-publish-row{margin:0 16px 16px}
+.nexus-settings-data-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:16px}
+.nexus-settings-data-path{min-width:0;display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:11px;padding:11px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.012)}
+.nexus-settings-data-path>i{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:rgba(var(--purple-rgb),.06);color:var(--purple-bright)}
+.nexus-settings-data-path code,.nexus-settings-data-path strong,.nexus-settings-data-path span{display:block}
+.nexus-settings-data-path code{color:#d7c5ff;font-size:10px}
+.nexus-settings-data-path strong{margin-top:4px;color:var(--text);font-size:9px;text-transform:uppercase}
+.nexus-settings-data-path span{margin-top:3px;color:var(--dim);font-size:8px;line-height:1.35}
+.nexus-settings-state{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:28px;color:var(--dim);text-align:center}
+.nexus-settings-state>i{color:var(--purple-bright);font-size:28px}
+.nexus-settings-error>i{color:#ff7c91}
+.nexus-settings-state strong{color:var(--text);font-size:16px;text-transform:uppercase}
+.nexus-settings-state span{max-width:520px;font-size:10px;line-height:1.45}
+.nexus-settings-state .action-button{margin-top:7px}
+@media(max-width:1180px){.nexus-settings-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.nexus-settings-layout{grid-template-columns:1fr}.nexus-settings-banner-panel,.nexus-settings-data-panel{grid-column:auto}.nexus-settings-banner-layout{grid-template-columns:1fr}}
+@media(max-width:700px){.nexus-settings-summary,.nexus-settings-form-grid,.nexus-settings-data-grid{grid-template-columns:1fr}.nexus-settings-field-wide{grid-column:auto}.nexus-settings-panel-header{align-items:flex-start;flex-direction:column}.nexus-settings-actions,.nexus-settings-publish-row{flex-direction:column}.nexus-settings-actions .action-button,.nexus-settings-publish-row .action-button{width:100%}.nexus-settings-feature{grid-template-columns:38px minmax(0,1fr) 42px}.nexus-settings-feature>input{display:none}.nexus-settings-feature .nexus-settings-switch{grid-column:3}.nexus-settings-banner-layout{padding:11px}.nexus-settings-publish-row{margin:0 11px 11px}.nexus-settings-banner-card{grid-template-columns:32px minmax(0,1fr)}.nexus-settings-banner-link{grid-column:1/-1;justify-content:flex-end}}

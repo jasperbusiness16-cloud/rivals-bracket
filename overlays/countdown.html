@@ -1451,7 +1451,462 @@
         transform:none;
       }
     }
-  </style>
+ /* =========================================================
+   COUNTDOWN REFINEMENT
+   ========================================================= */
+
+.hero {
+  top: 41%;
+  width: 1080px;
+}
+
+.timer-system {
+  width: 740px;
+  height: 480px;
+  margin-top: 10px;
+}
+
+.aura {
+  width: 440px;
+  height: 440px;
+}
+
+.orbit.outer {
+  width: 440px;
+  height: 440px;
+}
+
+.orbit.middle {
+  width: 378px;
+  height: 378px;
+}
+
+.progress-ring {
+  width: 322px;
+  height: 322px;
+}
+
+.ripple {
+  width: 285px;
+  height: 285px;
+}
+
+.timer-core {
+  width: 430px;
+  height: 210px;
+  border-radius: 29px;
+}
+
+.timer-core::before {
+  border-radius: 21px;
+}
+
+.timer-label {
+  top: 19px;
+  font-size: 10px;
+}
+
+.timer {
+  min-width: 390px;
+  font-size: 120px;
+  letter-spacing: 0.015em;
+}
+
+.timer.long {
+  font-size: 82px;
+}
+
+.schedule {
+  margin-top: -9px;
+  font-size: 20px;
+}
+
+
+/* =========================================================
+   LARGER ROTATING INFORMATION PANEL
+   ========================================================= */
+
+.info-shell {
+  width: 1260px;
+  min-height: 265px;
+  bottom: 72px;
+  border-radius: 24px;
+}
+
+.info-head {
+  min-height: 60px;
+}
+
+.info-head h2 {
+  font-size: 14px;
+}
+
+.slide-index {
+  right: 28px;
+  font-size: 11px;
+}
+
+.info-body {
+  min-height: 204px;
+  padding: 24px 40px 30px;
+}
+
+.team-block {
+  min-height: 92px;
+  padding: 18px 26px;
+}
+
+.team-block strong {
+  font-size: 31px;
+}
+
+.vs {
+  width: 72px;
+  height: 72px;
+  font-size: 20px;
+}
+
+.matchups {
+  gap: 12px 16px;
+}
+
+.match-row {
+  min-height: 64px;
+  grid-template-columns:
+    64px
+    minmax(0, 1fr)
+    38px
+    minmax(0, 1fr);
+
+  padding: 0 18px;
+}
+
+.match-row > span {
+  font-size: 11px;
+}
+
+.match-row p {
+  font-size: 17px;
+}
+
+.info-item {
+  min-height: 112px;
+  padding: 17px 18px;
+}
+
+.info-item small {
+  font-size: 10px;
+}
+
+.info-item strong {
+  font-size: 20px;
+}
+
+
+/* =========================================================
+   OPENING ROUND SLIDE
+   ========================================================= */
+
+.round-slide {
+  width: 100%;
+}
+
+.round-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+.round-heading span {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.round-heading p {
+  margin: 0;
+
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+  text-align: right;
+}
+
+
+/* =========================================================
+   PREDICTION CENTER SLIDE
+   ========================================================= */
+
+.prediction-card {
+  position: relative;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.45fr)
+    minmax(320px, 0.72fr);
+
+  align-items: stretch;
+  gap: 18px;
+
+  overflow: hidden;
+}
+
+.prediction-card::before {
+  content: "";
+
+  position: absolute;
+  left: 8%;
+  top: 50%;
+
+  width: 430px;
+  height: 220px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(var(--purple-rgb), 0.13),
+      transparent 68%
+    );
+
+  filter: blur(16px);
+
+  transform:
+    translateY(-50%)
+    scale(0.92);
+
+  opacity: 0.65;
+
+  animation:
+    predictionAura 6s ease-in-out infinite;
+}
+
+.prediction-main,
+.prediction-cta {
+  position: relative;
+  z-index: 2;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(var(--purple-rgb), 0.055),
+      rgba(255, 255, 255, 0.012)
+    );
+}
+
+.prediction-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 22px 27px;
+}
+
+.prediction-kicker {
+  color: var(--purple-bright);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+
+.prediction-main h3 {
+  margin:
+    7px 0 4px;
+
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.prediction-main p {
+  max-width: 690px;
+
+  margin:
+    8px 0 0;
+
+  color: var(--soft);
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.prediction-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+
+  margin-top: 17px;
+}
+
+.prediction-pill-row span {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding:
+    0 12px;
+
+  border:
+    1px solid
+    rgba(var(--purple-rgb), 0.16);
+
+  border-radius: 9px;
+
+  color: var(--soft);
+
+  background:
+    rgba(var(--purple-rgb), 0.035);
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.prediction-pill-row b {
+  color: var(--purple-bright);
+  font-size: 10px;
+}
+
+.prediction-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 19px 23px;
+
+  text-align: center;
+}
+
+.prediction-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  color: var(--green);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prediction-status i {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+
+  box-shadow:
+    0 0 12px currentColor;
+
+  animation:
+    predictionStatusPulse 2.4s ease-in-out infinite;
+}
+
+.prediction-cta strong {
+  max-width: 290px;
+
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+.prediction-cta small {
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.prediction-url {
+  width: 100%;
+
+  margin-top: 16px;
+  padding:
+    10px 12px;
+
+  border:
+    1px solid
+    rgba(var(--purple-rgb), 0.2);
+
+  border-radius: 9px;
+
+  color: var(--purple-bright);
+
+  background:
+    rgba(var(--purple-rgb), 0.045);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+@keyframes predictionAura {
+  0%,
+  100% {
+    opacity: 0.42;
+
+    transform:
+      translateY(-50%)
+      scale(0.9);
+  }
+
+  50% {
+    opacity: 0.78;
+
+    transform:
+      translateY(-50%)
+      scale(1.06);
+  }
+}
+
+@keyframes predictionStatusPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+   </style>
 </head>
 
 <body>
@@ -2115,51 +2570,133 @@
   }
 
   function makeMatchupsCard() {
-    var rows =
-      getMatchups()
-        .map(
-          function (match) {
-            return (
-              '<div class="match-row">' +
+  var rows =
+    getMatchups()
+      .map(
+        function (match) {
+          return (
+            '<div class="match-row">' +
 
-                '<span>' +
-                  escapeHtml(
-                    match.label
-                  ) +
-                '</span>' +
+              '<span>' +
+                escapeHtml(
+                  match.label
+                ) +
+              '</span>' +
 
-                '<p>' +
-                  escapeHtml(
-                    match.teamA
-                  ) +
-                '</p>' +
+              '<p>' +
+                escapeHtml(
+                  match.teamA
+                ) +
+              '</p>' +
 
-                '<strong>' +
-                  'VS' +
-                '</strong>' +
+              '<strong>' +
+                'VS' +
+              '</strong>' +
 
-                '<p>' +
-                  escapeHtml(
-                    match.teamB
-                  ) +
-                '</p>' +
+              '<p>' +
+                escapeHtml(
+                  match.teamB
+                ) +
+              '</p>' +
 
-              '</div>'
-            );
-          }
-        )
-        .join("");
+            '</div>'
+          );
+        }
+      )
+      .join("");
 
-    return {
-      title: "TODAY'S MATCHUPS",
+  return {
+    title: "OPENING ROUND",
 
-      html:
+    html:
+      '<div class="round-slide">' +
+
+        '<div class="round-heading">' +
+
+          '<span>' +
+            'Quarterfinal Matchups' +
+          '</span>' +
+
+          '<p>' +
+            'Winners advance to the Semifinals • Grand Finals follows live' +
+          '</p>' +
+
+        '</div>' +
+
         '<div class="matchups">' +
           rows +
-        '</div>'
-    };
-  }
+        '</div>' +
 
+      '</div>'
+  };
+}
+function makePredictionsCard() {
+  return {
+    title: "PREDICTION CENTER",
+
+    html:
+      '<div class="prediction-card">' +
+
+        '<div class="prediction-main">' +
+
+          '<div class="prediction-kicker">' +
+            'Bracket Pick’em + Live Predictions' +
+          '</div>' +
+
+          '<h3>' +
+            'Make Every Match Matter' +
+          '</h3>' +
+
+          '<p>' +
+            'Fill out your tournament bracket before the first match goes live, ' +
+            'then return throughout the entire event for live predictions.' +
+          '</p>' +
+
+          '<div class="prediction-pill-row">' +
+
+            '<span>' +
+              '<b>01</b>' +
+              'Predict' +
+            '</span>' +
+
+            '<span>' +
+              '<b>02</b>' +
+              'Earn RP' +
+            '</span>' +
+
+            '<span>' +
+              '<b>03</b>' +
+              'Increase Predictor Ranking' +
+            '</span>' +
+
+          '</div>' +
+
+        '</div>' +
+
+        '<div class="prediction-cta">' +
+
+          '<span class="prediction-status">' +
+            '<i></i>' +
+            'Bracket Open' +
+          '</span>' +
+
+          '<strong>' +
+            'Fill Out Your Bracket' +
+          '</strong>' +
+
+          '<small>' +
+            'Before the broadcast begins' +
+          '</small>' +
+
+          '<div class="prediction-url">' +
+            'RIVALSGAUNTLET.COM/PREDICTIONS' +
+          '</div>' +
+
+        '</div>' +
+
+      '</div>'
+  };
+}
   function makeFormatCard() {
     var format =
       countdownData.format || {};
@@ -2390,14 +2927,15 @@
   }
 
   function getCards() {
-    return [
-      makeUpNextCard(),
-      makeMatchupsCard(),
-      makeFormatCard(),
-      makePrizeCard(),
-      makeCommunityCard()
-    ];
-  }
+  return [
+    makeUpNextCard(),
+    makePredictionsCard(),
+    makeMatchupsCard(),
+    makeFormatCard(),
+    makePrizeCard(),
+    makeCommunityCard()
+  ];
+}
 
   function renderCard(
     requestedIndex,

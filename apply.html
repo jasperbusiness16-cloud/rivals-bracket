@@ -220,7 +220,8 @@
           <div class="grid">
             <div class="field" data-field="willStream"><label for="willStream">Will you livestream your matches?<span class="req">*</span></label><select id="willStream"><option value="">Select One</option><option>Yes</option><option>Maybe</option><option>No</option></select><p class="error">Select your streaming plans.</p></div>
             <div class="field" data-field="followerCount"><label for="followerCount">Total Combined Follower Count<span class="req">*</span></label><input id="followerCount" type="number" min="0" step="1" inputmode="numeric" placeholder="Example: 2500"><p class="note">Enter 0 when you do not currently have a creator audience.</p><p class="error">Enter your combined follower count, including 0.</p></div>
-            <div class="field full"><label for="adminNotes">Additional Information — Optional</label><textarea id="adminNotes" maxlength="700" placeholder="Schedule concerns, creator context, preferred role details, teammate information, accessibility needs, or anything tournament staff should know."></textarea><p class="note">This field is visible to tournament administrators.</p></div>
+            <div class="field full"><label for="applicantNotes">Additional Information — Optional</label>
+<textarea id="applicantNotes" maxlength="700" placeholder="Schedule concerns, creator context, preferred role details, teammate information, accessibility needs, or anything tournament staff should know."></textarea><p class="note">This field is visible to tournament administrators.</p></div>
           </div>
         </section>
 
@@ -358,7 +359,7 @@
       const missing=missingProfile(),ready=!missing.length;$("profileReadiness").classList.toggle("warning",!ready);$("profileReadinessTitle").textContent=ready?"Player Record Ready":"Profile Information Required";$("profileReadinessCopy").textContent=ready?"Your required tournament identity fields are complete.":`Complete: ${missing.join(", ")}.`;$("completeProfileButton").hidden=ready;
     }
 
-    function loadApplication(app){if(!app)return;requiredFields.forEach(id=>Object.prototype.hasOwnProperty.call(app,id)&&setValue(id,app[id]));setValue("adminNotes",app.adminNotes||"")}
+    function loadApplication(app){if(!app)return;requiredFields.forEach(id=>Object.prototype.hasOwnProperty.call(app,id)&&setValue(id,app[id]));setValue("applicantNotes",app.applicantNotes||"")}
     function stepComplete(step){if(step===0)return profileReady();if(step===4)return profileReady()&&requiredFields.every(id=>value(id));return(stepFields[step]||[]).every(id=>value(id))}
     function completion(){const total=requiredFields.length+1;let done=requiredFields.filter(id=>value(id)).length+(profileReady()?1:0);return Math.round(done/total*100)}
     function validateField(id){
@@ -430,7 +431,7 @@
 )+
       reviewGroup("Competitive Information",2,[["Peak Rank",value("peakRank")],["Main Role",value("mainRole")],["Main Heroes",value("mainHeroes")],["Previous RG Event",value("participatedBefore")],["Substitute Interest",value("wantsSub")]])+
       reviewGroup("Creator Information",3,[["Will Stream",value("willStream")],["Combined Followers",Number(value("followerCount")||0).toLocaleString()]])+
-      reviewGroup("Additional Information",3,[["Administrator Notes",value("adminNotes")||"No additional information provided."]],true)
+      reviewGroup("Additional Information",3,[["Applicant Notes",value("applicantNotes")||"No additional information provided."]],true)
     }
 
     function updateStep(){
@@ -569,8 +570,7 @@
       value("followerCount")
     )||0,
 
-  adminNotes:
-    value("adminNotes"),
+  applicantNotes:value("applicantNotes"),
 
   status:"pending",
   submittedAt:now,
@@ -590,7 +590,7 @@
     }
 
     function attach(){
-      requiredFields.forEach(id=>{["input","change"].forEach(evt=>$(id).addEventListener(evt,()=>{clearError(id);updateProgress();renderReview()}))});$("adminNotes").addEventListener("input",renderReview);
+      requiredFields.forEach(id=>{["input","change"].forEach(evt=>$(id).addEventListener(evt,()=>{clearError(id);updateProgress();renderReview()}))});$("applicantNotes").addEventListener("input",renderReview);
       document.querySelectorAll("[data-step]").forEach(btn=>btn.addEventListener("click",()=>openStep(Number(btn.dataset.step),readOnlyReview)));document.querySelectorAll("[data-mobile-step]").forEach(btn=>btn.addEventListener("click",()=>openStep(Number(btn.dataset.mobileStep),readOnlyReview)));
       $("nextButton").addEventListener("click",()=>validateStep(activeStep)&&openStep(activeStep+1,true));$("previousButton").addEventListener("click",()=>openStep(activeStep-1,true));$("submitButton").addEventListener("click",submitApplication);$("reviewSubmittedButton").addEventListener("click",reviewSubmitted)
     }

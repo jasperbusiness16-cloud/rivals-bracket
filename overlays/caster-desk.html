@@ -1076,9 +1076,11 @@
       ];
 
       var studioData = {};
-      var siteData = {};
-      var countdownData = {};
-      var donationsData = [];
+var siteData = {};
+var countdownData = {};
+var donationsData = [];
+
+var overlayCasterSettings = {};
 
       var lastCasterSignature = "";
       var renderTimer = null;
@@ -1466,26 +1468,130 @@
       }
 
       function getActiveCasters() {
-        var configured =
-          newStudioCasters();
+  var hasOverlaySettings =
+    overlayCasterSettings &&
+    Object.keys(
+      overlayCasterSettings
+    ).length > 0;
 
-        var list;
+  if (
+    hasOverlaySettings &&
+    overlayCasterSettings.enabled === false
+  ) {
+    return [];
+  }
 
-        if (configured.length) {
-          list = configured;
+  if (hasOverlaySettings) {
+    var casterCount =
+      parseInt(
+        overlayCasterSettings.casterCount,
+        10
+      );
 
-        } else {
-          list = [
-            oldSiteCaster(1),
-            oldSiteCaster(2),
-            oldSiteCaster(3),
-            oldSiteCaster(4)
-          ];
+    if (
+      !Number.isFinite(casterCount)
+    ) {
+      casterCount = 2;
+    }
+
+    casterCount =
+      Math.max(
+        1,
+        Math.min(
+          4,
+          casterCount
+        )
+      );
+
+    var overlayCasters = [];
+
+    for (
+      var index = 1;
+      index <= casterCount;
+      index += 1
+    ) {
+      var prefix =
+        "caster" + index;
+
+      overlayCasters.push({
+        id: prefix,
+        active: true,
+
+        name:
+          clean(
+            overlayCasterSettings[
+              prefix + "Name"
+            ],
+            DEFAULT_CASTERS[
+              index - 1
+            ].name
+          ),
+
+        role:
+          clean(
+            overlayCasterSettings[
+              prefix + "Role"
+            ],
+            DEFAULT_CASTERS[
+              index - 1
+            ].role
+          ),
+
+        handle:
+          clean(
+            overlayCasterSettings[
+              prefix + "Handle"
+            ]
+          ),
+
+        subtitle:
+          clean(
+            overlayCasterSettings[
+              prefix + "Subtitle"
+            ]
+          )
+      });
+    }
+
+    return overlayCasters;
+  }
+
+  var configured =
+    newStudioCasters();
+
+  var list;
+
+  if (configured.length) {
+    list = configured;
+  } else {
+    list = [
+      oldSiteCaster(1),
+      oldSiteCaster(2),
+      oldSiteCaster(3),
+      oldSiteCaster(4)
+    ];
+  }
+
+  list =
+    list
+      .filter(
+        function (caster) {
+          return caster.active;
         }
+      )
+      .slice(0, 4);
 
-        list =
-          list
-            .filter(
+  if (
+    !list.length &&
+    studioData.visible !== false
+  ) {
+    list = [
+      DEFAULT_CASTERS[0]
+    ];
+  }
+
+  return list;
+}
               function (caster) {
                 return caster.active;
               }
@@ -1789,7 +1895,29 @@
               );
             }
           );
+db.ref(
+  "broadcastOverlays/casterDesk"
+).on(
+  "value",
 
+  function (snapshot) {
+    overlayCasterSettings =
+      snapshot.val() || {};
+
+    renderAll();
+  },
+
+  function (error) {
+    overlayCasterSettings = {};
+
+    console.warn(
+      "[RG CASTER DESK] Overlay Settings read failed:",
+      error
+    );
+
+    renderAll();
+  }
+);
           db.ref(
             "broadcastCasters"
           ).on(

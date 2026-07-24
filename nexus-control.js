@@ -9,12 +9,20 @@
       permission: "dashboard.view"
     },
     live: {
-      title: "Live Operations",
-      breadcrumb: "Nexus / Broadcast",
-      icon: "fa-satellite-dish",
-      permission: "broadcast.view"
-    },
-    tournament: {
+  title: "Live Operations",
+  breadcrumb: "Nexus / Broadcast",
+  icon: "fa-satellite-dish",
+  permission: "broadcast.view"
+},
+
+overlays: {
+  title: "Overlay Settings",
+  breadcrumb: "Nexus / Broadcast / Overlays",
+  icon: "fa-layer-group",
+  permission: "broadcast.control"
+},
+
+tournament: {
       title: "Event Control",
       breadcrumb: "Nexus / Tournament",
       icon: "fa-trophy",

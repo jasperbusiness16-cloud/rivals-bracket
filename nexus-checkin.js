@@ -14,16 +14,17 @@
   };
 
   const state = {
-    activeTournamentId: "",
-    tournamentId: "",
-    tournaments: {},
-    tournament: {},
-    teamsRecord: {},
-    checkIns: {},
-    availability: {},
-    applications: [],
-    listeners: []
-  };
+  activeTournamentId: "",
+  tournamentId: "",
+  tournaments: {},
+  tournament: {},
+  teamsRecord: {},
+  checkIns: {},
+  availability: {},
+  applications: [],
+  players: {},
+  listeners: []
+};
 
   let context = null;
   let content = null;
@@ -163,7 +164,12 @@
             "0/0",
             "fa-shield-halved"
           )}
-
+${summaryMetric(
+  "checkInDiscordReadyCount",
+  "Discord Ready",
+  "0/0",
+  "fa-headset"
+)}
         </section>
 
         <article
@@ -353,8 +359,9 @@
     state.teamsRecord = {};
     state.checkIns = {};
     state.availability = {};
-    state.applications = [];
-    state.listeners = [];
+state.applications = [];
+state.players = {};
+state.listeners = [];
   }
 
   function bindEvents() {
@@ -555,7 +562,7 @@
     state.checkIns = {};
     state.availability = {};
     state.applications = [];
-
+    state.players = {};
     const select =
       document.getElementById(
         "checkInTournamentSelect"
@@ -668,7 +675,18 @@
 
       "Application data"
     );
+listen(
+  context.database.ref("players"),
 
+  snapshot => {
+    state.players =
+      snapshot.val() || {};
+
+    renderAll();
+  },
+
+  "Player profile data"
+);
     renderTournamentOptions();
     renderAll();
   }
@@ -850,7 +868,11 @@
         player =>
           !isReady(player.uid)
       );
-
+const discordReadyPlayers =
+  roster.filter(
+    player =>
+      discordReady(player)
+  );
     const readyTeams =
       teams.filter(
         ([, players]) => {
@@ -898,7 +920,11 @@
       "checkInTeamsReadyCount",
       `${readyTeams}/${teams.length}`
     );
-  }
+ setText(
+  "checkInDiscordReadyCount",
+  `${discordReadyPlayers.length}/${roster.length}`
+);
+   }
 
   function renderAlerts() {
     const panel =
@@ -1219,9 +1245,15 @@
         </div>
 
         <div class="checkin-roster-list">
-          ${players
-            .map(playerRow)
-            .join("")}
+        ${players
+  .map(
+    player =>
+      playerRow(
+        player,
+        teamKey
+      )
+  )
+  .join("")}
         </div>
 
         ${
@@ -1277,87 +1309,109 @@
     `;
   }
 
-  function playerRow(player) {
-    const unavailable =
-      isUnavailable(player.uid);
+  function playerRow(
+  player,
+  teamKey
+) {
+  const unavailable =
+    isUnavailable(player.uid);
 
-    const checked =
-      isCheckedIn(player.uid);
+  const checked =
+    isCheckedIn(player.uid);
 
-    const ready =
-      checked &&
-      !unavailable;
+  const ready =
+    checked &&
+    !unavailable;
 
-    const statusClass =
-      unavailable
-        ? "unavailable"
-        : ready
-          ? "ready"
-          : "pending";
+  const statusClass =
+    unavailable
+      ? "unavailable"
+      : ready
+        ? "ready"
+        : "pending";
 
-    const statusText =
-      unavailable
-        ? "Not Available"
-        : ready
-          ? "Checked In"
-          : "Not Checked In";
+  const statusText =
+    unavailable
+      ? "Not Available"
+      : ready
+        ? "Checked In"
+        : "Not Checked In";
 
-    const statusIcon =
-      unavailable
-        ? "fa-circle-xmark"
-        : ready
-          ? "fa-circle-check"
-          : "fa-clock";
+  const statusIcon =
+    unavailable
+      ? "fa-circle-xmark"
+      : ready
+        ? "fa-circle-check"
+        : "fa-clock";
 
-    return `
-      <div
-        class="checkin-player-row ${statusClass}"
-      >
-        ${avatar(
-          player,
-          "checkin-player-avatar"
-        )}
+  const hasDiscord =
+    discordReady(player);
 
-        <div class="checkin-player-copy">
-          <strong>
-            ${escapeHtml(
-              player.displayName ||
-              player.rivalsIgn ||
-              "Player"
-            )}
-          </strong>
+  const discordText =
+    isTestPlayer(player)
+      ? "Test Player · Discord Skipped"
+      : hasDiscord
+        ? `${
+            getDiscordUsername(player) ||
+            "Discord"
+          } · ID Ready`
+        : "Discord User ID Missing";
 
-          <span>
-            ${escapeHtml(
-              player.peakRank ||
-              "No Rank"
-            )}
+  return `
+    <div
+      class="checkin-player-row ${statusClass}"
+    >
+      ${avatar(
+        player,
+        "checkin-player-avatar"
+      )}
 
-            ·
+      <div class="checkin-player-copy">
+        <strong>
+          ${escapeHtml(
+            playerLabel(player)
+          )}
+        </strong>
 
-            ${escapeHtml(
-              player.mainRole ||
-              "No Role"
-            )}
+        <span>
+          ${escapeHtml(
+            player.peakRank ||
+            "No Rank"
+          )}
 
-            ·
+          ·
 
-            ${escapeHtml(
-              player.region ||
-              "No Region"
-            )}
-          </span>
-        </div>
+          ${escapeHtml(
+            player.mainRole ||
+            "No Role"
+          )}
 
-        <span
-          class="checkin-state-badge ${statusClass}"
-        >
-          <i class="fa-solid ${statusIcon}"></i>
-          ${statusText}
+          ·
+
+          ${escapeHtml(
+            player.region ||
+            "No Region"
+          )}
+        </span>
+
+        <span>
+          <i class="fa-brands fa-discord"></i>
+
+          ${escapeHtml(discordText)}
+
+          · Team ${teamNumber(teamKey)}
         </span>
       </div>
-    `;
-  }
+
+      <span
+        class="checkin-state-badge ${statusClass}"
+      >
+        <i class="fa-solid ${statusIcon}"></i>
+        ${statusText}
+      </span>
+    </div>
+  `;
+}
 
   function missingBlock(
     player,
@@ -1604,7 +1658,8 @@
 
     const ready =
       isReady(player.uid);
-
+const hasDiscord =
+  discordReady(player);
     const statusClass =
       unavailable
         ? "unavailable"
@@ -1683,171 +1738,432 @@
               "No Platform"
             )}
           </span>
+        <span>
+  <i class="fa-brands fa-discord"></i>
+
+  ${
+    isTestPlayer(player)
+      ? "Test Player"
+      : hasDiscord
+        ? "Discord Ready"
+        : "Discord ID Missing"
+  }
+</span>
         </div>
       </article>
     `;
   }
-
-  async function replacePlayer(
-    missingUid,
-    subUid,
-    teamKey,
-    button
+async function queueDiscordSubstitutionJob(
+  outgoingPlayer,
+  incomingPlayer,
+  teamKey
+) {
+  if (
+    typeof firebase === "undefined" ||
+    typeof firebase.functions !==
+      "function"
   ) {
-    const teams =
-      getTeams();
+    throw new Error(
+      "The Firebase Functions browser SDK is not loaded."
+    );
+  }
 
-    const team =
-      teams[teamKey] || [];
+  const outgoingDiscordUserId =
+    getDiscordUserId(
+      outgoingPlayer
+    );
 
-    const missingPlayer =
-      team.find(
-        player =>
-          player.uid === missingUid
+  const incomingDiscordUserId =
+    getDiscordUserId(
+      incomingPlayer
+    );
+
+  const callable =
+    firebase
+      .functions()
+      .httpsCallable(
+        "queueDiscordSubstitution"
       );
 
-    const sub =
-      state.applications.find(
-        player =>
-          player.uid === subUid
-      );
+  const response =
+    await callable({
+      tournamentId:
+        state.tournamentId,
 
-    if (
-      !missingPlayer ||
-      !sub
-    ) {
-      context.showToast(
-        "Replacement records could not be found."
-      );
+      teamKey,
 
-      return;
-    }
+      outgoingDiscordUserId,
 
-    if (!isReady(subUid)) {
-      context.showToast(
-        "The selected substitute must be checked in first."
-      );
+      incomingDiscordUserId,
 
-      return;
-    }
+      /*
+       * Compatibility aliases for the
+       * bot/function substitution naming.
+       */
+      substituteDiscordUserId:
+        incomingDiscordUserId,
 
-    const confirmed =
-      window.confirm(
-        `Replace ${
-          missingPlayer.displayName ||
-          "missing player"
-        } with ${
-          sub.displayName ||
-          "substitute"
-        }?\n\n` +
-        "This immediately updates the tournament team roster."
-      );
+      outgoingPlayerUid:
+        outgoingPlayer.uid || "",
 
-    if (!confirmed) return;
+      incomingPlayerUid:
+        incomingPlayer.uid || "",
 
-    await buttonAction(
-      button,
-      "Replacing...",
-      async () => {
-        const timestamp =
-          firebase.database
-            .ServerValue
-            .TIMESTAMP;
+      substitutePlayerUid:
+        incomingPlayer.uid || "",
 
-        const updatedTeam =
-          team.map(player => {
-            if (
-              player.uid !==
-              missingUid
-            ) {
-              return publicPlayer(player);
-            }
+      outgoingPlayerName:
+        playerLabel(
+          outgoingPlayer
+        ),
 
-            return {
-              ...publicPlayer(sub),
+      incomingPlayerName:
+        playerLabel(
+          incomingPlayer
+        ),
 
-              replacedPlayerUid:
-                missingUid,
+      substitutePlayerName:
+        playerLabel(
+          incomingPlayer
+        )
+    });
 
-              addedAsSubstitute:
-                true,
+  return (
+    response?.data || {}
+  );
+}
+  async function replacePlayer(
+  missingUid,
+  subUid,
+  teamKey,
+  button
+) {
+  const teams =
+    getTeams();
 
-              substitutedAt:
-                timestamp
-            };
-          });
+  const team =
+    teams[teamKey] || [];
+
+  const missingPlayer =
+    team.find(
+      player =>
+        player.uid === missingUid
+    );
+
+  const sub =
+    state.applications.find(
+      player =>
+        player.uid === subUid
+    );
+
+  if (
+    !missingPlayer ||
+    !sub
+  ) {
+    context.showToast(
+      "Replacement records could not be found."
+    );
+
+    return;
+  }
+
+  if (!isReady(subUid)) {
+    context.showToast(
+      "The selected substitute must be checked in first."
+    );
+
+    return;
+  }
+
+  const testOnlyReplacement =
+    isTestPlayer(missingPlayer) &&
+    isTestPlayer(sub);
+
+  /*
+   * Real substitutions require both IDs.
+   * This prevents stale Discord team roles.
+   */
+  if (
+    !testOnlyReplacement &&
+    !hasValidDiscordUserId(
+      missingPlayer
+    )
+  ) {
+    context.showToast(
+      `${
+        playerLabel(missingPlayer)
+      } is missing a valid Discord User ID.`
+    );
+
+    window.alert(
+      "Substitution Blocked\n\n" +
+      `${playerLabel(missingPlayer)} does not have a valid Discord User ID. ` +
+      "The bot would be unable to remove their existing tournament team role."
+    );
+
+    return;
+  }
+
+  if (
+    !testOnlyReplacement &&
+    !hasValidDiscordUserId(sub)
+  ) {
+    context.showToast(
+      `${
+        playerLabel(sub)
+      } is missing a valid Discord User ID.`
+    );
+
+    window.alert(
+      "Substitution Blocked\n\n" +
+      `${playerLabel(sub)} does not have a valid Discord User ID. ` +
+      "The bot would be unable to assign their new tournament team role."
+    );
+
+    return;
+  }
+
+  const discordCopy =
+    testOnlyReplacement
+      ? "This updates the generated test roster. Discord synchronization will be skipped."
+      : "This updates the tournament roster and queues the Discord team-role transfer.";
+
+  const confirmed =
+    window.confirm(
+      `Replace ${
+        playerLabel(missingPlayer)
+      } with ${
+        playerLabel(sub)
+      }?\n\n${discordCopy}`
+    );
+
+  if (!confirmed) return;
+
+  await buttonAction(
+    button,
+    "Replacing...",
+    async () => {
+      const timestamp =
+        firebase.database
+          .ServerValue
+          .TIMESTAMP;
+
+      const updatedTeam =
+        team.map(player => {
+          if (
+            player.uid !==
+            missingUid
+          ) {
+            return publicPlayer(player);
+          }
+
+          return {
+            ...publicPlayer(sub),
+
+            replacedPlayerUid:
+              missingUid,
+
+            addedAsSubstitute:
+              true,
+
+            substitutedAt:
+              timestamp
+          };
+        });
+
+      /*
+       * The website roster is updated first.
+       */
+      await context.database
+        .ref()
+        .update({
+          [`teams/${state.tournamentId}/teams/${teamKey}`]:
+            updatedTeam,
+
+          [`teams/${state.tournamentId}/updatedAt`]:
+            timestamp,
+
+          [`teams/${state.tournamentId}/updatedBy`]:
+            context.currentUser?.uid ||
+            null,
+
+          [`applications/${state.tournamentId}/${subUid}/status`]:
+            "accepted",
+
+          [`applications/${state.tournamentId}/${subUid}/addedAsSubstitute`]:
+            true,
+
+          [`applications/${state.tournamentId}/${subUid}/substitutedInto`]:
+            teamKey,
+
+          [`applications/${state.tournamentId}/${subUid}/substitutedAt`]:
+            timestamp,
+
+          [`applications/${state.tournamentId}/${subUid}/updatedAt`]:
+            timestamp,
+
+          [`applications/${state.tournamentId}/${missingUid}/replacedBySubUid`]:
+            subUid,
+
+          [`applications/${state.tournamentId}/${missingUid}/replacedAt`]:
+            timestamp,
+
+          [`applications/${state.tournamentId}/${missingUid}/updatedAt`]:
+            timestamp,
+
+          [`checkIns/${state.tournamentId}/${subUid}/type`]:
+            "main",
+
+          [`checkIns/${state.tournamentId}/${subUid}/teamKey`]:
+            teamKey,
+
+          [`checkIns/${state.tournamentId}/${subUid}/replacedPlayerUid`]:
+            missingUid,
+
+          [`checkIns/${state.tournamentId}/${subUid}/updatedAt`]:
+            timestamp,
+
+          [`checkIns/${state.tournamentId}/${missingUid}/checkedIn`]:
+            false,
+
+          [`checkIns/${state.tournamentId}/${missingUid}/replacedBySubUid`]:
+            subUid,
+
+          [`checkIns/${state.tournamentId}/${missingUid}/updatedAt`]:
+            timestamp
+        });
+
+      if (testOnlyReplacement) {
+        context.showToast(
+          `${
+            playerLabel(sub)
+          } replaced ${
+            playerLabel(missingPlayer)
+          }. Discord skipped for test players.`
+        );
+
+        return;
+      }
+
+      /*
+       * Queue the Discord transfer after the
+       * roster write succeeds. A Discord error
+       * must not falsely report total success.
+       */
+      try {
+        const discordResult =
+          await queueDiscordSubstitutionJob(
+            missingPlayer,
+            sub,
+            teamKey
+          );
+
+        const jobId =
+          discordResult.jobId ||
+          discordResult.id ||
+          "";
 
         await context.database
           .ref()
           .update({
-            [`teams/${state.tournamentId}/teams/${teamKey}`]:
-              updatedTeam,
+            [`applications/${state.tournamentId}/${subUid}/discordSubstitutionStatus`]:
+              "queued",
 
-            [`teams/${state.tournamentId}/updatedAt`]:
-              timestamp,
+            [`applications/${state.tournamentId}/${subUid}/discordSubstitutionJobId`]:
+              jobId || null,
 
-            [`teams/${state.tournamentId}/updatedBy`]:
-              context.currentUser?.uid ||
+            [`applications/${state.tournamentId}/${subUid}/discordSubstitutionError`]:
               null,
 
-            [`applications/${state.tournamentId}/${subUid}/status`]:
-              "accepted",
+            [`applications/${state.tournamentId}/${subUid}/discordSubstitutionUpdatedAt`]:
+              firebase.database
+                .ServerValue
+                .TIMESTAMP,
 
-            [`applications/${state.tournamentId}/${subUid}/addedAsSubstitute`]:
-              true,
+            [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionStatus`]:
+              "queued",
 
-            [`applications/${state.tournamentId}/${subUid}/substitutedInto`]:
-              teamKey,
+            [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionJobId`]:
+              jobId || null,
 
-            [`applications/${state.tournamentId}/${subUid}/substitutedAt`]:
-              timestamp,
+            [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionError`]:
+              null,
 
-            [`applications/${state.tournamentId}/${subUid}/updatedAt`]:
-              timestamp,
-
-            [`applications/${state.tournamentId}/${missingUid}/replacedBySubUid`]:
-              subUid,
-
-            [`applications/${state.tournamentId}/${missingUid}/replacedAt`]:
-              timestamp,
-
-            [`applications/${state.tournamentId}/${missingUid}/updatedAt`]:
-              timestamp,
-
-            [`checkIns/${state.tournamentId}/${subUid}/type`]:
-              "main",
-
-            [`checkIns/${state.tournamentId}/${subUid}/teamKey`]:
-              teamKey,
-
-            [`checkIns/${state.tournamentId}/${subUid}/replacedPlayerUid`]:
-              missingUid,
-
-            [`checkIns/${state.tournamentId}/${subUid}/updatedAt`]:
-              timestamp,
-
-            [`checkIns/${state.tournamentId}/${missingUid}/checkedIn`]:
-              false,
-
-            [`checkIns/${state.tournamentId}/${missingUid}/replacedBySubUid`]:
-              subUid,
-
-            [`checkIns/${state.tournamentId}/${missingUid}/updatedAt`]:
-              timestamp
+            [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionUpdatedAt`]:
+              firebase.database
+                .ServerValue
+                .TIMESTAMP
           });
 
         context.showToast(
           `${
-            sub.displayName ||
-            "Substitute"
+            playerLabel(sub)
           } replaced ${
-            missingPlayer.displayName ||
-            "player"
-          }.`
+            playerLabel(missingPlayer)
+          }. Discord substitution queued.`
+        );
+      } catch (error) {
+        console.error(
+          "Discord substitution queue failed:",
+          error
+        );
+
+        const discordMessage =
+          error?.message ||
+          "Discord synchronization could not be queued.";
+
+        /*
+         * The roster has already changed, so
+         * record this as a partial failure.
+         */
+        try {
+          await context.database
+            .ref()
+            .update({
+              [`applications/${state.tournamentId}/${subUid}/discordSubstitutionStatus`]:
+                "failed",
+
+              [`applications/${state.tournamentId}/${subUid}/discordSubstitutionError`]:
+                discordMessage,
+
+              [`applications/${state.tournamentId}/${subUid}/discordSubstitutionUpdatedAt`]:
+                firebase.database
+                  .ServerValue
+                  .TIMESTAMP,
+
+              [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionStatus`]:
+                "failed",
+
+              [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionError`]:
+                discordMessage,
+
+              [`applications/${state.tournamentId}/${missingUid}/discordSubstitutionUpdatedAt`]:
+                firebase.database
+                  .ServerValue
+                  .TIMESTAMP
+            });
+        } catch (statusError) {
+          console.error(
+            "Could not record Discord substitution failure:",
+            statusError
+          );
+        }
+
+        context.showToast(
+          "Roster updated, but Discord synchronization failed."
+        );
+
+        window.alert(
+          "Partial Substitution Success\n\n" +
+          `${playerLabel(sub)} has replaced ${playerLabel(missingPlayer)} on the website roster.\n\n` +
+          "The Discord role transfer failed to queue. Do not repeat the roster substitution. " +
+          "The Discord synchronization must be retried separately.\n\n" +
+          `Error: ${discordMessage}`
         );
       }
-    );
-  }
+    }
+  );
+}
 
   async function checkInAllTestSubs(
     button
@@ -1991,6 +2307,101 @@
       button.innerHTML = originalHtml;
     }
   }
+
+const DISCORD_USER_ID_PATTERN =
+  /^\d{17,20}$/;
+
+function applicationByUid(uid) {
+  return (
+    state.applications.find(
+      application =>
+        application.uid === uid
+    ) || null
+  );
+}
+
+function profileByUid(uid) {
+  return (
+    state.players?.[uid] ||
+    null
+  );
+}
+
+function getDiscordUserId(player) {
+  const uid =
+    player?.uid || "";
+
+  const application =
+    applicationByUid(uid);
+
+  const profile =
+    profileByUid(uid);
+
+  const candidates = [
+    player?.discordUserId,
+    application?.discordUserId,
+    profile?.discordUserId
+  ];
+
+  for (const candidate of candidates) {
+    const value =
+      String(
+        candidate || ""
+      ).trim();
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return "";
+}
+
+function getDiscordUsername(player) {
+  const uid =
+    player?.uid || "";
+
+  const application =
+    applicationByUid(uid);
+
+  const profile =
+    profileByUid(uid);
+
+  return String(
+    player?.discordUsername ||
+    application?.discordUsername ||
+    profile?.discordUsername ||
+    ""
+  ).trim();
+}
+
+function hasValidDiscordUserId(player) {
+  return DISCORD_USER_ID_PATTERN.test(
+    getDiscordUserId(player)
+  );
+}
+
+function isTestPlayer(player) {
+  return (
+    player?.testPlayer === true
+  );
+}
+
+function discordReady(player) {
+  return (
+    isTestPlayer(player) ||
+    hasValidDiscordUserId(player)
+  );
+}
+
+function playerLabel(player) {
+  return (
+    player?.displayName ||
+    player?.rivalsIgn ||
+    player?.uid ||
+    "Player"
+  );
+}
 
   function getTeams() {
     const normalized = {};
@@ -2160,88 +2571,112 @@
   }
 
   function publicPlayer(player) {
-    const result = {
-      uid:
-        player.uid || "",
+  const result = {
+    uid:
+      player.uid || "",
 
-      rgId:
-        player.rgId || "",
+    rgId:
+      player.rgId || "",
 
-      displayName:
-        player.displayName || "",
+    displayName:
+      player.displayName || "",
 
-      rivalsIgn:
-        player.rivalsIgn || "",
+    rivalsIgn:
+      player.rivalsIgn || "",
 
-      profileImage:
-        player.profileImage || "",
+    discordUsername:
+      getDiscordUsername(player),
 
-      peakRank:
-        player.peakRank || "",
+    /*
+     * Keep this value as a string.
+     */
+    discordUserId:
+      getDiscordUserId(player),
 
-      mainRole:
-        player.mainRole || "",
+    discordMember:
+      player.discordMember === true,
 
-      region:
-        player.region || "",
+    profileImage:
+      player.profileImage || "",
 
-      platform:
-        player.platform || ""
-    };
+    peakRank:
+      player.peakRank || "",
 
-    if (
-      player.replacedPlayerUid
-    ) {
-      result.replacedPlayerUid =
-        player.replacedPlayerUid;
-    }
+    mainRole:
+      player.mainRole || "",
 
-    if (
-      player.addedAsSubstitute ===
-      true
-    ) {
-      result.addedAsSubstitute =
-        true;
-    }
+    region:
+      player.region || "",
 
-    if (player.substitutedAt) {
-      result.substitutedAt =
-        player.substitutedAt;
-    }
+    platform:
+      player.platform || "",
 
-    return result;
+    testPlayer:
+      player.testPlayer === true
+  };
+
+  if (
+    player.replacedPlayerUid
+  ) {
+    result.replacedPlayerUid =
+      player.replacedPlayerUid;
   }
+
+  if (
+    player.addedAsSubstitute ===
+    true
+  ) {
+    result.addedAsSubstitute =
+      true;
+  }
+
+  if (player.substitutedAt) {
+    result.substitutedAt =
+      player.substitutedAt;
+  }
+
+  return result;
+}
 
   function checkInRecord(player) {
-    return {
-      uid:
-        player.uid,
+  return {
+    uid:
+      player.uid,
 
-      displayName:
-        player.displayName || "",
+    displayName:
+      player.displayName || "",
 
-      rivalsIgn:
-        player.rivalsIgn || "",
+    rivalsIgn:
+      player.rivalsIgn || "",
 
-      rgId:
-        player.rgId || "",
+    rgId:
+      player.rgId || "",
 
-      profileImage:
-        player.profileImage || "",
+    discordUsername:
+      getDiscordUsername(player),
 
-      peakRank:
-        player.peakRank || "",
+    discordUserId:
+      getDiscordUserId(player),
 
-      mainRole:
-        player.mainRole || "",
+    profileImage:
+      player.profileImage || "",
 
-      region:
-        player.region || "",
+    peakRank:
+      player.peakRank || "",
 
-      platform:
-        player.platform || ""
-    };
-  }
+    mainRole:
+      player.mainRole || "",
+
+    region:
+      player.region || "",
+
+    platform:
+      player.platform || "",
+
+    testPlayer:
+      player.testPlayer === true
+  };
+}
 
   function contextMetric(
     id,

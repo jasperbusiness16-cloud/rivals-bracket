@@ -39,10 +39,35 @@
     casterDesk: {
   enabled: true,
   casterCount: "2",
+
   showHandles: true,
   showRoles: true,
+  showSubtitles: true,
   showWebsite: true,
   showStatusLabel: true,
+
+  statusLabel: "CASTER DESK",
+
+  caster1Name: "JASPER HARVEY",
+  caster1Role: "HOST",
+  caster1Handle: "",
+  caster1Subtitle: "",
+
+  caster2Name: "CASTER TWO",
+  caster2Role: "ANALYST",
+  caster2Handle: "",
+  caster2Subtitle: "",
+
+  caster3Name: "CASTER THREE",
+  caster3Role: "GUEST",
+  caster3Handle: "",
+  caster3Subtitle: "",
+
+  caster4Name: "CASTER FOUR",
+  caster4Role: "ANALYST",
+  caster4Handle: "",
+  caster4Subtitle: "",
+
   replayToken: 0
 },
 
@@ -249,13 +274,19 @@ select(
         ),
 
         toggle(
-          "showRoles",
-          "Caster Roles",
-          "Show host, analyst and guest roles."
-        ),
+  "showRoles",
+  "Caster Roles",
+  "Show host, analyst and guest roles."
+),
 
-        toggle(
-          "showWebsite",
+toggle(
+  "showSubtitles",
+  "Caster Subtitles",
+  "Show the optional description below each role."
+),
+
+toggle(
+  "showWebsite",
           "Website",
           "Show the website callout."
         ),
@@ -1485,19 +1516,25 @@ select(
           </label>
         </header>
 
-        <div class="nexus-overlay-options">
-          ${overlay.options
-            .map(
-              option =>
-                overlayOptionMarkup(
-                  overlay,
-                  option
-                )
-            )
-            .join("")}
-        </div>
+       <div class="nexus-overlay-options">
+  ${overlay.options
+    .map(
+      option =>
+        overlayOptionMarkup(
+          overlay,
+          option
+        )
+    )
+    .join("")}
+</div>
 
-        <div class="nexus-overlay-actions">
+${
+  overlay.key === "casterDesk"
+    ? casterNameplateEditorMarkup()
+    : ""
+}
+
+<div class="nexus-overlay-actions">
           <button
             class="action-button"
             type="button"
@@ -1719,7 +1756,174 @@ select(
 
     return "";
   }
+function casterNameplateEditorMarkup() {
+  const settings =
+    state.draft.casterDesk;
 
+  const casterCount =
+    Math.min(
+      4,
+      Math.max(
+        1,
+        Number(
+          settings.casterCount
+        ) || 2
+      )
+    );
+
+  const nameplates =
+    [1, 2, 3, 4]
+      .map(index => {
+        const active =
+          index <= casterCount;
+
+        return `
+          <article
+            class="nexus-caster-nameplate-editor ${
+              active
+                ? "is-active"
+                : "is-inactive"
+            }"
+          >
+            <header class="nexus-caster-editor-header">
+              <span>
+                C${String(index).padStart(2, "0")}
+              </span>
+
+              <div>
+                <strong>
+                  Caster ${index} Nameplate
+                </strong>
+
+                <small>
+                  ${
+                    active
+                      ? "Currently visible"
+                      : "Hidden by caster count"
+                  }
+                </small>
+              </div>
+            </header>
+
+            <div class="nexus-caster-editor-fields">
+              <label class="nexus-overlays-field nexus-caster-field-wide">
+                <span>
+                  Full Display Name
+                </span>
+
+                <input
+                  type="text"
+                  maxlength="70"
+                  value="${esc(
+                    settings[
+                      `caster${index}Name`
+                    ]
+                  )}"
+                  placeholder="Caster full name"
+                  data-overlay-key="casterDesk"
+                  data-overlay-field="caster${index}Name"
+                >
+              </label>
+
+              <label class="nexus-overlays-field">
+                <span>
+                  Broadcast Role
+                </span>
+
+                <input
+                  type="text"
+                  maxlength="40"
+                  value="${esc(
+                    settings[
+                      `caster${index}Role`
+                    ]
+                  )}"
+                  placeholder="Host, Analyst, Guest..."
+                  data-overlay-key="casterDesk"
+                  data-overlay-field="caster${index}Role"
+                >
+              </label>
+
+              <label class="nexus-overlays-field">
+                <span>
+                  Handle
+                </span>
+
+                <input
+                  type="text"
+                  maxlength="60"
+                  value="${esc(
+                    settings[
+                      `caster${index}Handle`
+                    ]
+                  )}"
+                  placeholder="@caster"
+                  data-overlay-key="casterDesk"
+                  data-overlay-field="caster${index}Handle"
+                >
+              </label>
+
+              <label class="nexus-overlays-field nexus-caster-field-wide">
+                <span>
+                  Optional Subtitle
+                </span>
+
+                <input
+                  type="text"
+                  maxlength="90"
+                  value="${esc(
+                    settings[
+                      `caster${index}Subtitle`
+                    ]
+                  )}"
+                  placeholder="Marvel Rivals specialist, play-by-play..."
+                  data-overlay-key="casterDesk"
+                  data-overlay-field="caster${index}Subtitle"
+                >
+              </label>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+
+  return `
+    <section class="nexus-caster-editor">
+      <header class="nexus-caster-editor-title">
+        <div>
+          <strong>
+            Full Caster Nameplates
+          </strong>
+
+          <span>
+            Edit the text displayed by caster-desk.html.
+          </span>
+        </div>
+
+        <label class="nexus-overlays-field">
+          <span>
+            Desk Status Label
+          </span>
+
+          <input
+            type="text"
+            maxlength="50"
+            value="${esc(
+              settings.statusLabel
+            )}"
+            placeholder="CASTER DESK"
+            data-overlay-key="casterDesk"
+            data-overlay-field="statusLabel"
+          >
+        </label>
+      </header>
+
+      <div class="nexus-caster-editor-grid">
+        ${nameplates}
+      </div>
+    </section>
+  `;
+}
     function globalToggleMarkup(
     key,
     label,

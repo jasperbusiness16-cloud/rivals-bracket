@@ -37,13 +37,14 @@
     },
 
     casterDesk: {
-      enabled: true,
-      showHandles: true,
-      showRoles: true,
-      showWebsite: true,
-      showStatusLabel: true,
-      replayToken: 0
-    },
+  enabled: true,
+  casterCount: "2",
+  showHandles: true,
+  showRoles: true,
+  showWebsite: true,
+  showStatusLabel: true,
+  replayToken: 0
+},
 
     matchIntro: {
       enabled: true,
@@ -229,7 +230,18 @@
       file: "caster-desk.html",
 
       options: [
-
+select(
+  "casterCount",
+  "Number of Casters",
+  "Choose how many caster nameplates appear on screen.",
+  [
+    ["1", "1 Caster"],
+    ["2", "2 Casters"],
+    ["3", "3 Casters"],
+    ["4", "4 Casters"]
+  ],
+  true
+),
               toggle(
           "showHandles",
           "Caster Handles",

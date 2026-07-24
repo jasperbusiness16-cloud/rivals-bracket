@@ -2,62 +2,4192 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1920, initial-scale=1.0">
 
-  <title>Rivals Gauntlet | Bracket Overlay</title>
+  <meta
+    name="viewport"
+    content="width=1920, initial-scale=1.0"
+  >
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>
+    Rivals Gauntlet | Stream Bracket
+  </title>
 
-  <link rel="stylesheet" href="bracket-overlay.css?v=1">
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root{
+      --bg:#050509;
+
+      --panel:#0f0d17;
+      --panel-2:#151220;
+
+      --text:#faf7ff;
+      --soft:#cbc4d6;
+      --muted:#958e9f;
+      --dim:#655e70;
+
+      --purple:#9a7cff;
+      --purple-bright:#c8b9ff;
+      --purple-rgb:154,124,255;
+
+      --green:#62e1a6;
+      --green-rgb:98,225,166;
+
+      --red:#ff718a;
+      --red-rgb:255,113,138;
+
+      --gold:#f2cf78;
+      --gold-bright:#ffedb0;
+      --gold-rgb:242,207,120;
+
+      --yellow:#f2c66c;
+
+      --line:rgba(210,197,255,.12);
+      --line-soft:rgba(255,255,255,.055);
+
+      --body-height:742px;
+      --match-height:80px;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+
+      margin:0;
+      overflow:hidden;
+
+      background:var(--bg);
+    }
+
+    body{
+      color:var(--text);
+
+      font-family:
+        "Rajdhani",
+        Arial,
+        sans-serif;
+    }
+
+    .stage{
+      position:relative;
+
+      width:1920px;
+      height:1080px;
+
+      overflow:hidden;
+      isolation:isolate;
+
+      background:
+        radial-gradient(
+          circle at 50% 34%,
+          rgba(var(--purple-rgb),.11),
+          transparent 29%
+        ),
+        radial-gradient(
+          circle at 13% 45%,
+          rgba(83,48,174,.11),
+          transparent 31%
+        ),
+        radial-gradient(
+          circle at 88% 48%,
+          rgba(var(--gold-rgb),.055),
+          transparent 28%
+        ),
+        linear-gradient(
+          145deg,
+          #110d1c 0%,
+          #090810 50%,
+          #050509 100%
+        );
+    }
+
+    .stage::before{
+      content:"";
+
+      position:absolute;
+      inset:-70px;
+      z-index:-8;
+
+      background:
+        linear-gradient(
+          116deg,
+          transparent 0 23%,
+          rgba(255,255,255,.011)
+          23.15% 23.4%,
+          transparent 23.55% 75%,
+          rgba(255,255,255,.009)
+          75.15% 75.4%,
+          transparent 75.55%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 108px,
+          rgba(255,255,255,.007) 109px,
+          transparent 110px 216px
+        );
+
+      animation:
+        backgroundDrift
+        38s ease-in-out
+        infinite alternate;
+    }
+
+    .stage::after{
+      content:"RG";
+
+      position:absolute;
+      left:51%;
+      top:52%;
+      z-index:-7;
+
+      color:
+        rgba(255,255,255,.012);
+
+      font-size:710px;
+      font-weight:800;
+      letter-spacing:-.13em;
+      line-height:.72;
+
+      transform:
+        translate(-49%,-50%);
+    }
+
+    .grid{
+      position:absolute;
+      inset:-130px;
+      z-index:-6;
+
+      opacity:.29;
+
+      background-image:
+        linear-gradient(
+          rgba(var(--purple-rgb),.038) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.038) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        86px 86px;
+
+      transform:
+        perspective(760px)
+        rotateX(68deg)
+        translateY(480px)
+        scale(1.33);
+
+      transform-origin:
+        center bottom;
+
+      mask-image:
+        linear-gradient(
+          to top,
+          black,
+          transparent 79%
+        );
+
+      animation:
+        gridMove
+        26s linear infinite;
+    }
+
+    .ambient{
+      position:absolute;
+      z-index:-5;
+
+      width:560px;
+      height:560px;
+
+      border-radius:50%;
+
+      filter:blur(21px);
+      opacity:.29;
+    }
+
+    .ambient.left{
+      left:-280px;
+      top:210px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb),.2),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat
+        17s ease-in-out
+        infinite alternate;
+    }
+
+    .ambient.right{
+      right:-280px;
+      top:160px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--gold-rgb),.105),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat
+        20s ease-in-out
+        infinite alternate-reverse;
+    }
+
+    .frame{
+      position:absolute;
+      inset:27px;
+      z-index:90;
+
+      pointer-events:none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.09);
+
+      clip-path:polygon(
+        0 0,
+        18% 0,
+        19% 6px,
+        81% 6px,
+        82% 0,
+        100% 0,
+        100% 28%,
+        calc(100% - 6px) 29%,
+        calc(100% - 6px) 71%,
+        100% 72%,
+        100% 100%,
+        82% 100%,
+        81% calc(100% - 6px),
+        19% calc(100% - 6px),
+        18% 100%,
+        0 100%,
+        0 72%,
+        6px 71%,
+        6px 29%,
+        0 28%
+      );
+    }
+
+    /* ======================================================
+       HEADER
+       ====================================================== */
+
+    .topbar{
+      position:absolute;
+      left:54px;
+      right:54px;
+      top:34px;
+      z-index:50;
+
+      min-height:65px;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(420px,1fr)
+        minmax(480px,1.05fr)
+        minmax(330px,.72fr);
+
+      align-items:center;
+      gap:25px;
+
+      opacity:0;
+
+      transform:
+        translateY(-15px);
+    }
+
+    .stage.ready .topbar{
+      animation:
+        headerIn
+        .7s
+        cubic-bezier(.18,.86,.24,1)
+        .08s forwards;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      min-width:0;
+    }
+
+    .mark{
+      position:relative;
+
+      width:57px;
+      height:57px;
+
+      display:grid;
+      place-items:center;
+
+      flex:0 0 57px;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.4);
+
+      border-radius:15px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.15),
+          rgba(8,7,13,.96) 68%
+        );
+
+      box-shadow:
+        inset 0 0 22px
+        rgba(var(--purple-rgb),.07),
+        0 0 27px
+        rgba(var(--purple-rgb),.09);
+
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+
+    .mark::before{
+      content:"";
+
+      position:absolute;
+      inset:6px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.04);
+
+      border-radius:10px;
+    }
+
+    .brand-copy{
+      min-width:0;
+    }
+
+    .brand-copy span,
+    .brand-copy strong{
+      display:block;
+    }
+
+    .brand-copy span{
+      color:var(--purple-bright);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+    }
+
+    .brand-copy strong{
+      margin-top:4px;
+      overflow:hidden;
+
+      font-size:23px;
+      font-weight:800;
+      letter-spacing:.05em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .live-summary{
+      min-width:0;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+
+      padding:0 22px;
+    }
+
+    .summary-rule{
+      width:45px;
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.42)
+        );
+    }
+
+    .summary-rule:last-child{
+      transform:scaleX(-1);
+    }
+
+    .summary-copy{
+      min-width:0;
+      text-align:center;
+    }
+
+    .summary-copy span{
+      display:block;
+
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+
+    .summary-copy strong{
+      display:block;
+
+      margin-top:4px;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:.04em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .summary-copy strong.live{
+      color:var(--purple-bright);
+
+      text-shadow:
+        0 0 18px
+        rgba(var(--purple-rgb),.19);
+    }
+
+    .connection{
+      min-height:36px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+
+      justify-self:end;
+
+      padding:0 14px;
+
+      border:
+        1px solid
+        rgba(242,198,108,.2);
+
+      border-radius:999px;
+
+      color:var(--yellow);
+
+      background:
+        rgba(242,198,108,.05);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .connection.online{
+      border-color:
+        rgba(var(--green-rgb),.22);
+
+      color:var(--green);
+
+      background:
+        rgba(var(--green-rgb),.05);
+    }
+
+    .connection.error{
+      border-color:
+        rgba(var(--red-rgb),.22);
+
+      color:var(--red);
+
+      background:
+        rgba(var(--red-rgb),.05);
+    }
+
+    .connection-dot{
+      width:7px;
+      height:7px;
+
+      border-radius:50%;
+
+      background:currentColor;
+
+      box-shadow:
+        0 0 10px
+        currentColor;
+    }
+
+    /* ======================================================
+       STATUS STRIP
+       ====================================================== */
+
+    .status-strip{
+      position:absolute;
+      left:54px;
+      right:54px;
+      top:111px;
+      z-index:45;
+
+      min-height:47px;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(320px,1fr)
+        auto
+        minmax(420px,1fr);
+
+      align-items:center;
+      gap:18px;
+
+      padding:0 18px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:13px;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.05),
+          rgba(255,255,255,.012) 45%,
+          rgba(var(--gold-rgb),.025)
+        );
+
+      box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.018);
+
+      opacity:0;
+
+      transform:
+        translateY(-8px);
+    }
+
+    .stage.ready .status-strip{
+      animation:
+        headerIn
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        .25s forwards;
+    }
+
+    .strip-item{
+      min-width:0;
+
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .strip-item.center{
+      justify-content:center;
+    }
+
+    .strip-item.right{
+      justify-content:flex-end;
+    }
+
+    .strip-label{
+      flex:0 0 auto;
+
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .strip-value{
+      min-width:0;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.055em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .strip-value.highlight{
+      color:var(--purple-bright);
+    }
+
+    .strip-dot{
+      width:5px;
+      height:5px;
+
+      flex:0 0 5px;
+
+      border-radius:50%;
+
+      background:var(--purple);
+
+      box-shadow:
+        0 0 9px
+        rgba(var(--purple-rgb),.62);
+    }
+
+    /* ======================================================
+       BRACKET SHELL
+       ====================================================== */
+
+    .bracket-shell{
+      position:absolute;
+      left:44px;
+      right:44px;
+      top:171px;
+      bottom:72px;
+      z-index:20;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius:23px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.014),
+          transparent 95px
+        ),
+        linear-gradient(
+          145deg,
+          rgba(21,17,34,.95),
+          rgba(7,7,12,.97)
+        );
+
+      box-shadow:
+        0 30px 84px
+        rgba(0,0,0,.43),
+        inset 0 1px 0
+        rgba(255,255,255,.025);
+
+      opacity:0;
+
+      transform:
+        translateY(16px)
+        scale(.994);
+    }
+
+    .stage.ready .bracket-shell{
+      animation:
+        shellIn
+        .8s
+        cubic-bezier(.18,.86,.24,1)
+        .38s forwards;
+    }
+
+    .bracket-shell::before{
+      content:"";
+
+      position:absolute;
+      left:6%;
+      right:6%;
+      top:0;
+      z-index:4;
+
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.43) 24%,
+          rgba(225,215,255,.7) 50%,
+          rgba(var(--purple-rgb),.43) 76%,
+          transparent
+        );
+
+      opacity:.72;
+    }
+
+    .bracket-loading{
+      position:absolute;
+      inset:0;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      text-align:center;
+    }
+
+    .bracket-loading span{
+      color:var(--purple-bright);
+
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+    }
+
+    .bracket-loading strong{
+      margin-top:10px;
+
+      font-size:26px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .bracket-grid{
+      position:relative;
+
+      width:100%;
+      height:100%;
+
+      display:grid;
+
+      padding:
+        12px 17px 13px;
+
+      column-gap:30px;
+    }
+
+    .bracket-grid.format-8{
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+      column-gap:44px;
+    }
+
+    .bracket-grid.format-16{
+      grid-template-columns:
+        repeat(5,minmax(0,1fr));
+
+      column-gap:29px;
+    }
+
+    .round-column{
+      position:relative;
+      z-index:4;
+
+      min-width:0;
+
+      display:grid;
+
+      grid-template-rows:
+        43px
+        var(--body-height);
+    }
+
+    .round-head{
+      position:relative;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.045);
+
+      color:var(--purple-bright);
+
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.19em;
+      text-align:center;
+      text-transform:uppercase;
+    }
+
+    .round-head::after{
+      content:"";
+
+      position:absolute;
+      left:22%;
+      right:22%;
+      bottom:-1px;
+
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.46),
+          transparent
+        );
+    }
+
+    .round-head span{
+      color:var(--dim);
+
+      font-size:8px;
+      letter-spacing:.1em;
+    }
+
+    .round-column.champion-round .round-head{
+      color:var(--gold);
+    }
+
+    .round-column.champion-round .round-head::after{
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--gold-rgb),.5),
+          transparent
+        );
+    }
+
+    .round-body{
+      position:relative;
+
+      width:100%;
+      height:var(--body-height);
+    }
+
+    /* ======================================================
+       MATCH CARDS
+       ====================================================== */
+
+    .match-card{
+      position:absolute;
+      left:0;
+
+      width:100%;
+      height:var(--match-height);
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(255,255,255,.075);
+
+      border-radius:11px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.025),
+          rgba(255,255,255,.008)
+        ),
+        rgba(13,11,20,.96);
+
+      box-shadow:
+        0 12px 30px
+        rgba(0,0,0,.26),
+        inset 0 1px 0
+        rgba(255,255,255,.018);
+
+      opacity:0;
+
+      transform:
+        translateY(12px)
+        scale(.985);
+
+      animation:
+        cardReveal
+        .58s
+        cubic-bezier(.18,.86,.24,1)
+        forwards;
+
+      animation-delay:
+        var(--reveal-delay);
+    }
+
+    .match-card::before{
+      content:"";
+
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+
+      width:2px;
+
+      background:
+        rgba(var(--purple-rgb),.32);
+    }
+
+    .match-card.completed{
+      border-color:
+        rgba(var(--green-rgb),.15);
+    }
+
+    .match-card.completed::before{
+      background:
+        rgba(var(--green-rgb),.67);
+
+      box-shadow:
+        0 0 11px
+        rgba(var(--green-rgb),.22);
+    }
+
+    .match-card.live{
+      border-color:
+        rgba(var(--purple-rgb),.68);
+
+      box-shadow:
+        0 0 0 1px
+        rgba(var(--purple-rgb),.24),
+        0 0 30px
+        rgba(var(--purple-rgb),.18),
+        inset 0 0 24px
+        rgba(var(--purple-rgb),.04);
+
+      animation:
+        cardReveal
+        .58s
+        cubic-bezier(.18,.86,.24,1)
+        forwards,
+        liveBreathe
+        2.7s ease-in-out
+        calc(
+          var(--reveal-delay) +
+          .7s
+        )
+        infinite;
+    }
+
+    .match-card.live::before{
+      background:
+        linear-gradient(
+          180deg,
+          var(--purple-bright),
+          var(--purple)
+        );
+
+      box-shadow:
+        0 0 13px
+        rgba(var(--purple-rgb),.52);
+    }
+
+    .match-card.grand-final{
+      border-color:
+        rgba(var(--gold-rgb),.25);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--gold-rgb),.035),
+          rgba(var(--purple-rgb),.02)
+        ),
+        rgba(13,11,20,.96);
+    }
+
+    .match-card.grand-final::before{
+      background:var(--gold);
+
+      box-shadow:
+        0 0 12px
+        rgba(var(--gold-rgb),.3);
+    }
+
+    .match-top{
+      height:22px;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(0,1fr)
+        auto
+        auto;
+
+      align-items:center;
+      gap:8px;
+
+      padding:0 9px 0 11px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.045);
+
+      background:
+        rgba(255,255,255,.012);
+    }
+
+    .match-top strong{
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.11em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .match-format{
+      color:var(--dim);
+
+      font-size:7px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .match-state{
+      min-width:34px;
+
+      color:var(--dim);
+
+      font-size:7px;
+      font-weight:800;
+      letter-spacing:.07em;
+      text-align:right;
+      text-transform:uppercase;
+    }
+
+    .match-state.live{
+      color:var(--purple-bright);
+
+      text-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.42);
+    }
+
+    .match-state.final{
+      color:var(--green);
+    }
+
+    .team-row{
+      position:relative;
+
+      height:28px;
+
+      display:grid;
+
+      grid-template-columns:
+        23px
+        minmax(0,1fr)
+        25px;
+
+      align-items:center;
+      gap:7px;
+
+      padding:0 7px 0 9px;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.037);
+    }
+
+    .team-row:last-child{
+      border-bottom:0;
+    }
+
+    .team-row.winner{
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--green-rgb),.105),
+          transparent 76%
+        );
+    }
+
+    .team-row.loser{
+      opacity:.51;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(var(--red-rgb),.045),
+          transparent 70%
+        );
+    }
+
+    .team-crest{
+      width:21px;
+      height:21px;
+
+      display:grid;
+      place-items:center;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.13);
+
+      border-radius:6px;
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.035);
+
+      font-size:7px;
+      font-weight:800;
+    }
+
+    .team-row.winner .team-crest{
+      border-color:
+        rgba(var(--green-rgb),.25);
+
+      color:var(--green);
+
+      background:
+        rgba(var(--green-rgb),.05);
+    }
+
+    .team-crest img{
+      width:100%;
+      height:100%;
+
+      object-fit:cover;
+    }
+
+    .team-copy{
+      min-width:0;
+
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .team-seed{
+      color:var(--dim);
+
+      font-size:7px;
+      font-weight:800;
+    }
+
+    .team-name{
+      min-width:0;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.01em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .team-row.winner .team-name{
+      color:#f5fff9;
+      font-weight:800;
+    }
+
+    .team-score{
+      height:21px;
+
+      display:grid;
+      place-items:center;
+
+      border:
+        1px solid
+        rgba(255,255,255,.055);
+
+      border-radius:6px;
+
+      color:var(--soft);
+
+      background:
+        rgba(0,0,0,.21);
+
+      font-size:11px;
+      font-weight:800;
+      font-variant-numeric:
+        tabular-nums;
+    }
+
+    .team-row.winner .team-score{
+      border-color:
+        rgba(var(--green-rgb),.21);
+
+      color:var(--green);
+
+      background:
+        rgba(var(--green-rgb),.045);
+    }
+
+    /* ======================================================
+       CHAMPION CARD
+       ====================================================== */
+
+    .champion-card{
+      position:absolute;
+      left:0;
+
+      width:100%;
+      min-height:224px;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      padding:19px;
+
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--gold-rgb),.3);
+
+      border-radius:18px;
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(var(--gold-rgb),.11),
+          transparent 49%
+        ),
+        linear-gradient(
+          145deg,
+          rgba(var(--gold-rgb),.04),
+          rgba(var(--purple-rgb),.025)
+        ),
+        rgba(12,10,18,.96);
+
+      box-shadow:
+        0 22px 60px
+        rgba(0,0,0,.33),
+        inset 0 1px 0
+        rgba(255,255,255,.025),
+        0 0 32px
+        rgba(var(--gold-rgb),.06);
+
+      text-align:center;
+
+      opacity:0;
+
+      transform:
+        translateY(14px)
+        scale(.98);
+
+      animation:
+        cardReveal
+        .72s
+        cubic-bezier(.18,.86,.24,1)
+        forwards;
+
+      animation-delay:
+        var(--reveal-delay);
+    }
+
+    .champion-card::before{
+      content:"";
+
+      position:absolute;
+      left:10%;
+      right:10%;
+      top:0;
+
+      height:2px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--gold-rgb),.7),
+          transparent
+        );
+    }
+
+    .champion-kicker{
+      color:var(--gold);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.19em;
+      text-transform:uppercase;
+    }
+
+    .champion-logo{
+      width:72px;
+      height:72px;
+
+      display:grid;
+      place-items:center;
+
+      margin-top:13px;
+      overflow:hidden;
+
+      border:
+        1px solid
+        rgba(var(--gold-rgb),.25);
+
+      border-radius:17px;
+
+      color:var(--gold-bright);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--gold-rgb),.09),
+          rgba(var(--purple-rgb),.055),
+          rgba(8,7,13,.97)
+        );
+
+      box-shadow:
+        0 0 28px
+        rgba(var(--gold-rgb),.07);
+
+      font-size:21px;
+      font-weight:800;
+    }
+
+    .champion-logo img{
+      width:100%;
+      height:100%;
+
+      object-fit:cover;
+    }
+
+    .champion-name{
+      width:100%;
+
+      margin-top:13px;
+      overflow:hidden;
+
+      color:var(--text);
+
+      font-size:23px;
+      font-weight:800;
+      line-height:.95;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .champion-claim{
+      margin-top:8px;
+
+      color:var(--gold-bright);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+
+    .champion-score{
+      min-height:29px;
+
+      display:flex;
+      align-items:center;
+
+      margin-top:13px;
+      padding:0 11px;
+
+      border:
+        1px solid
+        rgba(var(--gold-rgb),.13);
+
+      border-radius:8px;
+
+      color:var(--soft);
+
+      background:
+        rgba(var(--gold-rgb),.025);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .champion-card.awaiting{
+      border-color:
+        rgba(var(--purple-rgb),.16);
+
+      background:
+        radial-gradient(
+          circle at 50% 0%,
+          rgba(var(--purple-rgb),.075),
+          transparent 50%
+        ),
+        rgba(12,10,18,.96);
+    }
+
+    .champion-card.awaiting::before{
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.38),
+          transparent
+        );
+    }
+
+    .champion-card.awaiting .champion-kicker,
+    .champion-card.awaiting .champion-claim{
+      color:var(--muted);
+    }
+
+    .champion-card.awaiting .champion-logo{
+      border-color:
+        rgba(var(--purple-rgb),.15);
+
+      color:var(--purple-bright);
+
+      background:
+        rgba(var(--purple-rgb),.035);
+    }
+
+    /* ======================================================
+       CONNECTORS
+       ====================================================== */
+
+    .connector-svg{
+      position:absolute;
+      inset:0;
+      z-index:2;
+
+      width:100%;
+      height:100%;
+
+      overflow:visible;
+      pointer-events:none;
+    }
+
+    .connector{
+      fill:none;
+
+      stroke:
+        rgba(var(--purple-rgb),.15);
+
+      stroke-width:1.35;
+
+      stroke-linecap:round;
+      stroke-linejoin:round;
+
+      vector-effect:
+        non-scaling-stroke;
+
+      stroke-dasharray:520;
+      stroke-dashoffset:520;
+
+      animation:
+        connectorDraw
+        .85s ease forwards;
+
+      animation-delay:
+        var(--line-delay);
+    }
+
+    .connector.complete{
+      stroke:
+        rgba(var(--green-rgb),.3);
+    }
+
+    .connector.live{
+      stroke:
+        rgba(var(--purple-rgb),.66);
+
+      stroke-width:1.7;
+
+      filter:
+        drop-shadow(
+          0 0 5px
+          rgba(var(--purple-rgb),.37)
+        );
+
+      animation:
+        connectorDraw
+        .85s ease forwards,
+        connectorPulse
+        2.5s ease-in-out
+        calc(
+          var(--line-delay) +
+          .9s
+        )
+        infinite;
+    }
+
+    .connector.gold{
+      stroke:
+        rgba(var(--gold-rgb),.36);
+    }
+
+    /* ======================================================
+       FOOTER
+       ====================================================== */
+
+    .footer{
+      position:absolute;
+      left:54px;
+      right:54px;
+      bottom:24px;
+      z-index:50;
+
+      display:grid;
+
+      grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+      align-items:center;
+      gap:22px;
+
+      opacity:0;
+
+      transform:
+        translateY(11px);
+    }
+
+    .stage.ready .footer{
+      animation:
+        footerIn
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        1.05s forwards;
+    }
+
+    .footer-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.28)
+        );
+    }
+
+    .footer-line:last-child{
+      transform:scaleX(-1);
+    }
+
+    .footer-copy{
+      display:flex;
+      align-items:center;
+      gap:14px;
+
+      white-space:nowrap;
+    }
+
+    .footer-copy strong{
+      font-size:19px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .footer-copy i{
+      width:5px;
+      height:5px;
+
+      border-radius:50%;
+
+      background:var(--purple);
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.6);
+    }
+
+    .footer-copy span{
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+
+    /* ======================================================
+       ANIMATIONS
+       ====================================================== */
+
+    @keyframes backgroundDrift{
+      from{
+        transform:
+          translate3d(-16px,-8px,0)
+          scale(1.015);
+      }
+
+      to{
+        transform:
+          translate3d(18px,10px,0)
+          scale(1.03);
+      }
+    }
+
+    @keyframes gridMove{
+      to{
+        background-position:
+          0 86px,
+          86px 0;
+      }
+    }
+
+    @keyframes ambientFloat{
+      from{
+        transform:
+          translate3d(-12px,-8px,0)
+          scale(.96);
+      }
+
+      to{
+        transform:
+          translate3d(18px,12px,0)
+          scale(1.05);
+      }
+    }
+
+    @keyframes headerIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes shellIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes footerIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes cardReveal{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes liveBreathe{
+      0%,
+      100%{
+        box-shadow:
+          0 0 0 1px
+          rgba(var(--purple-rgb),.24),
+          0 0 25px
+          rgba(var(--purple-rgb),.13),
+          inset 0 0 22px
+          rgba(var(--purple-rgb),.035);
+      }
+
+      50%{
+        box-shadow:
+          0 0 0 1px
+          rgba(var(--purple-rgb),.38),
+          0 0 39px
+          rgba(var(--purple-rgb),.24),
+          inset 0 0 28px
+          rgba(var(--purple-rgb),.06);
+      }
+    }
+
+    @keyframes connectorDraw{
+      to{
+        stroke-dashoffset:0;
+      }
+    }
+
+    @keyframes connectorPulse{
+      0%,
+      100%{
+        opacity:.68;
+      }
+
+      50%{
+        opacity:1;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+      }
+
+      .topbar,
+      .status-strip,
+      .bracket-shell,
+      .footer,
+      .match-card,
+      .champion-card{
+        opacity:1 !important;
+        transform:none !important;
+      }
+
+      .connector{
+        stroke-dashoffset:0;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <main
+    id="stage"
+    class="stage"
+  >
+    <div
+      class="grid"
+      aria-hidden="true"
+    ></div>
 
-  <main class="bracket-stage">
+    <div
+      class="ambient left"
+      aria-hidden="true"
+    ></div>
 
-    <div class="bracket-bg-grid"></div>
-    <div class="bracket-red-core"></div>
-    <div class="bracket-sweep"></div>
-    <div class="bracket-particles dust-layer"></div>
-    <div class="bracket-particles ember-layer"></div>
-    <div class="bracket-frame"></div>
+    <div
+      class="ambient right"
+      aria-hidden="true"
+    ></div>
 
-    <header class="bracket-header">
-      <div class="brand-lockup">
-        <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
-        <div>
-          <p>RIVALS GAUNTLET</p>
-          <h1 data-event-name>Rivals Gauntlet Open #1</h1>
+    <div
+      class="frame"
+      aria-hidden="true"
+    ></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div
+          class="mark"
+          aria-hidden="true"
+        >
+          RG
+        </div>
+
+        <div class="brand-copy">
+          <span>
+            Rivals Gauntlet Tournament
+          </span>
+
+          <strong id="eventName">
+            RIVALS GAUNTLET
+          </strong>
         </div>
       </div>
 
-      <div class="bracket-status">
-        <span></span>
-        <p>TOURNAMENT BRACKET</p>
+      <div class="live-summary">
+        <span class="summary-rule"></span>
+
+        <div class="summary-copy">
+          <span id="summaryLabel">
+            Current Match
+          </span>
+
+          <strong id="currentMatch">
+            Awaiting Tournament
+          </strong>
+        </div>
+
+        <span class="summary-rule"></span>
+      </div>
+
+      <div
+        id="connection"
+        class="connection"
+      >
+        <span class="connection-dot"></span>
+
+        <span id="connectionText">
+          Connecting
+        </span>
       </div>
     </header>
 
-    <section class="bracket-overlay-content">
-      <div id="dynamicBracket"></div>
+    <section class="status-strip">
+      <div class="strip-item">
+        <span class="strip-dot"></span>
+
+        <span class="strip-label">
+          Format
+        </span>
+
+        <strong
+          id="formatText"
+          class="strip-value"
+        >
+          Single Elimination
+        </strong>
+      </div>
+
+      <div class="strip-item center">
+        <span class="strip-label">
+          Bracket Status
+        </span>
+
+        <strong
+          id="bracketStatus"
+          class="strip-value highlight"
+        >
+          Realtime Sync
+        </strong>
+      </div>
+
+      <div class="strip-item right">
+        <span class="strip-label">
+          Up Next
+        </span>
+
+        <strong
+          id="upNextText"
+          class="strip-value"
+        >
+          Awaiting Match Queue
+        </strong>
+      </div>
     </section>
 
-    <footer class="bracket-footer">
-      <p>RIVALSGAUNTLET.COM</p>
-      <span></span>
-      <p>WEEKLY COMMUNITY TOURNAMENTS</p>
-      <span></span>
-      <p>RIVALS GAUNTLET</p>
-    </footer>
+    <section class="bracket-shell">
+      <div
+        id="bracketMount"
+        class="bracket-loading"
+      >
+        <span>
+          Realtime Tournament Bracket
+        </span>
 
+        <strong>
+          Loading Published Teams
+        </strong>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-copy">
+        <strong id="website">
+          RIVALSGAUNTLET.COM
+        </strong>
+
+        <i></i>
+
+        <span>
+          Live Scores • Advancing Teams • Tournament Champion
+        </span>
+      </div>
+
+      <span class="footer-line"></span>
+    </footer>
   </main>
+
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var connection =
+          document.getElementById(
+            "connection"
+          );
+
+        var connectionText =
+          document.getElementById(
+            "connectionText"
+          );
+
+        var bracketMount =
+          document.getElementById(
+            "bracketMount"
+          );
+
+        if (connection) {
+          connection.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionText) {
+          connectionText.textContent =
+            "SCRIPT ERROR";
+        }
+
+        if (bracketMount) {
+          bracketMount.innerHTML =
+            '<span style="' +
+              'color:#ff718a;' +
+              'font-size:10px;' +
+              'font-weight:800;' +
+              'letter-spacing:.18em;' +
+              'text-transform:uppercase;' +
+            '">' +
+              'Bracket Script Error' +
+            '</span>' +
+
+            '<strong style="' +
+              'margin-top:12px;' +
+              'font-size:23px;' +
+              'text-transform:uppercase;' +
+            '">' +
+              String(
+                event.message ||
+                "The bracket script stopped."
+              )
+                .replace(/</g,"&lt;")
+                .replace(/>/g,"&gt;") +
+            '</strong>';
+        }
+      }
+    );
+  </script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <script src="../firebase.js"></script>
-  <script src="bracket-overlay.js?v=1"></script>
+  <script src="../firebase.js?v=2"></script>
 
+  <script>
+    (function () {
+      "use strict";
+
+      var BODY_HEIGHT = 742;
+      var MATCH_HEIGHT = 80;
+      var CHAMPION_HEIGHT = 224;
+
+      var state = {
+        site:{},
+        countdown:{},
+        teamData:{},
+        tournamentId:"open1"
+      };
+
+      var teamsRef = null;
+      var teamsCallback = null;
+
+      var renderTimer = null;
+      var connectorTimer = null;
+      var resizeTimer = null;
+
+      var lastSignature = "";
+
+      var stage =
+        document.getElementById(
+          "stage"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var currentMatch =
+        document.getElementById(
+          "currentMatch"
+        );
+
+      var summaryLabel =
+        document.getElementById(
+          "summaryLabel"
+        );
+
+      var formatText =
+        document.getElementById(
+          "formatText"
+        );
+
+      var bracketStatus =
+        document.getElementById(
+          "bracketStatus"
+        );
+
+      var upNextText =
+        document.getElementById(
+          "upNextText"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      var bracketMount =
+        document.getElementById(
+          "bracketMount"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text ||
+          fallback ||
+          "";
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(/&/g,"&amp;")
+          .replace(/</g,"&lt;")
+          .replace(/>/g,"&gt;")
+          .replace(/"/g,"&quot;")
+          .replace(/'/g,"&#039;");
+      }
+
+      function normalize(value) {
+        return clean(value)
+          .toLowerCase()
+          .replace(
+            /[^a-z0-9]/g,
+            ""
+          );
+      }
+
+      function hasValue(value) {
+        return (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        );
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0,2)
+            .toUpperCase();
+        }
+
+        return (
+          (
+            parts[0][0] ||
+            ""
+          ) +
+          (
+            parts[
+              parts.length - 1
+            ][0] ||
+            ""
+          )
+        ).toUpperCase();
+      }
+
+      function normalizeMatchId(value) {
+        var text =
+          clean(value)
+            .toUpperCase();
+
+        var match;
+
+        if (
+          text.indexOf(
+            "GRAND"
+          ) !== -1
+        ) {
+          return "GF";
+        }
+
+        match =
+          text.match(
+            /R16-?([1-8])/
+          );
+
+        if (match) {
+          return (
+            "R16-" +
+            match[1]
+          );
+        }
+
+        match =
+          text.match(
+            /QF([1-4])/
+          );
+
+        if (match) {
+          return (
+            "QF" +
+            match[1]
+          );
+        }
+
+        match =
+          text.match(
+            /SF([1-2])/
+          );
+
+        if (match) {
+          return (
+            "SF" +
+            match[1]
+          );
+        }
+
+        return "";
+      }
+
+      function friendlyMatchName(value) {
+        var id =
+          normalizeMatchId(value);
+
+        var match;
+
+        if (id === "GF") {
+          return "GRAND FINALS • BO5";
+        }
+
+        match =
+          id.match(
+            /^R16-([1-8])$/
+          );
+
+        if (match) {
+          return (
+            "ROUND OF 16 • MATCH " +
+            match[1] +
+            " • BO3"
+          );
+        }
+
+        match =
+          id.match(
+            /^QF([1-4])$/
+          );
+
+        if (match) {
+          return (
+            "QUARTERFINAL " +
+            match[1] +
+            " • BO3"
+          );
+        }
+
+        match =
+          id.match(
+            /^SF([1-2])$/
+          );
+
+        if (match) {
+          return (
+            "SEMIFINAL " +
+            match[1] +
+            " • BO3"
+          );
+        }
+
+        return "BRACKET OVERVIEW";
+      }
+
+      function getWebsite() {
+        var follow =
+          state.countdown.follow ||
+          {};
+
+        return clean(
+          state.countdown.website ||
+          follow.website ||
+          state.site.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      /* =====================================================
+         PUBLISHED TEAM DATA
+         ===================================================== */
+
+      function getTeamsArray() {
+        var teams =
+          state.teamData.teams ||
+          {};
+
+        var names =
+          state.teamData.teamNames ||
+          {};
+
+        var logos =
+          state.teamData.teamLogos ||
+          state.teamData.logos ||
+          {};
+
+        return Object.keys(teams)
+          .sort(
+            function (a,b) {
+              return (
+                Number(
+                  a.replace(
+                    /\D/g,
+                    ""
+                  )
+                ) -
+                Number(
+                  b.replace(
+                    /\D/g,
+                    ""
+                  )
+                )
+              );
+            }
+          )
+          .map(
+            function (
+              teamKey,
+              index
+            ) {
+              return {
+                teamKey:teamKey,
+
+                seed:
+                  index + 1,
+
+                teamName:
+                  clean(
+                    names[teamKey],
+                    "TEAM NAME PENDING"
+                  ),
+
+                logo:
+                  clean(
+                    logos[teamKey]
+                  ),
+
+                players:
+                  Array.isArray(
+                    teams[teamKey]
+                  )
+                    ? teams[
+                        teamKey
+                      ].filter(Boolean)
+                    : []
+              };
+            }
+          );
+      }
+
+      function getTeamByKey(teamKey) {
+        var teams =
+          getTeamsArray();
+
+        var index;
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            teams[index].teamKey ===
+            teamKey
+          ) {
+            return teams[index];
+          }
+        }
+
+        return null;
+      }
+
+      function placeholderTeam(label) {
+        return {
+          teamKey:"",
+          seed:"",
+          teamName:
+            clean(
+              label,
+              "AWAITING TEAM"
+            ),
+          logo:"",
+          placeholder:true
+        };
+      }
+
+      function resolveTeam(value) {
+        var raw =
+          clean(value);
+
+        var teams =
+          getTeamsArray();
+
+        var direct =
+          getTeamByKey(raw);
+
+        var index;
+        var match;
+
+        if (direct) {
+          return direct;
+        }
+
+        if (!raw) {
+          return null;
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            normalize(
+              teams[index].teamName
+            ) ===
+            normalize(raw)
+          ) {
+            return teams[index];
+          }
+        }
+
+        match =
+          raw.match(
+            /^Team\s+(\d+)$/i
+          );
+
+        if (
+          match &&
+          teams[
+            Number(match[1]) - 1
+          ]
+        ) {
+          return teams[
+            Number(match[1]) - 1
+          ];
+        }
+
+        if (
+          normalize(raw).indexOf(
+            "winner"
+          ) === 0 ||
+          normalize(raw).indexOf(
+            "awaiting"
+          ) === 0 ||
+          normalize(raw) ===
+            "tbd"
+        ) {
+          return placeholderTeam(
+            raw
+          );
+        }
+
+        return {
+          teamKey:"",
+          seed:"",
+          teamName:raw,
+          logo:"",
+          placeholder:false
+        };
+      }
+
+      function sameTeam(
+        team,
+        winnerValue
+      ) {
+        var winner =
+          resolveTeam(
+            winnerValue
+          );
+
+        if (
+          !team ||
+          !winner
+        ) {
+          return false;
+        }
+
+        if (
+          team.teamKey &&
+          winner.teamKey &&
+          team.teamKey ===
+            winner.teamKey
+        ) {
+          return true;
+        }
+
+        return (
+          normalize(
+            team.teamName
+          ) ===
+          normalize(
+            winner.teamName
+          )
+        );
+      }
+
+      function indexedTeam(
+        index,
+        fallback
+      ) {
+        return (
+          getTeamsArray()[index] ||
+          placeholderTeam(
+            fallback
+          )
+        );
+      }
+
+      function winnerTeam(
+        field,
+        fallback
+      ) {
+        return (
+          resolveTeam(
+            state.site[field]
+          ) ||
+          placeholderTeam(
+            fallback
+          )
+        );
+      }
+
+      /* =====================================================
+         MATCH MODEL
+         ===================================================== */
+
+      function makeMatch(
+        id,
+        label,
+        format,
+        teamA,
+        teamB,
+        scoreAField,
+        scoreBField,
+        winnerField
+      ) {
+        var rawScoreA =
+          state.site[
+            scoreAField
+          ];
+
+        var rawScoreB =
+          state.site[
+            scoreBField
+          ];
+
+        var winnerValue =
+          clean(
+            state.site[
+              winnerField
+            ]
+          );
+
+        var live =
+          normalizeMatchId(
+            state.site.currentMatch
+          ) ===
+          id;
+
+        var complete =
+          Boolean(
+            winnerValue
+          );
+
+        return {
+          id:id,
+          label:label,
+          format:format,
+
+          teamA:
+            teamA ||
+            placeholderTeam(
+              "AWAITING TEAM"
+            ),
+
+          teamB:
+            teamB ||
+            placeholderTeam(
+              "AWAITING TEAM"
+            ),
+
+          scoreA:
+            hasValue(
+              rawScoreA
+            )
+              ? String(
+                  rawScoreA
+                )
+              : (
+                  live
+                    ? "0"
+                    : "—"
+                ),
+
+          scoreB:
+            hasValue(
+              rawScoreB
+            )
+              ? String(
+                  rawScoreB
+                )
+              : (
+                  live
+                    ? "0"
+                    : "—"
+                ),
+
+          winnerValue:
+            winnerValue,
+
+          complete:
+            complete,
+
+          live:
+            live,
+
+          grand:
+            id === "GF"
+        };
+      }
+
+      function getBracketModel() {
+        var teams =
+          getTeamsArray();
+
+        var is16 =
+          state.site.formatType ===
+            "16_single_elim" ||
+          teams.length > 8;
+
+        var rounds = [];
+        var r16 = [];
+        var qf = [];
+        var sf = [];
+        var grand = [];
+
+        var index;
+
+        if (is16) {
+          for (
+            index = 1;
+            index <= 8;
+            index += 1
+          ) {
+            r16.push(
+              makeMatch(
+                "R16-" + index,
+
+                "R16-" + index,
+
+                "BO3",
+
+                indexedTeam(
+                  (
+                    index - 1
+                  ) * 2,
+                  "AWAITING TEAM"
+                ),
+
+                indexedTeam(
+                  (
+                    index - 1
+                  ) * 2 + 1,
+                  "AWAITING TEAM"
+                ),
+
+                "r16m" +
+                index +
+                "Team1Score",
+
+                "r16m" +
+                index +
+                "Team2Score",
+
+                "r16m" +
+                index +
+                "Winner"
+              )
+            );
+          }
+
+          rounds.push({
+            key:"r16",
+            title:"Round Of 16",
+            subtitle:"8 Matches",
+            matches:r16
+          });
+
+          for (
+            index = 1;
+            index <= 4;
+            index += 1
+          ) {
+            qf.push(
+              makeMatch(
+                "QF" + index,
+
+                "QF" + index,
+
+                "BO3",
+
+                winnerTeam(
+                  "r16m" +
+                  (
+                    (
+                      index - 1
+                    ) * 2 + 1
+                  ) +
+                  "Winner",
+
+                  "WINNER R16-" +
+                  (
+                    (
+                      index - 1
+                    ) * 2 + 1
+                  )
+                ),
+
+                winnerTeam(
+                  "r16m" +
+                  (
+                    (
+                      index - 1
+                    ) * 2 + 2
+                  ) +
+                  "Winner",
+
+                  "WINNER R16-" +
+                  (
+                    (
+                      index - 1
+                    ) * 2 + 2
+                  )
+                ),
+
+                "qf" +
+                index +
+                "Team1Score",
+
+                "qf" +
+                index +
+                "Team2Score",
+
+                "qf" +
+                index +
+                "Winner"
+              )
+            );
+          }
+
+        } else {
+          for (
+            index = 1;
+            index <= 4;
+            index += 1
+          ) {
+            qf.push(
+              makeMatch(
+                "QF" + index,
+
+                "QF" + index,
+
+                "BO3",
+
+                indexedTeam(
+                  (
+                    index - 1
+                  ) * 2,
+                  "AWAITING TEAM"
+                ),
+
+                indexedTeam(
+                  (
+                    index - 1
+                  ) * 2 + 1,
+                  "AWAITING TEAM"
+                ),
+
+                "qf" +
+                index +
+                "Team1Score",
+
+                "qf" +
+                index +
+                "Team2Score",
+
+                "qf" +
+                index +
+                "Winner"
+              )
+            );
+          }
+        }
+
+        rounds.push({
+          key:"qf",
+          title:"Quarterfinals",
+          subtitle:"4 Matches",
+          matches:qf
+        });
+
+        sf.push(
+          makeMatch(
+            "SF1",
+            "SF1",
+            "BO3",
+
+            winnerTeam(
+              "qf1Winner",
+              "WINNER QF1"
+            ),
+
+            winnerTeam(
+              "qf2Winner",
+              "WINNER QF2"
+            ),
+
+            "sf1Team1Score",
+            "sf1Team2Score",
+            "sf1Winner"
+          )
+        );
+
+        sf.push(
+          makeMatch(
+            "SF2",
+            "SF2",
+            "BO3",
+
+            winnerTeam(
+              "qf3Winner",
+              "WINNER QF3"
+            ),
+
+            winnerTeam(
+              "qf4Winner",
+              "WINNER QF4"
+            ),
+
+            "sf2Team1Score",
+            "sf2Team2Score",
+            "sf2Winner"
+          )
+        );
+
+        rounds.push({
+          key:"sf",
+          title:"Semifinals",
+          subtitle:"2 Matches",
+          matches:sf
+        });
+
+        grand.push(
+          makeMatch(
+            "GF",
+            "Grand Finals",
+            "BO5",
+
+            winnerTeam(
+              "sf1Winner",
+              "WINNER SF1"
+            ),
+
+            winnerTeam(
+              "sf2Winner",
+              "WINNER SF2"
+            ),
+
+            "gfTeam1Score",
+            "gfTeam2Score",
+            "grandWinner"
+          )
+        );
+
+        rounds.push({
+          key:"gf",
+          title:"Grand Finals",
+          subtitle:"Best Of 5",
+          matches:grand
+        });
+
+        return {
+          is16:is16,
+          rounds:rounds,
+          champion:
+            resolveTeam(
+              state.site.grandWinner
+            )
+        };
+      }
+
+      /* =====================================================
+         POSITIONING
+         ===================================================== */
+
+      function getRoundCenters(model) {
+        var centers = [];
+        var firstCount =
+          model.rounds[0]
+            .matches.length;
+
+        var first = [];
+        var index;
+        var previous;
+        var next;
+        var matchIndex;
+
+        for (
+          index = 0;
+          index < firstCount;
+          index += 1
+        ) {
+          first.push(
+            (
+              index +
+              .5
+            ) *
+            BODY_HEIGHT /
+            firstCount
+          );
+        }
+
+        centers.push(first);
+
+        for (
+          index = 1;
+          index <
+            model.rounds.length;
+          index += 1
+        ) {
+          previous =
+            centers[
+              index - 1
+            ];
+
+          next = [];
+
+          for (
+            matchIndex = 0;
+            matchIndex <
+              model.rounds[index]
+                .matches.length;
+            matchIndex += 1
+          ) {
+            next.push(
+              (
+                previous[
+                  matchIndex * 2
+                ] +
+                previous[
+                  matchIndex * 2 + 1
+                ]
+              ) /
+              2
+            );
+          }
+
+          centers.push(next);
+        }
+
+        return centers;
+      }
+
+      function revealDelay(
+        roundIndex,
+        matchIndex
+      ) {
+        return (
+          .58 +
+          roundIndex *
+          .25 +
+          matchIndex *
+          .035
+        ) +
+        "s";
+      }
+
+      /* =====================================================
+         CARD MARKUP
+         ===================================================== */
+
+      function crestMarkup(team) {
+        if (
+          team &&
+          team.logo
+        ) {
+          return (
+            '<span class="team-crest">' +
+              '<img ' +
+                'src="' +
+                escapeHtml(
+                  team.logo
+                ) +
+                '" ' +
+                'alt="' +
+                escapeHtml(
+                  team.teamName
+                ) +
+                ' logo"' +
+              '>' +
+            '</span>'
+          );
+        }
+
+        return (
+          '<span class="team-crest">' +
+            escapeHtml(
+              team &&
+              !team.placeholder
+                ? initials(
+                    team.teamName
+                  )
+                : "—"
+            ) +
+          '</span>'
+        );
+      }
+
+      function rowClass(
+        match,
+        team
+      ) {
+        if (
+          !match.complete
+        ) {
+          return "";
+        }
+
+        return sameTeam(
+          team,
+          match.winnerValue
+        )
+          ? " winner"
+          : " loser";
+      }
+
+      function teamRowMarkup(
+        match,
+        team,
+        score
+      ) {
+        return (
+          '<div class="team-row' +
+            rowClass(
+              match,
+              team
+            ) +
+          '">' +
+
+            crestMarkup(team) +
+
+            '<div class="team-copy">' +
+
+              (
+                team &&
+                team.seed
+                  ? (
+                      '<span class="team-seed">' +
+                        '#' +
+                        escapeHtml(
+                          team.seed
+                        ) +
+                      '</span>'
+                    )
+                  : ""
+              ) +
+
+              '<strong class="team-name">' +
+                escapeHtml(
+                  team &&
+                  team.teamName
+                    ? team.teamName
+                    : "AWAITING TEAM"
+                ) +
+              '</strong>' +
+
+            '</div>' +
+
+            '<strong class="team-score">' +
+              escapeHtml(score) +
+            '</strong>' +
+
+          '</div>'
+        );
+      }
+
+      function matchMarkup(
+        match,
+        top,
+        roundIndex,
+        matchIndex
+      ) {
+        var classes =
+          "match-card";
+
+        var stateText =
+          "UPCOMING";
+
+        var stateClass =
+          "";
+
+        if (match.complete) {
+          classes +=
+            " completed";
+
+          stateText =
+            "FINAL";
+
+          stateClass =
+            " final";
+        }
+
+        if (match.live) {
+          classes +=
+            " live";
+
+          stateText =
+            "LIVE";
+
+          stateClass =
+            " live";
+        }
+
+        if (match.grand) {
+          classes +=
+            " grand-final";
+        }
+
+        return (
+          '<article ' +
+            'id="match-' +
+            escapeHtml(match.id) +
+            '" ' +
+            'class="' +
+            classes +
+            '" ' +
+            'data-match-id="' +
+            escapeHtml(match.id) +
+            '" ' +
+            'style="' +
+              'top:' +
+              top +
+              'px;' +
+
+              '--reveal-delay:' +
+              revealDelay(
+                roundIndex,
+                matchIndex
+              ) +
+              ';' +
+            '"' +
+          '>' +
+
+            '<header class="match-top">' +
+
+              '<strong>' +
+                escapeHtml(
+                  match.label
+                ) +
+              '</strong>' +
+
+              '<span class="match-format">' +
+                escapeHtml(
+                  match.format
+                ) +
+              '</span>' +
+
+              '<span class="match-state' +
+                stateClass +
+              '">' +
+                stateText +
+              '</span>' +
+
+            '</header>' +
+
+            teamRowMarkup(
+              match,
+              match.teamA,
+              match.scoreA
+            ) +
+
+            teamRowMarkup(
+              match,
+              match.teamB,
+              match.scoreB
+            ) +
+
+          '</article>'
+        );
+      }
+
+      function championMarkup(
+        model,
+        top
+      ) {
+        var champion =
+          model.champion;
+
+        var grand =
+          model.rounds[
+            model.rounds.length - 1
+          ].matches[0];
+
+        var awaiting =
+          !champion;
+
+        var logo = "";
+
+        if (
+          champion &&
+          champion.logo
+        ) {
+          logo =
+            '<img ' +
+              'src="' +
+              escapeHtml(
+                champion.logo
+              ) +
+              '" ' +
+              'alt="' +
+              escapeHtml(
+                champion.teamName
+              ) +
+              ' logo"' +
+            '>';
+
+        } else {
+          logo =
+            escapeHtml(
+              champion
+                ? initials(
+                    champion.teamName
+                  )
+                : "RG"
+            );
+        }
+
+        return (
+          '<article ' +
+            'id="champion-card" ' +
+            'class="champion-card' +
+              (
+                awaiting
+                  ? " awaiting"
+                  : ""
+              ) +
+            '" ' +
+            'style="' +
+              'top:' +
+              top +
+              'px;' +
+
+              '--reveal-delay:' +
+              (
+                model.rounds.length *
+                .25 +
+                1.05
+              ) +
+              's;' +
+            '"' +
+          '>' +
+
+            '<span class="champion-kicker">' +
+              (
+                awaiting
+                  ? "Tournament Champion"
+                  : "The Gauntlet Has Been Claimed"
+              ) +
+            '</span>' +
+
+            '<div class="champion-logo">' +
+              logo +
+            '</div>' +
+
+            '<strong class="champion-name">' +
+              escapeHtml(
+                champion
+                  ? champion.teamName
+                  : "AWAITING CHAMPION"
+              ) +
+            '</strong>' +
+
+            '<span class="champion-claim">' +
+              (
+                champion
+                  ? "Claimed The Gauntlet"
+                  : "Grand Finals Result Pending"
+              ) +
+            '</span>' +
+
+            '<div class="champion-score">' +
+
+              (
+                champion
+                  ? (
+                      'Grand Finals • ' +
+                      escapeHtml(
+                        grand.scoreA
+                      ) +
+                      ' — ' +
+                      escapeHtml(
+                        grand.scoreB
+                      )
+                    )
+                  : "Winner Advances Here"
+              ) +
+
+            '</div>' +
+
+          '</article>'
+        );
+      }
+
+      /* =====================================================
+         RENDER BRACKET
+         ===================================================== */
+
+      function renderBracket() {
+        var model =
+          getBracketModel();
+
+        var centers =
+          getRoundCenters(
+            model
+          );
+
+        var html =
+          '<div ' +
+            'id="bracketGrid" ' +
+            'class="bracket-grid ' +
+              (
+                model.is16
+                  ? "format-16"
+                  : "format-8"
+              ) +
+            '"' +
+          '>' +
+
+            '<svg ' +
+              'id="connectorSvg" ' +
+              'class="connector-svg" ' +
+              'aria-hidden="true"' +
+            '></svg>';
+
+        var roundIndex;
+        var round;
+        var matchIndex;
+        var top;
+        var championTop;
+
+        for (
+          roundIndex = 0;
+          roundIndex <
+            model.rounds.length;
+          roundIndex += 1
+        ) {
+          round =
+            model.rounds[
+              roundIndex
+            ];
+
+          html +=
+            '<section ' +
+              'class="round-column" ' +
+              'data-round-index="' +
+              roundIndex +
+              '"' +
+            '>' +
+
+              '<header class="round-head">' +
+                escapeHtml(
+                  round.title
+                ) +
+
+                '<span>' +
+                  escapeHtml(
+                    round.subtitle
+                  ) +
+                '</span>' +
+              '</header>' +
+
+              '<div class="round-body">';
+
+          for (
+            matchIndex = 0;
+            matchIndex <
+              round.matches.length;
+            matchIndex += 1
+          ) {
+            top =
+              centers[
+                roundIndex
+              ][
+                matchIndex
+              ] -
+              MATCH_HEIGHT /
+              2;
+
+            html +=
+              matchMarkup(
+                round.matches[
+                  matchIndex
+                ],
+
+                top,
+
+                roundIndex,
+
+                matchIndex
+              );
+          }
+
+          html +=
+              '</div>' +
+            '</section>';
+        }
+
+        championTop =
+          centers[
+            centers.length - 1
+          ][0] -
+          CHAMPION_HEIGHT /
+          2;
+
+        html +=
+          '<section ' +
+            'class="round-column champion-round"' +
+          '>' +
+
+            '<header class="round-head">' +
+              'Champion' +
+
+              '<span>' +
+                'Tournament Winner' +
+              '</span>' +
+            '</header>' +
+
+            '<div class="round-body">' +
+              championMarkup(
+                model,
+                championTop
+              ) +
+            '</div>' +
+
+          '</section>' +
+
+        '</div>';
+
+        bracketMount.className = "";
+        bracketMount.innerHTML =
+          html;
+
+        clearTimeout(
+          connectorTimer
+        );
+
+        connectorTimer =
+          setTimeout(
+            function () {
+              drawConnectors(
+                model
+              );
+            },
+            90
+          );
+      }
+
+      /* =====================================================
+         SVG CONNECTORS
+         ===================================================== */
+
+      function elementCenter(
+        element,
+        gridRect
+      ) {
+        var rect =
+          element.getBoundingClientRect();
+
+        return {
+          left:
+            rect.left -
+            gridRect.left,
+
+          right:
+            rect.right -
+            gridRect.left,
+
+          top:
+            rect.top -
+            gridRect.top,
+
+          bottom:
+            rect.bottom -
+            gridRect.top,
+
+          centerY:
+            rect.top -
+            gridRect.top +
+            rect.height /
+            2
+        };
+      }
+
+      function connectorPath(
+        source,
+        target,
+        gridRect
+      ) {
+        var from =
+          elementCenter(
+            source,
+            gridRect
+          );
+
+        var to =
+          elementCenter(
+            target,
+            gridRect
+          );
+
+        var startX =
+          from.right;
+
+        var startY =
+          from.centerY;
+
+        var endX =
+          to.left;
+
+        var endY =
+          to.centerY;
+
+        var middleX =
+          startX +
+          (
+            endX -
+            startX
+          ) *
+          .5;
+
+        return (
+          "M " +
+          startX +
+          " " +
+          startY +
+
+          " H " +
+          middleX +
+
+          " V " +
+          endY +
+
+          " H " +
+          endX
+        );
+      }
+
+      function sourceMatchClass(
+        match
+      ) {
+        if (match.live) {
+          return " live";
+        }
+
+        if (match.complete) {
+          return " complete";
+        }
+
+        if (match.grand) {
+          return " gold";
+        }
+
+        return "";
+      }
+
+      function drawConnectors(model) {
+        var grid =
+          document.getElementById(
+            "bracketGrid"
+          );
+
+        var svg =
+          document.getElementById(
+            "connectorSvg"
+          );
+
+        var gridRect;
+        var width;
+        var height;
+        var html = "";
+
+        var roundIndex;
+        var sourceRound;
+        var targetRound;
+        var sourceIndex;
+        var targetIndex;
+        var sourceMatch;
+        var sourceElement;
+        var targetElement;
+
+        if (
+          !grid ||
+          !svg
+        ) {
+          return;
+        }
+
+        gridRect =
+          grid.getBoundingClientRect();
+
+        width =
+          gridRect.width;
+
+        height =
+          gridRect.height;
+
+        svg.setAttribute(
+          "viewBox",
+          "0 0 " +
+          width +
+          " " +
+          height
+        );
+
+        svg.setAttribute(
+          "preserveAspectRatio",
+          "none"
+        );
+
+        for (
+          roundIndex = 0;
+          roundIndex <
+            model.rounds.length - 1;
+          roundIndex += 1
+        ) {
+          sourceRound =
+            model.rounds[
+              roundIndex
+            ];
+
+          targetRound =
+            model.rounds[
+              roundIndex + 1
+            ];
+
+          for (
+            sourceIndex = 0;
+            sourceIndex <
+              sourceRound.matches.length;
+            sourceIndex += 1
+          ) {
+            targetIndex =
+              Math.floor(
+                sourceIndex /
+                2
+              );
+
+            sourceMatch =
+              sourceRound.matches[
+                sourceIndex
+              ];
+
+            sourceElement =
+              document.getElementById(
+                "match-" +
+                sourceMatch.id
+              );
+
+            targetElement =
+              document.getElementById(
+                "match-" +
+                targetRound.matches[
+                  targetIndex
+                ].id
+              );
+
+            if (
+              !sourceElement ||
+              !targetElement
+            ) {
+              continue;
+            }
+
+            html +=
+              '<path ' +
+                'class="connector' +
+                  sourceMatchClass(
+                    sourceMatch
+                  ) +
+                '" ' +
+
+                'style="' +
+                  '--line-delay:' +
+                  (
+                    .85 +
+                    roundIndex *
+                    .25 +
+                    sourceIndex *
+                    .035
+                  ) +
+                  's;' +
+                '" ' +
+
+                'd="' +
+                  connectorPath(
+                    sourceElement,
+                    targetElement,
+                    gridRect
+                  ) +
+                '"' +
+              '></path>';
+          }
+        }
+
+        sourceMatch =
+          model.rounds[
+            model.rounds.length - 1
+          ].matches[0];
+
+        sourceElement =
+          document.getElementById(
+            "match-" +
+            sourceMatch.id
+          );
+
+        targetElement =
+          document.getElementById(
+            "champion-card"
+          );
+
+        if (
+          sourceElement &&
+          targetElement
+        ) {
+          html +=
+            '<path ' +
+              'class="connector' +
+                (
+                  sourceMatch.complete
+                    ? " gold"
+                    : ""
+                ) +
+              '" ' +
+
+              'style="' +
+                '--line-delay:' +
+                (
+                  1.05 +
+                  model.rounds.length *
+                  .25
+                ) +
+                's;' +
+              '" ' +
+
+              'd="' +
+                connectorPath(
+                  sourceElement,
+                  targetElement,
+                  gridRect
+                ) +
+              '"' +
+            '></path>';
+        }
+
+        svg.innerHTML =
+          html;
+      }
+
+      /* =====================================================
+         HEADER DATA
+         ===================================================== */
+
+      function renderHeader() {
+        var current =
+          normalizeMatchId(
+            state.site.currentMatch
+          );
+
+        var next =
+          state.countdown.upNext ||
+          {};
+
+        var teams =
+          getTeamsArray();
+
+        var format16 =
+          state.site.formatType ===
+            "16_single_elim" ||
+          teams.length > 8;
+
+        eventName.textContent =
+          clean(
+            state.site.eventName ||
+            state.countdown.eventName,
+            "RIVALS GAUNTLET"
+          )
+            .toUpperCase();
+
+        if (current) {
+          summaryLabel.textContent =
+            "Current Match";
+
+          currentMatch.textContent =
+            friendlyMatchName(
+              state.site.currentMatch
+            );
+
+          currentMatch.classList.add(
+            "live"
+          );
+
+        } else {
+          summaryLabel.textContent =
+            "Tournament Bracket";
+
+          currentMatch.textContent =
+            state.site.grandWinner
+              ? "TOURNAMENT COMPLETE"
+              : "BRACKET OVERVIEW";
+
+          currentMatch.classList.remove(
+            "live"
+          );
+        }
+
+        formatText.textContent =
+          (
+            format16
+              ? "16 Teams"
+              : "8 Teams"
+          ) +
+          " • Single Elimination • BO3 / BO5 Final";
+
+        bracketStatus.textContent =
+          state.site.grandWinner
+            ? "Tournament Complete"
+            : (
+                current
+                  ? "Live Bracket"
+                  : "Realtime Sync"
+              );
+
+        if (
+          next.teamA &&
+          next.teamB
+        ) {
+          upNextText.textContent =
+            clean(
+              next.label,
+              "Next Match"
+            ) +
+            " • " +
+            clean(
+              next.teamA
+            ) +
+            " VS " +
+            clean(
+              next.teamB
+            );
+
+        } else {
+          upNextText.textContent =
+            state.site.grandWinner
+              ? "Champion Confirmed"
+              : "Awaiting Match Queue";
+        }
+
+        website.textContent =
+          getWebsite();
+      }
+
+      /* =====================================================
+         COMPLETE RENDER
+         ===================================================== */
+
+      function getRenderSignature() {
+        return JSON.stringify({
+          tournamentId:
+            state.tournamentId,
+
+          site:
+            state.site,
+
+          upNext:
+            state.countdown.upNext ||
+            {},
+
+          teams:
+            state.teamData
+        });
+      }
+
+      function render() {
+        var signature =
+          getRenderSignature();
+
+        renderHeader();
+
+        if (
+          signature ===
+            lastSignature &&
+          document.getElementById(
+            "bracketGrid"
+          )
+        ) {
+          return;
+        }
+
+        lastSignature =
+          signature;
+
+        renderBracket();
+
+        stage.classList.remove(
+          "ready"
+        );
+
+        void stage.offsetWidth;
+
+        stage.classList.add(
+          "ready"
+        );
+      }
+
+      function scheduleRender() {
+        clearTimeout(
+          renderTimer
+        );
+
+        renderTimer =
+          setTimeout(
+            render,
+            100
+          );
+      }
+
+      /* =====================================================
+         FIREBASE
+         ===================================================== */
+
+      function attachTeams(
+        databaseConnection,
+        tournamentId
+      ) {
+        if (
+          teamsRef &&
+          teamsCallback
+        ) {
+          teamsRef.off(
+            "value",
+            teamsCallback
+          );
+        }
+
+        state.tournamentId =
+          clean(
+            tournamentId,
+            "open1"
+          );
+
+        state.teamData = {};
+
+        teamsRef =
+          databaseConnection.ref(
+            "teams/" +
+            state.tournamentId
+          );
+
+        teamsCallback =
+          function (snapshot) {
+            state.teamData =
+              snapshot.val() ||
+              {};
+
+            scheduleRender();
+          };
+
+        teamsRef.on(
+          "value",
+          teamsCallback,
+
+          function (error) {
+            connection.classList.add(
+              "error"
+            );
+
+            connectionText.textContent =
+              error &&
+              error.code ===
+                "PERMISSION_DENIED"
+                ? "TEAM READ BLOCKED"
+                : "TEAM DATA UNAVAILABLE";
+
+            console.warn(
+              "[RG BRACKET] Published teams unavailable:",
+              error
+            );
+
+            scheduleRender();
+          }
+        );
+      }
+
+      function connect() {
+        var databaseConnection =
+          null;
+
+        try {
+          try {
+            if (
+              typeof database !==
+                "undefined" &&
+              database &&
+              typeof database.ref ===
+                "function"
+            ) {
+              databaseConnection =
+                database;
+            }
+          } catch (
+            globalDatabaseError
+          ) {
+            databaseConnection =
+              null;
+          }
+
+          if (
+            !databaseConnection &&
+            typeof firebase !==
+              "undefined" &&
+            firebase.apps &&
+            firebase.apps.length > 0
+          ) {
+            databaseConnection =
+              firebase.database();
+          }
+
+          if (
+            !databaseConnection ||
+            typeof databaseConnection.ref !==
+              "function"
+          ) {
+            throw new Error(
+              "firebase.js did not expose a usable Realtime Database connection."
+            );
+          }
+
+          databaseConnection.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() ===
+                true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connection.classList.remove(
+                "error"
+              );
+
+              connectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            }
+          );
+
+          databaseConnection.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var nextSite =
+                snapshot.val() ||
+                {};
+
+              var nextTournament =
+                clean(
+                  nextSite.currentTournament,
+                  "open1"
+                );
+
+              var changed =
+                nextTournament !==
+                state.tournamentId;
+
+              state.site =
+                nextSite;
+
+              if (
+                changed ||
+                !teamsRef
+              ) {
+                attachTeams(
+                  databaseConnection,
+                  nextTournament
+                );
+              }
+
+              scheduleRender();
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+            }
+          );
+
+          databaseConnection.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.countdown =
+                snapshot.val() ||
+                {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              console.warn(
+                "[RG BRACKET] Broadcast queue unavailable:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          connection.classList.add(
+            "error"
+          );
+
+          connectionText.textContent =
+            "FIREBASE ERROR";
+
+          bracketMount.innerHTML =
+            '<span style="' +
+              'color:#ff718a;' +
+              'font-size:10px;' +
+              'font-weight:800;' +
+              'letter-spacing:.18em;' +
+              'text-transform:uppercase;' +
+            '">' +
+              'Bracket Startup Error' +
+            '</span>' +
+
+            '<strong style="' +
+              'margin-top:12px;' +
+              'font-size:23px;' +
+              'text-transform:uppercase;' +
+            '">' +
+              escapeHtml(
+                error.message ||
+                "Bracket could not connect."
+              ) +
+            '</strong>';
+        }
+      }
+
+      window.addEventListener(
+        "resize",
+
+        function () {
+          clearTimeout(
+            resizeTimer
+          );
+
+          resizeTimer =
+            setTimeout(
+              function () {
+                var model =
+                  getBracketModel();
+
+                drawConnectors(
+                  model
+                );
+              },
+              120
+            );
+        }
+      );
+
+      connect();
+    })();
+  </script>
 </body>
 </html>

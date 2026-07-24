@@ -574,3 +574,128 @@
     flex-basis:100%;
   }
 }
+.nexus-caster-editor{
+  margin:0 14px 14px;
+  padding:16px;
+  border:1px solid rgba(154,124,255,.15);
+  border-radius:14px;
+  background:rgba(154,124,255,.025);
+}
+
+.nexus-caster-editor-title{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,340px);
+  align-items:end;
+  gap:18px;
+  margin-bottom:14px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--border,rgba(255,255,255,.09));
+}
+
+.nexus-caster-editor-title strong,
+.nexus-caster-editor-title span{
+  display:block;
+}
+
+.nexus-caster-editor-title strong{
+  font-size:14px;
+  text-transform:uppercase;
+}
+
+.nexus-caster-editor-title > div > span{
+  margin-top:4px;
+  color:var(--dim,#746e82);
+  font-size:10px;
+}
+
+.nexus-caster-editor-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.nexus-caster-nameplate-editor{
+  min-width:0;
+  padding:14px;
+  border:1px solid var(--border,rgba(255,255,255,.09));
+  border-radius:13px;
+  background:rgba(255,255,255,.014);
+  transition:.18s ease;
+}
+
+.nexus-caster-nameplate-editor.is-active{
+  border-color:rgba(154,124,255,.22);
+  background:rgba(154,124,255,.035);
+}
+
+.nexus-caster-nameplate-editor.is-inactive{
+  opacity:.55;
+}
+
+.nexus-caster-editor-header{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  align-items:center;
+  gap:11px;
+  margin-bottom:13px;
+}
+
+.nexus-caster-editor-header > span{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(154,124,255,.2);
+  border-radius:11px;
+  color:#c8b9ff;
+  background:rgba(154,124,255,.055);
+  font-size:11px;
+  font-weight:800;
+}
+
+.nexus-caster-editor-header strong,
+.nexus-caster-editor-header small{
+  display:block;
+}
+
+.nexus-caster-editor-header strong{
+  font-size:12px;
+  text-transform:uppercase;
+}
+
+.nexus-caster-editor-header small{
+  margin-top:3px;
+  color:var(--dim,#746e82);
+  font-size:9px;
+  text-transform:uppercase;
+}
+
+.nexus-caster-editor-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+
+.nexus-caster-field-wide{
+  grid-column:1 / -1;
+}
+
+@media(max-width:900px){
+  .nexus-caster-editor-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:700px){
+  .nexus-caster-editor-title{
+    grid-template-columns:1fr;
+  }
+
+  .nexus-caster-editor-fields{
+    grid-template-columns:1fr;
+  }
+
+  .nexus-caster-field-wide{
+    grid-column:auto;
+  }
+}

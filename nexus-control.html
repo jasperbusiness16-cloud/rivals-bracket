@@ -40,6 +40,7 @@
 <link rel="stylesheet" href="nexus-staff-access.css?v=1">
 <link rel="stylesheet" href="nexus-audit.css?v=1">
 <link rel="stylesheet" href="nexus-event-champions.css?v=1">
+<link rel="stylesheet" href="nexus-overlays.css?v=1">
 <link rel="stylesheet" href="nexus-settings.css?v=1">
 </head>
 
@@ -124,7 +125,16 @@
             <span>Live Operations</span>
             <em>LIVE</em>
           </button>
-        </div>
+       <button
+  class="nav-item"
+  type="button"
+  data-module="overlays"
+  data-permission="broadcast.control"
+>
+  <i class="fa-solid fa-layer-group"></i>
+  <span>Overlay Settings</span>
+</button>
+         </div>
 
         <div class="nav-section">
           <p class="nav-section-label">TOURNAMENT</p>
@@ -405,7 +415,8 @@
 <script src="nexus-players.js?v=1"></script>
 <script src="nexus-staff-access.js?v=1"></script>
 <script src="nexus-audit.js?v=1"></script>
+<script src="nexus-overlays.js?v=1"></script>
 <script src="nexus-settings.js?v=1"></script>
-<script src="nexus-control.js?v=19"></script>
+<script src="nexus-control.js?v=20"></script>
 </body>
 </html>

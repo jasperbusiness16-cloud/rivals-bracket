@@ -41,7 +41,8 @@
     tournament: {},
     reports: {},
     applications: [],
-    teamsRecord: {},
+players: {},
+teamsRecord: {},
     checkIns: {},
     availability: {},
     selectedIncidentKey: "",
@@ -188,7 +189,114 @@
           )}
 
         </section>
+<article class="nexus-panel reports-manual-panel">
+  <header class="panel-header">
+    <div>
+      <h3>Manual Roster Override</h3>
 
+      <span>
+        Owner and administrator substitution control
+      </span>
+    </div>
+
+    <span id="reportsManualState">
+      Select a team
+    </span>
+  </header>
+
+  <div class="reports-panel-content">
+    <div class="reports-manual-warning">
+      <i class="fa-solid fa-shield-halved"></i>
+
+      <div>
+        <strong>Full Administrative Control</strong>
+
+        <span>
+          This control does not require a report, substitute status,
+          check-in, or availability. Players already assigned to another
+          team will be transferred rather than duplicated.
+        </span>
+      </div>
+    </div>
+
+    <div class="reports-manual-grid">
+      <div class="reports-field">
+        <label for="reportsManualTeamSelect">
+          Team
+        </label>
+
+        <select
+          id="reportsManualTeamSelect"
+          class="reports-select"
+        >
+          <option value="">
+            Select a team
+          </option>
+        </select>
+      </div>
+
+      <div class="reports-field">
+        <label for="reportsManualOutgoingSelect">
+          Player Being Removed
+        </label>
+
+        <select
+          id="reportsManualOutgoingSelect"
+          class="reports-select"
+        >
+          <option value="">
+            Select an outgoing player
+          </option>
+        </select>
+      </div>
+
+      <div class="reports-field">
+        <label for="reportsManualIncomingSelect">
+          Incoming Player
+        </label>
+
+        <select
+          id="reportsManualIncomingSelect"
+          class="reports-select"
+        >
+          <option value="">
+            Select an incoming player
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div
+      id="reportsManualSummary"
+      class="reports-manual-summary"
+    >
+      Select a team and both players to preview the roster change.
+    </div>
+
+    <div class="reports-manual-footer">
+      <label class="reports-field reports-manual-reason">
+        <span>Administrative Reason — Optional</span>
+
+        <textarea
+          id="reportsManualReason"
+          class="reports-textarea"
+          maxlength="500"
+          placeholder="Emergency replacement, availability change, roster correction, staff decision..."
+        ></textarea>
+      </label>
+
+      <button
+        id="reportsManualExecuteButton"
+        class="action-button action-button-primary"
+        type="button"
+        disabled
+      >
+        <i class="fa-solid fa-people-arrows"></i>
+        Execute Substitution
+      </button>
+    </div>
+  </div>
+</article>
         <section class="reports-workspace">
 
           <article class="nexus-panel reports-inbox-panel">
@@ -416,7 +524,8 @@
     moduleState.tournament = {};
     moduleState.reports = {};
     moduleState.applications = [];
-    moduleState.teamsRecord = {};
+moduleState.players = {};
+moduleState.teamsRecord = {};
     moduleState.checkIns = {};
     moduleState.availability = {};
     moduleState.selectedIncidentKey = "";
@@ -497,20 +606,31 @@
     }
   }
 
-  function handleClick(event) {
-    const button =
-      event.target.closest(
-        "button"
+ function handleClick(event) {
+  const button =
+    event.target.closest(
+      "button"
+    );
+
+  if (
+    button &&
+    boundContent.contains(button)
+  ) {
+    if (
+      button.id ===
+      "reportsManualExecuteButton"
+    ) {
+      void executeManualSubstitution(
+        button
       );
 
+      return;
+    }
+
     if (
-      button &&
-      boundContent.contains(button)
+      button.id ===
+      "reportsRefreshButton"
     ) {
-      if (
-        button.id ===
-        "reportsRefreshButton"
-      ) {
         void refreshModule(button);
         return;
       }
@@ -611,20 +731,38 @@
   }
 
   function handleChange(event) {
-    if (
-      event.target.id ===
-      "reportsTournamentSelect"
-    ) {
-      switchTournament(
-        event.target.value
-      );
+  if (
+    event.target.id ===
+    "reportsTournamentSelect"
+  ) {
+    switchTournament(
+      event.target.value
+    );
 
-      return;
-    }
+    return;
+  }
 
-    if (
-      event.target.id ===
-        "reportsStatusFilter" ||
+  if (
+    event.target.id ===
+      "reportsManualTeamSelect" ||
+    event.target.id ===
+      "reportsManualOutgoingSelect"
+  ) {
+    renderManualControl();
+    return;
+  }
+
+  if (
+    event.target.id ===
+    "reportsManualIncomingSelect"
+  ) {
+    renderManualSummary();
+    return;
+  }
+
+  if (
+    event.target.id ===
+      "reportsStatusFilter" ||
       event.target.id ===
         "reportsIssueFilter"
     ) {
@@ -705,7 +843,8 @@
     moduleState.tournament = {};
     moduleState.reports = {};
     moduleState.applications = [];
-    moduleState.teamsRecord = {};
+moduleState.players = {};
+moduleState.teamsRecord = {};
     moduleState.checkIns = {};
     moduleState.availability = {};
     moduleState.selectedIncidentKey =
@@ -772,7 +911,21 @@
       context.database.ref(
         `applications/${tournamentId}`
       ),
+listen(
+  context.database.ref(
+    "players"
+  ),
 
+  snapshot => {
+    moduleState.players =
+      snapshot.val() ||
+      {};
+
+    renderAll();
+  },
+
+  "player directory"
+);
       snapshot => {
         const data =
           snapshot.val() ||
@@ -897,9 +1050,10 @@
   }
 
   function renderAll() {
-    renderTournamentOptions();
-    renderContext();
-    renderSummary();
+  renderTournamentOptions();
+  renderContext();
+  renderSummary();
+  renderManualControl();
     renderRoleOptions();
     renderIncidentList();
     renderCaseDetail();
@@ -1667,7 +1821,485 @@
       </section>
     `;
   }
+function allKnownPlayers() {
+  const records =
+    new Map();
 
+  Object.entries(
+    moduleState.players ||
+    {}
+  ).forEach(
+    ([uid, player]) => {
+      records.set(uid, {
+        ...(player || {}),
+        uid:
+          player?.uid ||
+          uid
+      });
+    }
+  );
+
+  moduleState.applications.forEach(
+    player => {
+      if (!player?.uid) {
+        return;
+      }
+
+      records.set(
+        player.uid,
+        {
+          ...(records.get(
+            player.uid
+          ) || {}),
+
+          ...player,
+
+          uid:
+            player.uid
+        }
+      );
+    }
+  );
+
+  mainRoster().forEach(
+    player => {
+      if (!player?.uid) {
+        return;
+      }
+
+      records.set(
+        player.uid,
+        {
+          ...(records.get(
+            player.uid
+          ) || {}),
+
+          ...player,
+
+          uid:
+            player.uid
+        }
+      );
+    }
+  );
+
+  return Array.from(
+    records.values()
+  )
+    .filter(
+      player =>
+        clean(player.uid)
+    )
+    .sort(
+      (first, second) =>
+        playerDisplayName(first)
+          .localeCompare(
+            playerDisplayName(
+              second
+            )
+          )
+    );
+}
+
+function playerDisplayName(
+  player
+) {
+  return clean(
+    player?.displayName ||
+    player?.rivalsIgn ||
+    player?.rgId,
+    "Rivals Gauntlet Player"
+  );
+}
+
+function compareTeamKeys(
+  first,
+  second
+) {
+  const firstMatch =
+    String(first).match(
+      /\d+/
+    );
+
+  const secondMatch =
+    String(second).match(
+      /\d+/
+    );
+
+  const firstNumber =
+    firstMatch
+      ? Number(firstMatch[0])
+      : 999;
+
+  const secondNumber =
+    secondMatch
+      ? Number(secondMatch[0])
+      : 999;
+
+  return (
+    firstNumber -
+      secondNumber ||
+    String(first).localeCompare(
+      String(second)
+    )
+  );
+}
+
+function renderManualControl() {
+  const teamSelect =
+    document.getElementById(
+      "reportsManualTeamSelect"
+    );
+
+  const outgoingSelect =
+    document.getElementById(
+      "reportsManualOutgoingSelect"
+    );
+
+  const incomingSelect =
+    document.getElementById(
+      "reportsManualIncomingSelect"
+    );
+
+  if (
+    !teamSelect ||
+    !outgoingSelect ||
+    !incomingSelect
+  ) {
+    return;
+  }
+
+  const teams =
+    getTeams();
+
+  const teamKeys =
+    Object.keys(teams)
+      .sort(compareTeamKeys);
+
+  const previousTeam =
+    teamSelect.value;
+
+  const selectedTeam =
+    teamKeys.includes(
+      previousTeam
+    )
+      ? previousTeam
+      : teamKeys[0] ||
+        "";
+
+  teamSelect.innerHTML =
+    teamKeys.length
+      ? teamKeys
+          .map(
+            teamKey => `
+              <option value="${escapeHtml(
+                teamKey
+              )}">
+                ${escapeHtml(
+                  formatTeamName(
+                    teamKey
+                  )
+                )}
+              </option>
+            `
+          )
+          .join("")
+      : `
+          <option value="">
+            No published teams
+          </option>
+        `;
+
+  teamSelect.value =
+    selectedTeam;
+
+  const roster =
+    teams[selectedTeam] ||
+    [];
+
+  const previousOutgoing =
+    outgoingSelect.value;
+
+  const selectedOutgoing =
+    roster.some(
+      player =>
+        player.uid ===
+        previousOutgoing
+    )
+      ? previousOutgoing
+      : roster[0]?.uid ||
+        "";
+
+  outgoingSelect.innerHTML =
+    roster.length
+      ? roster
+          .map(
+            player => `
+              <option value="${escapeHtml(
+                player.uid
+              )}">
+                ${escapeHtml(
+                  playerDisplayName(
+                    player
+                  )
+                )}
+
+                ${
+                  player.mainRole
+                    ? ` — ${escapeHtml(
+                        player.mainRole
+                      )}`
+                    : ""
+                }
+              </option>
+            `
+          )
+          .join("")
+      : `
+          <option value="">
+            No players on this team
+          </option>
+        `;
+
+  outgoingSelect.value =
+    selectedOutgoing;
+
+  const currentTeamUids =
+    new Set(
+      roster.map(
+        player =>
+          player.uid
+      )
+    );
+
+  const incomingPlayers =
+    allKnownPlayers()
+      .filter(
+        player =>
+          player.uid !==
+            selectedOutgoing &&
+          !currentTeamUids.has(
+            player.uid
+          )
+      );
+
+  const previousIncoming =
+    incomingSelect.value;
+
+  const selectedIncoming =
+    incomingPlayers.some(
+      player =>
+        player.uid ===
+        previousIncoming
+    )
+      ? previousIncoming
+      : "";
+
+  incomingSelect.innerHTML = `
+    <option value="">
+      Select an incoming player
+    </option>
+
+    ${incomingPlayers
+      .map(player => {
+        const assignedTeam =
+          assignedTeamKey(
+            player.uid
+          );
+
+        const rosterState =
+          assignedTeam
+            ? formatTeamName(
+                assignedTeam
+              )
+            : "Unassigned";
+
+        const readiness =
+          isUnavailable(
+            player.uid
+          )
+            ? "Unavailable"
+            : isReady(
+                player.uid
+              )
+              ? "Ready"
+              : "Not Checked In";
+
+        return `
+          <option value="${escapeHtml(
+            player.uid
+          )}">
+            ${escapeHtml(
+              playerDisplayName(
+                player
+              )
+            )}
+
+            — ${escapeHtml(
+              rosterState
+            )}
+
+            — ${escapeHtml(
+              readiness
+            )}
+          </option>
+        `;
+      })
+      .join("")}
+  `;
+
+  incomingSelect.value =
+    selectedIncoming;
+
+  renderManualSummary();
+}
+
+function renderManualSummary() {
+  const teamKey =
+    clean(
+      document.getElementById(
+        "reportsManualTeamSelect"
+      )?.value
+    );
+
+  const outgoingUid =
+    clean(
+      document.getElementById(
+        "reportsManualOutgoingSelect"
+      )?.value
+    );
+
+  const incomingUid =
+    clean(
+      document.getElementById(
+        "reportsManualIncomingSelect"
+      )?.value
+    );
+
+  const summary =
+    document.getElementById(
+      "reportsManualSummary"
+    );
+
+  const button =
+    document.getElementById(
+      "reportsManualExecuteButton"
+    );
+
+  const stateLabel =
+    document.getElementById(
+      "reportsManualState"
+    );
+
+  if (
+    !summary ||
+    !button
+  ) {
+    return;
+  }
+
+  const outgoing =
+    rosterPlayer(
+      outgoingUid
+    );
+
+  const incoming =
+    allKnownPlayers()
+      .find(
+        player =>
+          player.uid ===
+          incomingUid
+      );
+
+  if (
+    !teamKey ||
+    !outgoing ||
+    !incoming
+  ) {
+    summary.classList.remove(
+      "warning"
+    );
+
+    summary.textContent =
+      "Select a team and both players to preview the roster change.";
+
+    button.disabled =
+      true;
+
+    if (stateLabel) {
+      stateLabel.textContent =
+        "Selection incomplete";
+    }
+
+    return;
+  }
+
+  const previousTeam =
+    assignedTeamKey(
+      incoming.uid
+    );
+
+  const transferText =
+    previousTeam &&
+    previousTeam !==
+      teamKey
+      ? `${playerDisplayName(
+          incoming
+        )} will first be removed from ${formatTeamName(
+          previousTeam
+        )}.`
+      : `${playerDisplayName(
+          incoming
+        )} is currently unassigned.`;
+
+  summary.classList.toggle(
+    "warning",
+    Boolean(previousTeam)
+  );
+
+  summary.innerHTML = `
+    <strong>
+      ${escapeHtml(
+        formatTeamName(
+          teamKey
+        )
+      )}
+    </strong>
+
+    <span>
+      Remove
+      <b>${escapeHtml(
+        playerDisplayName(
+          outgoing
+        )
+      )}</b>
+
+      and add
+
+      <b>${escapeHtml(
+        playerDisplayName(
+          incoming
+        )
+      )}</b>.
+    </span>
+
+    <small>
+      ${escapeHtml(
+        transferText
+      )}
+    </small>
+  `;
+
+  button.disabled =
+    false;
+
+  if (stateLabel) {
+    stateLabel.textContent =
+      previousTeam
+        ? "Team transfer"
+        : "Roster replacement";
+  }
+}
   function renderRoleOptions() {
     const select =
       document.getElementById(
@@ -2355,7 +2987,446 @@
       }
     );
   }
+async function executeManualSubstitution(
+  button
+) {
+  const teamKey =
+    clean(
+      document.getElementById(
+        "reportsManualTeamSelect"
+      )?.value
+    );
 
+  const outgoingUid =
+    clean(
+      document.getElementById(
+        "reportsManualOutgoingSelect"
+      )?.value
+    );
+
+  const incomingUid =
+    clean(
+      document.getElementById(
+        "reportsManualIncomingSelect"
+      )?.value
+    );
+
+  const reason =
+    clean(
+      document.getElementById(
+        "reportsManualReason"
+      )?.value
+    );
+
+  const teams =
+    getTeams();
+
+  const targetTeam =
+    teams[teamKey] ||
+    [];
+
+  const outgoing =
+    targetTeam.find(
+      player =>
+        player.uid ===
+        outgoingUid
+    );
+
+  const incoming =
+    allKnownPlayers()
+      .find(
+        player =>
+          player.uid ===
+          incomingUid
+      );
+
+  if (!teamKey) {
+    context.showToast(
+      "Select a team."
+    );
+
+    return;
+  }
+
+  if (!outgoing) {
+    context.showToast(
+      "Select a current player from that team."
+    );
+
+    return;
+  }
+
+  if (!incoming) {
+    context.showToast(
+      "Select an incoming player."
+    );
+
+    return;
+  }
+
+  if (
+    outgoing.uid ===
+    incoming.uid
+  ) {
+    context.showToast(
+      "The outgoing and incoming players cannot be the same."
+    );
+
+    return;
+  }
+
+  const incomingCurrentTeam =
+    assignedTeamKey(
+      incoming.uid
+    );
+
+  if (
+    incomingCurrentTeam ===
+    teamKey
+  ) {
+    context.showToast(
+      "The incoming player is already on the selected team."
+    );
+
+    return;
+  }
+
+  const transferWarning =
+    incomingCurrentTeam
+      ? `\n\n${playerDisplayName(
+          incoming
+        )} is currently assigned to ${formatTeamName(
+          incomingCurrentTeam
+        )} and will be removed from that roster.`
+      : "";
+
+  const confirmed =
+    window.confirm(
+      `Execute this roster substitution?\n\n` +
+      `${formatTeamName(
+        teamKey
+      )}\n` +
+      `OUT: ${playerDisplayName(
+        outgoing
+      )}\n` +
+      `IN: ${playerDisplayName(
+        incoming
+      )}` +
+      transferWarning +
+      `\n\nThis immediately updates the published tournament roster.`
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await buttonAction(
+    button,
+    "Substituting...",
+
+    async () => {
+      const timestamp =
+        firebase.database
+          .ServerValue
+          .TIMESTAMP;
+
+      const historyReference =
+        context.database.ref(
+          `tournaments/${moduleState.tournamentId}/substitutions`
+        ).push();
+
+      const historyKey =
+        historyReference.key;
+
+      const updatedTargetTeam =
+        targetTeam.map(
+          player => {
+            if (
+              player.uid !==
+              outgoing.uid
+            ) {
+              return publicPlayer(
+                player
+              );
+            }
+
+            return {
+              ...publicPlayer(
+                incoming
+              ),
+
+              replacedPlayerUid:
+                outgoing.uid,
+
+              addedAsSubstitute:
+                true,
+
+              substitutedAt:
+                timestamp
+            };
+          }
+        );
+
+      const updates = {
+        [`teams/${moduleState.tournamentId}/teams/${teamKey}`]:
+          updatedTargetTeam,
+
+        [`teams/${moduleState.tournamentId}/updatedAt`]:
+          timestamp,
+
+        [`teams/${moduleState.tournamentId}/updatedBy`]:
+          context.currentUser?.uid ||
+          null,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/uid`]:
+          incoming.uid,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/tournamentId`]:
+          moduleState.tournamentId,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/displayName`]:
+          incoming.displayName ||
+          "",
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/rivalsIgn`]:
+          incoming.rivalsIgn ||
+          "",
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/rgId`]:
+          incoming.rgId ||
+          "",
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/status`]:
+          "accepted",
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/addedAsSubstitute`]:
+          true,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/substitutedInto`]:
+          teamKey,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/substitutedAt`]:
+          timestamp,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/previousTeamKey`]:
+          incomingCurrentTeam ||
+          null,
+
+        [`applications/${moduleState.tournamentId}/${incoming.uid}/updatedAt`]:
+          timestamp,
+
+        [`applications/${moduleState.tournamentId}/${outgoing.uid}/replacedBySubUid`]:
+          incoming.uid,
+
+        [`applications/${moduleState.tournamentId}/${outgoing.uid}/replacedAt`]:
+          timestamp,
+
+        [`applications/${moduleState.tournamentId}/${outgoing.uid}/substitutedOutOf`]:
+          teamKey,
+
+        [`applications/${moduleState.tournamentId}/${outgoing.uid}/updatedAt`]:
+          timestamp,
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/uid`]:
+          incoming.uid,
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/displayName`]:
+          playerDisplayName(
+            incoming
+          ),
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/checkedIn`]:
+          true,
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/type`]:
+          "main",
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/teamKey`]:
+          teamKey,
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/replacedPlayerUid`]:
+          outgoing.uid,
+
+        [`checkIns/${moduleState.tournamentId}/${incoming.uid}/updatedAt`]:
+          timestamp,
+
+        [`checkIns/${moduleState.tournamentId}/${outgoing.uid}/checkedIn`]:
+          false,
+
+        [`checkIns/${moduleState.tournamentId}/${outgoing.uid}/replacedBySubUid`]:
+          incoming.uid,
+
+        [`checkIns/${moduleState.tournamentId}/${outgoing.uid}/updatedAt`]:
+          timestamp,
+
+        [`availability/${moduleState.tournamentId}/${incoming.uid}/status`]:
+          "available",
+
+        [`availability/${moduleState.tournamentId}/${incoming.uid}/updatedAt`]:
+          timestamp,
+
+        [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}`]:
+          {
+            substitutionId:
+              historyKey,
+
+            type:
+              incomingCurrentTeam
+                ? "manual_transfer"
+                : "manual_substitution",
+
+            teamKey,
+
+            outgoingUid:
+              outgoing.uid,
+
+            outgoingName:
+              playerDisplayName(
+                outgoing
+              ),
+
+            incomingUid:
+              incoming.uid,
+
+            incomingName:
+              playerDisplayName(
+                incoming
+              ),
+
+            previousIncomingTeamKey:
+              incomingCurrentTeam ||
+              "",
+
+            reason,
+
+            createdAt:
+              timestamp,
+
+            createdBy:
+              context.currentUser?.uid ||
+              null
+          }
+      };
+
+      if (
+        incomingCurrentTeam &&
+        incomingCurrentTeam !==
+          teamKey
+      ) {
+        const previousTeam =
+          teams[
+            incomingCurrentTeam
+          ] ||
+          [];
+
+        updates[
+          `teams/${moduleState.tournamentId}/teams/${incomingCurrentTeam}`
+        ] =
+          previousTeam
+            .filter(
+              player =>
+                player.uid !==
+                incoming.uid
+            )
+            .map(
+              publicPlayer
+            );
+      }
+
+      const incomingNotificationKey =
+        context.database
+          .ref(
+            `notifications/${incoming.uid}`
+          )
+          .push()
+          .key;
+
+      const outgoingNotificationKey =
+        context.database
+          .ref(
+            `notifications/${outgoing.uid}`
+          )
+          .push()
+          .key;
+
+      updates[
+        `notifications/${incoming.uid}/${incomingNotificationKey}`
+      ] = {
+        title:
+          "You Have Been Subbed In",
+
+        message:
+          `You have been assigned to ${formatTeamName(
+            teamKey
+          )}. Report to your team voice channel and tournament staff immediately.`,
+
+        type:
+          "substitution",
+
+        tournamentId:
+          moduleState.tournamentId,
+
+        teamKey,
+
+        read:
+          false,
+
+        createdAt:
+          timestamp
+      };
+
+      updates[
+        `notifications/${outgoing.uid}/${outgoingNotificationKey}`
+      ] = {
+        title:
+          "Tournament Roster Updated",
+
+        message:
+          `You have been removed from ${formatTeamName(
+            teamKey
+          )}. Contact tournament staff with any questions.`,
+
+        type:
+          "substitution",
+
+        tournamentId:
+          moduleState.tournamentId,
+
+        teamKey,
+
+        read:
+          false,
+
+        createdAt:
+          timestamp
+      };
+
+      await context.database
+        .ref()
+        .update(updates);
+
+      const reasonField =
+        document.getElementById(
+          "reportsManualReason"
+        );
+
+      if (reasonField) {
+        reasonField.value =
+          "";
+      }
+
+      context.showToast(
+        `${playerDisplayName(
+          incoming
+        )} replaced ${playerDisplayName(
+          outgoing
+        )} on ${formatTeamName(
+          teamKey
+        )}.`
+      );
+    }
+  );
+}
   async function replacePlayerWithSub(
     subUid,
     button
@@ -3685,23 +4756,39 @@
   }
 
   function formatTeamName(
-    teamKey
-  ) {
-    const text =
-      clean(
-        teamKey,
-        "No Team"
-      );
+  teamKey
+) {
+  const publishedName =
+    clean(
+      moduleState
+        .teamsRecord
+        ?.teamNames
+        ?.[teamKey] ||
+      moduleState
+        .teamsRecord
+        ?.names
+        ?.[teamKey]
+    );
 
-    const match =
-      text.match(
-        /team\s*(\d+)/i
-      );
-
-    return match
-      ? `Team ${match[1]}`
-      : formatLabel(text);
+  if (publishedName) {
+    return publishedName;
   }
+
+  const text =
+    clean(
+      teamKey,
+      "No Team"
+    );
+
+  const match =
+    text.match(
+      /team\s*(\d+)/i
+    );
+
+  return match
+    ? `Team ${match[1]}`
+    : formatLabel(text);
+}
 
   function formatDateTime(
     timestamp

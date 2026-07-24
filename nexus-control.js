@@ -596,6 +596,28 @@ tournament: {
     cleanupLiveModuleEvents();
 
 if (
+  state.activeModule === "overlays" &&
+  window.NexusOverlays &&
+  typeof window.NexusOverlays.hasUnsavedChanges === "function" &&
+  window.NexusOverlays.hasUnsavedChanges()
+) {
+  const confirmed = window.confirm(
+    "Discard the unsaved Overlay Settings changes?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+}
+
+if (
+  window.NexusOverlays &&
+  typeof window.NexusOverlays.cleanup === "function"
+) {
+  window.NexusOverlays.cleanup();
+}
+
+if (
   window.NexusApplications &&
   typeof window.NexusApplications.cleanup === "function"
 ) {
@@ -722,6 +744,32 @@ state.activeModule = moduleId;
 
     if (moduleId === "live") {
   renderLiveOperations();
+  return;
+}
+
+if (moduleId === "overlays") {
+  if (
+    !window.NexusOverlays ||
+    typeof window.NexusOverlays.render !== "function"
+  ) {
+    showToast(
+      "The Overlay Settings module failed to load."
+    );
+
+    renderModulePlaceholder(moduleId);
+    return;
+  }
+
+  window.NexusOverlays.render({
+    database,
+    content: elements.content,
+    currentUser: auth.currentUser,
+    roleId: state.roleId,
+    showToast,
+    escapeHtml,
+    isPermissionDenied
+  });
+
   return;
 }
 
@@ -3276,10 +3324,13 @@ async function clearLiveNextMatch(
         "Assign administrative roles, customize permissions and preview Nexus as another role.",
 
       audit:
-        "Every sensitive Nexus action will eventually create a permanent audit record.",
+  "Every sensitive Nexus action will eventually create a permanent audit record.",
 
-      settings:
-        "Feature flags, Control Center configuration and protected system preferences will be managed here."
+overlays:
+  "OBS overlay visibility, animation behavior, replay triggers and preview URLs are managed here.",
+
+settings:
+  "Feature flags, Control Center configuration and protected system preferences will be managed here."
     };
 
     elements.content.innerHTML = `

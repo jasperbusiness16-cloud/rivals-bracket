@@ -165,6 +165,36 @@
           <div class="grid">
             <div class="field full" data-field="ageConfirm"><label for="ageConfirm">Are you at least 18 years old, or do you have a parent/legal guardian who can collect prize money on your behalf?<span class="req">*</span></label><select id="ageConfirm"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">You must confirm the age or guardian requirement.</p></div>
             <div class="field" data-field="discordConfirm"><label for="discordConfirm">Are you currently in the Rivals Gauntlet Discord?<span class="req">*</span></label><select id="discordConfirm"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Discord membership is required.</p></div>
+            <div
+  class="field"
+  data-field="discordUserId"
+>
+  <label for="discordUserId">
+    Discord User ID
+    <span class="req">*</span>
+  </label>
+
+  <input
+    id="discordUserId"
+    type="text"
+    inputmode="numeric"
+    pattern="[0-9]{17,20}"
+    minlength="17"
+    maxlength="20"
+    autocomplete="off"
+    placeholder="Example: 123456789012345678"
+  >
+
+  <p class="note">
+    This is your permanent numeric Discord ID, not your username.
+    In Discord, enable Developer Mode, open your profile and choose
+    Copy User ID.
+  </p>
+
+  <p class="error">
+    Enter a valid 17–20 digit Discord User ID.
+  </p>
+</div>
             <div class="field" data-field="availability"><label for="availability">Will you be available for the entire tournament?<span class="req">*</span></label><select id="availability"><option value="">Select One</option><option value="Yes">Yes</option><option value="Mostly, but I may have a conflict">Mostly, but I may have a conflict</option><option value="No">No</option></select><p class="error">Select your tournament availability.</p></div>
             <div class="field" data-field="workingMic"><label for="workingMic">Do you have a working microphone?<span class="req">*</span></label><select id="workingMic"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Select your microphone status.</p></div>
             <div class="field" data-field="customLobby"><label for="customLobby">Can you join a custom lobby on time?<span class="req">*</span></label><select id="customLobby"><option value="">Select One</option><option value="Yes">Yes</option><option value="No">No</option></select><p class="error">Confirm custom-lobby availability.</p></div>
@@ -254,8 +284,46 @@
     const DEFAULT_DISCORD="https://discord.gg/82HPpfkhQN";
     let currentUser=null,currentPlayer=null,currentApplication=null,currentTournament={},currentSite={};
     let tournamentId="open1",tournamentName="Rivals Gauntlet Open #1",activeStep=0,readOnlyReview=false;
-    const requiredFields=["ageConfirm","discordConfirm","availability","workingMic","customLobby","teamVc","peakRank","mainRole","mainHeroes","participatedBefore","wantsSub","willStream","followerCount"];
-    const stepFields={0:[],1:["ageConfirm","discordConfirm","availability","workingMic","customLobby","teamVc"],2:["peakRank","mainRole","mainHeroes","participatedBefore","wantsSub"],3:["willStream","followerCount"],4:[]};
+    const requiredFields=[
+  "ageConfirm",
+  "discordConfirm",
+  "discordUserId",
+  "availability",
+  "workingMic",
+  "customLobby",
+  "teamVc",
+  "peakRank",
+  "mainRole",
+  "mainHeroes",
+  "participatedBefore",
+  "wantsSub",
+  "willStream",
+  "followerCount"
+];
+    const stepFields={
+  0:[],
+  1:[
+    "ageConfirm",
+    "discordConfirm",
+    "discordUserId",
+    "availability",
+    "workingMic",
+    "customLobby",
+    "teamVc"
+  ],
+  2:[
+    "peakRank",
+    "mainRole",
+    "mainHeroes",
+    "participatedBefore",
+    "wantsSub"
+  ],
+  3:[
+    "willStream",
+    "followerCount"
+  ],
+  4:[]
+};
     const stepCopy=[
       ["Confirm Your Player Record","Review the account information that will be attached to your tournament application."],
       ["Confirm Event Requirements","Verify your eligibility, availability, microphone, Discord membership, and team communication."],
@@ -293,7 +361,24 @@
     function loadApplication(app){if(!app)return;requiredFields.forEach(id=>Object.prototype.hasOwnProperty.call(app,id)&&setValue(id,app[id]));setValue("adminNotes",app.adminNotes||"")}
     function stepComplete(step){if(step===0)return profileReady();if(step===4)return profileReady()&&requiredFields.every(id=>value(id));return(stepFields[step]||[]).every(id=>value(id))}
     function completion(){const total=requiredFields.length+1;let done=requiredFields.filter(id=>value(id)).length+(profileReady()?1:0);return Math.round(done/total*100)}
-    function validateField(id){const valid=Boolean(value(id));document.querySelector(`[data-field="${id}"]`)?.classList.toggle("invalid",!valid);return valid}
+    function validateField(id){
+  const fieldValue=value(id);
+
+  let valid=Boolean(fieldValue);
+
+  if(id==="discordUserId"){
+    valid=/^\d{17,20}$/.test(fieldValue);
+  }
+
+  document
+    .querySelector(`[data-field="${id}"]`)
+    ?.classList.toggle(
+      "invalid",
+      !valid
+    );
+
+  return valid;
+}
     function clearError(id){document.querySelector(`[data-field="${id}"]`)?.classList.remove("invalid")}
     function validateStep(step){if(step===0){if(!profileReady()){$("profileReadiness").scrollIntoView({behavior:"smooth",block:"center"});return false}return true}const results=(stepFields[step]||[]).map(validateField);if(results.includes(false)){document.querySelector(".form-step.active .field.invalid")?.scrollIntoView({behavior:"smooth",block:"center"});return false}if(step===1&&value("ageConfirm")!=="Yes"){document.querySelector('[data-field="ageConfirm"]')?.classList.add("invalid");return false}if(step===1&&value("discordConfirm")!=="Yes"){document.querySelector('[data-field="discordConfirm"]')?.classList.add("invalid");return false}return true}
 
@@ -309,7 +394,40 @@
     function reviewGroup(title,step,rows,full=false){return`<section class="review-group ${full?"full":""}"><header class="review-head"><strong>${esc(title)}</strong>${readOnlyReview?"":`<button class="review-edit" type="button" onclick="openStep(${step},true)">Edit</button>`}</header><div class="review-list">${reviewRows(rows)}</div></section>`}
     function renderReview(){if(!currentPlayer)return;$("reviewGrid").innerHTML=
       reviewGroup("Player Record",0,[["Display Name",currentPlayer.displayName],["RG ID",currentPlayer.rgId],["Rivals IGN",currentPlayer.rivalsIgn],["Discord",currentPlayer.discordUsername],["Region / Platform",`${clean(currentPlayer.region,"—")} • ${clean(currentPlayer.platform,"—")}`]])+
-      reviewGroup("Requirements",1,[["Age / Guardian",value("ageConfirm")],["RG Discord",value("discordConfirm")],["Availability",value("availability")],["Working Mic",value("workingMic")],["Custom Lobby",value("customLobby")],["Team Voice Chat",value("teamVc")]])+
+      reviewGroup(
+  "Requirements",
+  1,
+  [
+    [
+      "Age / Guardian",
+      value("ageConfirm")
+    ],
+    [
+      "RG Discord",
+      value("discordConfirm")
+    ],
+    [
+      "Discord User ID",
+      value("discordUserId")
+    ],
+    [
+      "Availability",
+      value("availability")
+    ],
+    [
+      "Working Mic",
+      value("workingMic")
+    ],
+    [
+      "Custom Lobby",
+      value("customLobby")
+    ],
+    [
+      "Team Voice Chat",
+      value("teamVc")
+    ]
+  ]
+)+
       reviewGroup("Competitive Information",2,[["Peak Rank",value("peakRank")],["Main Role",value("mainRole")],["Main Heroes",value("mainHeroes")],["Previous RG Event",value("participatedBefore")],["Substitute Interest",value("wantsSub")]])+
       reviewGroup("Creator Information",3,[["Will Stream",value("willStream")],["Combined Followers",Number(value("followerCount")||0).toLocaleString()]])+
       reviewGroup("Additional Information",3,[["Administrator Notes",value("adminNotes")||"No additional information provided."]],true)
@@ -338,10 +456,137 @@
       if(!validateAll()){status.textContent="Complete every required application field before submitting.";status.style.color="#ff9fa8";return}
       if(value("ageConfirm")!=="Yes"){status.textContent="You must meet the age or guardian requirement to apply.";status.style.color="#ff9fa8";openStep(1,true);return}
       if(value("discordConfirm")!=="Yes"){status.textContent="You must be in the Rivals Gauntlet Discord to apply.";status.style.color="#ff9fa8";openStep(1,true);return}
+      if(
+  !/^\d{17,20}$/.test(
+    value("discordUserId")
+  )
+){
+  status.textContent=
+    "Enter a valid 17–20 digit Discord User ID.";
+
+  status.style.color=
+    "#ff9fa8";
+
+  openStep(1,true);
+
+  validateField(
+    "discordUserId"
+  );
+
+  return;
+}
       button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';status.textContent="Submitting your application...";status.style.color="#aaa3b4";
       const socials=currentPlayer.socials||{},now=Date.now();
-      const application={tournamentId,tournamentName,uid:currentUser.uid,rgId:currentPlayer.rgId||"",displayName:currentPlayer.displayName||"",rivalsIgn:currentPlayer.rivalsIgn||"",discordUsername:currentPlayer.discordUsername||"",discordMember:currentPlayer.discordMember||false,region:currentPlayer.region||"",platform:currentPlayer.platform||"",profileImage:currentPlayer.profileImage||"",socials:{twitch:socials.twitch||"",youtube:socials.youtube||"",tiktok:socials.tiktok||"",x:socials.x||""},ageConfirm:value("ageConfirm"),discordConfirm:value("discordConfirm"),availability:value("availability"),workingMic:value("workingMic"),customLobby:value("customLobby"),teamVc:value("teamVc"),peakRank:value("peakRank"),mainRole:value("mainRole"),mainHeroes:value("mainHeroes"),participatedBefore:value("participatedBefore"),wantsSub:value("wantsSub"),willStream:value("willStream"),followerCount:Number(value("followerCount"))||0,adminNotes:value("adminNotes"),status:"pending",submittedAt:now,updatedAt:now};
-      try{const ref=database.ref(`applications/${tournamentId}/${currentUser.uid}`),existing=await ref.once("value");if(existing.exists()){currentApplication=existing.val();loadApplication(currentApplication);renderExisting();status.textContent="You already submitted an application for this tournament.";status.style.color="#ff9fa8";return}await ref.set(application);currentApplication=application;status.textContent="Application submitted successfully.";status.style.color="#82e7af";renderExisting();window.scrollTo({top:Math.max(0,$("applicationState").offsetTop-90),behavior:"smooth"})}catch(error){console.error(error);status.textContent=error.message;status.style.color="#ff9fa8"}finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Application'}
+      const application={
+  tournamentId,
+  tournamentName,
+
+  uid:currentUser.uid,
+
+  rgId:
+    currentPlayer.rgId||"",
+
+  displayName:
+    currentPlayer.displayName||"",
+
+  rivalsIgn:
+    currentPlayer.rivalsIgn||"",
+
+  discordUsername:
+    currentPlayer.discordUsername||"",
+
+  /*
+   * Keep this as a string.
+   * Discord IDs must never be converted to Number().
+   */
+  discordUserId:
+    value("discordUserId"),
+
+  discordMember:
+    currentPlayer.discordMember||false,
+
+  region:
+    currentPlayer.region||"",
+
+  platform:
+    currentPlayer.platform||"",
+
+  profileImage:
+    currentPlayer.profileImage||"",
+
+  socials:{
+    twitch:
+      socials.twitch||"",
+
+    youtube:
+      socials.youtube||"",
+
+    tiktok:
+      socials.tiktok||"",
+
+    x:
+      socials.x||""
+  },
+
+  ageConfirm:
+    value("ageConfirm"),
+
+  discordConfirm:
+    value("discordConfirm"),
+
+  availability:
+    value("availability"),
+
+  workingMic:
+    value("workingMic"),
+
+  customLobby:
+    value("customLobby"),
+
+  teamVc:
+    value("teamVc"),
+
+  peakRank:
+    value("peakRank"),
+
+  mainRole:
+    value("mainRole"),
+
+  mainHeroes:
+    value("mainHeroes"),
+
+  participatedBefore:
+    value("participatedBefore"),
+
+  wantsSub:
+    value("wantsSub"),
+
+  willStream:
+    value("willStream"),
+
+  followerCount:
+    Number(
+      value("followerCount")
+    )||0,
+
+  adminNotes:
+    value("adminNotes"),
+
+  status:"pending",
+  submittedAt:now,
+  updatedAt:now
+};
+      try{const ref=database.ref(`applications/${tournamentId}/${currentUser.uid}`),existing=await ref.once("value");if(existing.exists()){currentApplication=existing.val();loadApplication(currentApplication);renderExisting();status.textContent="You already submitted an application for this tournament.";status.style.color="#ff9fa8";return}await Promise.all([
+  ref.set(application),
+
+  database
+    .ref(
+      `players/${currentUser.uid}/discordUserId`
+    )
+    .set(
+      value("discordUserId")
+    )
+]);currentApplication=application;status.textContent="Application submitted successfully.";status.style.color="#82e7af";renderExisting();window.scrollTo({top:Math.max(0,$("applicationState").offsetTop-90),behavior:"smooth"})}catch(error){console.error(error);status.textContent=error.message;status.style.color="#ff9fa8"}finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit Application'}
     }
 
     function attach(){
@@ -352,7 +597,27 @@
 
     async function loadPage(user){
       currentUser=user;const [siteSnap,playerSnap]=await Promise.all([database.ref("site").once("value"),database.ref(`players/${user.uid}`).once("value")]);currentSite=siteSnap.val()||{};tournamentId=currentSite.currentTournament||"open1";currentPlayer=playerSnap.val();if(!currentPlayer){location.href="settings.html";return}
-      const [tourneySnap,appSnap]=await Promise.all([database.ref(`tournaments/${tournamentId}`).once("value"),database.ref(`applications/${tournamentId}/${user.uid}`).once("value")]);currentTournament=tourneySnap.val()||{};currentApplication=appSnap.val();tournamentName=currentTournament.name||currentSite.eventName||"Rivals Gauntlet Open";renderTournament();renderPlayer();if(currentApplication)loadApplication(currentApplication);else if(currentPlayer.discordMember)setValue("discordConfirm","Yes");renderExisting();updateStep();
+      const [tourneySnap,appSnap]=await Promise.all([database.ref(`tournaments/${tournamentId}`).once("value"),database.ref(`applications/${tournamentId}/${user.uid}`).once("value")]);currentTournament=tourneySnap.val()||{};currentApplication=appSnap.val();tournamentName=currentTournament.name||currentSite.eventName||"Rivals Gauntlet Open";renderTournament();renderPlayer();if(currentApplication){
+  loadApplication(
+    currentApplication
+  );
+}else{
+  if(currentPlayer.discordMember){
+    setValue(
+      "discordConfirm",
+      "Yes"
+    );
+  }
+
+  if(currentPlayer.discordUserId){
+    setValue(
+      "discordUserId",
+      String(
+        currentPlayer.discordUserId
+      )
+    );
+  }
+}renderExisting();updateStep();
       if(!registrationOpen()&&!currentApplication){$("applicationClient").classList.add("locked");$("applicationState").classList.add("visible");$("stateTitle").textContent="Applications Are Closed";$("stateDescription").textContent="Recruitment for the active tournament is currently closed. Watch the Tournament page for future application windows.";$("stateStatus").textContent="Closed";$("stateTournament").textContent=tournamentName;$("stateSubmitted").textContent="Not submitted";$("stateIgn").textContent=currentPlayer.rivalsIgn||"Not provided";$("stateRole").textContent="—";$("reviewSubmittedButton").hidden=true}
     }
 

@@ -1575,23 +1575,7 @@ var overlayCasterSettings = {};
   list =
     list
       .filter(
-        function (caster) {
-          return caster.active;
-        }
-      )
-      .slice(0, 4);
-
-  if (
-    !list.length &&
-    studioData.visible !== false
-  ) {
-    list = [
-      DEFAULT_CASTERS[0]
-    ];
-  }
-
-  return list;
-}
+        
               function (caster) {
                 return caster.active;
               }

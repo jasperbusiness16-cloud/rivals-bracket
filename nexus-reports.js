@@ -46,7 +46,18 @@ teamsRecord: {},
     checkIns: {},
     availability: {},
     selectedIncidentKey: "",
-    listeners: []
+
+manualTeamKey: "",
+manualOutgoingUid: "",
+manualIncomingUid: "",
+
+incomingScope: "all",
+incomingReadiness: "all",
+incomingRole: "all",
+incomingSearch: "",
+manualReason: "",
+
+listeners: []
   };
 
   let context = null;
@@ -189,112 +200,46 @@ teamsRecord: {},
           )}
 
         </section>
-<article class="nexus-panel reports-manual-panel">
-  <header class="panel-header">
+<article class="nexus-panel reports-roster-command-panel">
+  <header class="panel-header reports-roster-command-header">
     <div>
-      <h3>Manual Roster Override</h3>
+      <h3>Roster Command Board</h3>
 
       <span>
-        Owner and administrator substitution control
+        Tap any roster player to begin a substitution
       </span>
     </div>
 
-    <span id="reportsManualState">
-      Select a team
+    <span id="reportsRosterCommandState">
+      No player selected
     </span>
   </header>
 
-  <div class="reports-panel-content">
-    <div class="reports-manual-warning">
-      <i class="fa-solid fa-shield-halved"></i>
+  <div class="reports-roster-help-strip">
+    <i class="fa-solid fa-shield-halved"></i>
 
-      <div>
-        <strong>Full Administrative Control</strong>
+    Select an outgoing player directly from a team card. Then choose any
+    registered RG player, waitlisted substitute, or player on another team.
+  </div>
 
-        <span>
-          This control does not require a report, substitute status,
-          check-in, or availability. Players already assigned to another
-          team will be transferred rather than duplicated.
-        </span>
-      </div>
-    </div>
+  <div
+    id="reportsRosterBoard"
+    class="reports-roster-board"
+  >
+    ${loadingState(
+      "Loading published team rosters..."
+    )}
+  </div>
 
-    <div class="reports-manual-grid">
-      <div class="reports-field">
-        <label for="reportsManualTeamSelect">
-          Team
-        </label>
-
-        <select
-          id="reportsManualTeamSelect"
-          class="reports-select"
-        >
-          <option value="">
-            Select a team
-          </option>
-        </select>
-      </div>
-
-      <div class="reports-field">
-        <label for="reportsManualOutgoingSelect">
-          Player Being Removed
-        </label>
-
-        <select
-          id="reportsManualOutgoingSelect"
-          class="reports-select"
-        >
-          <option value="">
-            Select an outgoing player
-          </option>
-        </select>
-      </div>
-
-      <div class="reports-field">
-        <label for="reportsManualIncomingSelect">
-          Incoming Player
-        </label>
-
-        <select
-          id="reportsManualIncomingSelect"
-          class="reports-select"
-        >
-          <option value="">
-            Select an incoming player
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div
-      id="reportsManualSummary"
-      class="reports-manual-summary"
-    >
-      Select a team and both players to preview the roster change.
-    </div>
-
-    <div class="reports-manual-footer">
-      <label class="reports-field reports-manual-reason">
-        <span>Administrative Reason — Optional</span>
-
-        <textarea
-          id="reportsManualReason"
-          class="reports-textarea"
-          maxlength="500"
-          placeholder="Emergency replacement, availability change, roster correction, staff decision..."
-        ></textarea>
-      </label>
-
-      <button
-        id="reportsManualExecuteButton"
-        class="action-button action-button-primary"
-        type="button"
-        disabled
-      >
-        <i class="fa-solid fa-people-arrows"></i>
-        Execute Substitution
-      </button>
-    </div>
+  <div
+    id="reportsIncomingDrawer"
+    class="reports-incoming-drawer"
+  >
+    ${emptyState(
+      "Choose an outgoing player",
+      "Select a player from any team roster to open the replacement pool.",
+      "fa-arrow-pointer"
+    )}
   </div>
 </article>
         <section class="reports-workspace">
@@ -528,8 +473,19 @@ moduleState.players = {};
 moduleState.teamsRecord = {};
     moduleState.checkIns = {};
     moduleState.availability = {};
-    moduleState.selectedIncidentKey = "";
-    moduleState.listeners = [];
+moduleState.selectedIncidentKey = "";
+
+moduleState.manualTeamKey = "";
+moduleState.manualOutgoingUid = "";
+moduleState.manualIncomingUid = "";
+
+moduleState.incomingScope = "all";
+moduleState.incomingReadiness = "all";
+moduleState.incomingRole = "all";
+moduleState.incomingSearch = "";
+moduleState.manualReason = "";
+
+moduleState.listeners = [];
   }
 
   function bindEvents() {
@@ -613,122 +569,167 @@ moduleState.teamsRecord = {};
     );
 
   if (
-    button &&
-    boundContent.contains(button)
+    !button ||
+    !boundContent.contains(button)
   ) {
-    if (
-      button.id ===
-      "reportsManualExecuteButton"
-    ) {
-      void executeManualSubstitution(
-        button
-      );
-
-      return;
-    }
-
-    if (
-      button.id ===
-      "reportsRefreshButton"
-    ) {
-        void refreshModule(button);
-        return;
-      }
-
-      if (
-        button.id ===
-        "reportsOpenCheckInButton"
-      ) {
-        sessionStorage.setItem(
-          "nexusCheckInTournament",
-          moduleState.tournamentId
-        );
-
-        context.openModule(
-          "checkin"
-        );
-
-        return;
-      }
-
-      const incidentKey =
-        button.dataset.incidentKey;
-
-      if (incidentKey) {
-        moduleState.selectedIncidentKey =
-          incidentKey;
-
-        renderIncidentList();
-        renderCaseDetail();
-        renderSubPool();
-
-        return;
-      }
-
-      const action =
-        button.dataset.reportAction;
-
-      if (
-        action ===
-        "status"
-      ) {
-        void updateCaseStatus(
-          button.dataset.status,
-          button
-        );
-
-        return;
-      }
-
-      if (
-        action ===
-        "save-notes"
-      ) {
-        void saveInternalNotes(
-          button
-        );
-
-        return;
-      }
-
-      if (
-        action ===
-        "send-response"
-      ) {
-        void sendReporterResponse(
-          button
-        );
-
-        return;
-      }
-
-      if (
-        action ===
-        "focus-subs"
-      ) {
-        document
-          .getElementById(
-            "reportsSubPool"
-          )
-          ?.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-        return;
-      }
-
-      if (
-        action ===
-        "replace"
-      ) {
-        void replacePlayerWithSub(
-          button.dataset.subUid,
-          button
-        );
-      }
-    }
+    return;
   }
+
+  if (
+    button.id ===
+    "reportsRefreshButton"
+  ) {
+    void refreshModule(button);
+    return;
+  }
+
+  if (
+    button.id ===
+    "reportsOpenCheckInButton"
+  ) {
+    sessionStorage.setItem(
+      "nexusCheckInTournament",
+      moduleState.tournamentId
+    );
+
+    context.openModule(
+      "checkin"
+    );
+
+    return;
+  }
+
+  const rosterAction =
+    button.dataset.rosterAction;
+
+  if (
+    rosterAction ===
+    "select-outgoing"
+  ) {
+    moduleState.manualTeamKey =
+      button.dataset.teamKey ||
+      "";
+
+    moduleState.manualOutgoingUid =
+      button.dataset.playerUid ||
+      "";
+
+    moduleState.manualIncomingUid =
+      "";
+
+    renderRosterCommandBoard();
+    return;
+  }
+
+  if (
+    rosterAction ===
+    "select-incoming"
+  ) {
+    moduleState.manualIncomingUid =
+      button.dataset.playerUid ||
+      "";
+
+    renderRosterCommandBoard();
+    return;
+  }
+
+  if (
+    rosterAction ===
+    "clear-selection"
+  ) {
+    clearManualSelection();
+    renderRosterCommandBoard();
+    return;
+  }
+
+  if (
+    rosterAction ===
+    "execute"
+  ) {
+    void executeManualSubstitution(
+      button
+    );
+
+    return;
+  }
+
+  const incidentKey =
+    button.dataset.incidentKey;
+
+  if (incidentKey) {
+    moduleState.selectedIncidentKey =
+      incidentKey;
+
+    renderIncidentList();
+    renderCaseDetail();
+    renderSubPool();
+
+    return;
+  }
+
+  const action =
+    button.dataset.reportAction;
+
+  if (
+    action ===
+    "status"
+  ) {
+    void updateCaseStatus(
+      button.dataset.status,
+      button
+    );
+
+    return;
+  }
+
+  if (
+    action ===
+    "save-notes"
+  ) {
+    void saveInternalNotes(
+      button
+    );
+
+    return;
+  }
+
+  if (
+    action ===
+    "send-response"
+  ) {
+    void sendReporterResponse(
+      button
+    );
+
+    return;
+  }
+
+  if (
+    action ===
+    "focus-subs"
+  ) {
+    document
+      .getElementById(
+        "reportsSubPool"
+      )
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    return;
+  }
+
+  if (
+    action ===
+    "replace"
+  ) {
+    void replacePlayerWithSub(
+      button.dataset.subUid,
+      button
+    );
+  }
+}
 
   function handleChange(event) {
   if (
@@ -744,61 +745,102 @@ moduleState.teamsRecord = {};
 
   if (
     event.target.id ===
-      "reportsManualTeamSelect" ||
-    event.target.id ===
-      "reportsManualOutgoingSelect"
+    "reportsIncomingScopeFilter"
   ) {
-    renderManualControl();
+    moduleState.incomingScope =
+      event.target.value ||
+      "all";
+
+    renderIncomingDrawer();
     return;
   }
 
   if (
     event.target.id ===
-    "reportsManualIncomingSelect"
+    "reportsIncomingReadinessFilter"
   ) {
-    renderManualSummary();
+    moduleState.incomingReadiness =
+      event.target.value ||
+      "all";
+
+    renderIncomingDrawer();
+    return;
+  }
+
+  if (
+    event.target.id ===
+    "reportsIncomingRoleFilter"
+  ) {
+    moduleState.incomingRole =
+      event.target.value ||
+      "all";
+
+    renderIncomingDrawer();
     return;
   }
 
   if (
     event.target.id ===
       "reportsStatusFilter" ||
-      event.target.id ===
-        "reportsIssueFilter"
-    ) {
-      renderIncidentList();
-      renderCaseDetail();
-      renderSubPool();
+    event.target.id ===
+      "reportsIssueFilter"
+  ) {
+    renderIncidentList();
+    renderCaseDetail();
+    renderSubPool();
 
-      return;
-    }
-
-    if (
-      event.target.id ===
-        "reportsSubReadinessFilter" ||
-      event.target.id ===
-        "reportsSubRoleFilter"
-    ) {
-      renderSubPool();
-    }
+    return;
   }
+
+  if (
+    event.target.id ===
+      "reportsSubReadinessFilter" ||
+    event.target.id ===
+      "reportsSubRoleFilter"
+  ) {
+    renderSubPool();
+  }
+}
 
   function handleInput(event) {
-    if (
-      event.target.id ===
-      "reportsSearchInput"
-    ) {
-      renderIncidentList();
-      return;
-    }
+  if (
+    event.target.id ===
+    "reportsIncomingSearch"
+  ) {
+    moduleState.incomingSearch =
+      event.target.value ||
+      "";
 
-    if (
-      event.target.id ===
-      "reportsSubSearch"
-    ) {
-      renderSubPool();
-    }
+    renderIncomingPoolOnly();
+    return;
   }
+
+  if (
+    event.target.id ===
+    "reportsManualReason"
+  ) {
+    moduleState.manualReason =
+      event.target.value ||
+      "";
+
+    return;
+  }
+
+  if (
+    event.target.id ===
+    "reportsSearchInput"
+  ) {
+    renderIncidentList();
+    return;
+  }
+
+  if (
+    event.target.id ===
+    "reportsSubSearch"
+  ) {
+    renderSubPool();
+  }
+}
 
   async function refreshModule(
     button
@@ -849,7 +891,7 @@ moduleState.teamsRecord = {};
     moduleState.availability = {};
     moduleState.selectedIncidentKey =
       "";
-
+clearManualSelection();
     const select =
       document.getElementById(
         "reportsTournamentSelect"
@@ -873,7 +915,12 @@ moduleState.teamsRecord = {};
         "Loading substitute candidates..."
       )
     );
-
+setHtml(
+  "reportsRosterBoard",
+  loadingState(
+    "Loading published team rosters..."
+  )
+);
     listen(
       context.database.ref(
         `tournaments/${tournamentId}`
@@ -960,10 +1007,11 @@ moduleState.teamsRecord = {};
 
       snapshot => {
         moduleState.teamsRecord =
-          snapshot.val() ||
-          {};
+  snapshot.val() ||
+  {};
 
-        renderAll();
+reconcileManualSelection();
+renderAll();
       },
 
       "teams"
@@ -1055,12 +1103,12 @@ moduleState.teamsRecord = {};
   renderTournamentOptions();
   renderContext();
   renderSummary();
-  renderManualControl();
-    renderRoleOptions();
-    renderIncidentList();
-    renderCaseDetail();
-    renderSubPool();
-  }
+  renderRosterCommandBoard();
+  renderRoleOptions();
+  renderIncidentList();
+  renderCaseDetail();
+  renderSubPool();
+}
 
   function renderTournamentOptions() {
     const select =
@@ -1947,29 +1995,61 @@ function compareTeamKeys(
   );
 }
 
-function renderManualControl() {
-  const teamSelect =
-    document.getElementById(
-      "reportsManualTeamSelect"
-    );
+function clearManualSelection() {
+  moduleState.manualTeamKey = "";
+  moduleState.manualOutgoingUid = "";
+  moduleState.manualIncomingUid = "";
 
-  const outgoingSelect =
-    document.getElementById(
-      "reportsManualOutgoingSelect"
-    );
+  moduleState.incomingSearch = "";
+  moduleState.incomingScope = "all";
+  moduleState.incomingReadiness = "all";
+  moduleState.incomingRole = "all";
 
-  const incomingSelect =
-    document.getElementById(
-      "reportsManualIncomingSelect"
-    );
+  moduleState.manualReason = "";
+}
+
+function reconcileManualSelection() {
+  const teams =
+    getTeams();
+
+  const team =
+    teams[
+      moduleState.manualTeamKey
+    ] ||
+    [];
 
   if (
-    !teamSelect ||
-    !outgoingSelect ||
-    !incomingSelect
+    moduleState.manualOutgoingUid &&
+    !team.some(
+      player =>
+        player.uid ===
+        moduleState.manualOutgoingUid
+    )
   ) {
+    clearManualSelection();
     return;
   }
+
+  if (
+    moduleState.manualIncomingUid &&
+    !allKnownPlayers().some(
+      player =>
+        player.uid ===
+        moduleState.manualIncomingUid
+    )
+  ) {
+    moduleState.manualIncomingUid =
+      "";
+  }
+}
+
+function renderRosterCommandBoard() {
+  const board =
+    document.getElementById(
+      "reportsRosterBoard"
+    );
+
+  if (!board) return;
 
   const teams =
     getTeams();
@@ -1978,95 +2058,543 @@ function renderManualControl() {
     Object.keys(teams)
       .sort(compareTeamKeys);
 
-  const previousTeam =
-    teamSelect.value;
+  setText(
+    "reportsRosterCommandState",
 
-  const selectedTeam =
-    teamKeys.includes(
-      previousTeam
-    )
-      ? previousTeam
-      : teamKeys[0] ||
-        "";
+    moduleState.manualOutgoingUid
+      ? moduleState.manualIncomingUid
+        ? "Replacement ready"
+        : "Choose incoming player"
+      : "No player selected"
+  );
 
-  teamSelect.innerHTML =
-    teamKeys.length
-      ? teamKeys
-          .map(
-            teamKey => `
-              <option value="${escapeHtml(
-                teamKey
-              )}">
-                ${escapeHtml(
-                  formatTeamName(
-                    teamKey
-                  )
-                )}
-              </option>
-            `
+  if (!teamKeys.length) {
+    board.innerHTML =
+      emptyState(
+        "No published team rosters",
+        "Publish teams for this tournament before using roster substitutions.",
+        "fa-users-slash"
+      );
+
+    renderIncomingDrawer();
+    return;
+  }
+
+  board.innerHTML =
+    teamKeys
+      .map(
+        teamKey =>
+          teamCardMarkup(
+            teamKey,
+            teams[teamKey] ||
+            []
           )
-          .join("")
-      : `
-          <option value="">
-            No published teams
-          </option>
-        `;
+      )
+      .join("");
 
-  teamSelect.value =
-    selectedTeam;
+  renderIncomingDrawer();
+}
 
+function teamCardMarkup(
+  teamKey,
+  roster
+) {
+  const selectedTeam =
+    moduleState.manualTeamKey ===
+    teamKey;
+
+  const logo =
+    getTeamLogo(
+      teamKey
+    );
+
+  const readyCount =
+    roster.filter(
+      player =>
+        isReady(
+          player.uid
+        )
+    ).length;
+
+  return `
+    <article
+      class="reports-team-card ${
+        selectedTeam
+          ? "selected-team"
+          : ""
+      }"
+    >
+      <header class="reports-team-card-header">
+
+        <div class="reports-team-identity">
+
+          ${
+            logo
+              ? `
+                <img
+                  src="${escapeHtml(logo)}"
+                  alt="${escapeHtml(
+                    formatTeamName(
+                      teamKey
+                    )
+                  )}"
+                >
+              `
+              : `
+                <span class="reports-team-logo-fallback">
+                  ${escapeHtml(
+                    initials(
+                      formatTeamName(
+                        teamKey
+                      )
+                    )
+                  )}
+                </span>
+              `
+          }
+
+          <div>
+            <span>
+              ${escapeHtml(
+                teamKey.toUpperCase()
+              )}
+            </span>
+
+            <strong>
+              ${escapeHtml(
+                formatTeamName(
+                  teamKey
+                )
+              )}
+            </strong>
+          </div>
+        </div>
+
+        <div class="reports-team-counts">
+          <span>
+            ${roster.length} Players
+          </span>
+
+          <small>
+            ${readyCount} Ready
+          </small>
+        </div>
+
+      </header>
+
+      <div class="reports-team-roster">
+        ${
+          roster.length
+            ? roster
+                .map(
+                  player =>
+                    rosterPlayerRowMarkup(
+                      teamKey,
+                      player
+                    )
+                )
+                .join("")
+            : `
+              <div class="reports-team-empty">
+                <i class="fa-solid fa-user-plus"></i>
+                No players published
+              </div>
+            `
+        }
+      </div>
+    </article>
+  `;
+}
+
+function rosterPlayerRowMarkup(
+  teamKey,
+  player
+) {
+  const selected =
+    moduleState.manualOutgoingUid ===
+    player.uid;
+
+  const readiness =
+    playerReadiness(
+      player.uid
+    );
+
+  return `
+    <button
+      class="reports-roster-player ${
+        selected
+          ? "selected-out"
+          : ""
+      }"
+      type="button"
+      data-roster-action="select-outgoing"
+      data-team-key="${escapeHtml(teamKey)}"
+      data-player-uid="${escapeHtml(
+        player.uid
+      )}"
+    >
+      ${avatar(
+        player,
+        "reports-roster-avatar"
+      )}
+
+      <span class="reports-roster-player-copy">
+        <strong>
+          ${escapeHtml(
+            playerDisplayName(
+              player
+            )
+          )}
+        </strong>
+
+        <small>
+          ${escapeHtml(
+            player.rivalsIgn ||
+            player.rgId ||
+            "No IGN"
+          )}
+
+          ${
+            player.mainRole
+              ? ` • ${escapeHtml(
+                  player.mainRole
+                )}`
+              : ""
+          }
+        </small>
+      </span>
+
+      <span class="reports-roster-player-meta">
+        <b class="${escapeHtml(
+          readiness.className
+        )}">
+          ${escapeHtml(
+            readiness.label
+          )}
+        </b>
+
+        <small>
+          ${escapeHtml(
+            player.peakRank ||
+            "No Rank"
+          )}
+        </small>
+      </span>
+
+      <span class="reports-roster-select-label">
+        ${
+          selected
+            ? "OUT"
+            : "Select"
+        }
+      </span>
+    </button>
+  `;
+}
+
+function renderIncomingDrawer() {
+  const drawer =
+    document.getElementById(
+      "reportsIncomingDrawer"
+    );
+
+  if (!drawer) return;
+
+  const outgoing =
+    rosterPlayer(
+      moduleState.manualOutgoingUid
+    );
+
+  if (
+    !moduleState.manualTeamKey ||
+    !outgoing
+  ) {
+    drawer.innerHTML =
+      emptyState(
+        "Choose an outgoing player",
+        "Select a player from any team roster to open the replacement pool.",
+        "fa-arrow-pointer"
+      );
+
+    return;
+  }
+
+  const incoming =
+    allKnownPlayers()
+      .find(
+        player =>
+          player.uid ===
+          moduleState.manualIncomingUid
+      );
+
+  drawer.innerHTML = `
+    <div class="reports-incoming-header">
+      <div>
+        <span>
+          Substitution Builder
+        </span>
+
+        <h3>
+          ${escapeHtml(
+            formatTeamName(
+              moduleState.manualTeamKey
+            )
+          )}
+        </h3>
+
+        <p>
+          Replacing
+
+          <strong>
+            ${escapeHtml(
+              playerDisplayName(
+                outgoing
+              )
+            )}
+          </strong>
+        </p>
+      </div>
+
+      <button
+        class="reports-clear-selection"
+        type="button"
+        data-roster-action="clear-selection"
+      >
+        <i class="fa-solid fa-xmark"></i>
+        Clear
+      </button>
+    </div>
+
+    <div class="reports-swap-preview ${
+      incoming
+        ? "ready"
+        : ""
+    }">
+      ${swapPlayerMarkup(
+        "OUT",
+        outgoing,
+        moduleState.manualTeamKey,
+        "out"
+      )}
+
+      <span class="reports-swap-arrow">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+      </span>
+
+      ${
+        incoming
+          ? swapPlayerMarkup(
+              "IN",
+              incoming,
+              assignedTeamKey(
+                incoming.uid
+              ) ||
+              "Unassigned",
+              "in"
+            )
+          : `
+            <div class="reports-swap-player empty">
+              <span>IN</span>
+
+              <strong>
+                Select a replacement
+              </strong>
+
+              <small>
+                Use the player pool below
+              </small>
+            </div>
+          `
+      }
+    </div>
+
+    <div class="reports-incoming-toolbar">
+
+      <div class="reports-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          id="reportsIncomingSearch"
+          type="search"
+          value="${escapeHtml(
+            moduleState.incomingSearch
+          )}"
+          placeholder="Search name, IGN, RG ID, role or rank..."
+          autocomplete="off"
+        >
+      </div>
+
+      <select
+        id="reportsIncomingScopeFilter"
+        class="reports-select"
+      >
+        ${selectOption(
+          "all",
+          "All RG Players",
+          moduleState.incomingScope
+        )}
+
+        ${selectOption(
+          "eligible",
+          "Eligible Substitutes",
+          moduleState.incomingScope
+        )}
+
+        ${selectOption(
+          "unassigned",
+          "Unassigned Players",
+          moduleState.incomingScope
+        )}
+
+        ${selectOption(
+          "transfers",
+          "Team Transfers",
+          moduleState.incomingScope
+        )}
+      </select>
+
+      <select
+        id="reportsIncomingReadinessFilter"
+        class="reports-select"
+      >
+        ${selectOption(
+          "all",
+          "Any Readiness",
+          moduleState.incomingReadiness
+        )}
+
+        ${selectOption(
+          "ready",
+          "Ready Now",
+          moduleState.incomingReadiness
+        )}
+
+        ${selectOption(
+          "not_ready",
+          "Not Checked In",
+          moduleState.incomingReadiness
+        )}
+
+        ${selectOption(
+          "unavailable",
+          "Unavailable",
+          moduleState.incomingReadiness
+        )}
+      </select>
+
+      <select
+        id="reportsIncomingRoleFilter"
+        class="reports-select"
+      >
+        ${incomingRoleOptions()}
+      </select>
+    </div>
+
+    <div
+      id="reportsIncomingPool"
+      class="reports-incoming-pool"
+    ></div>
+
+    <div class="reports-execute-bar">
+
+      <label class="reports-field reports-execute-reason">
+        <span>
+          Administrative Reason — Optional
+        </span>
+
+        <textarea
+          id="reportsManualReason"
+          class="reports-textarea"
+          maxlength="500"
+          placeholder="Emergency replacement, availability change, roster correction, staff decision..."
+        >${escapeHtml(
+          moduleState.manualReason
+        )}</textarea>
+      </label>
+
+      <div class="reports-execute-summary">
+        <span>
+          ${
+            incoming
+              ? "Ready to execute"
+              : "Select an incoming player"
+          }
+        </span>
+
+        <strong>
+          ${
+            incoming
+              ? `${escapeHtml(
+                  playerDisplayName(
+                    outgoing
+                  )
+                )} → ${escapeHtml(
+                  playerDisplayName(
+                    incoming
+                  )
+                )}`
+              : "Substitution incomplete"
+          }
+        </strong>
+
+        <button
+          class="action-button action-button-primary"
+          type="button"
+          data-roster-action="execute"
+          ${
+            incoming
+              ? ""
+              : "disabled"
+          }
+        >
+          <i class="fa-solid fa-people-arrows"></i>
+          Execute Substitution
+        </button>
+      </div>
+    </div>
+  `;
+
+  renderIncomingPoolOnly();
+}
+
+function renderIncomingPoolOnly() {
+  const pool =
+    document.getElementById(
+      "reportsIncomingPool"
+    );
+
+  if (!pool) return;
+
+  const candidates =
+    filteredIncomingPlayers();
+
+  if (!candidates.length) {
+    pool.innerHTML =
+      emptyState(
+        "No matching players",
+        "Adjust the player scope, readiness, role, or search filters.",
+        "fa-user-slash"
+      );
+
+    return;
+  }
+
+  pool.innerHTML =
+    candidates
+      .map(
+        incomingPlayerCardMarkup
+      )
+      .join("");
+}
+
+function filteredIncomingPlayers() {
   const roster =
-    teams[selectedTeam] ||
+    getTeams()[
+      moduleState.manualTeamKey
+    ] ||
     [];
 
-  const previousOutgoing =
-    outgoingSelect.value;
-
-  const selectedOutgoing =
-    roster.some(
-      player =>
-        player.uid ===
-        previousOutgoing
-    )
-      ? previousOutgoing
-      : roster[0]?.uid ||
-        "";
-
-  outgoingSelect.innerHTML =
-    roster.length
-      ? roster
-          .map(
-            player => `
-              <option value="${escapeHtml(
-                player.uid
-              )}">
-                ${escapeHtml(
-                  playerDisplayName(
-                    player
-                  )
-                )}
-
-                ${
-                  player.mainRole
-                    ? ` — ${escapeHtml(
-                        player.mainRole
-                      )}`
-                    : ""
-                }
-              </option>
-            `
-          )
-          .join("")
-      : `
-          <option value="">
-            No players on this team
-          </option>
-        `;
-
-  outgoingSelect.value =
-    selectedOutgoing;
-
-  const currentTeamUids =
+  const rosterUids =
     new Set(
       roster.map(
         player =>
@@ -2074,233 +2602,409 @@ function renderManualControl() {
       )
     );
 
-  const incomingPlayers =
-    allKnownPlayers()
-      .filter(
+  const eligibleUids =
+    new Set(
+      eligibleSubs().map(
         player =>
-          player.uid !==
-            selectedOutgoing &&
-          !currentTeamUids.has(
-            player.uid
-          )
-      );
+          player.uid
+      )
+    );
 
-  const previousIncoming =
-    incomingSelect.value;
+  const search =
+    clean(
+      moduleState.incomingSearch
+    ).toLowerCase();
 
-  const selectedIncoming =
-    incomingPlayers.some(
-      player =>
+  return allKnownPlayers()
+    .filter(player => {
+      if (
+        !player.uid ||
         player.uid ===
-        previousIncoming
-    )
-      ? previousIncoming
-      : "";
+          moduleState.manualOutgoingUid
+      ) {
+        return false;
+      }
 
-  incomingSelect.innerHTML = `
-    <option value="">
-      Select an incoming player
-    </option>
+      if (
+        rosterUids.has(
+          player.uid
+        )
+      ) {
+        return false;
+      }
 
-    ${incomingPlayers
-      .map(player => {
-        const assignedTeam =
-          assignedTeamKey(
-            player.uid
+      const assigned =
+        assignedTeamKey(
+          player.uid
+        );
+
+      const readiness =
+        playerReadiness(
+          player.uid
+        );
+
+      if (
+        moduleState.incomingScope ===
+          "eligible" &&
+        !eligibleUids.has(
+          player.uid
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        moduleState.incomingScope ===
+          "unassigned" &&
+        assigned
+      ) {
+        return false;
+      }
+
+      if (
+        moduleState.incomingScope ===
+          "transfers" &&
+        !assigned
+      ) {
+        return false;
+      }
+
+      if (
+        moduleState.incomingReadiness !==
+          "all" &&
+        readiness.key !==
+          moduleState.incomingReadiness
+      ) {
+        return false;
+      }
+
+      if (
+        moduleState.incomingRole !==
+          "all" &&
+        clean(
+          player.mainRole
+        ) !==
+          moduleState.incomingRole
+      ) {
+        return false;
+      }
+
+      if (!search) {
+        return true;
+      }
+
+      return [
+        player.displayName,
+        player.rivalsIgn,
+        player.rgId,
+        player.mainRole,
+        player.peakRank,
+        player.region,
+        player.platform,
+        assigned
+          ? formatTeamName(
+              assigned
+            )
+          : "unassigned"
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(search);
+    })
+    .sort(
+      (
+        first,
+        second
+      ) => {
+        const firstSelected =
+          first.uid ===
+          moduleState.manualIncomingUid
+            ? 1
+            : 0;
+
+        const secondSelected =
+          second.uid ===
+          moduleState.manualIncomingUid
+            ? 1
+            : 0;
+
+        if (
+          firstSelected !==
+          secondSelected
+        ) {
+          return (
+            secondSelected -
+            firstSelected
           );
+        }
 
-        const rosterState =
-          assignedTeam
-            ? formatTeamName(
-                assignedTeam
-              )
-            : "Unassigned";
+        const firstReady =
+          isReady(first.uid)
+            ? 1
+            : 0;
 
-        const readiness =
-          isUnavailable(
-            player.uid
+        const secondReady =
+          isReady(second.uid)
+            ? 1
+            : 0;
+
+        if (
+          firstReady !==
+          secondReady
+        ) {
+          return (
+            secondReady -
+            firstReady
+          );
+        }
+
+        return playerDisplayName(
+          first
+        ).localeCompare(
+          playerDisplayName(
+            second
           )
-            ? "Unavailable"
-            : isReady(
-                player.uid
-              )
-              ? "Ready"
-              : "Not Checked In";
-
-        return `
-          <option value="${escapeHtml(
-            player.uid
-          )}">
-            ${escapeHtml(
-              playerDisplayName(
-                player
-              )
-            )}
-
-            — ${escapeHtml(
-              rosterState
-            )}
-
-            — ${escapeHtml(
-              readiness
-            )}
-          </option>
-        `;
-      })
-      .join("")}
-  `;
-
-  incomingSelect.value =
-    selectedIncoming;
-
-  renderManualSummary();
+        );
+      }
+    );
 }
 
-function renderManualSummary() {
-  const teamKey =
-    clean(
-      document.getElementById(
-        "reportsManualTeamSelect"
-      )?.value
-    );
+function incomingPlayerCardMarkup(
+  player
+) {
+  const selected =
+    moduleState.manualIncomingUid ===
+    player.uid;
 
-  const outgoingUid =
-    clean(
-      document.getElementById(
-        "reportsManualOutgoingSelect"
-      )?.value
-    );
-
-  const incomingUid =
-    clean(
-      document.getElementById(
-        "reportsManualIncomingSelect"
-      )?.value
-    );
-
-  const summary =
-    document.getElementById(
-      "reportsManualSummary"
-    );
-
-  const button =
-    document.getElementById(
-      "reportsManualExecuteButton"
-    );
-
-  const stateLabel =
-    document.getElementById(
-      "reportsManualState"
-    );
-
-  if (
-    !summary ||
-    !button
-  ) {
-    return;
-  }
-
-  const outgoing =
-    rosterPlayer(
-      outgoingUid
-    );
-
-  const incoming =
-    allKnownPlayers()
-      .find(
-        player =>
-          player.uid ===
-          incomingUid
-      );
-
-  if (
-    !teamKey ||
-    !outgoing ||
-    !incoming
-  ) {
-    summary.classList.remove(
-      "warning"
-    );
-
-    summary.textContent =
-      "Select a team and both players to preview the roster change.";
-
-    button.disabled =
-      true;
-
-    if (stateLabel) {
-      stateLabel.textContent =
-        "Selection incomplete";
-    }
-
-    return;
-  }
-
-  const previousTeam =
+  const assigned =
     assignedTeamKey(
-      incoming.uid
+      player.uid
     );
 
-  const transferText =
-    previousTeam &&
-    previousTeam !==
-      teamKey
-      ? `${playerDisplayName(
-          incoming
-        )} will first be removed from ${formatTeamName(
-          previousTeam
-        )}.`
-      : `${playerDisplayName(
-          incoming
-        )} is currently unassigned.`;
+  const readiness =
+    playerReadiness(
+      player.uid
+    );
 
-  summary.classList.toggle(
-    "warning",
-    Boolean(previousTeam)
-  );
-
-  summary.innerHTML = `
-    <strong>
-      ${escapeHtml(
-        formatTeamName(
-          teamKey
-        )
+  return `
+    <button
+      class="reports-incoming-player ${
+        selected
+          ? "selected-in"
+          : ""
+      }"
+      type="button"
+      data-roster-action="select-incoming"
+      data-player-uid="${escapeHtml(
+        player.uid
+      )}"
+    >
+      ${avatar(
+        player,
+        "reports-incoming-avatar"
       )}
-    </strong>
 
-    <span>
-      Remove
-      <b>${escapeHtml(
-        playerDisplayName(
-          outgoing
-        )
-      )}</b>
+      <span class="reports-incoming-player-copy">
+        <strong>
+          ${escapeHtml(
+            playerDisplayName(
+              player
+            )
+          )}
+        </strong>
 
-      and add
+        <small>
+          ${escapeHtml(
+            player.rivalsIgn ||
+            player.rgId ||
+            "No IGN"
+          )}
+        </small>
+      </span>
 
-      <b>${escapeHtml(
-        playerDisplayName(
-          incoming
-        )
-      )}</b>.
-    </span>
+      <span class="reports-incoming-tags">
+        <b>
+          ${escapeHtml(
+            player.mainRole ||
+            "No Role"
+          )}
+        </b>
 
-    <small>
-      ${escapeHtml(
-        transferText
-      )}
-    </small>
+        <small>
+          ${escapeHtml(
+            player.peakRank ||
+            "No Rank"
+          )}
+        </small>
+      </span>
+
+      <span class="reports-incoming-status">
+        <b class="${escapeHtml(
+          readiness.className
+        )}">
+          ${escapeHtml(
+            readiness.label
+          )}
+        </b>
+
+        <small>
+          ${escapeHtml(
+            assigned
+              ? formatTeamName(
+                  assigned
+                )
+              : "Unassigned"
+          )}
+        </small>
+      </span>
+
+      <span class="reports-incoming-select-label">
+        ${
+          selected
+            ? "IN"
+            : "Select"
+        }
+      </span>
+    </button>
   `;
+}
 
-  button.disabled =
-    false;
+function swapPlayerMarkup(
+  label,
+  player,
+  teamLabel,
+  tone
+) {
+  return `
+    <div class="reports-swap-player ${escapeHtml(
+      tone
+    )}">
+      <span>
+        ${escapeHtml(label)}
+      </span>
 
-  if (stateLabel) {
-    stateLabel.textContent =
-      previousTeam
-        ? "Team transfer"
-        : "Roster replacement";
+      ${avatar(
+        player,
+        "reports-swap-avatar"
+      )}
+
+      <strong>
+        ${escapeHtml(
+          playerDisplayName(
+            player
+          )
+        )}
+      </strong>
+
+      <small>
+        ${escapeHtml(
+          player.mainRole ||
+          "No Role"
+        )}
+
+        •
+
+        ${escapeHtml(
+          formatTeamName(
+            teamLabel
+          )
+        )}
+      </small>
+    </div>
+  `;
+}
+
+function incomingRoleOptions() {
+  const roles =
+    Array.from(
+      new Set(
+        allKnownPlayers()
+          .map(
+            player =>
+              clean(
+                player.mainRole
+              )
+          )
+          .filter(Boolean)
+      )
+    ).sort();
+
+  if (
+    moduleState.incomingRole !==
+      "all" &&
+    !roles.includes(
+      moduleState.incomingRole
+    )
+  ) {
+    moduleState.incomingRole =
+      "all";
   }
+
+  return [
+    selectOption(
+      "all",
+      "All Roles",
+      moduleState.incomingRole
+    ),
+
+    ...roles.map(
+      role =>
+        selectOption(
+          role,
+          role,
+          moduleState.incomingRole
+        )
+    )
+  ].join("");
+}
+
+function selectOption(
+  value,
+  label,
+  currentValue
+) {
+  return `
+    <option
+      value="${escapeHtml(value)}"
+      ${
+        value ===
+        currentValue
+          ? "selected"
+          : ""
+      }
+    >
+      ${escapeHtml(label)}
+    </option>
+  `;
+}
+
+function playerReadiness(uid) {
+  if (
+    isUnavailable(uid)
+  ) {
+    return {
+      key: "unavailable",
+      label: "Unavailable",
+      className: "unavailable"
+    };
+  }
+
+  if (
+    isReady(uid)
+  ) {
+    return {
+      key: "ready",
+      label: "Ready",
+      className: "ready"
+    };
+  }
+
+  return {
+    key: "not_ready",
+    label: "Not Checked In",
+    className: "pending"
+  };
 }
   function renderRoleOptions() {
     const select =
@@ -2993,28 +3697,17 @@ async function executeManualSubstitution(
   button
 ) {
   const teamKey =
-    clean(
-      document.getElementById(
-        "reportsManualTeamSelect"
-      )?.value
-    );
+    moduleState.manualTeamKey;
 
   const outgoingUid =
-    clean(
-      document.getElementById(
-        "reportsManualOutgoingSelect"
-      )?.value
-    );
+    moduleState.manualOutgoingUid;
 
   const incomingUid =
-    clean(
-      document.getElementById(
-        "reportsManualIncomingSelect"
-      )?.value
-    );
+    moduleState.manualIncomingUid;
 
   const reason =
     clean(
+      moduleState.manualReason ||
       document.getElementById(
         "reportsManualReason"
       )?.value
@@ -3407,15 +4100,8 @@ async function executeManualSubstitution(
         .ref()
         .update(updates);
 
-      const reasonField =
-        document.getElementById(
-          "reportsManualReason"
-        );
-
-      if (reasonField) {
-        reasonField.value =
-          "";
-      }
+      clearManualSelection();
+renderRosterCommandBoard();
 
       context.showToast(
         `${playerDisplayName(
@@ -4195,7 +4881,20 @@ async function executeManualSubstitution(
 
     return normalized;
   }
-
+function getTeamLogo(
+  teamKey
+) {
+  return safeImageUrl(
+    moduleState
+      .teamsRecord
+      .teamLogos
+      ?.[teamKey] ||
+    moduleState
+      .teamsRecord
+      .logos
+      ?.[teamKey]
+  );
+}
   function mainRoster() {
     return Object.values(
       getTeams()

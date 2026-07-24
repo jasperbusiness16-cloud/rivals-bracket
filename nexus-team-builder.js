@@ -32,6 +32,29 @@
   let context = null;
   let boundContent = null;
 
+const DISCORD_USER_ID_PATTERN =
+  /^\d{17,20}$/;
+
+function getPlayerDiscordUserId(
+  player
+) {
+  /*
+   * Discord IDs must remain strings.
+   * Never convert them with Number().
+   */
+  return String(
+    player?.discordUserId || ""
+  ).trim();
+}
+
+function hasValidDiscordUserId(
+  player
+) {
+  return DISCORD_USER_ID_PATTERN.test(
+    getPlayerDiscordUserId(player)
+  );
+}
+
   function render(nexusContext) {
     cleanup();
 
@@ -2153,129 +2176,444 @@
       }
     );
   }
-
-  async function publishTeams(button) {
-    const assignedCount =
-      getAssignedUids().size;
-
-    if (!assignedCount) {
-      context.showToast(
-        "Assign players before publishing teams."
-      );
-
-      return;
-    }
-
-    const incompleteTeams =
-      Object.keys(
-        moduleState.teams
-      ).filter(
-        teamKey =>
-          moduleState.teams[
-            teamKey
-          ].length !==
-          getPlayersPerTeam()
-      );
-
-    const warning =
-      incompleteTeams.length
-        ? `\n\n${incompleteTeams.length} teams are not full.`
-        : "";
-
-    const confirmed =
-      window.confirm(
-        `Publish teams for ${
-          moduleState.tournament.name ||
-          moduleState.tournamentId
-        }?${warning}\n\nThis makes the team lineup public.`
-      );
-
-    if (!confirmed) return;
-
-    await runButtonAction(
-      button,
-      "Publishing...",
-      async () => {
-        const timestamp =
-          firebase.database
-            .ServerValue
-            .TIMESTAMP;
-
-        const updates = {
-          [`teams/${moduleState.tournamentId}/teams`]:
-            serializeTeams(),
-
-          [`teams/${moduleState.tournamentId}/teamNames`]:
-            serializeTeamNames(),
-
-          [`teams/${moduleState.tournamentId}/published`]:
-            true,
-
-          [`teams/${moduleState.tournamentId}/publishedAt`]:
-            timestamp,
-
-          [`teams/${moduleState.tournamentId}/updatedAt`]:
-            timestamp,
-
-          [`teams/${moduleState.tournamentId}/updatedBy`]:
-            context.currentUser?.uid ||
-            null,
-
-          [`tournaments/${moduleState.tournamentId}/teamsPublished`]:
-            true,
-
-          [`tournaments/${moduleState.tournamentId}/teamsPublishedAt`]:
-            timestamp,
-
-          [`tournaments/${moduleState.tournamentId}/status`]:
-            "teams_published"
-        };
-
-        /*
-         * Only the active tournament should update
-         * the legacy public-site team fields.
-         */
-        if (
-          moduleState.tournamentId ===
-          moduleState.activeTournamentId
-        ) {
-          for (
-            let index = 1;
-            index <= 16;
-            index += 1
-          ) {
-            const teamKey =
-              `team${index}`;
-
-            updates[
-              `site/${teamKey}`
-            ] =
-              index <= getTeamCount()
-                ? getTeamName(teamKey)
-                : null;
-          }
-        }
-
-        await context.database
-          .ref()
-          .update(updates);
-
-        moduleState.dirty = false;
-
-        moduleState.teamRecord.published =
-          true;
-
-        moduleState.teamRecord.teamNames =
-          serializeTeamNames();
-
-        renderAll();
-
-        context.showToast(
-          "Teams published successfully."
-        );
-      }
+async function queuePublishedDiscordAssignments() {
+  if (
+    typeof firebase === "undefined" ||
+    typeof firebase.functions !==
+      "function"
+  ) {
+    throw new Error(
+      "The Firebase Functions browser SDK is not loaded on this admin page."
     );
   }
+
+  const queueAssignment =
+    firebase
+      .functions()
+      .httpsCallable(
+        "queueDiscordTeamAssignment"
+      );
+
+  const queued = [];
+  const skipped = [];
+  const failed = [];
+
+  for (
+    let index = 1;
+    index <= getTeamCount();
+    index += 1
+  ) {
+    const teamKey =
+      `team${index}`;
+
+    const players =
+      moduleState.teams[
+        teamKey
+      ] || [];
+
+    for (const player of players) {
+      const playerName =
+        player.displayName ||
+        player.rivalsIgn ||
+        player.uid ||
+        "Player";
+
+      /*
+       * Generated applicants do not
+       * represent real Discord members.
+       */
+      if (
+        player.testPlayer === true
+      ) {
+        skipped.push({
+          uid: player.uid || "",
+          playerName,
+          teamKey,
+          reason: "Test player"
+        });
+
+        continue;
+      }
+
+      const discordUserId =
+        getPlayerDiscordUserId(
+          player
+        );
+
+      if (
+        !hasValidDiscordUserId(
+          player
+        )
+      ) {
+        skipped.push({
+          uid: player.uid || "",
+          playerName,
+          teamKey,
+          reason:
+            "Missing or invalid Discord User ID"
+        });
+
+        continue;
+      }
+
+      setText(
+        "teamBuilderSaveState",
+        `Queuing Discord: ${playerName}`
+      );
+
+      try {
+        const response =
+          await queueAssignment({
+            discordUserId,
+            teamKey,
+
+            playerUid:
+              player.uid || null,
+
+            playerName,
+
+            tournamentId:
+              moduleState.tournamentId
+          });
+
+        queued.push({
+          uid: player.uid || "",
+          playerName,
+          discordUserId,
+          teamKey,
+          jobId:
+            response?.data?.jobId ||
+            null
+        });
+      } catch (error) {
+        console.error(
+          `Discord assignment failed for ${playerName}:`,
+          error
+        );
+
+        failed.push({
+          uid: player.uid || "",
+          playerName,
+          discordUserId,
+          teamKey,
+          reason:
+            error?.message ||
+            "Discord assignment could not be queued."
+        });
+      }
+    }
+  }
+
+  return {
+    queued,
+    skipped,
+    failed
+  };
+}
+  async function publishTeams(
+  button
+) {
+  const assignedCount =
+    getAssignedUids().size;
+
+  if (!assignedCount) {
+    context.showToast(
+      "Assign players before publishing teams."
+    );
+
+    return;
+  }
+
+  const incompleteTeams =
+    Object.keys(
+      moduleState.teams
+    ).filter(
+      teamKey =>
+        moduleState.teams[
+          teamKey
+        ].length !==
+        getPlayersPerTeam()
+    );
+
+  const realPlayersMissingDiscord =
+    [];
+
+  Object.entries(
+    moduleState.teams
+  ).forEach(
+    ([
+      teamKey,
+      players
+    ]) => {
+      players.forEach(player => {
+        if (
+          player.testPlayer !== true &&
+          !hasValidDiscordUserId(
+            player
+          )
+        ) {
+          realPlayersMissingDiscord.push({
+            teamKey,
+            playerName:
+              player.displayName ||
+              player.rivalsIgn ||
+              player.uid ||
+              "Player"
+          });
+        }
+      });
+    }
+  );
+
+  const warningParts = [];
+
+  if (
+    incompleteTeams.length
+  ) {
+    warningParts.push(
+      `${incompleteTeams.length} team${
+        incompleteTeams.length === 1
+          ? " is"
+          : "s are"
+      } not full.`
+    );
+  }
+
+  if (
+    realPlayersMissingDiscord.length
+  ) {
+    warningParts.push(
+      `${realPlayersMissingDiscord.length} real player${
+        realPlayersMissingDiscord.length === 1
+          ? " is"
+          : "s are"
+      } missing a valid Discord User ID and will not receive Discord roles.`
+    );
+  }
+
+  const warning =
+    warningParts.length
+      ? `\n\n${warningParts.join(
+          "\n"
+        )}`
+      : "";
+
+  const confirmed =
+    window.confirm(
+      `Publish teams for ${
+        moduleState.tournament.name ||
+        moduleState.tournamentId
+      }?${warning}\n\nThis makes the lineup public and queues Discord team-role assignments.`
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await runButtonAction(
+    button,
+    "Publishing...",
+    async () => {
+      const timestamp =
+        firebase.database
+          .ServerValue
+          .TIMESTAMP;
+
+      const serializedTeams =
+        serializeTeams();
+
+      const serializedTeamNames =
+        serializeTeamNames();
+
+      const updates = {
+        [`teams/${moduleState.tournamentId}/teams`]:
+          serializedTeams,
+
+        [`teams/${moduleState.tournamentId}/teamNames`]:
+          serializedTeamNames,
+
+        [`teams/${moduleState.tournamentId}/published`]:
+          true,
+
+        [`teams/${moduleState.tournamentId}/publishedAt`]:
+          timestamp,
+
+        [`teams/${moduleState.tournamentId}/updatedAt`]:
+          timestamp,
+
+        [`teams/${moduleState.tournamentId}/updatedBy`]:
+          context.currentUser?.uid ||
+          null,
+
+        [`tournaments/${moduleState.tournamentId}/teamsPublished`]:
+          true,
+
+        [`tournaments/${moduleState.tournamentId}/teamsPublishedAt`]:
+          timestamp,
+
+        [`tournaments/${moduleState.tournamentId}/status`]:
+          "teams_published"
+      };
+
+      /*
+       * Only the active tournament
+       * updates the legacy site fields.
+       */
+      if (
+        moduleState.tournamentId ===
+        moduleState.activeTournamentId
+      ) {
+        for (
+          let index = 1;
+          index <= 16;
+          index += 1
+        ) {
+          const teamKey =
+            `team${index}`;
+
+          updates[
+            `site/${teamKey}`
+          ] =
+            index <= getTeamCount()
+              ? getTeamName(
+                  teamKey
+                )
+              : null;
+        }
+      }
+
+      /*
+       * First publish the tournament
+       * lineup to Firebase.
+       */
+      await context.database
+        .ref()
+        .update(updates);
+
+      moduleState.dirty = false;
+
+      moduleState.teamRecord.published =
+        true;
+
+      moduleState.teamRecord.teamNames =
+        serializedTeamNames;
+
+      renderAll();
+
+      setText(
+        "teamBuilderSaveState",
+        "Publishing Discord roles..."
+      );
+
+      /*
+       * Then queue the Discord jobs.
+       * A Discord failure does not undo
+       * the already-published lineup.
+       */
+      const discordResult =
+        await queuePublishedDiscordAssignments();
+
+      const queuedCount =
+        discordResult.queued.length;
+
+      const skippedCount =
+        discordResult.skipped.length;
+
+      const failedCount =
+        discordResult.failed.length;
+
+      const summaryParts = [
+        "Teams published successfully.",
+        `${queuedCount} Discord assignment${
+          queuedCount === 1
+            ? ""
+            : "s"
+        } queued.`
+      ];
+
+      if (skippedCount) {
+        summaryParts.push(
+          `${skippedCount} player${
+            skippedCount === 1
+              ? ""
+              : "s"
+          } skipped.`
+        );
+      }
+
+      if (failedCount) {
+        summaryParts.push(
+          `${failedCount} Discord assignment${
+            failedCount === 1
+              ? ""
+              : "s"
+          } failed to queue.`
+        );
+      }
+
+      const summary =
+        summaryParts.join(" ");
+
+      setText(
+        "teamBuilderSaveState",
+        failedCount
+          ? "Published with Discord errors"
+          : "Published and Discord jobs queued"
+      );
+
+      context.showToast(
+        summary
+      );
+
+      if (
+        skippedCount ||
+        failedCount
+      ) {
+        const skippedLines =
+          discordResult.skipped
+            .map(
+              item =>
+                `• ${item.playerName} — ${item.reason}`
+            );
+
+        const failedLines =
+          discordResult.failed
+            .map(
+              item =>
+                `• ${item.playerName} — ${item.reason}`
+            );
+
+        const detailSections = [];
+
+        if (
+          skippedLines.length
+        ) {
+          detailSections.push(
+            `Skipped:\n${skippedLines.join(
+              "\n"
+            )}`
+          );
+        }
+
+        if (
+          failedLines.length
+        ) {
+          detailSections.push(
+            `Failed:\n${failedLines.join(
+              "\n"
+            )}`
+          );
+        }
+
+        window.alert(
+          `${summary}\n\n${detailSections.join(
+            "\n\n"
+          )}`
+        );
+      }
+    }
+  );
+}
 
   async function generateTestPlayers(
     button
@@ -2721,50 +3059,67 @@
   }
 
   function serializeTeams() {
-    const serialized = {};
+  const serialized = {};
 
-    Object.entries(
-      moduleState.teams
-    ).forEach(
-      ([
-        teamKey,
-        players
-      ]) => {
-        serialized[teamKey] =
-          players.map(player => ({
-            uid: player.uid,
+  Object.entries(
+    moduleState.teams
+  ).forEach(
+    ([
+      teamKey,
+      players
+    ]) => {
+      serialized[teamKey] =
+        players.map(player => ({
+          uid:
+            player.uid,
 
-            rgId:
-              player.rgId || "",
+          rgId:
+            player.rgId || "",
 
-            displayName:
-              player.displayName ||
-              "",
+          displayName:
+            player.displayName || "",
 
-            rivalsIgn:
-              player.rivalsIgn || "",
+          rivalsIgn:
+            player.rivalsIgn || "",
 
-            profileImage:
-              player.profileImage ||
-              "",
+          discordUsername:
+            player.discordUsername || "",
 
-            peakRank:
-              player.peakRank || "",
+          /*
+           * Keep the Discord snowflake
+           * stored as a string.
+           */
+          discordUserId:
+            getPlayerDiscordUserId(
+              player
+            ),
 
-            mainRole:
-              player.mainRole || "",
+          discordMember:
+            player.discordMember === true,
 
-            region:
-              player.region || "",
+          profileImage:
+            player.profileImage || "",
 
-            platform:
-              player.platform || ""
-          }));
-      }
-    );
+          peakRank:
+            player.peakRank || "",
 
-    return serialized;
-  }
+          mainRole:
+            player.mainRole || "",
+
+          region:
+            player.region || "",
+
+          platform:
+            player.platform || "",
+
+          testPlayer:
+            player.testPlayer === true
+        }));
+    }
+  );
+
+  return serialized;
+}
 
   function normalizeSavedTeamNames(
     savedNames

@@ -907,25 +907,11 @@ moduleState.teamsRecord = {};
       "tournament reports"
     );
 
-    listen(
+        listen(
       context.database.ref(
         `applications/${tournamentId}`
       ),
-listen(
-  context.database.ref(
-    "players"
-  ),
 
-  snapshot => {
-    moduleState.players =
-      snapshot.val() ||
-      {};
-
-    renderAll();
-  },
-
-  "player directory"
-);
       snapshot => {
         const data =
           snapshot.val() ||
@@ -949,6 +935,22 @@ listen(
       },
 
       "applications"
+    );
+
+    listen(
+      context.database.ref(
+        "players"
+      ),
+
+      snapshot => {
+        moduleState.players =
+          snapshot.val() ||
+          {};
+
+        renderAll();
+      },
+
+      "player directory"
     );
 
     listen(

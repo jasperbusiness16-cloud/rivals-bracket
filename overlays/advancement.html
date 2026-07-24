@@ -2,38 +2,2993 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1920, initial-scale=1.0">
-  <title>Rivals Gauntlet | Advancement</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta
+    name="viewport"
+    content="width=1920, initial-scale=1.0"
+  >
 
-  <link rel="stylesheet" href="advancement.css?v=1">
+  <title>
+    Rivals Gauntlet | Winner Advances
+  </title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root{
+      --bg:#050509;
+
+      --text:#fbf9ff;
+      --soft:#cec8d8;
+      --muted:#9891a3;
+      --dim:#696271;
+
+      --purple:#9a7cff;
+      --purple-bright:#c9bcff;
+      --purple-rgb:154,124,255;
+
+      --gold:#f2d079;
+      --gold-bright:#fff0b6;
+      --gold-rgb:242,208,121;
+
+      --green:#62e1a6;
+      --green-rgb:98,225,166;
+
+      --yellow:#f2c66c;
+      --red:#ff718a;
+
+      --line:rgba(212,200,255,.12);
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+
+      margin:0;
+      overflow:hidden;
+
+      background:var(--bg);
+    }
+
+    body{
+      color:var(--text);
+
+      font-family:
+        "Rajdhani",
+        Arial,
+        sans-serif;
+    }
+
+    .stage{
+      position:relative;
+
+      width:1920px;
+      height:1080px;
+
+      overflow:hidden;
+      isolation:isolate;
+
+      background:
+        radial-gradient(
+          circle at 50% 43%,
+          rgba(var(--purple-rgb),.16),
+          transparent 27%
+        ),
+        radial-gradient(
+          circle at 17% 54%,
+          rgba(91,56,181,.13),
+          transparent 31%
+        ),
+        radial-gradient(
+          circle at 84% 44%,
+          rgba(var(--gold-rgb),.08),
+          transparent 27%
+        ),
+        linear-gradient(
+          145deg,
+          #110d1d 0%,
+          #090810 51%,
+          #050509 100%
+        );
+    }
+
+    .stage::before{
+      content:"";
+
+      position:absolute;
+      inset:-75px;
+      z-index:-8;
+
+      background:
+        linear-gradient(
+          116deg,
+          transparent 0 23%,
+          rgba(255,255,255,.012)
+          23.15% 23.4%,
+          transparent 23.55% 74%,
+          rgba(255,255,255,.009)
+          74.15% 74.4%,
+          transparent 74.55%
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 108px,
+          rgba(255,255,255,.007) 109px,
+          transparent 110px 216px
+        );
+
+      animation:
+        backgroundDrift
+        38s ease-in-out
+        infinite alternate;
+    }
+
+    .stage::after{
+      content:"";
+
+      position:absolute;
+      left:50%;
+      top:46%;
+      z-index:-7;
+
+      width:980px;
+      height:470px;
+
+      border-radius:50%;
+
+      background:
+        radial-gradient(
+          ellipse,
+          rgba(var(--purple-rgb),.105),
+          transparent 68%
+        );
+
+      filter:blur(24px);
+
+      transform:
+        translate(-50%,-50%);
+
+      animation:
+        ambientBreathe
+        7s ease-in-out
+        infinite;
+    }
+
+    .grid{
+      position:absolute;
+      inset:-140px;
+      z-index:-6;
+
+      opacity:.31;
+
+      background-image:
+        linear-gradient(
+          rgba(var(--purple-rgb),.038) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(var(--purple-rgb),.038) 1px,
+          transparent 1px
+        );
+
+      background-size:
+        86px 86px;
+
+      transform:
+        perspective(760px)
+        rotateX(68deg)
+        translateY(485px)
+        scale(1.34);
+
+      transform-origin:
+        center bottom;
+
+      mask-image:
+        linear-gradient(
+          to top,
+          black,
+          transparent 79%
+        );
+
+      animation:
+        gridMove
+        28s linear infinite;
+    }
+
+    .ambient{
+      position:absolute;
+      z-index:-5;
+
+      width:600px;
+      height:600px;
+
+      border-radius:50%;
+
+      filter:blur(22px);
+      opacity:.3;
+    }
+
+    .ambient.left{
+      left:-300px;
+      top:170px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--purple-rgb),.2),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat
+        17s ease-in-out
+        infinite alternate;
+    }
+
+    .ambient.right{
+      right:-300px;
+      top:150px;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(var(--gold-rgb),.11),
+          transparent 68%
+        );
+
+      animation:
+        ambientFloat
+        20s ease-in-out
+        infinite alternate-reverse;
+    }
+
+    .frame{
+      position:absolute;
+      inset:28px;
+      z-index:90;
+
+      pointer-events:none;
+
+      border:
+        1px solid
+        rgba(var(--purple-rgb),.09);
+
+      clip-path:polygon(
+        0 0,
+        18% 0,
+        19% 6px,
+        81% 6px,
+        82% 0,
+        100% 0,
+        100% 28%,
+        calc(100% - 6px) 29%,
+        calc(100% - 6px) 71%,
+        100% 72%,
+        100% 100%,
+        82% 100%,
+        81% calc(100% - 6px),
+        19% calc(100% - 6px),
+        18% 100%,
+        0 100%,
+        0 72%,
+        6px 71%,
+        6px 29%,
+        0 28%
+      );
+    }
+
+    .particle-field{
+      position:absolute;
+      inset:0;
+      z-index:55;
+
+      overflow:hidden;
+      pointer-events:none;
+    }
+
+    .particle{
+      position:absolute;
+      left:var(--x);
+      bottom:-30px;
+
+      width:var(--size);
+      height:var(--size);
+
+      border-radius:50%;
+
+      background:
+        var(--color);
+
+      opacity:0;
+
+      box-shadow:
+        0 0 10px
+        var(--color);
+
+      animation:
+        particleRise
+        var(--duration)
+        ease-in-out
+        var(--delay)
+        infinite;
+    }
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+
+    .topbar{
+      position:absolute;
+      left:58px;
+      right:58px;
+      top:42px;
+      z-index:60;
+
+      display:grid;
+
+      grid-template-columns:
+        minmax(450px,1fr)
+        minmax(500px,1.2fr)
+        minmax(300px,.72fr);
+
+      align-items:center;
+      gap:24px;
+
+      opacity:0;
+
+      transform:
+        translateY(-15px);
+    }
+
+    .stage.ready .topbar{
+      animation:
+        headerIn
+        .7s
+        cubic-bezier(.18,.86,.24,1)
+        .08s forwards;
+    }
+
+    .brand-copy{
+      min-width:0;
+    }
+
+    .brand-copy span,
+    .brand-copy strong{
+      display:block;
+    }
+
+    .brand-copy span{
+      color:var(--purple-bright);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+    }
+
+    .brand-copy strong{
+      max-width:720px;
+
+      margin-top:5px;
+      overflow:hidden;
+
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:.055em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .header-center{
+      min-width:0;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+    }
+
+    .header-line{
+      width:65px;
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.48)
+        );
+    }
+
+    .header-line:last-child{
+      transform:scaleX(-1);
+    }
+
+    .header-center-copy{
+      min-width:0;
+
+      text-align:center;
+    }
+
+    .header-center-copy span{
+      display:block;
+
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.17em;
+      text-transform:uppercase;
+    }
+
+    .header-center-copy strong{
+      display:block;
+
+      margin-top:4px;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:.07em;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .connection{
+      min-height:36px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+
+      justify-self:end;
+
+      padding:0 14px;
+
+      border:
+        1px solid
+        rgba(242,198,108,.2);
+
+      border-radius:999px;
+
+      color:var(--yellow);
+
+      background:
+        rgba(242,198,108,.05);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.09em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .connection.online{
+      border-color:
+        rgba(var(--green-rgb),.22);
+
+      color:var(--green);
+
+      background:
+        rgba(var(--green-rgb),.05);
+    }
+
+    .connection.error{
+      border-color:
+        rgba(255,113,138,.22);
+
+      color:var(--red);
+
+      background:
+        rgba(255,113,138,.05);
+    }
+
+    .connection-dot{
+      width:7px;
+      height:7px;
+
+      border-radius:50%;
+
+      background:currentColor;
+
+      box-shadow:
+        0 0 10px
+        currentColor;
+    }
+
+    /* =====================================================
+       RESULT PRESENTATION
+       ===================================================== */
+
+    .result-shell{
+      position:absolute;
+      left:72px;
+      right:72px;
+      top:135px;
+      bottom:95px;
+      z-index:20;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      overflow:hidden;
+      text-align:center;
+    }
+
+    .winner-watermark{
+      position:absolute;
+      left:50%;
+      top:45%;
+      z-index:-1;
+
+      width:520px;
+      height:520px;
+
+      display:grid;
+      place-items:center;
+
+      overflow:hidden;
+
+      color:
+        rgba(255,255,255,.026);
+
+      font-size:180px;
+      font-weight:800;
+      letter-spacing:-.08em;
+
+      opacity:0;
+
+      filter:
+        drop-shadow(
+          0 0 45px
+          rgba(var(--purple-rgb),.1)
+        );
+
+      transform:
+        translate(-50%,-50%)
+        scale(.84);
+    }
+
+    .winner-watermark img{
+      width:100%;
+      height:100%;
+
+      object-fit:contain;
+
+      opacity:.095;
+
+      filter:
+        grayscale(.2)
+        brightness(1.35)
+        drop-shadow(
+          0 0 38px
+          rgba(var(--purple-rgb),.35)
+        );
+    }
+
+    .stage.ready .winner-watermark{
+      animation:
+        watermarkIn
+        1.1s
+        cubic-bezier(.18,.86,.24,1)
+        .3s forwards;
+    }
+
+    .result-kicker{
+      color:var(--gold);
+
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.34em;
+      text-transform:uppercase;
+
+      opacity:0;
+
+      transform:
+        translateY(13px);
+    }
+
+    .stage.ready .result-kicker{
+      animation:
+        textRise
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        .52s forwards;
+    }
+
+    .winner-name{
+      width:100%;
+      max-width:1630px;
+
+      margin:22px auto 0;
+      overflow:hidden;
+
+      font-size:116px;
+      font-weight:800;
+      letter-spacing:-.045em;
+      line-height:.78;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+
+      text-shadow:
+        0 0 46px
+        rgba(var(--purple-rgb),.12);
+
+      opacity:0;
+
+      transform:
+        translateY(25px)
+        scale(.97);
+    }
+
+    .stage.ready .winner-name{
+      animation:
+        winnerIn
+        .82s
+        cubic-bezier(.16,.9,.24,1)
+        .78s forwards;
+    }
+
+    .winner-divider{
+      width:0;
+      height:2px;
+
+      margin-top:29px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.9) 25%,
+          rgba(var(--gold-rgb),.85) 50%,
+          rgba(var(--purple-rgb),.9) 75%,
+          transparent
+        );
+
+      box-shadow:
+        0 0 16px
+        rgba(var(--purple-rgb),.32);
+    }
+
+    .stage.ready .winner-divider{
+      animation:
+        dividerGrow
+        .78s ease
+        1.2s forwards;
+    }
+
+    .advance-label{
+      margin-top:24px;
+
+      color:var(--muted);
+
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+
+      opacity:0;
+
+      transform:
+        translateY(12px);
+    }
+
+    .stage.ready .advance-label{
+      animation:
+        textRise
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        1.45s forwards;
+    }
+
+    .destination{
+      max-width:1450px;
+
+      margin:10px 0 0;
+
+      color:var(--gold-bright);
+
+      font-size:61px;
+      font-weight:800;
+      letter-spacing:.045em;
+      line-height:.9;
+
+      text-transform:uppercase;
+
+      text-shadow:
+        0 0 35px
+        rgba(var(--gold-rgb),.13);
+
+      opacity:0;
+
+      transform:
+        translateY(18px);
+    }
+
+    .stage.ready .destination{
+      animation:
+        destinationIn
+        .76s
+        cubic-bezier(.18,.86,.24,1)
+        1.68s forwards;
+    }
+
+    .result-card{
+      width:min(1260px,100%);
+
+      display:grid;
+
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+
+      gap:12px;
+
+      margin-top:45px;
+
+      opacity:0;
+
+      transform:
+        translateY(22px);
+    }
+
+    .stage.ready .result-card{
+      animation:
+        detailsIn
+        .76s
+        cubic-bezier(.18,.86,.24,1)
+        2.03s forwards;
+    }
+
+    .result-stat{
+      min-width:0;
+      min-height:96px;
+
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+
+      padding:14px;
+
+      border:
+        1px solid
+        rgba(255,255,255,.06);
+
+      border-radius:14px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(var(--purple-rgb),.035),
+          rgba(255,255,255,.01)
+        ),
+        rgba(12,10,18,.73);
+
+      box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.018);
+    }
+
+    .result-stat span{
+      color:var(--dim);
+
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+
+    .result-stat strong{
+      width:100%;
+
+      margin-top:8px;
+      overflow:hidden;
+
+      color:var(--soft);
+
+      font-size:21px;
+      font-weight:800;
+      line-height:1;
+
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .result-stat.score strong{
+      color:var(--gold-bright);
+
+      font-size:27px;
+      font-variant-numeric:
+        tabular-nums;
+    }
+
+    .result-stat.next strong{
+      color:var(--purple-bright);
+    }
+
+    .awaiting-note{
+      display:none;
+
+      margin-top:35px;
+
+      color:var(--muted);
+
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .stage.awaiting .result-kicker{
+      color:var(--muted);
+    }
+
+    .stage.awaiting .winner-name{
+      font-size:85px;
+    }
+
+    .stage.awaiting .winner-divider{
+      opacity:.42;
+    }
+
+    .stage.awaiting .destination{
+      color:var(--purple-bright);
+    }
+
+    .stage.awaiting .result-card{
+      display:none;
+    }
+
+    .stage.awaiting .awaiting-note{
+      display:block;
+
+      opacity:0;
+
+      transform:
+        translateY(12px);
+    }
+
+    .stage.ready.awaiting .awaiting-note{
+      animation:
+        textRise
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        2s forwards;
+    }
+
+    .stage.champion .result-kicker{
+      color:var(--gold);
+    }
+
+    .stage.champion .winner-divider{
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--gold-rgb),.95),
+          transparent
+        );
+
+      box-shadow:
+        0 0 18px
+        rgba(var(--gold-rgb),.28);
+    }
+
+    .stage.champion .destination{
+      color:var(--gold-bright);
+    }
+
+    /* =====================================================
+       FOOTER
+       ===================================================== */
+
+    .footer{
+      position:absolute;
+      left:58px;
+      right:58px;
+      bottom:29px;
+      z-index:60;
+
+      display:grid;
+
+      grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+      align-items:center;
+      gap:22px;
+
+      opacity:0;
+
+      transform:
+        translateY(12px);
+    }
+
+    .stage.ready .footer{
+      animation:
+        footerIn
+        .65s
+        cubic-bezier(.18,.86,.24,1)
+        2.55s forwards;
+    }
+
+    .footer-line{
+      height:1px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(var(--purple-rgb),.28)
+        );
+    }
+
+    .footer-line:last-child{
+      transform:scaleX(-1);
+    }
+
+    .footer-copy{
+      display:flex;
+      align-items:center;
+      gap:14px;
+
+      white-space:nowrap;
+    }
+
+    .footer-copy strong{
+      font-size:19px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    .footer-copy i{
+      width:5px;
+      height:5px;
+
+      border-radius:50%;
+
+      background:var(--purple);
+
+      box-shadow:
+        0 0 10px
+        rgba(var(--purple-rgb),.6);
+    }
+
+    .footer-copy span{
+      color:var(--muted);
+
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+    }
+
+    /* =====================================================
+       ANIMATIONS
+       ===================================================== */
+
+    @keyframes backgroundDrift{
+      from{
+        transform:
+          translate3d(-16px,-8px,0)
+          scale(1.015);
+      }
+
+      to{
+        transform:
+          translate3d(18px,10px,0)
+          scale(1.03);
+      }
+    }
+
+    @keyframes gridMove{
+      to{
+        background-position:
+          0 86px,
+          86px 0;
+      }
+    }
+
+    @keyframes ambientFloat{
+      from{
+        transform:
+          translate3d(-12px,-8px,0)
+          scale(.96);
+      }
+
+      to{
+        transform:
+          translate3d(18px,12px,0)
+          scale(1.05);
+      }
+    }
+
+    @keyframes ambientBreathe{
+      0%,
+      100%{
+        opacity:.64;
+
+        transform:
+          translate(-50%,-50%)
+          scale(.96);
+      }
+
+      50%{
+        opacity:1;
+
+        transform:
+          translate(-50%,-50%)
+          scale(1.04);
+      }
+    }
+
+    @keyframes particleRise{
+      0%{
+        opacity:0;
+
+        transform:
+          translate3d(
+            0,
+            30px,
+            0
+          )
+          scale(.65);
+      }
+
+      15%{
+        opacity:.66;
+      }
+
+      78%{
+        opacity:.42;
+      }
+
+      100%{
+        opacity:0;
+
+        transform:
+          translate3d(
+            var(--drift),
+            -1120px,
+            0
+          )
+          scale(1.15);
+      }
+    }
+
+    @keyframes headerIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes watermarkIn{
+      0%{
+        opacity:0;
+
+        transform:
+          translate(-50%,-50%)
+          scale(.84);
+      }
+
+      100%{
+        opacity:1;
+
+        transform:
+          translate(-50%,-50%)
+          scale(1);
+      }
+    }
+
+    @keyframes textRise{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes winnerIn{
+      0%{
+        opacity:0;
+
+        transform:
+          translateY(25px)
+          scale(.97);
+      }
+
+      65%{
+        opacity:1;
+
+        transform:
+          translateY(-3px)
+          scale(1.012);
+      }
+
+      100%{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes dividerGrow{
+      from{
+        width:0;
+      }
+
+      to{
+        width:560px;
+      }
+    }
+
+    @keyframes destinationIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes detailsIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @keyframes footerIn{
+      to{
+        opacity:1;
+        transform:none;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+      }
+
+      .topbar,
+      .winner-watermark,
+      .result-kicker,
+      .winner-name,
+      .advance-label,
+      .destination,
+      .result-card,
+      .awaiting-note,
+      .footer{
+        opacity:1 !important;
+        transform:none !important;
+      }
+
+      .winner-divider{
+        width:560px !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <main
+    id="stage"
+    class="stage awaiting"
+  >
+    <div
+      class="grid"
+      aria-hidden="true"
+    ></div>
 
-<main class="advance-stage loading" id="advanceStage">
-  <div class="advance-bg-grid"></div>
-  <div class="advance-red-core"></div>
-  <div class="advance-sweep"></div>
-  <div class="advance-particles dust-layer"></div>
-  <div class="advance-particles ember-layer"></div>
-  <div class="advance-frame"></div>
+    <div
+      class="ambient left"
+      aria-hidden="true"
+    ></div>
 
-  <section class="advance-card">
-    <img src="assets/logos/clean%20logo.PNG" alt="Rivals Gauntlet">
+    <div
+      class="ambient right"
+      aria-hidden="true"
+    ></div>
 
-    <h1 id="advanceTeam">TEAM NAME</h1>
-    <p>ADVANCE</p>
-    <h2 id="advanceDestination">TO SEMIFINAL 1</h2>
-  </section>
-</main>
+    <div
+      class="frame"
+      aria-hidden="true"
+    ></div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="../firebase.js"></script>
-<script src="advancement.js?v=1"></script>
+    <div
+      id="particleField"
+      class="particle-field"
+      aria-hidden="true"
+    ></div>
 
+    <header class="topbar">
+      <div class="brand-copy">
+        <span>
+          Rivals Gauntlet Tournament
+        </span>
+
+        <strong id="eventName">
+          RIVALS GAUNTLET
+        </strong>
+      </div>
+
+      <div class="header-center">
+        <span class="header-line"></span>
+
+        <div class="header-center-copy">
+          <span>
+            Match Result
+          </span>
+
+          <strong id="headerMatch">
+            Awaiting Completed Match
+          </strong>
+        </div>
+
+        <span class="header-line"></span>
+      </div>
+
+      <div
+        id="connection"
+        class="connection"
+      >
+        <span class="connection-dot"></span>
+
+        <span id="connectionText">
+          Connecting
+        </span>
+      </div>
+    </header>
+
+    <section class="result-shell">
+      <div
+        id="winnerWatermark"
+        class="winner-watermark"
+        aria-hidden="true"
+      >
+        RG
+      </div>
+
+      <div
+        id="resultKicker"
+        class="result-kicker"
+      >
+        Match Complete
+      </div>
+
+      <h1
+        id="winnerName"
+        class="winner-name"
+      >
+        NO WINNER SAVED
+      </h1>
+
+      <div
+        class="winner-divider"
+        aria-hidden="true"
+      ></div>
+
+      <div
+        id="advanceLabel"
+        class="advance-label"
+      >
+        Advances To
+      </div>
+
+      <h2
+        id="destination"
+        class="destination"
+      >
+        RESULT PENDING
+      </h2>
+
+      <section class="result-card">
+        <article class="result-stat">
+          <span>
+            Completed Match
+          </span>
+
+          <strong id="completedMatch">
+            Pending
+          </strong>
+        </article>
+
+        <article class="result-stat score">
+          <span>
+            Final Score
+          </span>
+
+          <strong id="finalScore">
+            — — —
+          </strong>
+        </article>
+
+        <article class="result-stat">
+          <span>
+            Defeated
+          </span>
+
+          <strong id="defeatedTeam">
+            Pending
+          </strong>
+        </article>
+
+        <article class="result-stat next">
+          <span>
+            Tournament Path
+          </span>
+
+          <strong id="pathText">
+            Advances
+          </strong>
+        </article>
+      </section>
+
+      <div
+        id="awaitingNote"
+        class="awaiting-note"
+      >
+        Save a completed match winner in Nexus to activate this overlay.
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="footer-line"></span>
+
+      <div class="footer-copy">
+        <strong id="website">
+          RIVALSGAUNTLET.COM
+        </strong>
+
+        <i></i>
+
+        <span>
+          Winner Confirmed • Bracket Updated
+        </span>
+      </div>
+
+      <span class="footer-line"></span>
+    </footer>
+  </main>
+
+  <script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var connection =
+          document.getElementById(
+            "connection"
+          );
+
+        var connectionText =
+          document.getElementById(
+            "connectionText"
+          );
+
+        if (connection) {
+          connection.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionText) {
+          connectionText.textContent =
+            "SCRIPT ERROR";
+        }
+
+        console.error(
+          "[RG WINNER ADVANCES]",
+          event.message
+        );
+      }
+    );
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var state = {
+        site:{},
+        countdown:{},
+        teamData:{},
+        tournamentId:"open1"
+      };
+
+      var teamsRef = null;
+      var teamsCallback = null;
+
+      var renderTimer = null;
+      var replayTimer = null;
+
+      var lastSignature = "";
+
+      var stage =
+        document.getElementById(
+          "stage"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var headerMatch =
+        document.getElementById(
+          "headerMatch"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      var winnerWatermark =
+        document.getElementById(
+          "winnerWatermark"
+        );
+
+      var resultKicker =
+        document.getElementById(
+          "resultKicker"
+        );
+
+      var winnerName =
+        document.getElementById(
+          "winnerName"
+        );
+
+      var advanceLabel =
+        document.getElementById(
+          "advanceLabel"
+        );
+
+      var destination =
+        document.getElementById(
+          "destination"
+        );
+
+      var completedMatch =
+        document.getElementById(
+          "completedMatch"
+        );
+
+      var finalScore =
+        document.getElementById(
+          "finalScore"
+        );
+
+      var defeatedTeam =
+        document.getElementById(
+          "defeatedTeam"
+        );
+
+      var pathText =
+        document.getElementById(
+          "pathText"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      var particleField =
+        document.getElementById(
+          "particleField"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text ||
+          fallback ||
+          "";
+      }
+
+      function normalize(value) {
+        return clean(value)
+          .toLowerCase()
+          .replace(
+            /[^a-z0-9]/g,
+            ""
+          );
+      }
+
+      function hasValue(value) {
+        return (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        );
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0,2)
+            .toUpperCase();
+        }
+
+        return (
+          (
+            parts[0][0] ||
+            ""
+          ) +
+          (
+            parts[
+              parts.length - 1
+            ][0] ||
+            ""
+          )
+        ).toUpperCase();
+      }
+
+      function normalizeMatchId(value) {
+        var text =
+          clean(value)
+            .toUpperCase();
+
+        var match;
+
+        if (
+          text.indexOf(
+            "GRAND"
+          ) !== -1 ||
+          text === "GF"
+        ) {
+          return "GF";
+        }
+
+        match =
+          text.match(
+            /R16-?([1-8])/
+          );
+
+        if (match) {
+          return (
+            "R16-" +
+            match[1]
+          );
+        }
+
+        match =
+          text.match(
+            /QF([1-4])/
+          );
+
+        if (match) {
+          return (
+            "QF" +
+            match[1]
+          );
+        }
+
+        match =
+          text.match(
+            /SF([1-2])/
+          );
+
+        if (match) {
+          return (
+            "SF" +
+            match[1]
+          );
+        }
+
+        return "";
+      }
+
+      function getForcedMatch() {
+        var search =
+          window.location.search ||
+          "";
+
+        var match =
+          search.match(
+            /(?:\?|&)match=([^&]+)/i
+          );
+
+        if (!match) {
+          return "";
+        }
+
+        try {
+          return normalizeMatchId(
+            decodeURIComponent(
+              match[1]
+            )
+          );
+
+        } catch (error) {
+          return normalizeMatchId(
+            match[1]
+          );
+        }
+      }
+
+      function getWebsite() {
+        var follow =
+          state.countdown.follow ||
+          {};
+
+        return clean(
+          state.countdown.website ||
+          follow.website ||
+          state.site.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      /* =====================================================
+         PUBLISHED TEAM DATA
+         ===================================================== */
+
+      function getTeamsArray() {
+        var teams =
+          state.teamData.teams ||
+          {};
+
+        var names =
+          state.teamData.teamNames ||
+          {};
+
+        var logos =
+          state.teamData.teamLogos ||
+          state.teamData.logos ||
+          {};
+
+        return Object.keys(teams)
+          .sort(
+            function (a,b) {
+              return (
+                Number(
+                  a.replace(
+                    /\D/g,
+                    ""
+                  )
+                ) -
+                Number(
+                  b.replace(
+                    /\D/g,
+                    ""
+                  )
+                )
+              );
+            }
+          )
+          .map(
+            function (
+              teamKey,
+              index
+            ) {
+              return {
+                teamKey:teamKey,
+
+                seed:
+                  index + 1,
+
+                teamName:
+                  clean(
+                    names[teamKey],
+                    "TEAM NAME PENDING"
+                  ),
+
+                logo:
+                  clean(
+                    logos[teamKey]
+                  ),
+
+                players:
+                  Array.isArray(
+                    teams[teamKey]
+                  )
+                    ? teams[
+                        teamKey
+                      ].filter(Boolean)
+                    : []
+              };
+            }
+          );
+      }
+
+      function placeholderTeam(label) {
+        return {
+          teamKey:"",
+          seed:"",
+          teamName:
+            clean(
+              label,
+              "AWAITING TEAM"
+            ),
+          logo:"",
+          placeholder:true
+        };
+      }
+
+      function getTeamByKey(teamKey) {
+        var teams =
+          getTeamsArray();
+
+        var index;
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            teams[index].teamKey ===
+            teamKey
+          ) {
+            return teams[index];
+          }
+        }
+
+        return null;
+      }
+
+      function resolveTeam(value) {
+        var raw =
+          clean(value);
+
+        var teams =
+          getTeamsArray();
+
+        var direct =
+          getTeamByKey(raw);
+
+        var index;
+        var match;
+
+        if (direct) {
+          return direct;
+        }
+
+        if (!raw) {
+          return null;
+        }
+
+        for (
+          index = 0;
+          index < teams.length;
+          index += 1
+        ) {
+          if (
+            normalize(
+              teams[index].teamName
+            ) ===
+            normalize(raw)
+          ) {
+            return teams[index];
+          }
+        }
+
+        match =
+          raw.match(
+            /^Team\s+(\d+)$/i
+          );
+
+        if (
+          match &&
+          teams[
+            Number(match[1]) - 1
+          ]
+        ) {
+          return teams[
+            Number(match[1]) - 1
+          ];
+        }
+
+        return {
+          teamKey:"",
+          seed:"",
+          teamName:raw,
+          logo:"",
+          placeholder:false
+        };
+      }
+
+      function sameTeam(
+        team,
+        value
+      ) {
+        var resolved =
+          resolveTeam(value);
+
+        if (
+          !team ||
+          !resolved
+        ) {
+          return false;
+        }
+
+        if (
+          team.teamKey &&
+          resolved.teamKey &&
+          team.teamKey ===
+            resolved.teamKey
+        ) {
+          return true;
+        }
+
+        return (
+          normalize(
+            team.teamName
+          ) ===
+          normalize(
+            resolved.teamName
+          )
+        );
+      }
+
+      function indexedTeam(
+        index,
+        fallback
+      ) {
+        return (
+          getTeamsArray()[index] ||
+          placeholderTeam(fallback)
+        );
+      }
+
+      function winnerTeam(
+        field,
+        fallback
+      ) {
+        return (
+          resolveTeam(
+            state.site[field]
+          ) ||
+          placeholderTeam(fallback)
+        );
+      }
+
+      function is16TeamFormat() {
+        return (
+          state.site.formatType ===
+            "16_single_elim" ||
+          getTeamsArray().length > 8
+        );
+      }
+
+      /* =====================================================
+         MATCH CONFIGURATION
+         ===================================================== */
+
+      function makeConfig(
+        id,
+        label,
+        format,
+        teamA,
+        teamB,
+        scoreAField,
+        scoreBField,
+        winnerField,
+        destinationText,
+        pathDescription
+      ) {
+        return {
+          id:id,
+          label:label,
+          format:format,
+
+          teamA:
+            teamA ||
+            placeholderTeam(
+              "AWAITING TEAM"
+            ),
+
+          teamB:
+            teamB ||
+            placeholderTeam(
+              "AWAITING TEAM"
+            ),
+
+          scoreAField:
+            scoreAField,
+
+          scoreBField:
+            scoreBField,
+
+          winnerField:
+            winnerField,
+
+          destination:
+            destinationText,
+
+          path:
+            pathDescription
+        };
+      }
+
+      function getMatchConfig(matchId) {
+        var is16 =
+          is16TeamFormat();
+
+        var map = {};
+        var index;
+
+        for (
+          index = 1;
+          index <= 8;
+          index += 1
+        ) {
+          map[
+            "R16-" + index
+          ] = makeConfig(
+            "R16-" + index,
+
+            "ROUND OF 16 • MATCH " +
+            index,
+
+            "BO3",
+
+            indexedTeam(
+              (
+                index - 1
+              ) * 2,
+              "AWAITING TEAM"
+            ),
+
+            indexedTeam(
+              (
+                index - 1
+              ) * 2 + 1,
+              "AWAITING TEAM"
+            ),
+
+            "r16m" +
+            index +
+            "Team1Score",
+
+            "r16m" +
+            index +
+            "Team2Score",
+
+            "r16m" +
+            index +
+            "Winner",
+
+            "QUARTERFINAL " +
+            Math.ceil(
+              index / 2
+            ),
+
+            "Advances to QF" +
+            Math.ceil(
+              index / 2
+            )
+          );
+        }
+
+        map.QF1 =
+          makeConfig(
+            "QF1",
+            "QUARTERFINAL 1",
+            "BO3",
+
+            is16
+              ? winnerTeam(
+                  "r16m1Winner",
+                  "WINNER R16-1"
+                )
+              : indexedTeam(
+                  0,
+                  "AWAITING TEAM"
+                ),
+
+            is16
+              ? winnerTeam(
+                  "r16m2Winner",
+                  "WINNER R16-2"
+                )
+              : indexedTeam(
+                  1,
+                  "AWAITING TEAM"
+                ),
+
+            "qf1Team1Score",
+            "qf1Team2Score",
+            "qf1Winner",
+
+            "SEMIFINAL 1",
+            "Advances to SF1"
+          );
+
+        map.QF2 =
+          makeConfig(
+            "QF2",
+            "QUARTERFINAL 2",
+            "BO3",
+
+            is16
+              ? winnerTeam(
+                  "r16m3Winner",
+                  "WINNER R16-3"
+                )
+              : indexedTeam(
+                  2,
+                  "AWAITING TEAM"
+                ),
+
+            is16
+              ? winnerTeam(
+                  "r16m4Winner",
+                  "WINNER R16-4"
+                )
+              : indexedTeam(
+                  3,
+                  "AWAITING TEAM"
+                ),
+
+            "qf2Team1Score",
+            "qf2Team2Score",
+            "qf2Winner",
+
+            "SEMIFINAL 1",
+            "Advances to SF1"
+          );
+
+        map.QF3 =
+          makeConfig(
+            "QF3",
+            "QUARTERFINAL 3",
+            "BO3",
+
+            is16
+              ? winnerTeam(
+                  "r16m5Winner",
+                  "WINNER R16-5"
+                )
+              : indexedTeam(
+                  4,
+                  "AWAITING TEAM"
+                ),
+
+            is16
+              ? winnerTeam(
+                  "r16m6Winner",
+                  "WINNER R16-6"
+                )
+              : indexedTeam(
+                  5,
+                  "AWAITING TEAM"
+                ),
+
+            "qf3Team1Score",
+            "qf3Team2Score",
+            "qf3Winner",
+
+            "SEMIFINAL 2",
+            "Advances to SF2"
+          );
+
+        map.QF4 =
+          makeConfig(
+            "QF4",
+            "QUARTERFINAL 4",
+            "BO3",
+
+            is16
+              ? winnerTeam(
+                  "r16m7Winner",
+                  "WINNER R16-7"
+                )
+              : indexedTeam(
+                  6,
+                  "AWAITING TEAM"
+                ),
+
+            is16
+              ? winnerTeam(
+                  "r16m8Winner",
+                  "WINNER R16-8"
+                )
+              : indexedTeam(
+                  7,
+                  "AWAITING TEAM"
+                ),
+
+            "qf4Team1Score",
+            "qf4Team2Score",
+            "qf4Winner",
+
+            "SEMIFINAL 2",
+            "Advances to SF2"
+          );
+
+        map.SF1 =
+          makeConfig(
+            "SF1",
+            "SEMIFINAL 1",
+            "BO3",
+
+            winnerTeam(
+              "qf1Winner",
+              "WINNER QF1"
+            ),
+
+            winnerTeam(
+              "qf2Winner",
+              "WINNER QF2"
+            ),
+
+            "sf1Team1Score",
+            "sf1Team2Score",
+            "sf1Winner",
+
+            "GRAND FINALS",
+            "Advances to the Grand Finals"
+          );
+
+        map.SF2 =
+          makeConfig(
+            "SF2",
+            "SEMIFINAL 2",
+            "BO3",
+
+            winnerTeam(
+              "qf3Winner",
+              "WINNER QF3"
+            ),
+
+            winnerTeam(
+              "qf4Winner",
+              "WINNER QF4"
+            ),
+
+            "sf2Team1Score",
+            "sf2Team2Score",
+            "sf2Winner",
+
+            "GRAND FINALS",
+            "Advances to the Grand Finals"
+          );
+
+        map.GF =
+          makeConfig(
+            "GF",
+            "GRAND FINALS",
+            "BO5",
+
+            winnerTeam(
+              "sf1Winner",
+              "WINNER SF1"
+            ),
+
+            winnerTeam(
+              "sf2Winner",
+              "WINNER SF2"
+            ),
+
+            "gfTeam1Score",
+            "gfTeam2Score",
+            "grandWinner",
+
+            "CLAIMED THE GAUNTLET",
+            "Tournament Champion"
+          );
+
+        return map[matchId] || null;
+      }
+
+      function getMatchOrder() {
+        var order8 = [
+          "QF1",
+          "QF2",
+          "QF3",
+          "QF4",
+          "SF1",
+          "SF2",
+          "GF"
+        ];
+
+        if (
+          !is16TeamFormat()
+        ) {
+          return order8;
+        }
+
+        return [
+          "R16-1",
+          "R16-2",
+          "R16-3",
+          "R16-4",
+          "R16-5",
+          "R16-6",
+          "R16-7",
+          "R16-8",
+          "QF1",
+          "QF2",
+          "QF3",
+          "QF4",
+          "SF1",
+          "SF2",
+          "GF"
+        ];
+      }
+
+      function buildResult(matchId) {
+        var config =
+          getMatchConfig(matchId);
+
+        var winnerValue;
+        var winner;
+        var loser;
+
+        var winnerIsA;
+        var winnerIsB;
+
+        var rawScoreA;
+        var rawScoreB;
+
+        var scoreA;
+        var scoreB;
+
+        var winnerScore;
+        var loserScore;
+
+        if (!config) {
+          return null;
+        }
+
+        winnerValue =
+          clean(
+            state.site[
+              config.winnerField
+            ]
+          );
+
+        if (!winnerValue) {
+          return null;
+        }
+
+        winner =
+          resolveTeam(
+            winnerValue
+          );
+
+        if (!winner) {
+          return null;
+        }
+
+        winnerIsA =
+          sameTeam(
+            config.teamA,
+            winnerValue
+          );
+
+        winnerIsB =
+          sameTeam(
+            config.teamB,
+            winnerValue
+          );
+
+        if (winnerIsA) {
+          loser =
+            config.teamB;
+
+        } else if (winnerIsB) {
+          loser =
+            config.teamA;
+
+        } else {
+          loser =
+            placeholderTeam(
+              "OPPONENT"
+            );
+        }
+
+        rawScoreA =
+          state.site[
+            config.scoreAField
+          ];
+
+        rawScoreB =
+          state.site[
+            config.scoreBField
+          ];
+
+        scoreA =
+          hasValue(rawScoreA)
+            ? String(rawScoreA)
+            : "—";
+
+        scoreB =
+          hasValue(rawScoreB)
+            ? String(rawScoreB)
+            : "—";
+
+        winnerScore =
+          winnerIsB
+            ? scoreB
+            : scoreA;
+
+        loserScore =
+          winnerIsB
+            ? scoreA
+            : scoreB;
+
+        return {
+          config:config,
+          winner:winner,
+          loser:loser,
+
+          winnerScore:
+            winnerScore,
+
+          loserScore:
+            loserScore,
+
+          champion:
+            config.id === "GF"
+        };
+      }
+
+      function findResult() {
+        var forced =
+          getForcedMatch();
+
+        var current =
+          normalizeMatchId(
+            state.site.currentMatch
+          );
+
+        var order =
+          getMatchOrder();
+
+        var result;
+        var index;
+
+        if (forced) {
+          result =
+            buildResult(
+              forced
+            );
+
+          if (result) {
+            return result;
+          }
+        }
+
+        if (current) {
+          result =
+            buildResult(
+              current
+            );
+
+          if (result) {
+            return result;
+          }
+        }
+
+        for (
+          index =
+            order.length - 1;
+          index >= 0;
+          index -= 1
+        ) {
+          result =
+            buildResult(
+              order[index]
+            );
+
+          if (result) {
+            return result;
+          }
+        }
+
+        return null;
+      }
+
+      /* =====================================================
+         VISUAL RENDERING
+         ===================================================== */
+
+      function setWatermark(team) {
+        winnerWatermark.innerHTML = "";
+
+        if (
+          team &&
+          team.logo
+        ) {
+          var image =
+            document.createElement(
+              "img"
+            );
+
+          image.src =
+            team.logo;
+
+          image.alt = "";
+
+          image.onerror =
+            function () {
+              winnerWatermark.innerHTML = "";
+              winnerWatermark.textContent =
+                initials(
+                  team.teamName
+                );
+            };
+
+          winnerWatermark.appendChild(
+            image
+          );
+
+        } else {
+          winnerWatermark.textContent =
+            initials(
+              team &&
+              team.teamName
+                ? team.teamName
+                : "RG"
+            );
+        }
+      }
+
+      function replay() {
+        clearTimeout(
+          replayTimer
+        );
+
+        stage.classList.remove(
+          "ready"
+        );
+
+        void stage.offsetWidth;
+
+        replayTimer =
+          setTimeout(
+            function () {
+              stage.classList.add(
+                "ready"
+              );
+            },
+            80
+          );
+      }
+
+      function renderAwaiting() {
+        stage.classList.add(
+          "awaiting"
+        );
+
+        stage.classList.remove(
+          "champion"
+        );
+
+        resultKicker.textContent =
+          "Awaiting Match Result";
+
+        winnerName.textContent =
+          "NO WINNER SAVED";
+
+        advanceLabel.textContent =
+          "Winner Advances To";
+
+        destination.textContent =
+          "RESULT PENDING";
+
+        completedMatch.textContent =
+          "Pending";
+
+        finalScore.textContent =
+          "— — —";
+
+        defeatedTeam.textContent =
+          "Pending";
+
+        pathText.textContent =
+          "Awaiting Nexus";
+
+        headerMatch.textContent =
+          "AWAITING COMPLETED MATCH";
+
+        setWatermark(null);
+
+        lastSignature = "";
+
+        replay();
+      }
+
+      function renderResult(result) {
+        var winner =
+          result.winner;
+
+        var loser =
+          result.loser;
+
+        var config =
+          result.config;
+
+        var signature = [
+          state.tournamentId,
+          config.id,
+          winner.teamName,
+          result.winnerScore,
+          result.loserScore,
+          config.destination
+        ].join("|");
+
+        stage.classList.remove(
+          "awaiting"
+        );
+
+        stage.classList.toggle(
+          "champion",
+          result.champion
+        );
+
+        resultKicker.textContent =
+          result.champion
+            ? "Tournament Champions"
+            : "Match Winner Confirmed";
+
+        winnerName.textContent =
+          clean(
+            winner.teamName,
+            "WINNER"
+          )
+            .toUpperCase();
+
+        advanceLabel.textContent =
+          result.champion
+            ? "Tournament Result"
+            : "Advances To";
+
+        destination.textContent =
+          config.destination
+            .toUpperCase();
+
+        completedMatch.textContent =
+          (
+            config.label +
+            " • " +
+            config.format
+          )
+            .toUpperCase();
+
+        finalScore.textContent =
+          (
+            result.winnerScore +
+            " — " +
+            result.loserScore
+          );
+
+        defeatedTeam.textContent =
+          clean(
+            loser.teamName,
+            "Opponent"
+          )
+            .toUpperCase();
+
+        pathText.textContent =
+          config.path
+            .toUpperCase();
+
+        headerMatch.textContent =
+          (
+            config.label +
+            " • FINAL"
+          )
+            .toUpperCase();
+
+        setWatermark(
+          winner
+        );
+
+        if (
+          signature !==
+          lastSignature
+        ) {
+          lastSignature =
+            signature;
+
+          replay();
+        }
+      }
+
+      function render() {
+        var result =
+          findResult();
+
+        eventName.textContent =
+          clean(
+            state.site.eventName ||
+            state.countdown.eventName,
+            "RIVALS GAUNTLET"
+          )
+            .toUpperCase();
+
+        website.textContent =
+          getWebsite();
+
+        if (!result) {
+          renderAwaiting();
+          return;
+        }
+
+        renderResult(
+          result
+        );
+      }
+
+      function scheduleRender() {
+        clearTimeout(
+          renderTimer
+        );
+
+        renderTimer =
+          setTimeout(
+            render,
+            100
+          );
+      }
+
+      function buildParticles() {
+        var colors = [
+          "#9a7cff",
+          "#c9bcff",
+          "#f2d079",
+          "#fff0b6",
+          "#ffffff"
+        ];
+
+        var html = "";
+        var index;
+
+        for (
+          index = 0;
+          index < 38;
+          index += 1
+        ) {
+          html +=
+            '<span ' +
+              'class="particle" ' +
+              'style="' +
+
+                '--x:' +
+                Math.round(
+                  Math.random() *
+                  100
+                ) +
+                '%;' +
+
+                '--size:' +
+                (
+                  2 +
+                  Math.round(
+                    Math.random() *
+                    3
+                  )
+                ) +
+                'px;' +
+
+                '--duration:' +
+                (
+                  7 +
+                  Math.random() *
+                  7
+                ) +
+                's;' +
+
+                '--delay:' +
+                (
+                  Math.random() *
+                  8
+                ) +
+                's;' +
+
+                '--drift:' +
+                (
+                  -90 +
+                  Math.round(
+                    Math.random() *
+                    180
+                  )
+                ) +
+                'px;' +
+
+                '--color:' +
+                colors[
+                  index %
+                  colors.length
+                ] +
+                ';' +
+
+              '"' +
+            '></span>';
+        }
+
+        particleField.innerHTML =
+          html;
+      }
+
+      /* =====================================================
+         FIREBASE
+         ===================================================== */
+
+      function attachTeams(
+        db,
+        tournamentId
+      ) {
+        if (
+          teamsRef &&
+          teamsCallback
+        ) {
+          teamsRef.off(
+            "value",
+            teamsCallback
+          );
+        }
+
+        state.tournamentId =
+          clean(
+            tournamentId,
+            "open1"
+          );
+
+        state.teamData = {};
+
+        teamsRef =
+          db.ref(
+            "teams/" +
+            state.tournamentId
+          );
+
+        teamsCallback =
+          function (snapshot) {
+            state.teamData =
+              snapshot.val() ||
+              {};
+
+            scheduleRender();
+          };
+
+        teamsRef.on(
+          "value",
+          teamsCallback,
+
+          function (error) {
+            connection.classList.add(
+              "error"
+            );
+
+            connectionText.textContent =
+              error &&
+              error.code ===
+                "PERMISSION_DENIED"
+                ? "TEAM READ BLOCKED"
+                : "TEAM DATA UNAVAILABLE";
+
+            console.warn(
+              "[RG WINNER ADVANCES] Team data unavailable:",
+              error
+            );
+
+            scheduleRender();
+          }
+        );
+      }
+
+      function connect() {
+        var db;
+
+        try {
+          if (
+            typeof firebase ===
+              "undefined" ||
+            !firebase.apps ||
+            firebase.apps.length === 0
+          ) {
+            throw new Error(
+              "Firebase is not initialized. Check ../firebase.js."
+            );
+          }
+
+          db =
+            firebase.database();
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() ===
+                true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connection.classList.remove(
+                "error"
+              );
+
+              connectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var nextSite =
+                snapshot.val() ||
+                {};
+
+              var nextTournament =
+                clean(
+                  nextSite.currentTournament,
+                  "open1"
+                );
+
+              var tournamentChanged =
+                nextTournament !==
+                state.tournamentId;
+
+              state.site =
+                nextSite;
+
+              if (
+                tournamentChanged ||
+                !teamsRef
+              ) {
+                attachTeams(
+                  db,
+                  nextTournament
+                );
+              }
+
+              scheduleRender();
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+
+              console.error(
+                "[RG WINNER ADVANCES] Site data failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              state.countdown =
+                snapshot.val() ||
+                {};
+
+              scheduleRender();
+            },
+
+            function (error) {
+              console.warn(
+                "[RG WINNER ADVANCES] Broadcast data unavailable:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          connection.classList.add(
+            "error"
+          );
+
+          connectionText.textContent =
+            "FIREBASE ERROR";
+
+          console.error(
+            "[RG WINNER ADVANCES] Startup failed:",
+            error
+          );
+
+          renderAwaiting();
+        }
+      }
+
+      buildParticles();
+      renderAwaiting();
+      connect();
+    })();
+  </script>
 </body>
 </html>

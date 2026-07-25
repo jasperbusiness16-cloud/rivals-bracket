@@ -3869,25 +3869,11 @@ async function executeManualSubstitution(
           incomingCurrentTeam
         )} and will be removed from that roster.`
       : "";
-const testOnlyReplacement =
-  isTestPlayer(outgoing) &&
+const incomingIsTest =
   isTestPlayer(incoming);
 
 if (
-  !testOnlyReplacement &&
-  !hasValidDiscordUserId(
-    outgoing
-  )
-) {
-  context.showToast(
-    `${playerDisplayName(outgoing)} is missing a Discord User ID.`
-  );
-
-  return;
-}
-
-if (
-  !testOnlyReplacement &&
+  !incomingIsTest &&
   !hasValidDiscordUserId(
     incoming
   )
@@ -4350,25 +4336,11 @@ renderRosterCommandBoard();
 
       return;
     }
-const testOnlyReplacement =
-  isTestPlayer(targetPlayer) &&
+const substituteIsTest =
   isTestPlayer(sub);
 
 if (
-  !testOnlyReplacement &&
-  !hasValidDiscordUserId(
-    targetPlayer
-  )
-) {
-  context.showToast(
-    `${playerDisplayName(targetPlayer)} is missing a Discord User ID.`
-  );
-
-  return;
-}
-
-if (
-  !testOnlyReplacement &&
+  !substituteIsTest &&
   !hasValidDiscordUserId(
     sub
   )

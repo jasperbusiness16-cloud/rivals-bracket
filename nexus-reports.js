@@ -3719,11 +3719,12 @@ function playerReadiness(uid) {
     );
 
   const callable =
-    firebase
-      .functions()
-      .httpsCallable(
-        "queueDiscordSubstitution"
-      );
+  firebase
+    .app()
+    .functions("us-central1")
+    .httpsCallable(
+      "queueDiscordSubstitution"
+    );
 
   const response =
     await callable({
@@ -4188,6 +4189,9 @@ if (
       await context.database
         .ref()
         .update(updates);
+let discordSyncFailed = false;
+let discordSyncError = "";
+
 if (!isTestPlayer(incoming)) {
   try {
     const discordResult =
@@ -4211,16 +4215,25 @@ if (!isTestPlayer(incoming)) {
         [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}/discordJobId`]:
           jobId,
 
+        [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}/discordError`]:
+          null,
+
         [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}/discordUpdatedAt`]:
           firebase.database.ServerValue.TIMESTAMP
       });
-
   } catch (error) {
-
     console.error(
       "Discord substitution failed:",
       error
     );
+
+    discordSyncFailed = true;
+
+    discordSyncError =
+      error?.message ||
+      error?.details ||
+      error?.code ||
+      "Unknown Discord synchronization error";
 
     await context.database
       .ref()
@@ -4229,29 +4242,39 @@ if (!isTestPlayer(incoming)) {
           "failed",
 
         [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}/discordError`]:
-          error.message,
+          discordSyncError,
 
         [`tournaments/${moduleState.tournamentId}/substitutions/${historyKey}/discordUpdatedAt`]:
           firebase.database.ServerValue.TIMESTAMP
       });
-
-    context.showToast(
-      "Roster updated, but Discord synchronization failed."
-    );
   }
 }
       clearManualSelection();
 renderRosterCommandBoard();
 
-      context.showToast(
-        `${playerDisplayName(
-          incoming
-        )} replaced ${playerDisplayName(
-          outgoing
-        )} on ${formatTeamName(
-          teamKey
-        )}.`
-      );
+      if (discordSyncFailed) {
+  const message =
+    `${playerDisplayName(incoming)} replaced ` +
+    `${playerDisplayName(outgoing)} on ` +
+    `${formatTeamName(teamKey)}, but Discord failed: ` +
+    `${discordSyncError}`;
+
+  context.showToast(message);
+
+  window.alert(
+    `Roster Updated — Discord Failed\n\n${discordSyncError}`
+  );
+} else {
+  context.showToast(
+    `${playerDisplayName(
+      incoming
+    )} replaced ${playerDisplayName(
+      outgoing
+    )} on ${formatTeamName(
+      teamKey
+    )}.`
+  );
+}
     }
   );
 }

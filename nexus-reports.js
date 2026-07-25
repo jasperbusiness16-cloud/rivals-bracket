@@ -4192,7 +4192,7 @@ if (
 let discordSyncFailed = false;
 let discordSyncError = "";
 
-if (!isTestPlayer(incoming)) {
+if (hasValidDiscordUserId(incoming)) {
   try {
     const discordResult =
       await queueDiscordSubstitutionJob(
@@ -4617,7 +4617,7 @@ if (
         await context.database
           .ref()
           .update(updates);
-if (!isTestPlayer(sub)) {
+if (hasValidDiscordUserId(sub)) {
   try {
     await queueDiscordSubstitutionJob(
       targetPlayer,

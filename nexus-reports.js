@@ -4188,7 +4188,7 @@ if (
       await context.database
         .ref()
         .update(updates);
-if (!testOnlyReplacement) {
+if (!isTestPlayer(incoming)) {
   try {
     const discordResult =
       await queueDiscordSubstitutionJob(
@@ -4594,7 +4594,7 @@ if (
         await context.database
           .ref()
           .update(updates);
-if (!testOnlyReplacement) {
+if (!isTestPlayer(sub)) {
   try {
     await queueDiscordSubstitutionJob(
       targetPlayer,

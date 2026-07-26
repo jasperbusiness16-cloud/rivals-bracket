@@ -1195,7 +1195,7 @@
 
           <a
             class="action-button"
-            href="player.html?id=${encodeURIComponent(uid)}"
+            href="profile.html?id=${encodeURIComponent(uid)}"
             target="_blank"
             rel="noopener noreferrer"
           >

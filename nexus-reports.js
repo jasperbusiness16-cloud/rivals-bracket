@@ -3436,7 +3436,7 @@ function playerReadiness(uid) {
           <div class="reports-sub-actions">
 
             <a
-              href="player.html?id=${encodeURIComponent(
+              href="profile.html?id=${encodeURIComponent(
                 player.uid
               )}"
               target="_blank"

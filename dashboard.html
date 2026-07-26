@@ -3868,7 +3868,7 @@
         `${completion}%`;
 
       const profileUrl =
-        `player.html?id=${currentUser.uid}`;
+        `profile.html?id=${currentUser.uid}`;
 
       $("publicProfileLink").href =
         profileUrl;
@@ -5795,7 +5795,7 @@
               return `
                 <a
                   class="roster-player"
-                  href="player.html?id=${escapeHtml(rosterPlayer.uid || "")}"
+                  href="profile.html?id=${escapeHtml(rosterPlayer.uid || "")}"
                 >
                   <div class="roster-initials">
                     ${escapeHtml(getInitials(rosterPlayer.displayName || "RG"))}

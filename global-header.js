@@ -146,7 +146,7 @@ friendRequestPaths: [
         ],
 
         signInHref: "login.html",
-        createAccountHref: "register.html",
+        createAccountHref: "signup.html",
 
         defaultAvatar: "",
 

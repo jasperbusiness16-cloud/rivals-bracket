@@ -650,7 +650,7 @@ function renderFriendsList() {
 
           <a
             class="friend-action-button"
-            href="player.html?id=${player.uid}"
+            href="profile.html?id=${player.uid}"
           >
             Profile
           </a>
@@ -1068,7 +1068,7 @@ function renderFriendSearchResults(players) {
 
         <a
           class="friend-action-button"
-          href="player.html?id=${encodeURIComponent(player.uid)}"
+          href="profile.html?id=${encodeURIComponent(player.uid)}"
         >
           Profile
         </a>
@@ -1682,7 +1682,7 @@ RGFriends.listenToOutgoingRequests(
 
   document.getElementById(
     "friendsPublicProfileBtn"
-  ).href = `player.html?id=${user.uid}`;
+  ).href = `profile.html?id=${user.uid}`;
 
   database
     .ref(`players/${user.uid}`)

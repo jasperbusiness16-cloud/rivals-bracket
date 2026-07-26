@@ -3699,7 +3699,7 @@ this.state.firebaseListeners.push(() => {
 >
   <a
     class="rg-friend-card__action"
-    href="player.html?id=${encodeURIComponent(
+    href="profile.html?id=${encodeURIComponent(
         friend.id
     )}"
     style="
@@ -4325,7 +4325,7 @@ renderPlayerSearchResults(players) {
                         class="rg-friend-card__copy"
                     >
                         <a
-                            href="player.html?id=${encodeURIComponent(
+                            href="profile.html?id=${encodeURIComponent(
                                 player.uid
                             )}"
                         >

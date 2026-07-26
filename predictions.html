@@ -2093,7 +2093,7 @@
           <div class="team-card-head"><h3>${escapeHtml(team.teamName)}</h3><span>${team.players.length} Players</span></div>
           <div class="roster">
             ${team.players.length?team.players.map((player,index)=>`
-              <a class="player" href="player.html?id=${encodeURIComponent(player.uid||"")}">
+              <a class="player" href="profile.html?id=${encodeURIComponent(player.uid||"")}">
                 <span class="player-index">${index+1}</span>
                 <span><strong>${escapeHtml(player.displayName||"Player")}</strong><small>${escapeHtml(player.peakRank||"No Rank")} • ${escapeHtml(player.mainRole||"No Role")}</small></span>
               </a>`).join(""):`<div class="player"><span class="player-index">-</span><span><strong>No players assigned</strong></span></div>`}

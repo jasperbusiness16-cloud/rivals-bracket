@@ -4200,384 +4200,446 @@
       return true;
     }
 
-    async function submitApplication(){
-      if(
-        !currentUser ||
-        !currentPlayer
-      ){
-        return;
-      }
+  async function submitApplication(){
+  if(
+    !currentUser ||
+    !currentPlayer
+  ){
+    return;
+  }
 
-      const status =
-        $("applyStatus");
+  const status =
+    $("applyStatus");
 
-      const button =
-        $("submitButton");
+  const button =
+    $("submitButton");
 
-      if(!registrationOpen()){
-        status.textContent =
-          "Applications are currently closed for this tournament.";
+  if(!registrationOpen()){
+    status.textContent =
+      "Applications are currently closed for this tournament.";
 
-        status.style.color =
-          "#ff9fa8";
+    status.style.color =
+      "#ff9fa8";
 
-        return;
-      }
+    return;
+  }
 
-      if(!validateAll()){
-        status.textContent =
-          "Complete every required application field before submitting.";
+  if(!validateAll()){
+    status.textContent =
+      "Complete every required application field before submitting.";
 
-        status.style.color =
-          "#ff9fa8";
+    status.style.color =
+      "#ff9fa8";
 
-        return;
-      }
+    return;
+  }
 
-      if(
-        value("ageConfirm") !==
-        "Yes"
-      ){
-        status.textContent =
-          "You must meet the age or guardian requirement to apply.";
+  if(
+    value("ageConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "You must meet the age or guardian requirement to apply.";
 
-        status.style.color =
-          "#ff9fa8";
+    status.style.color =
+      "#ff9fa8";
 
-        openStep(
-          1,
-          true
-        );
+    openStep(
+      1,
+      true
+    );
 
-        return;
-      }
+    return;
+  }
 
-      if(
-        value("discordConfirm") !==
-        "Yes"
-      ){
-        status.textContent =
-          "You must be in the official Rivals Gauntlet Discord to apply.";
+  if(
+    value("discordConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "You must be in the official Rivals Gauntlet Discord to apply.";
 
-        status.style.color =
-          "#ff9fa8";
+    status.style.color =
+      "#ff9fa8";
 
-        openStep(
-          1,
-          true
-        );
+    openStep(
+      1,
+      true
+    );
 
-        return;
-      }
+    return;
+  }
 
-      if(
-        !/^\d{17,20}$/.test(
-          value("discordUserId")
+  const discordId =
+    value(
+      "discordUserId"
+    );
+
+  if(
+    !/^\d{17,20}$/.test(
+      discordId
+    )
+  ){
+    status.textContent =
+      "Enter a valid 17–20 digit Discord User ID.";
+
+    status.style.color =
+      "#ff9fa8";
+
+    openStep(
+      1,
+      true
+    );
+
+    validateField(
+      "discordUserId"
+    );
+
+    return;
+  }
+
+  if(
+    value("checkInConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "You must understand and confirm the tournament-day check-in requirement.";
+
+    status.style.color =
+      "#ff9fa8";
+
+    openStep(
+      1,
+      true
+    );
+
+    document
+      .querySelector(
+        '[data-field="checkInConfirm"]'
+      )
+      ?.classList
+      .add(
+        "invalid"
+      );
+
+    return;
+  }
+
+  if(
+    value("accuracyConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "Confirm that your application and account information are current and accurate.";
+
+    status.style.color =
+      "#ff9fa8";
+
+    openStep(
+      4,
+      true
+    );
+
+    validateField(
+      "accuracyConfirm"
+    );
+
+    return;
+  }
+
+  button.disabled =
+    true;
+
+  button.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+  status.textContent =
+    "Preparing your application...";
+
+  status.style.color =
+    "#aaa3b4";
+
+  const socials =
+    currentPlayer.socials ||
+    {};
+
+  const now =
+    Date.now();
+
+  const strength =
+    profileStrengthData();
+
+  const application = {
+    tournamentId,
+    tournamentName,
+
+    uid:
+      currentUser.uid,
+
+    rgId:
+      currentPlayer.rgId ||
+      "",
+
+    displayName:
+      currentPlayer.displayName ||
+      "",
+
+    rivalsIgn:
+      currentPlayer.rivalsIgn ||
+      "",
+
+    discordUsername:
+      currentPlayer.discordUsername ||
+      "",
+
+    /*
+     * Discord IDs must always remain strings.
+     */
+    discordUserId:
+      discordId,
+
+    discordMember:
+      true,
+
+    region:
+      currentPlayer.region ||
+      "",
+
+    platform:
+      currentPlayer.platform ||
+      "",
+
+    bio:
+      currentPlayer.bio ||
+      "",
+
+    socials:{
+      twitch:
+        socials.twitch ||
+        "",
+
+      youtube:
+        socials.youtube ||
+        "",
+
+      tiktok:
+        socials.tiktok ||
+        "",
+
+      x:
+        socials.x ||
+        ""
+    },
+
+    profileCompletionPercent:
+      strength.percent,
+
+    missingRecommendedProfileInfo:
+      strength.missing,
+
+    ageConfirm:
+      value(
+        "ageConfirm"
+      ),
+
+    discordConfirm:
+      value(
+        "discordConfirm"
+      ),
+
+    checkInConfirm:
+      value(
+        "checkInConfirm"
+      ),
+
+    availability:
+      value(
+        "availability"
+      ),
+
+    workingMic:
+      value(
+        "workingMic"
+      ),
+
+    customLobby:
+      value(
+        "customLobby"
+      ),
+
+    teamVc:
+      value(
+        "teamVc"
+      ),
+
+    peakRank:
+      value(
+        "peakRank"
+      ),
+
+    mainRole:
+      value(
+        "mainRole"
+      ),
+
+    mainHeroes:
+      value(
+        "mainHeroes"
+      ),
+
+    participatedBefore:
+      value(
+        "participatedBefore"
+      ),
+
+    wantsSub:
+      value(
+        "wantsSub"
+      ),
+
+    willStream:
+      value(
+        "willStream"
+      ),
+
+    followerCount:
+      Number(
+        value(
+          "followerCount"
         )
-      ){
-        status.textContent =
-          "Enter a valid 17–20 digit Discord User ID.";
+      ) || 0,
 
-        status.style.color =
-          "#ff9fa8";
+    applicantNotes:
+      value(
+        "applicantNotes"
+      ),
 
-        openStep(
-          1,
-          true
-        );
+    accuracyConfirm:
+      value(
+        "accuracyConfirm"
+      ),
 
-        validateField(
-          "discordUserId"
-        );
+    status:
+      "pending",
 
-        return;
-      }
+    submittedAt:
+      now,
 
-      if(
-        value("checkInConfirm") !==
-        "Yes"
-      ){
-        status.textContent =
-          "You must understand and confirm the tournament-day check-in requirement.";
+    updatedAt:
+      now
+  };
 
-        status.style.color =
-          "#ff9fa8";
+  const applicationRef =
+    database.ref(
+      `applications/${tournamentId}/${currentUser.uid}`
+    );
 
-        openStep(
-          1,
-          true
-        );
+  const discordIdRef =
+    database.ref(
+      `players/${currentUser.uid}/discordUserId`
+    );
 
-        document
-          .querySelector(
-            '[data-field="checkInConfirm"]'
-          )
-          ?.classList
-          .add(
-            "invalid"
-          );
+  try{
+    /*
+     * Check before performing either write.
+     */
+    const existing =
+      await applicationRef.once(
+        "value"
+      );
 
-        return;
-      }
+    if(existing.exists()){
+      currentApplication =
+        existing.val();
 
-      if(
-        value("accuracyConfirm") !==
-        "Yes"
-      ){
-        status.textContent =
-          "Confirm that your application and account information are current and accurate.";
+      loadApplication(
+        currentApplication
+      );
 
-        status.style.color =
-          "#ff9fa8";
-
-        openStep(
-          4,
-          true
-        );
-
-        validateField(
-          "accuracyConfirm"
-        );
-
-        return;
-      }
-
-      button.disabled =
-        true;
-
-      button.innerHTML =
-        '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+      renderExisting();
 
       status.textContent =
-        "Submitting your application...";
+        "You already submitted an application for this tournament.";
 
       status.style.color =
-        "#aaa3b4";
+        "#ff9fa8";
 
-      const socials =
-        currentPlayer.socials ||
-        {};
+      return;
+    }
 
-      const now =
-        Date.now();
+    /*
+     * Save and confirm the Discord ID first.
+     *
+     * This prevents Firebase application rules from evaluating
+     * before the player's Discord ID exists.
+     */
+    status.textContent =
+      "Verifying your Discord information...";
 
-      const strength =
-        profileStrengthData();
+    await discordIdRef.set(
+      discordId
+    );
 
-      const application = {
-        tournamentId,
-        tournamentName,
+    currentPlayer.discordUserId =
+      discordId;
 
-        uid:
-          currentUser.uid,
+    /*
+     * Submit the application only after the Discord write
+     * has been accepted by Firebase.
+     */
+    status.textContent =
+      "Submitting your application...";
 
-        rgId:
-          currentPlayer.rgId ||
-          "",
+    await applicationRef.set(
+      application
+    );
 
-        displayName:
-          currentPlayer.displayName ||
-          "",
+    currentApplication =
+      application;
 
-        rivalsIgn:
-          currentPlayer.rivalsIgn ||
-          "",
+    status.textContent =
+      "Application submitted successfully.";
 
-        discordUsername:
-          currentPlayer.discordUsername ||
-          "",
+    status.style.color =
+      "#82e7af";
 
-        /*
-         * Discord IDs must always remain strings.
-         */
-        discordUserId:
-          value(
-            "discordUserId"
-          ),
+    renderExisting();
 
-        discordMember:
-          value(
-            "discordConfirm"
-          ) === "Yes",
+    window.scrollTo({
+      top:
+        Math.max(
+          0,
+          $("applicationState").offsetTop -
+          90
+        ),
 
-        region:
-          currentPlayer.region ||
-          "",
+      behavior:
+        "smooth"
+    });
+  }catch(error){
+    console.error(
+      "Application submission failed:",
+      error
+    );
 
-        platform:
-          currentPlayer.platform ||
-          "",
+    /*
+     * Double-check whether Firebase saved the application despite
+     * an error from another operation. This avoids displaying a
+     * false failure message.
+     */
+    try{
+      const savedApplication =
+        await applicationRef.once(
+          "value"
+        );
 
-        bio:
-          currentPlayer.bio ||
-          "",
-
-        socials:{
-          twitch:
-            socials.twitch ||
-            "",
-
-          youtube:
-            socials.youtube ||
-            "",
-
-          tiktok:
-            socials.tiktok ||
-            "",
-
-          x:
-            socials.x ||
-            ""
-        },
-
-        profileCompletionPercent:
-          strength.percent,
-
-        missingRecommendedProfileInfo:
-          strength.missing,
-
-        ageConfirm:
-          value(
-            "ageConfirm"
-          ),
-
-        discordConfirm:
-          value(
-            "discordConfirm"
-          ),
-
-        checkInConfirm:
-          value(
-            "checkInConfirm"
-          ),
-
-        availability:
-          value(
-            "availability"
-          ),
-
-        workingMic:
-          value(
-            "workingMic"
-          ),
-
-        customLobby:
-          value(
-            "customLobby"
-          ),
-
-        teamVc:
-          value(
-            "teamVc"
-          ),
-
-        peakRank:
-          value(
-            "peakRank"
-          ),
-
-        mainRole:
-          value(
-            "mainRole"
-          ),
-
-        mainHeroes:
-          value(
-            "mainHeroes"
-          ),
-
-        participatedBefore:
-          value(
-            "participatedBefore"
-          ),
-
-        wantsSub:
-          value(
-            "wantsSub"
-          ),
-
-        willStream:
-          value(
-            "willStream"
-          ),
-
-        followerCount:
-          Number(
-            value(
-              "followerCount"
-            )
-          ) || 0,
-
-        applicantNotes:
-          value(
-            "applicantNotes"
-          ),
-
-        accuracyConfirm:
-          value(
-            "accuracyConfirm"
-          ),
-
-        status:
-          "pending",
-
-        submittedAt:
-          now,
-
-        updatedAt:
-          now
-      };
-
-      try{
-        const ref =
-          database.ref(
-            `applications/${tournamentId}/${currentUser.uid}`
-          );
-
-        const existing =
-          await ref.once(
-            "value"
-          );
-
-        if(
-          existing.exists()
-        ){
-          currentApplication =
-            existing.val();
-
-          loadApplication(
-            currentApplication
-          );
-
-          renderExisting();
-
-          status.textContent =
-            "You already submitted an application for this tournament.";
-
-          status.style.color =
-            "#ff9fa8";
-
-          return;
-        }
-
-        await Promise.all([
-          ref.set(
-            application
-          ),
-
-          database
-            .ref(
-              `players/${currentUser.uid}/discordUserId`
-            )
-            .set(
-              value(
-                "discordUserId"
-              )
-            )
-        ]);
-
+      if(savedApplication.exists()){
         currentApplication =
-          application;
+          savedApplication.val();
+
+        loadApplication(
+          currentApplication
+        );
 
         status.textContent =
           "Application submitted successfully.";
@@ -4598,22 +4660,38 @@
           behavior:
             "smooth"
         });
-      }catch(error){
-        console.error(error);
 
-        status.textContent =
-          error.message;
-
-        status.style.color =
-          "#ff9fa8";
-      }finally{
-        button.disabled =
-          false;
-
-        button.innerHTML =
-          '<i class="fa-solid fa-paper-plane"></i> Submit Application';
+        return;
       }
+    }catch(checkError){
+      console.error(
+        "Could not verify the application after the error:",
+        checkError
+      );
     }
+
+    if(
+      error?.code ===
+      "PERMISSION_DENIED"
+    ){
+      status.textContent =
+        "Firebase denied the submission. Please confirm that your Discord ID and required account information are complete, then try again.";
+    }else{
+      status.textContent =
+        error?.message ||
+        "The application could not be submitted. Please try again.";
+    }
+
+    status.style.color =
+      "#ff9fa8";
+  }finally{
+    button.disabled =
+      false;
+
+    button.innerHTML =
+      '<i class="fa-solid fa-paper-plane"></i> Submit Application';
+  }
+}
 
     function attach(){
       requiredFields.forEach(

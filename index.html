@@ -2351,7 +2351,7 @@ const commentPlayerCache = new Map();
           <article class="comment-item">
             <a
               class="comment-avatar-shell"
-              href="player.html?id=${encodeURIComponent(comment.userId || "")}"
+              href="profile.html?id=${encodeURIComponent(comment.userId || "")}"
               style="--comment-frame-color:${frameColor};"
               aria-label="View ${escapeHtml(displayName)} profile"
             >
@@ -2362,7 +2362,7 @@ const commentPlayerCache = new Map();
               <div class="comment-topline">
                 <a
                   class="comment-name ${nameEffectClass}"
-                  href="player.html?id=${encodeURIComponent(comment.userId || "")}"
+                  href="profile.html?id=${encodeURIComponent(comment.userId || "")}"
                   style="${nameColor ? `--comment-name-color:${nameColor};` : ""}"
                 >
                   ${escapeHtml(displayName)}

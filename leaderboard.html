@@ -1716,7 +1716,7 @@
     }
 
     function playerProfileLink(uid){
-      return uid ? `player.html?id=${encodeURIComponent(uid)}` : "";
+      return uid ? `profile.html?id=${encodeURIComponent(uid)}` : "";
     }
 
     function uidFromPlayerProfileLink(linkValue){
@@ -1726,7 +1726,7 @@
       try{
         const url = new URL(link,window.location.href);
         const path = url.pathname.toLowerCase();
-        if(!path.endsWith("/player.html") && !path.endsWith("player.html")) return "";
+        if(!path.endsWith("/profile.html") && !path.endsWith("profile.html")) return "";
         return clean(url.searchParams.get("id"));
       }catch{
         const match = link.match(/(?:^|\/)player\.html\?[^#]*[?&]?id=([^&#]+)/i);

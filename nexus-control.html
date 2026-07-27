@@ -428,5 +428,140 @@
 <script src="nexus-overlays.js?v=1"></script>
 <script src="nexus-settings.js?v=1"></script>
 <script src="nexus-control.js?v=21"></script>
+
+<script>
+  (() => {
+    "use strict";
+
+    let reportsNavReference = null;
+    let reportsNavHandler = null;
+
+    function updateReportsNavBadge(count) {
+      const badge = document.getElementById("reportsNavCount");
+
+      if (!badge) return;
+
+      const safeCount = Math.max(0, Number(count) || 0);
+
+      badge.textContent =
+        safeCount > 99
+          ? "99+"
+          : String(safeCount);
+
+      badge.hidden = safeCount === 0;
+
+      badge.setAttribute(
+        "aria-label",
+        safeCount === 1
+          ? "1 new report"
+          : `${safeCount} new reports`
+      );
+    }
+
+    function countNewReports(reportsRecord) {
+      return Object.values(reportsRecord || {}).filter(report => {
+        if (!report || typeof report !== "object") {
+          return false;
+        }
+
+        const reporters = report.reporters || {};
+
+        /*
+          Ignore empty case records that contain no actual reporters.
+        */
+        if (
+          !reporters ||
+          typeof reporters !== "object" ||
+          Object.keys(reporters).length === 0
+        ) {
+          return false;
+        }
+
+        const status =
+          String(
+            report.admin?.status ||
+            report.meta?.status ||
+            "open"
+          )
+            .trim()
+            .toLowerCase();
+
+        return status === "open";
+      }).length;
+    }
+
+    function detachReportsNavListener() {
+      if (reportsNavReference && reportsNavHandler) {
+        reportsNavReference.off(
+          "value",
+          reportsNavHandler
+        );
+      }
+
+      reportsNavReference = null;
+      reportsNavHandler = null;
+      updateReportsNavBadge(0);
+    }
+
+    async function attachReportsNavListener(user) {
+      detachReportsNavListener();
+
+      if (!user) return;
+
+      try {
+        const tournamentSnapshot = await database
+          .ref("site/currentTournament")
+          .once("value");
+
+        const tournamentId =
+          String(
+            tournamentSnapshot.val() ||
+            "open1"
+          ).trim();
+
+        reportsNavReference = database.ref(
+          `tournamentReports/${tournamentId}`
+        );
+
+        reportsNavHandler = snapshot => {
+          const unreadCount = countNewReports(
+            snapshot.val() || {}
+          );
+
+          updateReportsNavBadge(unreadCount);
+        };
+
+        reportsNavReference.on(
+          "value",
+          reportsNavHandler,
+          error => {
+            console.error(
+              "Reports navigation badge listener failed:",
+              error
+            );
+
+            updateReportsNavBadge(0);
+          }
+        );
+      } catch (error) {
+        console.error(
+          "Reports badge tournament lookup failed:",
+          error
+        );
+
+        updateReportsNavBadge(0);
+      }
+    }
+
+    auth.onAuthStateChanged(user => {
+      void attachReportsNavListener(user);
+    });
+
+    window.addEventListener(
+      "beforeunload",
+      detachReportsNavListener
+    );
+  })();
+</script>
 </body>
 </html>

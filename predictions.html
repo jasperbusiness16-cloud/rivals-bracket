@@ -1042,6 +1042,39 @@
         rgba(16,13,26,.86);
     }
     .career-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 32%,rgba(255,255,255,.045),transparent 68%);transform:translateX(-120%);animation:cardSweep 8s ease-in-out infinite;pointer-events:none}
+
+      .rank-info-button{
+      position:absolute;
+      top:14px;
+      right:14px;
+      z-index:3;
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      padding:0;
+      border:1px solid rgba(192,132,252,.5);
+      border-radius:50%;
+      background:rgba(168,85,247,.14);
+      color:#fff;
+      transition:.18s ease;
+    }
+
+    .rank-info-button span{
+      display:block;
+      font-family:Arial,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      line-height:1;
+      transform:translateY(-1px);
+    }
+
+    .rank-info-button:hover{
+      transform:translateY(-1px);
+      border-color:var(--purple-2);
+      background:rgba(168,85,247,.26);
+      color:#fff;
+    }
     .career-emblem{width:76px;height:76px;display:grid;place-items:center;clip-path:polygon(50% 0,92% 22%,86% 78%,50% 100%,14% 78%,8% 22%);background:linear-gradient(160deg,rgba(192,132,252,.95),rgba(76,29,149,.86));font-size:26px;font-weight:800}
     .career-emblem span{width:calc(100% - 6px);height:calc(100% - 6px);display:grid;place-items:center;clip-path:inherit;background:#100d1a;color:var(--purple-2)}
     .career-rank-copy{min-width:0}
@@ -1073,22 +1106,100 @@
     .history-result.incorrect{color:var(--red)}
     .history-result.pending{color:var(--gold)}
 
-    .career-side{min-height:0;display:grid;grid-template-rows:auto auto auto;align-content:start;gap:10px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-right:2px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.28) transparent}
-    .side-card{min-width:0;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.015)}
-    .side-card h4{margin:0;font-size:11px;text-transform:uppercase}
-    .side-card p{margin:6px 0 0;color:var(--muted);font-size:9px;line-height:1.4;overflow-wrap:anywhere}
+    .career-side{min-height:0;display:grid;grid-template-rows:auto auto;align-content:start;gap:10px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding-right:2px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.28) transparent}
+        .side-card{
+      min-width:0;
+      padding:22px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .side-card h4{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.5px;
+      text-transform:uppercase;
+    }
+
+    .side-card p{
+      margin:9px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      overflow-wrap:anywhere;
+    }
+
     .rank-ladder-card{align-self:start}
     .rank-ladder-card .reward-list{margin-top:8px}
-    .mastery-large{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:10px}
-    .mastery-large strong{font-size:30px;line-height:1}
-    .mastery-large span{color:var(--purple-2);font-size:13px;font-weight:800}
-    .milestone-list{display:grid;gap:8px;margin-top:10px}
-    .milestone{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.012)}
-    .milestone-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:rgba(168,85,247,.07);color:var(--purple-2);font-size:10px}
-    .milestone strong{display:block;font-size:9px;text-transform:uppercase}
-    .milestone span{display:block;margin-top:1px;color:var(--dim);font-size:7px}
-    .milestone b{color:var(--gold);font-size:8px}
 
+    .mastery-large{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .mastery-large strong{
+      font-size:38px;
+      line-height:1;
+    }
+
+    .mastery-large span{
+      color:var(--purple-2);
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .milestone-list{
+      display:grid;
+      gap:13px;
+      margin-top:17px;
+    }
+
+    .milestone{
+      min-height:76px;
+      display:grid;
+      grid-template-columns:48px minmax(0,1fr) auto;
+      align-items:center;
+      gap:14px;
+      padding:13px 15px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:rgba(255,255,255,.018);
+    }
+
+    .milestone-icon{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:12px;
+      background:rgba(168,85,247,.1);
+      color:var(--purple-2);
+      font-size:18px;
+    }
+
+    .milestone strong{
+      display:block;
+      font-size:14px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .milestone span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:11px;
+    }
+
+    .milestone b{
+      color:var(--gold);
+      font-size:14px;
+    }
     /* INTEL RAIL */
     .intel-rail{
       display:flex;
@@ -1129,18 +1240,23 @@
     .system-status i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(61,220,151,.55)}
 
     /* MODALS */
-    .modal-backdrop{
+      .modal-backdrop{
       position:fixed;
       inset:0;
       z-index:4000;
       display:none;
-      align-items:flex-start;
+      align-items:center;
       justify-content:center;
-      padding:20px;
+      overflow-y:auto;
+      padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
       background:rgba(3,3,7,.82);
       backdrop-filter:blur(11px);
     }
-    .modal-backdrop.show{display:flex}
+
+    .modal-backdrop.show{
+      display:flex;
+    }
+
     .modal{
       width:min(1040px,100%);
       max-height:calc(100dvh - 40px);
@@ -1315,14 +1431,941 @@
       .career-side{grid-template-columns:1fr}
       .career-side .side-card:last-child{grid-column:auto}
       .teams-grid{grid-template-columns:1fr}
-      .modal-backdrop{padding:max(10px,env(safe-area-inset-top)) 0 0}
-      .modal{width:100%;max-height:calc(100dvh - max(10px,env(safe-area-inset-top)));border-radius:16px 16px 0 0}
+          .modal-backdrop{
+        align-items:center;
+        padding:max(14px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));
+      }
+
+      .modal{
+        width:100%;
+        max-height:calc(100dvh - 28px);
+        border-radius:16px;
+      }
       .modal-body{padding:17px 14px calc(24px + env(safe-area-inset-bottom))}
     }
 
     @media(prefers-reduced-motion:reduce){
       *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
     }
+
+
+    /* =========================================================
+       2026 CLEAN PREDICTION COMMAND REDESIGN
+       One document scroll, clearer hierarchy, simpler mobile UI.
+       ========================================================= */
+
+    html,
+    body{
+      width:100%;
+      min-height:100%;
+      height:auto;
+      overflow-x:hidden;
+      overscroll-behavior-x:none;
+    }
+
+    body{
+      display:block;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      background:
+        radial-gradient(circle at 78% -8%,rgba(124,58,237,.19),transparent 30%),
+        radial-gradient(circle at 8% 105%,rgba(76,29,149,.12),transparent 34%),
+        linear-gradient(180deg,#09080f,#050509 44%,#050509);
+    }
+
+    body.modal-open{
+      overflow:hidden;
+    }
+
+    #globalHeader{
+      position:relative;
+      z-index:300;
+    }
+
+    .prediction-client{
+      width:min(calc(100% - 28px),1500px);
+      min-height:0;
+      height:auto;
+      margin:16px auto 72px;
+      padding:0;
+      overflow:visible;
+      isolation:isolate;
+    }
+
+    .prediction-client::before{
+      position:fixed;
+      inset:0;
+      opacity:.72;
+      animation:none;
+    }
+
+    .prediction-client::after{
+      position:fixed;
+      inset:0;
+      mask-image:linear-gradient(180deg,transparent,black 13%,black 87%,transparent);
+    }
+
+    .client-shell{
+      width:100%;
+      height:auto;
+      min-height:0;
+      display:block;
+      overflow:visible;
+      border:1px solid rgba(192,132,252,.2);
+      border-radius:20px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.022),transparent 11%),
+        rgba(7,6,12,.93);
+      box-shadow:0 24px 76px rgba(0,0,0,.42);
+      backdrop-filter:blur(16px);
+    }
+
+    .client-topbar{
+      position:relative;
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      grid-template-areas:
+        "brand status"
+        "tabs tabs";
+      align-items:start;
+      gap:16px 22px;
+      padding:22px 22px 18px;
+      border-bottom:1px solid rgba(192,132,252,.18);
+      border-radius:20px 20px 0 0;
+      background:
+        radial-gradient(circle at 88% 0%,rgba(168,85,247,.13),transparent 34%),
+        linear-gradient(120deg,rgba(76,29,149,.12),transparent 48%),
+        rgba(12,10,19,.93);
+    }
+
+    .client-topbar::after{
+      left:22px;
+      right:22px;
+      opacity:.55;
+    }
+
+    .brand-lockup{grid-area:brand}
+    .brand-kicker{font-size:9px;letter-spacing:1.8px}
+    .brand-lockup h1{
+      margin-top:7px;
+      font-size:clamp(27px,3vw,42px);
+      letter-spacing:-1px;
+    }
+    .brand-lockup p{
+      max-width:680px;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:11px;
+      white-space:normal;
+      line-height:1.4;
+    }
+
+    .top-status{
+      grid-area:status;
+      align-self:start;
+      flex-wrap:wrap;
+    }
+
+    .status-chip{
+      min-height:38px;
+      padding:0 12px;
+      border-radius:10px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .section-tabs{
+      grid-area:tabs;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:7px;
+      width:100%;
+      padding:6px;
+      overflow:visible;
+      border-radius:14px;
+      background:rgba(255,255,255,.016);
+    }
+
+    .section-tab{
+      min-height:46px;
+      border-radius:10px;
+      color:#898295;
+      font-size:10px;
+    }
+
+    .section-tab.active{
+      color:#fff;
+      border-color:rgba(192,132,252,.4);
+      background:linear-gradient(135deg,rgba(76,29,149,.68),rgba(168,85,247,.18));
+      box-shadow:inset 0 1px rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.2);
+    }
+
+    .section-tab.active::after{
+      left:25%;
+      right:25%;
+      bottom:-7px;
+    }
+
+    .client-grid{
+      display:block;
+      width:100%;
+      min-height:0;
+      overflow:visible;
+    }
+
+    .player-rail,
+    .intel-rail{
+      display:none !important;
+    }
+
+    .stage-shell{
+      width:100%;
+      min-height:0;
+      height:auto;
+      position:relative;
+      overflow:visible;
+      background:transparent;
+    }
+
+    .stage-panel{
+      position:relative;
+      inset:auto;
+      width:100%;
+      min-height:0;
+      height:auto;
+      display:none;
+      overflow:visible;
+      animation:panelIn .24s ease;
+    }
+
+    .stage-panel.active{
+      display:block;
+    }
+
+    .stage-header{
+      min-height:0;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:18px;
+      padding:24px 22px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.012),transparent);
+    }
+
+    .stage-title h2{
+      margin-top:6px;
+      font-size:clamp(25px,3vw,36px);
+    }
+
+    .stage-title p{
+      max-width:690px;
+      margin-top:7px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.45;
+    }
+
+    .button{
+      min-height:40px;
+      padding:0 14px;
+      border-radius:10px;
+    }
+
+    /* OVERVIEW: one obvious action, compact supporting information */
+    .command-grid{
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1.45fr) minmax(290px,.75fr);
+      grid-template-rows:auto auto;
+      gap:12px;
+      padding:14px;
+    }
+
+    .command-card{
+      border-color:rgba(255,255,255,.09);
+      border-radius:17px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.023),transparent 42%),
+        rgba(17,14,27,.8);
+    }
+
+    .primary-command{
+      grid-row:auto;
+      min-height:330px;
+      padding:30px;
+      justify-content:center;
+      background:
+        radial-gradient(circle at 77% 44%,rgba(168,85,247,.22),transparent 30%),
+        linear-gradient(125deg,rgba(76,29,149,.3),transparent 58%),
+        rgba(15,12,25,.94);
+    }
+
+    .primary-copy h3{
+      max-width:780px;
+      margin-top:16px;
+      font-size:clamp(36px,5vw,65px);
+      line-height:.9;
+    }
+
+    .primary-copy p{
+      max-width:680px;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .primary-command-footer{
+      align-items:center;
+      margin-top:28px;
+    }
+
+    .command-side-stack{
+      min-height:0;
+      display:grid;
+      grid-template-rows:1fr 1fr;
+      gap:12px;
+    }
+
+    .mini-command{
+      min-height:159px;
+      padding:18px;
+    }
+
+    .mini-command h4{font-size:17px}
+    .mini-command p{font-size:10px;line-height:1.45}
+
+    .recent-command{
+      grid-column:1/-1;
+      min-height:130px;
+      grid-template-columns:minmax(0,1.35fr) repeat(3,minmax(120px,.45fr));
+      padding:18px 20px;
+    }
+
+    .recent-copy p{
+      white-space:normal;
+      line-height:1.4;
+    }
+
+    /* PICK'EM: only the bracket scrolls sideways */
+    .pickem-body{
+      display:block;
+      min-height:0;
+    }
+
+    .bracket-viewport{
+      min-height:0;
+      overflow-x:auto;
+      overflow-y:visible;
+      overscroll-behavior-x:contain;
+      -webkit-overflow-scrolling:touch;
+      padding:16px;
+    }
+
+    .bracket{
+      height:auto;
+      min-height:560px;
+      min-width:1000px;
+      gap:20px;
+    }
+
+    .round,
+    .match-stack{
+      min-height:0;
+    }
+
+    .match-stack{
+      justify-content:space-around;
+    }
+
+    .match-card{
+      border-radius:13px;
+      background:rgba(255,255,255,.015);
+    }
+
+    .bracket-team{
+      min-height:48px;
+    }
+
+    .team-copy span{
+      display:none;
+    }
+
+    .champion-stage{
+      min-height:230px;
+    }
+
+    .bracket-dock{
+      position:relative;
+      min-height:78px;
+      padding:13px 17px;
+      border-top:1px solid var(--line);
+      border-radius:0 0 18px 18px;
+      background:linear-gradient(90deg,rgba(76,29,149,.11),transparent 48%);
+    }
+
+    .dock-copy span{
+      white-space:normal;
+      line-height:1.35;
+    }
+
+    /* LIVE: direct match -> question -> answer -> reward */
+    .live-body{
+      display:grid;
+      grid-template-rows:auto auto;
+      gap:12px;
+      min-height:0;
+      padding:14px;
+    }
+
+    .live-match-hero{
+      min-height:210px;
+      border-radius:18px;
+      padding:24px 34px;
+    }
+
+    .question-console{
+      min-height:0;
+      display:grid;
+      grid-template-columns:190px minmax(0,1fr) 240px;
+      overflow:hidden;
+      border-radius:18px;
+    }
+
+    .question-nav{
+      padding:15px;
+    }
+
+    .question-tab{
+      min-height:58px;
+      margin-top:9px;
+    }
+
+    .question-stage{
+      justify-content:flex-start;
+      padding:28px;
+    }
+
+    .question-stage h3{
+      font-size:clamp(29px,3vw,42px);
+    }
+
+    .question-stage p{
+      margin-top:9px;
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .answer-grid{
+      gap:10px;
+      margin-top:22px;
+    }
+
+    .live-answer{
+      min-height:68px;
+      border-radius:12px;
+      font-size:13px;
+    }
+
+    .question-intel{
+      padding:20px;
+    }
+
+    .reward-value{
+      margin-top:7px;
+      font-size:32px;
+    }
+
+    /* CAREER: profile first, supporting systems below */
+    .career-body{
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);
+      gap:12px;
+      padding:14px;
+    }
+
+    .career-overview{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto auto auto;
+      gap:12px;
+    }
+
+    .career-banner{
+      min-height:190px;
+      padding:25px;
+      border-radius:18px;
+    }
+
+    .career-emblem{
+      width:92px;
+      height:92px;
+      font-size:31px;
+    }
+
+    .career-rank-copy h3{
+      font-size:36px;
+    }
+
+    .career-rank-copy p{
+      max-width:520px;
+      font-size:11px;
+      line-height:1.45;
+    }
+
+    .career-metrics{
+      gap:10px;
+    }
+
+    .career-metric{
+      min-height:100px;
+      padding:16px;
+      border-radius:14px;
+    }
+
+    .career-metric strong{
+      margin-top:8px;
+      font-size:27px;
+    }
+
+    .history-panel{
+      min-height:260px;
+      height:auto;
+      display:block;
+      overflow:visible;
+      border-radius:17px;
+    }
+
+    .panel-subhead{
+      min-height:52px;
+    }
+
+    .history-list{
+      min-height:210px;
+      max-height:none;
+      overflow:visible;
+      padding:10px;
+    }
+
+    .career-side{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto auto auto;
+      gap:12px;
+      overflow:visible;
+      padding:0;
+    }
+
+    .side-card{
+      padding:18px;
+      border-radius:17px;
+    }
+
+    .side-card h4{font-size:13px}
+    .side-card p{font-size:10px;line-height:1.45}
+
+    /* Modals remain the only vertical inner scroll area. */
+    .modal-body{
+      overflow-y:auto;
+      overflow-x:hidden;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    @media(max-width:1280px){
+      .client-grid{display:block}
+      .question-console{grid-template-columns:175px minmax(0,1fr) 215px}
+    }
+
+    @media(max-width:980px){
+      body{
+        height:auto;
+        min-height:100dvh;
+        overflow-x:hidden;
+        overflow-y:auto;
+      }
+
+      .prediction-client{
+        width:min(calc(100% - 18px),1500px);
+        min-height:0;
+        margin:10px auto 58px;
+        overflow:visible;
+      }
+
+      .client-shell,
+      .client-grid,
+      .stage-shell,
+      .stage-panel,
+      .stage-panel.active{
+        height:auto;
+        min-height:0;
+        overflow:visible;
+      }
+
+      .client-topbar{
+        grid-template-columns:minmax(0,1fr) auto;
+        grid-template-areas:
+          "brand status"
+          "tabs tabs";
+        padding:18px;
+      }
+
+      .top-status{
+        position:static;
+      }
+
+      .section-tabs{
+        display:flex;
+        overflow-x:auto;
+        overflow-y:hidden;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        -webkit-overflow-scrolling:touch;
+      }
+
+      .section-tabs::-webkit-scrollbar{display:none}
+
+      .section-tab{
+        flex:0 0 auto;
+        min-width:180px;
+      }
+
+      .command-grid{
+        grid-template-columns:1fr;
+      }
+
+      .primary-command{
+        min-height:300px;
+      }
+
+      .command-side-stack{
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:auto;
+      }
+
+      .recent-command{
+        grid-template-columns:1fr repeat(3,minmax(100px,.4fr));
+      }
+
+      .question-console{
+        grid-template-columns:165px minmax(0,1fr);
+      }
+
+      .question-intel{
+        grid-column:1/-1;
+        border-left:0;
+        border-top:1px solid var(--line);
+      }
+
+      .career-body{
+        grid-template-columns:1fr;
+      }
+
+      .career-side{
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:auto;
+      }
+
+      .career-side .side-card:last-child{
+        grid-column:1/-1;
+      }
+    }
+
+    @media(max-width:700px){
+      .prediction-client{
+        width:min(calc(100% - 12px),1500px);
+        margin-top:8px;
+      }
+
+      .client-shell{
+        border-radius:16px;
+      }
+
+      .client-topbar{
+        grid-template-columns:1fr;
+        grid-template-areas:
+          "brand"
+          "status"
+          "tabs";
+        gap:13px;
+        padding:17px 14px 14px;
+        border-radius:16px 16px 0 0;
+      }
+
+      .brand-lockup h1{
+        max-width:none;
+        font-size:28px;
+        white-space:normal;
+      }
+
+      .brand-lockup p{
+        font-size:10px;
+      }
+
+      .top-status{
+        justify-content:flex-start;
+      }
+
+      .top-status .status-chip:last-child{
+        display:inline-flex;
+      }
+
+      .section-tab{
+        min-width:160px;
+        min-height:44px;
+      }
+
+      .stage-header{
+        align-items:flex-start;
+        flex-direction:column;
+        padding:19px 16px 15px;
+      }
+
+      .header-actions{
+        width:100%;
+        justify-content:flex-start;
+      }
+
+      .header-actions .button{
+        flex:1 1 auto;
+      }
+
+      .command-grid{
+        padding:10px;
+        gap:10px;
+      }
+
+      .primary-command{
+        min-height:0;
+        padding:23px 20px;
+        justify-content:flex-start;
+      }
+
+      .primary-copy h3{
+        font-size:39px;
+        line-height:.92;
+      }
+
+      .primary-copy p{
+        font-size:12px;
+      }
+
+      .primary-command-footer{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:15px;
+        margin-top:24px;
+      }
+
+      .primary-command-footer .button{
+        width:100%;
+      }
+
+      .command-side-stack{
+        grid-template-columns:1fr;
+      }
+
+      .mini-command{
+        min-height:0;
+      }
+
+      .recent-command{
+        grid-template-columns:1fr 1fr;
+        min-height:0;
+        padding:16px;
+      }
+
+      .recent-copy{
+        grid-column:1/-1;
+      }
+
+      .recent-stat{
+        padding:11px 0 0;
+        border-left:0;
+        border-top:1px solid var(--line);
+      }
+
+      .bracket-viewport{
+        padding:12px 10px 14px;
+      }
+
+      .bracket{
+        min-width:900px;
+        min-height:560px;
+      }
+
+      .bracket-dock{
+        grid-template-columns:1fr;
+        gap:13px;
+        padding:14px;
+      }
+
+      .dock-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+
+      .dock-actions .button{
+        width:100%;
+      }
+
+      .live-body{
+        display:block;
+        padding:10px;
+      }
+
+      .live-match-hero{
+        min-height:0;
+        margin-bottom:10px;
+        padding:20px 10px;
+        gap:8px;
+      }
+
+      .live-crest{
+        width:62px;
+        height:62px;
+        flex-basis:62px;
+      }
+
+      .live-team-copy strong{
+        font-size:17px;
+      }
+
+      .question-console{
+        display:block;
+        overflow:hidden;
+      }
+
+      .question-nav{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+        padding:12px;
+        border-right:0;
+        border-bottom:1px solid var(--line);
+      }
+
+      .question-nav-title{
+        grid-column:1/-1;
+      }
+
+      .question-tab{
+        min-height:62px;
+        margin:0;
+      }
+
+      .question-stage{
+        padding:22px 18px;
+      }
+
+      .question-stage h3{
+        font-size:31px;
+      }
+
+      .answer-grid{
+        grid-template-columns:1fr;
+      }
+
+      .question-intel{
+        padding:18px;
+      }
+
+      .career-body{
+        padding:10px;
+      }
+
+      .career-banner{
+        grid-template-columns:74px minmax(0,1fr);
+        gap:14px;
+        min-height:0;
+        padding:20px;
+      }
+
+      .career-emblem{
+        width:74px;
+        height:74px;
+        font-size:25px;
+      }
+
+      .career-rank-copy h3{
+        font-size:30px;
+      }
+
+      .career-stars{
+        grid-column:1/-1;
+        text-align:left;
+      }
+
+      .career-metrics{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .career-metric{
+        min-height:96px;
+      }
+
+      .history-panel{
+        min-height:240px;
+      }
+
+      .career-side{
+        grid-template-columns:1fr;
+      }
+
+      .career-side .side-card:last-child{
+        grid-column:auto;
+      }
+
+      .teams-grid{
+        grid-template-columns:1fr;
+      }
+
+         .modal-backdrop{align-items:center;padding:max(14px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom))}
+      .modal{width:100%;max-height:calc(100dvh - 28px);border-radius:16px}
+    }
+
+    @media(max-width:430px){
+      .top-status{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+      }
+
+      .status-chip{
+        justify-content:center;
+      }
+
+      .section-tab{
+        min-width:148px;
+        font-size:9px;
+      }
+
+      .primary-copy h3{
+        font-size:35px;
+      }
+
+      .live-match-hero{
+        grid-template-columns:1fr auto 1fr;
+      }
+
+      .live-team{
+        display:block;
+        text-align:center;
+      }
+
+      .live-team.right{
+        display:block;
+        text-align:center;
+      }
+
+      .live-crest{
+        margin:0 auto 8px;
+      }
+
+      .career-metrics{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -1335,7 +2378,7 @@
         <div class="brand-lockup">
           <div class="brand-kicker">Prediction Command</div>
           <h1 id="tournamentName">Rivals Gauntlet Open #1</h1>
-          <p id="tournamentSub">Tournament intelligence, live calls and predictor progression.</p>
+          <p id="tournamentSub">Build your bracket, make live predictions, and track your prediction career.</p>
         </div>
 
         <nav class="section-tabs" aria-label="Prediction Center sections">
@@ -1405,7 +2448,7 @@
               <div class="stage-title">
                 <div class="eyebrow">Operational Overview</div>
                 <h2>Command Center</h2>
-                <p>Your highest-priority prediction actions and tournament status.</p>
+                <p>See what is open now and take the next prediction action.</p>
               </div>
               <div class="header-actions">
                 <button class="button" type="button" data-open-modal="rulesModal">How It Works</button>
@@ -1418,7 +2461,7 @@
                 <div class="primary-copy">
                   <div id="priorityBadge" class="priority-badge"><span class="pulse"></span><span>Action Available</span></div>
                   <h3 id="priorityTitle">Complete Your Tournament Bracket</h3>
-                  <p id="priorityText">Build the complete tournament path before the first match becomes currentMatch.</p>
+                  <p id="priorityText">Build the complete tournament path before the first match starts.</p>
                 </div>
 
                 <div class="primary-command-footer">
@@ -1450,7 +2493,7 @@
                   </div>
                   <div>
                     <h4 id="commandLiveTitle">Awaiting Next Match</h4>
-                    <p id="commandLiveText">Questions appear automatically when staff set the next matchup.</p>
+                    <p id="commandLiveText">Questions appear automatically when staff prepare the next matchup.</p>
                     <button class="button" type="button" data-go-section="live">Open Live Console</button>
                   </div>
                 </article>
@@ -1475,7 +2518,7 @@
               <div class="stage-title">
                 <div class="eyebrow">Tournament Campaign</div>
                 <h2>My Tournament Bracket</h2>
-                <p id="bracketHelper">Select a winner in every matchup before QF1 becomes currentMatch.</p>
+                <p id="bracketHelper">Select a winner in every matchup before the first match starts.</p>
               </div>
               <div class="header-actions">
                 <div class="completion-wrap">
@@ -1531,7 +2574,7 @@
               <div class="stage-title">
                 <div class="eyebrow">Broadcast Prediction Channel</div>
                 <h2>Live Predictions</h2>
-                <p id="liveHeaderText">Questions open with nextMatch and lock when the matchup becomes currentMatch.</p>
+                <p id="liveHeaderText">Questions open for the upcoming matchup and lock when the match starts.</p>
               </div>
               <div class="header-actions">
                 <div id="liveStatusChip" class="status-chip"><i class="status-dot"></i><span>Awaiting Match</span></div>
@@ -1553,6 +2596,15 @@
             <div class="career-body">
               <div class="career-overview">
                 <article class="career-banner">
+                <button
+  class="rank-info-button"
+  type="button"
+  aria-label="View predictor rank requirements"
+  title="View rank requirements"
+  onclick="openModal('rankModal')"
+>
+  <span aria-hidden="true">i</span>
+</button>
                   <div class="career-emblem"><span id="careerRankLetter">R</span></div>
                   <div class="career-rank-copy">
                     <span>Current Predictor Rank</span>
@@ -1593,16 +2645,6 @@
                   </div>
                 </section>
 
-                <section class="side-card rank-ladder-card">
-                  <h4>Rank Ladder</h4>
-                  <p>Rookie → Analyst → Expert → Oracle → Legend. Accuracy and completed prediction volume determine your current skill rank.</p>
-                  <div class="reward-list">
-                    <div class="reward-row"><span>Analyst</span><strong>50% / 3 Picks</strong></div>
-                    <div class="reward-row"><span>Expert</span><strong>60% / 5 Picks</strong></div>
-                    <div class="reward-row"><span>Oracle</span><strong>70% / 8 Picks</strong></div>
-                    <div class="reward-row"><span>Legend</span><strong>80% / 10 Picks</strong></div>
-                  </div>
-                </section>
               </aside>
             </div>
           </section>
@@ -1664,10 +2706,28 @@
       <div class="modal-body">
         <div class="rules">
           <div class="rule"><div class="rule-number">1</div><div><h3>Build the complete bracket</h3><p>Quarterfinal winners populate the Semifinals. Semifinal winners populate the Grand Final and your final choice becomes the predicted champion.</p></div></div>
-          <div class="rule"><div class="rule-number">2</div><div><h3>Submit before the tournament begins</h3><p>The full bracket locks when the first matchup becomes currentMatch. Submitted brackets can be updated until that moment.</p></div></div>
+          <div class="rule"><div class="rule-number">2</div><div><h3>Submit before the tournament begins</h3><p>The full bracket locks when the first match starts. Submitted brackets can be updated until that moment.</p></div></div>
           <div class="rule"><div class="rule-number">3</div><div><h3>Chase a perfect bracket</h3><p>Every matchup must be correct to earn the exclusive Perfect Bracket reward. The remaining counter updates as official results are finalized.</p></div></div>
-          <div class="rule"><div class="rule-number">4</div><div><h3>Predict the upcoming live match</h3><p>Live questions open when staff set nextMatch. Saved answers remain selected and lock automatically when that matchup becomes currentMatch.</p></div></div>
+          <div class="rule"><div class="rule-number">4</div><div><h3>Predict the upcoming live match</h3><p>Live questions open for the upcoming matchup. Saved answers remain selected and lock automatically when the match starts.</p></div></div>
           <div class="rule"><div class="rule-number">5</div><div><h3>Advance your predictor career</h3><p>Accuracy determines rank. Long-term participation increases Predictor Level and unlocks a capped reward multiplier for standard prediction rewards.</p></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="rankModal" class="modal-backdrop" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="rankTitle">
+      <div class="modal-header">
+        <div><span>Prediction Career</span><h2 id="rankTitle">Predictor Rank Requirements</h2></div>
+        <button class="modal-close" type="button" data-close-modal="rankModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="rules">
+          <div class="rule"><div class="rule-number">R</div><div><h3>Rookie</h3><p>Starting rank. Build a completed prediction record to begin advancing.</p></div></div>
+          <div class="rule"><div class="rule-number">A</div><div><h3>Analyst</h3><p>At least 50% accuracy across 3 or more completed predictions.</p></div></div>
+          <div class="rule"><div class="rule-number">E</div><div><h3>Expert</h3><p>At least 60% accuracy across 5 or more completed predictions.</p></div></div>
+          <div class="rule"><div class="rule-number">O</div><div><h3>Oracle</h3><p>At least 70% accuracy across 8 or more completed predictions.</p></div></div>
+          <div class="rule"><div class="rule-number">L</div><div><h3>Legend</h3><p>At least 80% accuracy across 10 or more completed predictions.</p></div></div>
         </div>
       </div>
     </section>
@@ -1917,7 +2977,7 @@
         <button class="bracket-team ${selected?"selected":""} ${resultClass}" type="button"
           data-pick-match="${matchId}" data-pick-team="${escapeHtml(teamKey)}" ${bracketLocked()?"disabled":""}>
           ${teamCrestMarkup(teamKey)}
-          <span class="team-copy"><strong>${escapeHtml(team?.teamName||"TBD")}</strong><span>Seed ${team?.seed||"-"}</span></span>
+          <span class="team-copy"><strong>${escapeHtml(team?.teamName||"TBD")}</strong><span>Tournament Team</span></span>
           <span class="team-check">◆</span>
         </button>`;
     }
@@ -2200,7 +3260,7 @@
       if(!matchKey||teams.length<2){
         statusChip.className="status-chip";
         statusChip.innerHTML='<i class="status-dot" style="background:var(--dim);box-shadow:none"></i><span>Awaiting Match</span>';
-        setText("liveHeaderText","Questions open with nextMatch and lock when the matchup becomes currentMatch.");
+        setText("liveHeaderText","Questions open for the upcoming matchup and lock when the match starts.");
         mount.innerHTML=`
           <div class="empty-live">
             <div class="empty-sigil">◉</div>
@@ -2224,7 +3284,7 @@
 
       statusChip.className=`status-chip ${locked?"locked":""}`;
       statusChip.innerHTML=`<i class="status-dot"></i><span>${locked?"Predictions Locked":"Predictions Open"}</span>`;
-      setText("liveHeaderText",locked?"This matchup is currentMatch. Saved answers are locked and remain visible.":"Make your calls now. Answers lock automatically when this matchup becomes currentMatch.");
+      setText("liveHeaderText",locked?"This match has started. Saved answers are locked and remain visible.":"Make your calls now. Answers lock automatically when the match starts.");
 
       mount.innerHTML=`
         <section class="live-match-hero">
@@ -2232,7 +3292,7 @@
             ${teamCrestMarkup(teams[0],"live-crest")}
             <div class="live-team-copy"><span>Team Alpha</span><strong>${escapeHtml(getTeamName(teams[0]))}</strong></div>
           </div>
-          <div class="live-center"><span>${escapeHtml(matchKey)} • ${isBo5?"Best of 5":"Best of 3"}</span><strong>VS</strong><div class="lock-copy">${locked?"Window Locked":"Locks at currentMatch"}</div></div>
+          <div class="live-center"><span>${escapeHtml(matchKey)} • ${isBo5?"Best of 5":"Best of 3"}</span><strong>VS</strong><div class="lock-copy">${locked?"Window Locked":"Locks when match starts"}</div></div>
           <div class="live-team right">
             ${teamCrestMarkup(teams[1],"live-crest")}
             <div class="live-team-copy"><span>Team Bravo</span><strong>${escapeHtml(getTeamName(teams[1]))}</strong></div>
@@ -2353,7 +3413,7 @@
       const liveOpen=Boolean(matchKey&&teams.length>=2&&!liveWindowLocked());
 
       let priorityTitle="Complete Your Tournament Bracket";
-      let priorityText="Build the complete tournament path before the first match becomes currentMatch.";
+      let priorityText="Build the complete tournament path before the first match starts.";
       let actionText="Enter Tournament Pick’em";
       let actionSection="pickem";
       let rewardLabel="Maximum Bracket Reward";
@@ -2390,7 +3450,7 @@
       setText("commandBracketText",submitted?`${complete}/7 picks secured. ${locked?"No further edits are available.":"Edits remain open until the tournament begins."}`:`${complete}/7 picks selected. Complete the full path to secure eligibility.`);
       setText("commandLiveState",liveOpen?"Open":liveWindowLocked()?"Locked":"Offline");
       setText("commandLiveTitle",matchKey&&teams.length>=2?`${matchKey}: ${getTeamName(teams[0])} vs ${getTeamName(teams[1])}`:"Awaiting Next Match");
-      setText("commandLiveText",liveOpen?"Two prediction questions are available now.":liveWindowLocked()?"This matchup is currentMatch and all saved answers are locked.":"Questions appear automatically when staff set the next matchup.");
+      setText("commandLiveText",liveOpen?"Two prediction questions are available now.":liveWindowLocked()?"This match has started and all saved answers are locked.":"Questions appear automatically when staff prepare the next matchup.");
       setText("snapshotTitle",`${stats.rank} Predictor • Level ${stats.level}`);
       setText("snapshotText",stats.total?`${stats.accuracy}% accuracy across ${stats.total} completed predictions.`:"Your prediction history will build as tournament results are finalized.");
       setText("commandCurrentStreak",stats.currentStreak);
@@ -2423,13 +3483,13 @@
       const chip=document.getElementById("pickemStatusChip");
       chip.classList.toggle("locked",locked);
       setText("pickemStatusText",locked?"Pick’em Locked":"Pick’em Open");
-      setText("bracketHelper",locked?"The tournament has started. Submitted brackets are final.":"Select a winner in every matchup before QF1 becomes currentMatch.");
+      setText("bracketHelper",locked?"The tournament has started. Submitted brackets are final.":"Select a winner in every matchup before the first match starts.");
     }
 
     function renderAll(){
       mapResolvedWinners();
       setText("tournamentName",siteData.eventName||"Rivals Gauntlet Open #1");
-      setText("tournamentSub",siteData.status?`${siteData.status} • Tournament prediction operations`:"Tournament intelligence, live calls and predictor progression.");
+      setText("tournamentSub",siteData.status?`${siteData.status} • Tournament prediction operations`:"Build your bracket, make live predictions, and track your prediction career.");
       renderPlayerRail();
       renderLockState();
       renderBracket();
@@ -2441,9 +3501,18 @@
       renderIntel();
     }
 
-    function openModal(id){
-      document.getElementById(id)?.classList.add("show");
-      document.getElementById(id)?.setAttribute("aria-hidden","false");
+        function openModal(id){
+      const backdrop=document.getElementById(id);
+      if(!backdrop)return;
+
+      backdrop.classList.add("show");
+      backdrop.setAttribute("aria-hidden","false");
+
+      backdrop.scrollTop=0;
+
+      const modalBody=backdrop.querySelector(".modal-body");
+      if(modalBody)modalBody.scrollTop=0;
+
       document.body.classList.add("modal-open");
     }
     function closeModal(id){

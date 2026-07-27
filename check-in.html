@@ -2320,87 +2320,83 @@ note: upcoming
         });
       }
 
-      function renderWindow() {
-        const windowState = getCheckInWindow();
-        const label = document.getElementById("windowLabel");
-        const state = document.getElementById("windowState");
-        const description =
-          document.getElementById("windowDescription");
-        const countdown =
-          document.getElementById("windowCountdown");
+    function renderWindow() {
+  const windowState = getCheckInWindow();
+  const label = document.getElementById("windowLabel");
+  const state = document.getElementById("windowState");
+  const description =
+    document.getElementById("windowDescription");
+  const countdown =
+    document.getElementById("windowCountdown");
 
-        if (windowState.phase === "complete") {
-          label.textContent = "Attendance Status";
-          state.textContent = "Confirmed";
-          description.textContent =
-            "Your tournament check-in is complete.";
-          countdown.hidden = true;
-          return;
-        }
+  if (windowState.phase === "complete") {
+    label.textContent = "Attendance Status";
+    state.textContent = "Confirmed";
+    description.textContent =
+      "Your tournament check-in is complete.";
+    countdown.hidden = true;
+    return;
+  }
 
-        if (windowState.phase === "open") {
-  label.textContent = windowState.isSubstitute
-    ? "Substitute Check-In"
-    : "Main Roster Check-In";
+  if (windowState.phase === "open") {
+    label.textContent = windowState.isSubstitute
+      ? "Substitute Check-In"
+      : "Main Roster Check-In";
 
-  state.textContent = "Open Now";
+    state.textContent = "Open Now";
 
-  description.textContent = windowState.isSubstitute
-    ? `Substitute availability closes ${formatDateTime(windowState.closesAt)}`
-    : `Main roster check-in closes ${formatDateTime(windowState.closesAt)}`;
+    description.textContent = windowState.isSubstitute
+      ? `Substitute availability closes ${formatDateTime(
+          windowState.closesAt
+        )}`
+      : `Main roster check-in closes ${formatDateTime(
+          windowState.closesAt
+        )}`;
 
-  countdown.hidden = false;
-  updateCountdownUnits(windowState.closesAt);
-  return;
+    countdown.hidden = false;
+    updateCountdownUnits(windowState.closesAt);
+    return;
+  }
+
+  if (windowState.phase === "upcoming") {
+    label.textContent = windowState.isSubstitute
+      ? "Substitute Check-In Opens"
+      : "Main Check-In Opens";
+
+    state.textContent = formatDateTime(
+      windowState.opensAt
+    );
+
+    description.textContent = windowState.isSubstitute
+      ? "Substitute availability opens five hours before main roster check-in."
+      : "Main roster check-in opens one hour before tournament start.";
+
+    countdown.hidden = false;
+    updateCountdownUnits(windowState.opensAt);
+    return;
+  }
+
+  if (windowState.phase === "closed") {
+    label.textContent = windowState.isSubstitute
+      ? "Substitute Check-In"
+      : "Main Roster Check-In";
+
+    state.textContent = "Closed";
+
+    description.textContent = windowState.isSubstitute
+      ? "The substitute availability window has closed."
+      : "Main roster check-in closed 30 minutes before tournament start.";
+
+    countdown.hidden = true;
+    return;
+  }
+
+  label.textContent = "Check-In Window";
+  state.textContent = "Not Scheduled";
+  description.textContent =
+    "Tournament staff has not published a tournament start time.";
+  countdown.hidden = true;
 }
-
-          countdown.hidden = false;
-
-          const target =
-            windowState.closesAt ||
-            windowState.eventStart;
-
-          updateCountdownUnits(target);
-          return;
-        }
-
-        if (windowState.phase === "upcoming") {
-  label.textContent = windowState.isSubstitute
-    ? "Substitute Check-In Opens"
-    : "Main Check-In Opens";
-
-  state.textContent = formatDateTime(
-    windowState.opensAt
-  );
-
-  description.textContent = windowState.isSubstitute
-    ? "Substitute availability opens five hours before main roster check-in."
-    : "Main roster check-in opens one hour before tournament start.";
-
-  countdown.hidden = false;
-  updateCountdownUnits(windowState.opensAt);
-  return;
-}
-          countdown.hidden = false;
-          updateCountdownUnits(windowState.opensAt);
-          return;
-        }
-
-        if (windowState.phase === "closed") {
-          label.textContent = "Check-In Window";
-          state.textContent = "Closed";
-          description.textContent =
-            "Contact tournament staff if you need assistance.";
-          countdown.hidden = true;
-          return;
-        }
-
-        label.textContent = "Check-In Window";
-        state.textContent = "Not Scheduled";
-        description.textContent =
-          "Tournament staff has not published a check-in time.";
-        countdown.hidden = true;
-      }
 
       function updateCountdownUnits(target) {
         const timestamp = parseTimestamp(target);

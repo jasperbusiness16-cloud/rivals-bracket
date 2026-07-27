@@ -8,7 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
-
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
 <link rel="stylesheet" href="/global-header.css?v=11">
 
   <style>
@@ -633,53 +636,110 @@
   color:inherit;
 }
 
-.news-engagement{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:9px;
+.news-post-actions{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  max-width:470px;
+  margin-top:14px;
 }
 
-.news-engagement-item{
-  min-height:34px;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:0 10px;
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:9px;
-  background:rgba(255,255,255,.025);
-  color:var(--muted);
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.7px;
-  text-transform:uppercase;
-}
-
-.news-engagement-item strong{
-  color:#fff;
-  font-size:12px;
-}
-
-.news-read-link{
+.news-post-action{
   min-height:42px;
   display:inline-flex;
   align-items:center;
-  justify-content:center;
+  justify-content:flex-start;
   gap:8px;
-  padding:0 16px;
-  border:1px solid rgba(192,132,252,.46);
-  border-radius:10px;
-  background:linear-gradient(
-    135deg,
-    rgba(109,40,217,.85),
-    rgba(168,85,247,.9)
-  );
+  padding:0;
+  border:0;
+  color:var(--dim);
+  background:transparent;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:color .18s ease;
+}
+
+.news-post-action .news-action-icon{
+  width:31px;
+  height:31px;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  border-radius:50%;
+  transition:.18s ease;
+}
+
+.news-post-action:hover,
+.news-post-action.liked{
+  color:var(--purple-2);
+}
+
+.news-post-action:hover .news-action-icon,
+.news-post-action.liked .news-action-icon{
+  background:rgba(168,85,247,.12);
+}
+
+.news-post-action.comment-action:hover{
+  color:#6fb8ff;
+}
+
+.news-post-action.comment-action:hover .news-action-icon{
+  background:rgba(87,164,255,.12);
+}
+
+.news-post-action:disabled{
+  cursor:wait;
+  opacity:.6;
+}
+
+.news-open-full{
+  width:100%;
+  min-height:48px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  margin-top:13px;
+  border:1px solid rgba(192,132,252,.48);
+  border-radius:11px;
+  background:linear-gradient(135deg,var(--purple-3),var(--purple));
   color:#fff;
-  font-size:11px;
+  font-size:12px;
   font-weight:800;
   letter-spacing:1px;
   text-transform:uppercase;
+  box-shadow:0 12px 30px rgba(109,40,217,.24);
+  transition:.18s ease;
+}
+
+.news-open-full:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.08);
+}
+
+.home-post-status{
+  position:fixed;
+  z-index:9000;
+  left:50%;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  max-width:min(92vw,520px);
+  padding:12px 16px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(15,15,23,.97);
+  color:#fff;
+  box-shadow:0 15px 45px rgba(0,0,0,.48);
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%,14px);
+  transition:.2s ease;
+}
+
+.home-post-status.show{
+  opacity:1;
+  transform:translate(-50%,0);
 }
 
 .news-read-link:hover{
@@ -1013,10 +1073,17 @@
       padding: 34px 18px; border: 1px dashed var(--border); border-radius: 14px;
       color: var(--dim); text-align: center;
     }
-    @media (max-width:720px) {
-      .friends-drawer { width: 100%; border-left: 0; }
-      .friends-drawer-header { min-height: 68px; padding: 0 16px; }
-    }
+@media (max-width:720px) {
+  .friends-drawer{
+    width:100%;
+    border-left:0;
+  }
+
+  .friends-drawer-header{
+    min-height:68px;
+    padding:0 16px;
+  }
+}
 
     /* Notification center */
     #homeNotificationMount { position: relative; }
@@ -1645,12 +1712,20 @@
   }
 }
 
-    @media (max-width: 720px) {
-      .shell { width: min(calc(100% - 28px), var(--max)); }
-   
-    
-    }
+   @media (max-width: 720px) {
+  .shell{
+    width:min(calc(100% - 28px),var(--max));
+  }
 
+  .news-post-actions{
+    max-width:none;
+  }
+
+  .news-post-action{
+    justify-content:center;
+  }
+}
+  
     @media (max-width: 470px) {
     
       .hero h1 { font-size: 48px; }
@@ -1873,35 +1948,13 @@
   
 
 
-        <button
-          id="postModalClose"
-          class="post-modal-close"
-          type="button"
-          aria-label="Close post"
-        >
-          ×
-        </button>
-      </div>
-
-      <div class="post-modal-scroll">
-        <article id="modalPostContent" class="modal-post">
-          <div class="comment-loading">Loading post...</div>
-        </article>
-
-        <div class="modal-comments-heading">
-          <h3>Comments</h3>
-          <span id="modalCommentCount">0 Comments</span>
-        </div>
-
-        <div id="commentComposerMount"></div>
-
-        <div id="modalCommentList" class="comment-list">
-          <div class="comment-loading">Loading comments...</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
+     
+<p
+  id="homePostStatus"
+  class="home-post-status"
+  role="status"
+  aria-live="polite"
+></p>
   <footer>
     <div class="shell footer-inner">
       <div class="footer-copy">
@@ -1940,11 +1993,13 @@
     let siteData = {};
 let donations = [];
 let countdownTimer = null;
-let currentUser = null;
-let currentPlayer = null;
-let currentPlayerRef = null;
-let currentPlayerCallback = null;
+let latestHomePost = null;
+let homeCurrentUser = null;
+let stopHomePostLikes = null;
+let homePostStatusTimer = null;
 
+const homePostLikeCounts = {};
+const homeLikedPostIds = new Set();
     
 
     function clean(value, fallback = "") {
@@ -2117,12 +2172,198 @@ let currentPlayerCallback = null;
 
     
 
+function setHomePostStatus(message, color = "#f7f5ff") {
+  clearTimeout(homePostStatusTimer);
 
+  const status = document.getElementById("homePostStatus");
+  if (!status) return;
+
+  status.textContent = message || "";
+  status.style.color = color;
+  status.classList.toggle("show", Boolean(message));
+
+  if (message) {
+    homePostStatusTimer = setTimeout(() => {
+      status.classList.remove("show");
+    }, 3300);
+  }
+}
+
+function updateHomePostLikeButton(postId) {
+  const button = document.querySelector(
+    `[data-home-like-post="${CSS.escape(postId)}"]`
+  );
+
+  if (!button) return;
+
+  const liked = homeLikedPostIds.has(postId);
+  const count = Number(homePostLikeCounts[postId] || 0);
+
+  button.classList.toggle("liked", liked);
+  button.setAttribute("aria-pressed", String(liked));
+  button.setAttribute(
+    "aria-label",
+    `${liked ? "Unlike" : "Like"} this post`
+  );
+
+  const icon = button.querySelector("i.fa-heart");
+
+  if (icon) {
+    icon.classList.toggle("fa-solid", liked);
+    icon.classList.toggle("fa-regular", !liked);
+  }
+
+  const countNode = button.querySelector("[data-home-like-count]");
+
+  if (countNode) {
+    countNode.textContent = count.toLocaleString("en-US");
+  }
+}
+
+function attachHomePostLikesListener() {
+  if (stopHomePostLikes) {
+    stopHomePostLikes();
+    stopHomePostLikes = null;
+  }
+
+  const reference = database.ref("postLikes");
+
+  const handler = snapshot => {
+    Object.keys(homePostLikeCounts).forEach(key => {
+      delete homePostLikeCounts[key];
+    });
+
+    homeLikedPostIds.clear();
+
+    snapshot.forEach(postSnapshot => {
+      let count = 0;
+
+      postSnapshot.forEach(userSnapshot => {
+        if (userSnapshot.val() !== true) return;
+
+        count += 1;
+
+        if (
+          homeCurrentUser &&
+          userSnapshot.key === homeCurrentUser.uid
+        ) {
+          homeLikedPostIds.add(postSnapshot.key);
+        }
+      });
+
+      homePostLikeCounts[postSnapshot.key] = count;
+    });
+
+    if (latestHomePost?.id) {
+      updateHomePostLikeButton(latestHomePost.id);
+    }
+  };
+
+  reference.on("value", handler, error => {
+    console.warn(
+      "Homepage post likes unavailable:",
+      error?.code || error?.message || error
+    );
+  });
+
+  stopHomePostLikes = () => {
+    reference.off("value", handler);
+  };
+}
+
+async function toggleHomePostLike(postId) {
+  if (!homeCurrentUser) {
+    const redirect =
+      `${location.pathname}${location.search}${location.hash}`;
+
+    location.href =
+      `login.html?redirect=${encodeURIComponent(redirect)}`;
+
+    return;
+  }
+
+  const wasLiked = homeLikedPostIds.has(postId);
+  const oldCount = Number(homePostLikeCounts[postId] || 0);
+
+  if (wasLiked) {
+    homeLikedPostIds.delete(postId);
+  } else {
+    homeLikedPostIds.add(postId);
+  }
+
+  homePostLikeCounts[postId] = Math.max(
+    0,
+    oldCount + (wasLiked ? -1 : 1)
+  );
+
+  updateHomePostLikeButton(postId);
+
+  try {
+    await database
+      .ref(`postLikes/${postId}/${homeCurrentUser.uid}`)
+      .set(wasLiked ? null : true);
+  } catch (error) {
+    if (wasLiked) {
+      homeLikedPostIds.add(postId);
+    } else {
+      homeLikedPostIds.delete(postId);
+    }
+
+    homePostLikeCounts[postId] = oldCount;
+    updateHomePostLikeButton(postId);
+
+    setHomePostStatus(
+      String(error?.code || "").toLowerCase().includes("permission")
+        ? "Post-like permissions are not available."
+        : error.message || "The post like could not be saved.",
+      "#ff6a7f"
+    );
+  }
+}
+
+async function shareHomePost(postId) {
+  const postUrl = new URL("posts.html", location.href);
+  postUrl.searchParams.set("post", postId);
+
+  const shareData = {
+    title:
+      latestHomePost?.title ||
+      "Rivals Gauntlet Update",
+
+    text:
+      latestHomePost?.body ||
+      "View this Rivals Gauntlet update.",
+
+    url: postUrl.toString()
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(postUrl.toString());
+
+      setHomePostStatus(
+        "Post link copied.",
+        "#4fd6a2"
+      );
+    }
+  } catch (error) {
+    if (error?.name !== "AbortError") {
+      setHomePostStatus(
+        "The post link could not be shared.",
+        "#ff6a7f"
+      );
+    }
+  }
+}
     
     function renderLatestPost(post) {
   const container = document.getElementById("latestNews");
 
   if (!container) return;
+
+  latestHomePost = post || null;
 
   if (!post) {
     container.classList.add("no-image");
@@ -2144,63 +2385,54 @@ let currentPlayerCallback = null;
         <h3>News is coming soon</h3>
 
         <p>
-          Official Rivals Gauntlet posts will appear here once they
-          are published.
+          Official Rivals Gauntlet posts will appear here once
+          they are published.
         </p>
 
-        <div class="news-footer">
-          <span class="news-author">
-            Visit the official feed for all community updates.
-          </span>
-
-          <a class="news-read-link" href="posts.html">
-            View Official Feed →
-          </a>
-        </div>
+        <a class="news-open-full" href="posts.html">
+          View Community Feed
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
     `;
 
     return;
   }
 
-  const category = RGPosts.getPostCategoryLabel(post.category);
-  const date = RGPosts.formatPostDate(post.createdAt);
-  const hasImage = Boolean(clean(post.image));
+  const category =
+    RGPosts.getPostCategoryLabel(post.category);
 
-  const likes = Number(
-    post.likeCount ??
-    post.likesCount ??
-    post.stats?.likes ??
-    0
-  );
+  const date =
+    RGPosts.formatPostDate(post.createdAt);
 
-  const comments = Number(
-    post.commentCount ??
-    post.commentsCount ??
-    post.stats?.comments ??
-    0
-  );
+  const likeCount =
+    Number(homePostLikeCounts[post.id] || 0);
 
-  const replies = Number(
-    post.replyCount ??
-    post.repliesCount ??
-    post.stats?.replies ??
-    0
-  );
+  const commentCount =
+    Number(post.commentCount || 0);
+
+  const liked =
+    homeLikedPostIds.has(post.id);
 
   const postUrl =
     `posts.html?post=${encodeURIComponent(post.id)}`;
 
-  const image = hasImage
+  const image = post.image
     ? `
       <img
         src="${escapeHtml(post.image)}"
-        alt="${escapeHtml(post.title || "Official update")}"
+        alt="${escapeHtml(
+          post.title || "Official Rivals Gauntlet post"
+        )}"
       >
     `
     : "";
 
-  container.classList.toggle("no-image", !hasImage);
+  container.classList.toggle(
+    "no-image",
+    !post.image
+  );
+
   container.dataset.postId = post.id;
 
   container.innerHTML = `
@@ -2215,7 +2447,10 @@ let currentPlayerCallback = null;
 
     <div class="news-content">
       <div class="news-meta">
-        <span class="category">${escapeHtml(category)}</span>
+        <span class="category">
+          ${escapeHtml(category)}
+        </span>
+
         <span>${escapeHtml(date)}</span>
       </div>
 
@@ -2223,67 +2458,143 @@ let currentPlayerCallback = null;
         ${escapeHtml(post.title || "Official Update")}
       </h3>
 
-      <p>
-        ${escapeHtml(post.body || "")}
-      </p>
+      <p>${escapeHtml(post.body || "")}</p>
 
       <div class="news-footer">
-        <div>
-          <span class="news-author">
-            Posted by
-            ${escapeHtml(post.authorName || "Rivals Gauntlet")}
+        <span class="news-author">
+          Posted by
+          ${escapeHtml(
+            post.authorName || "Rivals Gauntlet"
+          )}
+        </span>
+      </div>
+
+      <div class="news-post-actions">
+        <a
+          class="news-post-action comment-action"
+          href="${postUrl}"
+          aria-label="Open discussion"
+        >
+          <span class="news-action-icon">
+            <i class="fa-regular fa-comment"></i>
           </span>
 
-          <div class="news-engagement">
-            <span class="news-engagement-item">
-              ♥
-              <strong>${likes}</strong>
-              ${likes === 1 ? "Like" : "Likes"}
-            </span>
-
-            <span class="news-engagement-item">
-              ◇
-              <strong>${comments}</strong>
-              ${comments === 1 ? "Comment" : "Comments"}
-            </span>
-
-            ${
-              replies > 0
-                ? `
-                  <span class="news-engagement-item">
-                    ↳
-                    <strong>${replies}</strong>
-                    ${replies === 1 ? "Reply" : "Replies"}
-                  </span>
-                `
-                : ""
-            }
-          </div>
-        </div>
-
-        <a
-          class="news-read-link"
-          href="${postUrl}"
-        >
-          Open Post →
+          <span>
+            ${commentCount.toLocaleString("en-US")}
+          </span>
         </a>
+
+        <button
+          class="news-post-action ${liked ? "liked" : ""}"
+          type="button"
+          data-home-like-post="${escapeHtml(post.id)}"
+          aria-label="${liked ? "Unlike" : "Like"} this post"
+          aria-pressed="${liked}"
+        >
+          <span class="news-action-icon">
+            <i class="${liked ? "fa-solid" : "fa-regular"} fa-heart"></i>
+          </span>
+
+          <span data-home-like-count>
+            ${likeCount.toLocaleString("en-US")}
+          </span>
+        </button>
+
+        <button
+          class="news-post-action"
+          type="button"
+          data-home-share-post="${escapeHtml(post.id)}"
+          aria-label="Share this post"
+        >
+          <span class="news-action-icon">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+          </span>
+
+          <span>Share</span>
+        </button>
       </div>
+
+      <a class="news-open-full" href="${postUrl}">
+        Open Post
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  
+
+    
+      <a class="news-open-full" href="${postUrl}">
+        Open Post
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
     </div>
   `;
 }
 
 
-    
+/* =========================================================
+   HOMEPAGE POST ACTIONS
+========================================================= */
+document.addEventListener("click", event => {
+  const likeButton = event.target.closest("[data-home-like-post]");
+
+  if (likeButton) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    toggleHomePostLike(likeButton.dataset.homeLikePost);
+    return;
+  }
+
+  const shareButton = event.target.closest("[data-home-share-post]");
+
+  if (shareButton) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    shareHomePost(shareButton.dataset.homeSharePost);
+  }
+});
 
 
-    
+/* =========================================================
+   SIGNED-IN USER + LIKE STATE
+========================================================= */
+auth.onAuthStateChanged(user => {
+  homeCurrentUser = user || null;
 
-    RGPosts.loadLatestPost()
-      .then(renderLatestPost)
-      .catch(error => {
-        console.error("Latest post error:", error);
-        renderLatestPost(null);
-      });
+  attachHomePostLikesListener();
+
+  if (latestHomePost) {
+    renderLatestPost(latestHomePost);
+  }
+});
+
+
+/* =========================================================
+   LIVE LATEST POST
+========================================================= */
+let stopLatestHomePost = null;
+
+if (typeof RGPosts.listenToPosts === "function") {
+  stopLatestHomePost = RGPosts.listenToPosts(posts => {
+    const latest = [...posts]
+      .filter(post => post.published !== false)
+      .sort(
+        (a, b) =>
+          Number(b.createdAt || 0) -
+          Number(a.createdAt || 0)
+      )[0] || null;
+
+    renderLatestPost(latest);
+  });
+} else {
+  RGPosts.loadLatestPost()
+    .then(renderLatestPost)
+    .catch(error => {
+      console.error("Latest post error:", error);
+      renderLatestPost(null);
+    });
+}
   </script>
 </body>
 </html>

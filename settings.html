@@ -1142,11 +1142,7 @@ body{
               <p class="field-note">This is your main Rivals Gauntlet identity.</p>
             </div>
 
-            <div class="form-field">
-              <label for="profileImage">Profile Image URL</label>
-              <input id="profileImage" inputmode="url" autocomplete="url" placeholder="https://...">
-              <p id="profileImageError" class="field-note">Use a direct HTTPS image URL.</p>
-            </div>
+           
 
             <div class="form-field full">
               <label for="bio">
@@ -1430,7 +1426,6 @@ body{
 
   const FIELD_IDS = [
     "displayName",
-    "profileImage",
     "bio",
     "rivalsIgn",
     "region",
@@ -1501,7 +1496,7 @@ body{
   function currentFormData() {
     return {
       displayName: clean($("displayName").value),
-      profileImage: clean($("profileImage").value),
+      profileImage: clean(state.player.profileImage),
       bio: clean($("bio").value),
       rivalsIgn: clean($("rivalsIgn").value),
       region: $("region").value,
@@ -1633,21 +1628,10 @@ body{
     updateCounter("rivalsIgn", "ignCount", 32);
     updateCounter("discordUsername", "discordCount", 40);
     updateSocialStates();
-    validateProfileImage(false);
     setDirtyUi();
   }
 
-  function validateProfileImage(markInvalid = true) {
-    const input = $("profileImage");
-    const raw = clean(input.value);
-    const valid = !raw || Boolean(safeUrl(raw));
-    input.classList.toggle("invalid", markInvalid && !valid);
-    $("profileImageError").classList.toggle("error", markInvalid && !valid);
-    $("profileImageError").textContent = valid
-      ? "Use a direct HTTPS image URL."
-      : "Enter a valid HTTP or HTTPS image URL.";
-    return valid;
-  }
+  
 
   function validateAll() {
     const errors = [];
@@ -1659,9 +1643,7 @@ body{
       $("displayName").classList.remove("invalid");
     }
 
-    if (!validateProfileImage(true)) {
-      errors.push("Profile Image URL is not valid.");
-    }
+    
 
     const socialInputs = [
       ["twitch","Twitch"],
@@ -1684,7 +1666,6 @@ body{
     const socials = player.socials || {};
 
     $("displayName").value = clean(player.displayName);
-    $("profileImage").value = clean(player.profileImage);
     $("bio").value = clean(player.bio);
     $("rivalsIgn").value = clean(player.rivalsIgn);
     $("region").value = clean(player.region);
@@ -1824,7 +1805,6 @@ body{
     const form = currentFormData();
     const updates = {
       displayName: form.displayName,
-      profileImage: safeUrl(form.profileImage),
       bio: form.bio,
       rivalsIgn: form.rivalsIgn,
       region: form.region,
@@ -1929,7 +1909,7 @@ body{
       $(id).addEventListener("change", updateLivePreview);
     });
 
-    $("profileImage").addEventListener("blur", () => validateProfileImage(true));
+ 
     $("saveButton").addEventListener("click", saveSettings);
     $("discardButton").addEventListener("click", discardChanges);
     $("passwordResetButton").addEventListener("click", sendPasswordReset);

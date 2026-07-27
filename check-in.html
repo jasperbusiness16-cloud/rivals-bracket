@@ -1508,15 +1508,14 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
       isSubstitute,
       opensAt: 0,
       closesAt: 0,
-      eventStart: 0
+      eventStart: 0,
+      mainOpensAt: 0,
+      mainClosesAt: 0,
+      substituteOpensAt: 0,
+      substituteClosesAt: 0
     };
   }
 
-  /*
-    Main roster:
-    Opens 60 minutes before tournament start.
-    Closes 30 minutes before tournament start.
-  */
   const mainOpensAt =
     eventStart -
     MAIN_CHECKIN_OPENS_BEFORE_MINUTES * 60 * 1000;
@@ -1525,21 +1524,10 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
     eventStart -
     MAIN_CHECKIN_CLOSES_BEFORE_MINUTES * 60 * 1000;
 
-  /*
-    Substitutes:
-    Opens 5 hours before MAIN check-in opens.
-
-    Main opens 1 hour before the event, so substitutes
-    effectively open 6 hours before the event.
-  */
   const substituteOpensAt =
     mainOpensAt -
     SUBSTITUTE_OPENS_BEFORE_MAIN_HOURS * 60 * 60 * 1000;
 
-  /*
-    Substitute check-in remains open until 24 hours
-    after the tournament start time.
-  */
   const substituteClosesAt =
     eventStart +
     SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS * 60 * 60 * 1000;
@@ -1552,49 +1540,48 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
     ? substituteClosesAt
     : mainClosesAt;
 
+  const windowDetails = {
+    isSubstitute,
+    opensAt,
+    closesAt,
+    eventStart,
+    mainOpensAt,
+    mainClosesAt,
+    substituteOpensAt,
+    substituteClosesAt
+  };
+
   if (
     currentCheckIn?.checkedIn &&
     currentAvailability?.status !== "not_available"
   ) {
     return {
+      ...windowDetails,
       phase: "complete",
-      open: false,
-      isSubstitute,
-      opensAt,
-      closesAt,
-      eventStart
+      open: false
     };
   }
 
   if (now < opensAt) {
     return {
+      ...windowDetails,
       phase: "upcoming",
-      open: false,
-      isSubstitute,
-      opensAt,
-      closesAt,
-      eventStart
+      open: false
     };
   }
 
   if (now >= closesAt) {
     return {
+      ...windowDetails,
       phase: "closed",
-      open: false,
-      isSubstitute,
-      opensAt,
-      closesAt,
-      eventStart
+      open: false
     };
   }
 
   return {
+    ...windowDetails,
     phase: "open",
-    open: true,
-    isSubstitute,
-    opensAt,
-    closesAt,
-    eventStart
+    open: true
   };
 }
 
@@ -2282,42 +2269,61 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
         );
 
         commandMarkup({
-          icon: upcoming ? "fa-lock" : "fa-clock",
-          tone: upcoming ? "" : "warning",
-          title: upcoming
-            ? "Tournament Check-In Has Not Opened Yet"
-            : "The Check-In Window Is Closed",
-          description: upcoming
-  ? windowState.isSubstitute
-    ? `Substitute check-in opens at ${formatDateTime(windowState.opensAt)}. This is five hours before the main roster check-in begins.`
-    : `Main roster check-in opens at ${formatDateTime(windowState.opensAt)} and closes 30 minutes before tournament start.`
-  : windowState.isSubstitute
-    ? "The substitute availability window has closed for this event."
-    : "The main roster check-in window closed 30 minutes before tournament start.",
-note: upcoming
-  ? windowState.isSubstitute
-    ? "Substitute check-in remains available until the day after the tournament begins."
-    : "Return when the countdown reaches zero. Missing the window may cause your position to be offered to a substitute."
-  : "Contact tournament staff through Discord if you believe your attendance status needs to be corrected.",
-          actions:
-            actionButton(
-              "I'm Not Available",
-              "openUnavailableModal()",
-              "fa-user-xmark",
-              "danger"
-            ) +
-            `
-              <a
-                class="button discord"
-                href="${escapeHtml(getDiscordInvite())}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <i class="fa-brands fa-discord"></i>
-                Contact Staff
-              </a>
-            `
-        });
+  icon: upcoming ? "fa-lock" : "fa-clock",
+  tone: upcoming ? "" : "warning",
+  title: upcoming
+    ? "Tournament Check-In Has Not Opened Yet"
+    : "The Check-In Window Is Closed",
+
+  description: upcoming
+    ? windowState.isSubstitute
+      ? `Substitute check-in opens at ${formatDateTime(
+          windowState.substituteOpensAt
+        )}. Main roster check-in opens at ${formatDateTime(
+          windowState.mainOpensAt
+        )}.`
+      : `Main roster check-in opens at ${formatDateTime(
+          windowState.mainOpensAt
+        )} and closes at ${formatDateTime(
+          windowState.mainClosesAt
+        )}.`
+    : windowState.isSubstitute
+      ? `The substitute availability window closed at ${formatDateTime(
+          windowState.substituteClosesAt
+        )}.`
+      : `The main roster check-in window closed at ${formatDateTime(
+          windowState.mainClosesAt
+        )}.`,
+
+  note: upcoming
+    ? windowState.isSubstitute
+      ? `Main roster check-in closes at ${formatDateTime(
+          windowState.mainClosesAt
+        )}. Substitute availability remains open until ${formatDateTime(
+          windowState.substituteClosesAt
+        )}.`
+      : "Return when the countdown reaches zero. Missing the window may cause your position to be offered to a substitute."
+    : "Contact tournament staff through Discord if you believe your attendance status needs to be corrected.",
+
+  actions:
+    actionButton(
+      "I'm Not Available",
+      "openUnavailableModal()",
+      "fa-user-xmark",
+      "danger"
+    ) +
+    `
+      <a
+        class="button discord"
+        href="${escapeHtml(getDiscordInvite())}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="fa-brands fa-discord"></i>
+        Contact Staff
+      </a>
+    `
+});
       }
 
     function renderWindow() {

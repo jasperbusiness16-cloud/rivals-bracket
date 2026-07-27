@@ -20,8 +20,9 @@
     tournament: {},
     acceptedPlayers: [],
     teams: {},
-    teamNames: {},
-    teamRecord: {},
+teamNames: {},
+teamLogos: {},
+teamRecord: {},
     selectedPlayerUid: null,
     dirty: false,
     teamsLoaded: false,
@@ -425,8 +426,9 @@ function hasValidDiscordUserId(
     moduleState.tournament = {};
     moduleState.acceptedPlayers = [];
     moduleState.teams = {};
-    moduleState.teamNames = {};
-    moduleState.teamRecord = {};
+moduleState.teamNames = {};
+moduleState.teamLogos = {};
+moduleState.teamRecord = {};
     moduleState.selectedPlayerUid = null;
     moduleState.dirty = false;
     moduleState.teamsLoaded = false;
@@ -540,6 +542,17 @@ function hasValidDiscordUserId(
       button &&
       boundContent.contains(button)
     ) {
+      const removeLogoTeamKey =
+  button.dataset.removeTeamLogo;
+
+if (removeLogoTeamKey) {
+  void removeTeamLogo(
+    removeLogoTeamKey,
+    button
+  );
+
+  return;
+}
       if (
         button.id ===
         "teamBuilderRefreshButton"
@@ -665,7 +678,24 @@ function hasValidDiscordUserId(
   }
 
   function handleChange(event) {
-    if (
+   const logoTeamKey =
+  event.target.dataset.teamLogo;
+
+if (logoTeamKey) {
+  const file =
+    event.target.files?.[0];
+
+  if (file) {
+    void uploadTeamLogo(
+      logoTeamKey,
+      file,
+      event.target
+    );
+  }
+
+  return;
+}
+     if (
       event.target.id ===
       "teamBuilderTournamentSelect"
     ) {
@@ -880,8 +910,9 @@ function hasValidDiscordUserId(
     moduleState.tournament = {};
     moduleState.acceptedPlayers = [];
     moduleState.teams = {};
-    moduleState.teamNames = {};
-    moduleState.teamRecord = {};
+moduleState.teamNames = {};
+moduleState.teamLogos = {};
+moduleState.teamRecord = {};
     moduleState.selectedPlayerUid = null;
     moduleState.dirty = false;
     moduleState.teamsLoaded = false;
@@ -1012,7 +1043,11 @@ function hasValidDiscordUserId(
               moduleState.teamRecord.teamNames ||
               {}
             );
-
+moduleState.teamLogos =
+  normalizeSavedTeamLogos(
+    moduleState.teamRecord.teamLogos ||
+    {}
+  );
           if (
             moduleState.applicationsLoaded
           ) {
@@ -1335,10 +1370,13 @@ function hasValidDiscordUserId(
         [];
 
       const teamName =
-        getTeamName(teamKey);
+  getTeamName(teamKey);
 
-      assignedCount +=
-        players.length;
+const teamLogo =
+  getTeamLogo(teamKey);
+
+assignedCount +=
+  players.length;
 
       const roleSummary =
         getRoleSummary(players);
@@ -1355,28 +1393,93 @@ function hasValidDiscordUserId(
           data-team-key="${teamKey}"
           data-drop-team="${teamKey}"
         >
-          <header class="team-builder-team-header">
-            <div>
-              <span>TEAM ${index}</span>
+      <header class="team-builder-team-header">
+  <div class="team-builder-team-title">
+    <div class="team-builder-team-logo-shell">
+      ${
+        teamLogo
+          ? `
+            <img
+              class="team-builder-team-logo"
+              src="${escapeHtml(teamLogo)}"
+              alt="${escapeHtml(teamName)} logo"
+            >
+          `
+          : `
+            <span class="team-builder-team-logo-fallback">
+              ${escapeHtml(
+                createInitials(teamName)
+              )}
+            </span>
+          `
+      }
+    </div>
 
-              <h3>
-                ${escapeHtml(teamName)}
-              </h3>
-            </div>
+    <div>
+      <span>TEAM ${index}</span>
 
-            <div class="team-builder-team-score">
-              <span>Strength</span>
+      <h3>
+        ${escapeHtml(teamName)}
+      </h3>
+    </div>
+  </div>
 
-              <strong>
-                ${getTeamScore(players)}
-              </strong>
-            </div>
-          </header>
+  <div class="team-builder-team-score">
+    <span>Strength</span>
 
-          <div class="team-builder-team-identity">
-            <label for="teamBuilderName${index}">
-              Team Name
-            </label>
+    <strong>
+      ${getTeamScore(players)}
+    </strong>
+  </div>
+</header>
+
+         <div class="team-builder-team-identity">
+  <div class="team-builder-logo-control">
+    <div>
+      <label for="teamBuilderLogo${index}">
+        Team Logo
+      </label>
+
+      <small>
+        PNG, JPG or WebP. Square images work best.
+      </small>
+    </div>
+
+    <label
+      class="action-button team-builder-logo-upload"
+      for="teamBuilderLogo${index}"
+    >
+      <i class="fa-solid fa-image"></i>
+      ${teamLogo ? "Replace Logo" : "Upload Logo"}
+    </label>
+
+    <input
+      id="teamBuilderLogo${index}"
+      class="team-builder-logo-input"
+      type="file"
+      accept="image/png,image/jpeg,image/webp"
+      data-team-logo="${teamKey}"
+    >
+
+    ${
+      teamLogo
+        ? `
+          <button
+            class="action-button team-builder-logo-remove"
+            type="button"
+            data-remove-team-logo="${teamKey}"
+          >
+            <i class="fa-solid fa-trash"></i>
+            Remove
+          </button>
+        `
+        : ""
+    }
+  </div>
+
+  <label for="teamBuilderName${index}">
+    Team Name
+  </label>
 
             <input
               id="teamBuilderName${index}"
@@ -2136,7 +2239,127 @@ function hasValidDiscordUserId(
 
     renderAll();
   }
+async function uploadTeamLogo(
+  teamKey,
+  file,
+  input
+) {
+  const allowedTypes = [
+    "image/png",
+    "image/jpeg",
+    "image/webp"
+  ];
 
+  if (!allowedTypes.includes(file.type)) {
+    context.showToast(
+      "Team logos must be PNG, JPG or WebP."
+    );
+
+    input.value = "";
+    return;
+  }
+
+  const maxFileSize =
+    5 * 1024 * 1024;
+
+  if (file.size > maxFileSize) {
+    context.showToast(
+      "Team logos must be smaller than 5 MB."
+    );
+
+    input.value = "";
+    return;
+  }
+
+  const extension =
+    file.type === "image/png"
+      ? "png"
+      : file.type === "image/webp"
+        ? "webp"
+        : "jpg";
+
+  const storagePath =
+    `team-logos/${moduleState.tournamentId}/${teamKey}.${extension}`;
+
+  setText(
+    "teamBuilderSaveState",
+    `Uploading ${getTeamName(teamKey)} logo...`
+  );
+
+  try {
+    const storageRef =
+      firebase.storage().ref(
+        storagePath
+      );
+
+    await storageRef.put(file, {
+      contentType: file.type
+    });
+
+    const downloadUrl =
+      await storageRef.getDownloadURL();
+
+    moduleState.teamLogos[
+      teamKey
+    ] = downloadUrl;
+
+    markDirty(
+      `${getTeamName(teamKey)} logo updated`
+    );
+
+    renderTeams();
+
+    context.showToast(
+      `${getTeamName(teamKey)} logo uploaded. Save or publish teams to keep it.`
+    );
+  } catch (error) {
+    console.error(
+      "Team logo upload failed:",
+      error
+    );
+
+    context.showToast(
+      context.isPermissionDenied(error)
+        ? "Firebase denied the team logo upload."
+        : error.message ||
+          "The team logo could not be uploaded."
+    );
+  } finally {
+    input.value = "";
+  }
+}
+
+async function removeTeamLogo(
+  teamKey,
+  button
+) {
+  const confirmed =
+    window.confirm(
+      `Remove the logo for ${getTeamName(teamKey)}?`
+    );
+
+  if (!confirmed) return;
+
+  await runButtonAction(
+    button,
+    "Removing...",
+    async () => {
+      moduleState.teamLogos[
+        teamKey
+      ] = "";
+
+      markDirty(
+        `${getTeamName(teamKey)} logo removed`
+      );
+
+      renderTeams();
+
+      context.showToast(
+        "Team logo removed. Save or publish teams to confirm the change."
+      );
+    }
+  );
+}
   async function saveTeams(button) {
     await runButtonAction(
       button,
@@ -2151,9 +2374,12 @@ function hasValidDiscordUserId(
               serializeTeams(),
 
             teamNames:
-              serializeTeamNames(),
+  serializeTeamNames(),
 
-            updatedAt:
+teamLogos:
+  serializeTeamLogos(),
+
+updatedAt:
               firebase.database
                 .ServerValue
                 .TIMESTAMP,
@@ -2164,7 +2390,10 @@ function hasValidDiscordUserId(
           });
 
         moduleState.teamRecord.teamNames =
-          serializeTeamNames();
+  serializeTeamNames();
+
+moduleState.teamRecord.teamLogos =
+  serializeTeamLogos();
 
         moduleState.dirty = false;
 
@@ -2424,14 +2653,16 @@ async function queuePublishedDiscordAssignments() {
 
       const serializedTeamNames =
         serializeTeamNames();
-
+const serializedTeamLogos =
+  serializeTeamLogos();
       const updates = {
         [`teams/${moduleState.tournamentId}/teams`]:
           serializedTeams,
 
         [`teams/${moduleState.tournamentId}/teamNames`]:
           serializedTeamNames,
-
+[`teams/${moduleState.tournamentId}/teamLogos`]:
+  serializedTeamLogos,
         [`teams/${moduleState.tournamentId}/published`]:
           true,
 
@@ -2497,7 +2728,8 @@ async function queuePublishedDiscordAssignments() {
 
       moduleState.teamRecord.teamNames =
         serializedTeamNames;
-
+moduleState.teamRecord.teamLogos =
+  serializedTeamLogos;
       renderAll();
 
       setText(
@@ -2864,8 +3096,9 @@ async function queuePublishedDiscordAssignments() {
           .update(updates);
 
         resetTeams();
-        moduleState.teamNames = {};
-        ensureTeamStructure();
+moduleState.teamNames = {};
+moduleState.teamLogos = {};
+ensureTeamStructure();
 
         moduleState.teamRecord = {};
         moduleState.dirty = false;
@@ -2924,8 +3157,8 @@ async function queuePublishedDiscordAssignments() {
       getTeamCount();
 
     const nextTeams = {};
-    const nextTeamNames = {};
-
+const nextTeamNames = {};
+const nextTeamLogos = {};
     for (
       let index = 1;
       index <= teamCount;
@@ -2954,15 +3187,70 @@ async function queuePublishedDiscordAssignments() {
             teamKey
           ]
         );
-    }
+   nextTeamLogos[teamKey] =
+  safeImageUrl(
+    moduleState.teamLogos[
+      teamKey
+    ]
+  );
+     }
 
     moduleState.teams =
-      nextTeams;
+  nextTeams;
 
-    moduleState.teamNames =
-      nextTeamNames;
+moduleState.teamNames =
+  nextTeamNames;
+
+moduleState.teamLogos =
+  nextTeamLogos;
+  }
+function normalizeSavedTeamLogos(
+  savedLogos
+) {
+  const normalized = {};
+
+  for (
+    let index = 1;
+    index <= getTeamCount();
+    index += 1
+  ) {
+    const teamKey =
+      `team${index}`;
+
+    normalized[teamKey] =
+      safeImageUrl(
+        savedLogos[teamKey]
+      );
   }
 
+  return normalized;
+}
+
+function serializeTeamLogos() {
+  const serialized = {};
+
+  for (
+    let index = 1;
+    index <= getTeamCount();
+    index += 1
+  ) {
+    const teamKey =
+      `team${index}`;
+
+    serialized[teamKey] =
+      getTeamLogo(teamKey);
+  }
+
+  return serialized;
+}
+
+function getTeamLogo(teamKey) {
+  return safeImageUrl(
+    moduleState.teamLogos[
+      teamKey
+    ]
+  );
+}
   function normalizeSavedTeams(
     savedTeams
   ) {

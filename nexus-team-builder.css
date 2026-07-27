@@ -727,3 +727,102 @@
     white-space: normal;
   }
 }
+
+.team-builder-team-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.team-builder-team-logo-shell {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(154, 124, 255, 0.28);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(154, 124, 255, 0.12),
+      rgba(255, 255, 255, 0.025)
+    );
+}
+
+.team-builder-team-logo,
+.team-builder-team-logo-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.team-builder-team-logo {
+  display: block;
+  object-fit: contain;
+  padding: 5px;
+}
+
+.team-builder-team-logo-fallback {
+  display: grid;
+  place-items: center;
+  color: #b8a4ff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.team-builder-logo-control {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto
+    auto;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.07);
+}
+
+.team-builder-logo-control label {
+  display: block;
+}
+
+.team-builder-logo-control small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted, #918a9f);
+  font-size: 11px;
+}
+
+.team-builder-logo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.team-builder-logo-upload {
+  cursor: pointer;
+}
+
+.team-builder-logo-remove {
+  color: #ff9aaa;
+  border-color: rgba(255, 102, 125, 0.25);
+  background: rgba(255, 102, 125, 0.07);
+}
+
+@media (max-width: 650px) {
+  .team-builder-logo-control {
+    grid-template-columns: 1fr;
+  }
+
+  .team-builder-logo-upload,
+  .team-builder-logo-remove {
+    width: 100%;
+  }
+}

@@ -285,7 +285,34 @@
       color: var(--dim);
       line-height: 1.5;
     }
+.section-head-action{
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:0 17px;
+  border:1px solid rgba(192,132,252,.34);
+  border-radius:10px;
+  background:rgba(168,85,247,.07);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  transition:.18s ease;
+}
 
+.section-head-action:hover{
+  transform:translateY(-2px);
+  border-color:rgba(192,132,252,.66);
+  background:rgba(168,85,247,.13);
+}
+
+.section-head-action span{
+  color:var(--purple-2);
+  font-size:15px;
+}
     .event-grid {
       display: grid;
       grid-template-columns: minmax(0,3fr) minmax(280px,1fr);
@@ -593,7 +620,85 @@
       font-size: 12px;
       font-weight: 700;
     }
+.news-section{
+  margin-top:0;
+}
 
+.tournament-section{
+  margin-top:72px;
+}
+
+.news-card-link{
+  display:grid;
+  color:inherit;
+}
+
+.news-engagement{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:9px;
+}
+
+.news-engagement-item{
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0 10px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:9px;
+  background:rgba(255,255,255,.025);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+
+.news-engagement-item strong{
+  color:#fff;
+  font-size:12px;
+}
+
+.news-read-link{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 16px;
+  border:1px solid rgba(192,132,252,.46);
+  border-radius:10px;
+  background:linear-gradient(
+    135deg,
+    rgba(109,40,217,.85),
+    rgba(168,85,247,.9)
+  );
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.news-read-link:hover{
+  filter:brightness(1.08);
+}
+
+.news-card[data-post-id]{
+  cursor:pointer;
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.news-card[data-post-id]:hover{
+  transform:translateY(-3px);
+  border-color:rgba(192,132,252,.32);
+  box-shadow:0 25px 80px rgba(0,0,0,.4);
+}
     footer {
       border-top: 1px solid var(--border);
       background: #08080c;
@@ -1433,7 +1538,34 @@
     }
 
     @media (max-width: 720px) {
-      .post-modal-backdrop {
+     .section-head{
+  align-items:flex-start;
+  flex-direction:column;
+}
+
+.section-head-action{
+  width:100%;
+}
+
+.news-footer{
+  align-items:stretch;
+  flex-direction:column;
+}
+
+.news-engagement{
+  width:100%;
+}
+
+.news-engagement-item{
+  flex:1;
+  justify-content:center;
+}
+
+.news-read-link{
+  width:100%;
+}
+      
+       .post-modal-backdrop {
         align-items: flex-end;
         padding: 0;
       }
@@ -1576,35 +1708,87 @@
 </div>
 </section>
 
-  <main>
-    <div class="shell">
+<main>
+  <div class="shell">
+
+    <!-- =====================================================
+         OFFICIAL FEED — NOW FIRST
+    ====================================================== -->
+    <section class="news-section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Official Feed</div>
+          <h2>Latest From Rivals Gauntlet</h2>
+        </div>
+
+        <a class="section-head-action" href="posts.html">
+          See All Posts
+          <span>→</span>
+        </a>
+      </div>
+
+      <article id="latestNews" class="news-card">
+        <div class="news-visual">
+          <div class="news-badge">
+            <span>Loading Latest Update</span>
+            <strong>Rivals Gauntlet</strong>
+          </div>
+        </div>
+
+        <div class="news-content">
+          <div class="news-meta">
+            <span class="category">Official Update</span>
+          </div>
+
+          <h3>Loading latest news...</h3>
+
+          <p>
+            Please wait while the newest Rivals Gauntlet update is loaded.
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <!-- =====================================================
+         UPCOMING TOURNAMENT — NOW SECOND
+    ====================================================== -->
+    <section class="tournament-section">
       <div class="section-head">
         <div>
           <div class="eyebrow">What’s Next</div>
           <h2>Upcoming Tournament</h2>
         </div>
+
         <p>
-          Apply for the next Rivals Gauntlet event and help grow the community-funded prize pool.
+          Apply for the next Rivals Gauntlet event and help grow the
+          community-funded prize pool.
         </p>
       </div>
 
       <div class="event-grid">
         <section class="card tournament-card">
           <div class="tournament-copy">
-            <span id="registrationPill" class="status-pill">APPLICATIONS OPEN</span>
+            <span id="registrationPill" class="status-pill">
+              APPLICATIONS OPEN
+            </span>
 
             <h3 id="eventName">Rivals Gauntlet Open #1</h3>
-            <div id="eventFormat" class="format">8 Teams • Single Elimination</div>
+
+            <div id="eventFormat" class="format">
+              8 Teams • Single Elimination
+            </div>
 
             <div class="meta">
               <div class="meta-box">
                 <span>Game</span>
                 <strong>Marvel Rivals</strong>
               </div>
+
               <div class="meta-box">
                 <span>Rounds</span>
                 <strong>QF Bo3 • SF Bo3 • GF Bo5</strong>
               </div>
+
               <div class="meta-box">
                 <span>Registration</span>
                 <strong id="registrationText">Open</strong>
@@ -1612,8 +1796,17 @@
             </div>
 
             <div class="actions">
-              <a id="applyButton" href="apply.html" class="btn primary">Apply Now</a>
-              <a href="tournament.html" class="btn">View Tournament</a>
+              <a
+                id="applyButton"
+                href="apply.html"
+                class="btn primary"
+              >
+                Apply Now
+              </a>
+
+              <a href="tournament.html" class="btn">
+                View Tournament
+              </a>
             </div>
           </div>
 
@@ -1625,25 +1818,34 @@
                 <strong id="countDays">00</strong>
                 <span>Days</span>
               </div>
+
               <div class="unit">
                 <strong id="countHours">00</strong>
                 <span>Hours</span>
               </div>
+
               <div class="unit">
                 <strong id="countMinutes">00</strong>
                 <span>Minutes</span>
               </div>
             </div>
 
-            <div id="eventDate" class="event-date">Loading event date...</div>
+            <div id="eventDate" class="event-date">
+              Loading event date...
+            </div>
           </div>
         </section>
 
         <aside class="card prize-card">
           <div class="prize-icon">$</div>
+
           <h3>Current Prize Pool</h3>
+
           <div id="prizePool" class="prize-total">$0</div>
-          <div id="communityDonations" class="prize-source">+$0 from community donations</div>
+
+          <div id="communityDonations" class="prize-source">
+            +$0 from community donations
+          </div>
 
           <div class="goal">
             <div class="goal-head">
@@ -1655,60 +1857,21 @@
               <div id="goalFill" class="goal-fill"></div>
             </div>
 
-            <a href="donate.html" class="btn primary">Add to Prize Pool</a>
+            <a href="donate.html" class="btn primary">
+              Add to Prize Pool
+            </a>
           </div>
         </aside>
       </div>
+    </section>
 
-      <section class="news-section">
-        <div class="section-head">
-          <div>
-            <div class="eyebrow">Official Feed</div>
-            <h2>Latest From Rivals Gauntlet</h2>
-          </div>
-          <p>The newest official announcement is featured here automatically.</p>
-        </div>
-
-        <div id="latestNews" class="news-card">
-          <div class="news-visual">
-            <div class="news-badge">
-              <span>Loading Latest Update</span>
-              <strong>Rivals Gauntlet</strong>
-            </div>
-          </div>
-
-          <div class="news-content">
-            <div class="news-meta">
-              <span class="category">Official Update</span>
-            </div>
-            <h3>Loading latest news...</h3>
-            <p>Please wait while the newest Rivals Gauntlet update is loaded.</p>
-          </div>
-        </div>
-      </section>
-    </div>
-  </main>
+  </div>
+</main>
 
 
 
   
-  <div
-    id="postModalBackdrop"
-    class="post-modal-backdrop"
-    aria-hidden="true"
-  >
-    <section
-      id="postModal"
-      class="post-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="postModalTitle"
-    >
-      <div class="post-modal-header">
-        <div>
-          <span>Rivals Gauntlet Official Feed</span>
-          <h2 id="postModalTitle">Post</h2>
-        </div>
+
 
         <button
           id="postModalClose"
@@ -1781,10 +1944,7 @@ let currentUser = null;
 let currentPlayer = null;
 let currentPlayerRef = null;
 let currentPlayerCallback = null;
-let activeModalPost = null;
-let stopModalComments = null;
 
-const commentPlayerCache = new Map();
     
 
     function clean(value, fallback = "") {
@@ -1958,634 +2118,162 @@ const commentPlayerCache = new Map();
     
 
 
-    auth.onAuthStateChanged(user => {
-  currentUser = user || null;
+    
+    function renderLatestPost(post) {
+  const container = document.getElementById("latestNews");
 
-  if (currentPlayerRef && currentPlayerCallback) {
-    currentPlayerRef.off("value", currentPlayerCallback);
-  }
+  if (!container) return;
 
-  currentPlayerRef = null;
-  currentPlayerCallback = null;
+  if (!post) {
+    container.classList.add("no-image");
+    container.removeAttribute("data-post-id");
 
-  if (!user) {
-    currentPlayer = null;
-    renderCommentComposer();
+    container.innerHTML = `
+      <div class="news-visual">
+        <div class="news-badge">
+          <span>Official Feed</span>
+          <strong>No updates published yet</strong>
+        </div>
+      </div>
+
+      <div class="news-content">
+        <div class="news-meta">
+          <span class="category">Rivals Gauntlet</span>
+        </div>
+
+        <h3>News is coming soon</h3>
+
+        <p>
+          Official Rivals Gauntlet posts will appear here once they
+          are published.
+        </p>
+
+        <div class="news-footer">
+          <span class="news-author">
+            Visit the official feed for all community updates.
+          </span>
+
+          <a class="news-read-link" href="posts.html">
+            View Official Feed →
+          </a>
+        </div>
+      </div>
+    `;
+
     return;
   }
 
-  currentPlayerRef = database.ref(`players/${user.uid}`);
+  const category = RGPosts.getPostCategoryLabel(post.category);
+  const date = RGPosts.formatPostDate(post.createdAt);
+  const hasImage = Boolean(clean(post.image));
 
-  currentPlayerCallback = snapshot => {
-    currentPlayer = snapshot.val() || {};
-    commentPlayerCache.set(user.uid, currentPlayer);
-    renderCommentComposer();
-  };
+  const likes = Number(
+    post.likeCount ??
+    post.likesCount ??
+    post.stats?.likes ??
+    0
+  );
 
-  currentPlayerRef.on("value", currentPlayerCallback);
-});
-    function renderLatestPost(post) {
-      const container = document.getElementById("latestNews");
+  const comments = Number(
+    post.commentCount ??
+    post.commentsCount ??
+    post.stats?.comments ??
+    0
+  );
 
-      if (!post) {
-        container.classList.add("no-image");
-        container.innerHTML = `
-          <div class="news-visual">
-            <div class="news-badge">
-              <span>Official Feed</span>
-              <strong>No updates published yet</strong>
-            </div>
-          </div>
-          <div class="news-content">
-            <div class="news-meta"><span class="category">Rivals Gauntlet</span></div>
-            <h3>News is coming soon</h3>
-            <p>The newest official announcement will appear here automatically once it is published.</p>
-          </div>
-        `;
-        return;
-      }
+  const replies = Number(
+    post.replyCount ??
+    post.repliesCount ??
+    post.stats?.replies ??
+    0
+  );
 
-      const category = RGPosts.getPostCategoryLabel(post.category);
-      const date = RGPosts.formatPostDate(post.createdAt);
-      const hasImage = Boolean(post.image);
-      const image = hasImage
-        ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.title || "Official update")}">`
-        : "";
+  const postUrl =
+    `posts.html?post=${encodeURIComponent(post.id)}`;
 
-      container.classList.toggle("no-image", !hasImage);
-      container.dataset.postId = post.id;
+  const image = hasImage
+    ? `
+      <img
+        src="${escapeHtml(post.image)}"
+        alt="${escapeHtml(post.title || "Official update")}"
+      >
+    `
+    : "";
 
-      container.innerHTML = `
-        <div class="news-visual">
-          ${image}
-          <div class="news-badge">
-            <span>${escapeHtml(category)}</span>
-            <strong>Latest Official Update</strong>
-          </div>
-        </div>
+  container.classList.toggle("no-image", !hasImage);
+  container.dataset.postId = post.id;
 
-        <div class="news-content">
-          <div class="news-meta">
-            <span class="category">${escapeHtml(category)}</span>
-            <span>${escapeHtml(date)}</span>
-          </div>
+  container.innerHTML = `
+    <div class="news-visual">
+      ${image}
 
-          <h3>${escapeHtml(post.title || "Official Update")}</h3>
-          <p>${escapeHtml(post.body || "")}</p>
+      <div class="news-badge">
+        <span>${escapeHtml(category)}</span>
+        <strong>Latest Official Update</strong>
+      </div>
+    </div>
 
-          <div class="news-footer">
-            <span class="news-author">
-              Posted by ${escapeHtml(post.authorName || "Rivals Gauntlet")}
+    <div class="news-content">
+      <div class="news-meta">
+        <span class="category">${escapeHtml(category)}</span>
+        <span>${escapeHtml(date)}</span>
+      </div>
+
+      <h3>
+        ${escapeHtml(post.title || "Official Update")}
+      </h3>
+
+      <p>
+        ${escapeHtml(post.body || "")}
+      </p>
+
+      <div class="news-footer">
+        <div>
+          <span class="news-author">
+            Posted by
+            ${escapeHtml(post.authorName || "Rivals Gauntlet")}
+          </span>
+
+          <div class="news-engagement">
+            <span class="news-engagement-item">
+              ♥
+              <strong>${likes}</strong>
+              ${likes === 1 ? "Like" : "Likes"}
             </span>
 
-            <button
-              class="btn primary news-open-button"
-              type="button"
-              data-open-post="${escapeHtml(post.id)}"
-            >
-              ${Number(post.commentCount || 0)} ${Number(post.commentCount || 0) === 1 ? "Comment" : "Comments"}
-            </button>
+            <span class="news-engagement-item">
+              ◇
+              <strong>${comments}</strong>
+              ${comments === 1 ? "Comment" : "Comments"}
+            </span>
+
+            ${
+              replies > 0
+                ? `
+                  <span class="news-engagement-item">
+                    ↳
+                    <strong>${replies}</strong>
+                    ${replies === 1 ? "Reply" : "Replies"}
+                  </span>
+                `
+                : ""
+            }
           </div>
         </div>
-      `;
-    }
 
-
-    const postModalBackdrop = document.getElementById("postModalBackdrop");
-    const postModalClose = document.getElementById("postModalClose");
-    const modalPostContent = document.getElementById("modalPostContent");
-    const modalCommentList = document.getElementById("modalCommentList");
-    const modalCommentCount = document.getElementById("modalCommentCount");
-    const commentComposerMount = document.getElementById("commentComposerMount");
-
-    function safeCosmeticColor(value, fallback = "") {
-      const color = String(value || "").trim();
-
-      if (
-        /^#[0-9a-fA-F]{3,8}$/.test(color) ||
-        /^rgb(a)?\([\d\s,.%]+\)$/.test(color) ||
-        /^hsl(a)?\([\d\s,.%]+\)$/.test(color)
-      ) {
-        return color;
-      }
-
-      return fallback;
-    }
-
-    function getEquippedCosmetics(player = {}) {
-      const equipped =
-        player.equippedCosmetics ||
-        player.equipped ||
-        player.cosmetics?.equipped ||
-        {};
-
-      return {
-        profileImage:
-          equipped.avatar ||
-          equipped.profileImage ||
-          player.profileImage ||
-          "",
-        profileBorder:
-          equipped.profileBorder ||
-          equipped.avatarFrame ||
-          equipped.frame ||
-          "",
-        profileBorderColor:
-          equipped.profileBorderColor ||
-          equipped.frameColor ||
-          "",
-        nameColor:
-          equipped.nameColor ||
-          player.nameColor ||
-          "",
-        nameEffect:
-          equipped.nameEffect ||
-          player.nameEffect ||
-          "",
-        title:
-          equipped.title ||
-          player.equippedTitle ||
-          "",
-        badge:
-          equipped.badge ||
-          player.equippedBadge ||
-          "",
-        prestige:
-          Number(player.prestige || equipped.prestige || 0)
-      };
-    }
-
-    function playerInitials(name) {
-      return initials(name || "RG");
-    }
-
-    function formatCommentTime(timestamp) {
-      const value = Number(timestamp || 0);
-      if (!value) return "";
-
-      const difference = Date.now() - value;
-      const minutes = Math.floor(difference / 60000);
-
-      if (minutes < 1) return "Just now";
-      if (minutes < 60) return `${minutes}m`;
-      if (minutes < 1440) return `${Math.floor(minutes / 60)}h`;
-      if (minutes < 10080) return `${Math.floor(minutes / 1440)}d`;
-
-      return new Date(value).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      });
-    }
-
-    async function getCommentPlayer(uid) {
-      if (!uid) return {};
-      if (commentPlayerCache.has(uid)) {
-        return commentPlayerCache.get(uid);
-      }
-
-      try {
-        const snapshot = await database.ref(`players/${uid}`).once("value");
-        const player = snapshot.val() || {};
-        commentPlayerCache.set(uid, player);
-        return player;
-      } catch (error) {
-        console.error("Comment player load error:", error);
-        return {};
-      }
-    }
-
-    function renderModalPost(post) {
-      if (!post) {
-        modalPostContent.innerHTML = `
-          <div class="comment-empty">This post could not be found.</div>
-        `;
-        return;
-      }
-
-      const category = RGPosts.getPostCategoryLabel(post.category);
-      const image = post.image
-        ? `
-          <img
-            class="modal-post-image"
-            src="${escapeHtml(post.image)}"
-            alt="${escapeHtml(post.title || "Official update")}"
-          >
-        `
-        : "";
-
-      modalPostContent.innerHTML = `
-        <div class="modal-post-meta">
-          <span class="category">${escapeHtml(category)}</span>
-          <span>${escapeHtml(RGPosts.formatPostDate(post.createdAt))}</span>
-        </div>
-
-        <h3>${escapeHtml(post.title || "Official Update")}</h3>
-
-        <p class="modal-post-body">${escapeHtml(post.body || "")}</p>
-
-        ${image}
-
-        <div class="modal-post-footer">
-          <span>
-            Posted by ${escapeHtml(post.authorName || "Rivals Gauntlet")}
-          </span>
-          <span>
-            ${Number(post.commentCount || 0)}
-            ${Number(post.commentCount || 0) === 1 ? "Comment" : "Comments"}
-          </span>
-        </div>
-      `;
-    }
-
-    function renderCommentComposer() {
-      if (!commentComposerMount || !postModalBackdrop.classList.contains("show")) {
-        return;
-      }
-
-      if (!currentUser) {
-        commentComposerMount.innerHTML = `
-          <div class="comment-signin">
-            <a href="login.html">Sign in</a> to join the discussion.
-          </div>
-        `;
-        return;
-      }
-
-      const cosmetics = getEquippedCosmetics(currentPlayer || {});
-      const avatar = cosmetics.profileImage
-        ? `
-          <img
-            class="comment-composer-avatar"
-            src="${escapeHtml(cosmetics.profileImage)}"
-            alt=""
-          >
-        `
-        : `
-          <div class="comment-composer-avatar avatar-fallback">
-            ${escapeHtml(playerInitials(currentPlayer?.displayName || currentUser.displayName))}
-          </div>
-        `;
-
-      commentComposerMount.innerHTML = `
-        <form id="commentForm" class="comment-composer">
-          <div class="comment-composer-row">
-            ${avatar}
-
-            <div>
-              <textarea
-                id="commentMessage"
-                maxlength="500"
-                placeholder="Add a comment..."
-                aria-label="Add a comment"
-              ></textarea>
-
-              <div class="comment-composer-actions">
-                <span id="commentComposerStatus" class="comment-composer-status"></span>
-
-                <button id="commentSubmit" class="comment-submit" type="submit">
-                  Comment
-                </button>
-              </div>
-            </div>
-          </div>
-        </form>
-      `;
-
-      document
-        .getElementById("commentForm")
-        ?.addEventListener("submit", submitModalComment);
-    }
-
-    async function renderModalComments(comments) {
-      const list = Array.isArray(comments) ? comments : [];
-      modalCommentCount.textContent =
-        `${list.length} ${list.length === 1 ? "Comment" : "Comments"}`;
-
-      if (!list.length) {
-        modalCommentList.innerHTML = `
-          <div class="comment-empty">
-            No comments yet. Start the discussion.
-          </div>
-        `;
-        return;
-      }
-
-      const playerPairs = await Promise.all(
-        list.map(async comment => [
-          comment.id,
-          await getCommentPlayer(comment.userId)
-        ])
-      );
-
-      const playersByComment = Object.fromEntries(playerPairs);
-
-      modalCommentList.innerHTML = list.map(comment => {
-        const livePlayer = playersByComment[comment.id] || {};
-        const cosmetics = getEquippedCosmetics(livePlayer);
-
-        const displayName =
-          livePlayer.displayName ||
-          comment.displayName ||
-          "Player";
-
-        const rgId =
-          livePlayer.rgId ||
-          comment.rgId ||
-          "";
-
-        const profileImage =
-          cosmetics.profileImage ||
-          comment.profileImage ||
-          "";
-
-        const frameColor = safeCosmeticColor(
-          cosmetics.profileBorderColor,
-          cosmetics.profileBorder
-            ? "rgba(192,132,252,.72)"
-            : "rgba(192,132,252,.42)"
-        );
-
-        const nameColor = safeCosmeticColor(
-          cosmetics.nameColor,
-          ""
-        );
-
-        const nameEffectClass =
-          String(cosmetics.nameEffect || "").toLowerCase().includes("gradient") ||
-          String(cosmetics.nameEffect || "").toLowerCase().includes("animated")
-            ? "name-gradient"
-            : "";
-
-        const avatar = profileImage
-          ? `
-            <img
-              class="comment-avatar"
-              src="${escapeHtml(profileImage)}"
-              alt=""
-            >
-          `
-          : `
-            <div class="comment-avatar-fallback">
-              ${escapeHtml(playerInitials(displayName))}
-            </div>
-          `;
-
-        const title = cosmetics.title
-          ? `<span class="comment-title">${escapeHtml(cosmetics.title)}</span>`
-          : "";
-
-        const badge = cosmetics.badge
-          ? `<span class="comment-badge">${escapeHtml(cosmetics.badge)}</span>`
-          : "";
-
-        const prestige = cosmetics.prestige > 0
-          ? `<span class="comment-prestige">★ ${cosmetics.prestige}</span>`
-          : "";
-
-        const canDelete =
-          currentUser &&
-          currentUser.uid === comment.userId;
-
-        return `
-          <article class="comment-item">
-            <a
-              class="comment-avatar-shell"
-              href="profile.html?id=${encodeURIComponent(comment.userId || "")}"
-              style="--comment-frame-color:${frameColor};"
-              aria-label="View ${escapeHtml(displayName)} profile"
-            >
-              ${avatar}
-            </a>
-
-            <div>
-              <div class="comment-topline">
-                <a
-                  class="comment-name ${nameEffectClass}"
-                  href="profile.html?id=${encodeURIComponent(comment.userId || "")}"
-                  style="${nameColor ? `--comment-name-color:${nameColor};` : ""}"
-                >
-                  ${escapeHtml(displayName)}
-                </a>
-
-                ${rgId ? `<span class="comment-rgid">${escapeHtml(rgId)}</span>` : ""}
-                ${title}
-                ${badge}
-                ${prestige}
-
-                <span class="comment-time">
-                  • ${escapeHtml(formatCommentTime(comment.createdAt))}
-                </span>
-              </div>
-
-              <p class="comment-message">${escapeHtml(comment.message || "")}</p>
-
-              <div class="comment-actions">
-                ${
-                  canDelete
-                    ? `
-                      <button
-                        class="comment-delete"
-                        type="button"
-                        data-delete-comment="${escapeHtml(comment.id)}"
-                      >
-                        Delete
-                      </button>
-                    `
-                    : ""
-                }
-              </div>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    async function submitModalComment(event) {
-      event.preventDefault();
-
-      const messageInput = document.getElementById("commentMessage");
-      const status = document.getElementById("commentComposerStatus");
-      const button = document.getElementById("commentSubmit");
-
-      if (!activeModalPost || !currentUser || !messageInput) return;
-
-      button.disabled = true;
-      status.textContent = "Posting...";
-
-      try {
-        await RGPosts.addComment(
-          activeModalPost.id,
-          currentUser,
-          currentPlayer || {},
-          messageInput.value
-        );
-
-        messageInput.value = "";
-        status.textContent = "Comment posted.";
-      } catch (error) {
-        status.textContent = error.message || "Comment could not be posted.";
-      } finally {
-        button.disabled = false;
-      }
-    }
-
-    async function deleteModalComment(commentId) {
-      if (!activeModalPost || !currentUser || !commentId) return;
-
-      try {
-        await RGPosts.deleteOwnComment(
-          activeModalPost.id,
-          commentId,
-          currentUser.uid
-        );
-      } catch (error) {
-        alert(error.message || "Comment could not be deleted.");
-      }
-    }
-
-    function setPostUrl(postId) {
-      const url = new URL(window.location.href);
-
-      if (postId) {
-        url.searchParams.set("post", postId);
-      } else {
-        url.searchParams.delete("post");
-      }
-
-      history.replaceState({}, "", url);
-    }
-
-    async function openPostModal(postId, updateUrl = true) {
-      if (!postId) return;
-
-      if (stopModalComments) {
-        stopModalComments();
-        stopModalComments = null;
-      }
-
-      postModalBackdrop.classList.add("show");
-      postModalBackdrop.setAttribute("aria-hidden", "false");
-      document.body.classList.add("post-modal-open");
-
-      modalPostContent.innerHTML = `
-        <div class="comment-loading">Loading post...</div>
-      `;
-      modalCommentList.innerHTML = `
-        <div class="comment-loading">Loading comments...</div>
-      `;
-      modalCommentCount.textContent = "Loading...";
-      renderCommentComposer();
-
-      try {
-        const post = await RGPosts.getPost(postId);
-        activeModalPost = post;
-
-        if (!post) {
-          renderModalPost(null);
-          return;
-        }
-
-        document.getElementById("postModalTitle").textContent =
-          post.title || "Official Post";
-
-        renderModalPost(post);
-        renderCommentComposer();
-
-        stopModalComments = RGPosts.listenToComments(
-          post.id,
-          comments => {
-            renderModalComments(comments);
-          }
-        );
-
-        if (updateUrl) setPostUrl(post.id);
-      } catch (error) {
-        console.error("Open post error:", error);
-        modalPostContent.innerHTML = `
-          <div class="comment-empty">
-            This post could not be loaded.
-          </div>
-        `;
-      }
-    }
-
-    function closePostModal(updateUrl = true) {
-      postModalBackdrop.classList.remove("show");
-      postModalBackdrop.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("post-modal-open");
-
-      if (stopModalComments) {
-        stopModalComments();
-        stopModalComments = null;
-      }
-
-      activeModalPost = null;
-
-      if (updateUrl) setPostUrl("");
-    }
-
-    document.addEventListener("click", event => {
-      const openTarget = event.target.closest("[data-open-post]");
-
-      if (openTarget) {
-        event.preventDefault();
-        event.stopPropagation();
-        openPostModal(openTarget.dataset.openPost);
-        return;
-      }
-
-      const newsCard = event.target.closest(".news-card[data-post-id]");
-
-      if (
-        newsCard &&
-        !event.target.closest("a, button")
-      ) {
-        openPostModal(newsCard.dataset.postId);
-        return;
-      }
-
-      const deleteTarget = event.target.closest("[data-delete-comment]");
-
-      if (deleteTarget) {
-        deleteModalComment(deleteTarget.dataset.deleteComment);
-      }
-    });
-
-    postModalClose.addEventListener("click", () => {
-      closePostModal();
-    });
-
-    postModalBackdrop.addEventListener("click", event => {
-      if (event.target === postModalBackdrop) {
-        closePostModal();
-      }
-    });
-
-    document.addEventListener("keydown", event => {
-  if (event.key !== "Escape") return;
-
-  if (postModalBackdrop.classList.contains("show")) {
-    closePostModal();
-  }
-});
-
-    window.addEventListener("popstate", () => {
-      const postId = new URL(window.location.href).searchParams.get("post");
-
-      if (postId) {
-        openPostModal(postId, false);
-      } else {
-        closePostModal(false);
-      }
-    });
-
-    const initialPostId =
-      new URL(window.location.href).searchParams.get("post");
-
-    if (initialPostId) {
-      openPostModal(initialPostId, false);
-    }
+        <a
+          class="news-read-link"
+          href="${postUrl}"
+        >
+          Open Post →
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+
+    
 
 
     

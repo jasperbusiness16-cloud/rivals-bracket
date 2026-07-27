@@ -2239,69 +2239,246 @@ assignedCount +=
 
     renderAll();
   }
+  function readTeamLogoAsDataUrl(
+  file
+) {
+  return new Promise(
+    (resolve, reject) => {
+      const reader =
+        new FileReader();
+
+      reader.onload = () => {
+        resolve(
+          String(
+            reader.result || ""
+          )
+        );
+      };
+
+      reader.onerror = () => {
+        reject(
+          new Error(
+            "The selected logo could not be read."
+          )
+        );
+      };
+
+      reader.readAsDataURL(file);
+    }
+  );
+}
+
+function loadTeamLogoImage(
+  source
+) {
+  return new Promise(
+    (resolve, reject) => {
+      const image =
+        new Image();
+
+      image.onload = () => {
+        resolve(image);
+      };
+
+      image.onerror = () => {
+        reject(
+          new Error(
+            "The selected image format could not be opened."
+          )
+        );
+      };
+
+      image.src = source;
+    }
+  );
+}
+
+async function optimizeTeamLogo(
+  file
+) {
+  const source =
+    await readTeamLogoAsDataUrl(
+      file
+    );
+
+  const image =
+    await loadTeamLogoImage(
+      source
+    );
+
+  const maxDimension = 512;
+
+  const originalWidth =
+    Number(
+      image.naturalWidth ||
+      image.width ||
+      1
+    );
+
+  const originalHeight =
+    Number(
+      image.naturalHeight ||
+      image.height ||
+      1
+    );
+
+  const scale =
+    Math.min(
+      1,
+      maxDimension /
+      Math.max(
+        originalWidth,
+        originalHeight
+      )
+    );
+
+  const width =
+    Math.max(
+      1,
+      Math.round(
+        originalWidth *
+        scale
+      )
+    );
+
+  const height =
+    Math.max(
+      1,
+      Math.round(
+        originalHeight *
+        scale
+      )
+    );
+
+  const canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  const canvasContext =
+    canvas.getContext(
+      "2d",
+      {
+        alpha: true
+      }
+    );
+
+  canvas.width = width;
+  canvas.height = height;
+
+  if (!canvasContext) {
+    throw new Error(
+      "This browser could not prepare the team logo."
+    );
+  }
+
+  canvasContext.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+  canvasContext.drawImage(
+    image,
+    0,
+    0,
+    width,
+    height
+  );
+
+  let optimized;
+
+  /*
+   * Preserve transparency for PNG
+   * and WebP uploads.
+   */
+  if (
+    file.type === "image/png" ||
+    file.type === "image/webp"
+  ) {
+    optimized =
+      canvas.toDataURL(
+        "image/webp",
+        0.88
+      );
+
+    /*
+     * Some older browsers may not
+     * support WebP canvas encoding.
+     */
+    if (
+      !optimized.startsWith(
+        "data:image/webp"
+      )
+    ) {
+      optimized =
+        canvas.toDataURL(
+          "image/png"
+        );
+    }
+  } else {
+    optimized =
+      canvas.toDataURL(
+        "image/jpeg",
+        0.86
+      );
+  }
+
+  if (
+    optimized.length >
+    900000
+  ) {
+    throw new Error(
+      "The logo is still too large after optimization. Choose a simpler or smaller image."
+    );
+  }
+
+  return optimized;
+}
 async function uploadTeamLogo(
   teamKey,
   file,
   input
 ) {
-  const allowedTypes = [
-    "image/png",
-    "image/jpeg",
-    "image/webp"
-  ];
-
-  if (!allowedTypes.includes(file.type)) {
+  if (
+    !file ||
+    !String(
+      file.type || ""
+    ).startsWith("image/")
+  ) {
     context.showToast(
-      "Team logos must be PNG, JPG or WebP."
+      "Choose an image file."
     );
 
     input.value = "";
     return;
   }
 
-  const maxFileSize =
-    5 * 1024 * 1024;
-
-  if (file.size > maxFileSize) {
+  if (
+    file.size >
+    20 * 1024 * 1024
+  ) {
     context.showToast(
-      "Team logos must be smaller than 5 MB."
+      "Choose an image smaller than 20 MB."
     );
 
     input.value = "";
     return;
   }
-
-  const extension =
-    file.type === "image/png"
-      ? "png"
-      : file.type === "image/webp"
-        ? "webp"
-        : "jpg";
-
-  const storagePath =
-    `team-logos/${moduleState.tournamentId}/${teamKey}.${extension}`;
 
   setText(
     "teamBuilderSaveState",
-    `Uploading ${getTeamName(teamKey)} logo...`
+    `Preparing ${getTeamName(teamKey)} logo...`
   );
 
   try {
-    const storageRef =
-      firebase.storage().ref(
-        storagePath
-      );
-
-    await storageRef.put(file, {
-      contentType: file.type
-    });
-
-    const downloadUrl =
-      await storageRef.getDownloadURL();
+    const optimizedLogo =
+      await optimizeTeamLogo(file);
 
     moduleState.teamLogos[
       teamKey
-    ] = downloadUrl;
+    ] = optimizedLogo;
 
     markDirty(
       `${getTeamName(teamKey)} logo updated`
@@ -2310,19 +2487,17 @@ async function uploadTeamLogo(
     renderTeams();
 
     context.showToast(
-      `${getTeamName(teamKey)} logo uploaded. Save or publish teams to keep it.`
+      `${getTeamName(teamKey)} logo ready. Save Draft or Publish Teams to keep it.`
     );
   } catch (error) {
     console.error(
-      "Team logo upload failed:",
+      "Team logo preparation failed:",
       error
     );
 
     context.showToast(
-      context.isPermissionDenied(error)
-        ? "Firebase denied the team logo upload."
-        : error.message ||
-          "The team logo could not be uploaded."
+      error.message ||
+      "The team logo could not be prepared."
     );
   } finally {
     input.value = "";
@@ -3775,13 +3950,21 @@ function getTeamLogo(teamKey) {
 
     if (!url) return "";
 
-    if (
-      url.startsWith("/") ||
-      url.startsWith("./") ||
-      url.startsWith("../")
-    ) {
-      return url;
-    }
+if (
+  url.startsWith(
+    "data:image/"
+  )
+) {
+  return url;
+}
+
+if (
+  url.startsWith("/") ||
+  url.startsWith("./") ||
+  url.startsWith("../")
+) {
+  return url;
+}
 
     try {
       const parsed =

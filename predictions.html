@@ -2394,7 +2394,7 @@
             <span id="pickemStatusText">Pick’em Open</span>
           </div>
           <div class="status-chip">
-            <span>Perfect Remaining</span>
+            <span>Perfect Brackets</span>
             <strong id="topPerfectCount">0</strong>
           </div>
         </div>
@@ -2415,16 +2415,6 @@
               <span id="predictionRating">★☆☆☆☆</span>
             </div>
 
-            <div class="mastery-block">
-              <div class="rail-label">Predictor Mastery</div>
-              <div class="mastery-row">
-                <strong>Level <span id="predictorLevel">1</span></strong>
-                <span id="predictorMultiplier">1.00×</span>
-              </div>
-              <div class="xp-track"><div id="predictorXpFill" class="xp-fill"></div></div>
-              <div class="xp-copy"><span id="predictorXpText">0 / 100 XP</span><span id="nextMultiplierText">Bonus at Level 5</span></div>
-            </div>
-
             <div class="rail-stat-grid">
               <div class="rail-stat"><span>Accuracy</span><strong id="railAccuracy">0%</strong></div>
               <div class="rail-stat"><span>Streak</span><strong id="railStreak">0</strong></div>
@@ -2432,13 +2422,6 @@
               <div class="rail-stat"><span>Total Picks</span><strong id="railTotal">0</strong></div>
             </div>
           </section>
-
-          <div class="rail-footer">
-            <div class="multiplier-chip">
-              <span>Prediction Reward Bonus</span>
-              <strong id="railMultiplierBonus">+0%</strong>
-            </div>
-          </div>
         </aside>
 
         <section class="stage-shell">
@@ -2477,7 +2460,7 @@
                 <article class="command-card mini-command">
                   <div class="mini-top">
                     <div class="mini-icon">♛</div>
-                    <div class="mini-value"><span>Perfect Remaining</span><strong id="commandPerfectCount">0</strong></div>
+                    <div class="mini-value"><span>Perfect Brackets</span><strong id="commandPerfectCount">0</strong></div>
                   </div>
                   <div>
                     <h4 id="commandBracketTitle">Bracket Not Submitted</h4>
@@ -2589,7 +2572,7 @@
               <div class="stage-title">
                 <div class="eyebrow">Long-Term Predictor Progression</div>
                 <h2>Prediction Career</h2>
-                <p>Rank, mastery, streaks, earnings and tournament history.</p>
+                <p>Rank, streaks, earnings and tournament history.</p>
               </div>
             </header>
 
@@ -2629,14 +2612,6 @@
 
               <aside class="career-side">
                 <section class="side-card">
-                  <h4>Predictor Mastery</h4>
-                  <p>Mastery level rewards long-term participation. Rank continues to represent prediction skill.</p>
-                  <div class="mastery-large"><strong>LV <span id="careerLevel">1</span></strong><span id="careerMultiplier">1.00× RP</span></div>
-                  <div class="xp-track"><div id="careerXpFill" class="xp-fill"></div></div>
-                  <div class="xp-copy"><span id="careerXpText">0 / 100 XP</span><span id="careerNextBonus">Next bonus: Level 5</span></div>
-                </section>
-
-                <section class="side-card">
                   <h4>Career Specialties</h4>
                   <div class="milestone-list">
                     <div class="milestone"><div class="milestone-icon">♛</div><div><strong>Champion Calls</strong><span>Correct tournament champions</span></div><b id="careerChampionCorrect">0</b></div>
@@ -2653,7 +2628,7 @@
         <aside class="intel-rail">
           <section class="intel-section">
             <div class="intel-title"><span>Tournament Intelligence</span><strong id="intelTournamentState">Upcoming</strong></div>
-            <div class="perfect-display"><strong id="perfectCount">0</strong><span>Perfect Brackets Remaining</span></div>
+            <div class="perfect-display"><strong id="perfectCount">0</strong><span>Perfect Brackets</span></div>
             <div class="intel-list">
               <div class="intel-row"><span>Your Bracket</span><strong id="myPerfectStatus">Not Submitted</strong></div>
               <div class="intel-row"><span>Completion</span><strong id="intelCompletion">0 / 7</strong></div>
@@ -2662,7 +2637,7 @@
           </section>
 
           <section class="intel-section">
-            <div class="intel-title"><span>Reward Matrix</span><strong id="intelMultiplier">1.00×</strong></div>
+            <div class="intel-title"><span>Reward Matrix</span><strong>Fixed RP</strong></div>
             <div class="reward-list">
               <div class="reward-row"><span>Quarterfinal</span><strong id="rewardQf">+100 RP</strong></div>
               <div class="reward-row"><span>Semifinal</span><strong id="rewardSf">+150 RP</strong></div>
@@ -2883,33 +2858,15 @@
       const rpEarned=Number(stats.rpEarned||0);
       const championCorrect=Number(stats.championCorrect||0);
       const matchCorrect=Number(stats.matchCorrect||0);
-      const level=Math.max(1,Number(stats.level||stats.predictorLevel||currentPlayer.predictorLevel||1));
-      const xp=Math.max(0,Number(stats.xp||stats.predictorXp||currentPlayer.predictorXp||0));
-      const xpIntoLevel=xp%100;
-
-      let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to advance through the ranking ladder.";
+let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to advance through the ranking ladder.";
       if(accuracy>=80&&total>=10){rank="Legend";rating="★★★★★";caption="Elite prediction accuracy across a proven body of tournament calls."}
       else if(accuracy>=70&&total>=8){rank="Oracle";rating="★★★★☆";caption="High-confidence reads backed by a strong prediction record."}
       else if(accuracy>=60&&total>=5){rank="Expert";rating="★★★☆☆";caption="Consistent tournament analysis with above-average accuracy."}
       else if(accuracy>=50&&total>=3){rank="Analyst";rating="★★☆☆☆";caption="A developing record with reliable early prediction performance."}
 
-      return {correct,total,accuracy,currentStreak,bestStreak,rpEarned,championCorrect,matchCorrect,level,xp,xpIntoLevel,rank,rating,caption};
+      return {correct,total,accuracy,currentStreak,bestStreak,rpEarned,championCorrect,matchCorrect,rank,rating,caption};
     }
-
-    function predictorMultiplier(level){
-      if(level>=30)return 1.20;
-      if(level>=25)return 1.18;
-      if(level>=20)return 1.16;
-      if(level>=15)return 1.14;
-      if(level>=10)return 1.12;
-      if(level>=5)return 1.10;
-      return 1.00;
-    }
-    function nextMultiplierMilestone(level){
-      const milestones=[5,10,15,20,25,30];
-      return milestones.find(value=>value>level)||null;
-    }
-    function multipliedReward(base){return Math.round(Number(base||0)*predictorMultiplier(getPredictorStats().level))}
+    function multipliedReward(base){return Math.round(Number(base||0))}
 
     function mapResolvedWinners(){
       resolvedWinners.QF1=clean(siteData.qf1Winner);
@@ -2938,9 +2895,6 @@
 
     function renderPlayerRail(){
       const stats=getPredictorStats();
-      const multiplier=predictorMultiplier(stats.level);
-      const bonus=Math.round((multiplier-1)*100);
-      const nextMilestone=nextMultiplierMilestone(stats.level);
       const displayName=currentPlayer.displayName||currentUser?.displayName||"Predictor";
       const avatar=document.getElementById("identityAvatar");
 
@@ -2956,16 +2910,10 @@
       setText("predictionRank",stats.rank);
       setText("predictionRating",stats.rating);
       setText("rankEmblemLetter",stats.rank[0]);
-      setText("predictorLevel",stats.level);
-      setText("predictorMultiplier",`${multiplier.toFixed(2)}×`);
       setText("railAccuracy",`${stats.accuracy}%`);
       setText("railStreak",stats.currentStreak);
       setText("railCorrect",stats.correct);
       setText("railTotal",stats.total);
-      setText("railMultiplierBonus",`+${bonus}%`);
-      setText("predictorXpText",`${stats.xpIntoLevel} / 100 XP`);
-      setText("nextMultiplierText",nextMilestone?`Bonus at Level ${nextMilestone}`:"Maximum Bonus Active");
-      document.getElementById("predictorXpFill").style.width=`${stats.xpIntoLevel}%`;
     }
 
     function renderBracketTeam(matchId,teamKey){
@@ -3280,7 +3228,6 @@
       if(!questions[activeLiveQuestion])activeLiveQuestion="map1Winner";
       const currentQuestion=questions[activeLiveQuestion];
       const community=getCommunityStats(activeLiveQuestion,currentQuestion.options);
-      const multiplier=predictorMultiplier(getPredictorStats().level);
 
       statusChip.className=`status-chip ${locked?"locked":""}`;
       statusChip.innerHTML=`<i class="status-dot"></i><span>${locked?"Predictions Locked":"Predictions Open"}</span>`;
@@ -3325,7 +3272,7 @@
           <aside class="question-intel">
             <h4>Potential Reward</h4>
             <div class="reward-value">+${multipliedReward(currentQuestion.base)} RP</div>
-            <div class="reward-breakdown">Base ${currentQuestion.base} RP • Predictor Mastery ${multiplier.toFixed(2)}×</div>
+            <div class="reward-breakdown">Fixed reward for a correct prediction. Rewards are credited after official results are finalized.</div>
             <div class="community-block">
               <h4>Community Calls</h4>
               ${community.length?community.map(item=>`
@@ -3362,8 +3309,6 @@
 
     function renderCareer(){
       const stats=getPredictorStats();
-      const multiplier=predictorMultiplier(stats.level);
-      const nextMilestone=nextMultiplierMilestone(stats.level);
       const entries=getHistoryEntries();
 
       setText("careerRankLetter",stats.rank[0]);
@@ -3376,14 +3321,9 @@
       setText("careerCurrentStreak",stats.currentStreak);
       setText("careerBestStreak",stats.bestStreak);
       setText("careerRpEarned",formatNumber(stats.rpEarned));
-      setText("careerLevel",stats.level);
-      setText("careerMultiplier",`${multiplier.toFixed(2)}× RP`);
-      setText("careerXpText",`${stats.xpIntoLevel} / 100 XP`);
-      setText("careerNextBonus",nextMilestone?`Next bonus: Level ${nextMilestone}`:"Maximum bonus active");
       setText("careerChampionCorrect",stats.championCorrect);
       setText("careerMatchCorrect",stats.matchCorrect);
       setText("careerPeakStreak",stats.bestStreak);
-      document.getElementById("careerXpFill").style.width=`${stats.xpIntoLevel}%`;
       setText("historyCount",`${entries.length} ${entries.length===1?"Entry":"Entries"}`);
 
       const container=document.getElementById("predictionHistory");
@@ -3451,7 +3391,7 @@
       setText("commandLiveState",liveOpen?"Open":liveWindowLocked()?"Locked":"Offline");
       setText("commandLiveTitle",matchKey&&teams.length>=2?`${matchKey}: ${getTeamName(teams[0])} vs ${getTeamName(teams[1])}`:"Awaiting Next Match");
       setText("commandLiveText",liveOpen?"Two prediction questions are available now.":liveWindowLocked()?"This match has started and all saved answers are locked.":"Questions appear automatically when staff prepare the next matchup.");
-      setText("snapshotTitle",`${stats.rank} Predictor • Level ${stats.level}`);
+      setText("snapshotTitle",`${stats.rank} Predictor`);
       setText("snapshotText",stats.total?`${stats.accuracy}% accuracy across ${stats.total} completed predictions.`:"Your prediction history will build as tournament results are finalized.");
       setText("commandCurrentStreak",stats.currentStreak);
       setText("commandBestStreak",stats.bestStreak);
@@ -3460,7 +3400,6 @@
 
     function renderIntel(){
       const stats=getPredictorStats();
-      const multiplier=predictorMultiplier(stats.level);
       const started=tournamentHasStarted();
       const complete=MATCH_ORDER.filter(id=>Boolean(picks[id])).length;
       const matchKey=normalizeMatchLabel(nextMatchData.label||nextMatchData.fullMatchId);
@@ -3469,7 +3408,6 @@
 
       setText("intelTournamentState",started?"Live":"Upcoming");
       setText("intelLiveState",liveState);
-      setText("intelMultiplier",`${multiplier.toFixed(2)}×`);
       setText("rewardQf",`+${multipliedReward(BASE_REWARDS.QF)} RP`);
       setText("rewardSf",`+${multipliedReward(BASE_REWARDS.SF)} RP`);
       setText("rewardGf",`+${multipliedReward(BASE_REWARDS.GRAND)} RP`);

@@ -134,10 +134,10 @@ friendRequestPaths: [
                 icon: "profile"
             },
             {
-                label: "Inventory",
-                href: "inventory.html",
-                icon: "inventory"
-            },
+    label: "Check In",
+    href: "check-in.html",
+    icon: "check"
+},
             {
                 label: "Settings",
                 href: "settings.html",

@@ -1051,11 +1051,7 @@ dailyGiftStats: {
                             )}
                         </p>
 
-                        <div class="rg-points-modal__footer">
-                            Earn RG Points through predictions,
-                            tournaments, daily rewards, and
-                            community activity.
-                        </div>
+                      
                     </div>
                 </div>
 

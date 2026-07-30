@@ -879,13 +879,14 @@ dailyGiftStats: {
                         >
                     </div>
 
-                 <div
+          <div
     class="rg-tabs"
     role="tablist"
     aria-label="Friends sections"
     style="
+        width:100%;
         grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(2, minmax(0, 1fr));
     "
 >
     <button
@@ -3673,20 +3674,19 @@ this.state.firebaseListeners.push(() => {
                                     </span>
                                 </div>
 
-   <div
-    style="display:flex;gap:8px;align-items:center;"
->
-  <a
+<a
     class="rg-friend-card__action"
     href="profile.html?id=${encodeURIComponent(
         friend.id
     )}"
     style="
+        min-width:108px;
+        min-height:42px;
         display:inline-flex;
         align-items:center;
         justify-content:center;
+        margin-left:auto;
         text-align:center;
-        min-height:42px;
         line-height:1;
         text-decoration:none;
         box-sizing:border-box;
@@ -3694,29 +3694,6 @@ this.state.firebaseListeners.push(() => {
 >
     Profile
 </a>
-
-    <button
-        class="rg-friend-card__action"
-        type="button"
-        data-rg-friend-action="gift"
-        data-rg-friend-id="${this.escapeAttribute(
-            friend.id
-        )}"
-        title="${this.escapeAttribute(
-            giftState.reason ||
-            "Send this friend a Daily Gift"
-        )}"
-        ${
-            giftState.disabled
-                ? "disabled"
-                : ""
-        }
-    >
-        ${this.escapeHTML(
-            giftState.label
-        )}
-    </button>
-</div>
                             </article>
                         `;
                     })

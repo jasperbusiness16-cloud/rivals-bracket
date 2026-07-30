@@ -350,7 +350,7 @@
 }
 
 /* =========================================================
-   CSS ARENA / COMMAND STAGE
+   ABSTRACT ANGULAR ESPORTS HERO ART
 ========================================================= */
 
 .hero-art {
@@ -358,507 +358,184 @@
   min-height: 500px;
   display: grid;
   place-items: center;
-  perspective: 1100px;
+  overflow: visible;
 }
 
-/* Ambient glow behind stage */
-.hero-art::before {
-  content: "";
-  position: absolute;
-  z-index: -2;
-  width: 78%;
-  height: 70%;
-  border-radius: 50%;
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(149,69,239,.22),
-      rgba(109,40,217,.08) 44%,
-      transparent 72%
-    );
-  filter: blur(24px);
-  animation: heroGlowBreathe 7s ease-in-out infinite;
-}
-
-/* Fading floor plane */
-.hero-art::after {
-  content: "";
-  position: absolute;
-  z-index: -3;
-  left: 50%;
-  bottom: -48px;
-  width: 120%;
-  height: 260px;
-  transform:
-    translateX(-50%)
-    perspective(500px)
-    rotateX(67deg);
-  transform-origin: center bottom;
-  background-image:
-    linear-gradient(
-      rgba(172,105,245,.13) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(172,105,245,.12) 1px,
-      transparent 1px
-    );
-  background-size: 48px 48px;
-  mask-image:
-    linear-gradient(
-      to bottom,
-      transparent,
-      rgba(0,0,0,.92) 30%,
-      transparent 94%
-    );
-  opacity: .6;
-  animation: heroFloorDrift 18s linear infinite;
-}
-
-.hero-stage {
+.angular-scene {
   position: relative;
-  width: min(100%,660px);
-  min-height: 420px;
-  display: grid;
-  place-items: center;
-  transform-style: preserve-3d;
+  width: min(100%, 720px);
+  min-height: 470px;
+  isolation: isolate;
 }
 
-/* Thin outer frame */
-.hero-stage-frame {
+.angular-glow {
   position: absolute;
-  inset: 54px 20px 50px;
-  border-top: 1px solid rgba(192,132,252,.22);
-  border-bottom: 1px solid rgba(192,132,252,.12);
-  clip-path:
-    polygon(
-      8% 0,
-      92% 0,
-      100% 20%,
-      100% 80%,
-      92% 100%,
-      8% 100%,
-      0 80%,
-      0 20%
-    );
+  z-index: -5;
+  left: 52%;
+  top: 46%;
+  width: 62%;
+  height: 58%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(circle, rgba(168,85,247,.23), rgba(109,40,217,.08) 42%, transparent 72%);
+  filter: blur(38px);
+  animation: angularGlowPulse 8s ease-in-out infinite;
 }
 
-.hero-stage-frame::before,
-.hero-stage-frame::after {
-  content: "";
+.angular-grid {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 32%;
+  z-index: -6;
+  left: 4%;
+  right: 1%;
+  bottom: -8%;
+  height: 66%;
+  background-image:
+    linear-gradient(rgba(192,132,252,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,132,252,.06) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: perspective(620px) rotateX(67deg);
+  transform-origin: center bottom;
+  mask-image: linear-gradient(to bottom, transparent, rgba(0,0,0,.92) 30%, transparent 96%);
+  opacity: .54;
+  animation: angularGridMove 20s linear infinite;
+}
+
+.angular-panel {
+  position: absolute;
   border: 1px solid rgba(192,132,252,.12);
   background:
-    linear-gradient(
-      135deg,
-      rgba(168,85,247,.06),
-      rgba(168,85,247,.012)
-    );
+    linear-gradient(135deg, rgba(168,85,247,.07), rgba(168,85,247,.014) 62%, transparent);
+  box-shadow:
+    inset 0 0 44px rgba(168,85,247,.025),
+    0 22px 70px rgba(0,0,0,.2);
 }
 
-.hero-stage-frame::before {
-  left: 0;
-  clip-path:
-    polygon(
-      0 18%,
-      76% 0,
-      100% 50%,
-      76% 100%,
-      0 82%
-    );
-}
-
-.hero-stage-frame::after {
-  right: 0;
-  clip-path:
-    polygon(
-      24% 0,
-      100% 18%,
-      100% 82%,
-      24% 100%,
-      0 50%
-    );
-}
-
-/* Top illuminated rail */
-.stage-top-rail {
-  position: absolute;
-  top: 38px;
-  left: 50%;
+.panel-a {
+  z-index: -3;
   width: 58%;
-  height: 2px;
-  transform: translateX(-50%);
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(192,132,252,.28),
-      #c084fc,
-      rgba(192,132,252,.28),
-      transparent
-    );
-  box-shadow: 0 0 18px rgba(168,85,247,.34);
+  height: 69%;
+  left: 2%;
+  top: 9%;
+  clip-path: polygon(0 24%, 62% 0, 100% 22%, 83% 100%, 18% 88%);
+  transform: rotate(-7deg);
 }
 
-.stage-top-rail::before {
-  content: "RG // COMPETITIVE PLATFORM";
-  position: absolute;
-  left: 50%;
-  top: -23px;
-  transform: translateX(-50%);
-  color: rgba(217,192,245,.55);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 2.1px;
-  white-space: nowrap;
-}
-
-/* Main central screen */
-.stage-screen {
-  position: relative;
-  z-index: 3;
-  width: min(67%,410px);
-  min-height: 246px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border: 1px solid rgba(204,151,255,.31);
-  clip-path:
-    polygon(
-      7% 0,
-      93% 0,
-      100% 12%,
-      100% 88%,
-      93% 100%,
-      7% 100%,
-      0 88%,
-      0 12%
-    );
-  background:
-    linear-gradient(
-      135deg,
-      rgba(168,85,247,.14),
-      rgba(168,85,247,.015) 48%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(14,12,22,.97),
-      rgba(8,8,13,.98)
-    );
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.025),
-    0 30px 80px rgba(0,0,0,.48),
-    0 0 52px rgba(109,40,217,.13),
-    inset 0 0 48px rgba(168,85,247,.035);
-}
-
-/* Scan texture */
-.stage-screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,.018) 0,
-      rgba(255,255,255,.018) 1px,
-      transparent 1px,
-      transparent 5px
-    );
-  opacity: .55;
-  pointer-events: none;
-}
-
-/* Slow light sweep */
-.stage-screen::after {
-  content: "";
-  position: absolute;
-  top: -45%;
-  bottom: -45%;
-  left: -45%;
-  width: 32%;
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(192,132,252,.11),
-      transparent
-    );
-  transform: skewX(-17deg);
-  animation: heroScreenSweep 9s ease-in-out infinite;
-}
-
-.stage-screen-label {
-  position: relative;
-  z-index: 2;
-  color: rgba(206,179,235,.58);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-}
-
-.stage-screen-logo {
-  position: relative;
-  z-index: 2;
-  margin-top: 14px;
-  color: #f8f5ff;
-  font-size: clamp(88px,9vw,132px);
-  font-weight: 800;
-  line-height: .74;
-  letter-spacing: -8px;
-  text-shadow:
-    0 0 28px rgba(168,85,247,.11);
-}
-
-.stage-screen-subtitle {
-  position: relative;
-  z-index: 2;
-  margin-top: 24px;
-  color: var(--purple-2);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 3.4px;
-  text-transform: uppercase;
-}
-
-.stage-screen-status {
-  position: relative;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  color: rgba(212,204,222,.58);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.stage-screen-status::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #9f5cf1;
-  box-shadow: 0 0 11px rgba(168,85,247,.9);
-  animation: heroStatusPulse 2.5s ease-in-out infinite;
-}
-
-/* Side broadcast wings */
-.stage-wing {
-  position: absolute;
-  z-index: 2;
-  top: 115px;
-  width: 31%;
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: 1px solid rgba(192,132,252,.14);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(168,85,247,.075),
-      rgba(9,8,14,.84) 66%
-    );
-  box-shadow:
-    0 18px 54px rgba(0,0,0,.28),
-    inset 0 0 28px rgba(168,85,247,.02);
-}
-
-.stage-wing.left {
-  left: 0;
-  align-items: flex-start;
-  padding: 0 48px 0 22px;
-  clip-path:
-    polygon(
-      0 18%,
-      84% 0,
-      100% 50%,
-      84% 100%,
-      0 82%
-    );
-}
-
-.stage-wing.right {
+.panel-b {
+  z-index: -4;
+  width: 58%;
+  height: 72%;
   right: 0;
-  align-items: flex-end;
-  padding: 0 22px 0 48px;
-  text-align: right;
-  clip-path:
-    polygon(
-      16% 0,
-      100% 18%,
-      100% 82%,
-      16% 100%,
-      0 50%
-    );
+  top: 5%;
+  clip-path: polygon(18% 0, 100% 17%, 84% 84%, 38% 100%, 0 68%);
+  transform: rotate(8deg);
 }
 
-.stage-wing span {
-  color: rgba(167,159,178,.53);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.panel-c {
+  z-index: -2;
+  width: 88%;
+  height: 43%;
+  left: 6%;
+  top: 28%;
+  overflow: hidden;
+  clip-path: polygon(10% 0, 90% 0, 100% 50%, 87% 100%, 13% 100%, 0 50%);
+  background:
+    linear-gradient(90deg, rgba(168,85,247,.02), rgba(168,85,247,.085) 50%, rgba(168,85,247,.02));
+  border-color: rgba(192,132,252,.15);
 }
 
-.stage-wing strong {
-  display: block;
-  margin-top: 7px;
-  color: rgba(240,235,247,.84);
-  font-size: 13px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+.panel-d {
+  z-index: -5;
+  width: 112%;
+  height: 55%;
+  left: -6%;
+  bottom: -7%;
+  clip-path: polygon(0 44%, 24% 5%, 76% 5%, 100% 44%, 84% 100%, 16% 100%);
+  background: linear-gradient(180deg, rgba(168,85,247,.045), transparent 78%);
+  opacity: .72;
 }
 
-.stage-wing i {
-  margin-top: 12px;
-  color: rgba(192,132,252,.75);
-  font-size: 14px;
+.panel-e {
+  z-index: -1;
+  width: 46%;
+  height: 38%;
+  left: 27%;
+  top: 28%;
+  clip-path: polygon(14% 0, 86% 0, 100% 20%, 100% 80%, 86% 100%, 14% 100%, 0 80%, 0 20%);
+  border-color: rgba(192,132,252,.16);
+  background: rgba(9,8,14,.24);
+  box-shadow: inset 0 0 55px rgba(168,85,247,.035);
 }
 
-/* Bottom info rail */
-.stage-bottom-rail {
+.angular-line {
   position: absolute;
-  z-index: 5;
-  left: 50%;
-  bottom: 31px;
-  width: 72%;
-  min-height: 42px;
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  transform: translateX(-50%);
-  border-top: 1px solid rgba(192,132,252,.18);
-  border-bottom: 1px solid rgba(255,255,255,.05);
-  background: rgba(8,8,13,.76);
-  backdrop-filter: blur(8px);
+  height: 1px;
+  background:
+    linear-gradient(90deg, transparent, rgba(192,132,252,.16), rgba(192,132,252,.62), rgba(192,132,252,.16), transparent);
+  box-shadow: 0 0 15px rgba(168,85,247,.19);
 }
 
-.stage-stat {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 6px 12px;
-  border-left: 1px solid rgba(255,255,255,.055);
-  text-align: center;
-}
+.line-a { width: 82%; left: 9%; top: 16%; }
+.line-b { width: 69%; left: 15.5%; top: 76%; }
+.line-c { width: 49%; left: 25.5%; top: 24%; opacity: .62; }
+.line-d { width: 36%; left: 32%; top: 69%; opacity: .38; }
 
-.stage-stat:first-child {
-  border-left: 0;
-}
-
-.stage-stat span {
-  color: rgba(145,137,156,.56);
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.stage-stat strong {
-  margin-top: 3px;
-  color: rgba(238,232,245,.82);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-}
-
-/* Corner registration markers */
-.stage-marker {
+.angular-slash {
   position: absolute;
-  color: rgba(192,132,252,.36);
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 1.6px;
-  writing-mode: vertical-rl;
-  text-transform: uppercase;
+  width: 1px;
+  height: 46%;
+  top: 26%;
+  background: linear-gradient(to bottom, transparent, rgba(192,132,252,.42), transparent);
+  box-shadow: 0 0 12px rgba(168,85,247,.15);
 }
 
-.stage-marker.left {
-  left: 6px;
-  bottom: 76px;
+.slash-a { left: 20%; transform: rotate(18deg); }
+.slash-b { right: 18%; transform: rotate(-18deg); }
+
+.angular-scene::before,
+.angular-scene::after {
+  content: "";
+  position: absolute;
+  z-index: -4;
+  width: 190px;
+  height: 190px;
+  border: 1px solid rgba(192,132,252,.09);
+  transform: rotate(45deg);
 }
 
-.stage-marker.right {
-  right: 6px;
-  top: 75px;
+.angular-scene::before { left: -45px; top: 72px; }
+.angular-scene::after { right: -35px; bottom: 35px; }
+
+.panel-c::after {
+  content: "";
+  position: absolute;
+  top: -75%;
+  bottom: -75%;
+  left: -28%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgba(192,132,252,.09), transparent);
+  transform: skewX(-18deg);
+  animation: angularSweep 11s ease-in-out infinite;
 }
 
-/* =========================================================
-   HERO ANIMATIONS
-========================================================= */
-
-@keyframes heroGlowBreathe {
-  0%,100% {
-    opacity: .68;
-    transform: scale(.98);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.035);
-  }
+@keyframes angularGlowPulse {
+  0%,100% { opacity: .68; transform: translate(-50%, -50%) scale(.97); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
 }
 
-@keyframes heroScreenSweep {
-  0%,68% {
-    transform:
-      translateX(0)
-      skewX(-17deg);
-    opacity: 0;
-  }
-
-  76% {
-    opacity: 1;
-  }
-
-  100% {
-    transform:
-      translateX(580%)
-      skewX(-17deg);
-    opacity: 0;
-  }
+@keyframes angularGridMove {
+  to { background-position: 0 50px, 50px 0; }
 }
 
-@keyframes heroStatusPulse {
-  0%,100% {
-    opacity: .45;
-    transform: scale(.85);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes heroFloorDrift {
-  to {
-    background-position: 0 48px, 48px 0;
-  }
+@keyframes angularSweep {
+  0%,72% { left: -28%; opacity: 0; }
+  80% { opacity: 1; }
+  100% { left: 118%; opacity: 0; }
 }
 
 @keyframes heroButtonSweep {
-  0%,72% {
-    transform:
-      translateX(-220%)
-      rotate(18deg);
-  }
-
-  100% {
-    transform:
-      translateX(520%)
-      rotate(18deg);
-  }
+  0%,72% { transform: translateX(-220%) rotate(18deg); }
+  100% { transform: translateX(520%) rotate(18deg); }
 }
 
 /* =========================================================
@@ -870,158 +547,62 @@
     grid-template-columns: minmax(0,1fr) minmax(460px,.9fr);
     gap: 34px;
   }
-
-  .hero-stage {
-    transform: scale(.92);
-  }
 }
 
 @media (max-width: 980px) {
-  .hero {
-    min-height: auto;
-  }
+  .hero { min-height: auto; }
 
   .hero-inner {
     min-height: auto;
     grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 28px 0 58px;
+    gap: 8px;
+    padding: 24px 0 58px;
   }
 
   .hero-art {
     order: -1;
-    min-height: 410px;
+    min-height: 390px;
   }
+
   .hero-copy,
   .hero-art {
     grid-column: auto;
     grid-row: auto;
   }
-  .hero-stage {
-    width: min(100%,680px);
-    transform: none;
+
+  .angular-scene {
+    width: min(100%,720px);
+    min-height: 370px;
   }
 
-  .hero-copy {
-    max-width: 760px;
-  }
-
-  .hero h1 {
-    max-width: 720px;
-  }
+  .hero-copy { max-width: 760px; }
+  .hero h1 { max-width: 720px; }
 }
 
 @media (max-width: 720px) {
   .hero {
     background:
-      radial-gradient(
-        circle at 50% 26%,
-        rgba(133,61,230,.18),
-        transparent 30%
-      ),
-      linear-gradient(
-        180deg,
-        #09080e,
-        #08080d
-      );
+      radial-gradient(circle at 50% 25%, rgba(133,61,230,.17), transparent 31%),
+      linear-gradient(180deg, #09080e, #08080d);
   }
 
-  .hero-inner {
-    padding: 16px 0 48px;
-  }
+  .hero-inner { padding: 10px 0 48px; }
 
   .hero-art {
-    min-height: 352px;
-    margin: 0 -10px;
+    min-height: 330px;
+    margin: 0 -14px;
   }
 
-  .hero-stage {
-    min-height: 340px;
-  }
+  .angular-scene { min-height: 320px; }
+  .angular-grid { background-size: 42px 42px; }
+  .panel-a { width: 62%; height: 64%; left: -1%; }
+  .panel-b { width: 62%; height: 67%; right: -1%; }
+  .panel-c { width: 94%; left: 3%; top: 27%; height: 44%; }
+  .panel-e { width: 50%; left: 25%; height: 36%; top: 31%; }
+  .line-a { width: 90%; left: 5%; }
+  .line-b { width: 78%; left: 11%; }
 
-  .hero-stage-frame {
-    inset: 47px 8px 45px;
-  }
-
-  .stage-top-rail {
-    top: 34px;
-    width: 64%;
-  }
-
-  .stage-screen {
-    width: 67%;
-    min-height: 206px;
-  }
-
-  .stage-screen-logo {
-    font-size: 92px;
-  }
-
-  .stage-screen-label {
-    font-size: 7px;
-    letter-spacing: 1.7px;
-  }
-
-  .stage-screen-subtitle {
-    margin-top: 19px;
-    font-size: 8px;
-    letter-spacing: 2.4px;
-  }
-
-  .stage-screen-status {
-    margin-top: 10px;
-    font-size: 7px;
-  }
-
-  .stage-wing {
-    top: 101px;
-    width: 29%;
-    min-height: 136px;
-  }
-
-  .stage-wing.left {
-    padding: 0 36px 0 13px;
-  }
-
-  .stage-wing.right {
-    padding: 0 13px 0 36px;
-  }
-
-  .stage-wing strong {
-    font-size: 10px;
-  }
-
-  .stage-wing span,
-  .stage-wing i {
-    display: none;
-  }
-
-  .stage-bottom-rail {
-    bottom: 28px;
-    width: 78%;
-    min-height: 39px;
-  }
-
-  .stage-stat {
-    padding: 5px 4px;
-  }
-
-  .stage-stat span {
-    font-size: 6px;
-    letter-spacing: 1px;
-  }
-
-  .stage-stat strong {
-    font-size: 8px;
-  }
-
-  .stage-marker {
-    display: none;
-  }
-
-  .hero-copy {
-    margin-top: 3px;
-  }
+  .hero-copy { margin-top: 0; }
 
   .hero h1 {
     margin-top: 19px;
@@ -1030,101 +611,449 @@
     letter-spacing: -2.8px;
   }
 
-  .hero p {
-    font-size: 17px;
-    line-height: 1.55;
+  .hero p { font-size: 17px; line-height: 1.55; }
+  .actions { margin-top: 26px; }
+}
+
+@media (max-width: 470px) {
+  .hero-art {
+    min-height: 270px;
+    margin: 0 -22px;
   }
 
-  .actions {
-    margin-top: 26px;
+  .angular-scene { min-height: 260px; }
+  .panel-a { height: 59%; top: 12%; }
+  .panel-b { height: 62%; top: 8%; }
+  .panel-c { top: 27%; height: 44%; }
+  .panel-d { bottom: -12%; }
+  .panel-e { top: 31%; height: 35%; }
+  .line-a { top: 15%; }
+  .line-b { top: 77%; }
+  .line-c { top: 23%; }
+  .angular-scene::before,
+  .angular-scene::after { width: 145px; height: 145px; }
+
+  .hero h1 { font-size: 49px; }
+  .actions .btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .angular-glow,
+  .angular-grid,
+  .panel-c::after,
+  .btn.primary::after {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================================
+   FINAL HOME POLISH — ANGULAR HERO + PREMIUM EVENT CARDS
+========================================================= */
+
+/* Faint legacy RG mark integrated into the geometry, not a card */
+.angular-logo {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 47%;
+  width: min(34%, 235px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: url("clean%20logo.PNG") center / contain no-repeat;
+  opacity: .115;
+  filter:
+    brightness(1.45)
+    contrast(1.08)
+    drop-shadow(0 0 24px rgba(168,85,247,.3));
+  mix-blend-mode: screen;
+  animation: angularLogoBreathe 8s ease-in-out infinite;
+}
+
+/* Slightly stronger geometry and a lower visual overlap into the copy */
+.angular-panel {
+  border-color: rgba(192,132,252,.16);
+}
+
+.angular-line {
+  filter: brightness(1.14);
+}
+
+.angular-scene {
+  transform: translateY(18px);
+}
+
+.hero-art {
+  margin-bottom: -54px;
+}
+
+.panel-a,
+.panel-b {
+  box-shadow:
+    inset 0 0 52px rgba(168,85,247,.035),
+    0 22px 70px rgba(0,0,0,.22);
+}
+
+@keyframes angularLogoBreathe {
+  0%,100% {
+    opacity: .085;
+    transform: translate(-50%, -50%) scale(.97);
+  }
+  50% {
+    opacity: .14;
+    transform: translate(-50%, -50%) scale(1.025);
+  }
+}
+
+/* Shared premium card foundation */
+.tournament-card,
+.prize-card {
+  border-color: rgba(192,132,252,.18);
+  background:
+    linear-gradient(145deg, rgba(168,85,247,.055), transparent 34%),
+    linear-gradient(180deg, rgba(18,16,27,.97), rgba(10,9,15,.985));
+  box-shadow:
+    0 26px 76px rgba(0,0,0,.38),
+    inset 0 1px rgba(255,255,255,.035);
+}
+
+.tournament-card::before,
+.prize-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(192,132,252,.5), transparent 18%) top left / 46% 1px no-repeat,
+    linear-gradient(180deg, rgba(192,132,252,.28), transparent 28%) top left / 1px 62% no-repeat,
+    linear-gradient(270deg, rgba(192,132,252,.18), transparent 24%) bottom right / 34% 1px no-repeat;
+  opacity: .72;
+}
+
+/* Upcoming tournament becomes a broadcast/event feature panel */
+.tournament-card {
+  min-height: 430px;
+  grid-template-columns: minmax(0,1.3fr) minmax(310px,.7fr);
+  gap: 0;
+  padding: 0;
+}
+
+.tournament-card::after {
+  right: -190px;
+  top: -270px;
+  width: 590px;
+  height: 590px;
+  border-color: rgba(192,132,252,.12);
+  background:
+    linear-gradient(135deg, rgba(168,85,247,.09), transparent 62%);
+  box-shadow: 0 0 90px rgba(109,40,217,.08);
+}
+
+.tournament-copy {
+  padding: 40px 42px 38px;
+}
+
+.tournament-copy::before {
+  content: "NEXT EVENT // RG TOURNAMENT SERIES";
+  display: block;
+  margin-bottom: 18px;
+  color: rgba(192,132,252,.68);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2.1px;
+}
+
+.tournament-card h3 {
+  max-width: 720px;
+  margin: 20px 0 14px;
+  font-size: clamp(42px,4.8vw,72px);
+  letter-spacing: -2.2px;
+}
+
+.tournament-card .format {
+  color: #c0b8cc;
+  font-size: 14px;
+  letter-spacing: .55px;
+}
+
+.tournament-card .meta {
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.tournament-card .meta-box {
+  min-width: 145px;
+  padding: 13px 15px;
+  border-color: rgba(255,255,255,.085);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), transparent),
+    rgba(6,6,11,.34);
+}
+
+.tournament-card .meta-box span {
+  color: #7e778c;
+  font-size: 8px;
+  letter-spacing: 1.45px;
+  text-transform: uppercase;
+}
+
+.tournament-card .meta-box strong {
+  margin-top: 7px;
+  font-size: 15px;
+}
+
+.tournament-card .actions {
+  margin-top: 30px;
+}
+
+/* Countdown side reads as a dedicated broadcast panel */
+.count-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 38px 30px;
+  border-left: 1px solid rgba(192,132,252,.14);
+  background:
+    radial-gradient(circle at 50% 25%, rgba(168,85,247,.12), transparent 42%),
+    linear-gradient(180deg, rgba(15,13,23,.78), rgba(7,7,11,.58));
+}
+
+.count-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(192,132,252,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,132,252,.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(to bottom, #000, transparent 90%);
+}
+
+.count-panel::after {
+  content: "";
+  position: absolute;
+  right: -84px;
+  bottom: -116px;
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(192,132,252,.12);
+  transform: rotate(45deg);
+}
+
+.count-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.count-panel > span {
+  color: #a39aaa;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.countdown {
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.unit {
+  min-width: 0;
+  padding: 19px 8px 17px;
+  border-color: rgba(192,132,252,.15);
+  border-radius: 13px;
+  background:
+    linear-gradient(180deg, rgba(168,85,247,.07), rgba(255,255,255,.018));
+  box-shadow: inset 0 1px rgba(255,255,255,.035);
+}
+
+.unit strong {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.unit span {
+  margin-top: 9px;
+  color: #81798d;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.event-date {
+  margin-top: 20px;
+  color: #bbb3c6;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Prize pool upgraded to match the official news visual language */
+.prize-card {
+  min-height: 430px;
+  padding: 32px;
+}
+
+.prize-card::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  right: -125px;
+  top: -125px;
+  width: 310px;
+  height: 310px;
+  border: 1px solid rgba(192,132,252,.13);
+  background: rgba(168,85,247,.035);
+  transform: rotate(45deg);
+}
+
+.prize-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.prize-icon {
+  width: 58px;
+  height: 58px;
+  border-color: rgba(192,132,252,.42);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(168,85,247,.17), rgba(168,85,247,.045));
+  box-shadow:
+    0 0 28px rgba(109,40,217,.14),
+    inset 0 1px rgba(255,255,255,.08);
+  font-size: 21px;
+}
+
+.prize-card h3 {
+  margin-top: 30px;
+  color: #aaa2b5;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.prize-total {
+  margin-top: 10px;
+  font-size: clamp(56px,5.6vw,78px);
+  letter-spacing: -3px;
+  text-shadow: 0 0 28px rgba(168,85,247,.1);
+}
+
+.prize-source {
+  color: #777080;
+  font-size: 15px;
+}
+
+.goal {
+  padding-top: 34px;
+}
+
+.goal-head {
+  color: #aaa2b5;
+  letter-spacing: .35px;
+}
+
+.goal-track {
+  height: 10px;
+  border: 1px solid rgba(255,255,255,.045);
+  background: rgba(255,255,255,.055);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.35);
+}
+
+.goal-fill {
+  background: linear-gradient(90deg, #6d28d9, #a855f7 58%, #d09aff);
+}
+
+@media (max-width: 980px) {
+  .tournament-card {
+    grid-template-columns: 1fr;
+  }
+
+  .count-panel {
+    border-top: 1px solid rgba(192,132,252,.14);
+    border-left: 0;
+  }
+
+  .prize-card {
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-art {
+    margin-bottom: -36px;
+  }
+
+  .angular-scene {
+    transform: translateY(8px);
+  }
+
+  .angular-logo {
+    width: min(35%, 150px);
+    opacity: .1;
+  }
+
+  .tournament-copy {
+    padding: 30px 24px 28px;
+  }
+
+  .tournament-copy::before {
+    margin-bottom: 14px;
+    font-size: 7px;
+    letter-spacing: 1.5px;
+  }
+
+  .tournament-card h3 {
+    font-size: clamp(38px,11vw,54px);
+  }
+
+  .tournament-card .meta-box {
+    flex: 1 1 145px;
+  }
+
+  .count-panel {
+    padding: 28px 24px 30px;
+  }
+
+  .prize-card {
+    padding: 28px 24px;
   }
 }
 
 @media (max-width: 470px) {
   .hero-art {
-    min-height: 310px;
-    margin: 0 -20px;
+    margin-bottom: -22px;
   }
 
-  .hero-stage {
-    min-height: 302px;
+  .angular-logo {
+    width: 128px;
   }
 
-  .hero-stage-frame {
-    inset: 43px 7px 42px;
+  .tournament-card .meta {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
-  .stage-top-rail {
-    top: 30px;
+  .tournament-card .meta-box {
+    min-width: 0;
   }
 
-  .stage-top-rail::before {
-    top: -19px;
-    font-size: 6px;
-    letter-spacing: 1.5px;
+  .countdown {
+    grid-template-columns: repeat(3,minmax(0,1fr));
   }
 
-  .stage-screen {
-    width: 65%;
-    min-height: 182px;
-  }
-
-  .stage-screen-logo {
-    margin-top: 11px;
-    font-size: 76px;
-    letter-spacing: -6px;
-  }
-
-  .stage-screen-subtitle {
-    margin-top: 16px;
-  }
-
-  .stage-screen-status {
-    font-size: 6px;
-    letter-spacing: 1px;
-  }
-
-  .stage-wing {
-    top: 91px;
-    min-height: 120px;
-  }
-
-  .stage-wing strong {
-    font-size: 8px;
-    letter-spacing: .7px;
-  }
-
-  .stage-bottom-rail {
-    bottom: 25px;
-    width: 82%;
-  }
-
-  .stage-stat span {
-    display: none;
-  }
-
-  .stage-stat strong {
-    font-size: 8px;
-  }
-
-  .hero h1 {
-    font-size: 49px;
-  }
-
-  .actions .btn {
-    width: 100%;
+  .unit strong {
+    font-size: 27px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-art::before,
-  .hero-art::after,
-  .stage-screen::after,
-  .stage-screen-status::before,
-  .btn.primary::after {
+  .angular-logo {
     animation: none !important;
   }
 }
+
 
     main { padding: 72px 0 90px; }
     .section-head {
@@ -2593,7 +2522,220 @@
       .countdown { grid-template-columns: repeat(3,1fr); }
       .unit strong { font-size: 23px; }
     }
-  </style>
+  
+
+/* =========================================================
+   FINAL REQUESTED POLISH — SLOWER HERO MOTION + DARK EVENT UI
+========================================================= */
+
+/* Make the hero sweep rare and understated instead of constant. */
+.panel-c::after {
+  width: 13%;
+  background: linear-gradient(90deg, transparent, rgba(192,132,252,.045), transparent);
+  animation: angularSweep 26s ease-in-out infinite;
+}
+
+.btn.primary::after {
+  opacity: .55;
+  animation: heroButtonSweep 20s ease-in-out infinite;
+}
+
+@keyframes angularSweep {
+  0%,88% { left: -28%; opacity: 0; }
+  92% { opacity: .48; }
+  100% { left: 118%; opacity: 0; }
+}
+
+@keyframes heroButtonSweep {
+  0%,90% { transform: translateX(-220%) rotate(18deg); opacity: 0; }
+  93% { opacity: .45; }
+  100% { transform: translateX(520%) rotate(18deg); opacity: 0; }
+}
+
+/* Lower the legacy mark slightly and let it fade between subtle and visible. */
+.angular-logo {
+  top: 50%;
+  animation: angularLogoBreathe 7.5s ease-in-out infinite;
+}
+
+@keyframes angularLogoBreathe {
+  0%,100% {
+    opacity: .065;
+    filter: brightness(1.05) contrast(1.05) drop-shadow(0 0 14px rgba(168,85,247,.16));
+    transform: translate(-50%, -50%) scale(.985);
+  }
+  50% {
+    opacity: .19;
+    filter: brightness(1.7) contrast(1.12) drop-shadow(0 0 30px rgba(168,85,247,.38));
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+}
+
+/* Darker, cleaner cards to match the official-news and donate-page language. */
+.tournament-card,
+.prize-card {
+  border-color: rgba(151,105,201,.25);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(133,61,230,.075), transparent 34%),
+    linear-gradient(180deg, #0d0c13 0%, #09090e 58%, #07070b 100%);
+  box-shadow:
+    0 26px 78px rgba(0,0,0,.48),
+    inset 0 1px rgba(255,255,255,.025);
+}
+
+.tournament-card::before,
+.prize-card::before {
+  opacity: .48;
+}
+
+.tournament-card::after,
+.prize-card::after {
+  opacity: .5;
+}
+
+.tournament-copy {
+  background: linear-gradient(135deg, rgba(255,255,255,.012), transparent 54%);
+}
+
+.tournament-card .meta-box {
+  border-color: rgba(255,255,255,.09);
+  background: #0c0b11;
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+}
+
+/* Countdown becomes a clear, high-contrast event panel. */
+.count-panel {
+  min-width: 0;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(123,52,207,.12), transparent 38%),
+    linear-gradient(180deg, #0a0910 0%, #07070b 100%);
+}
+
+.count-panel > span {
+  color: #b7aec2;
+}
+
+.countdown {
+  width: 100%;
+  grid-template-columns: repeat(3, minmax(76px,1fr));
+  gap: 10px;
+}
+
+.unit {
+  min-width: 0;
+  padding: 18px 8px 16px;
+  border-color: rgba(167,107,232,.25);
+  background:
+    linear-gradient(180deg, rgba(131,58,214,.09), rgba(255,255,255,.012)),
+    #09080e;
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.035),
+    0 10px 28px rgba(0,0,0,.22);
+}
+
+.unit strong {
+  color: #fff;
+  font-size: clamp(27px,3vw,36px);
+  letter-spacing: -.8px;
+  white-space: nowrap;
+}
+
+.unit span {
+  color: #9b92a7;
+  font-size: 8px;
+  letter-spacing: 1.15px;
+  white-space: nowrap;
+}
+
+.event-date {
+  color: #b7afc1;
+}
+
+/* Prize card: darker black surface with restrained violet highlights. */
+.prize-card {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(118,49,200,.08), transparent 38%),
+    linear-gradient(180deg, #0d0c13 0%, #08080d 100%);
+}
+
+.prize-icon {
+  background: linear-gradient(145deg, rgba(122,48,210,.16), rgba(168,85,247,.035));
+}
+
+.prize-source {
+  color: #81798a;
+}
+
+.goal-track {
+  background: #15131c;
+  border-color: rgba(255,255,255,.055);
+}
+
+/* Keep the event section readable on tablets and all mobile layouts. */
+@media (max-width: 1100px) {
+  .tournament-card {
+    grid-template-columns: 1fr !important;
+  }
+
+  .count-panel {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(151,105,201,.2);
+    padding: 30px 32px 34px;
+  }
+
+  .countdown {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 720px) {
+  .angular-logo {
+    top: 51%;
+  }
+
+  .tournament-copy {
+    padding: 30px 24px 28px;
+  }
+
+  .count-panel {
+    padding: 26px 24px 30px;
+  }
+
+  .countdown {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+    max-width: none;
+  }
+
+  .unit {
+    padding: 16px 4px 14px;
+  }
+
+  .unit strong {
+    font-size: clamp(25px,8vw,32px);
+  }
+
+  .unit span {
+    font-size: 7px;
+    letter-spacing: .75px;
+  }
+}
+
+@media (max-width: 390px) {
+  .count-panel {
+    padding-inline: 18px;
+  }
+
+  .countdown {
+    gap: 6px;
+  }
+
+  .unit strong {
+    font-size: 24px;
+  }
+}
+
+</style>
 </head>
 
   <body>
@@ -2615,68 +2757,27 @@
 
   <div class="shell hero-inner">
 
-    <!-- CSS-BUILT ESPORTS COMMAND STAGE -->
+    <!-- ABSTRACT ANGULAR ESPORTS BACKGROUND -->
     <div class="hero-art" aria-hidden="true">
-      <div class="hero-stage">
+      <div class="angular-scene">
+        <div class="angular-glow"></div>
+        <div class="angular-grid"></div>
 
-        <div class="hero-stage-frame"></div>
-        <div class="stage-top-rail"></div>
+        <div class="angular-panel panel-a"></div>
+        <div class="angular-panel panel-b"></div>
+        <div class="angular-panel panel-c"></div>
+        <div class="angular-panel panel-d"></div>
+        <div class="angular-panel panel-e"></div>
 
-        <div class="stage-wing left">
-          <span>Competitive System</span>
-          <strong>Tournaments</strong>
-          <i class="fa-solid fa-trophy"></i>
-        </div>
+        <div class="angular-logo" aria-hidden="true"></div>
 
-        <div class="stage-wing right">
-          <span>Player Progression</span>
-          <strong>Predictions</strong>
-          <i class="fa-solid fa-chart-line"></i>
-        </div>
+        <div class="angular-line line-a"></div>
+        <div class="angular-line line-b"></div>
+        <div class="angular-line line-c"></div>
+        <div class="angular-line line-d"></div>
 
-        <div class="stage-screen">
-          <span class="stage-screen-label">
-            Rivals Gauntlet Network
-          </span>
-
-          <strong class="stage-screen-logo">
-            RG
-          </strong>
-
-          <span class="stage-screen-subtitle">
-            Compete · Predict · Earn
-          </span>
-
-          <span class="stage-screen-status">
-            Platform Online
-          </span>
-        </div>
-
-        <div class="stage-bottom-rail">
-          <div class="stage-stat">
-            <span>Competition</span>
-            <strong>8-Team Events</strong>
-          </div>
-
-          <div class="stage-stat">
-            <span>Community</span>
-            <strong>Player Driven</strong>
-          </div>
-
-          <div class="stage-stat">
-            <span>Rewards</span>
-            <strong>RG Points</strong>
-          </div>
-        </div>
-
-        <span class="stage-marker left">
-          Tournament Operations
-        </span>
-
-        <span class="stage-marker right">
-          Rivals Gauntlet
-        </span>
-
+        <div class="angular-slash slash-a"></div>
+        <div class="angular-slash slash-b"></div>
       </div>
     </div>
 

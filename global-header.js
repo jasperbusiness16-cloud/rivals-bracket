@@ -111,6 +111,11 @@ friendRequestPaths: [
                 keys: ["leaderboard", "rankings"]
             },
             {
+    label: "Add To Prizepool",
+    href: "donate.html",
+    keys: ["donate", "donations", "support"]
+},
+            {
                 label: "About",
                 href: "about.html",
                 keys: ["about"]

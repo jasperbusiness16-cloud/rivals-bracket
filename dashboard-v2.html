@@ -985,25 +985,7 @@
           </div>
         </section>
 
-        <section class="status-grid" aria-label="Tournament status summary">
-          <div class="status-cell">
-            <span>Application</span>
-            <strong id="statusApplication">Loading</strong>
-          </div>
-          <div class="status-cell">
-            <span>Check-In</span>
-            <strong id="statusCheckIn">Loading</strong>
-          </div>
-          <div class="status-cell">
-            <span>Team</span>
-            <strong id="statusTeam">Pending</strong>
-          </div>
-          <div class="status-cell">
-            <span>Availability</span>
-            <strong id="statusAvailability">Unknown</strong>
-          </div>
-          <div class="status-cell">
-            <span>Discord Voice</span>
+       
             <strong id="statusVoice">Tournament Lobby</strong>
           </div>
         </section>
@@ -1533,11 +1515,8 @@
       function renderStatusSummary() {
         const state = getDashboardState();
         const discord = getDiscordConfig(state.team);
-        $("statusApplication").textContent = application ? formatStatus(application.status || "submitted") : "Not Submitted";
-        $("statusCheckIn").textContent = checkIn?.checkedIn ? "Complete" : state.team ? "Required" : "Not Available";
-        $("statusTeam").textContent = state.team?.teamName || "Pending";
-        $("statusAvailability").textContent = availability?.status === "not_available" ? "Unavailable" : checkIn?.checkedIn ? "Ready" : "Pending";
-        $("statusVoice").textContent = discord.voiceChannel;
+      
+        
       }
 
       function renderCurrentSeries() {

@@ -902,19 +902,7 @@ dailyGiftStats: {
         </span>
     </button>
 
-    <button
-        class="rg-tab"
-        type="button"
-        role="tab"
-        aria-selected="false"
-        data-rg-friends-tab="gifts"
-    >
-        Gifts
-
-        <span data-rg-gifts-count>
-            0
-        </span>
-    </button>
+ 
 
     <button
         class="rg-tab"
@@ -943,12 +931,7 @@ dailyGiftStats: {
                             <div data-rg-friends-list></div>
                         </div>
 
-<div
-    data-rg-friends-panel="gifts"
-    hidden
->
-    <div data-rg-gifts-list></div>
-</div>
+
 
                         <div
                             data-rg-friends-panel="requests"

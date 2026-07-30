@@ -106,11 +106,6 @@ friendRequestPaths: [
                 keys: ["predictions", "prediction"]
             },
             {
-                label: "Shop",
-                href: "shop.html",
-                keys: ["shop", "store", "crates"]
-            },
-            {
                 label: "Leaderboard",
                 href: "leaderboard.html",
                 keys: ["leaderboard", "rankings"]

@@ -233,7 +233,173 @@
     .account-switch a{color:var(--purple2);font-weight:800;text-transform:uppercase;letter-spacing:.5px}
     .account-switch a:hover{text-decoration:underline}
     .legal-note{margin:14px auto 0;max-width:470px;color:var(--dim);font-size:9px;line-height:1.4;text-align:center}
+    .legal-agreement{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:rgba(255,255,255,.025);
+}
 
+.checkbox-row{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+
+.checkbox-row + .checkbox-row{
+  margin-top:11px;
+}
+
+.checkbox-row input{
+  width:17px;
+  height:17px;
+  flex:0 0 17px;
+  margin:1px 0 0;
+  accent-color:var(--purple);
+  cursor:pointer;
+}
+
+.checkbox-row span{
+  min-width:0;
+}
+
+.legal-open{
+  display:inline;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--purple2);
+  font:inherit;
+  font-weight:800;
+  text-decoration:underline;
+  text-decoration-color:rgba(208,163,255,.4);
+  text-underline-offset:2px;
+  cursor:pointer;
+}
+
+.legal-open:hover,
+.legal-open:focus-visible{
+  color:#fff;
+}
+
+.legal-modal{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:rgba(3,3,7,.82);
+  backdrop-filter:blur(12px);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .2s ease,visibility .2s ease;
+}
+
+.legal-modal.open{
+  opacity:1;
+  visibility:visible;
+}
+
+.legal-modal-panel{
+  width:min(960px,100%);
+  height:min(760px,calc(100dvh - 36px));
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  overflow:hidden;
+  border:1px solid var(--border-strong);
+  border-radius:20px;
+  background:#0c0a12;
+  box-shadow:0 35px 120px rgba(0,0,0,.72);
+  transform:translateY(12px) scale(.985);
+  transition:transform .2s ease;
+}
+
+.legal-modal.open .legal-modal-panel{
+  transform:none;
+}
+
+.legal-modal-head{
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:12px 16px 12px 20px;
+  border-bottom:1px solid var(--border);
+  background:
+    linear-gradient(90deg,rgba(109,40,217,.15),transparent),
+    rgba(15,13,23,.98);
+}
+
+.legal-modal-title{
+  min-width:0;
+}
+
+.legal-modal-title span{
+  display:block;
+  color:var(--purple2);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}
+
+.legal-modal-title strong{
+  display:block;
+  margin-top:2px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:17px;
+  text-transform:uppercase;
+}
+
+.legal-modal-close{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:rgba(255,255,255,.035);
+  color:var(--muted);
+  font-size:20px;
+  cursor:pointer;
+}
+
+.legal-modal-close:hover{
+  color:#fff;
+  border-color:rgba(192,132,252,.4);
+  background:rgba(168,85,247,.08);
+}
+
+.legal-modal-frame{
+  width:100%;
+  height:100%;
+  border:0;
+  background:var(--bg);
+}
+
+body.legal-modal-open{
+  overflow:hidden;
+}
+
+@media(max-width:580px){
+  .legal-modal{
+    padding:8px;
+  }
+
+  .legal-modal-panel{
+    height:calc(100dvh - 16px);
+    border-radius:16px;
+  }
+}
     .success-view{padding:34px 32px 38px;text-align:center}
     .success-emblem{position:relative;width:86px;height:86px;display:grid;place-items:center;margin:0 auto;border:1px solid rgba(61,220,151,.42);border-radius:24px;background:radial-gradient(circle,rgba(61,220,151,.18),rgba(61,220,151,.05));color:#a7f3d0;font-size:34px;box-shadow:0 0 40px rgba(61,220,151,.14)}
     .success-emblem::after{content:"";position:absolute;inset:-9px;border:1px solid rgba(61,220,151,.14);border-radius:29px;animation:markPulse 3s ease-in-out infinite}
@@ -409,7 +575,39 @@
                 </span>
               </label>
             </div>
+<div class="legal-agreement">
+  <label class="checkbox-row">
+    <input id="agreeTerms" type="checkbox">
 
+    <span>
+      I have read and agree to the
+      <button
+        class="legal-open"
+        type="button"
+        data-legal-title="Terms & Conditions"
+        data-legal-url="/terms.html"
+      >
+        Terms &amp; Conditions
+      </button>.
+    </span>
+  </label>
+
+  <label class="checkbox-row">
+    <input id="agreePrivacy" type="checkbox">
+
+    <span>
+      I acknowledge the
+      <button
+        class="legal-open"
+        type="button"
+        data-legal-title="Privacy Policy"
+        data-legal-url="/privacy.html"
+      >
+        Privacy Policy
+      </button>.
+    </span>
+  </label>
+</div>
             <button id="signupButton" class="primary-button" type="button">
               <span class="button-spinner" aria-hidden="true"></span>
               <span id="signupButtonText">Create Competitor Account</span>
@@ -422,7 +620,7 @@
               <a href="login.html">Sign In</a>
             </div>
 
-            <p class="legal-note">By creating an account, you agree to follow Rivals Gauntlet tournament rules and community standards.</p>
+           
           </div>
 
           <div id="successView" class="success-view" hidden>
@@ -445,6 +643,41 @@
       </section>
     </div>
   </main>
+  
+
+  <div
+    id="legalModal"
+    class="legal-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="legalModalHeading"
+    hidden
+  >
+    <div class="legal-modal-panel">
+      <header class="legal-modal-head">
+        <div class="legal-modal-title">
+          <span>Rivals Gauntlet Legal</span>
+          <strong id="legalModalHeading">Legal Document</strong>
+        </div>
+
+        <button
+          id="legalModalClose"
+          class="legal-modal-close"
+          type="button"
+          aria-label="Close legal document"
+        >
+          ×
+        </button>
+      </header>
+
+      <iframe
+        id="legalModalFrame"
+        class="legal-modal-frame"
+        title="Rivals Gauntlet legal document"
+      ></iframe>
+    </div>
+  </div>
+
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -466,8 +699,22 @@
     const passwordHint = document.getElementById("passwordHint");
     const completionValue = document.getElementById("completionValue");
     const completionFill = document.getElementById("completionFill");
-    let isBusy = false;
-    let assignedRgId = "";
+
+const agreeTerms = document.getElementById("agreeTerms");
+const agreePrivacy = document.getElementById("agreePrivacy");
+
+const legalModal = document.getElementById("legalModal");
+const legalModalHeading = document.getElementById("legalModalHeading");
+const legalModalFrame = document.getElementById("legalModalFrame");
+const legalModalClose = document.getElementById("legalModalClose");
+const legalOpenButtons = Array.from(
+  document.querySelectorAll("[data-legal-url]")
+);
+
+let isBusy = false;
+let assignedRgId = "";
+let lastLegalTrigger = null;
+    
 
     function clean(value) {
       return String(value || "").trim();
@@ -497,13 +744,23 @@
     }
 
     function setBusy(busy) {
-      isBusy = busy;
-      signupButton.disabled = busy;
-      signupButton.classList.toggle("loading", busy);
-      signupButtonText.textContent = busy ? "Establishing Profile" : "Create Competitor Account";
-      requiredInputs.forEach((input) => { input.disabled = busy; });
-      passwordToggle.disabled = busy;
-    }
+  isBusy = busy;
+
+  signupButton.disabled = busy;
+  signupButton.classList.toggle("loading", busy);
+
+  signupButtonText.textContent = busy
+    ? "Establishing Profile"
+    : "Create Competitor Account";
+
+  requiredInputs.forEach((input) => {
+    input.disabled = busy;
+  });
+
+  passwordToggle.disabled = busy;
+  agreeTerms.disabled = busy;
+  agreePrivacy.disabled = busy;
+}
 
     function updateCompletion() {
       const completed = requiredInputs.filter((input) => clean(input.value)).length;
@@ -563,13 +820,37 @@
       }
 
       if (password.length < 6) {
-        setStatus("Your password must contain at least six characters.", "error");
-        passwordInput.focus();
-        return;
-      }
+  setStatus(
+    "Your password must contain at least six characters.",
+    "error"
+  );
 
-      clearStatus();
-      setBusy(true);
+  passwordInput.focus();
+  return;
+}
+
+if (!agreeTerms.checked) {
+  setStatus(
+    "You must agree to the Terms & Conditions before creating an account.",
+    "error"
+  );
+
+  agreeTerms.focus();
+  return;
+}
+
+if (!agreePrivacy.checked) {
+  setStatus(
+    "You must acknowledge the Privacy Policy before creating an account.",
+    "error"
+  );
+
+  agreePrivacy.focus();
+  return;
+}
+
+clearStatus();
+setBusy(true);
 
       try {
         const credential = await auth.createUserWithEmailAndPassword(email, password);
@@ -611,7 +892,24 @@ updates[`users/${user.uid}/createdAt`] =
 
 updates[`users/${user.uid}/lastLogin`] =
   now;
+/* Legal agreement records */
+updates[`users/${user.uid}/agreements/terms/accepted`] =
+  true;
 
+updates[`users/${user.uid}/agreements/terms/acceptedAt`] =
+  now;
+
+updates[`users/${user.uid}/agreements/terms/version`] =
+  "2026-07-31";
+
+updates[`users/${user.uid}/agreements/privacy/acknowledged`] =
+  true;
+
+updates[`users/${user.uid}/agreements/privacy/acknowledgedAt`] =
+  now;
+
+updates[`users/${user.uid}/agreements/privacy/version`] =
+  "2026-07-31";
 
 /* Public competitor profile */
 updates[`players/${user.uid}/uid`] =
@@ -709,7 +1007,64 @@ document.getElementById("assignedRgId").textContent =
         if (event.key === "Enter") createAccount();
       });
     });
+function openLegalModal(button) {
+  const url = button.dataset.legalUrl;
+  const title = button.dataset.legalTitle || "Legal Document";
 
+  if (!url) return;
+
+  lastLegalTrigger = button;
+  legalModalHeading.textContent = title;
+  legalModalFrame.src = url;
+
+  legalModal.hidden = false;
+
+  requestAnimationFrame(() => {
+    legalModal.classList.add("open");
+    document.body.classList.add("legal-modal-open");
+    legalModalClose.focus();
+  });
+}
+
+function closeLegalModal() {
+  legalModal.classList.remove("open");
+  document.body.classList.remove("legal-modal-open");
+
+  window.setTimeout(() => {
+    legalModal.hidden = true;
+    legalModalFrame.src = "";
+
+    if (lastLegalTrigger) {
+      lastLegalTrigger.focus();
+    }
+  }, 200);
+}
+
+legalOpenButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    openLegalModal(button);
+  });
+});
+
+legalModalClose.addEventListener("click", closeLegalModal);
+
+legalModal.addEventListener("click", (event) => {
+  if (event.target === legalModal) {
+    closeLegalModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (
+    event.key === "Escape" &&
+    legalModal.classList.contains("open")
+  ) {
+    closeLegalModal();
+  }
+});
+
+agreeTerms.addEventListener("change", clearStatus);
+agreePrivacy.addEventListener("change", clearStatus);
     updateCompletion();
     updatePasswordMeter();
   </script>

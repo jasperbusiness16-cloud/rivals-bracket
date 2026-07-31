@@ -2,10 +2,7 @@
   "use strict";
 
   const mount = document.getElementById("globalFooter");
-
-  if (!mount) {
-    return;
-  }
+  if (!mount) return;
 
   const currentYear = new Date().getFullYear();
 
@@ -14,7 +11,7 @@
     ["Tournament", "/tournament.html"],
     ["Predictions", "/predictions.html"],
     ["Leaderboard", "/leaderboard.html"],
-    ["Add to Prize Pool", "/donate.html"],
+    ["Add to Prize Pool", "/donate.html", "prize"],
     ["About", "/about.html"]
   ];
 
@@ -25,64 +22,112 @@
     ["Contact", "/contact.html"]
   ];
 
-  function createLinks(links, modifier = "") {
+  const socialLinks = [
+    ["Discord", "#", "fa-brands fa-discord"],
+    ["Twitch", "https://www.twitch.tv/atrophylive", "fa-brands fa-twitch"],
+    ["YouTube", "#", "fa-brands fa-youtube"],
+    ["TikTok", "#", "fa-brands fa-tiktok"],
+    ["X", "#", "fa-brands fa-x-twitter"]
+  ];
+
+  function createStandardLinks(links, extraClass = "") {
     return `
-      <div class="rg-footer__links ${modifier}">
-        ${links
-          .map(
-            ([label, href]) => `
-              <a class="rg-footer__link" href="${href}">
-                ${label}
-              </a>
-            `
-          )
-          .join("")}
+      <div class="rg-footer__links ${extraClass}">
+        ${links.map(([label, href, type]) => `
+          <a
+            href="${href}"
+            class="rg-footer__link ${type === "prize" ? "rg-footer__link--prize" : ""}"
+          >
+            ${type === "prize"
+              ? '<i class="fa-solid fa-coins"></i>'
+              : ""}
+            ${label}
+          </a>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function createSocialLinks() {
+    return `
+      <div class="rg-footer__links rg-footer__links--social">
+        ${socialLinks.map(([label, href, icon]) => `
+          <a
+            class="rg-footer__link rg-footer__social"
+            href="${href}"
+            ${href !== "#" ? 'target="_blank" rel="noopener noreferrer"' : ""}
+          >
+            <i class="${icon}"></i>
+            <span>${label}</span>
+          </a>
+        `).join("")}
       </div>
     `;
   }
 
   mount.innerHTML = `
-    <footer class="rg-footer" aria-label="Rivals Gauntlet footer">
+    <footer class="rg-footer">
+
       <div class="rg-footer__inner">
 
         <div class="rg-footer__main">
 
           <div class="rg-footer__brand">
-            <div class="rg-footer__eyebrow">
-              Independent Competition Platform
-            </div>
 
             <div class="rg-footer__name">
               Rivals Gauntlet
             </div>
 
-            <div class="rg-footer__domain">
-              rivalsgauntlet.com
+            <div class="rg-footer__eyebrow">
+              Community Tournament Platform
             </div>
+
+            <a
+              href="/"
+              class="rg-footer__domain"
+            >
+              rivalsgauntlet.com
+            </a>
+
           </div>
 
           <div class="rg-footer__groups">
 
-            <nav aria-label="Footer navigation">
+            <nav class="rg-footer__group">
+
               <h2 class="rg-footer__group-title">
                 Explore
               </h2>
 
-              ${createLinks(primaryLinks)}
+              ${createStandardLinks(primaryLinks)}
+
             </nav>
 
-            <nav aria-label="Legal and contact">
+            <nav class="rg-footer__group">
+
               <h2 class="rg-footer__group-title">
                 Information
               </h2>
 
-              ${createLinks(
+              ${createStandardLinks(
                 legalLinks,
                 "rg-footer__links--legal"
               )}
+
+            </nav>
+
+            <nav class="rg-footer__group rg-footer__group--connect">
+
+              <h2 class="rg-footer__group-title">
+                Connect
+              </h2>
+
+              ${createSocialLinks()}
+
             </nav>
 
           </div>
+
         </div>
 
         <div class="rg-footer__bottom">
@@ -92,11 +137,13 @@
           </p>
 
           <p class="rg-footer__status">
-            Community-operated esports platform
+            Community-operated tournament platform
           </p>
 
         </div>
+
       </div>
+
     </footer>
   `;
 })();

@@ -1288,6 +1288,221 @@
       }
     }
 
+
+    /* =========================================================
+       CONTRIBUTION ACKNOWLEDGEMENT + LEGAL MODAL
+    ========================================================= */
+    .contribution-notice{
+      margin-top:16px;
+      padding:16px;
+      border:1px solid rgba(var(--purple-rgb),.22);
+      border-left:3px solid var(--purple);
+      border-radius:12px;
+      background:rgba(var(--purple-rgb),.055);
+    }
+
+    .contribution-notice-title{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .contribution-notice-title i{
+      color:var(--purple-bright);
+    }
+
+    .contribution-notice p{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.5;
+    }
+
+    .contribution-agreements{
+      display:grid;
+      gap:10px;
+      margin-top:15px;
+    }
+
+    .contribution-check{
+      display:grid;
+      grid-template-columns:20px minmax(0,1fr);
+      align-items:flex-start;
+      gap:10px;
+      cursor:pointer;
+    }
+
+    .contribution-check input{
+      width:18px;
+      height:18px;
+      margin:1px 0 0;
+      accent-color:var(--purple);
+      cursor:pointer;
+    }
+
+    .contribution-check span{
+      color:var(--soft);
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .legal-open{
+      display:inline;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--purple-bright);
+      font:inherit;
+      font-weight:800;
+      text-decoration:underline;
+      text-decoration-color:rgba(190,170,255,.38);
+      text-underline-offset:2px;
+      cursor:pointer;
+    }
+
+    .legal-open:hover,
+    .legal-open:focus-visible{
+      color:#fff;
+    }
+
+    .contribution-action{
+      width:100%;
+      margin-top:15px;
+    }
+
+    .contribution-action.disabled{
+      opacity:.42;
+      filter:saturate(.5);
+      cursor:not-allowed;
+      pointer-events:none;
+      box-shadow:none;
+    }
+
+    .contribution-help{
+      min-height:17px;
+      margin:9px 0 0;
+      color:var(--dim);
+      font-size:10px;
+      line-height:1.4;
+    }
+
+    .contribution-help.ready{
+      color:var(--green);
+    }
+
+    .legal-modal{
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      background:rgba(3,3,7,.84);
+      -webkit-backdrop-filter:blur(12px);
+      backdrop-filter:blur(12px);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .2s ease,visibility .2s ease;
+    }
+
+    .legal-modal.open{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .legal-modal-panel{
+      width:min(980px,100%);
+      height:min(780px,calc(100dvh - 36px));
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:hidden;
+      border:1px solid rgba(190,170,255,.38);
+      border-radius:18px;
+      background:#0b0910;
+      box-shadow:0 35px 120px rgba(0,0,0,.72);
+      transform:translateY(12px) scale(.985);
+      transition:transform .2s ease;
+    }
+
+    .legal-modal.open .legal-modal-panel{
+      transform:none;
+    }
+
+    .legal-modal-head{
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 16px 12px 20px;
+      border-bottom:1px solid var(--border);
+      background:
+        linear-gradient(90deg,rgba(109,40,217,.16),transparent),
+        rgba(15,13,23,.98);
+    }
+
+    .legal-modal-title span{
+      display:block;
+      color:var(--purple-bright);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+    }
+
+    .legal-modal-title strong{
+      display:block;
+      margin-top:2px;
+      color:#fff;
+      font-size:17px;
+      text-transform:uppercase;
+    }
+
+    .legal-modal-close{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--border);
+      border-radius:9px;
+      background:rgba(255,255,255,.035);
+      color:var(--muted);
+      font-size:20px;
+      cursor:pointer;
+    }
+
+    .legal-modal-close:hover{
+      color:#fff;
+      border-color:rgba(190,170,255,.5);
+      background:rgba(var(--purple-rgb),.08);
+    }
+
+    .legal-modal-frame{
+      width:100%;
+      height:100%;
+      border:0;
+      background:var(--bg);
+    }
+
+    body.legal-modal-open{
+      overflow:hidden;
+    }
+
+    @media(max-width:580px){
+      .legal-modal{
+        padding:8px;
+      }
+
+      .legal-modal-panel{
+        height:calc(100dvh - 16px);
+        border-radius:14px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
@@ -1316,13 +1531,11 @@
           <div class="hero-actions">
             <a
               class="primary-action"
-              href="https://ko-fi.com/rivalsgauntlet"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#contributionNotice"
             >
               <i class="fa-solid fa-bolt"></i>
               Add to Prize Pool
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <i class="fa-solid fa-arrow-down"></i>
             </a>
 
             <a class="secondary-action" href="#recentSupport">
@@ -1531,18 +1744,83 @@
             </div>
           </div>
 
-          <div class="support-callout">
+          <div id="contributionNotice" class="support-callout">
             <strong>Add directly to the competition</strong>
             <span>Your confirmed contribution becomes part of the live community-funded prize pool.</span>
+
+            <div class="contribution-notice">
+              <div class="contribution-notice-title">
+                <i class="fa-solid fa-shield-heart"></i>
+                Community Contribution Notice
+              </div>
+
+              <p>
+                Prize-pool totals shown across Rivals Gauntlet reflect confirmed gross
+                community contributions before payment-processing fees, taxes, refunds,
+                chargebacks, transfer costs, or other required deductions. The final amount
+                distributed to prize recipients may therefore be lower than the displayed total.
+              </p>
+
+              <div class="contribution-agreements">
+                <label class="contribution-check">
+                  <input id="contributionVoluntary" type="checkbox">
+                  <span>
+                    I understand that this is a voluntary contribution and is generally
+                    non-refundable except where required by law.
+                  </span>
+                </label>
+
+                <label class="contribution-check">
+                  <input id="contributionGrossTotal" type="checkbox">
+                  <span>
+                    I understand that displayed prize-pool totals are gross amounts and that
+                    fees, taxes, refunds, chargebacks, transfer costs, or other adjustments may
+                    reduce the final amount distributed.
+                  </span>
+                </label>
+
+                <label class="contribution-check">
+                  <input id="contributionLegal" type="checkbox">
+                  <span>
+                    I have read and agree to the
+                    <button
+                      class="legal-open"
+                      type="button"
+                      data-legal-title="Terms & Conditions"
+                      data-legal-url="/terms.html"
+                    >
+                      Terms &amp; Conditions
+                    </button>
+                    and acknowledge the
+                    <button
+                      class="legal-open"
+                      type="button"
+                      data-legal-title="Privacy Policy"
+                      data-legal-url="/privacy.html"
+                    >
+                      Privacy Policy
+                    </button>.
+                  </span>
+                </label>
+              </div>
+            </div>
+
             <a
-              class="primary-action"
+              id="kofiContributionButton"
+              class="primary-action contribution-action disabled"
               href="https://ko-fi.com/rivalsgauntlet"
               target="_blank"
               rel="noopener noreferrer"
+              aria-disabled="true"
             >
               <i class="fa-solid fa-plus"></i>
-              Add to Prize Pool
+              Continue to Ko-fi
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
+
+            <p id="contributionHelp" class="contribution-help">
+              Complete all three acknowledgements to continue.
+            </p>
           </div>
         </article>
       </section>
@@ -1593,6 +1871,39 @@
 <div id="globalFooter"></div>
 
 
+  <div
+    id="legalModal"
+    class="legal-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="legalModalHeading"
+    hidden
+  >
+    <div class="legal-modal-panel">
+      <header class="legal-modal-head">
+        <div class="legal-modal-title">
+          <span>Rivals Gauntlet Legal</span>
+          <strong id="legalModalHeading">Legal Document</strong>
+        </div>
+
+        <button
+          id="legalModalClose"
+          class="legal-modal-close"
+          type="button"
+          aria-label="Close legal document"
+        >
+          ×
+        </button>
+      </header>
+
+      <iframe
+        id="legalModalFrame"
+        class="legal-modal-frame"
+        title="Rivals Gauntlet legal document"
+      ></iframe>
+    </div>
+  </div>
+
   <div id="supportToast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1628,6 +1939,115 @@
         (typeof database !== "undefined" ? database : firebase.database());
 
       const byId = id => document.getElementById(id);
+
+      let lastLegalTrigger = null;
+
+      function updateContributionGate() {
+        const voluntary = byId("contributionVoluntary");
+        const grossTotal = byId("contributionGrossTotal");
+        const legal = byId("contributionLegal");
+        const button = byId("kofiContributionButton");
+        const help = byId("contributionHelp");
+
+        if (!voluntary || !grossTotal || !legal || !button || !help) return;
+
+        const ready =
+          voluntary.checked &&
+          grossTotal.checked &&
+          legal.checked;
+
+        button.classList.toggle("disabled", !ready);
+        button.setAttribute("aria-disabled", ready ? "false" : "true");
+
+        help.textContent = ready
+          ? "Acknowledgements complete. You can continue securely to Ko-fi."
+          : "Complete all three acknowledgements to continue.";
+
+        help.classList.toggle("ready", ready);
+      }
+
+      function openLegalModal(button) {
+        const modal = byId("legalModal");
+        const heading = byId("legalModalHeading");
+        const frame = byId("legalModalFrame");
+        const closeButton = byId("legalModalClose");
+
+        if (!modal || !heading || !frame || !closeButton) return;
+
+        const url = button.dataset.legalUrl;
+        const title = button.dataset.legalTitle || "Legal Document";
+
+        if (!url) return;
+
+        lastLegalTrigger = button;
+        heading.textContent = title;
+        frame.src = url;
+        modal.hidden = false;
+
+        requestAnimationFrame(() => {
+          modal.classList.add("open");
+          document.body.classList.add("legal-modal-open");
+          closeButton.focus();
+        });
+      }
+
+      function closeLegalModal() {
+        const modal = byId("legalModal");
+        const frame = byId("legalModalFrame");
+
+        if (!modal || !frame) return;
+
+        modal.classList.remove("open");
+        document.body.classList.remove("legal-modal-open");
+
+        window.setTimeout(() => {
+          modal.hidden = true;
+          frame.src = "";
+          lastLegalTrigger?.focus();
+        }, 200);
+      }
+
+      function setupContributionGate() {
+        [
+          "contributionVoluntary",
+          "contributionGrossTotal",
+          "contributionLegal"
+        ].forEach(id => {
+          byId(id)?.addEventListener("change", updateContributionGate);
+        });
+
+        byId("kofiContributionButton")?.addEventListener("click", event => {
+          const button = event.currentTarget;
+
+          if (button.getAttribute("aria-disabled") === "true") {
+            event.preventDefault();
+            showToast("Complete all contribution acknowledgements before continuing.");
+          }
+        });
+
+        document.querySelectorAll("[data-legal-url]").forEach(button => {
+          button.addEventListener("click", () => openLegalModal(button));
+        });
+
+        byId("legalModalClose")?.addEventListener("click", closeLegalModal);
+
+        byId("legalModal")?.addEventListener("click", event => {
+          if (event.target === byId("legalModal")) {
+            closeLegalModal();
+          }
+        });
+
+        document.addEventListener("keydown", event => {
+          if (
+            event.key === "Escape" &&
+            byId("legalModal")?.classList.contains("open")
+          ) {
+            closeLegalModal();
+          }
+        });
+
+        updateContributionGate();
+      }
 
       function number(value, fallback = 0) {
         const parsed = Number(value);
@@ -1943,6 +2363,7 @@
       renderAll();
       renderConnection();
       attachFirebase();
+      setupContributionGate();
     })();
   </script>
 </body>

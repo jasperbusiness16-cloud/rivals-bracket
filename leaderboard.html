@@ -639,13 +639,14 @@
     }
     .rank-list-head span:nth-child(3),
     .rank-list-head span:nth-child(4){text-align:right}
-    .rank-list{
-      min-height:0;
-      overflow-y:auto;
-      overscroll-behavior:contain;
-      scrollbar-width:thin;
-      scrollbar-color:rgba(168,85,247,.34) transparent;
-    }
+.rank-list{
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:auto;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(168,85,247,.34) transparent;
+}
     .rank-row{
       position:relative;
       min-height:58px;
@@ -1327,7 +1328,16 @@
       .place-1 .podium-base{min-height:64px}
       .place-2 .podium-base{min-height:50px}
       .place-3 .podium-base{min-height:38px}
-      .rank-list-zone{min-height:480px;grid-template-rows:40px minmax(400px,1fr) auto}
+   .rank-list-zone{
+    height:auto;
+    min-height:0;
+    display:block;
+}
+.rank-list{
+    max-height:none;
+    overflow:visible;
+    -webkit-overflow-scrolling:touch;
+}
       .rank-list-head{grid-template-columns:44px minmax(0,1fr) 92px 30px;gap:7px;padding:0 8px}
       .rank-list-head span:nth-child(4){display:none}
       .rank-list-head span:nth-child(3){text-align:right}

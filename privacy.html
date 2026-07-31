@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Privacy Policy | Rivals Gauntlet</title>
+  <meta name="description" content="Privacy Policy for Rivals Gauntlet.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/global-header.css?v=10">
+  <link rel="stylesheet" href="/global-footer.css?v=2">
+
+  <style>
+    :root{
+      --bg:#06050a;
+      --panel:#0e0b15;
+      --panel-2:#14101e;
+      --text:#f8f5ff;
+      --muted:#aaa3ba;
+      --dim:#756d82;
+      --line:rgba(255,255,255,.09);
+      --purple:#a855f7;
+      --purple-2:#c084fc;
+      --shadow:0 26px 80px rgba(0,0,0,.45);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      min-height:100%;
+      background:var(--bg);
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      color:var(--text);
+      font-family:"Rajdhani",sans-serif;
+      background:
+        radial-gradient(circle at 80% -10%,rgba(124,58,237,.2),transparent 32%),
+        radial-gradient(circle at 8% 36%,rgba(168,85,247,.08),transparent 27%),
+        linear-gradient(180deg,#09070f,var(--bg));
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .legal-page{
+      width:min(100% - 28px,1180px);
+      margin:0 auto;
+      padding:58px 0 72px;
+    }
+
+    .legal-hero{
+      position:relative;
+      overflow:hidden;
+      padding:42px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:
+        linear-gradient(135deg,rgba(124,58,237,.13),transparent 42%),
+        rgba(12,9,18,.88);
+      box-shadow:var(--shadow);
+    }
+
+    .legal-hero::after{
+      content:"";
+      position:absolute;
+      left:42px;
+      right:42px;
+      bottom:0;
+      height:1px;
+      background:linear-gradient(90deg,var(--purple),transparent 70%);
+      box-shadow:0 0 18px rgba(168,85,247,.55);
+    }
+
+    .legal-kicker{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--purple-2);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+
+    .legal-kicker::before{
+      content:"";
+      width:30px;
+      height:2px;
+      background:linear-gradient(90deg,var(--purple),var(--purple-2));
+    }
+
+    .legal-hero h1{
+      margin:14px 0 0;
+      font-size:clamp(40px,7vw,76px);
+      line-height:.88;
+      letter-spacing:-1.8px;
+      text-transform:uppercase;
+    }
+
+    .legal-hero p{
+      max-width:700px;
+      margin:18px 0 0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.65;
+    }
+
+    .legal-updated{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:20px;
+      padding:8px 11px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      background:rgba(255,255,255,.025);
+    }
+
+    .legal-layout{
+      display:grid;
+      grid-template-columns:250px minmax(0,1fr);
+      gap:22px;
+      margin-top:22px;
+      align-items:start;
+    }
+
+    .legal-nav{
+      position:sticky;
+      top:96px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:rgba(14,11,21,.92);
+    }
+
+    .legal-nav strong{
+      display:block;
+      margin-bottom:11px;
+      color:#fff;
+      font-size:11px;
+      letter-spacing:1.3px;
+      text-transform:uppercase;
+    }
+
+    .legal-nav a{
+      display:block;
+      padding:7px 0;
+      color:var(--dim);
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      transition:.16s ease;
+    }
+
+    .legal-nav a:hover{
+      color:var(--purple-2);
+      transform:translateX(3px);
+    }
+
+    .legal-content{
+      padding:30px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(14,11,21,.86);
+      box-shadow:var(--shadow);
+    }
+
+    .legal-section + .legal-section{
+      margin-top:32px;
+      padding-top:30px;
+      border-top:1px solid var(--line);
+    }
+
+    .legal-section h2{
+      margin:0 0 12px;
+      font-size:23px;
+      line-height:1;
+      text-transform:uppercase;
+    }
+
+    .legal-section h3{
+      margin:20px 0 8px;
+      color:#fff;
+      font-size:16px;
+      text-transform:uppercase;
+    }
+
+    .legal-section p,
+    .legal-section li{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.72;
+    }
+
+    .legal-section p{margin:0 0 12px}
+
+    .legal-section ul{
+      margin:10px 0 0;
+      padding-left:20px;
+    }
+
+    .legal-section li + li{margin-top:7px}
+
+    .legal-link{
+      color:var(--purple-2);
+      text-decoration:underline;
+      text-decoration-color:rgba(192,132,252,.35);
+      text-underline-offset:3px;
+    }
+
+    .legal-callout{
+      margin-top:18px;
+      padding:16px 17px;
+      border:1px solid rgba(168,85,247,.24);
+      border-left:3px solid var(--purple);
+      border-radius:12px;
+      background:rgba(168,85,247,.055);
+    }
+
+    .legal-callout strong{
+      display:block;
+      margin-bottom:5px;
+      color:#fff;
+      font-size:12px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+    }
+
+    @media(max-width:820px){
+      .legal-page{padding-top:30px}
+      .legal-hero{padding:30px 24px}
+      .legal-hero::after{left:24px;right:24px}
+      .legal-layout{grid-template-columns:1fr}
+      .legal-nav{position:relative;top:auto}
+      .legal-nav div{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:0 18px;
+      }
+    }
+
+    @media(max-width:520px){
+      .legal-page{width:min(100% - 16px,1180px);padding-bottom:42px}
+      .legal-hero{padding:25px 18px;border-radius:18px}
+      .legal-content{padding:22px 17px;border-radius:16px}
+      .legal-nav div{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="globalHeader"></div>
+
+  <main class="legal-page">
+    <header class="legal-hero">
+      <div class="legal-kicker">Legal & Privacy</div>
+      <h1>Privacy Policy</h1>
+      <p>
+        This Privacy Policy explains how Rivals Gauntlet collects, uses,
+        stores, and protects information when you use our website,
+        account features, tournament systems, predictions, community tools,
+        and related services.
+      </p>
+      <div class="legal-updated">
+        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+        Effective July 31, 2026
+      </div>
+    </header>
+
+    <div class="legal-layout">
+      <aside class="legal-nav" aria-label="Privacy Policy sections">
+        <strong>On this page</strong>
+        <div>
+          <a href="#who-we-are">Who We Are</a>
+          <a href="#information">Information We Collect</a>
+          <a href="#use">How We Use Information</a>
+          <a href="#firebase">Firebase & Providers</a>
+          <a href="#sharing">How We Share Information</a>
+          <a href="#retention">Retention & Security</a>
+          <a href="#choices">Your Choices</a>
+          <a href="#children">Age Requirements</a>
+          <a href="#changes">Policy Changes</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </aside>
+
+      <article class="legal-content">
+        <section id="who-we-are" class="legal-section">
+          <h2>1. Who We Are</h2>
+          <p>
+            Rivals Gauntlet is an independently operated community tournament
+            platform based in Wyoming, United States. References to
+            “Rivals Gauntlet,” “we,” “us,” or “our” in this policy refer to
+            the individual operator of rivalsgauntlet.com.
+          </p>
+          <p>
+            Questions about this policy may be sent to
+            <a class="legal-link" href="mailto:rivalsgauntlet@gmail.com">
+              rivalsgauntlet@gmail.com
+            </a>.
+          </p>
+        </section>
+
+        <section id="information" class="legal-section">
+          <h2>2. Information We Collect</h2>
+
+          <h3>Information You Provide</h3>
+          <p>Depending on the features you use, we may collect:</p>
+          <ul>
+            <li>Email address and account authentication information.</li>
+            <li>Display name, in-game name, Discord username or Discord ID.</li>
+            <li>Platform, region, availability, competitive history, rank, and role preferences.</li>
+            <li>Profile image, biography, and optional social media links.</li>
+            <li>Tournament applications, roster information, substitutions, and participation records.</li>
+            <li>Predictions, bracket selections, scores, rankings, rewards, and RG Point activity.</li>
+            <li>Messages, reports, support requests, and other communications you send to us.</li>
+            <li>Contribution or donation records that are provided to us by a payment platform, such as the contributor name, contribution amount, date, and message.</li>
+          </ul>
+
+          <h3>Information Collected Automatically</h3>
+          <p>
+            Our hosting and technology providers may automatically process
+            limited technical information such as IP address, browser type,
+            device type, timestamps, authentication events, error logs, and
+            activity needed to operate and secure the service.
+          </p>
+
+          <h3>Public Information</h3>
+          <p>
+            Some information is intended to be displayed publicly, including
+            display names, profile images, tournament participation, team
+            assignments, match results, leaderboard placement, prediction
+            statistics, championships, and optional social links.
+          </p>
+          <p>
+            Do not submit information to a public profile or tournament feature
+            that you do not want others to see.
+          </p>
+        </section>
+
+        <section id="use" class="legal-section">
+          <h2>3. How We Use Information</h2>
+          <p>We may use information to:</p>
+          <ul>
+            <li>Create, authenticate, and maintain user accounts.</li>
+            <li>Process tournament applications and manage event participation.</li>
+            <li>Assign teams, tournament roles, substitutes, and private Discord access.</li>
+            <li>Operate rankings, predictions, rewards, RG Points, and account statistics.</li>
+            <li>Display public profiles, brackets, results, leaderboards, and championship records.</li>
+            <li>Communicate about applications, matches, account activity, support, and platform updates.</li>
+            <li>Prevent fraud, cheating, abuse, account sharing, and unauthorized access.</li>
+            <li>Diagnose errors, maintain security, and improve platform performance.</li>
+            <li>Comply with legal obligations and enforce our Terms of Service and Tournament Rules.</li>
+          </ul>
+        </section>
+
+        <section id="firebase" class="legal-section">
+          <h2>4. Firebase and Service Providers</h2>
+          <p>
+            Rivals Gauntlet uses Google Firebase services, including Firebase
+            Authentication and Firebase Realtime Database, to support account
+            authentication, data storage, live platform information, and other
+            site functionality.
+          </p>
+          <p>
+            We may also use hosting, email, payment, donation, social, or
+            communication providers when necessary to operate a feature.
+            Those providers may process information under their own terms and
+            privacy policies.
+          </p>
+          <div class="legal-callout">
+            <strong>Current analytics</strong>
+            Rivals Gauntlet does not currently state that it uses a separate
+            advertising network or standalone analytics platform. If that
+            changes, this policy should be updated.
+          </div>
+        </section>
+
+        <section id="sharing" class="legal-section">
+          <h2>5. How We Share Information</h2>
+          <p>We may share information in the following limited circumstances:</p>
+          <ul>
+            <li>With technology providers that help operate the platform.</li>
+            <li>With tournament staff, moderators, broadcasters, or event administrators when needed to run an event.</li>
+            <li>With Discord or similar services when you request or use connected tournament features.</li>
+            <li>Publicly, when information is part of a public profile, leaderboard, bracket, roster, result, broadcast, or championship archive.</li>
+            <li>When required by law, legal process, or a valid governmental request.</li>
+            <li>When reasonably necessary to protect users, enforce our rules, investigate misconduct, or secure the platform.</li>
+          </ul>
+          <p>
+            We do not sell personal information for money. We do not use
+            personal information for targeted advertising at this time.
+          </p>
+        </section>
+
+        <section id="retention" class="legal-section">
+          <h2>6. Data Retention and Security</h2>
+          <p>
+            We keep information for as long as reasonably necessary to operate
+            the platform, maintain tournament and championship records,
+            resolve disputes, enforce agreements, prevent abuse, and satisfy
+            legal or accounting requirements.
+          </p>
+          <p>
+            Tournament results, championships, public match records, and
+            moderation records may be retained after an account is closed
+            when necessary to preserve competitive history or platform integrity.
+          </p>
+          <p>
+            We use reasonable administrative and technical safeguards, but no
+            website, database, or internet transmission can be guaranteed to be
+            completely secure.
+          </p>
+        </section>
+
+        <section id="choices" class="legal-section">
+          <h2>7. Your Choices and Requests</h2>
+          <p>
+            You may update certain account and profile information through your
+            account settings. You may also contact us to request access,
+            correction, or deletion of personal information associated with
+            your account.
+          </p>
+          <p>
+            We may need to verify your identity before completing a request.
+            Some information may be retained when required for security,
+            fraud prevention, legal compliance, tournament integrity, or
+            permanent competitive records.
+          </p>
+          <p>
+            Send privacy requests to
+            <a class="legal-link" href="mailto:rivalsgauntlet@gmail.com">
+              rivalsgauntlet@gmail.com
+            </a>.
+          </p>
+        </section>
+
+        <section id="children" class="legal-section">
+          <h2>8. Age Requirements and Minors</h2>
+          <p>
+            Rivals Gauntlet is not intended for children under 13, and users
+            under 13 may not create an account or submit personal information.
+          </p>
+          <p>
+            Users who are at least 13 but under 18 may use the platform only
+            with permission from a parent or legal guardian. A parent or legal
+            guardian may also be required to verify eligibility, accept
+            tournament documents, receive or claim any prize or reward, and
+            provide payment or tax information where applicable.
+          </p>
+          <p>
+            If we learn that personal information was collected from a child
+            under 13 without legally valid parental consent, we will take
+            reasonable steps to delete it.
+          </p>
+        </section>
+
+        <section id="changes" class="legal-section">
+          <h2>9. Changes to This Policy</h2>
+          <p>
+            We may update this Privacy Policy as the platform, its features,
+            or applicable requirements change. The revised policy will be
+            posted on this page with a new effective date.
+          </p>
+          <p>
+            When a change is material, we may also provide notice through the
+            website, account interface, or email when appropriate.
+          </p>
+        </section>
+
+        <section id="contact" class="legal-section">
+          <h2>10. Contact Us</h2>
+          <p>
+            For questions, privacy requests, or concerns about personal
+            information, contact:
+          </p>
+          <div class="legal-callout">
+            <strong>Rivals Gauntlet</strong>
+            Wyoming, United States<br>
+            <a class="legal-link" href="mailto:rivalsgauntlet@gmail.com">
+              rivalsgauntlet@gmail.com
+            </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <div id="globalFooter"></div>
+
+  <script src="/global-header.js?v=10"></script>
+  <script src="/global-footer.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Terms &amp; Conditions | Rivals Gauntlet</title>
+  <meta name="description" content="Terms and Conditions governing use of Rivals Gauntlet.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="/global-header.css?v=10">
+  <link rel="stylesheet" href="/global-footer.css?v=2">
+
+  <style>
+    :root{
+      --bg:#06050a;
+      --panel:#0e0b15;
+      --panel-2:#14101e;
+      --text:#f8f5ff;
+      --muted:#aaa3ba;
+      --dim:#756d82;
+      --line:rgba(255,255,255,.09);
+      --purple:#a855f7;
+      --purple-2:#c084fc;
+      --shadow:0 26px 80px rgba(0,0,0,.45);
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      min-height:100%;
+      background:var(--bg);
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      margin:0;
+      color:var(--text);
+      font-family:"Rajdhani",sans-serif;
+      background:
+        radial-gradient(circle at 80% -10%,rgba(124,58,237,.2),transparent 32%),
+        radial-gradient(circle at 8% 36%,rgba(168,85,247,.08),transparent 27%),
+        linear-gradient(180deg,#09070f,var(--bg));
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .legal-page{
+      width:min(100% - 28px,1180px);
+      margin:0 auto;
+      padding:58px 0 72px;
+    }
+
+    .legal-hero{
+      position:relative;
+      overflow:hidden;
+      padding:42px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:
+        linear-gradient(135deg,rgba(124,58,237,.13),transparent 42%),
+        rgba(12,9,18,.88);
+      box-shadow:var(--shadow);
+    }
+
+    .legal-hero::after{
+      content:"";
+      position:absolute;
+      left:42px;
+      right:42px;
+      bottom:0;
+      height:1px;
+      background:linear-gradient(90deg,var(--purple),transparent 70%);
+      box-shadow:0 0 18px rgba(168,85,247,.55);
+    }
+
+    .legal-kicker{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--purple-2);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:2px;
+      text-transform:uppercase;
+    }
+
+    .legal-kicker::before{
+      content:"";
+      width:30px;
+      height:2px;
+      background:linear-gradient(90deg,var(--purple),var(--purple-2));
+    }
+
+    .legal-hero h1{
+      margin:14px 0 0;
+      font-size:clamp(40px,7vw,76px);
+      line-height:.88;
+      letter-spacing:-1.8px;
+      text-transform:uppercase;
+    }
+
+    .legal-hero p{
+      max-width:700px;
+      margin:18px 0 0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.65;
+    }
+
+    .legal-updated{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:20px;
+      padding:8px 11px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--dim);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      background:rgba(255,255,255,.025);
+    }
+
+    .legal-layout{
+      display:grid;
+      grid-template-columns:250px minmax(0,1fr);
+      gap:22px;
+      margin-top:22px;
+      align-items:start;
+    }
+
+    .legal-nav{
+      position:sticky;
+      top:96px;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:rgba(14,11,21,.92);
+    }
+
+    .legal-nav strong{
+      display:block;
+      margin-bottom:11px;
+      color:#fff;
+      font-size:11px;
+      letter-spacing:1.3px;
+      text-transform:uppercase;
+    }
+
+    .legal-nav a{
+      display:block;
+      padding:7px 0;
+      color:var(--dim);
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      transition:.16s ease;
+    }
+
+    .legal-nav a:hover{
+      color:var(--purple-2);
+      transform:translateX(3px);
+    }
+
+    .legal-content{
+      padding:30px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(14,11,21,.86);
+      box-shadow:var(--shadow);
+    }
+
+    .legal-section + .legal-section{
+      margin-top:32px;
+      padding-top:30px;
+      border-top:1px solid var(--line);
+    }
+
+    .legal-section h2{
+      margin:0 0 12px;
+      font-size:23px;
+      line-height:1;
+      text-transform:uppercase;
+    }
+
+    .legal-section h3{
+      margin:20px 0 8px;
+      color:#fff;
+      font-size:16px;
+      text-transform:uppercase;
+    }
+
+    .legal-section p,
+    .legal-section li{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.72;
+    }
+
+    .legal-section p{margin:0 0 12px}
+
+    .legal-section ul{
+      margin:10px 0 0;
+      padding-left:20px;
+    }
+
+    .legal-section li + li{margin-top:7px}
+
+    .legal-link{
+      color:var(--purple-2);
+      text-decoration:underline;
+      text-decoration-color:rgba(192,132,252,.35);
+      text-underline-offset:3px;
+    }
+
+    .legal-callout{
+      margin-top:18px;
+      padding:16px 17px;
+      border:1px solid rgba(168,85,247,.24);
+      border-left:3px solid var(--purple);
+      border-radius:12px;
+      background:rgba(168,85,247,.055);
+    }
+
+    .legal-callout strong{
+      display:block;
+      margin-bottom:5px;
+      color:#fff;
+      font-size:12px;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+    }
+
+    @media(max-width:820px){
+      .legal-page{padding-top:30px}
+      .legal-hero{padding:30px 24px}
+      .legal-hero::after{left:24px;right:24px}
+      .legal-layout{grid-template-columns:1fr}
+      .legal-nav{position:relative;top:auto}
+      .legal-nav div{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:0 18px;
+      }
+    }
+
+    @media(max-width:520px){
+      .legal-page{width:min(100% - 16px,1180px);padding-bottom:42px}
+      .legal-hero{padding:25px 18px;border-radius:18px}
+      .legal-content{padding:22px 17px;border-radius:16px}
+      .legal-nav div{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div id="globalHeader"></div>
+
+  <main class="legal-page">
+    <header class="legal-hero">
+      <div class="legal-kicker">Legal Agreement</div>
+      <h1>Terms &amp; Conditions</h1>
+      <p>
+        These Terms &amp; Conditions govern your access to and use of
+        Rivals Gauntlet, including its accounts, tournaments, predictions,
+        rankings, RG Points, community features, contributions, and related services.
+      </p>
+      <div class="legal-updated">
+        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+        Effective July 31, 2026
+      </div>
+    </header>
+
+    <div class="legal-layout">
+      <aside class="legal-nav" aria-label="Terms and Conditions sections">
+        <strong>On this page</strong>
+        <div>
+          <a href="#summary">Plain-English Summary</a>
+          <a href="#acceptance">Acceptance</a>
+          <a href="#eligibility">Eligibility</a>
+          <a href="#accounts">Accounts</a>
+          <a href="#conduct">Acceptable Use</a>
+          <a href="#integrity">Competitive Integrity</a>
+          <a href="#tournaments">Tournaments</a>
+          <a href="#predictions">Predictions &amp; Rankings</a>
+          <a href="#points">RG Points</a>
+          <a href="#contributions">Contributions &amp; Prize Pools</a>
+          <a href="#content">Content &amp; Intellectual Property</a>
+          <a href="#platform">Platform Changes</a>
+          <a href="#termination">Suspension &amp; Termination</a>
+          <a href="#disclaimers">Disclaimers</a>
+          <a href="#liability">Liability</a>
+          <a href="#law">Wyoming Law</a>
+          <a href="#changes">Changes</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </aside>
+
+      <article class="legal-content">
+        <section id="summary" class="legal-section">
+          <h2>Plain-English Summary</h2>
+          <div class="legal-callout">
+            <strong>Quick summary</strong>
+            Use Rivals Gauntlet honestly, keep your account secure, follow event
+            rules, do not cheat or harass others, and understand that platform
+            features, event details, contribution totals, and prize amounts may
+            change. The complete Terms below control if a summary and the full
+            text differ.
+          </div>
+        </section>
+
+        <section id="acceptance" class="legal-section">
+          <h2>1. Acceptance of These Terms</h2>
+          <p>
+            These Terms &amp; Conditions (“Terms”) form an agreement between you
+            and the individual operator of Rivals Gauntlet. By accessing or using
+            rivalsgauntlet.com, creating an account, submitting a tournament
+            application, participating in an event, making a prediction,
+            contributing toward a prize pool, or using another Rivals Gauntlet
+            feature, you agree to these Terms and our
+            <a class="legal-link" href="/privacy.html">Privacy Policy</a>.
+          </p>
+          <p>
+            Tournament participation is also subject to the
+            <a class="legal-link" href="/tournament-rules.html">Tournament Rules</a>
+            and any event-specific rules, schedules, eligibility requirements,
+            or instructions published for that event.
+          </p>
+          <p>
+            If you do not agree to these Terms, do not use Rivals Gauntlet.
+          </p>
+        </section>
+
+        <section id="eligibility" class="legal-section">
+          <h2>2. Eligibility and Minors</h2>
+          <p>
+            You must be at least 13 years old to create an account or submit
+            personal information through Rivals Gauntlet.
+          </p>
+          <p>
+            If you are between 13 and 17 years old, you may use the platform
+            only with the permission and supervision of a parent or legal guardian.
+            A parent or legal guardian may be required to verify eligibility,
+            approve participation, accept documents, provide payment or tax
+            information, or receive and claim any prize, reward, or other item
+            on your behalf.
+          </p>
+          <p>
+            Some events, rewards, jurisdictions, payment providers, or game
+            publishers may impose additional age or eligibility requirements.
+            You are responsible for meeting all requirements that apply to you.
+          </p>
+        </section>
+
+        <section id="accounts" class="legal-section">
+          <h2>3. Accounts and Account Security</h2>
+          <ul>
+            <li>You must provide accurate, current, and complete information.</li>
+            <li>You may not impersonate another person or misrepresent your identity, age, rank, region, platform, team, eligibility, or competitive history.</li>
+            <li>You are responsible for maintaining the confidentiality of your login credentials and for activity occurring through your account.</li>
+            <li>You may not sell, transfer, share, rent, or allow another person to use your account.</li>
+            <li>You should notify us promptly if you believe your account has been accessed without permission.</li>
+          </ul>
+          <p>
+            We may require additional verification before approving an
+            application, awarding a prize, restoring an account, or making a
+            sensitive account change.
+          </p>
+        </section>
+
+        <section id="conduct" class="legal-section">
+          <h2>4. Acceptable Use and Community Conduct</h2>
+          <p>You may not use Rivals Gauntlet to:</p>
+          <ul>
+            <li>Harass, threaten, intimidate, stalk, exploit, or abuse another person.</li>
+            <li>Post hateful, discriminatory, sexually exploitative, unlawful, fraudulent, or deliberately harmful content.</li>
+            <li>Spam users, distribute malware, attempt phishing, or interfere with platform security.</li>
+            <li>Access data, accounts, systems, or areas of the platform without authorization.</li>
+            <li>Scrape, copy, reverse engineer, overload, disrupt, or misuse the platform except where applicable law expressly permits it.</li>
+            <li>Exploit a bug, vulnerability, technical error, or unintended feature for personal or competitive advantage.</li>
+            <li>Submit false reports, manipulate votes or rankings, evade enforcement, or create accounts to circumvent a restriction.</li>
+          </ul>
+          <p>
+            We may remove content, restrict features, reverse transactions,
+            adjust records, or take other reasonable action to protect users
+            and the platform.
+          </p>
+        </section>
+
+        <section id="integrity" class="legal-section">
+          <h2>5. Competitive Integrity</h2>
+          <p>
+            Fair competition is a condition of participation. Prohibited conduct
+            includes, without limitation:
+          </p>
+          <ul>
+            <li>Cheats, hacks, unauthorized scripts, automation, macros, or prohibited third-party software.</li>
+            <li>Account sharing, boosting, smurfing, identity substitution, or using an ineligible player.</li>
+            <li>Match fixing, collusion, bribery, intentionally losing, or coordinating an outcome outside legitimate competition.</li>
+            <li>Stream sniping, unauthorized spectator assistance, ghosting, or obtaining non-public match information.</li>
+            <li>Abusing game bugs, map exploits, disconnects, pauses, substitutions, or tournament procedures.</li>
+            <li>Falsifying screenshots, scores, communications, eligibility information, or evidence.</li>
+          </ul>
+          <p>
+            We may investigate suspected misconduct and may consider game data,
+            platform records, communications, broadcasts, recordings, moderator
+            observations, participant reports, and other reasonably relevant evidence.
+          </p>
+        </section>
+
+        <section id="tournaments" class="legal-section">
+          <h2>6. Tournament Participation</h2>
+          <p>
+            Applying for an event does not guarantee selection, placement on a
+            roster, broadcast coverage, continued participation, or receipt of
+            a prize or reward.
+          </p>
+          <p>
+            Tournament schedules, formats, maps, match procedures, team sizes,
+            brackets, eligibility requirements, participant selections, broadcast
+            plans, prize pools, and other event details may be modified, delayed,
+            suspended, or canceled when reasonably necessary for fairness,
+            safety, technical limitations, staffing, game updates, server outages,
+            low participation, legal requirements, or other operational reasons.
+          </p>
+          <p>
+            Participants must follow administrator instructions and event-specific
+            rules. We may issue warnings, apply game or match penalties, require
+            a substitution, remove a participant or team, reverse a result, or
+            disqualify an entry when reasonably necessary to enforce the rules.
+          </p>
+          <p>
+            Tournament administrators have authority to interpret and apply the
+            rules to situations not expressly covered. Decisions may be reviewed
+            when credible new evidence is presented, but there is no guarantee
+            of a formal appeal unless an event rule provides one.
+          </p>
+        </section>
+
+        <section id="predictions" class="legal-section">
+          <h2>7. Predictions, Rankings, and Records</h2>
+          <p>
+            Predictions, bracket selections, rankings, streaks, statistics,
+            badges, and leaderboard positions are platform features and do not
+            constitute gambling, a financial account, or a promise of monetary value.
+          </p>
+          <p>
+            We may correct, recalculate, void, restore, or remove predictions,
+            results, rewards, scores, rankings, or records affected by a bug,
+            duplicate submission, incorrect result, unauthorized activity,
+            database error, rule violation, or administrative mistake.
+          </p>
+          <p>
+            Public competitive records and championship history may remain
+            visible after an account is closed where reasonably necessary to
+            preserve event history and platform integrity.
+          </p>
+        </section>
+
+        <section id="points" class="legal-section">
+          <h2>8. RG Points and Virtual Items</h2>
+          <p>
+            RG Points, virtual items, cosmetics, ranks, badges, crates, rewards,
+            and similar platform features are limited, revocable digital
+            entitlements for use within Rivals Gauntlet.
+          </p>
+          <ul>
+            <li>They have no cash value and are not legal tender.</li>
+            <li>They cannot be redeemed for money unless Rivals Gauntlet expressly states otherwise in writing.</li>
+            <li>They may not be sold, transferred, traded, or exchanged outside approved platform functionality.</li>
+            <li>They may be adjusted, reversed, suspended, or removed if issued in error, obtained through abuse, or affected by a technical problem.</li>
+            <li>Availability, pricing, functionality, and redemption options may change or be discontinued.</li>
+          </ul>
+        </section>
+
+        <section id="contributions" class="legal-section">
+          <h2>9. Community Contributions and Prize Pools</h2>
+          <p>
+            Contributions toward Rivals Gauntlet or a tournament prize pool are
+            voluntary. Unless applicable law requires otherwise, contributions
+            are generally non-refundable after they are completed.
+          </p>
+
+          <div class="legal-callout">
+            <strong>Displayed totals are gross amounts</strong>
+            Contribution and prize-pool counters displayed throughout Rivals
+            Gauntlet may show the gross amount contributed before PayPal or
+            another payment provider deducts fees when funds are received.
+            Displayed totals may also be shown before fees, transfer costs, taxes,
+            withholding, currency conversion, chargebacks, legally required
+            refunds, or other deductions incurred when prize funds are later
+            distributed to recipients.
+          </div>
+
+          <p>
+            As a result, the net amount actually received by Rivals Gauntlet and
+            the amount ultimately delivered to prize recipients may be lower
+            than the amount displayed on the website.
+          </p>
+          <p>
+            The final prize pool may also differ from community contribution
+            totals because Rivals Gauntlet may add its own funds, receive outside
+            sponsorship, allocate funds across events, correct an error, process
+            a chargeback, or make another disclosed adjustment.
+          </p>
+          <p>
+            Unless an event announcement expressly states otherwise, a displayed
+            contribution total should not be interpreted as a guarantee that the
+            exact displayed amount will be paid out to participants.
+          </p>
+          <p>
+            Prize recipients are responsible for providing accurate payment and
+            tax information, satisfying eligibility requirements, and handling
+            any taxes or reporting obligations that apply to them. A parent or
+            legal guardian may be required to receive a prize for an eligible minor.
+          </p>
+        </section>
+
+        <section id="content" class="legal-section">
+          <h2>10. Content and Intellectual Property</h2>
+          <p>
+            Rivals Gauntlet’s original website design, branding, code, graphics,
+            text, tournament materials, databases, and other original content
+            are owned by or licensed to Rivals Gauntlet and may not be copied,
+            republished, sold, or commercially exploited without permission,
+            except as allowed by law.
+          </p>
+          <p>
+            You retain ownership of content you submit. By submitting content
+            to a public or tournament feature, you grant Rivals Gauntlet a
+            non-exclusive, worldwide, royalty-free license to host, store,
+            reproduce, display, format, distribute, and use that content as
+            reasonably necessary to operate, promote, archive, and broadcast
+            Rivals Gauntlet and its events.
+          </p>
+          <p>
+            You represent that you have the rights needed to submit your content
+            and that its use as described above will not violate another person’s rights.
+          </p>
+
+          <div class="legal-callout">
+            <strong>Independent platform notice</strong>
+            Rivals Gauntlet is an independent community tournament platform and
+            is not affiliated with, endorsed by, or sponsored by Marvel,
+            Marvel Rivals, NetEase Games, or their respective parents,
+            subsidiaries, affiliates, licensors, or owners. All third-party
+            names, game titles, logos, characters, artwork, and trademarks
+            remain the property of their respective owners.
+          </div>
+        </section>
+
+        <section id="platform" class="legal-section">
+          <h2>11. Platform Evolution and Availability</h2>
+          <p>
+            Rivals Gauntlet is an evolving platform. We may add, modify,
+            reorganize, suspend, limit, or discontinue features, tournaments,
+            predictions, rewards, rankings, RG Points, virtual items, account
+            tools, integrations, or other functionality.
+          </p>
+          <p>
+            We do not guarantee that the platform or any particular feature will
+            be uninterrupted, error-free, permanently available, compatible
+            with every device, or preserved in its current form.
+          </p>
+        </section>
+
+        <section id="termination" class="legal-section">
+          <h2>12. Suspension and Termination</h2>
+          <p>
+            We may warn, restrict, suspend, or terminate an account or
+            participation when we reasonably believe there has been:
+          </p>
+          <ul>
+            <li>A violation of these Terms, the Privacy Policy, Tournament Rules, or event instructions.</li>
+            <li>Cheating, fraud, harassment, abuse, exploitation, or dishonest conduct.</li>
+            <li>A security concern, unauthorized access, chargeback abuse, or misuse of platform systems.</li>
+            <li>Conduct that creates legal, safety, reputational, or operational risk for Rivals Gauntlet or its community.</li>
+          </ul>
+          <p>
+            Termination may result in the loss of access to RG Points, virtual
+            items, rankings, applications, predictions, or other account features,
+            subject to applicable law.
+          </p>
+        </section>
+
+        <section id="disclaimers" class="legal-section">
+          <h2>13. Disclaimer of Warranties</h2>
+          <p>
+            To the fullest extent permitted by law, Rivals Gauntlet and all
+            related services are provided “as is” and “as available,” without
+            warranties of any kind, whether express, implied, or statutory.
+          </p>
+          <p>
+            We do not warrant that the platform will always be available, secure,
+            accurate, uninterrupted, free from harmful components, or suitable
+            for a particular purpose. We do not guarantee selection for an event,
+            a particular match result, continued availability of a feature, or
+            receipt of a prize or reward except as expressly confirmed in writing.
+          </p>
+          <p>
+            Some jurisdictions do not allow certain warranty exclusions, so
+            parts of this section may not apply to you.
+          </p>
+        </section>
+
+        <section id="liability" class="legal-section">
+          <h2>14. Limitation of Liability</h2>
+          <p>
+            To the fullest extent permitted by law, Rivals Gauntlet and its
+            operator, volunteers, moderators, contractors, broadcasters, and
+            event staff will not be liable for indirect, incidental, special,
+            consequential, exemplary, or punitive damages, or for loss of data,
+            profits, goodwill, opportunities, virtual items, or tournament participation.
+          </p>
+          <p>
+            To the fullest extent permitted by law, the total aggregate liability
+            arising from or relating to the platform will not exceed the greater
+            of the amount you paid directly to Rivals Gauntlet during the six
+            months before the event giving rise to the claim or fifty U.S. dollars.
+          </p>
+          <p>
+            Nothing in these Terms excludes liability that cannot legally be
+            excluded or limited.
+          </p>
+        </section>
+
+        <section id="law" class="legal-section">
+          <h2>15. Governing Law and Disputes</h2>
+          <p>
+            These Terms are governed by the laws of the State of Wyoming,
+            without regard to conflict-of-law principles, except where
+            applicable consumer law requires otherwise.
+          </p>
+          <p>
+            Before filing a formal claim, you agree to contact us at
+            <a class="legal-link" href="mailto:rivalsgauntlet@gmail.com">
+              rivalsgauntlet@gmail.com
+            </a>
+            and make a reasonable good-faith effort to resolve the dispute informally.
+          </p>
+          <p>
+            Unless applicable law requires another location, legal proceedings
+            relating to these Terms will be brought in a court of competent
+            jurisdiction located in Wyoming.
+          </p>
+        </section>
+
+        <section id="changes" class="legal-section">
+          <h2>16. Changes to These Terms</h2>
+          <p>
+            We may update these Terms as the platform, its features, our
+            operations, or applicable requirements change. Updated Terms will
+            be posted on this page with a revised effective date.
+          </p>
+          <p>
+            Material changes may also be announced through the website,
+            account interface, or email. Continued use after updated Terms take
+            effect means you accept the revised Terms where permitted by law.
+          </p>
+        </section>
+
+        <section id="contact" class="legal-section">
+          <h2>17. Contact</h2>
+          <p>
+            Questions about these Terms may be sent to:
+          </p>
+          <div class="legal-callout">
+            <strong>Rivals Gauntlet</strong>
+            Wyoming, United States<br>
+            <a class="legal-link" href="mailto:rivalsgauntlet@gmail.com">
+              rivalsgauntlet@gmail.com
+            </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <div id="globalFooter"></div>
+
+  <script src="/global-header.js?v=10"></script>
+  <script src="/global-footer.js?v=2"></script>
+</body>
+</html>

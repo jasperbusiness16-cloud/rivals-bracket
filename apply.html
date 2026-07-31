@@ -1574,6 +1574,152 @@
         text-align:left;
       }
     }
+
+    /* =========================================================
+       LEGAL AGREEMENTS + MODAL
+    ========================================================= */
+    .legal-confirmation-stack{
+      display:grid;
+      gap:11px;
+      margin-top:15px;
+    }
+
+    .legal-open{
+      display:inline;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:var(--purple2);
+      font:inherit;
+      font-weight:800;
+      text-decoration:underline;
+      text-decoration-color:rgba(208,156,255,.38);
+      text-underline-offset:2px;
+      cursor:pointer;
+    }
+
+    .legal-open:hover,
+    .legal-open:focus-visible{
+      color:#fff;
+    }
+
+    .legal-modal{
+      position:fixed;
+      inset:0;
+      z-index:10000;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      background:rgba(3,3,7,.84);
+      -webkit-backdrop-filter:blur(12px);
+      backdrop-filter:blur(12px);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .2s ease,visibility .2s ease;
+    }
+
+    .legal-modal.open{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .legal-modal-panel{
+      width:min(980px,100%);
+      height:min(780px,calc(100dvh - 36px));
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      overflow:hidden;
+      border:1px solid rgba(192,132,252,.38);
+      border-radius:18px;
+      background:#0b0910;
+      box-shadow:0 35px 120px rgba(0,0,0,.72);
+      transform:translateY(12px) scale(.985);
+      transition:transform .2s ease;
+    }
+
+    .legal-modal.open .legal-modal-panel{
+      transform:none;
+    }
+
+    .legal-modal-head{
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 16px 12px 20px;
+      border-bottom:1px solid var(--line);
+      background:
+        linear-gradient(90deg,rgba(109,40,217,.16),transparent),
+        rgba(15,13,23,.98);
+    }
+
+    .legal-modal-title{
+      min-width:0;
+    }
+
+    .legal-modal-title span{
+      display:block;
+      color:var(--purple2);
+      font-size:8px;
+      font-weight:800;
+      letter-spacing:1.4px;
+      text-transform:uppercase;
+    }
+
+    .legal-modal-title strong{
+      display:block;
+      margin-top:2px;
+      overflow:hidden;
+      color:#fff;
+      font-size:17px;
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .legal-modal-close{
+      width:38px;
+      height:38px;
+      flex:0 0 38px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--line2);
+      border-radius:9px;
+      background:rgba(255,255,255,.035);
+      color:var(--muted);
+      font-size:20px;
+      cursor:pointer;
+    }
+
+    .legal-modal-close:hover{
+      color:#fff;
+      border-color:rgba(192,132,252,.48);
+      background:rgba(168,85,247,.08);
+    }
+
+    .legal-modal-frame{
+      width:100%;
+      height:100%;
+      border:0;
+      background:var(--bg);
+    }
+
+    body.legal-modal-open{
+      overflow:hidden;
+    }
+
+    @media(max-width:580px){
+      .legal-modal{
+        padding:8px;
+      }
+
+      .legal-modal-panel{
+        height:calc(100dvh - 16px);
+        border-radius:14px;
+      }
+    }
+
     [hidden]{
   display:none !important;
 }
@@ -2804,6 +2950,62 @@
             </p>
           </div>
 
+
+          <div class="legal-confirmation-stack">
+            <div class="field confirmation-card" data-field="rulesConfirm">
+              <label class="confirmation-label" for="rulesConfirm">
+                <input id="rulesConfirm" type="checkbox" value="Yes">
+
+                <span class="confirmation-copy">
+                  <strong>I Agree to the Tournament Rules</strong>
+
+                  <span>
+                    I have read and agree to follow the
+                    <button
+                      class="legal-open"
+                      type="button"
+                      data-legal-title="Tournament Rules"
+                      data-legal-url="/tournament-rules.html"
+                    >
+                      Tournament Rules
+                    </button>
+                    for Rivals Gauntlet events.
+                  </span>
+                </span>
+              </label>
+
+              <p class="error">
+                Agree to the Tournament Rules before submitting.
+              </p>
+            </div>
+
+            <div class="field confirmation-card" data-field="termsConfirm">
+              <label class="confirmation-label" for="termsConfirm">
+                <input id="termsConfirm" type="checkbox" value="Yes">
+
+                <span class="confirmation-copy">
+                  <strong>I Agree to the Terms &amp; Conditions</strong>
+
+                  <span>
+                    I have read and agree to the
+                    <button
+                      class="legal-open"
+                      type="button"
+                      data-legal-title="Terms & Conditions"
+                      data-legal-url="/terms.html"
+                    >
+                      Terms &amp; Conditions
+                    </button>.
+                  </span>
+                </span>
+              </label>
+
+              <p class="error">
+                Agree to the Terms &amp; Conditions before submitting.
+              </p>
+            </div>
+          </div>
+
           <p id="applyStatus" class="status"></p>
         </section>
 
@@ -2832,6 +3034,40 @@
       </section>
     </section>
   </main>
+
+
+  <div
+    id="legalModal"
+    class="legal-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="legalModalHeading"
+    hidden
+  >
+    <div class="legal-modal-panel">
+      <header class="legal-modal-head">
+        <div class="legal-modal-title">
+          <span>Rivals Gauntlet Legal</span>
+          <strong id="legalModalHeading">Legal Document</strong>
+        </div>
+
+        <button
+          id="legalModalClose"
+          class="legal-modal-close"
+          type="button"
+          aria-label="Close legal document"
+        >
+          ×
+        </button>
+      </header>
+
+      <iframe
+        id="legalModalFrame"
+        class="legal-modal-frame"
+        title="Rivals Gauntlet legal document"
+      ></iframe>
+    </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -2867,6 +3103,9 @@
     let readOnlyReview =
       false;
 
+    let lastLegalTrigger =
+      null;
+
     const requiredFields = [
       "ageConfirm",
       "discordConfirm",
@@ -2883,7 +3122,9 @@
       "wantsSub",
       "willStream",
       "followerCount",
-      "accuracyConfirm"
+      "accuracyConfirm",
+      "rulesConfirm",
+      "termsConfirm"
     ];
 
     const stepFields = {
@@ -2914,7 +3155,9 @@
       ],
 
       4: [
-        "accuracyConfirm"
+        "accuracyConfirm",
+        "rulesConfirm",
+        "termsConfirm"
       ]
     };
 
@@ -4350,6 +4593,50 @@
     return;
   }
 
+  if(
+    value("rulesConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "You must agree to the Tournament Rules before submitting.";
+
+    status.style.color =
+      "#ff9fa8";
+
+    openStep(
+      4,
+      true
+    );
+
+    validateField(
+      "rulesConfirm"
+    );
+
+    return;
+  }
+
+  if(
+    value("termsConfirm") !==
+    "Yes"
+  ){
+    status.textContent =
+      "You must agree to the Terms & Conditions before submitting.";
+
+    status.style.color =
+      "#ff9fa8";
+
+    openStep(
+      4,
+      true
+    );
+
+    validateField(
+      "termsConfirm"
+    );
+
+    return;
+  }
+
   button.disabled =
     true;
 
@@ -4521,6 +4808,30 @@
       value(
         "accuracyConfirm"
       ),
+
+    rulesConfirm:
+      value(
+        "rulesConfirm"
+      ),
+
+    termsConfirm:
+      value(
+        "termsConfirm"
+      ),
+
+    agreements:{
+      tournamentRules:{
+        accepted:true,
+        acceptedAt:now,
+        version:"2026-07-31"
+      },
+
+      terms:{
+        accepted:true,
+        acceptedAt:now,
+        version:"2026-07-31"
+      }
+    },
 
     status:
       "pending",
@@ -4696,7 +5007,134 @@
   }
 }
 
+
+    function openLegalModal(button){
+      const url =
+        button.dataset.legalUrl;
+
+      const title =
+        button.dataset.legalTitle ||
+        "Legal Document";
+
+      if(!url){
+        return;
+      }
+
+      lastLegalTrigger =
+        button;
+
+      $("legalModalHeading").textContent =
+        title;
+
+      $("legalModalFrame").src =
+        url;
+
+      $("legalModal").hidden =
+        false;
+
+      requestAnimationFrame(
+        () => {
+          $("legalModal")
+            .classList
+            .add(
+              "open"
+            );
+
+          document.body
+            .classList
+            .add(
+              "legal-modal-open"
+            );
+
+          $("legalModalClose")
+            .focus();
+        }
+      );
+    }
+
+    function closeLegalModal(){
+      $("legalModal")
+        .classList
+        .remove(
+          "open"
+        );
+
+      document.body
+        .classList
+        .remove(
+          "legal-modal-open"
+        );
+
+      window.setTimeout(
+        () => {
+          $("legalModal").hidden =
+            true;
+
+          $("legalModalFrame").src =
+            "";
+
+          lastLegalTrigger
+            ?.focus();
+        },
+        200
+      );
+    }
+
     function attach(){
+      document
+        .querySelectorAll(
+          "[data-legal-url]"
+        )
+        .forEach(
+          button => {
+            button.addEventListener(
+              "click",
+              () => {
+                openLegalModal(
+                  button
+                );
+              }
+            );
+          }
+        );
+
+      $("legalModalClose")
+        .addEventListener(
+          "click",
+          closeLegalModal
+        );
+
+      $("legalModal")
+        .addEventListener(
+          "click",
+          event => {
+            if(
+              event.target ===
+              $("legalModal")
+            ){
+              closeLegalModal();
+            }
+          }
+        );
+
+      document
+        .addEventListener(
+          "keydown",
+          event => {
+            if(
+              event.key ===
+                "Escape" &&
+              $("legalModal")
+                .classList
+                .contains(
+                  "open"
+                )
+            ){
+              closeLegalModal();
+            }
+          }
+        );
+
       requiredFields.forEach(
         id => {
           const element =

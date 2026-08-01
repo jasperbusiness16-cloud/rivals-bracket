@@ -79,7 +79,10 @@
   let currentVideo = null;
 
   let forceKey = "";
-  let lastTimerText = "";
+let lastTimerText = "";
+
+let playbackToken = 0;
+let transitionTimer = null;
 
   function databaseConnection() {
     try {
@@ -558,26 +561,36 @@
     });
   }
 
-  function stopCurrent() {
-    if (currentTimer) {
-      clearTimeout(currentTimer);
-    }
+function stopCurrent() {
+  playbackToken += 1;
 
-    currentTimer = null;
-
-    if (currentVideo) {
-      try {
-        currentVideo.pause();
-      } catch (error) {
-        console.warn(
-          "The current video could not be paused:",
-          error
-        );
-      }
-
-      currentVideo = null;
-    }
+  if (currentTimer) {
+    clearTimeout(currentTimer);
   }
+
+  currentTimer = null;
+
+  if (transitionTimer) {
+    clearTimeout(transitionTimer);
+  }
+
+  transitionTimer = null;
+
+  if (currentVideo) {
+    try {
+      currentVideo.pause();
+      currentVideo.removeAttribute("src");
+      currentVideo.load();
+    } catch (error) {
+      console.warn(
+        "The current video could not be fully stopped:",
+        error
+      );
+    }
+
+    currentVideo = null;
+  }
+}
 
   function advance() {
     if (!playlist.length) {
@@ -599,32 +612,49 @@
     );
   }
 
-  function mount(html) {
-    const oldMount =
-      $("contentMount");
+  function mount(html, callback) {
+  const contentMount =
+    document.getElementById("contentMount");
 
-    oldMount.classList.add(
+  if (!contentMount) {
+    return;
+  }
+
+  contentMount.classList.remove(
+    "fade-in",
+    "fade-out"
+  );
+
+  contentMount.classList.add(
+    "fade-out"
+  );
+
+  transitionTimer = window.setTimeout(() => {
+    contentMount.innerHTML = html;
+
+    contentMount.classList.remove(
       "fade-out"
     );
 
-    window.setTimeout(() => {
-      oldMount.innerHTML = html;
+    contentMount.classList.add(
+      "fade-in"
+    );
 
-      oldMount.classList.remove(
-        "fade-out"
-      );
+    if (
+      typeof callback === "function"
+    ) {
+      callback();
+    }
 
-      oldMount.classList.add(
+    transitionTimer = window.setTimeout(() => {
+      contentMount.classList.remove(
         "fade-in"
       );
 
-      window.setTimeout(() => {
-        oldMount.classList.remove(
-          "fade-in"
-        );
-      }, 450);
-    }, 220);
-  }
+      transitionTimer = null;
+    }, 420);
+  }, 220);
+}
 
   function mediaMarkup(item, kind) {
     const url =
@@ -826,165 +856,67 @@
   }
 
   function showItem(item, forced) {
-    stopCurrent();
+  stopCurrent();
 
-    $("footerStatus").textContent =
-      item.type === "clip"
-        ? `Now Playing • ${clean(
-            item.submittedBy,
-            "Community Highlight"
-          )}`
-        : `${clean(
-            item.subtitle,
-            "Tournament Update"
-          )} • Rivals Gauntlet`;
+  const token = playbackToken;
+  let finished = false;
 
-    if (item.type === "clip") {
-      mount(
-        mediaMarkup(item, "video")
-      );
-    } else if (
-      item.type === "image"
-    ) {
-      mount(
-        mediaMarkup(item, "img")
-      );
-    } else if (
-      item.type === "matchup"
-    ) {
-      mount(
-        matchupMarkup(item)
-      );
-    } else {
-      mount(
-        newsMarkup(item)
-      );
+  function finishItem() {
+    if (finished) {
+      return;
     }
 
-    window.setTimeout(() => {
-      if (item.type === "clip") {
-        const video =
-          $("activeVideo");
+    if (token !== playbackToken) {
+      return;
+    }
 
-        if (video) {
-          currentVideo = video;
+    finished = true;
 
-          video.volume =
-            item.muted
-              ? 0
-              : Math.min(
-                  1,
-                  numberValue(
-                    settings.clipVolume,
-                    0.8
-                  )
-                );
+    if (
+      forced &&
+      settings.holdForcedItem
+    ) {
+      return;
+    }
 
-          video.addEventListener(
-            "loadedmetadata",
-            () => {
-              if (
-                item.startAt > 0 &&
-                item.startAt <
-                  video.duration
-              ) {
-                video.currentTime =
-                  item.startAt;
-              }
-            },
-            {
-              once: true
-            }
-          );
+    advance();
+  }
 
-          const finish = () => {
-            if (
-              forced &&
-              settings.holdForcedItem
-            ) {
-              return;
-            }
+  $("footerStatus").textContent =
+    item.type === "clip"
+      ? `Now Playing • ${clean(
+          item.submittedBy,
+          "Community Highlight"
+        )}`
+      : `${clean(
+          item.subtitle,
+          "Tournament Update"
+        )} • Rivals Gauntlet`;
 
-            advance();
-          };
+  let markup = "";
 
-          video.addEventListener(
-            "ended",
-            finish,
-            {
-              once: true
-            }
-          );
-
-          if (
-            item.endAt >
-            item.startAt
-          ) {
-            const check = () => {
-              if (
-                video.currentTime >=
-                item.endAt
-              ) {
-                video.removeEventListener(
-                  "timeupdate",
-                  check
-                );
-
-                finish();
-              }
-            };
-
-            video.addEventListener(
-              "timeupdate",
-              check
-            );
-          }
-
-          if (
-            settings.clipUsesFullDuration !==
-            true
-          ) {
-            currentTimer =
-              window.setTimeout(
-                finish,
-                item.durationMs
-              );
-          }
-
-          video
-  .play()
-  .catch(async (error) => {
-    console.warn(
-      "Unmuted autoplay was blocked. Retrying muted:",
-      error
+  if (item.type === "clip") {
+    markup = mediaMarkup(
+      item,
+      "video"
     );
+  } else if (item.type === "image") {
+    markup = mediaMarkup(
+      item,
+      "img"
+    );
+  } else if (item.type === "matchup") {
+    markup = matchupMarkup(item);
+  } else {
+    markup = newsMarkup(item);
+  }
 
-    /*
-     * Regular browsers may block autoplay with sound.
-     * Retry muted so the clip still plays instead of freezing.
-     */
-    video.muted = true;
-    video.volume = 0;
-
-    try {
-      await video.play();
-    } catch (retryError) {
-      console.error(
-        "The clip could not autoplay even while muted:",
-        retryError
-      );
-
-      currentTimer = window.setTimeout(
-        finish,
-        item.durationMs
-      );
+  mount(markup, () => {
+    if (token !== playbackToken) {
+      return;
     }
-  });
 
-          return;
-        }
-      }
-
+    if (item.type !== "clip") {
       if (
         !(
           forced &&
@@ -993,13 +925,178 @@
       ) {
         currentTimer =
           window.setTimeout(
-            advance,
+            finishItem,
             item.durationMs
           );
       }
-    }, 260);
-  }
 
+      return;
+    }
+
+    const video =
+      document.getElementById(
+        "activeVideo"
+      );
+
+    if (!video) {
+      currentTimer =
+        window.setTimeout(
+          finishItem,
+          item.durationMs
+        );
+
+      return;
+    }
+
+    currentVideo = video;
+
+    video.muted = item.muted;
+    video.volume = item.muted
+      ? 0
+      : Math.min(
+          1,
+          numberValue(
+            settings.clipVolume,
+            0.8
+          )
+        );
+
+    video.addEventListener(
+      "loadedmetadata",
+      () => {
+        if (
+          token !== playbackToken
+        ) {
+          return;
+        }
+
+        if (
+          item.startAt > 0 &&
+          item.startAt < video.duration
+        ) {
+          video.currentTime =
+            item.startAt;
+        }
+      },
+      {
+        once: true
+      }
+    );
+
+    video.addEventListener(
+      "ended",
+      finishItem,
+      {
+        once: true
+      }
+    );
+
+    video.addEventListener(
+      "error",
+      () => {
+        if (
+          token !== playbackToken
+        ) {
+          return;
+        }
+
+        console.error(
+          "Countdown video failed:",
+          video.error,
+          video.currentSrc
+        );
+
+        currentTimer =
+          window.setTimeout(
+            finishItem,
+            3000
+          );
+      },
+      {
+        once: true
+      }
+    );
+
+    if (
+      item.endAt >
+      item.startAt
+    ) {
+      const checkEndTime = () => {
+        if (
+          token !== playbackToken
+        ) {
+          video.removeEventListener(
+            "timeupdate",
+            checkEndTime
+          );
+
+          return;
+        }
+
+        if (
+          video.currentTime >=
+          item.endAt
+        ) {
+          video.removeEventListener(
+            "timeupdate",
+            checkEndTime
+          );
+
+          finishItem();
+        }
+      };
+
+      video.addEventListener(
+        "timeupdate",
+        checkEndTime
+      );
+    }
+
+    /*
+     * Use a duration timer only when the admin
+     * does not want the complete video duration.
+     */
+    if (
+      settings.clipUsesFullDuration !==
+      true
+    ) {
+      currentTimer =
+        window.setTimeout(
+          finishItem,
+          item.durationMs
+        );
+    }
+
+    video.play().catch(async (error) => {
+      console.warn(
+        "Initial video playback failed:",
+        error
+      );
+
+      /*
+       * Retry muted if autoplay with sound
+       * was rejected.
+       */
+      video.muted = true;
+      video.volume = 0;
+
+      try {
+        await video.play();
+      } catch (retryError) {
+        console.error(
+          "Muted playback also failed:",
+          retryError
+        );
+
+        currentTimer =
+          window.setTimeout(
+            finishItem,
+            3000
+          );
+      }
+    });
+  });
+}
   function refreshPlaylist(
     force = false
   ) {

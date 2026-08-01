@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1.0">
+<title>Rivals Gauntlet | Countdown</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#080817;
+  --ink2:#111126;
+  --text:#fff;
+  --soft:#d8d5e4;
+  --muted:#9893aa;
+  --violet:#a56cff;
+  --violet2:#d5b8ff;
+  --blue:#69c8ff;
+  --cyan:#83f1ff;
+  --pink:#ff78c7;
+  --orange:#ffb06a;
+  --green:#67efb1;
+  --yellow:#ffd77a;
+  --red:#ff728f;
+  --glass:rgba(12,13,32,.58);
+  --line:rgba(255,255,255,.13);
+  --progress:0deg;
+}
+*{box-sizing:border-box}
+html,body{width:1920px;height:1080px;margin:0;overflow:hidden;background:#070712}
+body{font-family:"Rajdhani",Arial,sans-serif;color:var(--text)}
+.stage{
+  position:relative;width:1920px;height:1080px;overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(circle at 50% 43%,rgba(255,255,255,.12),transparent 10%),
+    radial-gradient(circle at 14% 18%,rgba(83,170,255,.42),transparent 27%),
+    radial-gradient(circle at 82% 18%,rgba(255,111,184,.34),transparent 29%),
+    radial-gradient(circle at 52% 100%,rgba(155,91,255,.42),transparent 38%),
+    linear-gradient(145deg,#151539 0%,#0d0c24 50%,#070712 100%);
+}
+.stage::before{
+  content:"";position:absolute;inset:-18%;z-index:-7;
+  background:
+    radial-gradient(ellipse at 8% 34%,rgba(255,255,255,.75),transparent 18%),
+    radial-gradient(ellipse at 28% 12%,rgba(105,200,255,.72),transparent 22%),
+    radial-gradient(ellipse at 67% 20%,rgba(255,120,199,.56),transparent 23%),
+    radial-gradient(ellipse at 95% 56%,rgba(255,176,106,.52),transparent 21%),
+    radial-gradient(ellipse at 45% 83%,rgba(165,108,255,.65),transparent 28%);
+  filter:blur(52px);opacity:.62;animation:cloudDrift 24s ease-in-out infinite alternate;
+}
+.stage::after{
+  content:"";position:absolute;inset:-28%;z-index:-6;
+  background:conic-gradient(from 210deg at 50% 50%,transparent,rgba(105,200,255,.24),transparent 22%,rgba(255,120,199,.23),transparent 48%,rgba(255,176,106,.18),transparent 72%,rgba(165,108,255,.27),transparent);
+  filter:blur(30px);animation:energyTurn 38s linear infinite;
+}
+.grid{position:absolute;inset:0;z-index:-5;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:90px 90px;mask-image:radial-gradient(circle at center,black,transparent 76%)}
+.shard{position:absolute;z-index:-3;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(255,255,255,.05),transparent);transform:rotate(35deg);filter:drop-shadow(0 0 20px rgba(126,110,255,.14))}
+.shard.one{width:380px;height:380px;left:-160px;top:260px;animation:floatA 18s ease-in-out infinite alternate}
+.shard.two{width:520px;height:520px;right:-220px;top:100px;animation:floatB 22s ease-in-out infinite alternate}
+.shard.three{width:230px;height:230px;right:300px;bottom:-130px;opacity:.35;animation:floatA 26s ease-in-out infinite alternate-reverse}
+.frame{position:absolute;inset:26px;z-index:30;pointer-events:none;border:1px solid rgba(255,255,255,.11);clip-path:polygon(0 0,18% 0,19% 6px,81% 6px,82% 0,100% 0,100% 28%,calc(100% - 6px) 29%,calc(100% - 6px) 71%,100% 72%,100% 100%,82% 100%,81% calc(100% - 6px),19% calc(100% - 6px),18% 100%,0 100%,0 72%,6px 71%,6px 29%,0 28%)}
+
+.topbar{position:absolute;left:54px;right:54px;top:38px;z-index:40;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px}
+.brand{display:flex;align-items:center;gap:15px}
+.mark{position:relative;width:58px;height:58px;display:grid;place-items:center;clip-path:polygon(16% 0,84% 0,100% 16%,100% 84%,84% 100%,16% 100%,0 84%,0 16%);background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(105,200,255,.12) 42%,rgba(165,108,255,.34));font-size:21px;font-weight:800;box-shadow:0 0 28px rgba(105,200,255,.22)}
+.brand-copy span,.brand-copy strong{display:block}
+.brand-copy span{color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.brand-copy strong{max-width:680px;margin-top:3px;overflow:hidden;font-size:24px;letter-spacing:.055em;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.top-line{height:1px;background:linear-gradient(90deg,rgba(105,200,255,.52),rgba(255,120,199,.26),transparent)}
+.connection{min-height:36px;display:flex;align-items:center;gap:9px;padding:0 14px;border:1px solid rgba(255,215,122,.28);border-radius:999px;background:rgba(9,10,24,.5);color:var(--yellow);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(12px)}
+.connection.online{color:var(--green);border-color:rgba(103,239,177,.32)}
+.connection.error{color:var(--red);border-color:rgba(255,114,143,.35)}
+.connection-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
+
+.broadcast-layout{position:absolute;left:54px;right:54px;top:120px;bottom:88px;z-index:10;display:grid;grid-template-columns:270px minmax(0,1fr) 270px;gap:22px}
+.support-rail{min-width:0;display:grid;grid-template-rows:minmax(0,1fr) 190px;gap:16px}
+.side-panel,.side-cta,.countdown-zone,.info-shell{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(145deg,rgba(15,18,45,.66),rgba(9,9,24,.54));backdrop-filter:blur(20px);box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.side-panel,.side-cta{clip-path:polygon(15px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 15px)}
+.side-panel::before,.side-cta::before,.countdown-zone::before,.info-shell::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,rgba(105,200,255,.18),transparent 34%,rgba(255,120,199,.12) 70%,transparent);opacity:.7}
+.panel-heading{position:relative;z-index:2;min-height:60px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 17px;border-bottom:1px solid rgba(255,255,255,.07)}
+.panel-heading span,.panel-heading strong{display:block}
+.panel-heading span{color:var(--cyan);font-size:8px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+.panel-heading strong{margin-top:3px;overflow:hidden;font-size:13px;letter-spacing:.05em;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.panel-heading em{color:var(--muted);font-size:8px;font-style:normal;font-weight:800;text-transform:uppercase}
+.support-list{position:relative;z-index:2;height:calc(100% - 60px);display:flex;flex-direction:column;padding:8px}
+.support-row{min-height:68px;display:grid;grid-template-columns:24px 38px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border-bottom:1px solid rgba(255,255,255,.055)}
+.support-row:last-child{border-bottom:0}
+.support-row.featured{background:linear-gradient(90deg,rgba(105,200,255,.08),transparent)}
+.support-rank{color:var(--cyan);font-size:10px;font-weight:800;text-align:center}
+.support-avatar{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(105,200,255,.3);border-radius:10px;background:rgba(105,200,255,.08);font-size:12px;font-weight:800}
+.support-copy{min-width:0}.support-copy strong,.support-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.support-copy strong{font-size:13px;text-transform:uppercase}.support-copy small{margin-top:2px;color:var(--muted);font-size:8px;text-transform:uppercase}.support-amount{color:var(--violet2);font-size:12px;white-space:nowrap}
+.support-empty{flex:1;display:grid;place-items:center;padding:20px;color:var(--muted);font-size:12px;line-height:1.4;text-align:center}
+.side-cta{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:21px}
+.side-cta>*{position:relative;z-index:2}
+.side-kicker{color:var(--cyan);font-size:8px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+.side-cta h3{margin:7px 0 0;font-size:25px;line-height:.95;text-transform:uppercase}
+.side-cta p{margin:9px 0 0;color:var(--soft);font-size:11px;line-height:1.35}
+.side-url{margin-top:14px;padding:9px 10px;border:1px solid rgba(105,200,255,.22);border-radius:9px;background:rgba(105,200,255,.055);color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.07em;text-align:center;text-transform:uppercase}
+.pool-total{margin-top:7px;font-size:42px;font-weight:800;line-height:.95}
+.pool-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;color:var(--muted);font-size:9px;font-weight:700;text-transform:uppercase}
+.mini-goal{height:5px;margin-top:9px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.07)}
+.mini-goal span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink));box-shadow:0 0 14px rgba(105,200,255,.4);transition:width .7s ease}
+
+.center-stack{min-width:0;display:grid;grid-template-rows:500px minmax(0,1fr);gap:20px}
+.countdown-zone{clip-path:polygon(28px 0,calc(100% - 36px) 0,100% 34px,100% calc(100% - 28px),calc(100% - 28px) 100%,34px 100%,0 calc(100% - 34px),0 28px)}
+.countdown-zone::after{content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.06);clip-path:inherit;pointer-events:none}
+.hero{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.eyebrow{display:flex;align-items:center;gap:14px;color:var(--cyan);font-size:13px;font-weight:800;letter-spacing:.24em;text-transform:uppercase}
+.eyebrow::before,.eyebrow::after{content:"";width:90px;height:1px;background:linear-gradient(90deg,transparent,rgba(105,200,255,.62))}
+.eyebrow::after{transform:scaleX(-1)}
+.timer-system{position:relative;width:760px;height:350px;display:grid;place-items:center;margin-top:0}
+.aura{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),rgba(105,200,255,.12) 22%,rgba(165,108,255,.08) 42%,transparent 69%);filter:blur(9px);animation:breathe 5.5s ease-in-out infinite}
+.orbit{position:absolute;border-radius:50%;pointer-events:none}
+.orbit.outer{width:430px;height:430px;background:repeating-conic-gradient(from 0deg,rgba(105,200,255,.52) 0 1deg,transparent 1deg 9deg);mask:radial-gradient(circle,transparent 0 48.8%,#000 49.2% 50%,transparent 50.4%);animation:rotate 46s linear infinite;opacity:.68}
+.orbit.middle{width:365px;height:365px;background:conic-gradient(from 25deg,transparent 0 17%,rgba(255,120,199,.48) 18% 20%,transparent 21% 48%,rgba(255,255,255,.42) 49% 50%,transparent 51% 79%,rgba(105,200,255,.46) 80% 83%,transparent 84%);mask:radial-gradient(circle,transparent 0 48.5%,#000 49% 50%,transparent 50.5%);animation:rotateBack 31s linear infinite}
+.progress-ring{position:absolute;width:310px;height:310px;border-radius:50%;background:conic-gradient(from -90deg,var(--cyan) 0,var(--violet) var(--progress),rgba(255,255,255,.07) var(--progress) 360deg);mask:radial-gradient(circle,transparent 0 47.2%,#000 47.7% 50%,transparent 50.5%);filter:drop-shadow(0 0 10px rgba(105,200,255,.36))}
+.ripple{position:absolute;width:285px;height:285px;border:1px solid rgba(105,200,255,.34);border-radius:50%;opacity:0;animation:ripple 8s ease-out infinite}.ripple.two{animation-delay:4s}
+.timer-core{position:relative;z-index:4;width:540px;height:238px;display:grid;place-items:center;overflow:hidden;clip-path:polygon(24px 0,calc(100% - 28px) 0,100% 28px,100% calc(100% - 24px),calc(100% - 24px) 100%,28px 100%,0 calc(100% - 28px),0 24px);border:1px solid rgba(255,255,255,.18);background:linear-gradient(145deg,rgba(20,24,58,.9),rgba(8,8,24,.88));box-shadow:0 28px 75px rgba(0,0,0,.38),inset 0 0 50px rgba(105,200,255,.06)}
+.timer-label{position:absolute;top:22px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.timer{position:relative;z-index:3;min-width:485px;font-size:136px;font-weight:800;letter-spacing:.012em;line-height:.88;font-variant-numeric:tabular-nums;text-shadow:0 0 38px rgba(105,200,255,.24);transition:transform .16s,color .25s}.timer.tick{transform:scale(1.012)}.timer.long{font-size:90px}
+.schedule{position:relative;z-index:6;min-width:520px;margin-top:-5px;padding:11px 20px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(8,9,25,.56);color:var(--soft);font-size:18px;text-align:center;backdrop-filter:blur(10px)}
+.schedule strong{color:#fff}
+
+.info-shell{clip-path:polygon(20px 0,100% 0,100% calc(100% - 20px),calc(100% - 20px) 100%,0 100%,0 20px)}
+.info-head{position:relative;z-index:2;min-height:58px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,.07)}
+.info-head h2{margin:0;color:var(--cyan);font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+.slide-index{position:absolute;right:24px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.1em}
+.slide-progress{position:absolute;left:0;bottom:0;width:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink));box-shadow:0 0 12px rgba(105,200,255,.38)}.slide-progress.running{animation:slideProgress var(--slide-duration,10000ms) linear forwards}
+.info-body{position:relative;z-index:2;min-height:280px;display:grid;place-items:center;padding:22px 28px 26px;transition:opacity .22s,transform .28s,filter .22s}.info-body.changing{opacity:0;transform:scale(.987) translateY(7px);filter:blur(3px)}.info-body.entering{animation:infoIn .48s ease}
+
+.up-next{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);align-items:center;gap:22px;text-align:center}
+.team-block{min-width:0;min-height:120px;display:flex;flex-direction:column;justify-content:center;padding:18px 24px;border:1px solid rgba(255,255,255,.1);clip-path:polygon(15px 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,0 100%,0 15px);background:linear-gradient(145deg,rgba(105,200,255,.08),rgba(255,120,199,.035))}
+.team-block span,.team-block strong{display:block}.team-block span{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.team-block strong{margin-top:7px;overflow:hidden;font-size:32px;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.vs{width:76px;height:76px;display:grid;place-items:center;margin:auto;border:1px solid rgba(255,255,255,.17);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.11),rgba(165,108,255,.09));color:var(--violet2);font-size:20px;font-weight:800;box-shadow:0 0 28px rgba(165,108,255,.14)}
+.up-next-label{margin-top:9px;color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.round-slide{width:100%}.round-heading{display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:14px}.round-heading span{font-size:13px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.round-heading p{margin:0;color:var(--muted);font-size:12px}
+.matchups{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}.match-row{min-width:0;min-height:70px;display:grid;grid-template-columns:58px minmax(0,1fr) 34px minmax(0,1fr);align-items:center;gap:8px;padding:0 15px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025)}.match-row>span{color:var(--cyan);font-size:10px;font-weight:800}.match-row p{margin:0;overflow:hidden;color:var(--soft);font-size:17px;font-weight:700;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}.match-row strong{color:var(--muted);font-size:9px;text-align:center}
+.info-grid{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.info-item{min-width:0;min-height:138px;display:flex;flex-direction:column;justify-content:center;padding:16px;border-left:1px solid rgba(105,200,255,.3);background:linear-gradient(90deg,rgba(105,200,255,.055),transparent);text-align:center}.info-item small{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.info-item strong{margin-top:8px;overflow:hidden;font-size:22px;line-height:1.05;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}.goal{height:5px;margin-top:12px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.07)}.goal>span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink))}
+
+.prediction-card,.account-slide,.website-slide{width:100%;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:16px}
+.prediction-main,.prediction-cta,.account-copy,.account-actions,.website-copy,.website-route-grid{min-height:202px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(105,200,255,.055),rgba(255,120,199,.025))}
+.prediction-main,.account-copy,.website-copy{display:flex;flex-direction:column;justify-content:center;padding:23px 27px}
+.prediction-kicker,.account-copy span,.website-copy span{color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.17em;text-transform:uppercase}
+.prediction-main h3,.account-copy h3,.website-copy h3{margin:7px 0 0;font-size:33px;line-height:.98;text-transform:uppercase}
+.prediction-main p,.account-copy p,.website-copy p{margin:9px 0 0;color:var(--soft);font-size:15px;line-height:1.35}
+.prediction-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.prediction-pill-row span{min-height:34px;display:inline-flex;align-items:center;gap:7px;padding:0 11px;border:1px solid rgba(105,200,255,.16);background:rgba(105,200,255,.035);color:var(--soft);font-size:10px;font-weight:800;text-transform:uppercase}.prediction-pill-row b{color:var(--cyan)}
+.prediction-cta{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}.prediction-status{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--green);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.prediction-status i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}.prediction-cta strong{max-width:290px;font-size:24px;line-height:1.02;text-transform:uppercase}.prediction-cta small{margin-top:7px;color:var(--muted);font-size:10px;text-transform:uppercase}.prediction-url,.account-url{width:100%;margin-top:15px;padding:10px;border:1px solid rgba(105,200,255,.2);background:rgba(105,200,255,.045);color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.09em;text-align:center;text-transform:uppercase}
+.account-actions{display:flex;flex-direction:column;justify-content:center;padding:20px}.account-feature{display:grid;grid-template-columns:34px 1fr;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.055)}.account-feature:last-of-type{border-bottom:0}.account-feature b{width:30px;height:30px;display:grid;place-items:center;border:1px solid rgba(105,200,255,.22);background:rgba(105,200,255,.05);color:var(--cyan);font-size:9px}.account-feature strong,.account-feature small{display:block}.account-feature strong{font-size:13px;text-transform:uppercase}.account-feature small{margin-top:2px;color:var(--muted);font-size:8px;text-transform:uppercase}
+.website-route-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:14px}.website-route{display:flex;flex-direction:column;justify-content:center;padding:12px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.022)}.website-route strong,.website-route small{display:block}.website-route strong{font-size:13px;text-transform:uppercase}.website-route small{margin-top:3px;color:var(--muted);font-size:8px;text-transform:uppercase}
+
+.footer{position:absolute;left:54px;right:54px;bottom:24px;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}.footer-line{height:1px;background:linear-gradient(90deg,transparent,rgba(105,200,255,.4),rgba(255,120,199,.28))}.footer-line:last-child{transform:scaleX(-1)}.footer-brand{display:flex;align-items:center;gap:14px;white-space:nowrap}.footer-brand strong{font-size:19px;letter-spacing:.08em;text-transform:uppercase}.footer-brand span{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}.footer-brand small{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+
+.starting{position:absolute;inset:0;z-index:100;display:grid;place-items:center;visibility:hidden;opacity:0;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.16),transparent 16%),linear-gradient(145deg,rgba(20,24,58,.97),rgba(8,8,22,.99));transition:.4s}.starting.show{visibility:visible;opacity:1}.starting-content{text-align:center}.starting-mark{width:120px;height:120px;display:grid;place-items:center;margin:auto;clip-path:polygon(16% 0,84% 0,100% 16%,100% 84%,84% 100%,16% 100%,0 84%,0 16%);background:linear-gradient(145deg,var(--blue),var(--violet),var(--pink));font-size:42px;font-weight:800;box-shadow:0 0 80px rgba(105,200,255,.28)}.starting h1{margin:24px 0 0;font-size:76px;line-height:.85;text-transform:uppercase}.starting p{margin:14px 0 0;color:var(--cyan);font-size:18px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
+
+@keyframes cloudDrift{to{transform:translate3d(-85px,55px,0) scale(1.08)}}
+@keyframes energyTurn{to{transform:rotate(360deg)}}
+@keyframes floatA{to{transform:translate(55px,-35px) rotate(52deg)}}
+@keyframes floatB{to{transform:translate(-45px,48px) rotate(18deg)}}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.7}}
+@keyframes rotate{to{transform:rotate(360deg)}}
+@keyframes rotateBack{to{transform:rotate(-360deg)}}
+@keyframes ripple{0%{transform:scale(.92);opacity:0}18%{opacity:.5}100%{transform:scale(1.55);opacity:0}}
+@keyframes slideProgress{from{width:0}to{width:100%}}
+@keyframes infoIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<main id="stage" class="stage">
+  <div class="grid" aria-hidden="true"></div>
+  <div class="shard one" aria-hidden="true"></div>
+  <div class="shard two" aria-hidden="true"></div>
+  <div class="shard three" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">RG</div>
+      <div class="brand-copy">
+        <span>Rivals Gauntlet Live</span>
+        <strong id="eventName">RIVALS GAUNTLET</strong>
+      </div>
+    </div>
+    <div class="top-line" aria-hidden="true"></div>
+    <div id="connection" class="connection">
+      <span class="connection-dot"></span>
+      <span id="connectionText">Connecting</span>
+    </div>
+  </header>
+
+  <section class="broadcast-layout">
+    <aside class="support-rail">
+      <section class="side-panel">
+        <header class="panel-heading">
+          <div><span>Community Support</span><strong>Top Prize Pool Supporters</strong></div>
+          <em>All Time</em>
+        </header>
+        <div id="topSupportersList" class="support-list">
+          <div class="support-empty">Waiting for confirmed prize pool contributions.</div>
+        </div>
+      </section>
+
+      <section class="side-cta">
+        <span class="side-kicker">Live Prize Pool</span>
+        <div id="sidePrizePool" class="pool-total">$0</div>
+        <div class="pool-meta">
+          <span id="sidePoolGoalText">$0 / $250</span>
+          <span id="sidePoolPercent">0%</span>
+        </div>
+        <div class="mini-goal"><span id="sidePoolGoalFill"></span></div>
+        <div class="side-url">RIVALSGAUNTLET.COM/DONATE</div>
+      </section>
+    </aside>
+
+    <div class="center-stack">
+      <section class="countdown-zone">
+        <div class="hero">
+          <div class="eyebrow">Broadcast Begins In</div>
+          <div class="timer-system">
+            <div class="aura" aria-hidden="true"></div>
+            <div class="orbit outer" aria-hidden="true"></div>
+            <div class="orbit middle" aria-hidden="true"></div>
+            <div class="progress-ring" aria-hidden="true"></div>
+            <div class="ripple" aria-hidden="true"></div>
+            <div class="ripple two" aria-hidden="true"></div>
+            <div class="timer-core">
+              <span class="timer-label">Pre-Show Countdown</span>
+              <div id="timer" class="timer">--:--</div>
+            </div>
+          </div>
+          <div id="schedule" class="schedule">Waiting for the broadcast start time.</div>
+        </div>
+      </section>
+
+      <section class="info-shell">
+        <header class="info-head">
+          <h2 id="rotationTitle">UP NEXT</h2>
+          <span id="slideIndex" class="slide-index">01 / 07</span>
+          <span id="slideProgress" class="slide-progress"></span>
+        </header>
+        <div id="rotationBody" class="info-body"></div>
+      </section>
+    </div>
+
+    <aside class="support-rail">
+      <section class="side-panel">
+        <header class="panel-heading">
+          <div><span>Recent Activity</span><strong>Latest Prize Pool Supporters</strong></div>
+          <em>Newest</em>
+        </header>
+        <div id="recentSupportersList" class="support-list">
+          <div class="support-empty">New confirmed supporters will appear here automatically.</div>
+        </div>
+      </section>
+
+      <section class="side-cta">
+        <span class="side-kicker">Follow The Event</span>
+        <h3>Stay Connected</h3>
+        <p>View the live bracket, tournament details, predictions and official updates throughout the event.</p>
+        <div class="side-url">RIVALSGAUNTLET.COM</div>
+      </section>
+    </aside>
+  </section>
+
+  <footer class="footer">
+    <span class="footer-line"></span>
+    <div class="footer-brand">
+      <strong id="website">RIVALSGAUNTLET.COM</strong>
+      <span></span>
+      <small>Bracket • Tournament Updates • Live Predictions</small>
+    </div>
+    <span class="footer-line"></span>
+  </footer>
+
+  <section id="starting" class="starting">
+    <div class="starting-content">
+      <div class="starting-mark">RG</div>
+      <h1>Rivals Gauntlet</h1>
+      <p>Broadcast Starting</p>
+    </div>
+  </section>
+</main>
+
+<script>
+    window.addEventListener(
+      "error",
+
+      function (event) {
+        var timerElement =
+          document.getElementById("timer");
+
+        var scheduleElement =
+          document.getElementById("schedule");
+
+        var connectionElement =
+          document.getElementById("connection");
+
+        var connectionTextElement =
+          document.getElementById(
+            "connectionText"
+          );
+
+        var bodyElement =
+          document.getElementById(
+            "rotationBody"
+          );
+
+        if (connectionElement) {
+          connectionElement.classList.add(
+            "error"
+          );
+        }
+
+        if (connectionTextElement) {
+          connectionTextElement.textContent =
+            "SCRIPT ERROR";
+        }
+
+        if (timerElement) {
+          timerElement.textContent =
+            "ERROR";
+        }
+
+        if (scheduleElement) {
+          scheduleElement.textContent =
+            event.message ||
+            "The countdown script stopped.";
+        }
+
+        if (bodyElement) {
+          bodyElement.innerHTML =
+            '<div class="support-empty">' +
+
+              String(
+                event.message ||
+                "Unknown script error"
+              )
+                .replace(
+                  /&/g,
+                  "&amp;"
+                )
+                .replace(
+                  /</g,
+                  "&lt;"
+                )
+                .replace(
+                  />/g,
+                  "&gt;"
+                ) +
+
+            '</div>';
+        }
+      }
+    );
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script src="../firebase.js?v=2"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var DEFAULT_ROTATION_MS =
+        10000;
+
+      var DEFAULT_COUNTDOWN_MS =
+        15 * 60 * 1000;
+
+      var DEFAULT_STARTING_POOL =
+        60;
+
+      var DEFAULT_GOAL =
+        250;
+
+      var countdownData = {};
+      var siteData = {};
+      var donationsData = [];
+
+      var cardIndex = 0;
+      var cardTimer = null;
+      var cardSwapTimer = null;
+
+      var activeStartStamp = 0;
+      var initialRemaining = 0;
+      var lastTimerText = "";
+
+      var countdownEnded = false;
+      var countdownWasActive = false;
+
+      var stage =
+        document.getElementById(
+          "stage"
+        );
+
+      var timer =
+        document.getElementById(
+          "timer"
+        );
+
+      var schedule =
+        document.getElementById(
+          "schedule"
+        );
+
+      var eventName =
+        document.getElementById(
+          "eventName"
+        );
+
+      var website =
+        document.getElementById(
+          "website"
+        );
+
+      var rotationTitle =
+        document.getElementById(
+          "rotationTitle"
+        );
+
+      var rotationBody =
+        document.getElementById(
+          "rotationBody"
+        );
+
+      var slideIndex =
+        document.getElementById(
+          "slideIndex"
+        );
+
+      var slideProgress =
+        document.getElementById(
+          "slideProgress"
+        );
+
+      var starting =
+        document.getElementById(
+          "starting"
+        );
+
+      var connection =
+        document.getElementById(
+          "connection"
+        );
+
+      var connectionText =
+        document.getElementById(
+          "connectionText"
+        );
+
+      var topSupportersList =
+        document.getElementById(
+          "topSupportersList"
+        );
+
+      var recentSupportersList =
+        document.getElementById(
+          "recentSupportersList"
+        );
+
+      var sidePrizePool =
+        document.getElementById(
+          "sidePrizePool"
+        );
+
+      var sidePoolGoalText =
+        document.getElementById(
+          "sidePoolGoalText"
+        );
+
+      var sidePoolPercent =
+        document.getElementById(
+          "sidePoolPercent"
+        );
+
+      var sidePoolGoalFill =
+        document.getElementById(
+          "sidePoolGoalFill"
+        );
+
+      function clean(
+        value,
+        fallback
+      ) {
+        var text =
+          value == null
+            ? ""
+            : String(value).trim();
+
+        return text || fallback || "";
+      }
+
+      function escapeHtml(value) {
+        return clean(value)
+          .replace(
+            /&/g,
+            "&amp;"
+          )
+          .replace(
+            /</g,
+            "&lt;"
+          )
+          .replace(
+            />/g,
+            "&gt;"
+          )
+          .replace(
+            /"/g,
+            "&quot;"
+          )
+          .replace(
+            /'/g,
+            "&#039;"
+          );
+      }
+
+      function numberValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(value);
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function moneyValue(
+        value,
+        fallback
+      ) {
+        var parsed =
+          Number(
+            String(
+              value == null
+                ? ""
+                : value
+            ).replace(
+              /[^0-9.-]/g,
+              ""
+            )
+          );
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : Number(
+              fallback || 0
+            );
+      }
+
+      function formatMoney(
+        value,
+        showCents
+      ) {
+        return new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits:
+              showCents
+                ? 2
+                : 0,
+
+            maximumFractionDigits:
+              showCents
+                ? 2
+                : 0
+          }
+        ).format(
+          Math.max(
+            0,
+            numberValue(value)
+          )
+        );
+      }
+
+      function parseTimestamp(value) {
+        if (!value) {
+          return 0;
+        }
+
+        if (
+          typeof value === "number" &&
+          Number.isFinite(value)
+        ) {
+          return value;
+        }
+
+        var numeric =
+          Number(value);
+
+        if (
+          Number.isFinite(numeric) &&
+          numeric > 0
+        ) {
+          return numeric;
+        }
+
+        var parsed =
+          new Date(value).getTime();
+
+        return Number.isFinite(parsed)
+          ? parsed
+          : 0;
+      }
+
+      function initials(value) {
+        var parts =
+          clean(
+            value,
+            "RG"
+          )
+            .split(/\s+/)
+            .filter(Boolean);
+
+        if (!parts.length) {
+          return "RG";
+        }
+
+        if (parts.length === 1) {
+          return parts[0]
+            .slice(0, 2)
+            .toUpperCase();
+        }
+
+        return (
+          (
+            parts[0][0] ||
+            ""
+          ) +
+          (
+            parts[
+              parts.length - 1
+            ][0] ||
+            ""
+          )
+        ).toUpperCase();
+      }
+
+      function relativeTime(timestamp) {
+        var value =
+          numberValue(timestamp);
+
+        if (!value) {
+          return "Recently";
+        }
+
+        var difference =
+          Date.now() - value;
+
+        var absolute =
+          Math.abs(difference);
+
+        if (
+          absolute <
+          60 * 1000
+        ) {
+          return "Just now";
+        }
+
+        if (
+          absolute <
+          60 * 60 * 1000
+        ) {
+          return (
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  60 * 1000
+                )
+              )
+            ) +
+            "m ago"
+          );
+        }
+
+        if (
+          absolute <
+          24 * 60 * 60 * 1000
+        ) {
+          return (
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  60 *
+                  60 *
+                  1000
+                )
+              )
+            ) +
+            "h ago"
+          );
+        }
+
+        if (
+          absolute <
+          7 *
+          24 *
+          60 *
+          60 *
+          1000
+        ) {
+          return (
+            Math.max(
+              1,
+              Math.round(
+                absolute /
+                (
+                  24 *
+                  60 *
+                  60 *
+                  1000
+                )
+              )
+            ) +
+            "d ago"
+          );
+        }
+
+        return new Intl.DateTimeFormat(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric"
+          }
+        ).format(
+          new Date(value)
+        );
+      }
+
+      function normalizeDonations(raw) {
+        return Object.keys(
+          raw || {}
+        )
+          .map(
+            function (id) {
+              var record =
+                raw[id] || {};
+
+              var name =
+                clean(
+                  record.name ||
+                  record.displayName ||
+                  record.donorName ||
+                  record.fromName ||
+                  record.from_name,
+                  "Anonymous"
+                );
+
+              return {
+                id: id,
+                name: name,
+
+                amount:
+                  moneyValue(
+                    record.amount
+                  ),
+
+                message:
+                  clean(
+                    record.message
+                  ),
+
+                createdAt:
+                  parseTimestamp(
+                    record.createdAt ||
+                    record.timestamp ||
+                    record.receivedAt ||
+                    record.date
+                  ),
+
+                uid:
+                  clean(
+                    record.uid ||
+                    record.userId
+                  )
+              };
+            }
+          )
+          .filter(
+            function (record) {
+              return record.amount > 0;
+            }
+          )
+          .sort(
+            function (
+              first,
+              second
+            ) {
+              return (
+                second.createdAt -
+                first.createdAt
+              );
+            }
+          );
+      }
+
+      function getStartTime() {
+        var now =
+          Date.now();
+
+        var values = [
+          countdownData.startTime,
+          countdownData.countdownDate,
+          siteData.countdownDate,
+          countdownData.startTimeLocal
+        ];
+
+        var index;
+        var stamp;
+
+        for (
+          index = 0;
+          index < values.length;
+          index += 1
+        ) {
+          stamp =
+            parseTimestamp(
+              values[index]
+            );
+
+          if (stamp > now) {
+            return stamp;
+          }
+        }
+
+        for (
+          index = 0;
+          index < values.length;
+          index += 1
+        ) {
+          stamp =
+            parseTimestamp(
+              values[index]
+            );
+
+          if (
+            stamp > 0 &&
+            now - stamp >= 0 &&
+            now - stamp <=
+              10 * 60 * 1000
+          ) {
+            return stamp;
+          }
+        }
+
+        return 0;
+      }
+
+      function getEventName() {
+        return clean(
+          countdownData.eventName ||
+          siteData.eventName,
+          "RIVALS GAUNTLET"
+        );
+      }
+
+      function getWebsite() {
+        var follow =
+          countdownData.follow || {};
+
+        return clean(
+          countdownData.website ||
+          follow.website ||
+          siteData.websiteUrl ||
+          siteData.website,
+          "RIVALSGAUNTLET.COM"
+        )
+          .replace(
+            /^https?:\/\//i,
+            ""
+          )
+          .replace(
+            /^www\./i,
+            ""
+          )
+          .replace(
+            /\/+$/,
+            ""
+          )
+          .toUpperCase();
+      }
+
+      function getTeam(number) {
+        return clean(
+          siteData[
+            "team" + number
+          ],
+          "TEAM " + number
+        );
+      }
+
+      function getMatchups() {
+        var matchups =
+          countdownData.matchups || {};
+
+        return [
+          {
+            label:
+              clean(
+                matchups.match1Label,
+                "QF1"
+              ),
+
+            teamA:
+              clean(
+                matchups.match1A,
+                getTeam(1)
+              ),
+
+            teamB:
+              clean(
+                matchups.match1B,
+                getTeam(2)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match2Label,
+                "QF2"
+              ),
+
+            teamA:
+              clean(
+                matchups.match2A,
+                getTeam(3)
+              ),
+
+            teamB:
+              clean(
+                matchups.match2B,
+                getTeam(4)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match3Label,
+                "QF3"
+              ),
+
+            teamA:
+              clean(
+                matchups.match3A,
+                getTeam(5)
+              ),
+
+            teamB:
+              clean(
+                matchups.match3B,
+                getTeam(6)
+              )
+          },
+
+          {
+            label:
+              clean(
+                matchups.match4Label,
+                "QF4"
+              ),
+
+            teamA:
+              clean(
+                matchups.match4A,
+                getTeam(7)
+              ),
+
+            teamB:
+              clean(
+                matchups.match4B,
+                getTeam(8)
+              )
+          }
+        ];
+      }
+
+      function donationTotals() {
+        var starting =
+          Math.max(
+            0,
+
+            moneyValue(
+              siteData.startingPrizePool,
+
+              moneyValue(
+                siteData.prizePool,
+                DEFAULT_STARTING_POOL
+              )
+            )
+          );
+
+        var community =
+          donationsData.reduce(
+            function (
+              sum,
+              donation
+            ) {
+              return (
+                sum +
+                donation.amount
+              );
+            },
+            0
+          );
+
+        var current =
+          starting + community;
+
+        var goal =
+          Math.max(
+            1,
+
+            moneyValue(
+              siteData.donationGoal,
+              DEFAULT_GOAL
+            )
+          );
+
+        var percent =
+          Math.max(
+            0,
+
+            Math.min(
+              100,
+
+              Math.round(
+                (
+                  current /
+                  goal
+                ) *
+                100
+              )
+            )
+          );
+
+        return {
+          starting: starting,
+          community: community,
+          current: current,
+          goal: goal,
+          percent: percent
+        };
+      }
+
+      function groupedSupporters() {
+        var map = {};
+
+        donationsData.forEach(
+          function (donation) {
+            var key =
+              donation.uid
+                ? "uid:" +
+                  donation.uid
+                : "name:" +
+                  donation.name
+                    .toLowerCase();
+
+            if (!map[key]) {
+              map[key] = {
+                name:
+                  donation.name,
+
+                total: 0,
+                count: 0,
+                latest: 0
+              };
+            }
+
+            map[key].total +=
+              donation.amount;
+
+            map[key].count += 1;
+
+            map[key].latest =
+              Math.max(
+                map[key].latest,
+                donation.createdAt
+              );
+          }
+        );
+
+        return Object.keys(map)
+          .map(
+            function (key) {
+              return map[key];
+            }
+          )
+          .sort(
+            function (
+              first,
+              second
+            ) {
+              return (
+                second.total -
+                first.total ||
+                second.latest -
+                first.latest
+              );
+            }
+          )
+          .slice(0, 6);
+      }
+
+      function renderSupporterPanels() {
+        var top =
+          groupedSupporters();
+
+        var recent =
+          donationsData.slice(
+            0,
+            6
+          );
+
+        var totals =
+          donationTotals();
+
+        sidePrizePool.textContent =
+          formatMoney(
+            totals.current,
+            false
+          );
+
+        sidePoolGoalText.textContent =
+          formatMoney(
+            totals.current,
+            false
+          ) +
+          " / " +
+          formatMoney(
+            totals.goal,
+            false
+          );
+
+        sidePoolPercent.textContent =
+          totals.percent + "%";
+
+        sidePoolGoalFill.style.width =
+          totals.percent + "%";
+
+        if (!top.length) {
+          topSupportersList.innerHTML =
+            '<div class="support-empty">' +
+              'Be the first supporter featured on the broadcast leaderboard.' +
+            '</div>';
+        } else {
+          topSupportersList.innerHTML =
+            top
+              .map(
+                function (
+                  supporter,
+                  index
+                ) {
+                  return (
+                    '<article class="support-row' +
+                      (
+                        index === 0
+                          ? ' featured'
+                          : ''
+                      ) +
+                    '">' +
+
+                      '<span class="support-rank">' +
+                        '#' +
+                        (
+                          index + 1
+                        ) +
+                      '</span>' +
+
+                      '<span class="support-avatar">' +
+                        escapeHtml(
+                          initials(
+                            supporter.name
+                          )
+                        ) +
+                      '</span>' +
+
+                      '<div class="support-copy">' +
+
+                        '<strong>' +
+                          escapeHtml(
+                            supporter.name
+                          ) +
+                        '</strong>' +
+
+                        '<small>' +
+                          supporter.count +
+                          (
+                            supporter.count === 1
+                              ? ' contribution'
+                              : ' contributions'
+                          ) +
+                        '</small>' +
+
+                      '</div>' +
+
+                      '<strong class="support-amount">' +
+                        escapeHtml(
+                          formatMoney(
+                            supporter.total,
+                            false
+                          )
+                        ) +
+                      '</strong>' +
+
+                    '</article>'
+                  );
+                }
+              )
+              .join("");
+        }
+
+        if (!recent.length) {
+          recentSupportersList.innerHTML =
+            '<div class="support-empty">' +
+              'New confirmed supporters will appear here automatically.' +
+            '</div>';
+        } else {
+          recentSupportersList.innerHTML =
+            recent
+              .map(
+                function (donation) {
+                  return (
+                    '<article class="support-row">' +
+
+                      '<span class="support-rank">' +
+                        '+' +
+                      '</span>' +
+
+                      '<span class="support-avatar">' +
+                        escapeHtml(
+                          initials(
+                            donation.name
+                          )
+                        ) +
+                      '</span>' +
+
+                      '<div class="support-copy">' +
+
+                        '<strong>' +
+                          escapeHtml(
+                            donation.name
+                          ) +
+                        '</strong>' +
+
+                        '<small>' +
+                          escapeHtml(
+                            relativeTime(
+                              donation.createdAt
+                            )
+                          ) +
+                        '</small>' +
+
+                      '</div>' +
+
+                      '<strong class="support-amount">' +
+                        '+' +
+                        escapeHtml(
+                          formatMoney(
+                            donation.amount,
+                            false
+                          )
+                        ) +
+                      '</strong>' +
+
+                    '</article>'
+                  );
+                }
+              )
+              .join("");
+        }
+      }
+
+      function baseRotationDuration() {
+        return Math.max(
+          9000,
+
+          numberValue(
+            countdownData.rotationMs,
+            DEFAULT_ROTATION_MS
+          )
+        );
+      }
+
+      function makeUpNextCard() {
+        var matches =
+          getMatchups();
+
+        var first =
+          matches[0];
+
+        var next =
+          countdownData.upNext || {};
+
+        return {
+          title: "UP NEXT",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              11000
+            ),
+
+          html:
+            '<div class="up-next">' +
+
+              '<div class="team-block">' +
+                '<span>Team A</span>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      next.teamA,
+                      first.teamA
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div>' +
+                '<div class="vs">' +
+                  'VS' +
+                '</div>' +
+
+                '<div class="up-next-label">' +
+                  escapeHtml(
+                    clean(
+                      next.label,
+                      first.label
+                    )
+                  ) +
+                '</div>' +
+              '</div>' +
+
+              '<div class="team-block">' +
+                '<span>Team B</span>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      next.teamB,
+                      first.teamB
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makePredictionsCard() {
+        var currentMatch =
+          clean(
+            siteData.currentMatch
+          ).toLowerCase();
+
+        var bracketOpen =
+          !currentMatch ||
+          currentMatch.indexOf(
+            "no match"
+          ) !== -1;
+
+        return {
+          title:
+            "PREDICTION CENTER",
+
+          duration:
+            16000,
+
+          html:
+            '<div class="prediction-card">' +
+
+              '<div class="prediction-main">' +
+
+                '<div class="prediction-kicker">' +
+                  'Bracket Pick’em + Live Predictions' +
+                '</div>' +
+
+                '<h3>' +
+                  'Make Every Match Matter' +
+                '</h3>' +
+
+                '<p>' +
+                  'Fill out your tournament bracket before the first match goes live, then return throughout the entire event for live predictions that open before upcoming matches.' +
+                '</p>' +
+
+                '<div class="prediction-pill-row">' +
+                  '<span><b>01</b>Predict</span>' +
+                  '<span><b>02</b>Earn RP</span>' +
+                  '<span><b>03</b>Increase Predictor Ranking</span>' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="prediction-cta">' +
+
+                '<span class="prediction-status">' +
+                  '<i></i>' +
+
+                  (
+                    bracketOpen
+                      ? 'Bracket Open'
+                      : 'Live Predictions Active'
+                  ) +
+
+                '</span>' +
+
+                '<strong>' +
+
+                  (
+                    bracketOpen
+                      ? 'Fill Out Your Bracket'
+                      : 'Return For Live Predictions'
+                  ) +
+
+                '</strong>' +
+
+                '<small>' +
+
+                  (
+                    bracketOpen
+                      ? 'Submit before the first match begins'
+                      : 'Predictions open before upcoming matches'
+                  ) +
+
+                '</small>' +
+
+                '<div class="prediction-url">' +
+                  'RIVALSGAUNTLET.COM/PREDICTIONS' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeAccountCard() {
+        return {
+          title:
+            "CREATE YOUR RG ACCOUNT",
+
+          duration:
+            14500,
+
+          html:
+            '<div class="account-slide">' +
+
+              '<div class="account-copy">' +
+
+                '<span>' +
+                  'Your Rivals Gauntlet Career Starts Here' +
+                '</span>' +
+
+                '<h3>' +
+                  'One Account. Every Tournament.' +
+                '</h3>' +
+
+                '<p>' +
+                  'Create a free account to join predictions, build your Predictor Rank and keep your tournament activity connected to one profile.' +
+                '</p>' +
+
+              '</div>' +
+
+              '<div class="account-actions">' +
+
+                '<div class="account-feature">' +
+                  '<b>RP</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Track Your Predictions' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Accuracy, streaks and tournament picks' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-feature">' +
+                  '<b>PR</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Build Predictor Rank' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Track accuracy, streaks and career progress' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-feature">' +
+                  '<b>RG</b>' +
+
+                  '<div>' +
+                    '<strong>' +
+                      'Keep Your History' +
+                    '</strong>' +
+
+                    '<small>' +
+                      'Your profile follows every Rivals Gauntlet event' +
+                    '</small>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="account-url">' +
+                  'RIVALSGAUNTLET.COM/LOGIN' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeMatchupsCard() {
+        var rows =
+          getMatchups()
+            .map(
+              function (match) {
+                return (
+                  '<div class="match-row">' +
+
+                    '<span>' +
+                      escapeHtml(
+                        match.label
+                      ) +
+                    '</span>' +
+
+                    '<p>' +
+                      escapeHtml(
+                        match.teamA
+                      ) +
+                    '</p>' +
+
+                    '<strong>' +
+                      'VS' +
+                    '</strong>' +
+
+                    '<p>' +
+                      escapeHtml(
+                        match.teamB
+                      ) +
+                    '</p>' +
+
+                  '</div>'
+                );
+              }
+            )
+            .join("");
+
+        return {
+          title:
+            "OPENING ROUND",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              12000
+            ),
+
+          html:
+            '<div class="round-slide">' +
+
+              '<div class="round-heading">' +
+
+                '<span>' +
+                  'Quarterfinal Matchups' +
+                '</span>' +
+
+                '<p>' +
+                  'Winners advance to the Semifinals • Grand Finals follows live' +
+                '</p>' +
+
+              '</div>' +
+
+              '<div class="matchups">' +
+                rows +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeFormatCard() {
+        var format =
+          countdownData.format || {};
+
+        var formatType =
+          clean(
+            siteData.formatType,
+            "8_single_elim"
+          );
+
+        var teamCount =
+          formatType.indexOf(
+            "16"
+          ) === 0
+            ? "16 TEAMS"
+            : "8 TEAMS";
+
+        return {
+          title:
+            "TOURNAMENT FORMAT",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              10500
+            ),
+
+          html:
+            '<div class="info-grid">' +
+
+              '<div class="info-item">' +
+                '<small>Format</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.type,
+                      "Single Elimination"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Field</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.teams,
+                      teamCount
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Early Rounds</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.earlyRounds,
+                      "BO3"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>Grand Finals</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    clean(
+                      format.grandFinals,
+                      "BO5"
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makePrizeCard() {
+        var totals =
+          donationTotals();
+
+        return {
+          title:
+            "LIVE PRIZE POOL",
+
+          duration:
+            Math.max(
+              baseRotationDuration(),
+              12000
+            ),
+
+          html:
+            '<div class="info-grid">' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Current Prize Pool' +
+                '</small>' +
+
+                '<strong>' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.current,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Community Added' +
+                '</small>' +
+
+                '<strong>' +
+                  '+' +
+                  escapeHtml(
+                    formatMoney(
+                      totals.community,
+                      false
+                    )
+                  ) +
+                '</strong>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Community Goal' +
+                '</small>' +
+
+                '<strong>' +
+                  totals.percent +
+                  '%' +
+                '</strong>' +
+
+                '<div class="goal">' +
+                  '<span style="width:' +
+                    totals.percent +
+                    '%">' +
+                  '</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="info-item">' +
+                '<small>' +
+                  'Add To The Prize Pool' +
+                '</small>' +
+
+                '<strong>' +
+                  'RIVALSGAUNTLET.COM/DONATE' +
+                '</strong>' +
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function makeWebsiteCard() {
+        return {
+          title:
+            "RIVALSGAUNTLET.COM",
+
+          duration:
+            13500,
+
+          html:
+            '<div class="website-slide">' +
+
+              '<div class="website-copy">' +
+
+                '<span>' +
+                  'The Home Of Rivals Gauntlet' +
+                '</span>' +
+
+                '<h3>' +
+                  'Follow The Entire Tournament' +
+                '</h3>' +
+
+                '<p>' +
+                  'Visit the website for the live bracket, tournament information, predictions, prize pool updates, official posts and your personal RG account.' +
+                '</p>' +
+
+                '<div class="account-url">' +
+                  'RIVALSGAUNTLET.COM' +
+                '</div>' +
+
+              '</div>' +
+
+              '<div class="website-route-grid">' +
+
+                '<div class="website-route">' +
+                  '<strong>Predictions</strong>' +
+                  '<small>' +
+                    'Bracket Pick’em + Live Questions' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Tournament</strong>' +
+                  '<small>' +
+                    'Bracket, teams and event information' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Prize Pool</strong>' +
+                  '<small>' +
+                    'Live community contribution tracking' +
+                  '</small>' +
+                '</div>' +
+
+                '<div class="website-route">' +
+                  '<strong>Account Center</strong>' +
+                  '<small>' +
+                    'Profile, rank and tournament history' +
+                  '</small>' +
+                '</div>' +
+
+              '</div>' +
+
+            '</div>'
+        };
+      }
+
+      function getCards() {
+        return [
+          makeUpNextCard(),
+          makePredictionsCard(),
+          makeAccountCard(),
+          makeMatchupsCard(),
+          makeFormatCard(),
+          makePrizeCard(),
+          makeWebsiteCard()
+        ];
+      }
+
+      function restartSlideProgress(
+        duration
+      ) {
+        slideProgress.classList.remove(
+          "running"
+        );
+
+        slideProgress.style.setProperty(
+          "--slide-duration",
+          duration + "ms"
+        );
+
+        void slideProgress.offsetWidth;
+
+        slideProgress.classList.add(
+          "running"
+        );
+      }
+
+      function scheduleNextCard(
+        duration
+      ) {
+        clearTimeout(cardTimer);
+
+        cardTimer =
+          setTimeout(
+            function () {
+              renderCard(
+                cardIndex + 1,
+                true,
+                true
+              );
+            },
+            duration
+          );
+      }
+
+      function renderCard(
+        requestedIndex,
+        animate,
+        resetTimer
+      ) {
+        var cards =
+          getCards();
+
+        if (!cards.length) {
+          return;
+        }
+
+        cardIndex =
+          (
+            (
+              requestedIndex %
+              cards.length
+            ) +
+            cards.length
+          ) %
+          cards.length;
+
+        var card =
+          cards[cardIndex];
+
+        function commit() {
+          rotationTitle.textContent =
+            card.title;
+
+          rotationBody.innerHTML =
+            card.html;
+
+          slideIndex.textContent =
+            String(
+              cardIndex + 1
+            ).padStart(
+              2,
+              "0"
+            ) +
+            " / " +
+            String(
+              cards.length
+            ).padStart(
+              2,
+              "0"
+            );
+
+          rotationBody.classList.remove(
+            "changing",
+            "entering"
+          );
+
+          void rotationBody.offsetWidth;
+
+          rotationBody.classList.add(
+            "entering"
+          );
+
+          if (
+            resetTimer !== false
+          ) {
+            restartSlideProgress(
+              card.duration
+            );
+
+            scheduleNextCard(
+              card.duration
+            );
+          }
+        }
+
+        clearTimeout(
+          cardSwapTimer
+        );
+
+        if (
+          animate === false ||
+          !rotationBody.innerHTML
+        ) {
+          commit();
+          return;
+        }
+
+        rotationBody.classList.add(
+          "changing"
+        );
+
+        cardSwapTimer =
+          setTimeout(
+            commit,
+            230
+          );
+      }
+
+      function formatCountdown(ms) {
+        var totalSeconds =
+          Math.max(
+            0,
+            Math.ceil(
+              ms / 1000
+            )
+          );
+
+        var hours =
+          Math.floor(
+            totalSeconds / 3600
+          );
+
+        var minutes =
+          Math.floor(
+            (
+              totalSeconds %
+              3600
+            ) /
+            60
+          );
+
+        var seconds =
+          totalSeconds % 60;
+
+        if (hours > 0) {
+          return (
+            String(hours)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(minutes)
+              .padStart(
+                2,
+                "0"
+              ) +
+            ":" +
+            String(seconds)
+              .padStart(
+                2,
+                "0"
+              )
+          );
+        }
+
+        return (
+          String(
+            Math.floor(
+              totalSeconds /
+              60
+            )
+          ).padStart(
+            2,
+            "0"
+          ) +
+          ":" +
+          String(seconds)
+            .padStart(
+              2,
+              "0"
+            )
+        );
+      }
+
+      function formatStartDate(stamp) {
+        try {
+          return new Intl.DateTimeFormat(
+            "en-US",
+            {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+              timeZoneName: "short"
+            }
+          ).format(
+            new Date(stamp)
+          );
+
+        } catch (error) {
+          return new Date(
+            stamp
+          ).toLocaleString();
+        }
+      }
+
+      function updateProgress(
+        remaining
+      ) {
+        var configured =
+          Math.max(
+            1000,
+
+            numberValue(
+              countdownData.durationMs ||
+              countdownData.countdownDurationMs,
+              DEFAULT_COUNTDOWN_MS
+            )
+          );
+
+        var duration =
+          Math.max(
+            configured,
+            initialRemaining || 0
+          );
+
+        var elapsed =
+          Math.max(
+            0,
+
+            duration -
+            Math.max(
+              0,
+              remaining
+            )
+          );
+
+        var ratio =
+          Math.max(
+            0,
+
+            Math.min(
+              1,
+              elapsed /
+              duration
+            )
+          );
+
+        stage.style.setProperty(
+          "--progress",
+
+          Math.round(
+            ratio * 360
+          ) +
+          "deg"
+        );
+      }
+
+      function updateTimer() {
+        var start =
+          getStartTime();
+
+        if (!start) {
+          activeStartStamp = 0;
+          initialRemaining = 0;
+          lastTimerText = "";
+          countdownEnded = false;
+          countdownWasActive = false;
+
+          timer.textContent =
+            "--:--";
+
+          timer.classList.remove(
+            "long",
+            "tick"
+          );
+
+          schedule.textContent =
+            "Waiting for the broadcast start time.";
+
+          starting.classList.remove(
+            "active"
+          );
+
+          stage.classList.remove(
+            "final-ten"
+          );
+
+          stage.style.setProperty(
+            "--progress",
+            "0deg"
+          );
+
+          return;
+        }
+
+        var now =
+          Date.now();
+
+        var remaining =
+          start - now;
+
+        if (
+          activeStartStamp !== start
+        ) {
+          activeStartStamp =
+            start;
+
+          initialRemaining =
+            Math.max(
+              0,
+              remaining
+            );
+
+          lastTimerText = "";
+          countdownEnded = false;
+
+          countdownWasActive =
+            remaining > 0;
+
+          starting.classList.remove(
+            "active"
+          );
+        }
+
+        if (remaining > 0) {
+          countdownWasActive = true;
+        }
+
+        var text =
+          formatCountdown(
+            remaining
+          );
+
+        if (
+          text !==
+          lastTimerText
+        ) {
+          lastTimerText =
+            text;
+
+          timer.textContent =
+            text;
+
+          timer.classList.toggle(
+            "long",
+            text.length > 5
+          );
+
+          timer.classList.remove(
+            "tick"
+          );
+
+          void timer.offsetWidth;
+
+          timer.classList.add(
+            "tick"
+          );
+
+          setTimeout(
+            function () {
+              timer.classList.remove(
+                "tick"
+              );
+            },
+            170
+          );
+        }
+
+        if (remaining > 0) {
+          schedule.innerHTML =
+            "Scheduled for <strong>" +
+            escapeHtml(
+              formatStartDate(
+                start
+              )
+            ) +
+            "</strong>";
+
+        } else {
+          schedule.textContent =
+            "The broadcast is beginning now.";
+        }
+
+        stage.classList.toggle(
+          "final-ten",
+
+          remaining > 0 &&
+          remaining <= 10000
+        );
+
+        updateProgress(
+          remaining
+        );
+
+        if (
+          remaining <= 0 &&
+          !countdownEnded &&
+          countdownWasActive
+        ) {
+          countdownEnded = true;
+
+          timer.textContent =
+            "00:00";
+
+          starting.classList.add(
+            "active"
+          );
+        }
+      }
+
+      function refresh() {
+        eventName.textContent =
+          getEventName()
+            .toUpperCase();
+
+        website.textContent =
+          getWebsite();
+
+        renderSupporterPanels();
+
+        renderCard(
+          cardIndex,
+          false,
+          false
+        );
+
+        updateTimer();
+      }
+
+      function showStartupError(
+        message
+      ) {
+        connection.classList.remove(
+          "online"
+        );
+
+        connection.classList.add(
+          "error"
+        );
+
+        connectionText.textContent =
+          "FIREBASE ERROR";
+
+        timer.textContent =
+          "ERROR";
+
+        schedule.textContent =
+          message;
+
+        rotationBody.innerHTML =
+          '<div class="support-empty">' +
+            escapeHtml(message) +
+          '</div>';
+      }
+
+      function connect() {
+        var db = null;
+
+        try {
+          connectionText.textContent =
+            "CONNECTING";
+
+          try {
+            db = database;
+
+          } catch (
+            globalDatabaseError
+          ) {
+            db = null;
+          }
+
+          if (
+            !db &&
+            typeof firebase !==
+              "undefined" &&
+            firebase.apps &&
+            firebase.apps.length > 0
+          ) {
+            db =
+              firebase.database();
+          }
+
+          if (
+            !db ||
+            typeof db.ref !==
+              "function"
+          ) {
+            throw new Error(
+              "firebase.js did not expose a usable Realtime Database connection."
+            );
+          }
+
+          db.ref(
+            ".info/connected"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              var online =
+                snapshot.val() === true;
+
+              connection.classList.toggle(
+                "online",
+                online
+              );
+
+              connection.classList.remove(
+                "error"
+              );
+
+              connectionText.textContent =
+                online
+                  ? "REALTIME CONNECTED"
+                  : "RECONNECTING";
+            },
+
+            function (error) {
+              connection.classList.add(
+                "error"
+              );
+
+              connectionText.textContent =
+                "CONNECTION ERROR";
+
+              console.error(
+                "[RG COUNTDOWN] Connection listener failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "broadcastCountdown"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              countdownData =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            function (error) {
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "COUNTDOWN READ BLOCKED"
+                  : "COUNTDOWN UNAVAILABLE";
+
+              console.error(
+                "[RG COUNTDOWN] Countdown read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "site"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              siteData =
+                snapshot.val() || {};
+
+              refresh();
+            },
+
+            function (error) {
+              connectionText.textContent =
+                error &&
+                error.code ===
+                  "PERMISSION_DENIED"
+                  ? "SITE READ BLOCKED"
+                  : "SITE UNAVAILABLE";
+
+              console.error(
+                "[RG COUNTDOWN] Site read failed:",
+                error
+              );
+            }
+          );
+
+          db.ref(
+            "donations"
+          ).on(
+            "value",
+
+            function (snapshot) {
+              donationsData =
+                normalizeDonations(
+                  snapshot.val()
+                );
+
+              renderSupporterPanels();
+
+              renderCard(
+                cardIndex,
+                false,
+                false
+              );
+            },
+
+            function (error) {
+              donationsData = [];
+
+              renderSupporterPanels();
+
+              console.warn(
+                "[RG COUNTDOWN] Donations read failed:",
+                error
+              );
+            }
+          );
+
+        } catch (error) {
+          console.error(
+            "[RG COUNTDOWN] Startup failed:",
+            error
+          );
+
+          showStartupError(
+            error.message ||
+            "Countdown startup failed."
+          );
+        }
+      }
+
+      renderSupporterPanels();
+
+      renderCard(
+        0,
+        false,
+        true
+      );
+
+      updateTimer();
+
+      setInterval(
+        updateTimer,
+        250
+      );
+
+      connect();
+    })();
+  </script>
+</body>
+</html>

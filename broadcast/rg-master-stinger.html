@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet | Master Stinger</title>
+
+  <style>
+    :root{
+      --purple:#9a72ff;
+      --purple-soft:#c6b5ff;
+      --ink:#050509;
+      --panel:#0a0910;
+
+      --enter:340ms;
+      --hold:300ms;
+      --exit:420ms;
+      --total:1200ms;
+    }
+
+    *{box-sizing:border-box}
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+      margin:0;
+      overflow:hidden;
+      background:transparent;
+    }
+
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+    }
+
+    .stinger{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      visibility:visible;
+    }
+
+    .stinger.is-finished{
+      display:none;
+    }
+
+    .panel{
+      position:absolute;
+      top:-8%;
+      width:63%;
+      height:116%;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.018),
+          transparent 28%
+        ),
+        linear-gradient(
+          180deg,
+          #11101a 0%,
+          #07070c 55%,
+          #030305 100%
+        );
+      box-shadow:
+        0 0 80px rgba(0,0,0,.75),
+        inset 0 1px 0 rgba(255,255,255,.025);
+      will-change:transform;
+    }
+
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(
+          116deg,
+          transparent 0 33%,
+          rgba(255,255,255,.014) 33.2% 33.6%,
+          transparent 33.8% 68%,
+          rgba(154,114,255,.025) 68.2% 68.6%,
+          transparent 68.8%
+        );
+      opacity:.8;
+    }
+
+    .panel.left{
+      left:-8%;
+      clip-path:polygon(0 0,83% 0,100% 50%,83% 100%,0 100%);
+      transform:translateX(-112%);
+      animation:
+        leftIn var(--enter) cubic-bezier(.18,.86,.24,1) forwards,
+        leftOut var(--exit) cubic-bezier(.65,.05,.36,1)
+        calc(var(--enter) + var(--hold)) forwards;
+    }
+
+    .panel.right{
+      right:-8%;
+      clip-path:polygon(17% 0,100% 0,100% 100%,17% 100%,0 50%);
+      transform:translateX(112%);
+      animation:
+        rightIn var(--enter) cubic-bezier(.18,.86,.24,1) forwards,
+        rightOut var(--exit) cubic-bezier(.65,.05,.36,1)
+        calc(var(--enter) + var(--hold)) forwards;
+    }
+
+    .center-slice{
+      position:absolute;
+      left:50%;
+      top:0;
+      width:118px;
+      height:100%;
+      transform:translateX(-50%) scaleX(0);
+      transform-origin:center;
+      clip-path:polygon(36% 0,100% 0,64% 100%,0 100%);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(154,114,255,.95),
+          rgba(98,62,210,.92) 45%,
+          rgba(154,114,255,.95)
+        );
+      box-shadow:
+        0 0 34px rgba(154,114,255,.56);
+      animation:
+        sliceIn 220ms ease-out 170ms forwards,
+        sliceOut 300ms ease-in 640ms forwards;
+    }
+
+    .energy{
+      position:absolute;
+      left:-18%;
+      top:48%;
+      width:136%;
+      height:4px;
+      transform:rotate(-8deg) scaleX(0);
+      transform-origin:left center;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(198,181,255,.3),
+          #fff 48%,
+          var(--purple) 52%,
+          transparent
+        );
+      filter:
+        drop-shadow(0 0 8px rgba(154,114,255,.9))
+        drop-shadow(0 0 18px rgba(154,114,255,.46));
+      animation:
+        energySweep 760ms cubic-bezier(.2,.72,.2,1) 250ms forwards;
+    }
+
+    .brand{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) scale(.82);
+      text-align:center;
+      opacity:0;
+      filter:blur(8px);
+      animation:
+        brandIn 220ms ease-out 260ms forwards,
+        brandOut 180ms ease-in 650ms forwards;
+    }
+
+    .brand strong{
+      display:block;
+      color:#f6f3ff;
+      font-size:150px;
+      font-weight:900;
+      letter-spacing:-.08em;
+      line-height:.72;
+      text-shadow:
+        0 3px 0 rgba(255,255,255,.035),
+        0 0 32px rgba(154,114,255,.22);
+    }
+
+    .brand span{
+      display:block;
+      margin-top:24px;
+      color:var(--purple-soft);
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.42em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .flash{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(255,255,255,.28),
+          rgba(154,114,255,.12) 22%,
+          transparent 52%
+        );
+      animation:
+        flash 260ms ease-out 340ms forwards;
+    }
+
+    @keyframes leftIn{
+      to{transform:translateX(0)}
+    }
+
+    @keyframes rightIn{
+      to{transform:translateX(0)}
+    }
+
+    @keyframes leftOut{
+      to{transform:translateX(-112%)}
+    }
+
+    @keyframes rightOut{
+      to{transform:translateX(112%)}
+    }
+
+    @keyframes sliceIn{
+      to{transform:translateX(-50%) scaleX(1)}
+    }
+
+    @keyframes sliceOut{
+      to{transform:translateX(-50%) scaleX(0)}
+    }
+
+    @keyframes energySweep{
+      0%{
+        transform:rotate(-8deg) scaleX(0);
+        opacity:0;
+      }
+      16%{opacity:1}
+      72%{opacity:.95}
+      100%{
+        transform:rotate(-8deg) scaleX(1);
+        opacity:0;
+      }
+    }
+
+    @keyframes brandIn{
+      to{
+        opacity:1;
+        filter:none;
+        transform:translate(-50%,-50%) scale(1);
+      }
+    }
+
+    @keyframes brandOut{
+      to{
+        opacity:0;
+        filter:blur(5px);
+        transform:translate(-50%,-50%) scale(1.04);
+      }
+    }
+
+    @keyframes flash{
+      0%{opacity:0}
+      28%{opacity:.95}
+      100%{opacity:0}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .panel,
+      .center-slice,
+      .energy,
+      .brand,
+      .flash{
+        animation:none!important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="stinger" class="stinger" aria-label="Rivals Gauntlet transition">
+    <div class="panel left"></div>
+    <div class="panel right"></div>
+
+    <div class="center-slice"></div>
+    <div class="energy"></div>
+    <div class="flash"></div>
+
+    <div class="brand">
+      <strong>RG</strong>
+      <span>Rivals Gauntlet</span>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const stinger =
+        document.getElementById("stinger");
+
+      /*
+       * Remove the transition after it has fully opened again,
+       * leaving the browser source completely transparent.
+       */
+      window.setTimeout(() => {
+        stinger.classList.add("is-finished");
+      }, 1300);
+    })();
+  </script>
+</body>
+</html>

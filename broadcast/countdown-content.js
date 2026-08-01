@@ -835,10 +835,30 @@ async function mount(html, callback) {
     transitionTimer = null;
   }
 
-  const previousLayer =
-    contentMount.querySelector(
-      ".scene-layer.is-visible"
+  /*
+   * Keep only the currently visible scene.
+   * Remove any abandoned layers left behind by
+   * interrupted Firebase updates or transitions.
+   */
+  const existingLayers =
+    Array.from(
+      contentMount.querySelectorAll(
+        ".scene-layer"
+      )
     );
+
+  const previousLayer =
+    existingLayers.find(layer => {
+      return layer.classList.contains(
+        "is-visible"
+      );
+    }) || null;
+
+  existingLayers.forEach(layer => {
+    if (layer !== previousLayer) {
+      layer.remove();
+    }
+  });
 
   const nextLayer =
     document.createElement("div");
@@ -846,13 +866,13 @@ async function mount(html, callback) {
   nextLayer.className =
     "scene-layer";
 
-  nextLayer.innerHTML = html;
+  nextLayer.innerHTML =
+    html;
 
-  /*
-   * A small loading indicator is shown only over
-   * the invisible incoming layer. The previous
-   * scene remains visible underneath.
-   */
+  contentMount.appendChild(
+    nextLayer
+  );
+
   if (
     nextLayer.querySelector(
       "video.media-main, img.media-main"
@@ -872,13 +892,9 @@ async function mount(html, callback) {
     );
   }
 
-  contentMount.appendChild(
-    nextLayer
-  );
-
   /*
-   * Let showItem attach video events and begin
-   * playback while the new layer is still hidden.
+   * Attach video events while the incoming
+   * scene remains hidden.
    */
   if (
     typeof callback === "function"
@@ -890,6 +906,14 @@ async function mount(html, callback) {
     nextLayer
   );
 
+  /*
+   * The scene may have been cancelled while
+   * its media was loading.
+   */
+  if (!nextLayer.isConnected) {
+    return;
+  }
+
   const loading =
     nextLayer.querySelector(
       ".scene-loading"
@@ -899,17 +923,21 @@ async function mount(html, callback) {
     loading.remove();
   }
 
-  /*
-   * Wait for one rendered frame before revealing
-   * the incoming scene.
-   */
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
+      if (!nextLayer.isConnected) {
+        return;
+      }
+
       nextLayer.classList.add(
         "is-visible"
       );
 
       if (previousLayer) {
+        previousLayer.classList.remove(
+          "is-visible"
+        );
+
         previousLayer.classList.add(
           "is-leaving"
         );
@@ -924,9 +952,19 @@ async function mount(html, callback) {
             previousLayer.remove();
           }
 
-          nextLayer.classList.remove(
-            "is-leaving"
-          );
+          /*
+           * Remove every remaining stale layer,
+           * leaving only the new active scene.
+           */
+          contentMount
+            .querySelectorAll(
+              ".scene-layer"
+            )
+            .forEach(layer => {
+              if (layer !== nextLayer) {
+                layer.remove();
+              }
+            });
 
           transitionTimer = null;
         }, 420);

@@ -389,121 +389,408 @@ let sceneGeneration = 0;
   }
 
   function renderSchedule() {
-    const configured =
-      settings.scheduleItems;
+  const configured =
+    settings.scheduleItems;
 
-    let items = [];
+  const upNext =
+    countdownData.upNext || {};
+
+  const matchups =
+    countdownData.matchups || {};
+
+  /*
+   * The complete tournament order.
+   * The schedule begins at the match currently set as Up Next.
+   */
+  const tournamentOrder = [
+    "R16-1",
+    "R16-2",
+    "R16-3",
+    "R16-4",
+    "R16-5",
+    "R16-6",
+    "R16-7",
+    "R16-8",
+    "QF1",
+    "QF2",
+    "QF3",
+    "QF4",
+    "SF1",
+    "SF2",
+    "GF1"
+  ];
+
+  function normalizeMatchId(value) {
+    let raw =
+      clean(value)
+        .toUpperCase()
+        .trim();
+
+    raw = raw
+      .replace(
+        /GRAND\s*FINALS?/g,
+        "GF1"
+      )
+      .replace(
+        /GRAND\s*FINAL/g,
+        "GF1"
+      )
+      .replace(
+        /\s*•\s*BO\d+/g,
+        ""
+      )
+      .replace(
+        /\s*-\s*BO\d+/g,
+        ""
+      )
+      .replace(
+        /\s+/g,
+        ""
+      );
 
     if (
-      configured &&
-      typeof configured === "object"
+      /^R16[-_]?\d$/.test(raw)
     ) {
-      items = Object
+      return raw
+        .replace("_", "-")
+        .replace(
+          /^R16(\d)$/,
+          "R16-$1"
+        );
+    }
+
+    if (/^QF\d$/.test(raw)) {
+      return raw;
+    }
+
+    if (/^SF\d$/.test(raw)) {
+      return raw;
+    }
+
+    if (/^GF\d?$/.test(raw)) {
+      return "GF1";
+    }
+
+    return raw;
+  }
+
+  function displayMatchLabel(matchId) {
+    if (matchId === "GF1") {
+      return "Grand Finals";
+    }
+
+    return matchId;
+  }
+
+  function firstValue(...values) {
+    for (const value of values) {
+      const result =
+        clean(value);
+
+      if (result) {
+        return result;
+      }
+    }
+
+    return "";
+  }
+
+  function getMatchTeams(matchId) {
+    /*
+     * Round of 16
+     */
+    if (
+      matchId.startsWith("R16-")
+    ) {
+      const matchNumber =
+        Number(
+          matchId.split("-")[1]
+        );
+
+      const firstTeamNumber =
+        (matchNumber - 1) * 2 + 1;
+
+      const secondTeamNumber =
+        firstTeamNumber + 1;
+
+      return [
+        firstValue(
+          matchups[
+            `r16${matchNumber}A`
+          ],
+          matchups[
+            `match${matchNumber}A`
+          ],
+          siteData[
+            `team${firstTeamNumber}`
+          ]
+        ) ||
+          `TEAM ${firstTeamNumber}`,
+
+        firstValue(
+          matchups[
+            `r16${matchNumber}B`
+          ],
+          matchups[
+            `match${matchNumber}B`
+          ],
+          siteData[
+            `team${secondTeamNumber}`
+          ]
+        ) ||
+          `TEAM ${secondTeamNumber}`
+      ];
+    }
+
+    /*
+     * Quarterfinals
+     */
+    if (
+      matchId.startsWith("QF")
+    ) {
+      const matchNumber =
+        Number(
+          matchId.replace(
+            "QF",
+            ""
+          )
+        );
+
+      const firstTeamNumber =
+        (matchNumber - 1) * 2 + 1;
+
+      const secondTeamNumber =
+        firstTeamNumber + 1;
+
+      return [
+        firstValue(
+          matchups[
+            `qf${matchNumber}A`
+          ],
+          matchups[
+            `match${matchNumber}A`
+          ],
+          siteData[
+            `team${firstTeamNumber}`
+          ]
+        ) ||
+          `TEAM ${firstTeamNumber}`,
+
+        firstValue(
+          matchups[
+            `qf${matchNumber}B`
+          ],
+          matchups[
+            `match${matchNumber}B`
+          ],
+          siteData[
+            `team${secondTeamNumber}`
+          ]
+        ) ||
+          `TEAM ${secondTeamNumber}`
+      ];
+    }
+
+    /*
+     * Semifinal 1
+     */
+    if (matchId === "SF1") {
+      return [
+        firstValue(
+          siteData.qf1Winner,
+          matchups.sf1A
+        ) ||
+          "WINNER QF1",
+
+        firstValue(
+          siteData.qf2Winner,
+          matchups.sf1B
+        ) ||
+          "WINNER QF2"
+      ];
+    }
+
+    /*
+     * Semifinal 2
+     */
+    if (matchId === "SF2") {
+      return [
+        firstValue(
+          siteData.qf3Winner,
+          matchups.sf2A
+        ) ||
+          "WINNER QF3",
+
+        firstValue(
+          siteData.qf4Winner,
+          matchups.sf2B
+        ) ||
+          "WINNER QF4"
+      ];
+    }
+
+    /*
+     * Grand Finals
+     */
+    if (matchId === "GF1") {
+      return [
+        firstValue(
+          siteData.sf1Winner,
+          matchups.gf1A,
+          matchups.finalA
+        ) ||
+          "WINNER SF1",
+
+        firstValue(
+          siteData.sf2Winner,
+          matchups.gf1B,
+          matchups.finalB
+        ) ||
+          "WINNER SF2"
+      ];
+    }
+
+    return [
+      "TO BE ANNOUNCED",
+      "TO BE ANNOUNCED"
+    ];
+  }
+
+  /*
+   * Your current admin already provides upNext.label.
+   * Examples:
+   *
+   * QF3
+   * QF3 • Bo3
+   * SF1
+   * Grand Finals
+   */
+  const currentMatchId =
+    normalizeMatchId(
+      upNext.label ||
+      countdownData.nextMatch ||
+      matchups.match1Label ||
+      "QF1"
+    );
+
+  let items = [];
+
+  /*
+   * Only use manually configured schedule entries when this
+   * switch is deliberately enabled. This prevents old fixed
+   * QF1–QF4 entries from overriding the live schedule.
+   */
+  if (
+    settings.useCustomSchedule === true &&
+    configured &&
+    typeof configured === "object"
+  ) {
+    items =
+      Object
         .values(configured)
         .filter(Boolean)
-        .sort((first, second) => {
-          return (
-            numberValue(first.order) -
-            numberValue(second.order)
-          );
-        });
-    }
-
-    if (!items.length) {
-      const matchups =
-        countdownData.matchups || {};
-
-      items = [
-        1,
-        2,
-        3,
-        4
-      ].map(
-        (number, index) => {
-          const firstTeamNumber =
-            index * 2 + 1;
-
-          const secondTeamNumber =
-            index * 2 + 2;
-
-          return {
-            label: clean(
-              matchups[
-                `match${number}Label`
-              ],
-              `QF${number}`
-            ),
-
-            title:
-              `${clean(
-                matchups[
-                  `match${number}A`
-                ] ||
-                siteData[
-                  `team${firstTeamNumber}`
-                ],
-                `TEAM ${firstTeamNumber}`
-              )} VS ${clean(
-                matchups[
-                  `match${number}B`
-                ] ||
-                siteData[
-                  `team${secondTeamNumber}`
-                ],
-                `TEAM ${secondTeamNumber}`
-              )}`,
-
-            subtitle:
-              index === 0
-                ? "Up Next"
-                : "Opening Round",
-
-            active:
-              index === 0
-          };
-        }
+        .sort(
+          (first, second) => {
+            return (
+              numberValue(
+                first.order
+              ) -
+              numberValue(
+                second.order
+              )
+            );
+          }
+        );
+  } else {
+    let startIndex =
+      tournamentOrder.indexOf(
+        currentMatchId
       );
+
+    /*
+     * If the admin label is temporarily missing or unknown,
+     * fall back to QF1 instead of breaking the rail.
+     */
+    if (startIndex < 0) {
+      startIndex =
+        tournamentOrder.indexOf(
+          "QF1"
+        );
     }
 
-    $("scheduleList").innerHTML =
-      items
-        .slice(0, 6)
-        .map(item => `
-          <article class="schedule-item ${
-            item.active
-              ? "active"
-              : ""
-          }">
-            <small>
-              ${escapeHtml(
-                clean(
-                  item.label,
-                  "Event"
-                )
-              )}
-            </small>
+    items =
+      tournamentOrder
+        .slice(
+          startIndex,
+          startIndex + 6
+        )
+        .map(
+          (matchId, index) => {
+            const teams =
+              getMatchTeams(
+                matchId
+              );
 
-            <strong>
-              ${escapeHtml(
-                clean(
-                  item.title,
-                  "To Be Announced"
-                )
-              )}
-            </strong>
+            return {
+              label:
+                displayMatchLabel(
+                  matchId
+                ),
 
-            <span>
-              ${escapeHtml(
-                clean(
-                  item.subtitle,
-                  ""
-                )
-              )}
-            </span>
-          </article>
-        `)
-        .join("");
+              title:
+                `${teams[0]} VS ${teams[1]}`,
+
+              subtitle:
+                index === 0
+                  ? "Up Next"
+                  : "Coming Up",
+
+              active:
+                index === 0
+            };
+          }
+        );
   }
+
+  $("scheduleList").innerHTML =
+    items
+      .slice(0, 6)
+      .map(item => `
+        <article class="schedule-item ${
+          item.active
+            ? "active"
+            : ""
+        }">
+          <small>
+            ${escapeHtml(
+              clean(
+                item.label,
+                "Event"
+              )
+            )}
+          </small>
+
+          <strong>
+            ${escapeHtml(
+              clean(
+                item.title,
+                "To Be Announced"
+              )
+            )}
+          </strong>
+
+          <span>
+            ${escapeHtml(
+              clean(
+                item.subtitle,
+                ""
+              )
+            )}
+          </span>
+        </article>
+      `)
+      .join("");
+}
 
   function playlistItems(raw) {
     return Object

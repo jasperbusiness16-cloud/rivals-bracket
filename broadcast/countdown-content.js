@@ -5,11 +5,10 @@
   const DEFAULT_ITEM_MS = 12000;
   const DEFAULT_STARTING_POOL = 60;
 
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
 
-  const clean = (value, fallback = "") => {
-    return String(value ?? "").trim() || fallback;
-  };
+  const clean = (value, fallback = "") =>
+    String(value ?? "").trim() || fallback;
 
   const numberValue = (value, fallback = 0) => {
     const parsed = Number(value);
@@ -29,16 +28,15 @@
       : Number(fallback || 0);
   };
 
-  const escapeHtml = (value) => {
-    return clean(value)
+  const escapeHtml = value =>
+    clean(value)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
-  };
 
-  const safeUrl = (value) => {
+  const safeUrl = value => {
     const raw = clean(value);
 
     if (!raw) {
@@ -48,7 +46,11 @@
     try {
       const url = new URL(raw, location.href);
 
-      return ["http:", "https:", "blob:"].includes(url.protocol)
+      return [
+        "http:",
+        "https:",
+        "blob:"
+      ].includes(url.protocol)
         ? url.href
         : "";
     } catch {
@@ -56,15 +58,14 @@
     }
   };
 
-  const formatMoney = (value) => {
-    return new Intl.NumberFormat("en-US", {
+  const formatMoney = value =>
+    new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       maximumFractionDigits: 0
     }).format(
       Math.max(0, numberValue(value))
     );
-  };
 
   let db;
 
@@ -79,10 +80,11 @@
   let currentVideo = null;
 
   let forceKey = "";
-let lastTimerText = "";
+  let lastTimerText = "";
 
-let playbackToken = 0;
-let transitionTimer = null;
+  let playbackToken = 0;
+  let transitionTimer = null;
+  let currentItemId = "";
 
   function databaseConnection() {
     try {
@@ -92,16 +94,9 @@ let transitionTimer = null;
       ) {
         return database;
       }
-    } catch (error) {
-      console.warn(
-        "Global database reference was not available:",
-        error
-      );
-    }
+    } catch {}
 
-    if (
-      window.firebase?.apps?.length
-    ) {
+    if (window.firebase?.apps?.length) {
       return firebase.database();
     }
 
@@ -124,7 +119,8 @@ let transitionTimer = null;
       return numeric;
     }
 
-    const parsed = new Date(value).getTime();
+    const parsed =
+      new Date(value).getTime();
 
     return Number.isFinite(parsed)
       ? parsed
@@ -140,7 +136,8 @@ let transitionTimer = null;
     ];
 
     for (const value of values) {
-      const stamp = parseTimestamp(value);
+      const stamp =
+        parseTimestamp(value);
 
       if (stamp > 0) {
         return stamp;
@@ -156,17 +153,21 @@ let transitionTimer = null;
       Math.floor(milliseconds / 1000)
     );
 
-    const days = Math.floor(total / 86400);
+    const days =
+      Math.floor(total / 86400);
 
-    const hours = Math.floor(
-      (total % 86400) / 3600
-    );
+    const hours =
+      Math.floor(
+        (total % 86400) / 3600
+      );
 
-    const minutes = Math.floor(
-      (total % 3600) / 60
-    );
+    const minutes =
+      Math.floor(
+        (total % 3600) / 60
+      );
 
-    const seconds = total % 60;
+    const seconds =
+      total % 60;
 
     if (days > 0) {
       return (
@@ -197,28 +198,36 @@ let transitionTimer = null;
     }
 
     const formatted =
-      new Intl.DateTimeFormat("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        timeZoneName: "short"
-      }).format(new Date(timestamp));
+      new Intl.DateTimeFormat(
+        "en-US",
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          timeZoneName: "short"
+        }
+      ).format(
+        new Date(timestamp)
+      );
 
     return `Scheduled for ${formatted}`;
   }
 
   function updateCountdown() {
-    const start = getStartTime();
+    const start =
+      getStartTime();
 
-    const remaining = start
-      ? start - Date.now()
-      : 0;
+    const remaining =
+      start
+        ? start - Date.now()
+        : 0;
 
-    const text = start
-      ? formatRemaining(remaining)
-      : "--:--";
+    const text =
+      start
+        ? formatRemaining(remaining)
+        : "--:--";
 
     const timer = $("timer");
 
@@ -230,11 +239,15 @@ let transitionTimer = null;
     if (text !== lastTimerText) {
       timer.textContent = text;
 
-      timer.classList.remove("tick");
+      timer.classList.remove(
+        "tick"
+      );
 
       void timer.offsetWidth;
 
-      timer.classList.add("tick");
+      timer.classList.add(
+        "tick"
+      );
 
       lastTimerText = text;
     }
@@ -245,33 +258,68 @@ let transitionTimer = null;
 
   function normalizedDonations(raw) {
     return Object.values(raw || {})
-      .map((record) => {
-        return {
-          amount: moneyValue(record?.amount)
-        };
-      })
-      .filter((item) => {
+      .map(record => ({
+        name: clean(
+          record?.name ||
+          record?.displayName ||
+          record?.donorName ||
+          record?.fromName ||
+          record?.from_name,
+          "Anonymous"
+        ),
+
+        amount:
+          moneyValue(
+            record?.amount
+          ),
+
+        createdAt:
+          parseTimestamp(
+            record?.createdAt ||
+            record?.timestamp ||
+            record?.receivedAt ||
+            record?.date
+          )
+      }))
+      .filter(item => {
         return item.amount > 0;
+      })
+      .sort((first, second) => {
+        return (
+          second.createdAt -
+          first.createdAt
+        );
       });
   }
 
   function updateStaticData() {
-    $("eventName").textContent = clean(
-      countdownData.eventName ||
+    $("eventName").textContent =
+      clean(
+        countdownData.eventName ||
         siteData.eventName,
-      "RIVALS GAUNTLET"
-    ).toUpperCase();
+        "RIVALS GAUNTLET"
+      ).toUpperCase();
 
-    $("website").textContent = clean(
-      countdownData.website ||
+    $("website").textContent =
+      clean(
+        countdownData.website ||
         siteData.websiteUrl ||
         siteData.website,
-      "RIVALSGAUNTLET.COM"
-    )
-      .replace(/^https?:\/\//i, "")
-      .replace(/^www\./i, "")
-      .replace(/\/+$/, "")
-      .toUpperCase();
+        "RIVALSGAUNTLET.COM"
+      )
+        .replace(
+          /^https?:\/\//i,
+          ""
+        )
+        .replace(
+          /^www\./i,
+          ""
+        )
+        .replace(
+          /\/+$/,
+          ""
+        )
+        .toUpperCase();
 
     const starting = Math.max(
       0,
@@ -284,15 +332,21 @@ let transitionTimer = null;
       )
     );
 
-    const community = donations.reduce(
-      (sum, item) => {
-        return sum + item.amount;
-      },
-      0
-    );
+    const community =
+      donations.reduce(
+        (sum, item) => {
+          return (
+            sum +
+            item.amount
+          );
+        },
+        0
+      );
 
     $("prizePool").textContent =
-      formatMoney(starting + community);
+      formatMoney(
+        starting + community
+      );
 
     const matches =
       countdownData.matchups || {};
@@ -300,31 +354,35 @@ let transitionTimer = null;
     const upNext =
       countdownData.upNext || {};
 
-    $("nextTeamA").textContent = clean(
-      upNext.teamA ||
+    $("nextTeamA").textContent =
+      clean(
+        upNext.teamA ||
         matches.match1A ||
         siteData.team1,
-      "TEAM 1"
-    );
+        "TEAM 1"
+      );
 
-    $("nextTeamB").textContent = clean(
-      upNext.teamB ||
+    $("nextTeamB").textContent =
+      clean(
+        upNext.teamB ||
         matches.match1B ||
         siteData.team2,
-      "TEAM 2"
-    );
+        "TEAM 2"
+      );
 
-    $("nextLabelA").textContent = clean(
-      upNext.label ||
+    $("nextLabelA").textContent =
+      clean(
+        upNext.label ||
         matches.match1Label,
-      "UP NEXT"
-    );
+        "UP NEXT"
+      );
 
-    $("nextLabelB").textContent = clean(
-      upNext.label ||
+    $("nextLabelB").textContent =
+      clean(
+        upNext.label ||
         matches.match1Label,
-      "UP NEXT"
-    );
+        "UP NEXT"
+      );
 
     renderSchedule();
   }
@@ -339,7 +397,8 @@ let transitionTimer = null;
       configured &&
       typeof configured === "object"
     ) {
-      items = Object.values(configured)
+      items = Object
+        .values(configured)
         .filter(Boolean)
         .sort((first, second) => {
           return (
@@ -353,7 +412,12 @@ let transitionTimer = null;
       const matchups =
         countdownData.matchups || {};
 
-      items = [1, 2, 3, 4].map(
+      items = [
+        1,
+        2,
+        3,
+        4
+      ].map(
         (number, index) => {
           const firstTeamNumber =
             index * 2 + 1;
@@ -374,17 +438,17 @@ let transitionTimer = null;
                 matchups[
                   `match${number}A`
                 ] ||
-                  siteData[
-                    `team${firstTeamNumber}`
-                  ],
+                siteData[
+                  `team${firstTeamNumber}`
+                ],
                 `TEAM ${firstTeamNumber}`
               )} VS ${clean(
                 matchups[
                   `match${number}B`
                 ] ||
-                  siteData[
-                    `team${secondTeamNumber}`
-                  ],
+                siteData[
+                  `team${secondTeamNumber}`
+                ],
                 `TEAM ${secondTeamNumber}`
               )}`,
 
@@ -400,16 +464,21 @@ let transitionTimer = null;
       );
     }
 
-    $("scheduleList").innerHTML = items
-      .slice(0, 6)
-      .map((item) => {
-        return `
+    $("scheduleList").innerHTML =
+      items
+        .slice(0, 6)
+        .map(item => `
           <article class="schedule-item ${
-            item.active ? "active" : ""
+            item.active
+              ? "active"
+              : ""
           }">
             <small>
               ${escapeHtml(
-                clean(item.label, "Event")
+                clean(
+                  item.label,
+                  "Event"
+                )
               )}
             </small>
 
@@ -424,109 +493,116 @@ let transitionTimer = null;
 
             <span>
               ${escapeHtml(
-                clean(item.subtitle, "")
+                clean(
+                  item.subtitle,
+                  ""
+                )
               )}
             </span>
           </article>
-        `;
-      })
-      .join("");
+        `)
+        .join("");
   }
 
   function playlistItems(raw) {
-    return Object.entries(raw || {})
-      .map(([id, item]) => {
-        return {
-          id,
+    return Object
+      .entries(raw || {})
+      .map(([id, item]) => ({
+        id,
 
-          type: clean(
-            item?.type,
-            "news"
-          ),
+        type: clean(
+          item?.type,
+          "news"
+        ),
 
-          title: clean(
-            item?.title,
-            "Rivals Gauntlet"
-          ),
+        title: clean(
+          item?.title,
+          "Rivals Gauntlet"
+        ),
 
-          subtitle: clean(
-            item?.subtitle
-          ),
+        subtitle: clean(
+          item?.subtitle
+        ),
 
-          message: clean(
-            item?.message
-          ),
+        message: clean(
+          item?.message
+        ),
 
-          submittedBy: clean(
-            item?.submittedBy
-          ),
+        submittedBy: clean(
+          item?.submittedBy
+        ),
 
-          creatorHandle: clean(
-            item?.creatorHandle
-          ),
+        creatorHandle: clean(
+          item?.creatorHandle
+        ),
 
-          creatorUrl: clean(
-            item?.creatorUrl
-          ),
+        creatorUrl: clean(
+          item?.creatorUrl
+        ),
 
-          mediaUrl: clean(
-            item?.mediaUrl
-          ),
+        mediaUrl: clean(
+          item?.mediaUrl
+        ),
 
-          thumbnailUrl: clean(
-            item?.thumbnailUrl
-          ),
+        thumbnailUrl: clean(
+          item?.thumbnailUrl
+        ),
 
-          fit: clean(
-            item?.fit,
-            "cover"
-          ),
+        fit: clean(
+          item?.fit,
+          "cover"
+        ),
 
-          muted:
-            item?.muted !== false,
+        muted:
+          item?.muted !== false,
 
-          loop:
-            item?.loop === true,
+        loop:
+          item?.loop === true,
 
-          startAt: Math.max(
-            0,
-            numberValue(item?.startAt)
-          ),
+        startAt: Math.max(
+          0,
+          numberValue(
+            item?.startAt
+          )
+        ),
 
-          endAt: Math.max(
-            0,
-            numberValue(item?.endAt)
-          ),
+        endAt: Math.max(
+          0,
+          numberValue(
+            item?.endAt
+          )
+        ),
 
-          durationMs: Math.max(
-            3000,
-            numberValue(
-              item?.durationMs,
-              DEFAULT_ITEM_MS
-            )
-          ),
+        durationMs: Math.max(
+          3000,
+          numberValue(
+            item?.durationMs,
+            DEFAULT_ITEM_MS
+          )
+        ),
 
-          order: numberValue(
+        order:
+          numberValue(
             item?.order
           ),
 
-          enabled:
-            item?.enabled !== false,
+        enabled:
+          item?.enabled !== false,
 
-          updatedAt: numberValue(
+        updatedAt:
+          numberValue(
             item?.updatedAt
           )
-        };
-      })
-      .filter((item) => {
+      }))
+      .filter(item => {
         return item.enabled;
       })
       .sort((first, second) => {
         return (
           first.order -
-            second.order ||
+          second.order ||
           first.updatedAt -
-            second.updatedAt
+          second.updatedAt
         );
       });
   }
@@ -534,6 +610,7 @@ let transitionTimer = null;
   function fallbackNews() {
     return {
       id: "fallback",
+
       type: "news",
 
       title: clean(
@@ -551,46 +628,55 @@ let transitionTimer = null;
         "Community clips, upcoming matches and official tournament updates will appear here throughout the countdown."
       ),
 
-      durationMs: DEFAULT_ITEM_MS
+      durationMs:
+        DEFAULT_ITEM_MS
     };
   }
 
   function activeItemById(id) {
-    return playlist.find((item) => {
+    return playlist.find(item => {
       return item.id === id;
     });
   }
 
-function stopCurrent() {
-  playbackToken += 1;
+  function stopCurrent() {
+    playbackToken += 1;
 
-  if (currentTimer) {
-    clearTimeout(currentTimer);
-  }
-
-  currentTimer = null;
-
-  if (transitionTimer) {
-    clearTimeout(transitionTimer);
-  }
-
-  transitionTimer = null;
-
-  if (currentVideo) {
-    try {
-      currentVideo.pause();
-      currentVideo.removeAttribute("src");
-      currentVideo.load();
-    } catch (error) {
-      console.warn(
-        "The current video could not be fully stopped:",
-        error
+    if (currentTimer) {
+      clearTimeout(
+        currentTimer
       );
     }
 
-    currentVideo = null;
+    currentTimer = null;
+
+    if (transitionTimer) {
+      clearTimeout(
+        transitionTimer
+      );
+    }
+
+    transitionTimer = null;
+
+    if (currentVideo) {
+      try {
+        currentVideo.pause();
+
+        currentVideo.removeAttribute(
+          "src"
+        );
+
+        currentVideo.load();
+      } catch (error) {
+        console.warn(
+          "The current video could not be fully stopped:",
+          error
+        );
+      }
+
+      currentVideo = null;
+    }
   }
-}
 
   function advance() {
     if (!playlist.length) {
@@ -600,6 +686,39 @@ function stopCurrent() {
       );
 
       return;
+    }
+
+    if (
+      playlist.length === 1 &&
+      playlist[0].id ===
+        currentItemId
+    ) {
+      const item =
+        playlist[0];
+
+      if (
+        item.type === "clip" &&
+        currentVideo
+      ) {
+        try {
+          currentVideo.currentTime =
+            Math.max(
+              0,
+              item.startAt || 0
+            );
+
+          currentVideo
+            .play()
+            .catch(() => {});
+
+          return;
+        } catch (error) {
+          console.warn(
+            "Single clip could not restart in place:",
+            error
+          );
+        }
+      }
     }
 
     currentIndex =
@@ -613,52 +732,67 @@ function stopCurrent() {
   }
 
   function mount(html, callback) {
-  const contentMount =
-    document.getElementById("contentMount");
+    const contentMount =
+      $("contentMount");
 
-  if (!contentMount) {
-    return;
-  }
-
-  contentMount.classList.remove(
-    "fade-in",
-    "fade-out"
-  );
-
-  contentMount.classList.add(
-    "fade-out"
-  );
-
-  transitionTimer = window.setTimeout(() => {
-    contentMount.innerHTML = html;
+    if (!contentMount) {
+      return;
+    }
 
     contentMount.classList.remove(
+      "fade-in",
       "fade-out"
     );
 
     contentMount.classList.add(
-      "fade-in"
+      "fade-out"
     );
 
-    if (
-      typeof callback === "function"
-    ) {
-      callback();
-    }
+    transitionTimer =
+      window.setTimeout(() => {
+        contentMount.innerHTML =
+          html;
 
-    transitionTimer = window.setTimeout(() => {
-      contentMount.classList.remove(
-        "fade-in"
-      );
+        contentMount.classList.remove(
+          "fade-out"
+        );
 
-      transitionTimer = null;
-    }, 420);
-  }, 220);
-}
+        contentMount.classList.add(
+          "fade-in"
+        );
 
-  function mediaMarkup(item, kind) {
+        if (
+          typeof callback ===
+          "function"
+        ) {
+          callback();
+        }
+
+        transitionTimer =
+          window.setTimeout(
+            () => {
+              contentMount
+                .classList
+                .remove(
+                  "fade-in"
+                );
+
+              transitionTimer =
+                null;
+            },
+            420
+          );
+      }, 220);
+  }
+
+  function mediaMarkup(
+    item,
+    kind
+  ) {
     const url =
-      safeUrl(item.mediaUrl);
+      safeUrl(
+        item.mediaUrl
+      );
 
     if (!url) {
       return newsMarkup({
@@ -674,26 +808,35 @@ function stopCurrent() {
       });
     }
 
+    /*
+     * Contain mode uses a lightweight CSS background.
+     * It no longer creates a second video element.
+     */
     const blur =
       item.fit === "contain"
-        ? kind === "video"
-          ? `
-            <video
-              class="media-blur"
-              src="${escapeHtml(url)}"
-              muted
-              autoplay
-              loop
-              playsinline
-            ></video>
-          `
-          : `
-            <img
-              class="media-blur"
-              src="${escapeHtml(url)}"
-              alt=""
-            >
-          `
+        ? `
+          <div
+            class="media-blur"
+            style="
+              background:
+                radial-gradient(
+                  circle at 30% 30%,
+                  rgba(86,169,255,.34),
+                  transparent 34%
+                ),
+                radial-gradient(
+                  circle at 72% 25%,
+                  rgba(255,114,197,.30),
+                  transparent 36%
+                ),
+                linear-gradient(
+                  145deg,
+                  #151842,
+                  #08091f
+                );
+            "
+          ></div>
+        `
         : "";
 
     const media =
@@ -703,11 +846,19 @@ function stopCurrent() {
             id="activeVideo"
             class="media-main"
             src="${escapeHtml(url)}"
-            ${item.muted ? "muted" : ""}
-            ${item.loop ? "loop" : ""}
+            ${
+              item.muted
+                ? "muted"
+                : ""
+            }
+            ${
+              item.loop
+                ? "loop"
+                : ""
+            }
             autoplay
             playsinline
-            preload="auto"
+            preload="metadata"
           ></video>
         `
         : `
@@ -719,9 +870,11 @@ function stopCurrent() {
         `;
 
     return `
-      <div class="media-layer fit-${escapeHtml(
-        item.fit
-      )}">
+      <div
+        class="media-layer fit-${escapeHtml(
+          item.fit
+        )}"
+      >
         ${blur}
         ${media}
       </div>
@@ -737,13 +890,15 @@ function stopCurrent() {
           </span>
 
           <strong>
-            ${escapeHtml(item.title)}
+            ${escapeHtml(
+              item.title
+            )}
           </strong>
 
           <small>
             ${escapeHtml(
               item.subtitle ||
-                item.message
+              item.message
             )}
           </small>
         </div>
@@ -760,7 +915,7 @@ function stopCurrent() {
           <strong>
             ${escapeHtml(
               item.submittedBy ||
-                "Official Broadcast"
+              "Official Broadcast"
             )}
           </strong>
 
@@ -781,18 +936,20 @@ function stopCurrent() {
           <span>
             ${escapeHtml(
               item.subtitle ||
-                "Official Update"
+              "Official Update"
             )}
           </span>
 
           <h2>
-            ${escapeHtml(item.title)}
+            ${escapeHtml(
+              item.title
+            )}
           </h2>
 
           <p>
             ${escapeHtml(
               item.message ||
-                "More information will appear here soon."
+              "More information will appear here soon."
             )}
           </p>
         </div>
@@ -827,13 +984,13 @@ function stopCurrent() {
   function matchupMarkup(item) {
     const teamA = clean(
       item.teamA ||
-        item.subtitle,
+      item.subtitle,
       $("nextTeamA").textContent
     );
 
     const teamB = clean(
       item.teamB ||
-        item.message,
+      item.message,
       $("nextTeamB").textContent
     );
 
@@ -846,7 +1003,7 @@ function stopCurrent() {
       ),
 
       title:
-        `${teamA}  VS  ${teamB}`,
+        `${teamA} VS ${teamB}`,
 
       message: clean(
         item.description,
@@ -855,254 +1012,824 @@ function stopCurrent() {
     });
   }
 
-  function showItem(item, forced) {
-  stopCurrent();
-
-  const token = playbackToken;
-  let finished = false;
-
-  function finishItem() {
-    if (finished) {
-      return;
-    }
-
-    if (token !== playbackToken) {
-      return;
-    }
-
-    finished = true;
-
-    if (
-      forced &&
-      settings.holdForcedItem
-    ) {
-      return;
-    }
-
-    advance();
-  }
-
-  $("footerStatus").textContent =
-    item.type === "clip"
-      ? `Now Playing • ${clean(
-          item.submittedBy,
-          "Community Highlight"
-        )}`
-      : `${clean(
-          item.subtitle,
-          "Tournament Update"
-        )} • Rivals Gauntlet`;
-
-  let markup = "";
-
-  if (item.type === "clip") {
-    markup = mediaMarkup(
-      item,
-      "video"
-    );
-  } else if (item.type === "image") {
-    markup = mediaMarkup(
-      item,
-      "img"
-    );
-  } else if (item.type === "matchup") {
-    markup = matchupMarkup(item);
-  } else {
-    markup = newsMarkup(item);
-  }
-
-  mount(markup, () => {
-    if (token !== playbackToken) {
-      return;
-    }
-
-    if (item.type !== "clip") {
-      if (
-        !(
-          forced &&
-          settings.holdForcedItem
+  function donationTotals() {
+    const starting = Math.max(
+      0,
+      moneyValue(
+        siteData.startingPrizePool,
+        moneyValue(
+          siteData.prizePool,
+          DEFAULT_STARTING_POOL
         )
-      ) {
-        currentTimer =
-          window.setTimeout(
-            finishItem,
-            item.durationMs
+      )
+    );
+
+    const community =
+      donations.reduce(
+        (sum, item) => {
+          return (
+            sum +
+            moneyValue(
+              item.amount
+            )
           );
-      }
-
-      return;
-    }
-
-    const video =
-      document.getElementById(
-        "activeVideo"
+        },
+        0
       );
 
-    if (!video) {
-      currentTimer =
-        window.setTimeout(
-          finishItem,
-          item.durationMs
+    const current =
+      starting + community;
+
+    const goal = Math.max(
+      1,
+      moneyValue(
+        siteData.donationGoal,
+        250
+      )
+    );
+
+    const percent = Math.max(
+      0,
+      Math.min(
+        100,
+        Math.round(
+          (current / goal) *
+          100
+        )
+      )
+    );
+
+    return {
+      starting,
+      community,
+      current,
+      goal,
+      percent
+    };
+  }
+
+  function groupedSupporters() {
+    const grouped =
+      new Map();
+
+    donations.forEach(
+      donation => {
+        const name = clean(
+          donation.name,
+          "Anonymous"
         );
 
-      return;
+        const key =
+          name.toLowerCase();
+
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            name,
+            total: 0,
+            count: 0,
+            latest: 0
+          });
+        }
+
+        const entry =
+          grouped.get(key);
+
+        entry.total +=
+          moneyValue(
+            donation.amount
+          );
+
+        entry.count += 1;
+
+        entry.latest =
+          Math.max(
+            entry.latest,
+            numberValue(
+              donation.createdAt
+            )
+          );
+      }
+    );
+
+    return Array
+      .from(grouped.values())
+      .sort((first, second) => {
+        return (
+          second.total -
+          first.total ||
+          second.latest -
+          first.latest
+        );
+      });
+  }
+
+  function relativeTime(timestamp) {
+    const value =
+      numberValue(timestamp);
+
+    if (!value) {
+      return "Recently";
     }
 
-    currentVideo = video;
+    const difference =
+      Math.max(
+        0,
+        Date.now() - value
+      );
 
-    video.muted = item.muted;
-    video.volume = item.muted
-      ? 0
-      : Math.min(
+    if (difference < 60000) {
+      return "Just now";
+    }
+
+    if (difference < 3600000) {
+      return (
+        `${Math.max(
           1,
-          numberValue(
-            settings.clipVolume,
-            0.8
+          Math.round(
+            difference / 60000
           )
-        );
+        )}m ago`
+      );
+    }
 
-    video.addEventListener(
-      "loadedmetadata",
-      () => {
-        if (
-          token !== playbackToken
-        ) {
-          return;
-        }
+    if (difference < 86400000) {
+      return (
+        `${Math.max(
+          1,
+          Math.round(
+            difference / 3600000
+          )
+        )}h ago`
+      );
+    }
 
-        if (
-          item.startAt > 0 &&
-          item.startAt < video.duration
-        ) {
-          video.currentTime =
-            item.startAt;
-        }
-      },
-      {
-        once: true
-      }
+    return (
+      `${Math.max(
+        1,
+        Math.round(
+          difference / 86400000
+        )
+      )}d ago`
     );
+  }
 
-    video.addEventListener(
-      "ended",
-      finishItem,
-      {
-        once: true
+  function prizePoolMarkup(item) {
+    const totals =
+      donationTotals();
+
+    return `
+      <section class="auto-card">
+        <header class="auto-card-head">
+          <div>
+            <span class="auto-card-kicker">
+              ${escapeHtml(
+                item.subtitle ||
+                "Community Funded"
+              )}
+            </span>
+
+            <h2 class="auto-card-title">
+              ${escapeHtml(
+                item.title ||
+                "Live Prize Pool"
+              )}
+            </h2>
+          </div>
+
+          <div class="auto-card-live">
+            Live Firebase Data
+          </div>
+        </header>
+
+        <div class="prize-feature">
+          <div>
+            <div class="prize-amount">
+              ${escapeHtml(
+                formatMoney(
+                  totals.current
+                )
+              )}
+            </div>
+
+            <p class="prize-caption">
+              ${escapeHtml(
+                item.message ||
+                "The displayed amount updates automatically as confirmed prize-pool contributions are received."
+              )}
+            </p>
+          </div>
+
+          <div class="prize-breakdown">
+            <div class="prize-line">
+              <span>
+                Starting Pool
+              </span>
+
+              <strong>
+                ${escapeHtml(
+                  formatMoney(
+                    totals.starting
+                  )
+                )}
+              </strong>
+            </div>
+
+            <div class="prize-line">
+              <span>
+                Community Contributions
+              </span>
+
+              <strong>
+                ${escapeHtml(
+                  formatMoney(
+                    totals.community
+                  )
+                )}
+              </strong>
+            </div>
+
+            <div class="prize-line">
+              <span>
+                Current Goal
+              </span>
+
+              <strong>
+                ${escapeHtml(
+                  formatMoney(
+                    totals.goal
+                  )
+                )}
+              </strong>
+            </div>
+
+            <div class="prize-progress">
+              <div class="prize-progress-meta">
+                <span>
+                  Goal Progress
+                </span>
+
+                <strong>
+                  ${totals.percent}%
+                </strong>
+              </div>
+
+              <div class="prize-progress-track">
+                <div
+                  class="prize-progress-fill"
+                  style="width:${totals.percent}%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function supportersMarkup(item) {
+    const top =
+      groupedSupporters()
+        .slice(0, 5);
+
+    const recent =
+      donations.slice(0, 5);
+
+    const topRows =
+      top.length
+        ? top
+            .map(
+              (
+                supporter,
+                index
+              ) => `
+                <article class="supporter-live-row">
+                  <span class="supporter-live-rank">
+                    #${index + 1}
+                  </span>
+
+                  <div class="supporter-live-copy">
+                    <strong>
+                      ${escapeHtml(
+                        supporter.name
+                      )}
+                    </strong>
+
+                    <small>
+                      ${supporter.count}
+                      contribution${
+                        supporter.count === 1
+                          ? ""
+                          : "s"
+                      }
+                    </small>
+                  </div>
+
+                  <strong class="supporter-live-amount">
+                    ${escapeHtml(
+                      formatMoney(
+                        supporter.total
+                      )
+                    )}
+                  </strong>
+                </article>
+              `
+            )
+            .join("")
+        : `
+          <div class="auto-empty">
+            The first confirmed supporter will appear here.
+          </div>
+        `;
+
+    const recentRows =
+      recent.length
+        ? recent
+            .map(
+              donation => `
+                <article class="supporter-live-row">
+                  <span class="supporter-live-rank">
+                    +
+                  </span>
+
+                  <div class="supporter-live-copy">
+                    <strong>
+                      ${escapeHtml(
+                        clean(
+                          donation.name,
+                          "Anonymous"
+                        )
+                      )}
+                    </strong>
+
+                    <small>
+                      ${escapeHtml(
+                        relativeTime(
+                          donation.createdAt
+                        )
+                      )}
+                    </small>
+                  </div>
+
+                  <strong class="supporter-live-amount">
+                    +${escapeHtml(
+                      formatMoney(
+                        donation.amount
+                      )
+                    )}
+                  </strong>
+                </article>
+              `
+            )
+            .join("")
+        : `
+          <div class="auto-empty">
+            Recent confirmed contributions will appear here.
+          </div>
+        `;
+
+    return `
+      <section class="auto-card">
+        <header class="auto-card-head">
+          <div>
+            <span class="auto-card-kicker">
+              ${escapeHtml(
+                item.subtitle ||
+                "Community Support"
+              )}
+            </span>
+
+            <h2 class="auto-card-title">
+              ${escapeHtml(
+                item.title ||
+                "Supporter Spotlight"
+              )}
+            </h2>
+          </div>
+
+          <div class="auto-card-live">
+            Live Firebase Data
+          </div>
+        </header>
+
+        <div class="supporter-grid">
+          <section class="supporter-column">
+            <h3>
+              Top Supporters
+            </h3>
+
+            ${topRows}
+          </section>
+
+          <section class="supporter-column">
+            <h3>
+              Recent Contributions
+            </h3>
+
+            ${recentRows}
+          </section>
+        </div>
+      </section>
+    `;
+  }
+
+  function bracketMarkup(item) {
+    const matchups =
+      countdownData.matchups || {};
+
+    const matches =
+      [1, 2, 3, 4].map(
+        (number, index) => {
+          const firstTeam =
+            index * 2 + 1;
+
+          const secondTeam =
+            firstTeam + 1;
+
+          return {
+            label: clean(
+              matchups[
+                `match${number}Label`
+              ],
+              `QF${number}`
+            ),
+
+            teamA: clean(
+              matchups[
+                `match${number}A`
+              ] ||
+              siteData[
+                `team${firstTeam}`
+              ],
+              `TEAM ${firstTeam}`
+            ),
+
+            teamB: clean(
+              matchups[
+                `match${number}B`
+              ] ||
+              siteData[
+                `team${secondTeam}`
+              ],
+              `TEAM ${secondTeam}`
+            )
+          };
+        }
+      );
+
+    return `
+      <section class="auto-card">
+        <header class="auto-card-head">
+          <div>
+            <span class="auto-card-kicker">
+              ${escapeHtml(
+                item.subtitle ||
+                "Opening Round"
+              )}
+            </span>
+
+            <h2 class="auto-card-title">
+              ${escapeHtml(
+                item.title ||
+                "Current Bracket"
+              )}
+            </h2>
+          </div>
+
+          <div class="auto-card-live">
+            Live Tournament Data
+          </div>
+        </header>
+
+        <div class="bracket-feature">
+          ${matches
+            .map(match => `
+              <article class="bracket-match">
+                <div class="bracket-match-head">
+                  <span>
+                    ${escapeHtml(
+                      match.label
+                    )}
+                  </span>
+
+                  <span>
+                    Best of 3
+                  </span>
+                </div>
+
+                <div class="bracket-team">
+                  <span>
+                    ${escapeHtml(
+                      match.teamA
+                    )}
+                  </span>
+                </div>
+
+                <div class="bracket-team">
+                  <span>
+                    ${escapeHtml(
+                      match.teamB
+                    )}
+                  </span>
+                </div>
+              </article>
+            `)
+            .join("")}
+        </div>
+      </section>
+    `;
+  }
+
+  function showItem(
+    item,
+    forced
+  ) {
+    stopCurrent();
+
+    currentItemId =
+      item.id || "";
+
+    const token =
+      playbackToken;
+
+    let finished = false;
+
+    function finishItem() {
+      if (
+        finished ||
+        token !== playbackToken
+      ) {
+        return;
       }
-    );
 
-    video.addEventListener(
-      "error",
-      () => {
+      finished = true;
+
+      if (
+        forced &&
+        settings.holdForcedItem
+      ) {
+        return;
+      }
+
+      advance();
+    }
+
+    $("footerStatus").textContent =
+      item.type === "clip"
+        ? `Now Playing • ${clean(
+            item.submittedBy,
+            "Community Highlight"
+          )}`
+        : `${clean(
+            item.subtitle,
+            "Tournament Update"
+          )} • Rivals Gauntlet`;
+
+    let markup = "";
+
+    if (item.type === "clip") {
+      markup =
+        mediaMarkup(
+          item,
+          "video"
+        );
+    } else if (
+      item.type === "image"
+    ) {
+      markup =
+        mediaMarkup(
+          item,
+          "img"
+        );
+    } else if (
+      item.type === "matchup"
+    ) {
+      markup =
+        matchupMarkup(item);
+    } else if (
+      item.type === "prize_pool"
+    ) {
+      markup =
+        prizePoolMarkup(item);
+    } else if (
+      item.type === "top_supporters"
+    ) {
+      markup =
+        supportersMarkup(item);
+    } else if (
+      item.type === "bracket"
+    ) {
+      markup =
+        bracketMarkup(item);
+    } else {
+      markup =
+        newsMarkup(item);
+    }
+
+    mount(markup, () => {
+      if (
+        token !== playbackToken
+      ) {
+        return;
+      }
+
+      if (
+        item.type !== "clip"
+      ) {
         if (
-          token !== playbackToken
+          !(
+            forced &&
+            settings.holdForcedItem
+          )
         ) {
-          return;
+          currentTimer =
+            window.setTimeout(
+              finishItem,
+              item.durationMs
+            );
         }
 
-        console.error(
-          "Countdown video failed:",
-          video.error,
-          video.currentSrc
-        );
+        return;
+      }
 
+      const video =
+        $("activeVideo");
+
+      if (!video) {
         currentTimer =
           window.setTimeout(
             finishItem,
             3000
           );
-      },
-      {
-        once: true
+
+        return;
       }
-    );
 
-    if (
-      item.endAt >
-      item.startAt
-    ) {
-      const checkEndTime = () => {
-        if (
-          token !== playbackToken
-        ) {
-          video.removeEventListener(
-            "timeupdate",
-            checkEndTime
-          );
+      currentVideo = video;
 
-          return;
-        }
+      video.muted =
+        item.muted;
 
-        if (
-          video.currentTime >=
-          item.endAt
-        ) {
-          video.removeEventListener(
-            "timeupdate",
-            checkEndTime
-          );
-
-          finishItem();
-        }
-      };
+      video.volume =
+        item.muted
+          ? 0
+          : Math.min(
+              1,
+              numberValue(
+                settings.clipVolume,
+                0.8
+              )
+            );
 
       video.addEventListener(
-        "timeupdate",
-        checkEndTime
+        "loadedmetadata",
+        () => {
+          if (
+            token !==
+            playbackToken
+          ) {
+            return;
+          }
+
+          if (
+            item.startAt > 0 &&
+            item.startAt <
+            video.duration
+          ) {
+            video.currentTime =
+              item.startAt;
+          }
+        },
+        {
+          once: true
+        }
       );
-    }
 
-    /*
-     * Use a duration timer only when the admin
-     * does not want the complete video duration.
-     */
-    /*
- * Video clips advance when the video ends.
- * The duration field is only used as a safety fallback.
- */
-if (item.loop !== true) {
-  const safetyDuration =
-    Math.max(
-      item.durationMs,
-      10 * 60 * 1000
-    );
-
-  currentTimer = window.setTimeout(
-    finishItem,
-    safetyDuration
-  );
-}
-
-    video.play().catch(async (error) => {
-      console.warn(
-        "Initial video playback failed:",
-        error
+      video.addEventListener(
+        "ended",
+        finishItem,
+        {
+          once: true
+        }
       );
+
+      video.addEventListener(
+        "error",
+        () => {
+          if (
+            token !==
+            playbackToken
+          ) {
+            return;
+          }
+
+          console.error(
+            "Countdown video failed:",
+            video.error,
+            video.currentSrc
+          );
+
+          currentTimer =
+            window.setTimeout(
+              finishItem,
+              3000
+            );
+        },
+        {
+          once: true
+        }
+      );
+
+      if (
+        item.endAt >
+        item.startAt
+      ) {
+        const checkEndTime =
+          () => {
+            if (
+              token !==
+              playbackToken
+            ) {
+              video.removeEventListener(
+                "timeupdate",
+                checkEndTime
+              );
+
+              return;
+            }
+
+            if (
+              video.currentTime >=
+              item.endAt
+            ) {
+              video.removeEventListener(
+                "timeupdate",
+                checkEndTime
+              );
+
+              finishItem();
+            }
+          };
+
+        video.addEventListener(
+          "timeupdate",
+          checkEndTime
+        );
+      }
 
       /*
-       * Retry muted if autoplay with sound
-       * was rejected.
+       * The actual video ending controls
+       * normal clip advancement.
+       *
+       * The duration field only acts as a
+       * long safety fallback.
        */
-      video.muted = true;
-      video.volume = 0;
-
-      try {
-        await video.play();
-      } catch (retryError) {
-        console.error(
-          "Muted playback also failed:",
-          retryError
-        );
-
+      if (item.loop !== true) {
         currentTimer =
           window.setTimeout(
             finishItem,
-            3000
+            Math.max(
+              item.durationMs,
+              10 * 60 * 1000
+            )
           );
       }
+
+      video
+        .play()
+        .catch(
+          async error => {
+            console.warn(
+              "Initial video playback failed:",
+              error
+            );
+
+            /*
+             * If sound autoplay is blocked,
+             * retry muted so the clip still
+             * plays rather than freezing.
+             */
+            video.muted = true;
+            video.volume = 0;
+
+            try {
+              await video.play();
+            } catch (retryError) {
+              console.error(
+                "Muted playback also failed:",
+                retryError
+              );
+
+              currentTimer =
+                window.setTimeout(
+                  finishItem,
+                  3000
+                );
+            }
+          }
+        );
     });
-  });
-}
+  }
+
   function refreshPlaylist(
     force = false
   ) {
@@ -1121,7 +1848,7 @@ if (item.loop !== true) {
       force ||
       currentIndex < 0 ||
       currentIndex >=
-        playlist.length
+      playlist.length
     ) {
       currentIndex = 0;
 
@@ -1133,27 +1860,35 @@ if (item.loop !== true) {
   }
 
   function connect() {
-    db = databaseConnection();
+    db =
+      databaseConnection();
 
-    db.ref(".info/connected").on(
+    db.ref(
+      ".info/connected"
+    ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         const online =
           snapshot.val() === true;
 
-        $("connection").classList.toggle(
-          "online",
-          online
-        );
+        $("connection")
+          .classList
+          .toggle(
+            "online",
+            online
+          );
 
-        $("connection").classList.remove(
-          "error"
-        );
+        $("connection")
+          .classList
+          .remove(
+            "error"
+          );
 
-        $("connectionText").textContent =
-          online
-            ? "REALTIME CONNECTED"
-            : "RECONNECTING";
+        $("connectionText")
+          .textContent =
+            online
+              ? "REALTIME CONNECTED"
+              : "RECONNECTING";
       }
     );
 
@@ -1161,7 +1896,7 @@ if (item.loop !== true) {
       "broadcastCountdown"
     ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         countdownData =
           snapshot.val() || {};
 
@@ -1169,9 +1904,11 @@ if (item.loop !== true) {
       }
     );
 
-    db.ref("site").on(
+    db.ref(
+      "site"
+    ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         siteData =
           snapshot.val() || {};
 
@@ -1179,9 +1916,11 @@ if (item.loop !== true) {
       }
     );
 
-    db.ref("donations").on(
+    db.ref(
+      "donations"
+    ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         donations =
           normalizedDonations(
             snapshot.val()
@@ -1195,13 +1934,20 @@ if (item.loop !== true) {
       `${PATH}/settings`
     ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         settings =
           snapshot.val() || {};
 
         updateStaticData();
 
-        if (!playlist.length) {
+        /*
+         * Do not restart an active clip
+         * because unrelated settings changed.
+         */
+        if (
+          !playlist.length &&
+          !currentItemId
+        ) {
           refreshPlaylist(true);
         }
       }
@@ -1211,11 +1957,52 @@ if (item.loop !== true) {
       `${PATH}/items`
     ).on(
       "value",
-      (snapshot) => {
-        playlist =
+      snapshot => {
+        const updatedPlaylist =
           playlistItems(
             snapshot.val()
           );
+
+        const preservedId =
+          currentItemId;
+
+        playlist =
+          updatedPlaylist;
+
+        if (!playlist.length) {
+          currentIndex = -1;
+
+          showItem(
+            fallbackNews(),
+            false
+          );
+
+          return;
+        }
+
+        /*
+         * Preserve the currently playing
+         * item when another playlist item
+         * is edited, added, or reordered.
+         */
+        const preservedIndex =
+          playlist.findIndex(
+            item => {
+              return (
+                item.id ===
+                preservedId
+              );
+            }
+          );
+
+        if (
+          preservedIndex >= 0
+        ) {
+          currentIndex =
+            preservedIndex;
+
+          return;
+        }
 
         refreshPlaylist(true);
       }
@@ -1225,7 +2012,7 @@ if (item.loop !== true) {
       `${PATH}/control`
     ).on(
       "value",
-      (snapshot) => {
+      snapshot => {
         const control =
           snapshot.val() || {};
 
@@ -1253,9 +2040,10 @@ if (item.loop !== true) {
           if (item) {
             currentIndex =
               playlist.findIndex(
-                (entry) => {
+                entry => {
                   return (
-                    entry.id === item.id
+                    entry.id ===
+                    item.id
                   );
                 }
               );
@@ -1287,18 +2075,21 @@ if (item.loop !== true) {
 
   window.addEventListener(
     "error",
-    (event) => {
-      $("connection").classList.add(
-        "error"
-      );
+    event => {
+      $("connection")
+        .classList
+        .add(
+          "error"
+        );
 
-      $("connectionText").textContent =
-        "SCRIPT ERROR";
+      $("connectionText")
+        .textContent =
+          "SCRIPT ERROR";
 
       console.error(
         "[RG COUNTDOWN]",
         event.error ||
-          event.message
+        event.message
       );
     }
   );

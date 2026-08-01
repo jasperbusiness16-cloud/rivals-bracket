@@ -602,13 +602,9 @@ button{font:inherit}
 #contentMount{
   position:absolute;
   inset:0;
-}
-
-#contentMount{
-  position:absolute;
-  inset:0;
   overflow:hidden;
   isolation:isolate;
+  background:#070817;
 }
 
 .scene-layer{
@@ -633,32 +629,20 @@ button{font:inherit}
 .scene-layer.is-incoming{
   z-index:4;
   opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+/*
+ * Only the incoming scene fades in very quickly.
+ * The outgoing scene does not remain visible over it.
+ */
+.scene-layer.is-ready{
   visibility:visible;
-  transition:opacity .22s ease;
-}
-
-.scene-layer.is-incoming.is-ready{
   opacity:1;
+  transition:opacity .09s linear;
 }
 
-/*
- * Keep every scene's absolutely positioned
- * content contained inside its own layer.
- */
-.scene-layer > .news-card,
-.scene-layer > .auto-card,
-.scene-layer > .media-layer,
-.scene-layer > .now-playing,
-.scene-layer > .fallback-layer{
-  position:absolute;
-  max-width:100%;
-  max-height:100%;
-}
-
-/*
- * Prevent child z-index values from escaping
- * into another scene.
- */
 .scene-layer .news-card,
 .scene-layer .auto-card,
 .scene-layer .media-layer,

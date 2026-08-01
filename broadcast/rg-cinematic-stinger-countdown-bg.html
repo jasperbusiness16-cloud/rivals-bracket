@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Rivals Gauntlet | Cinematic Stinger</title>
+
+  <style>
+    :root{
+      --close-time: 430ms;
+      --hold-time: 240ms;
+      --open-time: 500ms;
+      --total-time: 1270ms;
+
+      --black-0:#020204;
+      --black-1:#050508;
+      --black-2:#0a0910;
+
+      --purple:#9a72ff;
+      --purple-soft:#c4b3ff;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+      margin:0;
+      overflow:hidden;
+      background:transparent;
+    }
+
+    .stinger{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      visibility:visible;
+    }
+
+    .stinger.is-finished{
+      display:none;
+    }
+
+    .panel{
+      position:absolute;
+      top:-7%;
+      width:64%;
+      height:114%;
+      will-change:transform;
+      background:
+        linear-gradient(
+          118deg,
+          transparent 0 34%,
+          rgba(255,255,255,.010) 34.2% 34.5%,
+          transparent 34.8% 68%,
+          rgba(154,114,255,.018) 68.2% 68.5%,
+          transparent 68.8%
+        ),
+        linear-gradient(
+          180deg,
+          var(--black-2) 0%,
+          var(--black-1) 45%,
+          var(--black-0) 100%
+        );
+      box-shadow:
+        0 0 130px rgba(0,0,0,.95),
+        inset 0 1px 0 rgba(255,255,255,.012),
+        inset 0 -1px 0 rgba(0,0,0,.96);
+    }
+
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(
+          ellipse at 50% 42%,
+          rgba(154,114,255,.035),
+          transparent 48%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.006),
+          transparent 28%
+        );
+      opacity:.72;
+    }
+
+    .panel::after{
+      content:"";
+      position:absolute;
+      top:0;
+      bottom:0;
+      width:2px;
+      opacity:0;
+      background:
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(196,179,255,.22) 20%,
+          rgba(154,114,255,.58) 50%,
+          rgba(196,179,255,.22) 80%,
+          transparent 100%
+        );
+      filter:
+        drop-shadow(0 0 5px rgba(154,114,255,.38));
+    }
+
+    .panel.left{
+      left:-10%;
+      clip-path:polygon(
+        0 0,
+        82% 0,
+        100% 24%,
+        94% 50%,
+        100% 76%,
+        82% 100%,
+        0 100%
+      );
+      transform:translateX(-112%);
+      animation:
+        panelLeftClose
+        var(--close-time)
+        cubic-bezier(.16,.84,.22,1)
+        forwards,
+
+        panelLeftOpen
+        var(--open-time)
+        cubic-bezier(.72,.02,.26,1)
+        calc(var(--close-time) + var(--hold-time))
+        forwards;
+    }
+
+    .panel.left::after{
+      right:7.5%;
+    }
+
+    .panel.right{
+      right:-10%;
+      clip-path:polygon(
+        18% 0,
+        100% 0,
+        100% 100%,
+        18% 100%,
+        0 76%,
+        6% 50%,
+        0 24%
+      );
+      transform:translateX(112%);
+      animation:
+        panelRightClose
+        var(--close-time)
+        cubic-bezier(.16,.84,.22,1)
+        forwards,
+
+        panelRightOpen
+        var(--open-time)
+        cubic-bezier(.72,.02,.26,1)
+        calc(var(--close-time) + var(--hold-time))
+        forwards;
+    }
+
+    .panel.right::after{
+      left:7.5%;
+    }
+
+    .seam{
+      position:absolute;
+      left:50%;
+      top:-8%;
+      width:34px;
+      height:116%;
+      transform:
+        translateX(-50%)
+        scaleX(0);
+      transform-origin:center;
+      clip-path:polygon(
+        38% 0,
+        100% 0,
+        62% 100%,
+        0 100%
+      );
+      background:
+        linear-gradient(
+          180deg,
+          rgba(194,179,255,.92),
+          rgba(154,114,255,.58) 28%,
+          rgba(84,54,170,.88) 55%,
+          rgba(154,114,255,.54) 78%,
+          rgba(194,179,255,.86)
+        );
+      box-shadow:
+        0 0 10px rgba(154,114,255,.28),
+        0 0 26px rgba(154,114,255,.14);
+      opacity:0;
+      animation:
+        seamAppear
+        190ms
+        ease-out
+        300ms
+        forwards,
+
+        seamDisappear
+        220ms
+        ease-in
+        650ms
+        forwards;
+    }
+
+    .energy-line{
+      position:absolute;
+      left:-20%;
+      top:50%;
+      width:140%;
+      height:2px;
+      transform:
+        translateY(-50%)
+        rotate(-7deg)
+        scaleX(0);
+      transform-origin:left center;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(255,255,255,.08),
+          rgba(194,179,255,.52),
+          rgba(154,114,255,.70),
+          rgba(255,255,255,.10),
+          transparent
+        );
+      filter:
+        drop-shadow(0 0 5px rgba(154,114,255,.42))
+        drop-shadow(0 0 14px rgba(154,114,255,.18));
+      opacity:0;
+      animation:
+        energySweep
+        560ms
+        cubic-bezier(.18,.72,.22,1)
+        350ms
+        forwards;
+    }
+
+    .edge-glow{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      background:
+        radial-gradient(
+          ellipse at center,
+          rgba(154,114,255,.055),
+          transparent 46%
+        );
+      animation:
+        edgeGlow
+        520ms
+        ease-out
+        360ms
+        forwards;
+    }
+
+    .film-shade{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      background:
+        radial-gradient(
+          ellipse at center,
+          rgba(0,0,0,.02) 0%,
+          rgba(0,0,0,.10) 58%,
+          rgba(0,0,0,.36) 100%
+        );
+      animation:
+        filmShade
+        var(--close-time)
+        ease-out
+        forwards,
+
+        filmShadeOut
+        var(--open-time)
+        ease-in
+        calc(var(--close-time) + var(--hold-time))
+        forwards;
+    }
+
+    @keyframes panelLeftClose{
+      0%{
+        transform:translateX(-112%);
+      }
+      100%{
+        transform:translateX(0);
+      }
+    }
+
+    @keyframes panelRightClose{
+      0%{
+        transform:translateX(112%);
+      }
+      100%{
+        transform:translateX(0);
+      }
+    }
+
+    @keyframes panelLeftOpen{
+      0%{
+        transform:translateX(0);
+      }
+      100%{
+        transform:translateX(-112%);
+      }
+    }
+
+    @keyframes panelRightOpen{
+      0%{
+        transform:translateX(0);
+      }
+      100%{
+        transform:translateX(112%);
+      }
+    }
+
+    @keyframes seamAppear{
+      0%{
+        opacity:0;
+        transform:
+          translateX(-50%)
+          scaleX(0);
+      }
+      100%{
+        opacity:.84;
+        transform:
+          translateX(-50%)
+          scaleX(1);
+      }
+    }
+
+    @keyframes seamDisappear{
+      0%{
+        opacity:.84;
+        transform:
+          translateX(-50%)
+          scaleX(1);
+      }
+      100%{
+        opacity:0;
+        transform:
+          translateX(-50%)
+          scaleX(0);
+      }
+    }
+
+    @keyframes energySweep{
+      0%{
+        transform:
+          translateY(-50%)
+          rotate(-7deg)
+          scaleX(0);
+        opacity:0;
+      }
+      16%{
+        opacity:.88;
+      }
+      74%{
+        opacity:.56;
+      }
+      100%{
+        transform:
+          translateY(-50%)
+          rotate(-7deg)
+          scaleX(1);
+        opacity:0;
+      }
+    }
+
+    @keyframes edgeGlow{
+      0%{
+        opacity:0;
+      }
+      42%{
+        opacity:.65;
+      }
+      100%{
+        opacity:0;
+      }
+    }
+
+    @keyframes filmShade{
+      from{
+        opacity:0;
+      }
+      to{
+        opacity:1;
+      }
+    }
+
+    @keyframes filmShadeOut{
+      from{
+        opacity:1;
+      }
+      to{
+        opacity:0;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .panel,
+      .seam,
+      .energy-line,
+      .edge-glow,
+      .film-shade{
+        animation:none !important;
+      }
+    }
+  </style>
+
+<style>
+/* Use the same cinematic background as the countdown overlay. */
+.stinger{
+  background:
+    linear-gradient(rgba(3,3,6,.55), rgba(3,3,6,.55)),
+    url("countdownimage.PNG") center center / cover no-repeat !important;
+}
+
+/* Let the background breathe through the transition. */
+.film-shade{
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(0,0,0,.04) 0%,
+      rgba(0,0,0,.22) 55%,
+      rgba(0,0,0,.62) 100%
+    ) !important;
+}
+
+.panel{
+  background:
+    linear-gradient(
+      118deg,
+      transparent 0 34%,
+      rgba(255,255,255,.008) 34.2% 34.5%,
+      transparent 34.8% 68%,
+      rgba(154,114,255,.016) 68.2% 68.5%,
+      transparent 68.8%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10,9,16,.92),
+      rgba(5,5,9,.95)
+    ) !important;
+}
+</style>
+
+</head>
+
+<body>
+  <main
+    id="stinger"
+    class="stinger"
+    aria-label="Cinematic scene transition"
+  >
+    <div class="panel left"></div>
+    <div class="panel right"></div>
+
+    <div class="film-shade"></div>
+    <div class="seam"></div>
+    <div class="energy-line"></div>
+    <div class="edge-glow"></div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const stinger =
+        document.getElementById(
+          "stinger"
+        );
+
+      /*
+       * Remove the source once the panels have reopened so the
+       * browser source returns to full transparency.
+       */
+      window.setTimeout(
+        () => {
+          stinger.classList.add(
+            "is-finished"
+          );
+        },
+        1325
+      );
+    })();
+  </script>
+</body>
+</html>

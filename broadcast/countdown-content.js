@@ -1056,16 +1056,22 @@ function stopCurrent() {
      * Use a duration timer only when the admin
      * does not want the complete video duration.
      */
-    if (
-      settings.clipUsesFullDuration !==
-      true
-    ) {
-      currentTimer =
-        window.setTimeout(
-          finishItem,
-          item.durationMs
-        );
-    }
+    /*
+ * Video clips advance when the video ends.
+ * The duration field is only used as a safety fallback.
+ */
+if (item.loop !== true) {
+  const safetyDuration =
+    Math.max(
+      item.durationMs,
+      10 * 60 * 1000
+    );
+
+  currentTimer = window.setTimeout(
+    finishItem,
+    safetyDuration
+  );
+}
 
     video.play().catch(async (error) => {
       console.warn(

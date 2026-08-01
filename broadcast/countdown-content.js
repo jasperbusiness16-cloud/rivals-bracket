@@ -731,59 +731,208 @@
     );
   }
 
-  function mount(html, callback) {
-    const contentMount =
-      $("contentMount");
+  function waitForSceneMedia(layer) {
+  return new Promise((resolve) => {
+    const video = layer.querySelector("video.media-main");
+    const image = layer.querySelector("img.media-main");
 
-    if (!contentMount) {
+    /*
+     * News, bracket, prize-pool and supporter scenes
+     * contain no large media and can display immediately.
+     */
+    if (!video && !image) {
+      resolve();
       return;
     }
 
-    contentMount.classList.remove(
-      "fade-in",
-      "fade-out"
+    let completed = false;
+
+    function finish() {
+      if (completed) {
+        return;
+      }
+
+      completed = true;
+      resolve();
+    }
+
+    /*
+     * Never leave the broadcast waiting indefinitely.
+     * The previous scene remains visible during this wait.
+     */
+    const safetyTimer = window.setTimeout(
+      finish,
+      3500
     );
 
-    contentMount.classList.add(
-      "fade-out"
-    );
+    function ready() {
+      window.clearTimeout(safetyTimer);
+      finish();
+    }
 
-    transitionTimer =
-      window.setTimeout(() => {
-        contentMount.innerHTML =
-          html;
+    if (video) {
+      if (video.readyState >= 3) {
+        ready();
+        return;
+      }
 
-        contentMount.classList.remove(
-          "fade-out"
-        );
+      video.addEventListener(
+        "canplay",
+        ready,
+        { once: true }
+      );
 
-        contentMount.classList.add(
-          "fade-in"
-        );
+      video.addEventListener(
+        "loadeddata",
+        ready,
+        { once: true }
+      );
 
-        if (
-          typeof callback ===
-          "function"
-        ) {
-          callback();
-        }
+      video.addEventListener(
+        "error",
+        ready,
+        { once: true }
+      );
 
-        transitionTimer =
-          window.setTimeout(
-            () => {
-              contentMount
-                .classList
-                .remove(
-                  "fade-in"
-                );
+      video.load();
+      return;
+    }
 
-              transitionTimer =
-                null;
-            },
-            420
-          );
-      }, 220);
+    if (image) {
+      if (image.complete) {
+        ready();
+        return;
+      }
+
+      image.addEventListener(
+        "load",
+        ready,
+        { once: true }
+      );
+
+      image.addEventListener(
+        "error",
+        ready,
+        { once: true }
+      );
+    }
+  });
+}
+
+async function mount(html, callback) {
+  const contentMount =
+    document.getElementById("contentMount");
+
+  if (!contentMount) {
+    return;
   }
+
+  if (transitionTimer) {
+    window.clearTimeout(
+      transitionTimer
+    );
+
+    transitionTimer = null;
+  }
+
+  const previousLayer =
+    contentMount.querySelector(
+      ".scene-layer.is-visible"
+    );
+
+  const nextLayer =
+    document.createElement("div");
+
+  nextLayer.className =
+    "scene-layer";
+
+  nextLayer.innerHTML = html;
+
+  /*
+   * A small loading indicator is shown only over
+   * the invisible incoming layer. The previous
+   * scene remains visible underneath.
+   */
+  if (
+    nextLayer.querySelector(
+      "video.media-main, img.media-main"
+    )
+  ) {
+    const loading =
+      document.createElement("div");
+
+    loading.className =
+      "scene-loading";
+
+    loading.textContent =
+      "Loading next scene";
+
+    nextLayer.appendChild(
+      loading
+    );
+  }
+
+  contentMount.appendChild(
+    nextLayer
+  );
+
+  /*
+   * Let showItem attach video events and begin
+   * playback while the new layer is still hidden.
+   */
+  if (
+    typeof callback === "function"
+  ) {
+    callback(nextLayer);
+  }
+
+  await waitForSceneMedia(
+    nextLayer
+  );
+
+  const loading =
+    nextLayer.querySelector(
+      ".scene-loading"
+    );
+
+  if (loading) {
+    loading.remove();
+  }
+
+  /*
+   * Wait for one rendered frame before revealing
+   * the incoming scene.
+   */
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      nextLayer.classList.add(
+        "is-visible"
+      );
+
+      if (previousLayer) {
+        previousLayer.classList.add(
+          "is-leaving"
+        );
+      }
+
+      transitionTimer =
+        window.setTimeout(() => {
+          if (
+            previousLayer &&
+            previousLayer.isConnected
+          ) {
+            previousLayer.remove();
+          }
+
+          nextLayer.classList.remove(
+            "is-leaving"
+          );
+
+          transitionTimer = null;
+        }, 420);
+    });
+  });
+}
 
   function mediaMarkup(
     item,
@@ -1625,7 +1774,7 @@
         newsMarkup(item);
     }
 
-    mount(markup, () => {
+    mount(markup, (sceneLayer) => {
       if (
         token !== playbackToken
       ) {
@@ -1652,7 +1801,9 @@
       }
 
       const video =
-        $("activeVideo");
+  sceneLayer.querySelector(
+    "#activeVideo"
+  );
 
       if (!video) {
         currentTimer =

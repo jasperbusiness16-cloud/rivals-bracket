@@ -114,7 +114,9 @@ button{font:inherit}
   align-items:center;
   gap:24px;
 }
-.brand{display:flex;align-items:center;gap:15px}
+.brand{
+    display:block;
+}
 .brand-mark{
   width:60px;height:60px;display:grid;place-items:center;
   clip-path:polygon(17% 0,83% 0,100% 17%,100% 83%,83% 100%,17% 100%,0 83%,0 17%);
@@ -832,6 +834,284 @@ button{font:inherit}
 }
 
 </style>
+
+<style>
+  /* =========================================================
+     FINAL COUNTDOWN POLISHES
+     Mirrors the finished intermission treatment.
+     ========================================================= */
+
+  /* Remove the realtime connection badge while preserving its
+     Firebase target for countdown-content.js. */
+  .connection{
+    display:none !important;
+  }
+
+  .header{
+    grid-template-columns:auto minmax(0,1fr) !important;
+  }
+
+  /* Minimal clip-title treatment. */
+  .now-playing{
+    left:22px !important;
+    right:22px !important;
+    bottom:18px !important;
+
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:space-between !important;
+    gap:16px !important;
+
+    pointer-events:none;
+  }
+
+  .playing-meta,
+  .submitter{
+    width:auto !important;
+    min-width:0 !important;
+    max-width:520px !important;
+
+    padding:0 !important;
+    border:none !important;
+    border-radius:0 !important;
+
+    background:transparent !important;
+    background-color:transparent !important;
+
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+  }
+
+  .playing-meta{
+    display:flex !important;
+    flex:0 1 auto !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:2px !important;
+  }
+
+  .playing-meta span{
+    display:inline-block !important;
+
+    padding-left:10px !important;
+    border-left:3px solid #8b5cff !important;
+
+    color:#bda5ff !important;
+    font-size:9px !important;
+    font-weight:800 !important;
+    letter-spacing:.22em !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+  }
+
+  .playing-meta strong{
+    display:block !important;
+    max-width:520px !important;
+    margin-top:3px !important;
+    overflow:hidden !important;
+
+    color:#fff !important;
+    font-size:24px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+
+    text-overflow:ellipsis !important;
+    text-shadow:0 2px 12px rgba(0,0,0,.65) !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+  }
+
+  .playing-meta small{
+    display:none !important;
+  }
+
+  /* Submitter information matches the title treatment while
+     retaining both the display name and creator handle. */
+  .submitter{
+    display:flex !important;
+    flex:0 0 auto !important;
+    flex-direction:column !important;
+    align-items:flex-end !important;
+    gap:2px !important;
+
+    max-width:320px !important;
+    padding-right:10px !important;
+    border-right:3px solid #8b5cff !important;
+
+    text-align:right !important;
+  }
+
+  .submitter span{
+    display:block !important;
+
+    color:#bda5ff !important;
+    font-size:8px !important;
+    font-weight:800 !important;
+    letter-spacing:.20em !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+  }
+
+  .submitter strong{
+    display:block !important;
+    max-width:320px !important;
+    margin-top:2px !important;
+    overflow:hidden !important;
+
+    color:#fff !important;
+    font-size:18px !important;
+    font-weight:800 !important;
+    line-height:1 !important;
+
+    text-overflow:ellipsis !important;
+    text-shadow:0 2px 12px rgba(0,0,0,.65) !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+  }
+
+  .submitter small{
+    display:block !important;
+    max-width:320px !important;
+    margin-top:2px !important;
+    overflow:hidden !important;
+
+    color:#bbb3c8 !important;
+    font-size:10px !important;
+    font-weight:700 !important;
+    letter-spacing:.08em !important;
+    line-height:1.1 !important;
+
+    text-overflow:ellipsis !important;
+    text-shadow:0 2px 10px rgba(0,0,0,.68) !important;
+    white-space:nowrap !important;
+  }
+
+  .submitter.is-empty{
+    display:none !important;
+  }
+
+  /* Keep both upcoming team names grouped tightly around VS. */
+  .next-match{
+    position:relative !important;
+
+    grid-template-columns:
+      minmax(0,420px)
+      70px
+      minmax(0,420px) !important;
+
+    justify-content:center !important;
+    gap:10px !important;
+
+    padding:
+      31px
+      22px
+      12px !important;
+  }
+
+  .next-match::before{
+    content:"Upcoming Match";
+    position:absolute;
+    left:22px;
+    top:10px;
+
+    color:#bca7ff;
+    font-size:8px;
+    font-weight:800;
+    letter-spacing:.18em;
+    line-height:1;
+    text-transform:uppercase;
+  }
+
+  .next-team > span{
+    display:none !important;
+  }
+
+  .next-team strong{
+    margin-top:0 !important;
+  }
+
+  .next-team:first-child{
+    padding-right:4px !important;
+    text-align:right !important;
+  }
+
+  .next-team:last-child{
+    padding-left:4px !important;
+    text-align:left !important;
+  }
+
+  .next-vs{
+    width:56px !important;
+    height:56px !important;
+  }
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  function tidyCountdownSubmitter() {
+    var submitter =
+      document.querySelector(
+        ".now-playing .submitter"
+      );
+
+    if (!submitter) {
+      return;
+    }
+
+    var strong =
+      submitter.querySelector("strong");
+
+    var small =
+      submitter.querySelector("small");
+
+    var name =
+      strong
+        ? strong.textContent.trim()
+        : "";
+
+    var handle =
+      small
+        ? small.textContent.trim()
+        : "";
+
+    var isGeneric =
+      !name ||
+      name === "Official Broadcast" ||
+      name === "Rivals Gauntlet";
+
+    submitter.classList.toggle(
+      "is-empty",
+      isGeneric && !handle
+    );
+  }
+
+  var mount =
+    document.getElementById(
+      "contentMount"
+    );
+
+  if (mount) {
+    var observer =
+      new MutationObserver(
+        tidyCountdownSubmitter
+      );
+
+    observer.observe(
+      mount,
+      {
+        childList:true,
+        subtree:true,
+        characterData:true
+      }
+    );
+  }
+
+  tidyCountdownSubmitter();
+})();
+</script>
+
 </head>
 <body>
 <main class="stage">
@@ -839,7 +1119,6 @@ button{font:inherit}
 
   <header class="header">
     <div class="brand">
-      <div class="brand-mark">RG</div>
       <div class="brand-copy">
         <span>Rivals Gauntlet Broadcast</span>
         <strong id="eventName">RIVALS GAUNTLET</strong>

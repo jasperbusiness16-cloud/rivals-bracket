@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, initial-scale=1.0">
+<title>Rivals Gauntlet | Instant Replay</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --hold:2400ms;
+  --fade:900ms;
+  --white:#f7f7f5;
+  --silver:#b9bbc3;
+  --accent:#8d6cff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  width:1920px;
+  height:1080px;
+  margin:0;
+  overflow:hidden;
+  background:transparent!important;
+  font-family:"Rajdhani",Arial,sans-serif;
+}
+
+.replay-screen{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  color:var(--white);
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(110,95,255,.08),
+      transparent 38%
+    ),
+    linear-gradient(
+      180deg,
+      #030304 0%,
+      #090a10 45%,
+      #030304 100%
+    );
+
+  animation:
+    screenFade var(--fade) cubic-bezier(.55,0,.3,1)
+    calc(var(--hold) + 180ms) forwards;
+}
+
+.replay-screen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 30%,
+      rgba(0,0,0,.28) 68%,
+      rgba(0,0,0,.58) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.018),
+      transparent 22%,
+      transparent 78%,
+      rgba(0,0,0,.22)
+    );
+}
+
+.replay-screen::after{
+  content:"";
+  position:absolute;
+  left:-30%;
+  top:0;
+  width:24%;
+  height:100%;
+  opacity:0;
+  transform:skewX(-18deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(141,108,255,.20),
+      rgba(255,255,255,.13),
+      rgba(141,108,255,.08),
+      transparent
+    );
+
+  filter:blur(12px);
+
+  animation:
+    titleSweep 1.25s cubic-bezier(.16,1,.3,1) 1.15s forwards;
+}
+
+.copy{
+  position:relative;
+  z-index:2;
+  width:min(1500px,86vw);
+  text-align:center;
+  text-transform:uppercase;
+}
+
+.kicker{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:24px;
+
+  margin-bottom:34px;
+
+  color:var(--silver);
+
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.42em;
+
+  opacity:0;
+  transform:translateY(10px);
+
+  animation:
+    kickerIn .6s ease .28s forwards;
+}
+
+.kicker::before,
+.kicker::after{
+  content:"";
+  width:260px;
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.35)
+    );
+}
+
+.kicker::after{
+  transform:scaleX(-1);
+}
+
+.word{
+  display:block;
+  font-weight:800;
+  line-height:.72;
+  white-space:nowrap;
+}
+
+65%{
+    opacity:1;
+    transform:translateY(-2px);
+    filter:blur(0);
+  }
+
+  100%{
+    opacity:1;
+    transform:translateY(0);
+    filter:blur(0);
+  }
+}
+
+@keyframes replayIn{
+  0%{
+    opacity:0;
+    transform:translateY(30px);
+    filter:blur(10px);
+  }
+
+  65%{
+    opacity:1;
+    transform:translateY(-2px);
+    filter:blur(0);
+  }
+
+  100%{
+    opacity:1;
+    transform:translateY(0);
+    filter:blur(0);
+  }
+}
+
+@keyframes accentIn{
+  to{
+    transform:translate(-50%,116px) scaleX(1);
+  }
+}
+
+@keyframes brandIn{
+  to{
+    opacity:1;
+  }
+}
+
+@keyframes titleSweep{
+  0%{
+    left:-30%;
+    opacity:0;
+  }
+
+  18%{
+    opacity:.9;
+  }
+
+  80%{
+    opacity:.7;
+  }
+
+  100%{
+    left:120%;
+    opacity:0;
+  }
+}
+
+@keyframes letterSweep{
+  to{
+    background-position:-120% 0;
+  }
+}
+
+@keyframes screenFade{
+  0%{
+    opacity:1;
+    visibility:visible;
+  }
+
+  100%{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .replay-screen{
+    animation:
+      screenFade .01ms linear
+      calc(var(--hold) + 180ms) forwards;
+  }
+
+  .replay-screen::after,
+  .kicker,
+  .word.instant,
+  .word.replay,
+  .brand,
+  .accent{
+    animation:none;
+    opacity:1;
+    transform:none;
+    filter:none;
+  }
+
+  .accent{
+    transform:translate(-50%,116px) scaleX(1);
+  }
+}
+</style>
+</head>
+
+<body>
+  <main class="replay-screen" aria-label="Instant replay transition">
+    <section class="copy">
+      <div class="kicker">
+        Official Replay
+      </div>
+<span class="word replay">
+        Replay
+      </span>
+    </section>
+
+    <div class="accent" aria-hidden="true"></div>
+
+    <div class="brand">
+      Rivals Gauntlet Broadcast
+    </div>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  const params =
+    new URLSearchParams(
+      location.search
+    );
+
+  const hold =
+    Number(
+      params.get("hold")
+    );
+
+  if (
+    Number.isFinite(hold) &&
+    hold >= 1000 &&
+    hold <= 10000
+  ) {
+    document.documentElement
+      .style
+      .setProperty(
+        "--hold",
+        `${hold}ms`
+      );
+  }
+})();
+</script>
+</body>
+</html>

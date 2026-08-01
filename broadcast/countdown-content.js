@@ -952,19 +952,34 @@
           }
 
           video
-            .play()
-            .catch((error) => {
-              console.warn(
-                "The clip could not autoplay:",
-                error
-              );
+  .play()
+  .catch(async (error) => {
+    console.warn(
+      "Unmuted autoplay was blocked. Retrying muted:",
+      error
+    );
 
-              currentTimer =
-                window.setTimeout(
-                  finish,
-                  item.durationMs
-                );
-            });
+    /*
+     * Regular browsers may block autoplay with sound.
+     * Retry muted so the clip still plays instead of freezing.
+     */
+    video.muted = true;
+    video.volume = 0;
+
+    try {
+      await video.play();
+    } catch (retryError) {
+      console.error(
+        "The clip could not autoplay even while muted:",
+        retryError
+      );
+
+      currentTimer = window.setTimeout(
+        finish,
+        item.durationMs
+      );
+    }
+  });
 
           return;
         }

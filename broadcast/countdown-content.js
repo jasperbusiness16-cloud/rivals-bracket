@@ -83,8 +83,9 @@
   let lastTimerText = "";
 
   let playbackToken = 0;
-  let transitionTimer = null;
-  let currentItemId = "";
+let transitionTimer = null;
+let currentItemId = "";
+let sceneGeneration = 0;
 
   function databaseConnection() {
     try {

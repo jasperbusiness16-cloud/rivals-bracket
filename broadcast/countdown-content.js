@@ -734,12 +734,19 @@ sceneGeneration += 1;
 
   function waitForSceneMedia(layer) {
   return new Promise((resolve) => {
-    const video = layer.querySelector("video.media-main");
-    const image = layer.querySelector("img.media-main");
+    const video =
+      layer.querySelector(
+        "video.media-main"
+      );
+
+    const image =
+      layer.querySelector(
+        "img.media-main"
+      );
 
     /*
-     * News, bracket, prize-pool and supporter scenes
-     * contain no large media and can display immediately.
+     * Firebase cards, news and matchup scenes
+     * can display immediately.
      */
     if (!video && !image) {
       resolve();
@@ -758,81 +765,91 @@ sceneGeneration += 1;
     }
 
     /*
-     * Never leave the broadcast waiting indefinitely.
-     * The previous scene remains visible during this wait.
+     * Keep the current scene visible if the media
+     * takes time to load. Never show a blank screen.
      */
-    const safetyTimer = window.setTimeout(
-      finish,
-      3500
-    );
+    const safetyTimer =
+      window.setTimeout(
+        finish,
+        5000
+      );
 
     function ready() {
-      window.clearTimeout(safetyTimer);
+      window.clearTimeout(
+        safetyTimer
+      );
+
       finish();
     }
 
     if (video) {
-      if (video.readyState >= 3) {
-        ready();
-        return;
-      }
-
+      /*
+       * "playing" means playback has genuinely started.
+       * It is more reliable here than "canplay."
+       */
       video.addEventListener(
-        "canplay",
+        "playing",
         ready,
-        { once: true }
-      );
-
-      video.addEventListener(
-        "loadeddata",
-        ready,
-        { once: true }
+        {
+          once: true
+        }
       );
 
       video.addEventListener(
         "error",
         ready,
-        { once: true }
+        {
+          once: true
+        }
       );
 
-      video.load();
+      /*
+       * A video can already be advancing before the
+       * listener is checked.
+       */
+      if (
+        !video.paused &&
+        video.currentTime > 0
+      ) {
+        ready();
+      }
+
       return;
     }
 
-    if (image) {
-      if (image.complete) {
-        ready();
-        return;
-      }
-
-      image.addEventListener(
-        "load",
-        ready,
-        { once: true }
-      );
-
-      image.addEventListener(
-        "error",
-        ready,
-        { once: true }
-      );
+    if (image.complete) {
+      ready();
+      return;
     }
+
+    image.addEventListener(
+      "load",
+      ready,
+      {
+        once: true
+      }
+    );
+
+    image.addEventListener(
+      "error",
+      ready,
+      {
+        once: true
+      }
+    );
   });
 }
 
 async function mount(html, callback) {
   const contentMount =
-    document.getElementById("contentMount");
+    document.getElementById(
+      "contentMount"
+    );
 
   if (!contentMount) {
     return;
   }
 
-  /*
-   * Every transition receives a unique generation.
-   * A slower older transition is not allowed to
-   * finish after a newer transition begins.
-   */
   sceneGeneration += 1;
 
   const generation =
@@ -847,24 +864,7 @@ async function mount(html, callback) {
   }
 
   /*
-   * Clean up anything left by the old mounting
-   * system, including cards mounted without a
-   * scene-layer wrapper.
-   */
-  Array.from(
-    contentMount.children
-  ).forEach(child => {
-    if (
-      !child.classList.contains(
-        "scene-layer"
-      )
-    ) {
-      child.remove();
-    }
-  });
-
-  /*
-   * Keep only one currently visible layer.
+   * Keep only the single active scene.
    */
   const existingLayers =
     Array.from(
@@ -873,7 +873,7 @@ async function mount(html, callback) {
       )
     );
 
-  let previousLayer =
+  const previousLayer =
     existingLayers.find(layer => {
       return layer.classList.contains(
         "is-visible"
@@ -903,9 +903,8 @@ async function mount(html, callback) {
   );
 
   /*
-   * Let showItem locate the new video and attach
-   * its playback handlers while this layer remains
-   * invisible.
+   * Attach playback events and start the incoming
+   * video while it remains hidden.
    */
   if (
     typeof callback === "function"
@@ -917,10 +916,6 @@ async function mount(html, callback) {
     nextLayer
   );
 
-  /*
-   * Cancel this result if another scene was requested
-   * while the media was still loading.
-   */
   if (
     generation !== sceneGeneration ||
     !nextLayer.isConnected
@@ -929,17 +924,10 @@ async function mount(html, callback) {
     return;
   }
 
-  const loading =
-    nextLayer.querySelector(
-      ".scene-loading"
-    );
-
-  if (loading) {
-    loading.remove();
-  }
-
   /*
-   * Reveal the fully loaded scene over the old one.
+   * Perform the handoff in one rendered frame.
+   * The previous scene is removed before the new
+   * scene becomes visible, preventing overlap.
    */
   requestAnimationFrame(() => {
     if (
@@ -950,45 +938,40 @@ async function mount(html, callback) {
       return;
     }
 
+    if (
+      previousLayer &&
+      previousLayer.isConnected
+    ) {
+      previousLayer.remove();
+    }
+
+    contentMount
+      .querySelectorAll(
+        ":scope > .scene-layer"
+      )
+      .forEach(layer => {
+        if (layer !== nextLayer) {
+          layer.remove();
+        }
+      });
+
+    nextLayer.classList.remove(
+      "is-incoming"
+    );
+
     nextLayer.classList.add(
+      "is-visible",
       "is-ready"
     );
 
     transitionTimer =
       window.setTimeout(() => {
-        if (
-          generation !== sceneGeneration ||
-          !nextLayer.isConnected
-        ) {
-          return;
-        }
-
-        /*
-         * The incoming scene is now opaque.
-         * Remove every other scene immediately.
-         */
-        contentMount
-          .querySelectorAll(
-            ":scope > .scene-layer"
-          )
-          .forEach(layer => {
-            if (layer !== nextLayer) {
-              layer.remove();
-            }
-          });
-
         nextLayer.classList.remove(
-          "is-incoming",
           "is-ready"
         );
 
-        nextLayer.classList.add(
-          "is-visible"
-        );
-
-        previousLayer = null;
         transitionTimer = null;
-      }, 240);
+      }, 110);
   });
 }
 
@@ -1065,7 +1048,7 @@ async function mount(html, callback) {
             }
             autoplay
             playsinline
-            preload="metadata"
+            preload="auto"
           ></video>
         `
         : `
@@ -1874,7 +1857,12 @@ async function mount(html, callback) {
       }
 
       currentVideo = video;
-
+/*
+ * Keep the incoming video invisible until it
+ * has genuinely entered the playing state.
+ */
+video.playsInline = true;
+video.preload = "auto";
       video.muted =
         item.muted;
 

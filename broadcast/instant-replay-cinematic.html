@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=1920, initial-scale=1.0"
+  >
+  <title>Rivals Gauntlet | Replay Intro</title>
+
+  <style>
+    :root{
+      --hold-time: 2200ms;
+      --fade-time: 650ms;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html,
+    body{
+      width:1920px;
+      height:1080px;
+      margin:0;
+      overflow:hidden;
+      background:transparent;
+    }
+
+    body{
+      font-family:Arial,sans-serif;
+    }
+
+    .replay-intro{
+      position:fixed;
+      inset:0;
+      z-index:10;
+      overflow:hidden;
+
+      background:
+        #050509
+        url("replayimage.PNG")
+        center center / cover
+        no-repeat;
+
+      opacity:1;
+      visibility:visible;
+
+      animation:
+        replayFadeOut
+        var(--fade-time)
+        ease
+        var(--hold-time)
+        forwards;
+    }
+
+    .replay-intro::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+
+      background:
+        radial-gradient(
+          ellipse at 50% 42%,
+          transparent 35%,
+          rgba(0,0,0,.12) 68%,
+          rgba(0,0,0,.42) 100%
+        );
+
+      animation:
+        subtlePush
+        calc(
+          var(--hold-time) +
+          var(--fade-time)
+        )
+        ease-out
+        forwards;
+    }
+
+    .replay-intro::after{
+      content:"";
+      position:absolute;
+      left:-20%;
+      top:0;
+      width:42%;
+      height:100%;
+      pointer-events:none;
+
+      background:
+        linear-gradient(
+          108deg,
+          transparent 0 30%,
+          rgba(255,255,255,.018) 42%,
+          rgba(188,160,255,.10) 50%,
+          rgba(255,255,255,.018) 58%,
+          transparent 70%
+        );
+
+      filter:blur(4px);
+      opacity:0;
+
+      animation:
+        cinematicSweep
+        1200ms
+        ease-in-out
+        440ms
+        forwards;
+    }
+
+    .replay-intro.is-hidden{
+      display:none;
+    }
+
+    @keyframes replayFadeOut{
+      0%{
+        opacity:1;
+        visibility:visible;
+      }
+
+      100%{
+        opacity:0;
+        visibility:hidden;
+      }
+    }
+
+    @keyframes subtlePush{
+      from{
+        transform:scale(1.018);
+      }
+
+      to{
+        transform:scale(1);
+      }
+    }
+
+    @keyframes cinematicSweep{
+      0%{
+        left:-28%;
+        opacity:0;
+      }
+
+      18%{
+        opacity:.72;
+      }
+
+      72%{
+        opacity:.34;
+      }
+
+      100%{
+        left:108%;
+        opacity:0;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      .replay-intro,
+      .replay-intro::before,
+      .replay-intro::after{
+        animation:none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div
+    id="replayIntro"
+    class="replay-intro"
+    aria-label="Replay"
+  ></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const intro =
+        document.getElementById(
+          "replayIntro"
+        );
+
+      /*
+       * Remove the full-screen intro after its fade so the
+       * browser source becomes completely transparent and the
+       * replay footage underneath is fully visible.
+       */
+      window.setTimeout(
+        () => {
+          intro.classList.add(
+            "is-hidden"
+          );
+        },
+        3000
+      );
+
+      /*
+       * OBS browser sources can be refreshed/re-shown to replay
+       * this animation from the beginning.
+       */
+    })();
+  </script>
+</body>
+</html>

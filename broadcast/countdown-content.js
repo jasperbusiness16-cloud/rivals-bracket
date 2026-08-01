@@ -642,7 +642,7 @@ let sceneGeneration = 0;
 
   function stopCurrent() {
     playbackToken += 1;
-
+sceneGeneration += 1;
     if (currentTimer) {
       clearTimeout(
         currentTimer
@@ -828,6 +828,16 @@ async function mount(html, callback) {
     return;
   }
 
+  /*
+   * Every transition receives a unique generation.
+   * A slower older transition is not allowed to
+   * finish after a newer transition begins.
+   */
+  sceneGeneration += 1;
+
+  const generation =
+    sceneGeneration;
+
   if (transitionTimer) {
     window.clearTimeout(
       transitionTimer
@@ -837,18 +847,33 @@ async function mount(html, callback) {
   }
 
   /*
-   * Keep only the currently visible scene.
-   * Remove any abandoned layers left behind by
-   * interrupted Firebase updates or transitions.
+   * Clean up anything left by the old mounting
+   * system, including cards mounted without a
+   * scene-layer wrapper.
+   */
+  Array.from(
+    contentMount.children
+  ).forEach(child => {
+    if (
+      !child.classList.contains(
+        "scene-layer"
+      )
+    ) {
+      child.remove();
+    }
+  });
+
+  /*
+   * Keep only one currently visible layer.
    */
   const existingLayers =
     Array.from(
       contentMount.querySelectorAll(
-        ".scene-layer"
+        ":scope > .scene-layer"
       )
     );
 
-  const previousLayer =
+  let previousLayer =
     existingLayers.find(layer => {
       return layer.classList.contains(
         "is-visible"
@@ -865,7 +890,10 @@ async function mount(html, callback) {
     document.createElement("div");
 
   nextLayer.className =
-    "scene-layer";
+    "scene-layer is-incoming";
+
+  nextLayer.dataset.generation =
+    String(generation);
 
   nextLayer.innerHTML =
     html;
@@ -874,28 +902,10 @@ async function mount(html, callback) {
     nextLayer
   );
 
-  if (
-    nextLayer.querySelector(
-      "video.media-main, img.media-main"
-    )
-  ) {
-    const loading =
-      document.createElement("div");
-
-    loading.className =
-      "scene-loading";
-
-    loading.textContent =
-      "Loading next scene";
-
-    nextLayer.appendChild(
-      loading
-    );
-  }
-
   /*
-   * Attach video events while the incoming
-   * scene remains hidden.
+   * Let showItem locate the new video and attach
+   * its playback handlers while this layer remains
+   * invisible.
    */
   if (
     typeof callback === "function"
@@ -908,10 +918,14 @@ async function mount(html, callback) {
   );
 
   /*
-   * The scene may have been cancelled while
-   * its media was loading.
+   * Cancel this result if another scene was requested
+   * while the media was still loading.
    */
-  if (!nextLayer.isConnected) {
+  if (
+    generation !== sceneGeneration ||
+    !nextLayer.isConnected
+  ) {
+    nextLayer.remove();
     return;
   }
 
@@ -924,52 +938,57 @@ async function mount(html, callback) {
     loading.remove();
   }
 
+  /*
+   * Reveal the fully loaded scene over the old one.
+   */
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      if (!nextLayer.isConnected) {
-        return;
-      }
+    if (
+      generation !== sceneGeneration ||
+      !nextLayer.isConnected
+    ) {
+      nextLayer.remove();
+      return;
+    }
 
-      nextLayer.classList.add(
-        "is-visible"
-      );
+    nextLayer.classList.add(
+      "is-ready"
+    );
 
-      if (previousLayer) {
-        previousLayer.classList.remove(
+    transitionTimer =
+      window.setTimeout(() => {
+        if (
+          generation !== sceneGeneration ||
+          !nextLayer.isConnected
+        ) {
+          return;
+        }
+
+        /*
+         * The incoming scene is now opaque.
+         * Remove every other scene immediately.
+         */
+        contentMount
+          .querySelectorAll(
+            ":scope > .scene-layer"
+          )
+          .forEach(layer => {
+            if (layer !== nextLayer) {
+              layer.remove();
+            }
+          });
+
+        nextLayer.classList.remove(
+          "is-incoming",
+          "is-ready"
+        );
+
+        nextLayer.classList.add(
           "is-visible"
         );
 
-        previousLayer.classList.add(
-          "is-leaving"
-        );
-      }
-
-      transitionTimer =
-        window.setTimeout(() => {
-          if (
-            previousLayer &&
-            previousLayer.isConnected
-          ) {
-            previousLayer.remove();
-          }
-
-          /*
-           * Remove every remaining stale layer,
-           * leaving only the new active scene.
-           */
-          contentMount
-            .querySelectorAll(
-              ".scene-layer"
-            )
-            .forEach(layer => {
-              if (layer !== nextLayer) {
-                layer.remove();
-              }
-            });
-
-          transitionTimer = null;
-        }, 420);
-    });
+        previousLayer = null;
+        transitionTimer = null;
+      }, 240);
   });
 }
 

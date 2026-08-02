@@ -385,25 +385,38 @@
   }
 
   function start() {
-    if (
-      started ||
-      stopped
-    ) {
-      return;
-    }
-
-    started =
-      true;
-
-    playlistIndex =
-      0;
-
-    playTrack(
-      nextTrack(),
-      true
-    );
+  if (stopped) {
+    return;
   }
 
+  /*
+   * Allow another attempt after mobile Safari blocks autoplay.
+   */
+  if (!started) {
+    started = true;
+    playlistIndex = 0;
+  }
+
+  const current =
+    activePlayer();
+
+  if (
+    current &&
+    current.src &&
+    current.paused
+  ) {
+    current
+      .play()
+      .catch(() => {});
+
+    return;
+  }
+
+  playTrack(
+    nextTrack(),
+    true
+  );
+}
   function stop(
     immediate = false
   ) {
@@ -609,21 +622,17 @@
   );
 
   document.addEventListener(
-    "click",
-    start,
-    {
-      once: true
-    }
-  );
+  "click",
+  start
+);
 
-  document.addEventListener(
-    "touchstart",
-    start,
-    {
-      once: true,
-      passive: true
-    }
-  );
+document.addEventListener(
+  "touchstart",
+  start,
+  {
+    passive: true
+  }
+);
 
   document.addEventListener(
     "visibilitychange",

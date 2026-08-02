@@ -388,26 +388,34 @@
   if (stopped) {
     return;
   }
-const current = activePlayer();
 
-if (
-  started &&
-  current &&
-  !current.paused
-) {
-  return;
-}
+  const current =
+    activePlayer();
+
   /*
-   * Allow another attempt after mobile Safari blocks autoplay.
+   * Music is already playing.
+   * Ignore additional taps.
+   */
+  if (
+    started &&
+    current &&
+    !current.paused
+  ) {
+    return;
+  }
+
+  /*
+   * First start attempt.
    */
   if (!started) {
     started = true;
     playlistIndex = 0;
   }
 
-  const current =
-    activePlayer();
-
+  /*
+   * Retry a track that was loaded but blocked
+   * by mobile autoplay restrictions.
+   */
   if (
     current &&
     current.src &&
@@ -415,11 +423,19 @@ if (
   ) {
     current
       .play()
-      .catch(() => {});
+      .catch(error => {
+        console.warn(
+          "Broadcast audio retry was blocked:",
+          error
+        );
+      });
 
     return;
   }
 
+  /*
+   * No track has loaded yet.
+   */
   playTrack(
     nextTrack(),
     true

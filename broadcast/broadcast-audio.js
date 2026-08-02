@@ -18,11 +18,12 @@
       loopPlaylist: true,
 
       tracks: [
-        "audio/intermission1.mp3",
-        "audio/intermission2.mp3",
-        "audio/intermission3.mp3",
-        "audio/intermission4.mp3"
-      ]
+  "audio/slow1.mp3",
+  "audio/slow2.mp3",
+  "audio/slow3.mp3",
+  "audio/slow4.mp3",
+  "audio/slow5.mp3"
+]
     },
 
     credits: {

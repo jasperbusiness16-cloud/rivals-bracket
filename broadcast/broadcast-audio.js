@@ -388,7 +388,15 @@
   if (stopped) {
     return;
   }
+const current = activePlayer();
 
+if (
+  started &&
+  current &&
+  !current.paused
+) {
+  return;
+}
   /*
    * Allow another attempt after mobile Safari blocks autoplay.
    */

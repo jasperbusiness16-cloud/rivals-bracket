@@ -550,20 +550,12 @@ function syncCountdownMusic(
   remaining,
   start
 ) {
-  function syncCountdownMusic(
-  remaining,
-  start
-) {
   if (
     !IS_COUNTDOWN_AUDIO_MODE
   ) {
     return;
   }
 
-  if (
-    !start ||
-    remaining <= 0
-  ) {
   if (
     !start ||
     remaining <= 0
@@ -577,8 +569,7 @@ function syncCountdownMusic(
 
   if (
     lastMusicStartTime &&
-    start !==
-      lastMusicStartTime
+    start !== lastMusicStartTime
   ) {
     stopCountdownMusic(true);
   }

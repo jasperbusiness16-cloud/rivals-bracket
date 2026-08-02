@@ -90,6 +90,18 @@ let sceneGeneration = 0;
    RIVALS GAUNTLET COUNTDOWN MUSIC MANAGER
    ========================================================= */
 
+const RG_AUDIO_MODE =
+  String(
+    window.RG_BROADCAST_MODE ||
+    "countdown"
+  )
+    .trim()
+    .toLowerCase();
+
+const IS_COUNTDOWN_AUDIO_MODE =
+  RG_AUDIO_MODE ===
+  "countdown";
+
 const MUSIC_START_WINDOW_MS =
   30 * 60 * 1000;
 
@@ -538,6 +550,20 @@ function syncCountdownMusic(
   remaining,
   start
 ) {
+  function syncCountdownMusic(
+  remaining,
+  start
+) {
+  if (
+    !IS_COUNTDOWN_AUDIO_MODE
+  ) {
+    return;
+  }
+
+  if (
+    !start ||
+    remaining <= 0
+  ) {
   if (
     !start ||
     remaining <= 0
@@ -582,6 +608,11 @@ function syncCountdownMusic(
 }
 
 function unlockCountdownMusic() {
+    if (
+    !IS_COUNTDOWN_AUDIO_MODE
+  ) {
+    return;
+  }
   const start =
     getStartTime();
 

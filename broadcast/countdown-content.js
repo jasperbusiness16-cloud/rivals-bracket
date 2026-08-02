@@ -86,7 +86,548 @@
 let transitionTimer = null;
 let currentItemId = "";
 let sceneGeneration = 0;
+/* =========================================================
+   RIVALS GAUNTLET COUNTDOWN MUSIC MANAGER
+   ========================================================= */
 
+const MUSIC_START_WINDOW_MS =
+  30 * 60 * 1000;
+
+const FINAL_TRACK_WINDOW_MS =
+  105 * 1000;
+
+const MUSIC_CROSSFADE_MS =
+  2600;
+
+const MUSIC_VOLUME =
+  0.34;
+
+const MUSIC_DUCKED_VOLUME =
+  0.10;
+
+const MUSIC_INTRO_PLAYLIST = [
+  "audio/slow1.mp3",
+  "audio/slow2.mp3",
+  "audio/slow3.mp3",
+  "audio/slow4.mp3",
+  "audio/slow5.mp3",
+  "audio/slowtoepic.mp3",
+  "audio/epic1.mp3",
+  "audio/epic2.mp3",
+  "audio/epic3.mp3",
+  "audio/epic4.mp3"
+];
+
+const MUSIC_EPIC_LOOP = [
+  "audio/epic1.mp3",
+  "audio/epic2.mp3",
+  "audio/epic3.mp3",
+  "audio/epic4.mp3"
+];
+
+const MUSIC_FINAL_TRACK =
+  "audio/endofcountdown.mp3";
+
+const musicPlayers = [
+  new Audio(),
+  new Audio()
+];
+
+musicPlayers.forEach(player => {
+  player.preload = "auto";
+  player.playsInline = true;
+  player.volume = 0;
+});
+
+let musicActivePlayer = 0;
+let musicIntroIndex = 0;
+let musicEpicIndex = 0;
+
+let musicPhase = "idle";
+
+let musicStarted = false;
+let musicFinalStarted = false;
+let musicDucked = false;
+
+let musicFadeFrame = 0;
+let lastMusicStartTime = 0;
+
+function musicTargetVolume() {
+  return musicDucked
+    ? MUSIC_DUCKED_VOLUME
+    : MUSIC_VOLUME;
+}
+
+function cancelMusicFade() {
+  if (musicFadeFrame) {
+    cancelAnimationFrame(
+      musicFadeFrame
+    );
+
+    musicFadeFrame = 0;
+  }
+}
+
+function fadeMusicPlayers(
+  outgoing,
+  incoming,
+  duration,
+  incomingTarget,
+  onComplete
+) {
+  cancelMusicFade();
+
+  const startedAt =
+    performance.now();
+
+  const outgoingStart =
+    outgoing
+      ? outgoing.volume
+      : 0;
+
+  const incomingStart =
+    incoming
+      ? incoming.volume
+      : 0;
+
+  function step(now) {
+    const progress =
+      Math.min(
+        1,
+        (now - startedAt) /
+          duration
+      );
+
+    const eased =
+      progress < 0.5
+        ? 2 * progress * progress
+        : 1 -
+          Math.pow(
+            -2 * progress + 2,
+            2
+          ) / 2;
+
+    if (outgoing) {
+      outgoing.volume =
+        Math.max(
+          0,
+          outgoingStart *
+            (1 - eased)
+        );
+    }
+
+    if (incoming) {
+      incoming.volume =
+        Math.min(
+          1,
+          incomingStart +
+            (
+              incomingTarget -
+              incomingStart
+            ) * eased
+        );
+    }
+
+    if (progress < 1) {
+      musicFadeFrame =
+        requestAnimationFrame(
+          step
+        );
+
+      return;
+    }
+
+    musicFadeFrame = 0;
+
+    if (outgoing) {
+      outgoing.pause();
+      outgoing.currentTime = 0;
+      outgoing.volume = 0;
+    }
+
+    if (incoming) {
+      incoming.volume =
+        incomingTarget;
+    }
+
+    if (
+      typeof onComplete ===
+      "function"
+    ) {
+      onComplete();
+    }
+  }
+
+  musicFadeFrame =
+    requestAnimationFrame(step);
+}
+
+function currentMusicPlayer() {
+  return musicPlayers[
+    musicActivePlayer
+  ];
+}
+
+function inactiveMusicPlayer() {
+  return musicPlayers[
+    musicActivePlayer === 0
+      ? 1
+      : 0
+  ];
+}
+
+function stopCountdownMusic(
+  immediate = false
+) {
+  cancelMusicFade();
+
+  if (immediate) {
+    musicPlayers.forEach(
+      player => {
+        player.pause();
+        player.currentTime = 0;
+        player.volume = 0;
+      }
+    );
+  } else {
+    const first =
+      musicPlayers[0];
+
+    const second =
+      musicPlayers[1];
+
+    const louder =
+      first.volume >= second.volume
+        ? first
+        : second;
+
+    fadeMusicPlayers(
+      louder,
+      null,
+      700,
+      0,
+      () => {
+        musicPlayers.forEach(
+          player => {
+            player.pause();
+            player.currentTime = 0;
+            player.volume = 0;
+          }
+        );
+      }
+    );
+  }
+
+  musicStarted = false;
+  musicFinalStarted = false;
+  musicPhase = "idle";
+  musicIntroIndex = 0;
+  musicEpicIndex = 0;
+}
+
+function setMusicDucked(
+  ducked
+) {
+  musicDucked =
+    Boolean(ducked);
+
+  const active =
+    currentMusicPlayer();
+
+  if (
+    !musicStarted ||
+    musicFinalStarted ||
+    active.paused
+  ) {
+    return;
+  }
+
+  const start =
+    active.volume;
+
+  const target =
+    musicTargetVolume();
+
+  const startedAt =
+    performance.now();
+
+  const duration = 500;
+
+  cancelMusicFade();
+
+  function step(now) {
+    const progress =
+      Math.min(
+        1,
+        (now - startedAt) /
+          duration
+      );
+
+    active.volume =
+      start +
+      (
+        target -
+        start
+      ) * progress;
+
+    if (progress < 1) {
+      musicFadeFrame =
+        requestAnimationFrame(
+          step
+        );
+    } else {
+      musicFadeFrame = 0;
+    }
+  }
+
+  musicFadeFrame =
+    requestAnimationFrame(step);
+}
+
+function nextCountdownMusicTrack() {
+  if (musicPhase === "intro") {
+    if (
+      musicIntroIndex <
+      MUSIC_INTRO_PLAYLIST.length
+    ) {
+      const track =
+        MUSIC_INTRO_PLAYLIST[
+          musicIntroIndex
+        ];
+
+      musicIntroIndex += 1;
+
+      return track;
+    }
+
+    musicPhase =
+      "epic-loop";
+  }
+
+  const track =
+    MUSIC_EPIC_LOOP[
+      musicEpicIndex %
+      MUSIC_EPIC_LOOP.length
+    ];
+
+  musicEpicIndex += 1;
+
+  return track;
+}
+
+function playMusicTrack(
+  src,
+  options = {}
+) {
+  const outgoing =
+    currentMusicPlayer();
+
+  const incoming =
+    inactiveMusicPlayer();
+
+  incoming.pause();
+  incoming.currentTime = 0;
+  incoming.src = src;
+  incoming.loop =
+    Boolean(options.loop);
+  incoming.volume = 0;
+
+  incoming.onended = () => {
+    if (!musicFinalStarted) {
+      playMusicTrack(
+        nextCountdownMusicTrack()
+      );
+    }
+  };
+
+  incoming.onerror = () => {
+    console.warn(
+      "Countdown music failed to load:",
+      src
+    );
+
+    if (!musicFinalStarted) {
+      window.setTimeout(
+        () => {
+          playMusicTrack(
+            nextCountdownMusicTrack()
+          );
+        },
+        500
+      );
+    }
+  };
+
+  incoming
+    .play()
+    .then(() => {
+      const target =
+        options.final
+          ? MUSIC_VOLUME
+          : musicTargetVolume();
+
+      fadeMusicPlayers(
+        outgoing.paused
+          ? null
+          : outgoing,
+
+        incoming,
+
+        options.immediate
+          ? 350
+          : MUSIC_CROSSFADE_MS,
+
+        target,
+
+        () => {
+          musicActivePlayer =
+            musicActivePlayer === 0
+              ? 1
+              : 0;
+        }
+      );
+    })
+    .catch(error => {
+      console.warn(
+        "Countdown music is waiting for user interaction:",
+        error
+      );
+    });
+}
+
+function startCountdownMusic() {
+  if (musicStarted) {
+    return;
+  }
+
+  musicStarted = true;
+  musicFinalStarted = false;
+
+  musicPhase = "intro";
+  musicIntroIndex = 0;
+  musicEpicIndex = 0;
+
+  playMusicTrack(
+    nextCountdownMusicTrack(),
+    {
+      immediate: true
+    }
+  );
+}
+
+function startFinalCountdownTrack() {
+  if (musicFinalStarted) {
+    return;
+  }
+
+  musicStarted = true;
+  musicFinalStarted = true;
+  musicPhase = "final";
+  musicDucked = false;
+
+  playMusicTrack(
+    MUSIC_FINAL_TRACK,
+    {
+      final: true,
+      immediate: true
+    }
+  );
+}
+
+function syncCountdownMusic(
+  remaining,
+  start
+) {
+  if (
+    !start ||
+    remaining <= 0
+  ) {
+    if (musicStarted) {
+      stopCountdownMusic(false);
+    }
+
+    return;
+  }
+
+  if (
+    lastMusicStartTime &&
+    start !==
+      lastMusicStartTime
+  ) {
+    stopCountdownMusic(true);
+  }
+
+  lastMusicStartTime =
+    start;
+
+  if (
+    remaining <=
+    FINAL_TRACK_WINDOW_MS
+  ) {
+    startFinalCountdownTrack();
+    return;
+  }
+
+  if (
+    remaining <=
+    MUSIC_START_WINDOW_MS
+  ) {
+    startCountdownMusic();
+    return;
+  }
+
+  if (musicStarted) {
+    stopCountdownMusic(false);
+  }
+}
+
+function unlockCountdownMusic() {
+  const start =
+    getStartTime();
+
+  const remaining =
+    start
+      ? start - Date.now()
+      : 0;
+
+  if (remaining <= 0) {
+    return;
+  }
+
+  syncCountdownMusic(
+    remaining,
+    start
+  );
+
+  musicPlayers.forEach(
+    player => {
+      if (
+        player.paused &&
+        player.src
+      ) {
+        player
+          .play()
+          .catch(() => {});
+      }
+    }
+  );
+}
+
+document.addEventListener(
+  "click",
+  unlockCountdownMusic,
+  {
+    once: true
+  }
+);
+
+document.addEventListener(
+  "touchstart",
+  unlockCountdownMusic,
+  {
+    once: true
+  }
+);
   function databaseConnection() {
     try {
       if (
@@ -255,6 +796,10 @@ let sceneGeneration = 0;
 
     $("schedule").textContent =
       formatSchedule(start);
+      syncCountdownMusic(
+  remaining,
+  start
+);
   }
 
   function normalizedDonations(raw) {
@@ -928,7 +1473,8 @@ let sceneGeneration = 0;
   }
 
   function stopCurrent() {
-    playbackToken += 1;
+   setMusicDucked(false);
+     playbackToken += 1;
 sceneGeneration += 1;
     if (currentTimer) {
       clearTimeout(
@@ -2294,7 +2840,7 @@ video.preload = "auto";
              */
             video.muted = true;
             video.volume = 0;
-
+setMusicDucked(false);
             try {
               await video.play();
             } catch (retryError) {

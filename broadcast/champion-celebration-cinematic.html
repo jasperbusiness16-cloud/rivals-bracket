@@ -3020,9 +3020,18 @@
 
         var fullPrizePool =
   moneyValue(
-    state.site.prizePool,
+    state.site.startingPrizePool,
     0
-  );
+  ) +
+  donationTotal();
+
+if (fullPrizePool <= 0) {
+  fullPrizePool =
+    moneyValue(
+      state.site.prizePool,
+      0
+    );
+}
 
 prize =
   fullPrizePool > 0
@@ -3031,10 +3040,10 @@ prize =
       )
     : "TBD";
 
-        number =
-          championNumber(
-            record
-          );
+number =
+  championNumber(
+    record
+  );
 
         score =
           finalScore(

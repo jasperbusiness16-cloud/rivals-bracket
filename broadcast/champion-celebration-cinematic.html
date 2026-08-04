@@ -3026,11 +3026,11 @@
 
         if (!prize) {
           prize =
-            calculatedPrizePool()
-              ? formatMoney(
-                  calculatedPrizePool()
-                )
-              : "TBD";
+  calculatedPrizePool()
+    ? formatMoney(
+        calculatedPrizePool() * 0.80
+      )
+    : "TBD";
         }
 
         number =

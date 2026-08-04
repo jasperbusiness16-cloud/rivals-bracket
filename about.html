@@ -150,7 +150,9 @@
       font-size: 16px;
       line-height: 1.6;
     }
-
+.about-intro {
+  padding: 54px 0 28px;
+}
     /* =========================================================
        HERO
        ========================================================= */
@@ -411,9 +413,9 @@
        FEATURED TEAM
        ========================================================= */
 
-    .team-section {
-      padding: 68px 0 58px;
-    }
+ .team-section {
+  padding: 54px 0 58px;
+}
 
     .team-stage {
       position: relative;
@@ -847,6 +849,9 @@
     }
 
     @media (max-width: 980px) {
+      .about-intro {
+  padding-top: 42px;
+}
       .hero-grid {
         grid-template-columns: 1fr;
         min-height: auto;
@@ -922,7 +927,10 @@
     }
 
     @media (max-width: 680px) {
-      .shell {
+     .about-intro {
+  padding: 30px 0 20px;
+}
+       .shell {
         width: min(
           calc(100% - 28px),
           var(--max)

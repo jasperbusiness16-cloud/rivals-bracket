@@ -1081,9 +1081,11 @@ body.rg-overlay-open { overflow: hidden; }
 /* ===== Icon size tweaks ===== */
 
 [data-rg-friends-toggle] .rg-utility__icon i{
-  font-size:20px !important;
+  font-size:18px !important;
+  line-height:1;
 }
 
 [data-rg-notifications-toggle] .rg-utility__icon i{
-  font-size:22px !important;
+  font-size:18px !important;
+  line-height:1;
 }

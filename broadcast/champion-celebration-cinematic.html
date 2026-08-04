@@ -3018,20 +3018,11 @@
             record
           );
 
-        prize =
-          clean(
-            record &&
-            record.prizeWon
-          );
+        const fullPrizePool = calculatedPrizePool();
 
-        if (!prize) {
-          prize =
-  calculatedPrizePool()
-    ? formatMoney(
-        calculatedPrizePool() * 0.80
-      )
-    : "TBD";
-        }
+prize = fullPrizePool
+  ? formatMoney(fullPrizePool * 0.80)
+  : "TBD";
 
         number =
           championNumber(

@@ -2598,48 +2598,87 @@
       }
 
       function finalScore(record) {
-        if (
-          record &&
-          clean(
-            record.finalScore
-          )
-        ) {
-          return clean(
-            record.finalScore
-          );
-        }
+  var savedScore =
+    clean(
+      record &&
+      record.finalScore
+    );
 
-        var scoreA =
-          clean(
-            state.site
-              .gfTeam1Score
-          );
+  var scoreA;
+  var scoreB;
+  var scoreParts;
 
-        var scoreB =
-          clean(
-            state.site
-              .gfTeam2Score
-          );
+  /*
+   * Use the archived final score when available.
+   * It may be stored as "0-3", "0 — 3", or similar.
+   */
+  if (savedScore) {
+    scoreParts =
+      savedScore.match(
+        /(\d+)\D+(\d+)/
+      );
 
-        if (
-          scoreA ||
+    if (scoreParts) {
+      scoreA =
+        numberValue(
+          scoreParts[1],
+          0
+        );
+
+      scoreB =
+        numberValue(
+          scoreParts[2],
+          0
+        );
+
+      return (
+        Math.max(
+          scoreA,
           scoreB
-        ) {
-          return (
-            clean(
-              scoreA,
-              "0"
-            ) +
-            " — " +
-            clean(
-              scoreB,
-              "0"
-            )
-          );
-        }
+        ) +
+        " — " +
+        Math.min(
+          scoreA,
+          scoreB
+        )
+      );
+    }
+  }
 
-        return "FINAL";
-      }
+  /*
+   * Otherwise use the live Grand Finals scores.
+   */
+  scoreA =
+    numberValue(
+      state.site.gfTeam1Score,
+      0
+    );
+
+  scoreB =
+    numberValue(
+      state.site.gfTeam2Score,
+      0
+    );
+
+  if (
+    state.site.gfTeam1Score != null ||
+    state.site.gfTeam2Score != null
+  ) {
+    return (
+      Math.max(
+        scoreA,
+        scoreB
+      ) +
+      " — " +
+      Math.min(
+        scoreA,
+        scoreB
+      )
+    );
+  }
+
+  return "FINAL";
+}
 
       function getWebsite() {
         var follow =
@@ -3096,8 +3135,8 @@ number =
           prize.toUpperCase();
 
         statLegacy.textContent =
-          "CHAMPION #" +
-          pad2(number);
+  "CHAMPION #" +
+  number;
 
         rosterCount.textContent =
           players.length +

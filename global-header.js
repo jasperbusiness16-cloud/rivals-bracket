@@ -134,7 +134,7 @@ friendRequestPaths: [
                 icon: "profile"
             },
             {
-    label: "Check In",
+    label: "Tournament Check In",
     href: "check-in.html",
     icon: "check"
 },

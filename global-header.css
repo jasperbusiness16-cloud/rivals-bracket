@@ -1077,3 +1077,13 @@ body.rg-overlay-open { overflow: hidden; }
     color:#c084fc;
     transform:scale(1.08);
 }
+
+/* ===== Icon size tweaks ===== */
+
+[data-rg-friends-toggle] .rg-utility__icon i{
+  font-size:20px !important;
+}
+
+[data-rg-notifications-toggle] .rg-utility__icon i{
+  font-size:22px !important;
+}

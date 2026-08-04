@@ -1061,3 +1061,19 @@ body.rg-overlay-open { overflow: hidden; }
   #globalHeader * { scroll-behavior: auto !important; }
 }
 
+.rg-utility__icon{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.rg-utility__icon i{
+    font-size:20px;
+    color:#d7d4e3;
+    transition:.2s ease;
+}
+
+.rg-utility:hover .rg-utility__icon i{
+    color:#c084fc;
+    transform:scale(1.08);
+}

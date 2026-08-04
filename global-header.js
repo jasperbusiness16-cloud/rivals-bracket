@@ -675,15 +675,9 @@ dailyGiftStats: {
                                     data-rg-friends-toggle
                                     aria-label="Open friends"
                                 >
-                                    <span
-                                        class="rg-utility__icon rg-utility__icon--asset"
-                                    >
-                                        <img
-                                            src="friends-icon.PNG"
-                                            alt=""
-                                            data-rg-asset-fallback="friend"
-                                        >
-                                    </span>
+<span class="rg-utility__icon">
+    <i class="fa-solid fa-user-group"></i>
+</span>
 
                                     <span
                                         class="rg-badge"
@@ -700,15 +694,9 @@ dailyGiftStats: {
                                     data-rg-notifications-toggle
                                     aria-label="Open notifications"
                                 >
-                                    <span
-                                        class="rg-utility__icon rg-utility__icon--asset"
-                                    >
-                                        <img
-                                            src="notification-bell.PNG"
-                                            alt=""
-                                            data-rg-asset-fallback="bell"
-                                        >
-                                    </span>
+<span class="rg-utility__icon">
+    <i class="fa-regular fa-bell"></i>
+</span>
 
                                     <span
                                         class="rg-badge"

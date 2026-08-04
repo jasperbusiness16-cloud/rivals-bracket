@@ -3018,11 +3018,18 @@
             record
           );
 
-        const fullPrizePool = calculatedPrizePool();
+        var fullPrizePool =
+  moneyValue(
+    state.site.prizePool,
+    0
+  );
 
-prize = fullPrizePool
-  ? formatMoney(fullPrizePool * 0.80)
-  : "TBD";
+prize =
+  fullPrizePool > 0
+    ? formatMoney(
+        fullPrizePool * 0.80
+      )
+    : "TBD";
 
         number =
           championNumber(

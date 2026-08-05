@@ -25,6 +25,7 @@
     livePredictions: {},
     predictionResults: {},
     predictionSettings: {},
+    tournamentSettlement: {},
     bracketData: {},
     legacyChampionPredictions: {},
 
@@ -1956,7 +1957,7 @@
             </h2>
 
             <p>
-              Review Pick’em submissions, live answers and correct-answer records without issuing RP payouts.
+              Review Pick’em submissions, settle live answers and issue verified RP rewards through the secure backend.
             </p>
           </div>
 
@@ -2595,11 +2596,11 @@
                   <div class="nexus-prediction-result-actions">
                     <div>
                       <strong>
-                        Grading Preview Only
+                        Secure Settlement
                       </strong>
 
                       <span>
-                        Saving correct answers does not modify player balances, stats or prediction history.
+                        Correct answers are verified against the official bracket, paid once and added to player stats atomically.
                       </span>
                     </div>
 
@@ -2609,7 +2610,7 @@
                       data-prediction-action="save-results"
                     >
                       <i class="fa-solid fa-check"></i>
-                      Save Correct Answers
+                      Save &amp; Settle Rewards
                     </button>
                   </div>
                 `
@@ -2655,13 +2656,23 @@
 
           <div>
             <strong>
-              Prediction Payout Backend Required
+              Secure Tournament Settlement
             </strong>
 
             <span>
-              Client-side RP payouts are intentionally disabled. A secure Firebase Function must verify results, prevent duplicate rewards and update balances atomically.
+              After every official bracket winner is saved, settle the full Pick’em once to issue match, champion and Perfect Bracket rewards.
             </span>
           </div>
+
+          <button
+            class="nexus-prediction-button primary"
+            type="button"
+            data-prediction-action="settle-tournament"
+            ${state.tournamentSettlement?.settledAt ? "disabled" : ""}
+          >
+            <i class="fa-solid ${state.tournamentSettlement?.settledAt ? "fa-circle-check" : "fa-coins"}"></i>
+            ${state.tournamentSettlement?.settledAt ? "Tournament Settled" : "Settle Tournament Pick’em"}
+          </button>
         </div>
       </section>
     `;
@@ -2675,6 +2686,7 @@
     state.livePredictions = {};
     state.predictionResults = {};
     state.predictionSettings = {};
+    state.tournamentSettlement = {};
     state.bracketData = {};
     state.legacyChampionPredictions = {};
     state.selectedMatchKey = "";
@@ -2811,6 +2823,20 @@
     listen(
       state.tournamentRefs,
       state.database.ref(
+        `predictions/${tournamentId}/tournamentSettlement`
+      ),
+      "value",
+      snapshot => {
+        state.tournamentSettlement =
+          snapshot.val() || {};
+
+        renderView();
+      }
+    );
+
+    listen(
+      state.tournamentRefs,
+      state.database.ref(
         `predictions/${tournamentId}/champion`
       ),
       "value",
@@ -2915,6 +2941,26 @@
     }
   }
 
+  function secureFunctionMessage(error, fallback) {
+    const code = clean(error?.code).toLowerCase();
+    const message = clean(error?.message);
+
+    if (
+      code.includes("failed-precondition") ||
+      code.includes("invalid-argument") ||
+      code.includes("already-exists") ||
+      code.includes("permission")
+    ) {
+      return message || fallback;
+    }
+
+    if (code.includes("unavailable") || code.includes("network")) {
+      return "The secure prediction service is unavailable. Try again after reconnecting.";
+    }
+
+    return message || fallback;
+  }
+
   async function saveCorrectAnswers(
     button
   ) {
@@ -2946,11 +2992,11 @@
       );
 
     if (
-      !map1Answer &&
+      !map1Answer ||
       !exactAnswer
     ) {
       showToast(
-        "Select at least one correct answer."
+        "Select both the Map 1 winner and exact series score before settling this match."
       );
 
       return;
@@ -2967,14 +3013,19 @@
       exactAnswer !==
         officialScore
     ) {
-      const confirmed =
-        window.confirm(
-          `The selected exact score (${exactAnswer}) does not match the official bracket score (${officialScore}). Save it anyway?`
-        );
+      showToast(
+        `Exact score must match the official bracket score (${officialScore}).`
+      );
 
-      if (!confirmed) {
-        return;
-      }
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Settle ${getMatchLabel(matchKey)} predictions now?\n\nCorrect players will receive RP immediately. This settlement cannot be paid twice.`
+    );
+
+    if (!confirmed) {
+      return;
     }
 
     const originalText =
@@ -2982,110 +3033,112 @@
 
     button.disabled = true;
     button.textContent =
-      "Saving...";
+      "Settling...";
 
     try {
-      const timestamp =
-        firebase.database
-          .ServerValue
-          .TIMESTAMP;
+      const settle = firebase
+        .functions()
+        .httpsCallable(
+          "settleMatchPredictions"
+        );
 
-      const updates = {};
+      const result = await settle({
+        tournamentId:
+          state.selectedTournamentId,
+        matchKey,
+        answers: {
+          map1Winner:
+            map1Answer || null,
+          exactScore:
+            exactAnswer || null
+        }
+      });
 
-      if (map1Answer) {
-        const currentRecord =
-          getResultRecord(
-            matchKey,
-            "map1Winner"
-          );
-
-        updates[
-          `predictions/${state.selectedTournamentId}/results/${matchKey}/map1Winner`
-        ] = {
-          answer:
-            map1Answer,
-          matchId:
-            matchKey,
-          questionId:
-            "map1Winner",
-          createdAt:
-            (
-              currentRecord &&
-              typeof currentRecord ===
-                "object" &&
-              currentRecord.createdAt
-            ) ||
-            timestamp,
-          updatedAt:
-            timestamp,
-          updatedBy:
-            state.currentUser
-              ?.uid ||
-            null
-        };
-      }
-
-      if (exactAnswer) {
-        const currentRecord =
-          getResultRecord(
-            matchKey,
-            "exactScore"
-          );
-
-        updates[
-          `predictions/${state.selectedTournamentId}/results/${matchKey}/exactScore`
-        ] = {
-          answer:
-            exactAnswer,
-          matchId:
-            matchKey,
-          questionId:
-            "exactScore",
-          createdAt:
-            (
-              currentRecord &&
-              typeof currentRecord ===
-                "object" &&
-              currentRecord.createdAt
-            ) ||
-            timestamp,
-          updatedAt:
-            timestamp,
-          updatedBy:
-            state.currentUser
-              ?.uid ||
-            null
-        };
-      }
-
-      updates[
-        `predictions/${state.selectedTournamentId}/results/${matchKey}/updatedAt`
-      ] = timestamp;
-
-      updates[
-        `predictions/${state.selectedTournamentId}/results/${matchKey}/updatedBy`
-      ] =
-        state.currentUser
-          ?.uid ||
-        null;
-
-      await state.database
-        .ref()
-        .update(updates);
+      const data =
+        result?.data || {};
 
       showToast(
-        "Correct answers saved. No RP payouts were issued."
+        data.duplicate
+          ? `${getMatchLabel(matchKey)} was already settled.`
+          : `${getMatchLabel(matchKey)} settled: ${formatNumber(data.rewardedPlayers || 0)} players received ${formatNumber(data.totalRewards || 0)} RP.`
       );
     } catch (error) {
       console.error(
-        "Prediction result save failed:",
+        "Prediction settlement failed:",
         error
       );
 
       showToast(
-        isPermissionDenied(error)
-          ? "Firebase rules blocked the prediction result."
-          : "Correct answers could not be saved."
+        secureFunctionMessage(
+          error,
+          "Correct answers could not be settled."
+        )
+      );
+    } finally {
+      button.disabled = false;
+      button.innerHTML =
+        originalText;
+    }
+  }
+
+  async function settleTournamentPickem(button) {
+    if (
+      state.tournamentSettlement
+        ?.settledAt
+    ) {
+      showToast(
+        "Tournament Pick’em is already settled."
+      );
+      return;
+    }
+
+    const tournamentName =
+      getTournamentName(
+        state.selectedTournamentId
+      );
+
+    const confirmed = window.confirm(
+      `Settle all submitted brackets for ${tournamentName}?\n\nThis issues Quarterfinal, Semifinal, Grand Finals, Champion Pick and Perfect Bracket rewards. It cannot be paid twice.`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    const originalText =
+      button.innerHTML;
+    button.disabled = true;
+    button.textContent =
+      "Settling Tournament...";
+
+    try {
+      const settle = firebase
+        .functions()
+        .httpsCallable(
+          "settleTournamentPredictions"
+        );
+      const result = await settle({
+        tournamentId:
+          state.selectedTournamentId
+      });
+      const data =
+        result?.data || {};
+
+      showToast(
+        data.duplicate
+          ? "Tournament Pick’em was already settled."
+          : `Tournament settled: ${formatNumber(data.rewardedPlayers || 0)} players received ${formatNumber(data.totalRewards || 0)} RP.`
+      );
+    } catch (error) {
+      console.error(
+        "Tournament prediction settlement failed:",
+        error
+      );
+      showToast(
+        secureFunctionMessage(
+          error,
+          "Tournament Pick’em could not be settled."
+        )
       );
     } finally {
       button.disabled = false;
@@ -3113,6 +3166,22 @@
       "map1Winner"
         ? "Map 1 Winner"
         : "Exact Series Score";
+
+    const savedResult =
+      getResultRecord(
+        matchKey,
+        questionId
+      );
+
+    if (
+      savedResult?.settled ===
+      true
+    ) {
+      showToast(
+        `${questionName} is already settled and cannot be cleared.`
+      );
+      return;
+    }
 
     const confirmed =
       window.confirm(
@@ -3370,6 +3439,17 @@
 
     if (
       action ===
+      "settle-tournament"
+    ) {
+      settleTournamentPickem(
+        button
+      );
+
+      return;
+    }
+
+    if (
+      action ===
       "clear-result"
     ) {
       clearCorrectAnswer(
@@ -3566,6 +3646,7 @@
     state.livePredictions = {};
     state.predictionResults = {};
     state.predictionSettings = {};
+    state.tournamentSettlement = {};
     state.bracketData = {};
     state.legacyChampionPredictions = {};
   }

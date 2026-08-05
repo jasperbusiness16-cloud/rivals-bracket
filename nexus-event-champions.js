@@ -1107,11 +1107,11 @@
 
           <div>
             <strong>
-              Manual publication required
+              Secure finalization required
             </strong>
 
             <span>
-              Saving a Grand Finals winner does not automatically publish a champion. Review the event record and championship roster before placing it in the public Hall.
+              Finalizing verifies the official Grand Finals result, freezes the 80/20 prize split, updates player tournament records and publishes the Hall entry atomically.
             </span>
           </div>
 
@@ -1995,46 +1995,34 @@
       getFinalsSuggestion();
 
     if (
-      finals.championName &&
-      finals.championName
-        .toLowerCase() !==
-        core.teamName
-          .toLowerCase()
+      !finals.championName
     ) {
-      const mismatchConfirmed =
-        window.confirm(
-          `The saved Grand Finals winner is "${finals.championName}", but this Hall entry selects "${core.teamName}".\n\nPublish the manually selected champion anyway?`
-        );
-
-      if (!mismatchConfirmed) {
-        return;
-      }
-    }
-
-    const tournamentStatus =
-      clean(
-        getTournament().status
+      showToast(
+        "Save the official Grand Finals score and winner before finalizing the tournament."
       );
+      return;
+    }
 
     if (
-      tournamentStatus !==
-        "completed" &&
-      tournamentStatus !==
-        "archived"
+      finals.championName
+        .toLowerCase() !==
+      core.teamName
+        .toLowerCase()
     ) {
-      const phaseConfirmed =
-        window.confirm(
-          "This tournament is not currently marked Completed or Archived.\n\nPublish its Hall of Champions entry anyway?"
-        );
-
-      if (!phaseConfirmed) {
-        return;
-      }
+      showToast(
+        `The selected champion must match the official Grand Finals winner: ${finals.championName}.`
+      );
+      return;
     }
+
+    const alreadyPublished =
+      hasPublishedRecord();
 
     const confirmed =
       window.confirm(
-        `Publish "${core.teamName}" as the champion of "${core.eventName}"?\n\nThis will immediately appear in the public Hall of Champions.`
+        alreadyPublished
+          ? `Update the public Hall presentation for "${core.teamName}"?\n\nThe frozen champion, result and prize split will not be changed.`
+          : `Finalize "${core.eventName}" with "${core.teamName}" as champion?\n\nThis will freeze the final result and 80/20 prize split, update player tournament records, and publish the Hall entry.`
       );
 
     if (!confirmed) {
@@ -2043,122 +2031,44 @@
 
     await runAction(
       button,
-      "Publishing...",
+      alreadyPublished
+        ? "Updating..."
+        : "Finalizing...",
       async () => {
-        const timestamp =
-          firebase.database
-            .ServerValue
-            .TIMESTAMP;
+        const finalize = firebase
+          .functions()
+          .httpsCallable(
+            "finalizeTournament"
+          );
 
-        const previousDraft =
-          state.api?.draft ||
-          {};
+        const result = await finalize({
+          tournamentId:
+            state.tournamentId,
+          record:
+            core
+        });
 
-        const existingPublic =
-          state.api
-            ?.publishedRecord ||
-          {};
-
-        const publicCreatedAt =
-          existingPublic.createdAt ||
-          state.model
-            .publicCreatedAt ||
-          getTournament()
-            .completedAt ||
-          timestamp;
-
-        const draftRecord = {
-          ...core,
-
-          published:
-            true,
-
-          publicCreatedAt,
-
-          createdAt:
-            previousDraft
-              .createdAt ||
-            timestamp,
-
-          createdBy:
-            previousDraft
-              .createdBy ||
-            state.api
-              ?.currentUser
-              ?.uid ||
-            null,
-
-          publishedAt:
-            timestamp,
-
-          publishedBy:
-            state.api
-              ?.currentUser
-              ?.uid ||
-            null,
-
-          updatedAt:
-            timestamp,
-
-          updatedBy:
-            state.api
-              ?.currentUser
-              ?.uid ||
-            null
-        };
-
-        const publicRecord = {
-          ...core,
-
-          published:
-            true,
-
-          createdAt:
-            publicCreatedAt,
-
-          publishedAt:
-            timestamp,
-
-          publishedBy:
-            state.api
-              ?.currentUser
-              ?.uid ||
-            null,
-
-          updatedAt:
-            timestamp,
-
-          updatedBy:
-            state.api
-              ?.currentUser
-              ?.uid ||
-            null
-        };
-
-        await state.api
-          .database
-          .ref()
-          .update({
-            [`tournaments/${state.tournamentId}/hallOfChampions`]:
-              draftRecord,
-
-            [`champions/${state.tournamentId}`]:
-              publicRecord
-          });
+        const data =
+          result?.data || {};
 
         state.model
           .publicCreatedAt =
           number(
-            existingPublic
-              .createdAt ||
+            state.api
+              ?.publishedRecord
+              ?.createdAt ||
             state.model
-              .publicCreatedAt
+              .publicCreatedAt ||
+            data.finalizedAt ||
+            data.updatedAt
           );
 
         state.dirty = false;
 
         showToast(
-          `${core.teamName} was published to the Hall of Champions.`
+          data.presentationUpdated
+            ? `${core.teamName}'s Hall presentation was updated.`
+            : `${core.teamName} was finalized and published as champion.`
         );
       }
     );

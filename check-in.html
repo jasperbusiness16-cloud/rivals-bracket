@@ -1286,7 +1286,7 @@
 
   <footer class="checkin-footer">
     © 2026 Rivals Gauntlet. Tournament check-in confirms attendance for the
-    active event and is separate from the daily reward check-in.
+    active event and updates tournament staff in real time.
   </footer>
 
   <div
@@ -1392,6 +1392,10 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
       let countdownTimer = null;
       let actionInProgress = false;
       let lastWindowPhase = "";
+
+      const updateTournamentAttendance = firebase
+        .functions()
+        .httpsCallable("updateTournamentAttendance");
 
       function clean(value, fallback = "") {
         const result = String(value ?? "").trim();
@@ -2474,59 +2478,33 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
 
       function friendlyError(error, fallback) {
         const code = normalize(error?.code);
+        const message = clean(error?.message);
+
+        if (code.includes("unauthenticated")) {
+          return "Your session expired. Sign in again and retry.";
+        }
 
         if (code.includes("permission")) {
-          return "Firebase denied this attendance update. Your check-in rules may not allow writes to your own record.";
+          return message || "Your account is not eligible for this attendance update.";
+        }
+
+        if (
+          code.includes("failed-precondition") ||
+          code.includes("already-exists") ||
+          code.includes("invalid-argument")
+        ) {
+          return message || fallback;
         }
 
         if (
           code.includes("network") ||
-          code.includes("disconnected")
+          code.includes("disconnected") ||
+          code.includes("unavailable")
         ) {
-          return "The realtime connection is unavailable. Reconnect and try again.";
+          return "The secure attendance service is unavailable. Reconnect and try again.";
         }
 
-        return error?.message || fallback;
-      }
-
-      function playerRecord(type) {
-        const app = currentApplication || {};
-        const myTeam = currentUser
-          ? findMyTeam(currentUser.uid)
-          : null;
-
-        return {
-          uid: currentUser.uid,
-          rgId: clean(
-            app.rgId ||
-            myTeam?.player?.rgId
-          ),
-          displayName: clean(
-            app.displayName ||
-            myTeam?.player?.displayName ||
-            currentUser.displayName
-          ),
-          rivalsIgn: clean(
-            app.rivalsIgn ||
-            myTeam?.player?.rivalsIgn
-          ),
-          discordUsername: clean(app.discordUsername),
-          peakRank: clean(app.peakRank),
-          mainRole: clean(
-            app.mainRole ||
-            app.preferredRole
-          ),
-          region: clean(app.region),
-          platform: clean(app.platform),
-          teamKey: clean(myTeam?.teamKey),
-          teamName: clean(myTeam?.teamName),
-          type,
-          checkedIn: true,
-          checkedInAt:
-            firebase.database.ServerValue.TIMESTAMP,
-          updatedAt:
-            firebase.database.ServerValue.TIMESTAMP
-        };
+        return message || fallback;
       }
 
       async function runAction(
@@ -2561,6 +2539,16 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
         }
       }
 
+      async function sendAttendanceAction(action, extra = {}) {
+        const result = await updateTournamentAttendance({
+          tournamentId,
+          action,
+          ...extra
+        });
+
+        return result?.data || {};
+      }
+
       window.checkInPlayer = async type => {
         if (!currentUser || !currentApplication) return;
 
@@ -2578,18 +2566,10 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           "checkInButton",
           "Confirming...",
           async () => {
-            setActionStatus("Confirming your attendance...");
+            setActionStatus("Securely confirming your attendance...");
 
             try {
-              const updates = {};
-              updates[
-                `checkIns/${tournamentId}/${currentUser.uid}`
-              ] = playerRecord(type);
-              updates[
-                `availability/${tournamentId}/${currentUser.uid}`
-              ] = null;
-
-              await database.ref().update(updates);
+              await sendAttendanceAction("check_in", { type });
 
               setActionStatus(
                 "✓ Check-in confirmed. Your dashboard and the staff Check-In Desk have updated.",
@@ -2626,14 +2606,10 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           "undoCheckInButton",
           "Undoing...",
           async () => {
-            setActionStatus("Updating your attendance...");
+            setActionStatus("Securely updating your attendance...");
 
             try {
-              await database
-                .ref(
-                  `checkIns/${tournamentId}/${currentUser.uid}`
-                )
-                .remove();
+              await sendAttendanceAction("undo_check_in");
 
               setActionStatus(
                 "Your tournament check-in has been undone.",
@@ -2695,52 +2671,7 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           "Updating...",
           async () => {
             try {
-              const app = currentApplication || {};
-              const myTeam = findMyTeam(currentUser.uid);
-              const updates = {};
-
-              updates[
-                `checkIns/${tournamentId}/${currentUser.uid}`
-              ] = null;
-
-              updates[
-                `availability/${tournamentId}/${currentUser.uid}`
-              ] = {
-                uid: currentUser.uid,
-                rgId: clean(
-                  app.rgId ||
-                  myTeam?.player?.rgId
-                ),
-                displayName: clean(
-                  app.displayName ||
-                  myTeam?.player?.displayName ||
-                  currentUser.displayName
-                ),
-                rivalsIgn: clean(
-                  app.rivalsIgn ||
-                  myTeam?.player?.rivalsIgn
-                ),
-                discordUsername: clean(
-                  app.discordUsername
-                ),
-                peakRank: clean(app.peakRank),
-                mainRole: clean(
-                  app.mainRole ||
-                  app.preferredRole
-                ),
-                region: clean(app.region),
-                platform: clean(app.platform),
-                teamKey: clean(myTeam?.teamKey),
-                teamName: clean(myTeam?.teamName),
-                status: "not_available",
-                reason,
-                reportedAt:
-                  firebase.database.ServerValue.TIMESTAMP,
-                updatedAt:
-                  firebase.database.ServerValue.TIMESTAMP
-              };
-
-              await database.ref().update(updates);
+              await sendAttendanceAction("mark_unavailable", { reason });
               closeUnavailableModal();
             } catch (error) {
               console.error(
@@ -2766,14 +2697,10 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           "markAvailableButton",
           "Restoring...",
           async () => {
-            setActionStatus("Restoring your availability...");
+            setActionStatus("Securely restoring your availability...");
 
             try {
-              await database
-                .ref(
-                  `availability/${tournamentId}/${currentUser.uid}`
-                )
-                .remove();
+              await sendAttendanceAction("mark_available");
 
               setActionStatus(
                 "✓ Your availability has been restored. Complete check-in when the window is open.",

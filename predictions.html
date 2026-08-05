@@ -2717,7 +2717,6 @@
     <script src="firebase.js?v=3"></script>
   <script src="notifications.js?v=2"></script>
   <script src="friends.js?v=2"></script>
-  <script src="daily-gifts.js?v=2"></script>
   <script src="global-header.js?v=12"></script>
 <script src="/global-footer.js?v=2"></script>
   <script>
@@ -2749,6 +2748,11 @@
     const MATCH_ORDER = ["QF1","QF2","QF3","QF4","SF1","SF2","GRAND"];
     const BASE_REWARDS = {QF:100,SF:150,GRAND:250,CHAMPION:500,PERFECT:2000,MAP1:50,EXACT_BO3:100,EXACT_BO5:150};
 
+    const securePredictionFunctions = firebase.functions();
+    const saveBracketDraftSecure = securePredictionFunctions.httpsCallable("saveBracketDraft");
+    const submitBracketSecure = securePredictionFunctions.httpsCallable("submitBracketPrediction");
+    const submitLiveSecure = securePredictionFunctions.httpsCallable("submitLivePrediction");
+
     function clean(value,fallback=""){return String(value ?? fallback).trim()}
     function escapeHtml(value){
       return String(value ?? "")
@@ -2763,6 +2767,14 @@
       toast.classList.add("show");
       clearTimeout(showToast.timer);
       showToast.timer=setTimeout(()=>toast.classList.remove("show"),2600);
+    }
+    function secureFunctionError(error,fallback){
+      const code=clean(error?.code).toLowerCase();
+      const message=clean(error?.message);
+      if(code.includes("unauthenticated"))return "Your session expired. Sign in again and retry.";
+      if(code.includes("failed-precondition")||code.includes("invalid-argument")||code.includes("permission")||code.includes("already-exists"))return message||fallback;
+      if(code.includes("unavailable")||code.includes("network"))return "The secure prediction service is unavailable. Reconnect and try again.";
+      return message||fallback;
     }
     function setText(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
     function initials(value){
@@ -3019,16 +3031,14 @@ let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to
       if(!currentUser){showToast("Sign in to save your bracket draft.");return}
       if(bracketLocked())return;
       try{
-        await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).set({
-          uid:currentUser.uid,
-          displayName:currentPlayer.displayName||currentUser.displayName||"",
-          picks:clonePicks(picks),
-          updatedAt:firebase.database.ServerValue.TIMESTAMP
+        await saveBracketDraftSecure({
+          tournamentId,
+          picks:clonePicks(picks)
         });
-        showToast("Bracket draft saved to Prediction Command.");
+        showToast("Bracket draft securely saved to Prediction Command.");
       }catch(error){
         console.error("Bracket draft save failed:",error);
-        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this draft save.":"Bracket draft could not be saved.");
+        showToast(secureFunctionError(error,"Bracket draft could not be saved."));
       }
     }
 
@@ -3037,28 +3047,18 @@ let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to
       if(bracketLocked()){showToast("Tournament Pick’em is already locked.");return}
       if(!MATCH_ORDER.every(id=>Boolean(picks[id]))){showToast("Complete all seven picks first.");return}
 
-      const payload={
-        uid:currentUser.uid,
-        rgId:currentPlayer.rgId||"",
-        displayName:currentPlayer.displayName||currentUser.displayName||"",
-        profileImage:currentPlayer.profileImage||"",
-        picks:clonePicks(picks),
-        championPick:picks.GRAND,
-        submitted:true,
-        perfectEligible:true,
-        submittedAt:myBracketRecord?.submittedAt||firebase.database.ServerValue.TIMESTAMP,
-        updatedAt:firebase.database.ServerValue.TIMESTAMP
-      };
-
       try{
-        await database.ref(`predictions/${tournamentId}/brackets/${currentUser.uid}`).set(payload);
-        await database.ref(`predictions/${tournamentId}/bracketDrafts/${currentUser.uid}`).remove();
+        const result=await submitBracketSecure({
+          tournamentId,
+          picks:clonePicks(picks)
+        });
         localStorage.removeItem(`rgPredictionDraft_${tournamentId}_${currentUser.uid}`);
         submittedBaseline=serializePicks(picks);
-        showToast(myBracketRecord?.submitted?"Bracket updated.":"Bracket submitted. Perfect Bracket eligibility secured.");
+        const updatedExisting=Boolean(result?.data?.updatedExisting||myBracketRecord?.submitted);
+        showToast(updatedExisting?"Bracket securely updated.":"Bracket securely submitted. Perfect Bracket eligibility secured.");
       }catch(error){
         console.error("Bracket submission failed:",error);
-        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this bracket submission.":"Bracket could not be submitted.");
+        showToast(secureFunctionError(error,"Bracket could not be submitted."));
       }
     }
 
@@ -3162,32 +3162,26 @@ let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to
       if(!matchKey)return;
 
       const previous=myLiveAnswers[questionId]||"";
-      const previousRecord=myLiveAnswerRecords[questionId]||null;
       myLiveAnswers={...myLiveAnswers,[questionId]:answer};
       savingLiveAnswerKey=`${questionId}:${answer}`;
       renderLivePanel();
 
       try{
-        await database.ref(`predictions/${tournamentId}/live/${matchKey}/${questionId}/${currentUser.uid}`).set({
-          uid:currentUser.uid,
-          rgId:currentPlayer.rgId||"",
-          displayName:currentPlayer.displayName||currentUser.displayName||"",
-          answer,
+        await submitLiveSecure({
           tournamentId,
-          matchId:matchKey,
+          matchKey,
           questionId,
-          createdAt:previousRecord?.createdAt||firebase.database.ServerValue.TIMESTAMP,
-          updatedAt:firebase.database.ServerValue.TIMESTAMP
+          answer
         });
         savingLiveAnswerKey="";
         renderLivePanel();
-        showToast("Live prediction saved.");
+        showToast("Live prediction securely saved.");
       }catch(error){
         console.error("Live prediction save failed:",error);
         myLiveAnswers={...myLiveAnswers,[questionId]:previous};
         savingLiveAnswerKey="";
         renderLivePanel();
-        showToast(error?.code==="PERMISSION_DENIED"?"Firebase rules blocked this prediction.":"Prediction could not be saved.");
+        showToast(secureFunctionError(error,"Prediction could not be saved."));
       }
     }
 

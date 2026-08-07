@@ -171,6 +171,10 @@ tournament: {
       currentMatchId: "No Match Live",
       teamAScore: 0,
       teamBScore: 0,
+      map1WinnerName: "",
+      settlementStatus: "",
+      settlementMessage: "",
+      scoreSaving: false,
 
       nextMatch: {
         label: "",
@@ -1398,12 +1402,12 @@ if (moduleId === "diagnostics") {
 
         <div>
           <strong>
-            Prediction payout protection is active.
+            Automatic prediction settlement is active.
           </strong>
 
-          Match results save normally, but Nexus
-          will not distribute prediction RP until
-          the secure payout system is added.
+          Each + score records a map win immediately.
+          The first team to reach 1-0 becomes the Map 1 winner,
+          and the final series score automatically settles live prediction RP once.
         </div>
       </div>
 
@@ -1544,14 +1548,18 @@ if (moduleId === "diagnostics") {
                 </strong>
               </div>
 
-              <div class="live-button-row">
-                <button
-                  id="saveLiveResultButton"
-                  class="action-button action-button-primary"
-                >
-                  <i class="fa-solid fa-floppy-disk"></i>
-                  Save Scores / Result
-                </button>
+              <div class="live-winner-preview">
+                Map 1:
+                <strong id="liveMap1WinnerPreview">
+                  Waiting for 1-0
+                </strong>
+              </div>
+
+              <div class="live-winner-preview">
+                Prediction Rewards:
+                <strong id="livePredictionSettlementPreview">
+                  Waiting for final score
+                </strong>
               </div>
 
             </div>
@@ -1748,9 +1756,10 @@ if (moduleId === "diagnostics") {
     }
 
     if (button.matches("[data-score-side]")) {
-      changeLiveScore(
+      void changeLiveScore(
         button.dataset.scoreSide,
-        Number(button.dataset.scoreChange)
+        Number(button.dataset.scoreChange),
+        button
       );
 
       return;
@@ -1839,6 +1848,7 @@ case "clearNextMatchButton":
     true;
 
   loadSelectedMatchScores();
+  void loadLiveMatchTracking();
 
   /*
    * No Current Match should not
@@ -2131,6 +2141,7 @@ case "clearNextMatchButton":
         "No Match Live";
 
       loadSelectedMatchScores();
+      void loadLiveMatchTracking();
 
       const savedNext =
         broadcast.upNext;
@@ -2156,6 +2167,10 @@ case "clearNextMatchButton":
     const site =
       window.nexusSiteData || {};
 
+    state.liveDraft.map1WinnerName = "";
+    state.liveDraft.settlementStatus = "";
+    state.liveDraft.settlementMessage = "";
+
     if (!config) {
       state.liveDraft.teamAScore = 0;
       state.liveDraft.teamBScore = 0;
@@ -2171,6 +2186,72 @@ case "clearNextMatchButton":
       Number(
         site[config.scoreB] || 0
       );
+  }
+
+  function getLiveStorageKey(matchId) {
+    const shortMatchId = String(matchId || "")
+      .split(" • ")[0]
+      .trim();
+
+    if (!shortMatchId || shortMatchId === "No Match Live") {
+      return "";
+    }
+
+    if (shortMatchId === "Grand Finals") {
+      return "gf";
+    }
+
+    const r16Match = shortMatchId.match(/^R16-(\d+)$/);
+    return r16Match
+      ? `r16m${r16Match[1]}`
+      : shortMatchId.toLowerCase();
+  }
+
+  async function loadLiveMatchTracking() {
+    const matchId = state.liveDraft.currentMatchId;
+    const storageKey = getLiveStorageKey(matchId);
+
+    if (!storageKey || isNoCurrentMatchSelected()) {
+      state.liveDraft.map1WinnerName = "";
+      state.liveDraft.settlementStatus = "";
+      state.liveDraft.settlementMessage = "";
+      paintLiveOperations();
+      return;
+    }
+
+    try {
+      const tournamentId = await getCurrentTournamentId();
+      const snapshot = await database
+        .ref(`tournaments/${tournamentId}/bracket/${storageKey}`)
+        .once("value");
+      const record = snapshot.val() || {};
+      const settlement = record.predictionSettlement || {};
+
+      state.liveDraft.map1WinnerName =
+        record.map1WinnerName || "";
+      state.liveDraft.settlementStatus =
+        settlement.status || "";
+
+      if (settlement.status === "settled") {
+        state.liveDraft.settlementMessage =
+          `${Number(settlement.rewardedPlayers || 0).toLocaleString()} players • ${Number(settlement.totalRewards || 0).toLocaleString()} RP`;
+      } else if (settlement.status === "error") {
+        state.liveDraft.settlementMessage =
+          "Needs review in Prediction Operations";
+      } else if (record.winner) {
+        state.liveDraft.settlementMessage =
+          "Final score saved • settlement processing";
+      } else {
+        state.liveDraft.settlementMessage = "";
+      }
+
+      paintLiveOperations();
+    } catch (error) {
+      console.error(
+        "[NEXUS LIVE] Could not load map tracking:",
+        error
+      );
+    }
   }
 
   function paintLiveOperations() {
@@ -2239,6 +2320,32 @@ if (currentMatchButton) {
     );
 
     setText(
+      "liveMap1WinnerPreview",
+      state.liveDraft.map1WinnerName ||
+      "Waiting for 1-0"
+    );
+
+    setText(
+      "livePredictionSettlementPreview",
+      state.liveDraft.settlementStatus === "settled"
+        ? state.liveDraft.settlementMessage || "Settled"
+        : state.liveDraft.settlementStatus === "error"
+          ? state.liveDraft.settlementMessage || "Needs review"
+          : getLiveWinner(config)
+            ? state.liveDraft.settlementMessage || "Settlement processing"
+            : "Waiting for final score"
+    );
+
+    elements.content
+      .querySelectorAll("[data-score-side]")
+      .forEach(button => {
+        button.disabled = Boolean(
+          state.liveDraft.scoreSaving ||
+          state.liveDraft.settlementStatus === "settled"
+        );
+      });
+
+    setText(
       "liveNextLabel",
       state.liveDraft.nextMatch.label ||
       "NO MATCH"
@@ -2269,46 +2376,139 @@ if (currentMatchButton) {
     }
   }
 
-  function changeLiveScore(
+  async function changeLiveScore(
     side,
-    amount
+    amount,
+    button
   ) {
-    const config =
-      getLiveMatchConfig();
+    const config = getLiveMatchConfig();
 
-    if (!config) return;
-
-    if (side === "A") {
-      state.liveDraft.teamAScore =
-        Math.max(
-          0,
-          Math.min(
-            config.max,
-            state.liveDraft.teamAScore +
-              amount
-          )
-        );
+    if (!config || isNoCurrentMatchSelected()) {
+      showToast(
+        "Set a tournament match live before recording map wins."
+      );
+      return;
     }
 
-    if (side === "B") {
-      state.liveDraft.teamBScore =
-        Math.max(
-          0,
-          Math.min(
-            config.max,
-            state.liveDraft.teamBScore +
-              amount
-          )
-        );
+    if (state.liveDraft.scoreSaving) {
+      return;
     }
 
-    state.liveDraft.dirty = true;
-
+    state.liveDraft.scoreSaving = true;
     setLiveSaveState(
-      "Unsaved score changes"
+      amount > 0
+        ? "Recording map win..."
+        : "Undoing last map..."
     );
-
     paintLiveOperations();
+
+    try {
+      const tournamentId = await getCurrentTournamentId();
+      const updateScore = firebase
+        .functions()
+        .httpsCallable(
+          "updateLiveMatchScore"
+        );
+
+      const requestId =
+        window.crypto?.randomUUID?.() ||
+        `score_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+      const result = await updateScore({
+        tournamentId,
+        matchId:
+          state.liveDraft.currentMatchId,
+        side,
+        delta: amount,
+        requestId
+      });
+
+      const data = result?.data || {};
+
+      state.liveDraft.teamAScore =
+        Number(data.scoreA || 0);
+      state.liveDraft.teamBScore =
+        Number(data.scoreB || 0);
+      state.liveDraft.map1WinnerName =
+        data.map1WinnerName || "";
+
+      const settlement = data.settlement || null;
+      if (data.final && settlement?.success !== false) {
+        state.liveDraft.settlementStatus =
+          "settled";
+        state.liveDraft.settlementMessage =
+          `${Number(settlement?.rewardedPlayers || 0).toLocaleString()} players • ${Number(settlement?.totalRewards || 0).toLocaleString()} RP`;
+      } else if (data.final && settlement?.success === false) {
+        state.liveDraft.settlementStatus =
+          "error";
+        state.liveDraft.settlementMessage =
+          "Needs review in Prediction Operations";
+      } else {
+        state.liveDraft.settlementStatus = "";
+        state.liveDraft.settlementMessage = "";
+      }
+
+      window.nexusSiteData = {
+        ...(window.nexusSiteData || {}),
+        [config.scoreA]:
+          String(data.scoreA ?? 0),
+        [config.scoreB]:
+          String(data.scoreB ?? 0),
+        [config.winner]:
+          data.winnerName || ""
+      };
+
+      state.liveDraft.dirty = false;
+      setLiveSaveState(
+        data.final
+          ? settlement?.success === false
+            ? "Final score saved • rewards need review"
+            : "Final score saved • rewards settled"
+          : "Map result saved automatically"
+      );
+      paintLiveOperations();
+
+      if (data.final) {
+        if (settlement?.success === false) {
+          showToast(
+            `${data.winnerName} wins ${data.exactScore}. Final score saved, but automatic prediction settlement needs review.`
+          );
+        } else {
+          showToast(
+            `${data.winnerName} wins ${data.exactScore}. ${Number(settlement?.rewardedPlayers || 0).toLocaleString()} players received ${Number(settlement?.totalRewards || 0).toLocaleString()} RP.`
+          );
+        }
+      } else if (amount > 0) {
+        showToast(
+          data.mapNumber === 1
+            ? `Map 1 recorded: ${data.mapWinnerName}. Score ${data.scoreA}-${data.scoreB}.`
+            : `Map ${data.mapNumber} recorded: ${data.mapWinnerName}. Score ${data.scoreA}-${data.scoreB}.`
+        );
+      } else {
+        showToast(
+          `Map ${data.mapNumber} undone. Score ${data.scoreA}-${data.scoreB}.`
+        );
+      }
+
+      void loadLiveMatchTracking();
+    } catch (error) {
+      console.error(
+        "[NEXUS LIVE] Secure score update failed:",
+        error
+      );
+
+      const message =
+        clean(error?.message) ||
+        "The live score could not be saved.";
+
+      setLiveSaveState(
+        "Score update failed"
+      );
+      showToast(message);
+    } finally {
+      state.liveDraft.scoreSaving = false;
+      paintLiveOperations();
+    }
   }
 
   function getLiveWinner(config) {

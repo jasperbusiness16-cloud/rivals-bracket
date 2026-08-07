@@ -1810,10 +1810,6 @@
       getSubmittedEntries()
         .length;
 
-    const draftCount =
-      getDraftEntries()
-        .length;
-
     const perfectRemaining =
       getPerfectRemaining();
 
@@ -1841,10 +1837,8 @@
             selectedMatch
           )
         : {
-            label:
-              "No Match",
-            className:
-              "inactive"
+            label: "No Match",
+            className: "inactive"
           };
 
     const participants =
@@ -1856,22 +1850,6 @@
             "",
             ""
           ];
-
-    const map1Options =
-      selectedMatch
-        ? getQuestionOptions(
-            selectedMatch,
-            "map1Winner"
-          )
-        : [];
-
-    const exactOptions =
-      selectedMatch
-        ? getQuestionOptions(
-            selectedMatch,
-            "exactScore"
-          )
-        : [];
 
     const map1Answer =
       selectedMatch
@@ -1927,12 +1905,134 @@
             incorrect: 0
           };
 
-    const exactConflict =
+    const mapResult =
+      selectedMatch
+        ? getResultRecord(
+            selectedMatch,
+            "map1Winner"
+          )
+        : null;
+
+    const exactResult =
+      selectedMatch
+        ? getResultRecord(
+            selectedMatch,
+            "exactScore"
+          )
+        : null;
+
+    const selectedResultRoot =
+      selectedMatch
+        ? state.predictionResults
+            ?.[selectedMatch] || {}
+        : {};
+
+    const canonicalMatch =
+      selectedMatch
+        ? getCanonicalMatchRecord(
+            selectedMatch
+          )
+        : {};
+
+    const settlementRecord =
+      canonicalMatch
+        ?.predictionSettlement || {};
+
+    const liveSettled =
       Boolean(
-        exactAnswer &&
-        officialScore &&
-        exactAnswer !==
-          officialScore
+        selectedResultRoot?.settled ||
+        settlementRecord?.status ===
+          "settled"
+      );
+
+    const settlementError =
+      clean(
+        settlementRecord?.error
+      );
+
+    const settlementPending =
+      Boolean(
+        !liveSettled &&
+        (
+          settlementRecord?.status ===
+            "processing" ||
+          officialWinner
+        )
+      );
+
+    const settledAt =
+      Number(
+        selectedResultRoot?.settledAt ||
+        settlementRecord?.settledAt ||
+        0
+      );
+
+    const selectedRewards =
+      Number(
+        mapResult?.rewardsIssued ||
+        0
+      ) +
+      Number(
+        exactResult?.rewardsIssued ||
+        0
+      );
+
+    const settledMatches =
+      Object.values(
+        state.predictionResults || {}
+      ).filter(
+        record =>
+          record &&
+          typeof record === "object" &&
+          record.settled === true
+      );
+
+    const settledMatchCount =
+      settledMatches.length;
+
+    const liveRewardsTotal =
+      settledMatches.reduce(
+        (
+          total,
+          record
+        ) =>
+          total +
+          Number(
+            record?.map1Winner
+              ?.rewardsIssued ||
+            0
+          ) +
+          Number(
+            record?.exactScore
+              ?.rewardsIssued ||
+            0
+          ),
+        0
+      );
+
+    const liveAnswerCount =
+      Object.values(
+        state.livePredictions || {}
+      ).reduce(
+        (
+          matchTotal,
+          matchRecord
+        ) =>
+          matchTotal +
+          Object.values(
+            matchRecord || {}
+          ).reduce(
+            (
+              questionTotal,
+              questionRecord
+            ) =>
+              questionTotal +
+              Object.keys(
+                questionRecord || {}
+              ).length,
+            0
+          ),
+        0
       );
 
     const legacyCount =
@@ -1943,6 +2043,24 @@
 
     const matchOptions =
       getAvailableMatches();
+
+    const settlementLabel =
+      liveSettled
+        ? "Auto Settled"
+        : settlementError
+          ? "Settlement Error"
+          : settlementPending
+            ? "Settlement Pending"
+            : matchState.label;
+
+    const settlementClass =
+      liveSettled
+        ? "complete"
+        : settlementError
+          ? "locked"
+          : settlementPending
+            ? "open"
+            : matchState.className;
 
     state.content.innerHTML = `
       <section class="nexus-predictions">
@@ -1957,7 +2075,7 @@
             </h2>
 
             <p>
-              Review Pick’em submissions, settle live answers and issue verified RP rewards through the secure backend.
+              Audit automatic live-prediction settlements, review player submissions and settle the full Tournament Pick’em when the bracket is complete.
             </p>
           </div>
 
@@ -2027,6 +2145,20 @@
           </div>
         </header>
 
+        <div class="nexus-prediction-alert">
+          <i class="fa-solid fa-bolt"></i>
+
+          <div>
+            <strong>
+              Live Operations Is The Source Of Truth
+            </strong>
+
+            <span>
+              Map 1 is captured from the first recorded map win. When a BO3 reaches 2 wins or a BO5 reaches 3 wins, Nexus automatically determines the final score, grades both live questions and distributes RP once through the secure backend.
+            </span>
+          </div>
+        </div>
+
         ${
           bracketSize === 16
             ? `
@@ -2084,77 +2216,55 @@
             </strong>
 
             <small>
-              Completed Pick’em entries
+              Tournament Pick’em entries
             </small>
           </article>
 
           <article>
             <span>
-              Saved Drafts
+              Live Answers
             </span>
 
             <strong>
               ${formatNumber(
-                draftCount
+                liveAnswerCount
               )}
             </strong>
 
             <small>
-              Unsubmitted player drafts
+              Map 1 + exact-score calls
             </small>
           </article>
 
           <article>
             <span>
-              Perfect Remaining
+              Auto-Settled Matches
+            </span>
+
+            <strong class="success">
+              ${formatNumber(
+                settledMatchCount
+              )}
+            </strong>
+
+            <small>
+              Completed secure settlements
+            </small>
+          </article>
+
+          <article>
+            <span>
+              Live RP Distributed
             </span>
 
             <strong>
-              ${
-                perfectRemaining ===
-                null
-                  ? "—"
-                  : formatNumber(
-                      perfectRemaining
-                    )
-              }
+              ${formatNumber(
+                liveRewardsTotal
+              )}
             </strong>
 
             <small>
-              ${
-                perfectRemaining ===
-                null
-                  ? "Unavailable for 16-team Pick’em"
-                  : "Still matching official results"
-              }
-            </small>
-          </article>
-
-          <article>
-            <span>
-              Pick’em Status
-            </span>
-
-            <strong class="${
-              pickemLocked
-                ? "danger"
-                : "success"
-            }">
-              ${
-                pickemLocked
-                  ? "LOCKED"
-                  : "OPEN"
-              }
-            </strong>
-
-            <small>
-              ${
-                tournamentHasStarted()
-                  ? "Locked by tournament progress"
-                  : forcedLock
-                    ? "Manually locked by staff"
-                    : "Accepting submissions"
-              }
+              Automatic live rewards
             </small>
           </article>
         </div>
@@ -2220,11 +2330,18 @@
 
               <div>
                 <span>
-                  Bracket Format
+                  Perfect Remaining
                 </span>
 
                 <strong>
-                  ${bracketSize}-Team Single Elimination
+                  ${
+                    perfectRemaining ===
+                    null
+                      ? "—"
+                      : formatNumber(
+                          perfectRemaining
+                        )
+                  }
                 </strong>
               </div>
             </div>
@@ -2293,17 +2410,17 @@
             <div class="nexus-prediction-panel-head">
               <div>
                 <span>
-                  Live Prediction Results
+                  Live Settlement Audit
                 </span>
 
                 <h3>
-                  Correct Answer Control
+                  Automatic Results
                 </h3>
               </div>
 
-              <span class="nexus-prediction-status ${matchState.className}">
+              <span class="nexus-prediction-status ${settlementClass}">
                 ${escapeHtml(
-                  matchState.label
+                  settlementLabel
                 )}
               </span>
             </div>
@@ -2382,11 +2499,30 @@
                   <div class="nexus-prediction-official-row">
                     <div>
                       <span>
-                        Official Series Score
+                        Map 1 Winner
                       </span>
 
                       <strong>
                         ${escapeHtml(
+                          map1Answer
+                            ? getTeamName(
+                                normalizeTeamKey(
+                                  map1Answer
+                                )
+                              )
+                            : "Awaiting Result"
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        Final Series Score
+                      </span>
+
+                      <strong>
+                        ${escapeHtml(
+                          exactAnswer ||
                           officialScore ||
                           "Not Final"
                         )}
@@ -2395,7 +2531,7 @@
 
                     <div>
                       <span>
-                        Official Series Winner
+                        Series Winner
                       </span>
 
                       <strong>
@@ -2423,36 +2559,23 @@
                           </h4>
                         </div>
 
-                        <button
-                          class="nexus-prediction-clear"
-                          type="button"
-                          data-prediction-action="clear-result"
-                          data-question-id="map1Winner"
+                        <strong class="${
+                          liveSettled
+                            ? "success"
+                            : ""
+                        }">
                           ${
-                            map1Answer
-                              ? ""
-                              : "disabled"
+                            liveSettled
+                              ? `+${formatNumber(
+                                  Number(
+                                    mapResult?.rewardsIssued ||
+                                    0
+                                  )
+                                )} RP`
+                              : "Pending"
                           }
-                        >
-                          Clear
-                        </button>
+                        </strong>
                       </div>
-
-                      <label class="nexus-prediction-field">
-                        <span>
-                          Correct Answer
-                        </span>
-
-                        <select
-                          id="nexusPredictionMap1Result"
-                        >
-                          ${selectOptionsMarkup(
-                            map1Options,
-                            map1Answer,
-                            "Select Map 1 Winner"
-                          )}
-                        </select>
-                      </label>
 
                       <div class="nexus-prediction-preview">
                         <div>
@@ -2506,51 +2629,23 @@
                           </h4>
                         </div>
 
-                        <button
-                          class="nexus-prediction-clear"
-                          type="button"
-                          data-prediction-action="clear-result"
-                          data-question-id="exactScore"
+                        <strong class="${
+                          liveSettled
+                            ? "success"
+                            : ""
+                        }">
                           ${
-                            exactAnswer
-                              ? ""
-                              : "disabled"
+                            liveSettled
+                              ? `+${formatNumber(
+                                  Number(
+                                    exactResult?.rewardsIssued ||
+                                    0
+                                  )
+                                )} RP`
+                              : "Pending"
                           }
-                        >
-                          Clear
-                        </button>
+                        </strong>
                       </div>
-
-                      <label class="nexus-prediction-field">
-                        <span>
-                          Correct Answer
-                        </span>
-
-                        <select
-                          id="nexusPredictionExactResult"
-                        >
-                          ${selectOptionsMarkup(
-                            exactOptions,
-                            exactAnswer,
-                            "Select Exact Score"
-                          )}
-                        </select>
-                      </label>
-
-                      ${
-                        exactConflict
-                          ? `
-                            <div class="nexus-prediction-conflict">
-                              <i class="fa-solid fa-triangle-exclamation"></i>
-
-                              Selected answer does not match the official series score of
-                              ${escapeHtml(
-                                officialScore
-                              )}.
-                            </div>
-                          `
-                          : ""
-                      }
 
                       <div class="nexus-prediction-preview">
                         <div>
@@ -2596,22 +2691,54 @@
                   <div class="nexus-prediction-result-actions">
                     <div>
                       <strong>
-                        Secure Settlement
+                        ${
+                          liveSettled
+                            ? "Automatic Settlement Complete"
+                            : settlementError
+                              ? "Automatic Settlement Needs Attention"
+                              : officialWinner
+                                ? "Automatic Settlement Processing"
+                                : "Awaiting Live Operations"
+                        }
                       </strong>
 
                       <span>
-                        Correct answers are verified against the official bracket, paid once and added to player stats atomically.
+                        ${
+                          liveSettled
+                            ? `${formatNumber(
+                                selectedRewards
+                              )} RP distributed for this match${
+                                settledAt
+                                  ? ` • ${escapeHtml(
+                                      formatDate(
+                                        settledAt
+                                      )
+                                    )}`
+                                  : ""
+                              }.`
+                            : settlementError
+                              ? escapeHtml(
+                                  settlementError
+                                )
+                              : officialWinner
+                                ? "The final score is saved. Nexus is finishing the secure payout operation."
+                                : "Record map wins in Live Operations. This page updates automatically and never requires manual live-result entry."
+                        }
                       </span>
                     </div>
 
-                    <button
-                      class="nexus-prediction-button primary"
-                      type="button"
-                      data-prediction-action="save-results"
-                    >
-                      <i class="fa-solid fa-check"></i>
-                      Save &amp; Settle Rewards
-                    </button>
+                    <span class="nexus-prediction-status ${settlementClass}">
+                      <i class="fa-solid ${
+                        liveSettled
+                          ? "fa-circle-check"
+                          : settlementError
+                            ? "fa-triangle-exclamation"
+                            : "fa-rotate"
+                      }"></i>
+                      ${escapeHtml(
+                        settlementLabel
+                      )}
+                    </span>
                   </div>
                 `
                 : `
@@ -2623,7 +2750,7 @@
                     </strong>
 
                     <span>
-                      Select a match to review live predictions.
+                      Select a match to review its automatic settlement record.
                     </span>
                   </div>
                 `
@@ -2656,11 +2783,11 @@
 
           <div>
             <strong>
-              Secure Tournament Settlement
+              Tournament Pick’em Settlement
             </strong>
 
             <span>
-              After every official bracket winner is saved, settle the full Pick’em once to issue match, champion and Perfect Bracket rewards.
+              Live predictions settle automatically from Live Operations. After every official bracket winner is saved, settle the full Tournament Pick’em once to issue QF/SF/Grand Final, Champion Pick and Perfect Bracket rewards.
             </span>
           </div>
 

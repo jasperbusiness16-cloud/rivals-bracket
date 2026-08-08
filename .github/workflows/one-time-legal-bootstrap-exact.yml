@@ -1,0 +1,37 @@
+name: One-time exact legal bootstrap
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.event.issue.title == 'Run exact RG legal bootstrap'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          boot='''  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="/firebase.js?v=3"></script>
+'''
+          for name in ['privacy.html','terms.html','contact.html','tournament-rules.html']:
+              p=Path(name); t=p.read_text(encoding='utf-8')
+              marker='  <script src="/global-header.js?v=10"></script>'
+              if 'firebase-app.js' not in t and marker in t:
+                  t=t.replace(marker,boot+marker,1)
+              if name=='privacy.html':
+                  t=t.replace('display names, profile images, tournament participation, team','display names, tournament participation, team')
+              p.write_text(t,encoding='utf-8')
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add privacy.html terms.html contact.html tournament-rules.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Bootstrap auth on legal pages"
+          git push origin HEAD:main

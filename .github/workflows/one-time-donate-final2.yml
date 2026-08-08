@@ -95,3 +95,5 @@ jobs:
           git commit -m "Scope prize pool page to active tournament"
           git pull --rebase origin main
           git push origin HEAD:main
+
+# trigger 2

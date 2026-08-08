@@ -212,7 +212,8 @@ donationsRef.on("value", (snapshot) => {
   .map(d => ({
     name: d.name || "Anonymous",
     amount: Number(d.amount) || 0,
-    createdAt: Number(d.createdAt) || 0
+    createdAt: Number(d.createdAt) || 0,
+    tournamentId: String(d.tournamentId || d.eventId || "").trim()
   }))
   .sort((a, b) => b.createdAt - a.createdAt);
 
@@ -222,7 +223,13 @@ updateDonationTotals();
 });
 
 function updateDonationTotals() {
-  const donationTotal = latestDonations.reduce((sum, donation) => {
+  const currentTournamentId = String(latestSiteData.currentTournament || "").trim();
+  const currentTournamentDonations = latestDonations.filter(donation =>
+    donation.tournamentId === currentTournamentId ||
+    (!donation.tournamentId && currentTournamentId === "open1")
+  );
+
+  const donationTotal = currentTournamentDonations.reduce((sum, donation) => {
     return sum + (Number(donation.amount) || 0);
   }, 0);
 

@@ -219,7 +219,7 @@ listeners: []
     <i class="fa-solid fa-shield-halved"></i>
 
     Select an outgoing player directly from a team card. Then choose any
-    registered RG player, waitlisted substitute, or player on another team.
+    registered RG player, player from the substitute pool, or player on another team.
   </div>
 
   <div

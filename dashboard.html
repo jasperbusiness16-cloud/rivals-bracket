@@ -1362,7 +1362,7 @@
           },
           waitlist: {
             tone: "warning",
-            state: "Waitlist / Substitute Pool",
+            state: "Substitute Player",
             title: "Stay Ready for an Open Roster Spot",
             description: "You are not currently on an active roster. Remain available in Discord in case tournament staff needs a substitute.",
             note: "Tournament Support remains hidden until you are officially moved onto an active team roster.",
@@ -1504,7 +1504,7 @@
         renderActions(copy.actions);
 
         const applicationStatus = clean(application?.status).toLowerCase();
-        setPill("applicationPill", application ? formatStatus(applicationStatus || "submitted") : "Not Applied", applicationStatus === "accepted" ? "success" : applicationStatus === "waitlist" ? "warning" : "");
+        setPill("applicationPill", application ? (applicationStatus === "waitlist" ? "Substitute Player" : formatStatus(applicationStatus || "submitted")) : "Not Applied", applicationStatus === "accepted" ? "success" : applicationStatus === "waitlist" ? "warning" : "");
         setPill("checkInPill", checkIn?.checkedIn ? "Checked In" : "Not Checked In", checkIn?.checkedIn ? "success" : state.team ? "warning" : "");
         setPill("rosterPill", state.team ? state.team.teamName : "No Active Roster", state.team ? "purple" : "");
       }

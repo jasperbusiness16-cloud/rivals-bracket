@@ -160,7 +160,7 @@
 
           ${createSummaryCard(
             "applicationsWaitlistCount",
-            "Waitlist",
+            "Substitutes",
             "fa-list-check"
           )}
 
@@ -212,7 +212,7 @@
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending</option>
                   <option value="accepted">Accepted</option>
-                  <option value="waitlist">Waitlist</option>
+                  <option value="waitlist">Substitute Players</option>
                   <option value="declined">Declined</option>
                 </select>
               </div>
@@ -1095,7 +1095,7 @@
               <span
                 class="application-status-badge status-${escapeHtml(status)}"
               >
-                ${escapeHtml(status)}
+                ${escapeHtml(status === "waitlist" ? "Substitute" : status)}
               </span>
             </div>
 
@@ -1216,7 +1216,7 @@
             ${createStatusButton(
               uid,
               "waitlist",
-              "Waitlist",
+              "Set Substitute",
               "fa-list-check",
               status
             )}

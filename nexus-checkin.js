@@ -1641,7 +1641,7 @@ const discordReadyPlayers =
                 </span>
 
                 <small>
-                  A waitlisted substitute
+                  A substitute player
                   must check in first.
                 </small>
               `

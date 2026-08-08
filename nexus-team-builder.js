@@ -3047,7 +3047,7 @@ moduleState.teamRecord.teamLogos =
 
     const confirmed =
       window.confirm(
-        `Generate ${acceptedCount} accepted test players and ${waitlistCount} waitlist players for ${moduleState.tournamentId}?`
+        `Generate ${acceptedCount} accepted test players and ${waitlistCount} substitute players for ${moduleState.tournamentId}?`
       );
 
     if (!confirmed) return;

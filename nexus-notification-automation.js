@@ -967,9 +967,9 @@
     if (status === "waitlist") {
       return {
         title:
-          "You Are on the Waitlist",
+          "You Are a Substitute Player",
         message:
-          `You were placed on the waitlist for ${name}. Stay available in Discord in case a roster position becomes available.`,
+          `You were selected as a substitute player for ${name}. Stay available in Discord in case tournament staff needs you to fill an open roster spot.`, 
         link:
           "dashboard.html"
       };
@@ -1133,7 +1133,7 @@
         ].includes(nextStatus)
       ) {
         /*
-         * A waitlisted player promoted directly into a live roster should
+         * A substitute player promoted directly into a live roster should
          * receive the substitution alert instead of a second acceptance alert.
          */
         if (

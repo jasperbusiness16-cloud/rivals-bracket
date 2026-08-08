@@ -1,0 +1,31 @@
+name: Remove temporary launch automation
+
+on:
+  push:
+    paths:
+      - ".github/workflows/cleanup-launch-temp.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove temporary launch workflows
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f --ignore-unmatch .github/workflows/one-time-*.yml
+          git rm -f --ignore-unmatch .github/workflows/trigger-final-launch-hardening.yml
+          git rm -f --ignore-unmatch .github/workflows/cleanup-launch-temp.yml
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Remove temporary launch automation"
+          git pull --rebase origin main
+          git push origin HEAD:main

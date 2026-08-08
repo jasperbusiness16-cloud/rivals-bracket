@@ -100,7 +100,7 @@ friendRequestPaths: [
                 keys: ["leaderboard", "rankings"]
             },
             {
-    label: "Add To Prizepool",
+    label: "Add To Prize Pool",
     href: "donate.html",
     keys: ["donate", "donations", "support"]
 },
@@ -123,7 +123,7 @@ friendRequestPaths: [
                 icon: "profile"
             },
             {
-    label: "Tournament Check In",
+    label: "Tournament Check-In",
     href: "check-in.html",
     icon: "check"
 },

@@ -149,3 +149,19 @@ function stopNotificationListener() {
 
   rgNotificationListener = null;
 }
+
+/**
+ * Creator-link validation is shared by settings/profile pages.
+ * Load the helper only where those controls can exist.
+ */
+(() => {
+  const page = String(location.pathname || "").split("/").pop().toLowerCase();
+  if (!["settings.html", "profile.html", ""].includes(page)) return;
+  if (document.querySelector('script[data-rg-creator-links]')) return;
+
+  const script = document.createElement("script");
+  script.src = "creator-links.js?v=1";
+  script.async = false;
+  script.dataset.rgCreatorLinks = "true";
+  document.head.appendChild(script);
+})();

@@ -1,0 +1,95 @@
+name: One-time issue-triggered final global header hardening
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+jobs:
+  harden:
+    if: github.event.issue.title == 'Run RG final global header hardening'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('global-header.js'); t=p.read_text(encoding='utf-8')
+          if 'notificationPaths: [' not in t:
+              old='''        avatarKeys: [],
+
+        friendPaths: ['''
+              new='''        avatarKeys: [],
+
+        notificationPaths: [
+            "notifications/{uid}",
+            "userNotifications/{uid}"
+        ],
+
+        friendPaths: ['''
+              if old not in t: raise SystemExit('notification insertion target missing')
+              t=t.replace(old,new,1)
+          t=t.replace('''                avatar:
+                    user.photoURL ||
+                    ""''','''                avatar: ""''')
+          t=re.sub(r'''\s+avatar: String\(\s*player\.profileImage \|\|\s*player\.avatarUrl \|\|\s*player\.photoURL \|\|\s*""\s*\),''','\n                            avatar: "",',t)
+          t=re.sub(r'''\s+avatar: String\(\s*sender\.profileImage \|\| ""\s*\),''','\n                            avatar: "",',t)
+          t=re.sub(r'''avatar:\s*String\(\s*value\.avatarUrl \|\|\s*value\.photoURL \|\|\s*value\.profileImage \|\|\s*value\.avatar \|\|\s*""\s*\),''','avatar: "",',t)
+          t=re.sub(r'''const avatarMarkup =\s*player\.profileImage\s*\? `.*?`\s*:\s*`\s*<span>\s*\$\{this\.escapeHTML\(\s*initial\s*\)\}\s*</span>\s*`;''','''const avatarMarkup = `
+                        <span>${this.escapeHTML(initial)}</span>
+                    `;''',t,flags=re.S)
+          t=t.replace('''friendRequests: [],
+giftInbox: [],
+
+playerSearchResults: [],
+playerSearchVersion: 0,
+
+dailyGiftStats: {
+    sentCount: 0,
+    receivedCount: 0,
+    receivedLimit: 5,
+    sentTo: {}
+},
+''','''friendRequests: [],
+
+playerSearchResults: [],
+playerSearchVersion: 0,
+''')
+          t=t.replace('''this.state.friendRequests = [];
+this.state.giftInbox = [];
+
+this.state.dailyGiftStats = {
+    sentCount: 0,
+    receivedCount: 0,
+    receivedLimit: 5,
+    sentTo: {}
+};
+''','''this.state.friendRequests = [];
+''')
+          t=t.replace('''this.renderFriends([]);
+this.renderFriendRequests([]);
+this.renderGiftInbox([]);''','''this.renderFriends([]);
+this.renderFriendRequests([]);''')
+          t=re.sub(r'''\nthis\.dom\.giftsList = root\.querySelector\(\n    "\[data-rg-gifts-list\]"\n\);\n\nthis\.dom\.giftsCount = root\.querySelector\(\n    "\[data-rg-gifts-count\]"\n\);\n''','\n',t)
+          t=re.sub(r'''\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToDailyStats ===\n        "function"\n\) \{.*?\n\}\n\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToGiftInbox ===\n        "function"\n\) \{.*?\n\}\n''','\n',t,count=1,flags=re.S)
+          t=re.sub(r'''\n\s*const giftState =\s*window\.RGDailyGifts.*?reason:\s*"Daily Gifts are not loaded on this page\."\s*\};\n''','\n',t,count=1,flags=re.S)
+          t=re.sub(r'''\n// =====================================================================\n// DAILY GIFT INBOX RENDERING\n// =====================================================================\n\nrenderGiftInbox\(.*?\n\}\n\n        // =====================================================================\n        // FRIEND REQUEST RENDERING''','''\n        // =====================================================================
+        // FRIEND REQUEST RENDERING''',t,count=1,flags=re.S)
+          t=re.sub(r'''\nif \(action === "open-gift"\) \{.*?\n\}\n\nif \(action === "gift"\) \{.*?\n\}\n\n            if \(action === "invite"\)''','''\n            if (action === "invite")''',t,count=1,flags=re.S)
+          t=t.replace('''    gift: "reward",
+    crate: "reward",
+    inventory: "reward",
+''','')
+          p.write_text(t,encoding='utf-8')
+          PY
+          node --check global-header.js
+          grep -q 'notificationPaths: \[' global-header.js
+          ! grep -q 'RGDailyGifts' global-header.js
+          ! grep -q 'user.photoURL' global-header.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add global-header.js
+          git commit -m "Finish initials-only header and remove gift leftovers"
+          git pull --rebase origin main
+          git push origin HEAD:main

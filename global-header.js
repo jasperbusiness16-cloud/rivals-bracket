@@ -70,11 +70,6 @@
 
         avatarKeys: [],
 
-        notificationPaths: [
-            "notifications/{uid}",
-            "userNotifications/{uid}"
-        ],
-
         friendPaths: [
     "userFriends/{uid}"
 ],

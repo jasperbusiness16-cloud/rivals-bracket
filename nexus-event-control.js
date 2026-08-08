@@ -38,11 +38,6 @@
     "8_single_elim": {
       label: "8 Team Single Elimination",
       teamCount: 8
-    },
-
-    "16_single_elim": {
-      label: "16 Team Single Elimination",
-      teamCount: 16
     }
   };
 

@@ -1094,3 +1094,9 @@ body.rg-overlay-open { overflow: hidden; }
 [data-rg-friend-action="open-gift"],
 [data-rg-gifts-list],
 [data-rg-gifts-count] { display: none !important; }
+
+/* Launch retired controls */
+[data-rg-friend-action="gift"],
+[data-rg-friend-action="open-gift"],
+[data-rg-gifts-list],
+[data-rg-gifts-count]{display:none!important;}

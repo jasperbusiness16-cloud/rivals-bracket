@@ -192,7 +192,6 @@
       record.region,
       record.platform,
       record.bio,
-      record.profileImage
     ];
 
     const completed = fields.filter(value => clean(value)).length;
@@ -372,12 +371,12 @@
             <h2>Player Directory</h2>
 
             <p>
-              Search accounts, inspect player profiles and prepare selected-player lists without changing protected balances, roles or account data.
+              Search accounts and inspect player profiles without changing protected balances, roles or account data.
             </p>
           </div>
 
           <div class="nexus-player-selection-summary">
-            <span>Giveaway Selection</span>
+            <span>Player Selection</span>
             <strong id="nexusPlayerSelectionCount">0</strong>
             <small>Local to this Nexus session</small>
           </div>
@@ -461,7 +460,7 @@
             <span>
               <strong id="nexusPlayerSelectionLabel">No players selected</strong>
               <small>
-                Build a temporary UID list for future selected-player giveaways.
+                Review player account information.
               </small>
             </span>
           </div>
@@ -760,7 +759,7 @@
           class="${selectionActive ? "selected" : ""}"
         >
           <i class="fa-solid ${selectionActive ? "fa-check" : "fa-user-plus"}"></i>
-          ${selectionActive ? "Selected for Giveaway" : "Add to Giveaway Selection"}
+          ${selectionActive ? "Selected for Giveaway" : "Add to Player Selection"}
         </button>
 
         <button

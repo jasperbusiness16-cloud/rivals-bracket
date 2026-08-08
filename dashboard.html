@@ -1182,7 +1182,7 @@
         $("welcomeName").textContent = `Welcome Back, ${displayName}`;
         $("publicProfileLink").href = currentUser ? `profile.html?id=${encodeURIComponent(currentUser.uid)}` : "profile.html";
 
-        const imageUrl = safeImageUrl(player.profileImage);
+        const imageUrl = "";
         if (imageUrl) {
           $("sidebarAvatar").src = imageUrl;
           $("sidebarAvatar").hidden = false;
@@ -1612,7 +1612,7 @@
         $("rosterList").innerHTML = team.players.map(member => {
           const readiness = getReadiness(member);
           const name = clean(member.displayName || member.rivalsIgn, "Player");
-          const image = safeImageUrl(member.profileImage);
+          const image = "";
           const profileUrl = member.uid
             ? `profile.html?id=${encodeURIComponent(member.uid)}`
             : "profile.html";

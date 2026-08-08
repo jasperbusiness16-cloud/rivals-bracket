@@ -1149,18 +1149,6 @@ body{
               <p class="field-note">Keep it concise so your public profile stays easy to scan.</p>
             </div>
           </div>
-
-          <div class="image-preview">
-            <div class="image-preview-avatar">
-              <img id="imagePreview" src="" alt="Profile image preview" hidden>
-              <div id="imagePreviewFallback" class="image-preview-fallback">RG</div>
-            </div>
-            <div class="image-preview-copy">
-              <span class="preview-label">Live Preview</span>
-              <strong id="imagePreviewName">Player</strong>
-              <p>Your profile image appears on your public profile, leaderboard entries, friend requests, and account surfaces.</p>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -1353,6 +1341,7 @@ body{
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-functions.js"></script>
 <script src="firebase.js?v=2"></script>
 <script src="notifications.js?v=1"></script>
+<script src="creator-links.js?v=2"></script>
 <script src="notification-center.js?v=1"></script>
 <script src="friends.js?v=1"></script>
 <script src="daily-gifts.js?v=1"></script>
@@ -1421,7 +1410,6 @@ body{
       player.region,
       player.platform,
       player.bio,
-      player.profileImage,
       socials.twitch || socials.youtube || socials.tiktok || socials.x
     ];
     return Math.round((fields.filter(value => clean(value)).length / fields.length) * 100);
@@ -1444,7 +1432,6 @@ body{
   function currentFormData() {
     return {
       displayName: clean($("displayName").value),
-      profileImage: clean(state.player.profileImage),
       bio: clean($("bio").value),
       rivalsIgn: clean($("rivalsIgn").value),
       region: $("region").value,
@@ -1463,7 +1450,6 @@ body{
   function normalizeComparable(data) {
     return JSON.stringify({
       displayName: clean(data.displayName),
-      profileImage: clean(data.profileImage),
       bio: clean(data.bio),
       rivalsIgn: clean(data.rivalsIgn),
       region: clean(data.region),
@@ -1550,7 +1536,7 @@ body{
   function updateLivePreview() {
     const data = currentFormData();
     const displayName = clean(data.displayName, "Player");
-    const imageUrl = data.profileImage;
+    const imageUrl = "";
 
     $("heroPlayerName").textContent = displayName;
     $("imagePreviewName").textContent = displayName;

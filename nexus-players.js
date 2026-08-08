@@ -222,7 +222,7 @@
       region: clean(player.region, "Unspecified"),
       platform: clean(player.platform, "Unspecified"),
       bio: clean(player.bio),
-      profileImage: clean(player.profileImage),
+      profileImage: "",
       rgId: clean(player.rgId || user.rgId),
 
       email: clean(user.email),
@@ -233,7 +233,6 @@
 
       rgPoints: Number(player.rgPoints || 0),
       lifetimeRgPoints: Number(player.lifetimeRgPoints || 0),
-      prestige: Number(player.prestige || 0),
       eventsPlayed: Number(player.eventsPlayed || 0),
       championships: Number(player.championships || 0),
       bestFinish: clean(player.bestFinish, "--"),
@@ -373,7 +372,7 @@
             <h2>Player Directory</h2>
 
             <p>
-              Search accounts, inspect player profiles and prepare selected-player lists without changing protected balances, roles or inventory.
+              Search accounts, inspect player profiles and prepare selected-player lists without changing protected balances, roles or account data.
             </p>
           </div>
 
@@ -390,7 +389,7 @@
           <div>
             <strong>Read-Only Directory</strong>
             <span>
-              This module reads player, account and inventory information. It does not write RG Points, roles, profile records, loadouts or reward data.
+              This module reads player and account information. It does not write RG Points, roles or player records.
             </span>
           </div>
         </div>
@@ -801,7 +800,6 @@
       <section class="nexus-player-stat-grid">
         ${createStatCard("RG Points", record.rgPoints)}
         ${createStatCard("Lifetime RP", record.lifetimeRgPoints)}
-        ${createStatCard("Prestige", record.prestige)}
         ${createStatCard("Events Played", record.eventsPlayed)}
         ${createStatCard("Championships", record.championships)}
         ${createStatCard("Best Finish", record.bestFinish)}

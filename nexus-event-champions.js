@@ -152,9 +152,7 @@
         ),
 
       profileImage:
-        clean(
-          record.profileImage
-        )
+        ""
     };
   }
 
@@ -693,10 +691,7 @@
     player,
     compact = false
   ) {
-    const image =
-      safeImageUrl(
-        player.profileImage
-      );
+    const image = "";
 
     return `
       <span class="event-champion-avatar ${

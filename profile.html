@@ -1410,6 +1410,7 @@ img{display:block;max-width:100%}
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
 <script src="firebase.js?v=2"></script>
 <script src="notifications.js?v=1"></script>
+<script src="creator-links.js?v=2"></script>
 <script src="notification-center.js?v=1"></script>
 <script src="friends.js?v=1"></script>
 <script src="global-header.js?v=19"></script>
@@ -1504,7 +1505,6 @@ img{display:block;max-width:100%}
       player.region,
       player.platform,
       player.bio,
-      player.profileImage,
       socials.twitch || socials.youtube || socials.tiktok || socials.x
     ];
 
@@ -1586,7 +1586,7 @@ img{display:block;max-width:100%}
 
     const name = clean(player.displayName, "Player");
     const stats = predictionStats(player);
-    const avatarUrl = safeUrl(player.profileImage);
+    const avatarUrl = "";
     const accuracy = predictionAccuracy(player);
     const rank = predictionRank(player);
     const eventsPlayed = formatNumber(player.eventsPlayed);
@@ -1618,7 +1618,7 @@ img{display:block;max-width:100%}
     setText("detailRegion", clean(player.region, "Not set"));
     setText("detailPlatform", clean(player.platform, "Not set"));
     setText("discord", clean(player.discordUsername, "Not set"));
-    setText("discordMember", player.discordMember ? "Confirmed member" : "Not confirmed");
+    setText("discordMember", player.discordMember ? "Member" : "Not marked as member");
     setText("predictorRank", rank);
     setText("completion", `Profile ${profileCompletion(player)}%`);
 
@@ -1654,7 +1654,7 @@ img{display:block;max-width:100%}
 
     const player = state.profile;
     const name = clean(player.displayName, "Player");
-    const avatarUrl = safeUrl(player.profileImage);
+    const avatarUrl = "";
     const accuracy = predictionAccuracy(player);
     const rank = predictionRank(player);
 

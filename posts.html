@@ -1961,7 +1961,6 @@
             <option value="tournament">Tournaments</option>
             <option value="registration">Registration</option>
             <option value="results">Results</option>
-            <option value="shop">Shop Updates</option>
             <option value="prediction">Predictions</option>
             <option value="community">Community</option>
             <option value="prize_pool">Prize Pool</option>
@@ -2057,7 +2056,6 @@
             <option value="tournament">Tournament</option>
             <option value="registration">Registration</option>
             <option value="results">Results</option>
-            <option value="shop">Shop Update</option>
             <option value="prediction">Prediction</option>
             <option value="community">Community</option>
             <option value="prize_pool">Prize Pool</option>
@@ -2395,7 +2393,7 @@
   }
 
   function getCommentAvatarHtml(comment) {
-    if (comment.profileImage) {
+    if (false) {
       return `
         <div>
           <img
@@ -2428,7 +2426,7 @@
   }
 
   function getReplyAvatarHtml(reply) {
-    if (reply.profileImage) {
+    if (false) {
       return `
         <div>
           <img
@@ -2951,7 +2949,7 @@
     `;
 
     const avatar = document.getElementById("postCommentComposerAvatar");
-    if (avatar && currentPlayer?.profileImage) {
+    if (false) {
       avatar.innerHTML = `
         <img
           class="post-comment-avatar"
@@ -3291,7 +3289,6 @@
           currentUser.displayName ||
           "Player",
         rgId: currentPlayer.rgId || "",
-        profileImage: currentPlayer.profileImage || "",
         message,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       };

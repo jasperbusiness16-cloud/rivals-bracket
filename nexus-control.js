@@ -71,12 +71,6 @@ tournament: {
       icon: "fa-newspaper",
       permission: "content.manage"
     },
-    giveaways: {
-      title: "Giveaways & Rewards",
-      breadcrumb: "Nexus / Engagement / Giveaways",
-      icon: "fa-gift",
-      permission: "giveaways.view"
-    },
     players: {
       title: "Player Directory",
       breadcrumb: "Nexus / Community / Players",
@@ -130,7 +124,6 @@ tournament: {
         "bracket.manage",
         "predictions.manage",
         "content.manage",
-        "giveaways.view",
         "users.view",
         "diagnostics.view",
         "audit.view"

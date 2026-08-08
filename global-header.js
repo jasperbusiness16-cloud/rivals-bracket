@@ -68,13 +68,7 @@
             "gamertag"
         ],
 
-        avatarKeys: [
-            "avatarUrl",
-            "photoURL",
-            "profileImage",
-            "avatar",
-            "photo"
-        ],
+        avatarKeys: [],
 
         notificationPaths: [
             "notifications/{uid}",
@@ -2025,8 +2019,6 @@ this.renderGiftInbox([]);
                             player,
                             this.config.avatarKeys
                         ) ||
-                        this.state.user
-                            ?.photoURL ||
                         "";
 
                     const pointsRaw =

@@ -2910,7 +2910,7 @@ let rank="Rookie",rating="★☆☆☆☆",caption="Build a prediction record to
       const displayName=currentPlayer.displayName||currentUser?.displayName||"Predictor";
       const avatar=document.getElementById("identityAvatar");
 
-      const profileImage=clean(currentPlayer.profileImage||currentUser?.photoURL);
+      const profileImage = "";
       if(profileImage){
         avatar.innerHTML=`<img src="${escapeHtml(profileImage)}" alt="${escapeHtml(displayName)} profile image">`;
       }else{

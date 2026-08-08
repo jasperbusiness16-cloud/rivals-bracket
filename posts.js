@@ -162,7 +162,6 @@ const RGPosts = (() => {
         user.displayName ||
         "Player",
       rgId: player?.rgId || "",
-      profileImage: player?.profileImage || "",
       message: cleanedMessage,
       edited: false,
       deleted: false,
@@ -253,7 +252,6 @@ return database.ref().update(updates);
       tournament: "Tournament",
       registration: "Registration",
       results: "Results",
-      shop: "Shop Update",
       prediction: "Predictions",
       community: "Community",
       prize_pool: "Prize Pool"

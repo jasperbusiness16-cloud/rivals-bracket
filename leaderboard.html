@@ -1494,7 +1494,6 @@
             <optgroup label="Economy">
               <option value="rgPoints">Current RG Points</option>
               <option value="lifetimeRgPoints">Lifetime RG Points</option>
-              <option value="prestige">Prestige</option>
             </optgroup>
             <optgroup label="Tournament">
               <option value="championships">Tournament Championships</option>
@@ -1606,17 +1605,6 @@
         value(player){ return number(player.lifetimeRgPoints); },
         secondary(player){ return `${formatNumber(player.rgPoints)} available`; },
         format(value){ return `${formatNumber(value)} RP`; }
-      },
-      prestige: {
-        kicker: "Account Progression",
-        title: "Prestige",
-        description: "The highest long-term progression marks achieved by Rivals Gauntlet competitors.",
-        primaryLabel: "Prestige",
-        secondaryLabel: "Lifetime RP",
-        type: "player",
-        value(player){ return number(player.prestige); },
-        secondary(player){ return `${formatNumber(player.lifetimeRgPoints)} lifetime RP`; },
-        format(value){ return `★ ${formatNumber(value)}`; }
       },
       championships: {
         kicker: "Tournament Legacy",
@@ -1860,7 +1848,7 @@
         ...player,
         displayName:clean(player?.displayName,player?.rivalsIgn || "Unknown Competitor"),
         rgId:clean(player?.rgId,"Unassigned RG ID"),
-        profileImage:clean(player?.profileImage)
+        profileImage:""
       }));
     }
 
@@ -1893,7 +1881,7 @@
           uid:entry.uid,
           name:clean(player?.displayName,entry.name),
           rgId:clean(player?.rgId,"Community Supporter"),
-          profileImage:clean(player?.profileImage),
+          profileImage:"",
           value:entry.value,
           secondary:`${entry.count} ${entry.count === 1 ? "donation" : "donations"}`,
           link:entry.uid ? playerProfileLink(entry.uid) : ""
@@ -1914,7 +1902,7 @@
           uid:player.uid,
           name:player.displayName,
           rgId:player.rgId,
-          profileImage:player.profileImage,
+          profileImage:"",
           value:number(config.value(player,player.uid)),
           secondary:config.secondary ? config.secondary(player,player.uid) : "",
           link:playerProfileLink(player.uid)
@@ -2081,7 +2069,7 @@
       return {
         uid,
         name:clean(player?.name,current?.displayName || "Champion"),
-        profileImage:clean(current?.profileImage,player?.profileImage || ""),
+        profileImage:"",
         link:championPlayerLink(player),
         championshipCount:uid ? Math.max(number(current?.championships),championshipsFromArchive(uid)) : 1
       };

@@ -1539,10 +1539,9 @@ body{
     const imageUrl = "";
 
     $("heroPlayerName").textContent = displayName;
-    $("imagePreviewName").textContent = displayName;
 
-    setImage("heroAvatarImage", "heroAvatarFallback", imageUrl, displayName);
-    setImage("imagePreview", "imagePreviewFallback", imageUrl, displayName);
+    $("heroAvatarImage").hidden = true;
+    $("heroAvatarFallback").hidden = false;
 
     const previewPlayer = {
       ...state.player,

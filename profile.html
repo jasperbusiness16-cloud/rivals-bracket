@@ -1320,25 +1320,6 @@ img{display:block;max-width:100%}
           </div>
         </div>
       </article>
-
-      <article class="panel">
-        <header class="panel-head">
-          <div>
-            <span class="kicker">Official Events</span>
-            <h2>Tournament History</h2>
-          </div>
-          <small>Rivals Gauntlet record</small>
-        </header>
-
-        <div class="panel-body">
-          <div id="history" class="history"></div>
-
-          <p id="historyEmpty" class="empty">
-            <strong>No tournament record yet</strong>
-            <span>Official Rivals Gauntlet event history will appear here after participation.</span>
-          </p>
-        </div>
-      </article>
     </div>
   </section>
 </main>
@@ -1644,7 +1625,6 @@ img{display:block;max-width:100%}
     }
 
     renderSocials(player.socials || {});
-    renderHistory(player.tournamentHistory || player.eventHistory || {});
     renderShareCard();
     renderControls();
   }

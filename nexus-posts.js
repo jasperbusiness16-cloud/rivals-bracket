@@ -16,7 +16,6 @@
     tournament: "Tournament",
     registration: "Registration",
     results: "Results",
-    shop: "Shop Update",
     prediction: "Predictions",
     community: "Community",
     prize_pool: "Prize Pool"

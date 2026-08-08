@@ -1,0 +1,39 @@
+name: One-time final legal header bootstrap
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-launch-legal-final.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          bootstrap='''<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>\n<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>\n<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>\n<script src="/firebase.js?v=3"></script>\n'''
+          for name in ['privacy.html','terms.html','contact.html','tournament-rules.html']:
+              p=Path(name)
+              if not p.exists(): continue
+              t=p.read_text(encoding='utf-8')
+              if 'firebase-app.js' not in t:
+                  m=re.search(r'<script src="/global-header\.js\?v=\d+"></script>',t)
+                  if not m: raise SystemExit(f'global header script not found in {name}')
+                  t=t[:m.start()]+bootstrap+t[m.start():]
+              p.write_text(t,encoding='utf-8')
+          for name in ['privacy.html','terms.html','contact.html','tournament-rules.html']:
+              assert 'firebase-app.js' in Path(name).read_text(encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add privacy.html terms.html contact.html tournament-rules.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Bootstrap Firebase on legal pages"
+          git push origin HEAD:main

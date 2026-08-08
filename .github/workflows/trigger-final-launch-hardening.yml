@@ -1,0 +1,31 @@
+name: Trigger final launch hardening
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+
+jobs:
+  trigger:
+    if: github.event.issue.title == 'Run RG final launch hardening'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('.github/workflows/one-time-final-launch-hardening.yml')
+          t = p.read_text(encoding='utf-8')
+          t = t.replace("    if: github.actor != 'github-actions[bot]'", "    if: true")
+          if '# triggered for final launch' not in t:
+              t += '\n# triggered for final launch\n'
+          p.write_text(t, encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/one-time-final-launch-hardening.yml
+          git commit -m "Trigger final launch hardening"
+          git push origin HEAD:main

@@ -134,6 +134,35 @@ const auth = window.auth;
 })();
 
 /*
+  The Donate page keeps all-time supporter history, while this guard ensures
+  the live/current prize pool only counts donations assigned to the active
+  tournament. It runs alongside the page's existing all-time supporter view.
+*/
+if (
+  /^\/donate(?:\.html)?\/?$/i.test(
+    window.location.pathname
+  )
+) {
+  const donateScopeScript =
+    document.createElement("script");
+
+  donateScopeScript.src =
+    "donate-scope.js?v=1";
+
+  donateScopeScript.async = false;
+
+  donateScopeScript.onerror = () => {
+    console.error(
+      "[RG] Active tournament prize pool guard failed to load."
+    );
+  };
+
+  document.head.appendChild(
+    donateScopeScript
+  );
+}
+
+/*
   Nexus notification automation is admin-side only.
   Load it from the shared Firebase bootstrap when the
   Control Center is open so public pages never run it.

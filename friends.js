@@ -159,12 +159,7 @@ window.RGFriends = (() => {
           },
 
           createdAt:
-            firebase.database.ServerValue.TIMESTAMP,
-
-          lifetimeGifts: {
-            [request.senderUid]: 0,
-            [request.receiverUid]: 0
-          }
+            firebase.database.ServerValue.TIMESTAMP
         };
 
         const updates = {};
@@ -487,22 +482,10 @@ function searchPlayers(query) {
           return;
         }
 
-        const equipped =
-          player.equippedCosmetics ||
-          player.equipped ||
-          {};
-
         results.push({
           uid,
           displayName,
-          rgId,
-
-          profileImage: String(
-            equipped.avatar ||
-            equipped.profileImage ||
-            player.profileImage ||
-            ""
-          )
+          rgId
         });
       });
 

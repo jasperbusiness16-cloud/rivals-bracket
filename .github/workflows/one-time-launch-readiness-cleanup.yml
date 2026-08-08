@@ -1,0 +1,682 @@
+name: One-time launch readiness cleanup
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-launch-readiness-cleanup.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  launch-cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Clean launch website
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          def read(path):
+              return Path(path).read_text(encoding="utf-8")
+
+          def write(path, text):
+              Path(path).write_text(text, encoding="utf-8")
+
+          def replace_if(text, old, new):
+              return text.replace(old, new) if old in text else text
+
+          def regex_sub(text, pattern, replacement, flags=0):
+              return re.sub(pattern, replacement, text, flags=flags)
+
+          # -------------------------------------------------
+          # Shared HTML cleanup: retired Daily Gifts and old
+          # standalone Notification Center UI.
+          # -------------------------------------------------
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              text = re.sub(
+                  r'\s*<script[^>]+(?:daily-gifts|notification-center)\.js[^>]*></script>\s*',
+                  '\n',
+                  text,
+                  flags=re.I,
+              )
+              path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Footer: only publish real social destinations.
+          # -------------------------------------------------
+          path = Path('global-footer.js')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'  const socialLinks = \[.*?\n  \];',
+              '''  const socialLinks = [
+    ["Discord", "https://discord.gg/82HPpfkhQN", "fa-brands fa-discord"],
+    ["Twitch", "https://www.twitch.tv/atrophylive", "fa-brands fa-twitch"]
+  ];''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Legal/info pages: give the global header Firebase
+          # auth/database context so signed-in state persists.
+          # -------------------------------------------------
+          firebase_bootstrap = '''<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+          <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+          <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+          <script src="/firebase.js?v=3"></script>
+          '''
+
+          for filename in ['privacy.html', 'terms.html', 'contact.html', 'tournament-rules.html']:
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+              if 'firebase-app.js' not in text:
+                  text = re.sub(
+                      r'(<script src="/global-header\.js\?v=\d+"></script>)',
+                      firebase_bootstrap + r'\1',
+                      text,
+                      count=1,
+                  )
+              path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # About: replace old generic progression/reward copy
+          # with systems that actually exist at launch.
+          # -------------------------------------------------
+          path = Path('about.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              'community events, live broadcasting, predictions,\n        progression and rewards.',
+              'community events, live broadcasting, predictions,\n        RG Points and competitive rankings.'
+          )
+          text = text.replace(
+              'The platform will continue expanding with deeper\n              tournament systems, predictions, rankings, rewards\n              and community-driven events.',
+              'The platform will continue expanding with deeper\n              tournament systems, predictions, rankings and\n              community-driven events.'
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Dashboard: current route + initials-only identities.
+          # -------------------------------------------------
+          path = Path('dashboard.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('href="dashboard-v2.html"', 'href="dashboard.html"')
+          text = re.sub(
+              r'\n\s*const imageUrl = safeImageUrl\(player\.profileImage\);\n\s*if \(imageUrl\) \{.*?\n\s*\} else \{\n\s*\$\("sidebarAvatar"\)\.hidden = true;\n\s*\$\("sidebarFallback"\)\.hidden = false;\n\s*\}',
+              '''
+        $("sidebarAvatar").hidden = true;
+        $("sidebarFallback").hidden = false;''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('          const image = safeImageUrl(member.profileImage);\n', '          const image = "";\n')
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Settings: remove profile image feature from the
+          # player-facing account model and UI.
+          # -------------------------------------------------
+          path = Path('settings.html')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(r'\s*<img id="heroAvatarImage"[^>]*>\s*', '\n', text, count=1)
+          text = re.sub(
+              r'\n\s*<div class="image-preview">.*?Your profile image appears on your public profile, leaderboard entries, friend requests, and account surfaces\.</p>\s*</div>\s*</div>',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('      player.profileImage,\n', '')
+          text = text.replace('      profileImage: clean(state.player.profileImage),\n', '')
+          text = text.replace('      profileImage: clean(data.profileImage),\n', '')
+          text = text.replace('    const imageUrl = data.profileImage;\n\n', '')
+          text = text.replace('    $("imagePreviewName").textContent = displayName;\n\n', '')
+          text = text.replace('    setImage("heroAvatarImage", "heroAvatarFallback", imageUrl, displayName);\n', '')
+          text = text.replace('    setImage("imagePreview", "imagePreviewFallback", imageUrl, displayName);\n', '')
+          text = text.replace(
+              '    $("heroPlayerName").textContent = displayName;\n',
+              '''    $("heroPlayerName").textContent = displayName;
+    $("heroAvatarFallback").textContent = displayName
+      .split(/\\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(part => part[0])
+      .join("")
+      .toUpperCase() || "RG";
+''',
+              1,
+          )
+          # Load creator-link validation directly rather than through notifications.js.
+          if 'creator-links.js' not in text:
+              text = text.replace(
+                  '<script src="notifications.js?v=1"></script>',
+                  '<script src="notifications.js?v=1"></script>\n<script src="creator-links.js?v=2"></script>',
+                  1,
+              )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Public profile: initials only, no prestige, no
+          # authoritative-sounding Discord verification claim.
+          # -------------------------------------------------
+          path = Path('profile.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('      player.profileImage,\n', '')
+          text = text.replace('    const avatarUrl = safeUrl(player.profileImage);\n', '')
+          text = re.sub(
+              r'\n\s*const avatar = \$\("profileAvatar"\);.*?\n\s*renderSocials\(',
+              '''
+    const fallback = $("profileFallback");
+    if (fallback) {
+      fallback.hidden = false;
+      fallback.textContent = initials(name);
+    }
+
+    renderSocials(''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\n\s*const avatar = \$\("shareAvatar"\);.*?\n\s*}\n\s*}\n\n\s*function renderControls',
+              '''
+    const fallback = $("shareFallback");
+    if (fallback) fallback.hidden = false;
+  }
+
+  function renderControls''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('    const avatarUrl = safeUrl(player.profileImage);\n', '')
+          text = text.replace('    setText("discordMember", player.discordMember ? "Confirmed member" : "Not confirmed");',
+                              '    setText("discordMember", player.discordMember ? "Member" : "Not marked as member");')
+          # The image elements can remain hidden for share/export compatibility, but player data is no longer read into them.
+          text = re.sub(r'\n\.prestige\{.*?\n\.prestige strong\{[^\n]*\}\n', '\n', text, count=1, flags=re.S)
+          text = re.sub(r'\n\.prestige\{\n\s*right:-10px;.*?\n\}\n\n\.prestige strong\{.*?\n\}\n', '\n', text, count=1, flags=re.S)
+          if 'creator-links.js' not in text:
+              text = text.replace(
+                  '<script src="notifications.js?v=1"></script>',
+                  '<script src="notifications.js?v=1"></script>\n<script src="creator-links.js?v=2"></script>',
+                  1,
+              )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Apply: remove crate/cosmetic language and profile
+          # images; use neutral account language.
+          # -------------------------------------------------
+          path = Path('apply.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('<span>Verified Competitor</span>', '<span>Registered Player</span>')
+          text = re.sub(r'\s*<img id="playerAvatar"[^>]*>\s*', '\n', text, count=1)
+          text = re.sub(
+              r'\n\s*<div class="cosmetic-note">.*?crate\s+cosmetics do not affect application completion or tournament selection\..*?</div>',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\n\s*if\(\s*currentPlayer\.profileImage\s*\)\{.*?\n\s*\}',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Predictions: remove nonexistent mastery/multiplier
+          # promise, make Perfect Bracket reward explicit, and
+          # use initials only.
+          # -------------------------------------------------
+          path = Path('predictions.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '<div class="rule"><div class="rule-number">3</div><div><h3>Chase a perfect bracket</h3><p>Every matchup must be correct to earn the exclusive Perfect Bracket reward. The remaining counter updates as official results are finalized.</p></div></div>',
+              '<div class="rule"><div class="rule-number">3</div><div><h3>Chase a perfect bracket</h3><p>Every matchup must be correct to earn the +2,000 RP Perfect Bracket bonus. The remaining counter updates as official results are finalized.</p></div></div>'
+          )
+          text = re.sub(
+              r'\s*<div class="rule"><div class="rule-number">5</div><div><h3>Advance your predictor career</h3><p>.*?</p></div></div>',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\n\s*const profileImage=clean\(currentPlayer\.profileImage\|\|currentUser\?\.photoURL\);\n\s*if\(profileImage\)\{.*?\n\s*\}else\{\n\s*avatar\.textContent=initials\(displayName\|\|"Predictor"\);\n\s*\}',
+              '\n      avatar.textContent=initials(displayName||"Predictor");',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Leaderboard: remove Prestige category and images.
+          # -------------------------------------------------
+          path = Path('leaderboard.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('              <option value="prestige">Prestige</option>\n', '')
+          text = re.sub(
+              r'\n\s*prestige: \{\n\s*kicker: "Account Progression",.*?\n\s*\},\n\s*championships:',
+              '\n      championships:',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('        profileImage:clean(player?.profileImage)\n', '        profileImage:""\n')
+          text = text.replace('          profileImage:clean(player?.profileImage),\n', '          profileImage:"",\n')
+          text = re.sub(
+              r'\$\{entry\.profileImage \? `<img data-avatar src="\$\{escapeAttr\(entry\.profileImage\)\}" alt="\$\{escapeAttr\(entry\.name\)\} profile image">` : ""\}',
+              '',
+              text,
+          )
+          # Make the shared avatar renderer initials-only even if old records still contain image URLs.
+          text = re.sub(
+              r'function playerAvatarHtml\(([^)]*)\)\s*\{.*?\n\s*\}',
+              '''function playerAvatarHtml(name, profileImage, className = "rank-avatar") {
+      return `<span class="${className}"><span class="avatar-fallback">${escapeHtml(initials(name))}</span></span>`;
+    }''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Teams: force initials fallback instead of stored
+          # profile images.
+          # -------------------------------------------------
+          path = Path('teams.html')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'function getPlayerAvatar\(player\)\{.*?\n\s*\}',
+              'function getPlayerAvatar(player){\n      return "";\n    }',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Posts: retire Shop category and profile-image data.
+          # -------------------------------------------------
+          path = Path('posts.js')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('      profileImage: player?.profileImage || "",\n', '')
+          text = text.replace('      shop: "Shop Update",\n', '')
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('posts.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('            <option value="shop">Shop Updates</option>\n', '')
+          text = text.replace('            <option value="shop">Shop Update</option>\n', '')
+          text = text.replace('        profileImage: currentPlayer.profileImage || "",\n', '')
+          # Replace comment/reply image helpers with initials-only variants.
+          text = re.sub(
+              r'  function getCommentAvatarHtml\(comment\) \{.*?\n  \}\n\n  function',
+              '''  function getCommentAvatarHtml(comment) {
+    return `<div class="post-comment-avatar-fallback">${escapePostHtml(getCommentInitials(comment.displayName))}</div>`;
+  }
+
+  function''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'  function getReplyAvatarHtml\(reply\) \{.*?\n  \}\n\n  function',
+              '''  function getReplyAvatarHtml(reply) {
+    return `<div class="post-reply-avatar-fallback">${escapePostHtml(getCommentInitials(reply.displayName))}</div>`;
+  }
+
+  function''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\n\s*const avatar = document\.getElementById\("postCommentComposerAvatar"\);\n\s*if \(avatar && currentPlayer\?\.profileImage\) \{.*?\n\s*\}',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('nexus-posts.js')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('    shop: "Shop Update",\n', '')
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Notifications helper: it should only handle
+          # notifications, not inject creator-link features.
+          # -------------------------------------------------
+          path = Path('notifications.js')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'\n/\*\*\n \* Creator-link validation is shared by settings/profile pages\..*?\n\}\)\(\);\n?$',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Global Header: initials-only account/friend avatars.
+          # Daily Gift state remains unreachable only if guarded,
+          # but we remove the retired state/cache/render/action code.
+          # -------------------------------------------------
+          path = Path('global-header.js')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'\n\s*avatarKeys: \[.*?\n\s*\],',
+              '\n\n        avatarKeys: [],',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('giftInbox: [],\n', '')
+          text = re.sub(
+              r'\ndailyGiftStats: \{\n\s*sentCount: 0,\n\s*receivedCount: 0,\n\s*receivedLimit: 5,\n\s*sentTo: \{\}\n\},\n',
+              '\n',
+              text,
+              count=1,
+          )
+          text = re.sub(
+              r'\nthis\.dom\.giftsList = root\.querySelector\(.*?this\.dom\.giftsCount = root\.querySelector\(.*?\);\n',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('this.state.giftInbox = [];\n', '')
+          text = re.sub(
+              r'\nthis\.state\.dailyGiftStats = \{\n\s*sentCount: 0,\n\s*receivedCount: 0,\n\s*receivedLimit: 5,\n\s*sentTo: \{\}\n\};\n',
+              '\n',
+              text,
+              count=1,
+          )
+          # Stop using Firebase/Auth profile photos in the account identity.
+          text = re.sub(
+              r'const avatar =\n\s*this\.pick\(\n\s*player,\n\s*this\.config\.avatarKeys\n\s*\) \|\|\n\s*this\.state\.user\n\s*\?\.photoURL \|\|\n\s*"";',
+              'const avatar = "";',
+              text,
+              count=1,
+          )
+          # Remove the dedicated Daily Gift renderer method.
+          text = re.sub(
+              r'\n// =====================================================================\n// DAILY GIFT INBOX RENDERING\n// =====================================================================\n\nrenderGiftInbox\(.*?\n\}\n\n(?=[A-Za-z_][A-Za-z0-9_]*\()',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          # Remove guarded gift-inbox subscription block if present.
+          text = re.sub(
+              r'\nif \(\n\s*window\.RGDailyGifts &&\n\s*typeof window\.RGDailyGifts\.listenToGiftInbox ===\n\s*"function"\n\) \{.*?\n\}\n',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          # Remove open-gift click action block.
+          text = re.sub(
+              r'\nif \(action === "open-gift"\) \{.*?\n\}\n\n(?=if \(action ===|this\.)',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Donate: current tournament pool uses current-event
+          # donations; supporter rankings remain all-time/weekly.
+          # -------------------------------------------------
+          path = Path('donate.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '            uid: clean(record.uid || record.userId)\n',
+              '            uid: clean(record.uid || record.userId),\n            tournamentId: clean(record.tournamentId || record.eventId)\n'
+          )
+          marker = '      function totals() {'
+          helper = '''      function currentTournamentDonations() {
+        const tournamentId = clean(state.site.currentTournament);
+        if (!tournamentId) return [];
+
+        return state.donations.filter(donation =>
+          donation.tournamentId === tournamentId ||
+          (!donation.tournamentId && tournamentId === "open1")
+        );
+      }
+
+'''
+          if helper not in text:
+              text = text.replace(marker, helper + marker, 1)
+          text = text.replace(
+              '        const community = state.donations.reduce(\n          (sum, donation) => sum + donation.amount,\n          0\n        );',
+              '        const community = currentTournamentDonations().reduce(\n          (sum, donation) => sum + donation.amount,\n          0\n        );'
+          )
+          text = text.replace(
+              '        const donations = state.donations.slice(0, 8);\n        byId("contributionCountLabel").textContent = `${state.donations.length.toLocaleString()} confirmed ${state.donations.length === 1 ? "contribution" : "contributions"}`;',
+              '        const eventDonations = currentTournamentDonations();\n        const donations = eventDonations.slice(0, 8);\n        byId("contributionCountLabel").textContent = `${eventDonations.length.toLocaleString()} confirmed ${eventDonations.length === 1 ? "contribution" : "contributions"} for this event`;'
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # Shared legacy site helper also needs event-scoped totals.
+          path = Path('site.js')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace(
+              '    createdAt: Number(d.createdAt) || 0\n',
+              '    createdAt: Number(d.createdAt) || 0,\n    tournamentId: String(d.tournamentId || d.eventId || "").trim()\n'
+          )
+          text = text.replace(
+              '  const donationTotal = latestDonations.reduce((sum, donation) => {\n    return sum + (Number(donation.amount) || 0);\n  }, 0);',
+              '''  const currentTournamentId = String(latestSiteData.currentTournament || "").trim();
+  const currentTournamentDonations = latestDonations.filter(donation => {
+    return donation.tournamentId === currentTournamentId ||
+      (!donation.tournamentId && currentTournamentId === "open1");
+  });
+
+  const donationTotal = currentTournamentDonations.reduce((sum, donation) => {
+    return sum + (Number(donation.amount) || 0);
+  }, 0);'''
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Nexus: remove unfinished Giveaways module entirely.
+          # -------------------------------------------------
+          path = Path('nexus-control.html')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(r'\s*<link rel="stylesheet" href="nexus-giveaways\.css\?v=\d+">\s*', '\n', text)
+          text = re.sub(r'\s*<script src="nexus-giveaways\.js\?v=\d+"></script>\s*', '\n', text)
+          text = re.sub(
+              r'\n\s*<button\n\s*class="nav-item"\n\s*data-module="giveaways".*?</button>',
+              '',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          path = Path('nexus-control.js')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'\n\s*giveaways: \{\n\s*title: "Giveaways & Rewards",.*?\n\s*\},\n\s*players:',
+              '\n    players:',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = text.replace('        "giveaways.view",\n', '')
+          text = re.sub(
+              r'\nif \(\n\s*window\.NexusGiveaways &&.*?\n\}\n(?=if \(\n\s*window\.NexusPlayers)',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\nif \(moduleId === "giveaways"\) \{.*?\n\}\n(?=if \(moduleId === "players"\))',
+              '\n',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # Nexus Player Directory: remove Prestige/profile images/inventory language.
+          path = Path('nexus-players.js')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('      record.profileImage\n', '')
+          text = text.replace('      profileImage: clean(player.profileImage),\n', '')
+          text = text.replace('      prestige: Number(player.prestige || 0),\n', '')
+          text = text.replace('        ${createStatCard("Prestige", record.prestige)}\n', '')
+          text = text.replace('without changing protected balances, roles or inventory.', 'without changing protected balances, roles or account data.')
+          text = text.replace('This module reads player, account and inventory information. It does not write RG Points, roles, profile records, loadouts or reward data.',
+                              'This module reads player and account information. It does not write RG Points, roles or player records.')
+          text = re.sub(
+              r'  function renderAvatar\(record, className = ""\) \{.*?\n  \}\n\n  function',
+              '''  function renderAvatar(record, className = "") {
+    return `<span class="nexus-player-avatar ${escapeHtml(className)}">${escapeHtml(createInitials(record.displayName))}</span>`;
+  }
+
+  function''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # Event Champions: initials only on archived champion presentation.
+          path = Path('nexus-event-champions.js')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('      profileImage:\n        clean(\n          record.profileImage\n        )\n', '      profileImage:\n        ""\n')
+          text = re.sub(
+              r'  function avatarMarkup\(\n\s*player,\n\s*compact = false\n\s*\) \{.*?\n\s*\}\n\n  function teamOptions',
+              '''  function avatarMarkup(
+    player,
+    compact = false
+  ) {
+    return `
+      <span class="event-champion-avatar ${compact ? "compact" : ""}">
+        ${escapeHtml(initials(player.name))}
+      </span>
+    `;
+  }
+
+  function teamOptions''',
+              text,
+              count=1,
+              flags=re.S,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # Launch only the prediction-compatible 8-team format for now.
+          path = Path('nexus-event-control.js')
+          text = path.read_text(encoding='utf-8')
+          text = re.sub(
+              r'  const FORMAT_OPTIONS = \{\n\s*"8_single_elim": \{\n\s*label: "8 Team Single Elimination",\n\s*teamCount: 8\n\s*\},\n\n\s*"16_single_elim": \{\n\s*label: "16 Team Single Elimination",\n\s*teamCount: 16\n\s*\}\n\s*\};',
+              '''  const FORMAT_OPTIONS = {
+    "8_single_elim": {
+      label: "8 Team Single Elimination",
+      teamCount: 8
+    }
+  };''',
+              text,
+              count=1,
+          )
+          path.write_text(text, encoding='utf-8')
+
+          # -------------------------------------------------
+          # Delete retired/publicly stale systems and page
+          # variants. Git history remains the archive.
+          # -------------------------------------------------
+          delete_globs = [
+              'shop*.html', 'shop*.js', 'shop*.css',
+              'rg-shop*.html', 'rg-shop*.js', 'rg-shop*.css',
+              'world-vault*.html', 'world-vault*.js', 'world-vault*.css',
+              'inventory.html', 'inventory.js', 'inventory.css',
+              'backupforbestshop.html',
+              'daily-gifts.js', 'notification-center.js', 'friends.html',
+              'nexus-giveaways.js', 'nexus-giveaways.css',
+              'player-old.html', 'settings-old.html', 'dashboard-old.html', 'team-builder-old.html',
+              'index-updated.html', 'index-premium-home.html', 'index-premium-home-v2.html', 'index-backup-before-aaa.html',
+              'home-aaa-test*.html', 'tournament-aaa-test*.html',
+              'dashboard-v2*.html', 'dashboard-aaa-test.html',
+              'profile-v2-clean*.html', 'player-profile-v2.html', 'player-profile-showcase-v1.html',
+              'leaderboard-v2.html', 'leaderboard-aaa.html',
+              'settings-aaa-v2.html', 'settings-aaa-global-header.html',
+              'predictions-no-mastery.html', 'predictions_redesigned*.html',
+              'about-updated.html', 'apply-updated.html', 'donate-updated.html', 'donate-modal-updated.html',
+              'test-global-header.html'
+          ]
+
+          for pattern in delete_globs:
+              for stale in Path('.').glob(pattern):
+                  if stale.is_file():
+                      stale.unlink()
+
+          # -------------------------------------------------
+          # Launch assertions.
+          # -------------------------------------------------
+          live_text = '\n'.join(
+              p.read_text(encoding='utf-8', errors='ignore')
+              for p in Path('.').glob('*.html')
+          )
+
+          assert 'daily-gifts.js' not in live_text
+          assert 'notification-center.js' not in live_text
+          assert 'dashboard-v2.html' not in Path('dashboard.html').read_text(encoding='utf-8')
+          assert 'Predictor Level' not in Path('predictions.html').read_text(encoding='utf-8')
+          assert '<option value="prestige">' not in Path('leaderboard.html').read_text(encoding='utf-8')
+          assert 'Giveaways & Rewards' not in Path('nexus-control.html').read_text(encoding='utf-8')
+          assert 'nexus-giveaways.js' not in Path('nexus-control.html').read_text(encoding='utf-8')
+          assert 'Shop Update' not in Path('nexus-posts.js').read_text(encoding='utf-8')
+          assert 'href="#"' not in Path('global-footer.js').read_text(encoding='utf-8')
+          assert 'creator-links.js' in Path('settings.html').read_text(encoding='utf-8')
+          assert 'creator-links.js' in Path('profile.html').read_text(encoding='utf-8')
+          PY
+
+          node --check global-header.js
+          node --check notifications.js
+          node --check posts.js
+          node --check site.js
+          node --check nexus-control.js
+          node --check nexus-players.js
+          node --check nexus-posts.js
+          node --check nexus-event-control.js
+          node --check nexus-event-champions.js
+
+      - name: Commit launch cleanup
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Prepare site for launch"
+          git push

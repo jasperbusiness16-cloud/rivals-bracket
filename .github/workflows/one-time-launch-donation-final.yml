@@ -1,0 +1,86 @@
+name: One-time final prize pool scoping
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-launch-donation-final.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('donate.html'); t=p.read_text(encoding='utf-8')
+          # Add event identity to normalized donation records.
+          if 'tournamentId: clean(record.tournamentId || record.eventId)' not in t:
+              t=t.replace('            uid: clean(record.uid || record.userId)\n','            uid: clean(record.uid || record.userId),\n            tournamentId: clean(record.tournamentId || record.eventId)\n',1)
+              if 'tournamentId: clean(record.tournamentId || record.eventId)' not in t:
+                  t=t.replace('            uid: clean(record.uid || record.userId),\n','            uid: clean(record.uid || record.userId),\n            tournamentId: clean(record.tournamentId || record.eventId),\n',1)
+          helper='''      function currentTournamentDonations() {
+        const tournamentId = clean(state.site.currentTournament);
+        if (!tournamentId) return [];
+        return state.donations.filter(donation =>
+          donation.tournamentId === tournamentId ||
+          (!donation.tournamentId && tournamentId === "open1")
+        );
+      }
+
+'''
+          if 'function currentTournamentDonations()' not in t:
+              anchor='      function totals() {'
+              if anchor not in t: raise SystemExit('donate totals function not found')
+              t=t.replace(anchor,helper+anchor,1)
+          old='''        const community = state.donations.reduce(
+          (sum, donation) => sum + donation.amount,
+          0
+        );'''
+          new='''        const community = currentTournamentDonations().reduce(
+          (sum, donation) => sum + donation.amount,
+          0
+        );'''
+          if old in t: t=t.replace(old,new,1)
+          # Scope recent-contribution list/count to this event while retaining all-time supporter data elsewhere.
+          old2='''        const donations = state.donations.slice(0, 8);
+        byId("contributionCountLabel").textContent = `${state.donations.length.toLocaleString()} confirmed ${state.donations.length === 1 ? "contribution" : "contributions"}`;'''
+          new2='''        const eventDonations = currentTournamentDonations();
+        const donations = eventDonations.slice(0, 8);
+        byId("contributionCountLabel").textContent = `${eventDonations.length.toLocaleString()} confirmed ${eventDonations.length === 1 ? "contribution" : "contributions"} for this event`;'''
+          if old2 in t: t=t.replace(old2,new2,1)
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('site.js'); t=p.read_text(encoding='utf-8')
+          if 'tournamentId: String(d.tournamentId || d.eventId || "").trim()' not in t:
+              t=t.replace('    createdAt: Number(d.createdAt) || 0\n','    createdAt: Number(d.createdAt) || 0,\n    tournamentId: String(d.tournamentId || d.eventId || "").trim()\n',1)
+          old='''  const donationTotal = latestDonations.reduce((sum, donation) => {
+    return sum + (Number(donation.amount) || 0);
+  }, 0);'''
+          new='''  const currentTournamentId = String(latestSiteData.currentTournament || "").trim();
+  const currentTournamentDonations = latestDonations.filter(donation =>
+    donation.tournamentId === currentTournamentId ||
+    (!donation.tournamentId && currentTournamentId === "open1")
+  );
+  const donationTotal = currentTournamentDonations.reduce((sum, donation) => {
+    return sum + (Number(donation.amount) || 0);
+  }, 0);'''
+          if old in t: t=t.replace(old,new,1)
+          p.write_text(t,encoding='utf-8')
+
+          assert 'function currentTournamentDonations()' in Path('donate.html').read_text(encoding='utf-8')
+          assert 'currentTournamentDonations.reduce' in Path('site.js').read_text(encoding='utf-8')
+          PY
+          node --check site.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add donate.html site.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Scope prize pool totals to active tournament"
+          git push origin HEAD:main

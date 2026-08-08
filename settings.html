@@ -1061,8 +1061,8 @@ body{
       <span class="hero-kicker">Rivals Gauntlet Account Center</span>
       <h1>Settings</h1>
       <p class="settings-hero-copy">
-        Manage the information shown across Rivals Gauntlet. Cosmetic backgrounds, frames,
-        titles, effects, badges, and stat trackers are equipped directly from your public profile.
+        Manage the information shown across Rivals Gauntlet, including your public identity,
+        competitive details, Discord status, and creator links.
       </p>
       <div class="hero-actions">
         <a id="heroViewProfile" class="button primary" href="#">
@@ -1071,9 +1071,6 @@ body{
             <circle cx="12" cy="12" r="2.7" stroke="currentColor" stroke-width="1.8"/>
           </svg>
           View Public Profile
-        </a>
-        <a id="heroCustomizeProfile" class="button" href="#">
-          Customize Profile Cosmetics
         </a>
       </div>
     </div>
@@ -1113,7 +1110,6 @@ body{
         <a class="settings-nav-link" href="#competitive">Competitive</a>
         <a class="settings-nav-link" href="#community">Community</a>
         <a class="settings-nav-link" href="#creator-links">Creator Links</a>
-        <a class="settings-nav-link" href="#showcase">Profile Showcase</a>
         <a class="settings-nav-link" href="#account-security">Account</a>
       </nav>
       <div class="settings-nav-footer">
@@ -1150,7 +1146,7 @@ body{
                 <span id="bioCount" class="character-count">0 / 240</span>
               </label>
               <textarea id="bio" maxlength="240" placeholder="Tell the community who you are, what you play, or what you create."></textarea>
-              <p class="field-note">Keep this concise. Your cosmetic showcase should remain the main focus.</p>
+              <p class="field-note">Keep it concise so your public profile stays easy to scan.</p>
             </div>
           </div>
 
@@ -1162,7 +1158,7 @@ body{
             <div class="image-preview-copy">
               <span class="preview-label">Live Preview</span>
               <strong id="imagePreviewName">Player</strong>
-              <p>The profile image is reused in your public showcase, leaderboard entries, friend requests, and account surfaces.</p>
+              <p>Your profile image appears on your public profile, leaderboard entries, friend requests, and account surfaces.</p>
             </div>
           </div>
         </div>
@@ -1239,7 +1235,7 @@ body{
                 <option value="false">Not joined / not confirmed</option>
                 <option value="true">Member</option>
               </select>
-              <p class="field-note">This is currently self-reported and can be replaced by Discord verification later.</p>
+              <p class="field-note">Select Member if you have joined the official Rivals Gauntlet Discord.</p>
             </div>
           </div>
         </div>
@@ -1299,59 +1295,13 @@ body{
         </div>
       </section>
 
-      <section id="showcase" class="settings-section">
-        <header class="section-head">
-          <div>
-            <span class="section-kicker">Cosmetic Identity</span>
-            <h2>Public Profile Showcase</h2>
-          </div>
-          <p>Cosmetics are previewed and equipped on your public profile, where you can see the complete composition.</p>
-        </header>
-
-        <div class="section-body">
-          <div class="showcase-preview">
-            <div class="preview-avatar-shell">
-              <div class="preview-avatar-inner">
-                <img id="showcaseAvatar" src="" alt="Showcase avatar" hidden>
-                <div id="showcaseAvatarFallback" class="preview-avatar-fallback">RG</div>
-              </div>
-            </div>
-
-            <div>
-              <span id="showcaseTitle" class="preview-title">Rivals Gauntlet Competitor</span>
-              <h3 id="showcaseName" class="preview-name">Player</h3>
-              <div class="preview-nameplate">
-                <strong id="showcaseIgn">Marvel Rivals IGN not set</strong>
-                <span id="showcaseMeta">Region not set • Platform not set</span>
-              </div>
-              <div class="showcase-preview-actions">
-                <a id="showcaseViewButton" class="button primary compact" href="#">Open Public Profile</a>
-                <a id="showcaseCustomizeButton" class="button compact" href="#">Customize Cosmetics</a>
-              </div>
-            </div>
-
-            <div id="showcaseTrackers" class="preview-trackers">
-              <div class="preview-tracker">
-                <div><span>Tracker Slot 1</span><strong>Empty</strong></div><b>＋</b>
-              </div>
-              <div class="preview-tracker">
-                <div><span>Tracker Slot 2</span><strong>Empty</strong></div><b>＋</b>
-              </div>
-              <div class="preview-tracker">
-                <div><span>Tracker Slot 3</span><strong>Empty</strong></div><b>＋</b>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="account-security" class="settings-section">
         <header class="section-head">
           <div>
             <span class="section-kicker">Account Security</span>
             <h2>Account</h2>
           </div>
-          <p>Authentication details are managed through Firebase Authentication.</p>
+          <p>Manage your sign-in security and account verification.</p>
         </header>
 
         <div class="section-body">
@@ -1416,8 +1366,6 @@ body{
     user: null,
     player: {},
     baseline: {},
-    loadout: null,
-    profileCatalog: {},
     dirty: false,
     saving: false,
     initialized: false,
@@ -1606,14 +1554,9 @@ body{
 
     $("heroPlayerName").textContent = displayName;
     $("imagePreviewName").textContent = displayName;
-    $("showcaseName").textContent = displayName.toUpperCase();
-    $("showcaseIgn").textContent = clean(data.rivalsIgn, "Marvel Rivals IGN not set");
-    $("showcaseMeta").textContent =
-      `${clean(data.region, "Region not set")} • ${clean(data.platform, "Platform not set")}`;
 
     setImage("heroAvatarImage", "heroAvatarFallback", imageUrl, displayName);
     setImage("imagePreview", "imagePreviewFallback", imageUrl, displayName);
-    setImage("showcaseAvatar", "showcaseAvatarFallback", imageUrl, displayName);
 
     const previewPlayer = {
       ...state.player,
@@ -1692,67 +1635,6 @@ body{
     $("verificationButton").hidden = Boolean(user.emailVerified);
   }
 
-  function catalogItemById(id) {
-    return state.profileCatalog[id] || null;
-  }
-
-  function resolveTrackerValue(statKey) {
-    const player = state.player;
-    const stats = player.predictionStats || {};
-    const accuracy = number(stats.total) > 0
-      ? Math.round((number(stats.correct) / number(stats.total)) * 100)
-      : 0;
-
-    const values = {
-      championships: [number(player.championships), "Championships"],
-      eventsPlayed: [number(player.eventsPlayed), "Events Played"],
-      bestFinish: [clean(player.bestFinish, "--"), "Best Finish"],
-      lifetimeRgPoints: [number(player.lifetimeRgPoints), "Lifetime RG Points"],
-      prestige: [number(player.prestige), "Prestige"],
-      predictionAccuracy: [`${accuracy}%`, "Prediction Accuracy"],
-      correctPredictions: [number(stats.correct), "Correct Predictions"],
-      bestPredictionStreak: [number(stats.bestStreak), "Best Prediction Streak"],
-      predictionRpEarned: [number(stats.rpEarned), "Prediction RP Earned"]
-    };
-
-    return values[statKey] || ["--", "Profile Statistic"];
-  }
-
-  function renderShowcaseLoadout() {
-    const titleItem = catalogItemById(state.loadout?.titleId);
-    $("showcaseTitle").textContent =
-      clean(titleItem?.value || titleItem?.name, "Rivals Gauntlet Competitor");
-
-    const trackers = state.loadout?.trackers || {};
-    $("showcaseTrackers").innerHTML = ["slot1","slot2","slot3"].map((slot,index) => {
-      const config = trackers[slot] || {};
-      const tracker = catalogItemById(config.trackerId);
-
-      if (!tracker) {
-        return `
-          <div class="preview-tracker">
-            <div>
-              <span>Tracker Slot ${index + 1}</span>
-              <strong>Empty</strong>
-            </div>
-            <b>＋</b>
-          </div>
-        `;
-      }
-
-      const [value,label] = resolveTrackerValue(config.statKey);
-      return `
-        <div class="preview-tracker" style="border-style:solid;border-color:rgba(${clean(tracker.accentRgb,"154,124,255")},.34)">
-          <div>
-            <span>${escapeHtml(label)}</span>
-            <strong>${escapeHtml(value)}</strong>
-          </div>
-          <b style="color:${escapeHtml(clean(tracker.accent,"#9a7cff"))}">${escapeHtml(clean(tracker.symbol,"RG"))}</b>
-        </div>
-      `;
-    }).join("");
-  }
-
   function escapeHtml(value) {
     return String(value ?? "")
       .replaceAll("&","&amp;")
@@ -1763,31 +1645,17 @@ body{
   }
 
   async function loadProfile(uid) {
-    const [playerSnapshot, loadoutSnapshot, cosmeticsSnapshot, trackersSnapshot] = await Promise.all([
-      database.ref(`players/${uid}`).once("value"),
-      database.ref(`profileLoadouts/${uid}`).once("value").catch(() => ({ val: () => null })),
-      database.ref("profileCosmetics").once("value").catch(() => ({ val: () => null })),
-      database.ref("profileTrackers").once("value").catch(() => ({ val: () => null }))
-    ]);
+    const playerSnapshot = await database.ref(`players/${uid}`).once("value");
 
     state.player = playerSnapshot.val() || {};
-    state.loadout = loadoutSnapshot.val() || null;
-    state.profileCatalog = {
-      ...(cosmeticsSnapshot.val() || {}),
-      ...(trackersSnapshot.val() || {})
-    };
 
     const profileUrl = buildProfileUrl(uid);
     [
-      "heroViewProfile",
-      "heroCustomizeProfile",
-      "showcaseViewButton",
-      "showcaseCustomizeButton"
+      "heroViewProfile"
     ].forEach(id => { $(id).href = profileUrl; });
 
     populateForm(state.player);
     renderAccount(state.user, state.player);
-    renderShowcaseLoadout();
     state.initialized = true;
   }
 

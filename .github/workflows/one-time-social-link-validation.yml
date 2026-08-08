@@ -1,0 +1,543 @@
+name: One-time creator link validation update
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-social-link-validation.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  update-social-links:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Harden creator profile links
+        shell: python
+        run: |
+          from pathlib import Path
+
+          settings = Path("settings.html")
+          text = settings.read_text(encoding="utf-8")
+
+          old = '''.social-state.connected{color:var(--success)}
+'''
+          new = '''.social-state.connected{color:var(--success)}
+.social-state.invalid{color:var(--danger)}
+.social-input-shell{
+  min-height:48px;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  align-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.11);
+  background:#101018;
+  transition:.18s ease;
+}
+.social-input-shell:focus-within{
+  border-color:rgba(var(--accent-rgb),.7);
+  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.08);
+}
+.social-input-shell.invalid{
+  border-color:rgba(255,101,123,.7);
+}
+.social-prefix{
+  height:100%;
+  display:flex;
+  align-items:center;
+  padding:0 0 0 14px;
+  color:var(--dim);
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+  user-select:none;
+}
+.social-input-shell input{
+  min-width:0;
+  height:46px;
+  padding:0 14px 0 6px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+'''
+          if old not in text:
+              raise SystemExit("settings CSS anchor not found")
+          text = text.replace(old, new, 1)
+
+          old = '''      <section id="creator-links" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">External Profiles</span>
+            <h2>Creator Links</h2>
+          </div>
+          <p>Only completed links appear publicly. Leave a field empty to hide that platform.</p>
+        </header>
+
+        <div class="section-body">
+          <div class="social-grid">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>Twitch</strong>
+                <span id="twitchState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="twitch" inputmode="url" autocomplete="url" aria-label="Twitch URL" placeholder="https://twitch.tv/yourname">
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>YouTube</strong>
+                <span id="youtubeState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="youtube" inputmode="url" autocomplete="url" aria-label="YouTube URL" placeholder="https://youtube.com/@yourname">
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>TikTok</strong>
+                <span id="tiktokState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="tiktok" inputmode="url" autocomplete="url" aria-label="TikTok URL" placeholder="https://tiktok.com/@yourname">
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>X / Twitter</strong>
+                <span id="xState" class="social-state">Not connected</span>
+              </div>
+              <div class="form-field">
+                <input id="x" inputmode="url" autocomplete="url" aria-label="X URL" placeholder="https://x.com/yourname">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>'''
+          new = '''      <section id="creator-links" class="settings-section">
+        <header class="section-head">
+          <div>
+            <span class="section-kicker">External Profiles</span>
+            <h2>Creator Links</h2>
+          </div>
+          <p>Add only your profile or channel. Rivals Gauntlet validates each platform before the link can appear publicly.</p>
+        </header>
+
+        <div class="section-body">
+          <div class="social-grid">
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>Twitch</strong>
+                <span id="twitchState" class="social-state">Not added</span>
+              </div>
+              <div class="form-field">
+                <div id="twitchShell" class="social-input-shell">
+                  <span class="social-prefix">twitch.tv/</span>
+                  <input id="twitch" inputmode="text" autocomplete="off" aria-label="Twitch username" placeholder="yourname">
+                </div>
+                <p class="field-note">Enter your Twitch username. Pasted Twitch profile links are accepted and cleaned automatically.</p>
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>YouTube</strong>
+                <span id="youtubeState" class="social-state">Not added</span>
+              </div>
+              <div class="form-field">
+                <input id="youtube" inputmode="url" autocomplete="url" aria-label="YouTube channel URL" placeholder="https://youtube.com/@yourname">
+                <p class="field-note">Use a YouTube channel/profile URL. Video, Shorts, playlist, and watch links are rejected.</p>
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>TikTok</strong>
+                <span id="tiktokState" class="social-state">Not added</span>
+              </div>
+              <div class="form-field">
+                <div id="tiktokShell" class="social-input-shell">
+                  <span class="social-prefix">tiktok.com/@</span>
+                  <input id="tiktok" inputmode="text" autocomplete="off" aria-label="TikTok username" placeholder="yourname">
+                </div>
+                <p class="field-note">Enter your TikTok username. Individual video and share links are rejected.</p>
+              </div>
+            </div>
+
+            <div class="social-card">
+              <div class="social-card-top">
+                <strong>X / Twitter</strong>
+                <span id="xState" class="social-state">Not added</span>
+              </div>
+              <div class="form-field">
+                <div id="xShell" class="social-input-shell">
+                  <span class="social-prefix">x.com/</span>
+                  <input id="x" inputmode="text" autocomplete="off" aria-label="X username" placeholder="yourname">
+                </div>
+                <p class="field-note">Enter your X username. X and legacy Twitter profile links are both accepted.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>'''
+          if old not in text:
+              raise SystemExit("settings creator-links block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''  function safeUrl(value) {
+    const raw = clean(value);
+    if (!raw) return "";
+    try {
+      const url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+      if (!["http:", "https:"].includes(url.protocol)) return "";
+      return url.href;
+    } catch {
+      return "";
+    }
+  }
+'''
+          new = '''  function safeUrl(value) {
+    const raw = clean(value);
+    if (!raw) return "";
+    try {
+      const url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+      if (!["http:", "https:"].includes(url.protocol)) return "";
+      return url.href;
+    } catch {
+      return "";
+    }
+  }
+
+  function parseWebUrl(value) {
+    const raw = clean(value);
+    if (!raw) return null;
+
+    try {
+      const url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+      return ["http:", "https:"].includes(url.protocol) ? url : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function normalizeSocialUrl(platform, value) {
+    const raw = clean(value);
+    if (!raw) return "";
+
+    const key = clean(platform).toLowerCase();
+    const direct = raw.replace(/^@/, "");
+
+    if (key === "twitch" && /^[A-Za-z0-9_]{1,25}$/.test(direct)) {
+      return `https://www.twitch.tv/${direct}`;
+    }
+
+    if (key === "tiktok" && /^[A-Za-z0-9._]{1,24}$/.test(direct)) {
+      return `https://www.tiktok.com/@${direct}`;
+    }
+
+    if (key === "x" && /^[A-Za-z0-9_]{1,15}$/.test(direct)) {
+      return `https://x.com/${direct}`;
+    }
+
+    const url = parseWebUrl(raw);
+    if (!url) return "";
+
+    const host = url.hostname.toLowerCase().replace(/^www\\./, "").replace(/^m\\./, "");
+    const parts = url.pathname.split("/").filter(Boolean).map(part => decodeURIComponent(part));
+
+    if (key === "twitch") {
+      const reserved = new Set(["directory", "downloads", "jobs", "p", "settings", "subscriptions", "turbo", "videos", "wallet"]);
+      const handle = parts[0] || "";
+      if (host !== "twitch.tv" || parts.length !== 1 || reserved.has(handle.toLowerCase()) || !/^[A-Za-z0-9_]{1,25}$/.test(handle)) return "";
+      return `https://www.twitch.tv/${handle}`;
+    }
+
+    if (key === "tiktok") {
+      const handle = (parts[0] || "").replace(/^@/, "");
+      if (host !== "tiktok.com" || parts.length !== 1 || !parts[0]?.startsWith("@") || !/^[A-Za-z0-9._]{1,24}$/.test(handle)) return "";
+      return `https://www.tiktok.com/@${handle}`;
+    }
+
+    if (key === "x") {
+      const reserved = new Set(["compose", "explore", "home", "i", "intent", "messages", "notifications", "search", "settings", "share"]);
+      const handle = parts[0] || "";
+      if (!["x.com", "twitter.com"].includes(host) || parts.length !== 1 || reserved.has(handle.toLowerCase()) || !/^[A-Za-z0-9_]{1,15}$/.test(handle)) return "";
+      return `https://x.com/${handle}`;
+    }
+
+    if (key === "youtube") {
+      if (host !== "youtube.com") return "";
+      const first = parts[0] || "";
+      const second = parts[1] || "";
+      const handlePath = parts.length === 1 && /^@[A-Za-z0-9._-]{1,100}$/.test(first);
+      const channelPath = parts.length === 2 && first === "channel" && /^[A-Za-z0-9_-]{10,}$/.test(second);
+      const legacyPath = parts.length === 2 && ["c", "user"].includes(first) && /^[A-Za-z0-9._-]{1,100}$/.test(second);
+      if (!handlePath && !channelPath && !legacyPath) return "";
+      return `https://www.youtube.com/${parts.join("/")}`;
+    }
+
+    return "";
+  }
+
+  function socialInputValue(platform, value) {
+    const raw = clean(value);
+    if (!raw) return "";
+
+    const normalized = normalizeSocialUrl(platform, raw);
+    if (!normalized) return raw;
+    if (platform === "youtube") return normalized;
+
+    const url = new URL(normalized);
+    const first = decodeURIComponent(url.pathname.split("/").filter(Boolean)[0] || "");
+    return platform === "tiktok" ? first.replace(/^@/, "") : first;
+  }
+
+  function socialErrorMessage(platform) {
+    return {
+      twitch: "Enter a Twitch username or Twitch profile URL.",
+      youtube: "Enter a YouTube channel/profile URL, not a video, Short, playlist, or watch link.",
+      tiktok: "Enter a TikTok username or TikTok profile URL.",
+      x: "Enter an X username or X/Twitter profile URL."
+    }[platform] || "Enter a valid creator profile.";
+  }
+'''
+          if old not in text:
+              raise SystemExit("settings safeUrl block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''  function updateSocialStates() {
+    ["twitch","youtube","tiktok","x"].forEach(id => {
+      const connected = Boolean(clean($(id).value));
+      const stateNode = $(`${id}State`);
+      stateNode.textContent = connected ? "Connected" : "Not connected";
+      stateNode.classList.toggle("connected", connected);
+    });
+  }
+'''
+          new = '''  function updateSocialStates() {
+    ["twitch","youtube","tiktok","x"].forEach(id => {
+      const raw = clean($(id).value);
+      const valid = Boolean(normalizeSocialUrl(id, raw));
+      const stateNode = $(`${id}State`);
+      stateNode.textContent = !raw ? "Not added" : valid ? "Added" : "Check link";
+      stateNode.classList.toggle("connected", valid);
+      stateNode.classList.toggle("invalid", Boolean(raw) && !valid);
+
+      const shell = $(`${id}Shell`);
+      if (shell) shell.classList.toggle("invalid", Boolean(raw) && !valid);
+    });
+  }
+'''
+          if old not in text:
+              raise SystemExit("settings social-state block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''    socialInputs.forEach(([id,label]) => {
+      const raw = clean($(id).value);
+      const valid = !raw || Boolean(safeUrl(raw));
+      $(id).classList.toggle("invalid", !valid);
+      if (!valid) errors.push(`${label} URL is not valid.`);
+    });
+'''
+          new = '''    socialInputs.forEach(([id,label]) => {
+      const raw = clean($(id).value);
+      const valid = !raw || Boolean(normalizeSocialUrl(id, raw));
+      $(id).classList.toggle("invalid", !valid);
+      const shell = $(`${id}Shell`);
+      if (shell) shell.classList.toggle("invalid", !valid);
+      if (!valid) errors.push(socialErrorMessage(id));
+    });
+'''
+          if old not in text:
+              raise SystemExit("settings validation block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''    $("twitch").value = clean(socials.twitch);
+    $("youtube").value = clean(socials.youtube);
+    $("tiktok").value = clean(socials.tiktok);
+    $("x").value = clean(socials.x);
+'''
+          new = '''    $("twitch").value = socialInputValue("twitch", socials.twitch);
+    $("youtube").value = socialInputValue("youtube", socials.youtube);
+    $("tiktok").value = socialInputValue("tiktok", socials.tiktok);
+    $("x").value = socialInputValue("x", socials.x);
+'''
+          if old not in text:
+              raise SystemExit("settings populate social block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''      socials: {
+        twitch: safeUrl(form.socials.twitch),
+        youtube: safeUrl(form.socials.youtube),
+        tiktok: safeUrl(form.socials.tiktok),
+        x: safeUrl(form.socials.x)
+      },
+'''
+          new = '''      socials: {
+        twitch: normalizeSocialUrl("twitch", form.socials.twitch),
+        youtube: normalizeSocialUrl("youtube", form.socials.youtube),
+        tiktok: normalizeSocialUrl("tiktok", form.socials.tiktok),
+        x: normalizeSocialUrl("x", form.socials.x)
+      },
+'''
+          if old not in text:
+              raise SystemExit("settings save social block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''  function bindEvents() {
+    FIELD_IDS.forEach(id => {
+      $(id).addEventListener("input", updateLivePreview);
+      $(id).addEventListener("change", updateLivePreview);
+    });
+
+ 
+    $("saveButton").addEventListener("click", saveSettings);
+'''
+          new = '''  function bindEvents() {
+    FIELD_IDS.forEach(id => {
+      $(id).addEventListener("input", updateLivePreview);
+      $(id).addEventListener("change", updateLivePreview);
+    });
+
+    ["twitch", "youtube", "tiktok", "x"].forEach(id => {
+      $(id).addEventListener("blur", () => {
+        const raw = clean($(id).value);
+        if (!raw) return;
+        const normalized = normalizeSocialUrl(id, raw);
+        if (!normalized) {
+          updateLivePreview();
+          return;
+        }
+        $(id).value = socialInputValue(id, normalized);
+        updateLivePreview();
+      });
+    });
+
+ 
+    $("saveButton").addEventListener("click", saveSettings);
+'''
+          if old not in text:
+              raise SystemExit("settings bindEvents anchor not found")
+          text = text.replace(old, new, 1)
+
+          settings.write_text(text, encoding="utf-8")
+
+          profile = Path("profile.html")
+          text = profile.read_text(encoding="utf-8")
+
+          old = '''  const safeUrl = value => {
+    const raw = clean(value);
+    if (!raw) return "";
+
+    try {
+      const url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch {
+      return "";
+    }
+  };
+'''
+          new = '''  const safeUrl = value => {
+    const raw = clean(value);
+    if (!raw) return "";
+
+    try {
+      const url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch {
+      return "";
+    }
+  };
+
+  const normalizeSocialUrl = (platform, value) => {
+    const raw = clean(value);
+    if (!raw) return "";
+
+    let url;
+    try {
+      url = new URL(/^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`);
+    } catch {
+      return "";
+    }
+
+    if (!["http:", "https:"].includes(url.protocol)) return "";
+
+    const key = clean(platform).toLowerCase();
+    const host = url.hostname.toLowerCase().replace(/^www\\./, "").replace(/^m\\./, "");
+    const parts = url.pathname.split("/").filter(Boolean).map(part => decodeURIComponent(part));
+
+    if (key === "twitch") {
+      const reserved = new Set(["directory", "downloads", "jobs", "p", "settings", "subscriptions", "turbo", "videos", "wallet"]);
+      const handle = parts[0] || "";
+      if (host !== "twitch.tv" || parts.length !== 1 || reserved.has(handle.toLowerCase()) || !/^[A-Za-z0-9_]{1,25}$/.test(handle)) return "";
+      return `https://www.twitch.tv/${handle}`;
+    }
+
+    if (key === "youtube") {
+      if (host !== "youtube.com") return "";
+      const first = parts[0] || "";
+      const second = parts[1] || "";
+      const handlePath = parts.length === 1 && /^@[A-Za-z0-9._-]{1,100}$/.test(first);
+      const channelPath = parts.length === 2 && first === "channel" && /^[A-Za-z0-9_-]{10,}$/.test(second);
+      const legacyPath = parts.length === 2 && ["c", "user"].includes(first) && /^[A-Za-z0-9._-]{1,100}$/.test(second);
+      if (!handlePath && !channelPath && !legacyPath) return "";
+      return `https://www.youtube.com/${parts.join("/")}`;
+    }
+
+    if (key === "tiktok") {
+      const handle = (parts[0] || "").replace(/^@/, "");
+      if (host !== "tiktok.com" || parts.length !== 1 || !parts[0]?.startsWith("@") || !/^[A-Za-z0-9._]{1,24}$/.test(handle)) return "";
+      return `https://www.tiktok.com/@${handle}`;
+    }
+
+    if (key === "x") {
+      const reserved = new Set(["compose", "explore", "home", "i", "intent", "messages", "notifications", "search", "settings", "share"]);
+      const handle = parts[0] || "";
+      if (!["x.com", "twitter.com"].includes(host) || parts.length !== 1 || reserved.has(handle.toLowerCase()) || !/^[A-Za-z0-9_]{1,15}$/.test(handle)) return "";
+      return `https://x.com/${handle}`;
+    }
+
+    return "";
+  };
+'''
+          if old not in text:
+              raise SystemExit("profile safeUrl block not found")
+          text = text.replace(old, new, 1)
+
+          old = '''      const url = safeUrl(rawUrl);
+
+      return url
+'''
+          new = '''      const platformKey = {
+        Twitch: "twitch",
+        YouTube: "youtube",
+        TikTok: "tiktok",
+        X: "x"
+      }[name];
+      const url = normalizeSocialUrl(platformKey, rawUrl);
+
+      return url
+'''
+          if old not in text:
+              raise SystemExit("profile social render block not found")
+          text = text.replace(old, new, 1)
+
+          profile.write_text(text, encoding="utf-8")
+
+      - name: Commit creator link validation
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add settings.html profile.html
+          git commit -m "Validate creator social profile links"
+          git push

@@ -1,0 +1,36 @@
+name: One-time launch legal cleanup
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.event.issue.title == 'Run RG legal launch cleanup'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          boot='''<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="/firebase.js?v=3"></script>
+'''
+          for name in ['privacy.html','terms.html','contact.html','tournament-rules.html']:
+              p=Path(name); t=p.read_text(encoding='utf-8')
+              if 'firebase-app.js' in t: continue
+              m=re.search(r'<script src="/global-header\.js\?v=\d+"></script>',t)
+              if not m: raise SystemExit('missing header marker: '+name)
+              p.write_text(t[:m.start()]+boot+t[m.start():],encoding='utf-8')
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add privacy.html terms.html contact.html tournament-rules.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Keep header auth on legal pages"
+          git push origin HEAD:main

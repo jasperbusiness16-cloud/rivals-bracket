@@ -1,0 +1,97 @@
+name: One-time final active-event donation page cleanup
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-donate-final2.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Scope Donate page to active tournament
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('donate.html')
+          t = p.read_text(encoding='utf-8')
+
+          old = '''            uid: clean(record.uid || record.userId)
+          }))'''
+          new = '''            uid: clean(record.uid || record.userId),
+            tournamentId: clean(record.tournamentId || record.eventId)
+          }))'''
+          if 'tournamentId: clean(record.tournamentId || record.eventId)' not in t:
+              if old not in t:
+                  raise SystemExit('normalizeDonations target not found')
+              t = t.replace(old, new, 1)
+
+          if 'function currentTournamentDonations()' not in t:
+              old = '''      function totals() {'''
+              new = '''      function currentTournamentDonations() {
+        const tournamentId = clean(state.site.currentTournament);
+        if (!tournamentId) return [];
+
+        return state.donations.filter(donation =>
+          donation.tournamentId === tournamentId ||
+          (!donation.tournamentId && tournamentId === "open1")
+        );
+      }
+
+      function totals() {'''
+              if old not in t:
+                  raise SystemExit('totals function target not found')
+              t = t.replace(old, new, 1)
+
+          old = '''        const community = state.donations.reduce(
+          (sum, donation) => sum + donation.amount,
+          0
+        );'''
+          new = '''        const community = currentTournamentDonations().reduce(
+          (sum, donation) => sum + donation.amount,
+          0
+        );'''
+          if old in t:
+              t = t.replace(old, new, 1)
+          elif 'const community = currentTournamentDonations().reduce(' not in t:
+              raise SystemExit('community total target not found')
+
+          old = '''        const donations = state.donations.slice(0, 8);
+        byId("contributionCountLabel").textContent = `${state.donations.length.toLocaleString()} confirmed ${state.donations.length === 1 ? "contribution" : "contributions"}`;'''
+          new = '''        const eventDonations = currentTournamentDonations();
+        const donations = eventDonations.slice(0, 8);
+        byId("contributionCountLabel").textContent = `${eventDonations.length.toLocaleString()} confirmed ${eventDonations.length === 1 ? "contribution" : "contributions"} for this event`;'''
+          if old in t:
+              t = t.replace(old, new, 1)
+          elif 'const eventDonations = currentTournamentDonations();' not in t:
+              raise SystemExit('recent donations target not found')
+
+          p.write_text(t, encoding='utf-8')
+          PY
+
+          grep -q 'function currentTournamentDonations' donate.html
+          grep -q 'tournamentId: clean(record.tournamentId || record.eventId)' donate.html
+          grep -q 'const eventDonations = currentTournamentDonations();' donate.html
+
+      - name: Commit
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add donate.html
+          if git diff --cached --quiet; then
+            echo "Donate page already scoped."
+            exit 0
+          fi
+          git commit -m "Scope prize pool page to active tournament"
+          git pull --rebase origin main
+          git push origin HEAD:main

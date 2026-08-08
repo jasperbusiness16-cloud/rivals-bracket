@@ -1,0 +1,85 @@
+name: One-time public launch cleanup
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.event.issue.title == 'Run RG public launch cleanup'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch public launch surfaces
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          for p in Path('.').glob('*.html'):
+              t=p.read_text(encoding='utf-8')
+              t=re.sub(r'\s*<script[^>]+daily-gifts\.js[^>]*></script>\s*','\n',t,flags=re.I)
+              t=re.sub(r'\s*<script[^>]+notification-center\.js[^>]*></script>\s*','\n',t,flags=re.I)
+              p.write_text(t,encoding='utf-8')
+
+          p=Path('global-footer.js'); t=p.read_text(encoding='utf-8')
+          a=t.index('  const socialLinks = ['); b=t.index('  ];',a)+4
+          t=t[:a]+'''  const socialLinks = [
+    ["Discord", "https://discord.gg/82HPpfkhQN", "fa-brands fa-discord"],
+    ["Twitch", "https://www.twitch.tv/atrophylive", "fa-brands fa-twitch"]
+  ];'''+t[b:]
+          p.write_text(t,encoding='utf-8')
+
+          bootstrap='''<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="/firebase.js?v=3"></script>
+'''
+          for name in ['privacy.html','terms.html','contact.html','tournament-rules.html']:
+              p=Path(name); t=p.read_text(encoding='utf-8')
+              if 'firebase-app.js' not in t:
+                  m=re.search(r'<script src="/global-header\.js\?v=\d+"></script>',t)
+                  if m: t=t[:m.start()]+bootstrap+t[m.start():]
+              p.write_text(t,encoding='utf-8')
+
+          p=Path('dashboard.html'); p.write_text(p.read_text(encoding='utf-8').replace('href="dashboard-v2.html"','href="dashboard.html"'),encoding='utf-8')
+
+          p=Path('apply.html'); t=p.read_text(encoding='utf-8')
+          t=t.replace('<span>Verified Competitor</span>','<span>Registered Player</span>')
+          t=re.sub(r'\n\s*<div class="cosmetic-note">.*?crate\s+cosmetics do not affect application completion or tournament selection\..*?</div>','',t,count=1,flags=re.S)
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('predictions.html'); t=p.read_text(encoding='utf-8')
+          t=t.replace('Every matchup must be correct to earn the exclusive Perfect Bracket reward. The remaining counter updates as official results are finalized.','Every matchup must be correct to earn the +2,000 RP Perfect Bracket bonus. The remaining counter updates as official results are finalized.')
+          t=re.sub(r'\s*<div class="rule"><div class="rule-number">5</div><div><h3>Advance your predictor career</h3><p>.*?</p></div></div>','',t,count=1,flags=re.S)
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('about.html'); t=p.read_text(encoding='utf-8')
+          t=t.replace('community events, live broadcasting, predictions,\n        progression and rewards.','community events, live broadcasting, predictions,\n        RG Points and competitive rankings.')
+          t=t.replace('tournament systems, predictions, rankings, rewards\n              and community-driven events.','tournament systems, predictions, rankings and\n              community-driven events.')
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('leaderboard.html'); t=p.read_text(encoding='utf-8')
+          t=t.replace('              <option value="prestige">Prestige</option>\n','')
+          t=re.sub(r'\n\s*prestige: \{\n\s*kicker: "Account Progression",.*?\n\s*\},\n\s*championships:','\n      championships:',t,count=1,flags=re.S)
+          p.write_text(t,encoding='utf-8')
+
+          p=Path('posts.js'); p.write_text(p.read_text(encoding='utf-8').replace('      shop: "Shop Update",\n',''),encoding='utf-8')
+          p=Path('posts.html'); t=p.read_text(encoding='utf-8').replace('            <option value="shop">Shop Updates</option>\n','').replace('            <option value="shop">Shop Update</option>\n',''); p.write_text(t,encoding='utf-8')
+          p=Path('nexus-posts.js'); p.write_text(p.read_text(encoding='utf-8').replace('    shop: "Shop Update",\n',''),encoding='utf-8')
+          PY
+          node --check global-footer.js
+          node --check posts.js
+          node --check nexus-posts.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Clean public launch surfaces"
+          git push origin HEAD:main

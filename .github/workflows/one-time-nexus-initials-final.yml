@@ -1,0 +1,81 @@
+name: One-time final Nexus initials-only cleanup
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.event.issue.title == 'Run RG final Nexus initials cleanup'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          def patch(name, fn):
+              p=Path(name); t=p.read_text(encoding='utf-8'); n=fn(t); p.write_text(n,encoding='utf-8')
+
+          def applications(t):
+              t=t.replace('''    const profileImage =
+      safeImageUrl(
+        application.profileImage
+      );''','''    const profileImage = "";''')
+              return t
+          patch('nexus-applications.js',applications)
+
+          def teams(t):
+              t=t.replace('''    const imageUrl =
+      safeImageUrl(
+        player.profileImage
+      );''','''    const imageUrl = "";''')
+              t=t.replace('''            profileImage: "",
+
+''','')
+              t=t.replace('''          profileImage:
+            player.profileImage || "",
+
+''','')
+              return t
+          patch('nexus-team-builder.js',teams)
+
+          def checkin(t):
+              t=t.replace('''    profileImage:
+      player.profileImage || "",
+
+''','')
+              t=t.replace('''    const imageUrl =
+      safeImageUrl(
+        player.profileImage
+      );''','''    const imageUrl = "";''')
+              return t
+          patch('nexus-checkin.js',checkin)
+
+          def reports(t):
+              t=t.replace('''  profileImage:
+    player.profileImage || "",
+
+''','')
+              t=t.replace('''    const imageUrl =
+      safeImageUrl(
+        player?.profileImage
+      );''','''    const imageUrl = "";''')
+              return t
+          patch('nexus-reports.js',reports)
+
+          for f in ['nexus-applications.js','nexus-team-builder.js','nexus-checkin.js','nexus-reports.js']:
+              text=Path(f).read_text(encoding='utf-8')
+              if 'safeImageUrl(\n        player.profileImage' in text or 'safeImageUrl(\n        player?.profileImage' in text:
+                  raise SystemExit(f'active profile image render remains in {f}')
+          PY
+          for f in nexus-applications.js nexus-team-builder.js nexus-checkin.js nexus-reports.js; do node --check "$f"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add nexus-applications.js nexus-team-builder.js nexus-checkin.js nexus-reports.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Finish initials-only Nexus player surfaces"
+          git pull --rebase origin main
+          git push origin HEAD:main

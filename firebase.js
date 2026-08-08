@@ -29,3 +29,32 @@ window.auth = firebase.auth();
 const database = window.database;
 
 const auth = window.auth;
+
+/*
+  Nexus notification automation is admin-side only.
+  Load it from the shared Firebase bootstrap when the
+  Control Center is open so public pages never run it.
+*/
+if (
+  /^\/nexus-control(?:\.html)?\/?$/i.test(
+    window.location.pathname
+  )
+) {
+  const notificationAutomationScript =
+    document.createElement("script");
+
+  notificationAutomationScript.src =
+    "nexus-notification-automation.js?v=1";
+
+  notificationAutomationScript.async = false;
+
+  notificationAutomationScript.onerror = () => {
+    console.error(
+      "[NEXUS] Notification automation failed to load."
+    );
+  };
+
+  document.head.appendChild(
+    notificationAutomationScript
+  );
+}

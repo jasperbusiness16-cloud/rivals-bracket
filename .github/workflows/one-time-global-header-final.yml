@@ -26,7 +26,6 @@ jobs:
           p = Path('global-header.js')
           t = p.read_text(encoding='utf-8')
 
-          # Notification paths are required by the bell/read-state methods.
           if 'notificationPaths: [' not in t:
               old = '''        avatarKeys: [],
 
@@ -43,37 +42,18 @@ jobs:
                   raise SystemExit('notification config insertion point missing')
               t = t.replace(old, new, 1)
 
-          # No player/profile photos at launch, including Firebase Auth photoURL.
           t = t.replace('''                avatar:
                     user.photoURL ||
                     ""''', '''                avatar: ""''')
-          t = re.sub(
-              r'''\s+avatar: String\(\s*player\.profileImage \|\|\s*player\.avatarUrl \|\|\s*player\.photoURL \|\|\s*""\s*\),''',
-              '\n                            avatar: "",',
-              t
-          )
-          t = re.sub(
-              r'''\s+avatar: String\(\s*sender\.profileImage \|\| ""\s*\),''',
-              '\n                            avatar: "",',
-              t
-          )
-          t = re.sub(
-              r'''avatar:\s*String\(\s*value\.avatarUrl \|\|\s*value\.photoURL \|\|\s*value\.profileImage \|\|\s*value\.avatar \|\|\s*""\s*\),''',
-              'avatar: "",',
-              t
-          )
-          t = re.sub(
-              r'''const avatarMarkup =\s*player\.profileImage\s*\? `.*?`\s*:\s*`\s*<span>\s*\$\{this\.escapeHTML\(\s*initial\s*\)\}\s*</span>\s*`;''',
-              '''const avatarMarkup = `
+          t = re.sub(r'''\s+avatar: String\(\s*player\.profileImage \|\|\s*player\.avatarUrl \|\|\s*player\.photoURL \|\|\s*""\s*\),''', '\n                            avatar: "",', t)
+          t = re.sub(r'''\s+avatar: String\(\s*sender\.profileImage \|\| ""\s*\),''', '\n                            avatar: "",', t)
+          t = re.sub(r'''avatar:\s*String\(\s*value\.avatarUrl \|\|\s*value\.photoURL \|\|\s*value\.profileImage \|\|\s*value\.avatar \|\|\s*""\s*\),''', 'avatar: "",', t)
+          t = re.sub(r'''const avatarMarkup =\s*player\.profileImage\s*\? `.*?`\s*:\s*`\s*<span>\s*\$\{this\.escapeHTML\(\s*initial\s*\)\}\s*</span>\s*`;''', '''const avatarMarkup = `
                         <span>
                             ${this.escapeHTML(initial)}
                         </span>
-                    `;''',
-              t,
-              flags=re.S
-          )
+                    `;''', t, flags=re.S)
 
-          # Remove retired Daily Gift state.
           t = t.replace('''friendRequests: [],
 giftInbox: [],
 
@@ -107,51 +87,12 @@ this.renderFriendRequests([]);
 this.renderGiftInbox([]);''', '''this.renderFriends([]);
 this.renderFriendRequests([]);''')
 
-          # Removed Gift DOM cache references.
-          t = re.sub(
-              r'''\nthis\.dom\.giftsList = root\.querySelector\(\n    "\[data-rg-gifts-list\]"\n\);\n\nthis\.dom\.giftsCount = root\.querySelector\(\n    "\[data-rg-gifts-count\]"\n\);\n''',
-              '\n',
-              t
-          )
-
-          # Remove optional RGDailyGifts listeners from attachFriendListeners.
-          t = re.sub(
-              r'''\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToDailyStats ===\n        "function"\n\) \{.*?\n\}\n\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToGiftInbox ===\n        "function"\n\) \{.*?\n\}\n''',
-              '\n',
-              t,
-              count=1,
-              flags=re.S
-          )
-
-          # Remove unused gift-state calculation in friend cards.
-          t = re.sub(
-              r'''\n\s*const giftState =\s*window\.RGDailyGifts.*?reason:\s*"Daily Gifts are not loaded on this page\."\s*\};\n''',
-              '\n',
-              t,
-              count=1,
-              flags=re.S
-          )
-
-          # Remove the entire retired gift inbox renderer.
-          t = re.sub(
-              r'''\n// =====================================================================\n// DAILY GIFT INBOX RENDERING\n// =====================================================================\n\nrenderGiftInbox\(.*?\n\}\n\n        // =====================================================================\n        // FRIEND REQUEST RENDERING''',
-              '''\n        // =====================================================================
-        // FRIEND REQUEST RENDERING''',
-              t,
-              count=1,
-              flags=re.S
-          )
-
-          # Remove open/send gift action branches.
-          t = re.sub(
-              r'''\nif \(action === "open-gift"\) \{.*?\n\}\n\nif \(action === "gift"\) \{.*?\n\}\n\n            if \(action === "invite"\)''',
-              '''\n            if (action === "invite")''',
-              t,
-              count=1,
-              flags=re.S
-          )
-
-          # Old shop/gift aliases should not remain in active notification taxonomy.
+          t = re.sub(r'''\nthis\.dom\.giftsList = root\.querySelector\(\n    "\[data-rg-gifts-list\]"\n\);\n\nthis\.dom\.giftsCount = root\.querySelector\(\n    "\[data-rg-gifts-count\]"\n\);\n''', '\n', t)
+          t = re.sub(r'''\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToDailyStats ===\n        "function"\n\) \{.*?\n\}\n\nif \(\n    window\.RGDailyGifts &&\n    typeof window\.RGDailyGifts\.listenToGiftInbox ===\n        "function"\n\) \{.*?\n\}\n''', '\n', t, count=1, flags=re.S)
+          t = re.sub(r'''\n\s*const giftState =\s*window\.RGDailyGifts.*?reason:\s*"Daily Gifts are not loaded on this page\."\s*\};\n''', '\n', t, count=1, flags=re.S)
+          t = re.sub(r'''\n// =====================================================================\n// DAILY GIFT INBOX RENDERING\n// =====================================================================\n\nrenderGiftInbox\(.*?\n\}\n\n        // =====================================================================\n        // FRIEND REQUEST RENDERING''', '''\n        // =====================================================================
+        // FRIEND REQUEST RENDERING''', t, count=1, flags=re.S)
+          t = re.sub(r'''\nif \(action === "open-gift"\) \{.*?\n\}\n\nif \(action === "gift"\) \{.*?\n\}\n\n            if \(action === "invite"\)''', '''\n            if (action === "invite")''', t, count=1, flags=re.S)
           t = t.replace('''    gift: "reward",
     crate: "reward",
     inventory: "reward",
@@ -181,3 +122,5 @@ this.renderFriendRequests([]);''')
           git commit -m "Finish initials-only header and remove gift leftovers"
           git pull --rebase origin main
           git push origin HEAD:main
+
+# trigger

@@ -23,11 +23,8 @@
   ];
 
   const socialLinks = [
-    ["Discord", "#", "fa-brands fa-discord"],
-    ["Twitch", "https://www.twitch.tv/atrophylive", "fa-brands fa-twitch"],
-    ["YouTube", "#", "fa-brands fa-youtube"],
-    ["TikTok", "#", "fa-brands fa-tiktok"],
-    ["X", "#", "fa-brands fa-x-twitter"]
+    ["Discord", "https://discord.gg/82HPpfkhQN", "fa-brands fa-discord"],
+    ["Twitch", "https://www.twitch.tv/atrophylive", "fa-brands fa-twitch"]
   ];
 
   function createStandardLinks(links, extraClass = "") {
@@ -55,7 +52,7 @@
           <a
             class="rg-footer__link rg-footer__social"
             href="${href}"
-            ${href !== "#" ? 'target="_blank" rel="noopener noreferrer"' : ""}
+            target="_blank" rel="noopener noreferrer"
           >
             <i class="${icon}"></i>
             <span>${label}</span>

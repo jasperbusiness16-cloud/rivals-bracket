@@ -1,15 +1,15 @@
 name: One-time full RG Points header display
 
 on:
-  push:
-    paths:
-      - ".github/workflows/one-time-full-rg-points.yml"
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
 
 jobs:
   update:
+    if: github.event.issue.title == 'Apply full RG Points header display'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
           node --check global-header.js
           grep -q 'this.formatFull(' global-header.js
 
-      - name: Commit launch change and remove temporary workflow
+      - name: Commit change and remove temporary workflow
         shell: bash
         run: |
           git config user.name "github-actions[bot]"

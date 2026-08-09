@@ -1,0 +1,71 @@
+name: One-time full RG Points header display
+
+on:
+  push:
+    paths:
+      - ".github/workflows/one-time-full-rg-points.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Show full RG Points balance in header
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          header = Path('global-header.js')
+          text = header.read_text(encoding='utf-8')
+          old = '''                this.dom.pointsShort.textContent =
+                    this.formatCompact(
+                        points
+                    );'''
+          new = '''                this.dom.pointsShort.textContent =
+                    this.formatFull(
+                        points
+                    );'''
+          if old not in text:
+              if new not in text:
+                  raise SystemExit('RG Points short formatter target not found')
+          else:
+              text = text.replace(old, new, 1)
+          header.write_text(text, encoding='utf-8')
+
+          active_pages = [
+              'index.html','tournament.html','predictions.html','leaderboard.html',
+              'apply.html','dashboard.html','check-in.html','settings.html',
+              'profile.html','teams.html','friends.html','posts.html','donate.html',
+              'about.html','contact.html','privacy.html','terms.html',
+              'tournament-rules.html'
+          ]
+          for name in active_pages:
+              path = Path(name)
+              if not path.exists():
+                  continue
+              page = path.read_text(encoding='utf-8')
+              page = re.sub(r'global-header\.js\?v=\d+', 'global-header.js?v=22', page)
+              path.write_text(page, encoding='utf-8')
+          PY
+
+          node --check global-header.js
+          grep -q 'this.formatFull(' global-header.js
+
+      - name: Commit launch change and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-time-full-rg-points.yml
+          git add global-header.js index.html tournament.html predictions.html leaderboard.html apply.html dashboard.html check-in.html settings.html profile.html teams.html friends.html posts.html donate.html about.html contact.html privacy.html terms.html tournament-rules.html
+          git commit -m "Show full RG Points balance in global header"
+          git pull --rebase origin main
+          git push origin HEAD:main

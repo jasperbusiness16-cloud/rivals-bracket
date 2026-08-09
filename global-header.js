@@ -592,7 +592,7 @@ dailyGiftStats: {
     >
         <span class="rg-header__brand-copy">
                                 <strong>RIVALS GAUNTLET</strong>
-                                <small>COMPETE • PREDICT • EARN</small>
+                                <small>CREATOR TOURNAMENTS</small>
                             </span>
                         </a>
 

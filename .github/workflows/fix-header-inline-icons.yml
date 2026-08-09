@@ -1,0 +1,66 @@
+name: Fix global header utility icons
+
+on:
+  push:
+    paths:
+      - ".github/workflows/fix-header-inline-icons.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Replace Font Awesome header icons with inline SVGs
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('global-header.js')
+          t = p.read_text(encoding='utf-8')
+
+          old_friend = '''<span class="rg-utility__icon">\n    <i class="fa-solid fa-user-group"></i>\n</span>'''
+          new_friend = '''<span class="rg-utility__icon">\n    ${ICONS.friend}\n</span>'''
+
+          old_bell = '''<span class="rg-utility__icon">\n    <i class="fa-regular fa-bell"></i>\n</span>'''
+          new_bell = '''<span class="rg-utility__icon">\n    ${ICONS.bell}\n</span>'''
+
+          if old_friend not in t:
+              raise SystemExit('Friends Font Awesome icon target not found')
+          if old_bell not in t:
+              raise SystemExit('Bell Font Awesome icon target not found')
+
+          t = t.replace(old_friend, new_friend, 1)
+          t = t.replace(old_bell, new_bell, 1)
+          p.write_text(t, encoding='utf-8')
+
+          # Force browsers/Safari to request the corrected header script.
+          for html in Path('.').glob('*.html'):
+              text = html.read_text(encoding='utf-8')
+              updated = text.replace('global-header.js?v=20', 'global-header.js?v=21')
+              if updated != text:
+                  html.write_text(updated, encoding='utf-8')
+          PY
+
+          node --check global-header.js
+          grep -q '\${ICONS.friend}' global-header.js
+          grep -q '\${ICONS.bell}' global-header.js
+          ! grep -q 'fa-solid fa-user-group' global-header.js
+          ! grep -q 'fa-regular fa-bell' global-header.js
+
+      - name: Commit fix and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-header-inline-icons.yml
+          git add global-header.js *.html
+          git commit -m "Use inline SVG icons in global header"
+          git pull --rebase origin main
+          git push origin HEAD:main

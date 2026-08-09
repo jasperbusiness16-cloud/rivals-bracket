@@ -16,6 +16,30 @@ window.database = firebase.database();
 window.auth = firebase.auth();
 
 /*
+  Keep Font Awesome available for shared header controls on every page.
+  Several production pages intentionally do not load Font Awesome themselves,
+  while the global header currently uses it for Friends and Notifications.
+*/
+(() => {
+  const alreadyLoaded = Array.from(
+    document.querySelectorAll('link[rel="stylesheet"]')
+  ).some(link =>
+    String(link.href || "").includes("font-awesome") ||
+    String(link.href || "").includes("fontawesome")
+  );
+
+  if (alreadyLoaded) return;
+
+  const fontAwesome = document.createElement("link");
+  fontAwesome.rel = "stylesheet";
+  fontAwesome.href =
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css";
+  fontAwesome.referrerPolicy = "no-referrer";
+
+  document.head.appendChild(fontAwesome);
+})();
+
+/*
   Keep these names available for older page scripts
   that use database and auth directly.
 */

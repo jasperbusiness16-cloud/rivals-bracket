@@ -70,6 +70,26 @@ const auth = window.auth;
     header.config.avatarKeys = [];
     header.config.defaultAvatar = "";
 
+    /* Always show the complete RG Points balance in the header. */
+    if (typeof header.updatePoints === "function") {
+      const originalUpdatePoints =
+        header.updatePoints.bind(header);
+
+      header.updatePoints = value => {
+        const result = originalUpdatePoints(value);
+        const points = Math.max(0, Number(value) || 0);
+
+        if (header.dom?.pointsShort) {
+          header.dom.pointsShort.textContent =
+            typeof header.formatFull === "function"
+              ? header.formatFull(points)
+              : Math.floor(points).toLocaleString("en-US");
+        }
+
+        return result;
+      };
+    }
+
     if (typeof header.updateIdentity === "function") {
       const originalUpdateIdentity =
         header.updateIdentity.bind(header);

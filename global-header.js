@@ -665,7 +665,7 @@ dailyGiftStats: {
                                     aria-label="Open friends"
                                 >
 <span class="rg-utility__icon">
-    <i class="fa-solid fa-user-group"></i>
+    ${ICONS.friend}
 </span>
 
                                     <span
@@ -684,7 +684,7 @@ dailyGiftStats: {
                                     aria-label="Open notifications"
                                 >
 <span class="rg-utility__icon">
-    <i class="fa-regular fa-bell"></i>
+    ${ICONS.bell}
 </span>
 
                                     <span

@@ -15,6 +15,10 @@
   flex:0 0 auto;
 }
 
+.leaderboard-client + #globalFooter{
+  margin-top:28px;
+}
+
 .rg-footer{
   position:relative;
   overflow:hidden;

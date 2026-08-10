@@ -1,28 +1,69 @@
 window.RGFriends = (() => {
   "use strict";
 
-  function getFriendshipId(uidA, uidB) {
-    return [uidA, uidB].sort().join("_");
+  /*
+    Friend-request path compatibility
+    ---------------------------------
+    The production UI historically used:
+      userFriendRequests/{uid}/incoming/{requestId}
+      userFriendRequests/{uid}/outgoing/{requestId}
+
+    The current RTDB rules expose:
+      incomingFriendRequests/{uid}/{requestId}
+      outgoingFriendRequests/{uid}/{requestId}
+
+    Keep old callers working by transparently mapping their references to the
+    rule-supported paths. We retain an unwrapped reference function so an
+    existing legacy index can be migrated once after sign-in.
+  */
+  const rawDatabaseRef = database.ref.bind(database);
+
+  function normalizePath(value) {
+    return String(value || "").replace(/^\/+|\/+$/g, "");
   }
 
-  function getFriendRequestId(senderUid, receiverUid) {
-    return `${senderUid}_${receiverUid}`;
+  function mapFriendRequestIndexPath(value) {
+    const path = normalizePath(value);
+    const match = path.match(
+      /^userFriendRequests\/([^/]+)\/(incoming|outgoing)(?:\/(.+))?$/i
+    );
+
+    if (!match) return value;
+
+    const uid = match[1];
+    const direction = match[2].toLowerCase();
+    const tail = match[3] ? `/${match[3]}` : "";
+    const root = direction === "incoming"
+      ? "incomingFriendRequests"
+      : "outgoingFriendRequests";
+
+    return `${root}/${uid}${tail}`;
+  }
+
+  if (!window.__RG_FRIEND_REQUEST_PATH_BRIDGE__) {
+    window.__RG_FRIEND_REQUEST_PATH_BRIDGE__ = true;
+
+    database.ref = path => {
+      if (typeof path !== "string") {
+        return rawDatabaseRef(path);
+      }
+
+      return rawDatabaseRef(
+        mapFriendRequestIndexPath(path)
+      );
+    };
   }
 
   function timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
   }
 
-  function isPermissionError(error) {
-    const code = String(error?.code || "").toLowerCase();
-    const message = String(error?.message || "").toLowerCase();
+  function getFriendshipId(uidA, uidB) {
+    return [uidA, uidB].sort().join("_");
+  }
 
-    return (
-      code.includes("permission") ||
-      code.includes("denied") ||
-      message.includes("permission_denied") ||
-      message.includes("permission denied")
-    );
+  function getFriendRequestId(senderUid, receiverUid) {
+    return `${senderUid}_${receiverUid}`;
   }
 
   function bestEffort(label, action) {
@@ -39,6 +80,47 @@ window.RGFriends = (() => {
       friendshipId,
       since: since || timestamp()
     };
+  }
+
+  async function migrateLegacyRequestIndexes(uid) {
+    if (!uid) return;
+
+    const legacyIncoming = rawDatabaseRef(
+      `userFriendRequests/${uid}/incoming`
+    );
+    const legacyOutgoing = rawDatabaseRef(
+      `userFriendRequests/${uid}/outgoing`
+    );
+
+    const [incomingResult, outgoingResult] =
+      await Promise.allSettled([
+        legacyIncoming.once("value"),
+        legacyOutgoing.once("value")
+      ]);
+
+    const updates = {};
+
+    if (incomingResult.status === "fulfilled") {
+      const incoming = incomingResult.value.val() || {};
+
+      Object.entries(incoming).forEach(([requestId, value]) => {
+        if (!requestId || !value) return;
+        updates[`incomingFriendRequests/${uid}/${requestId}`] = true;
+      });
+    }
+
+    if (outgoingResult.status === "fulfilled") {
+      const outgoing = outgoingResult.value.val() || {};
+
+      Object.entries(outgoing).forEach(([requestId, value]) => {
+        if (!requestId || !value) return;
+        updates[`outgoingFriendRequests/${uid}/${requestId}`] = true;
+      });
+    }
+
+    if (!Object.keys(updates).length) return;
+
+    await rawDatabaseRef().update(updates);
   }
 
   function repairOwnFriendIndex(uid) {
@@ -85,7 +167,6 @@ window.RGFriends = (() => {
               "[RG Friends] Could not repair the local friend index:",
               error
             );
-
             return friendMap;
           });
       })
@@ -94,7 +175,6 @@ window.RGFriends = (() => {
           "[RG Friends] Canonical friendship lookup failed:",
           error
         );
-
         return {};
       });
   }
@@ -118,12 +198,10 @@ window.RGFriends = (() => {
       currentUser.uid,
       targetPlayer.uid
     );
-
     const outgoingRequestId = getFriendRequestId(
       currentUser.uid,
       targetPlayer.uid
     );
-
     const reverseRequestId = getFriendRequestId(
       targetPlayer.uid,
       currentUser.uid
@@ -133,7 +211,7 @@ window.RGFriends = (() => {
       database.ref(`friendships/${friendshipId}`).once("value"),
       database.ref(`friendRequests/${outgoingRequestId}`).once("value"),
       database.ref(`friendRequests/${reverseRequestId}`).once("value")
-    ]).then(results => {
+    ]).then(async results => {
       if (results[0].exists()) {
         throw new Error("You are already friends with this player.");
       }
@@ -159,16 +237,16 @@ window.RGFriends = (() => {
       };
 
       const updates = {};
-
       updates[`friendRequests/${outgoingRequestId}`] = request;
       updates[
-        `userFriendRequests/${currentUser.uid}/outgoing/${outgoingRequestId}`
+        `outgoingFriendRequests/${currentUser.uid}/${outgoingRequestId}`
       ] = true;
       updates[
-        `userFriendRequests/${targetPlayer.uid}/incoming/${outgoingRequestId}`
+        `incomingFriendRequests/${targetPlayer.uid}/${outgoingRequestId}`
       ] = true;
 
-      return database.ref().update(updates);
+      await database.ref().update(updates);
+      return request;
     });
   }
 
@@ -211,71 +289,33 @@ window.RGFriends = (() => {
           createdAt: timestamp()
         };
 
-        const ownIndex = friendIndexRecord(friendshipId);
-
-        /*
-          Keep the canonical friendship and the accepting player's own
-          state in the required transaction. The previous implementation
-          also required writes into the sender's protected userFriends
-          branch; one denied optional index write rejected the whole accept.
-        */
-        const requiredUpdates = {};
-        requiredUpdates[`friendships/${friendshipId}`] = friendship;
-        requiredUpdates[
+        const updates = {};
+        updates[`friendships/${friendshipId}`] = friendship;
+        updates[
           `userFriends/${currentUid}/${request.senderUid}`
-        ] = ownIndex;
-        requiredUpdates[`friendRequests/${requestId}`] = null;
-        requiredUpdates[
-          `userFriendRequests/${currentUid}/incoming/${requestId}`
+        ] = friendIndexRecord(friendshipId);
+        updates[`friendRequests/${requestId}`] = null;
+        updates[
+          `incomingFriendRequests/${currentUid}/${requestId}`
+        ] = null;
+        updates[
+          `outgoingFriendRequests/${request.senderUid}/${requestId}`
         ] = null;
 
-        try {
-          await database.ref().update(requiredUpdates);
-        } catch (error) {
-          /*
-            Some older rulesets do not expose userFriends at all. In that
-            case preserve the canonical friendship and request transition,
-            then repair the local index separately when permissions allow it.
-          */
-          if (!isPermissionError(error)) throw error;
+        await database.ref().update(updates);
 
-          const canonicalUpdates = {};
-          canonicalUpdates[`friendships/${friendshipId}`] = friendship;
-          canonicalUpdates[`friendRequests/${requestId}`] = null;
-          canonicalUpdates[
-            `userFriendRequests/${currentUid}/incoming/${requestId}`
-          ] = null;
-
-          await database.ref().update(canonicalUpdates);
-
-          await bestEffort(
-            "accepting player friend index",
-            () =>
-              database
-                .ref(`userFriends/${currentUid}/${request.senderUid}`)
-                .set(friendIndexRecord(friendshipId))
-          );
-        }
-
-        /* Sender-side mirrors are useful indexes, not friendship authority. */
-        await Promise.all([
-          bestEffort(
-            "sender friend index",
-            () =>
-              database
-                .ref(`userFriends/${request.senderUid}/${currentUid}`)
-                .set(friendIndexRecord(friendshipId))
-          ),
-          bestEffort(
-            "sender outgoing request cleanup",
-            () =>
-              database
-                .ref(
-                  `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
-                )
-                .remove()
-          )
-        ]);
+        /*
+          The sender cannot write the receiver's protected userFriends index
+          and vice versa. Each account self-heals its own index on sign-in.
+          This write succeeds only on rulesets that explicitly allow it.
+        */
+        await bestEffort(
+          "sender friend index",
+          () =>
+            database
+              .ref(`userFriends/${request.senderUid}/${currentUid}`)
+              .set(friendIndexRecord(friendshipId))
+        );
 
         return {
           friendshipId,
@@ -302,23 +342,16 @@ window.RGFriends = (() => {
           throw new Error("You cannot decline this friend request.");
         }
 
-        const requiredUpdates = {};
-        requiredUpdates[`friendRequests/${requestId}`] = null;
-        requiredUpdates[
-          `userFriendRequests/${currentUid}/incoming/${requestId}`
+        const updates = {};
+        updates[`friendRequests/${requestId}`] = null;
+        updates[
+          `incomingFriendRequests/${currentUid}/${requestId}`
+        ] = null;
+        updates[
+          `outgoingFriendRequests/${request.senderUid}/${requestId}`
         ] = null;
 
-        await database.ref().update(requiredUpdates);
-
-        await bestEffort(
-          "sender outgoing request cleanup",
-          () =>
-            database
-              .ref(
-                `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
-              )
-              .remove()
-        );
+        await database.ref().update(updates);
       });
   }
 
@@ -339,23 +372,16 @@ window.RGFriends = (() => {
           throw new Error("You cannot cancel this friend request.");
         }
 
-        const requiredUpdates = {};
-        requiredUpdates[`friendRequests/${requestId}`] = null;
-        requiredUpdates[
-          `userFriendRequests/${currentUid}/outgoing/${requestId}`
+        const updates = {};
+        updates[`friendRequests/${requestId}`] = null;
+        updates[
+          `outgoingFriendRequests/${currentUid}/${requestId}`
+        ] = null;
+        updates[
+          `incomingFriendRequests/${request.receiverUid}/${requestId}`
         ] = null;
 
-        await database.ref().update(requiredUpdates);
-
-        await bestEffort(
-          "receiver incoming request cleanup",
-          () =>
-            database
-              .ref(
-                `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
-              )
-              .remove()
-        );
+        await database.ref().update(updates);
       });
   }
 
@@ -453,16 +479,24 @@ window.RGFriends = (() => {
   function listenToIncomingRequests(uid, callback) {
     const ref = database.ref(`userFriendRequests/${uid}/incoming`);
     const handler = snapshot => callback(snapshot.val() || {});
+    const errorHandler = error => {
+      console.error("Incoming friend request listener failed:", error);
+      callback({});
+    };
 
-    ref.on("value", handler);
+    ref.on("value", handler, errorHandler);
     return () => ref.off("value", handler);
   }
 
   function listenToOutgoingRequests(uid, callback) {
     const ref = database.ref(`userFriendRequests/${uid}/outgoing`);
     const handler = snapshot => callback(snapshot.val() || {});
+    const errorHandler = error => {
+      console.error("Outgoing friend request listener failed:", error);
+      callback({});
+    };
 
-    ref.on("value", handler);
+    ref.on("value", handler, errorHandler);
     return () => ref.off("value", handler);
   }
 
@@ -552,13 +586,17 @@ window.RGFriends = (() => {
       .then(players => players.filter(Boolean));
   }
 
-  /*
-    Heal an old/missing per-user friend index whenever that user opens the
-    site. The canonical friendships collection remains the source of truth.
-  */
   if (window.auth?.onAuthStateChanged) {
     window.auth.onAuthStateChanged(user => {
       if (!user?.uid) return;
+
+      migrateLegacyRequestIndexes(user.uid)
+        .catch(error => {
+          console.warn(
+            "[RG Friends] Legacy request index migration was unavailable:",
+            error
+          );
+        });
 
       repairOwnFriendIndex(user.uid).catch(() => {});
     });
@@ -577,6 +615,7 @@ window.RGFriends = (() => {
     getRequest,
     getPlayer,
     getFriends,
-    repairOwnFriendIndex
+    repairOwnFriendIndex,
+    migrateLegacyRequestIndexes
   };
 })();

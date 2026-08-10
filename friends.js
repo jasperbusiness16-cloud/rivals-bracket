@@ -202,69 +202,43 @@ window.RGFriends = (() => {
       currentUser.uid,
       targetPlayer.uid
     );
-    const reverseRequestId = getFriendRequestId(
-      targetPlayer.uid,
-      currentUser.uid
-    );
 
     /*
-      Do not pre-read friendRequests/{requestId} here. The RTDB rule for that
-      canonical record can only identify a normal user after the record exists,
-      so reading a brand-new/nonexistent request path returns PERMISSION_DENIED
-      for ordinary accounts while owner/admin accounts bypass the rule.
-
-      Duplicate checks belong on the signed-in user's own request indexes,
-      which the rules explicitly allow that user to read even when empty.
+      Do not pre-read friendRequests or request-index paths here. The deployed
+      rules can deny ordinary accounts on empty request/index paths before a
+      record exists. The canonical friendship path is readable to authenticated
+      users, so it is the only safe preflight check needed for sending.
     */
-    return Promise.all([
-      database.ref(`friendships/${friendshipId}`).once("value"),
-      database
-        .ref(
+    return database
+      .ref(`friendships/${friendshipId}`)
+      .once("value")
+      .then(async friendshipSnapshot => {
+        if (friendshipSnapshot.exists()) {
+          throw new Error("You are already friends with this player.");
+        }
+
+        const request = {
+          id: outgoingRequestId,
+          senderUid: currentUser.uid,
+          senderName: currentUser.displayName || "Player",
+          receiverUid: targetPlayer.uid,
+          receiverName: targetPlayer.displayName || "Player",
+          status: "pending",
+          createdAt: timestamp()
+        };
+
+        const updates = {};
+        updates[`friendRequests/${outgoingRequestId}`] = request;
+        updates[
           `outgoingFriendRequests/${currentUser.uid}/${outgoingRequestId}`
-        )
-        .once("value"),
-      database
-        .ref(
-          `incomingFriendRequests/${currentUser.uid}/${reverseRequestId}`
-        )
-        .once("value")
-    ]).then(async results => {
-      if (results[0].exists()) {
-        throw new Error("You are already friends with this player.");
-      }
+        ] = true;
+        updates[
+          `incomingFriendRequests/${targetPlayer.uid}/${outgoingRequestId}`
+        ] = true;
 
-      if (results[1].exists()) {
-        throw new Error("Friend request already sent.");
-      }
-
-      if (results[2].exists()) {
-        throw new Error(
-          "This player already sent you a friend request."
-        );
-      }
-
-      const request = {
-        id: outgoingRequestId,
-        senderUid: currentUser.uid,
-        senderName: currentUser.displayName || "Player",
-        receiverUid: targetPlayer.uid,
-        receiverName: targetPlayer.displayName || "Player",
-        status: "pending",
-        createdAt: timestamp()
-      };
-
-      const updates = {};
-      updates[`friendRequests/${outgoingRequestId}`] = request;
-      updates[
-        `outgoingFriendRequests/${currentUser.uid}/${outgoingRequestId}`
-      ] = true;
-      updates[
-        `incomingFriendRequests/${targetPlayer.uid}/${outgoingRequestId}`
-      ] = true;
-
-      await database.ref().update(updates);
-      return request;
-    });
+        await database.ref().update(updates);
+        return request;
+      });
   }
 
   function acceptFriendRequest(currentUid, requestId) {
@@ -321,11 +295,6 @@ window.RGFriends = (() => {
 
         await database.ref().update(updates);
 
-        /*
-          The sender cannot write the receiver's protected userFriends index
-          and vice versa. Each account self-heals its own index on sign-in.
-          This write succeeds only on rulesets that explicitly allow it.
-        */
         await bestEffort(
           "sender friend index",
           () =>

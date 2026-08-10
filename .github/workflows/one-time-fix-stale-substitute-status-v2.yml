@@ -1,0 +1,144 @@
+name: One-time stale substitute status fix v2
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-stale-substitute-status:
+    if: github.event.issue.title == '[maintenance] Fix Stale Substitute Status V2'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Patch current-roster substitute authority
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          checkin = Path('check-in.html')
+          text = checkin.read_text()
+
+          replacement = '''      function isAssignedSubstitute() {
+        const currentTeam = currentUser
+          ? findMyTeam(currentUser.uid)
+          : null;
+
+        /*
+         * The current published roster is authoritative. Historical
+         * substitution fields on the application must not keep a player
+         * classified as a substitute after a fresh starting roster is published.
+         */
+        if (currentTeam?.player) {
+          const rosterPlayer = currentTeam.player;
+          const rosterValues = [
+            rosterPlayer.rosterStatus,
+            rosterPlayer.rosterRole,
+            rosterPlayer.teamStatus,
+            rosterPlayer.slotType,
+            rosterPlayer.assignmentType,
+            rosterPlayer.status
+          ].map(value =>
+            String(value || "")
+              .trim()
+              .toLowerCase()
+          );
+
+          return Boolean(
+            rosterPlayer.addedAsSubstitute === true ||
+            rosterPlayer.isSubstitute === true ||
+            rosterPlayer.substitute === true ||
+            rosterPlayer.isSub === true ||
+            rosterValues.some(value =>
+              value === "substitute" ||
+              value === "sub" ||
+              value === "reserve"
+            )
+          );
+        }
+
+        return Boolean(
+          currentApplication?.addedAsSubstitute ||
+          currentApplication?.substitutedInto ||
+          currentApplication?.substituteTeam
+        );
+      }
+
+      function getEligibility()'''
+
+          text, count = re.subn(
+              r'      function isAssignedSubstitute\(\) \{.*?\n      \}\n\s*\n      function getEligibility\(\)',
+              replacement,
+              text,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'check-in classifier replacements: {count}')
+          checkin.write_text(text)
+
+          dashboard = Path('dashboard.html')
+          text = dashboard.read_text()
+
+          replacement = '''      function renderSubstitutionAlert() {
+        const team = getMyTeam();
+        const rosterPlayer =
+          team?.players?.find(
+            member =>
+              member?.uid === currentUser?.uid
+          ) || null;
+
+        const rosterValues = [
+          rosterPlayer?.rosterStatus,
+          rosterPlayer?.rosterRole,
+          rosterPlayer?.teamStatus,
+          rosterPlayer?.slotType,
+          rosterPlayer?.assignmentType,
+          rosterPlayer?.status
+        ].map(value =>
+          String(value || "")
+            .trim()
+            .toLowerCase()
+        );
+
+        /* The currently published roster overrides old substitution history. */
+        const wasSubbedIn = Boolean(
+          rosterPlayer?.addedAsSubstitute === true ||
+          rosterPlayer?.isSubstitute === true ||
+          rosterPlayer?.substitute === true ||
+          rosterPlayer?.isSub === true ||
+          rosterValues.some(value =>
+            value === "substitute" ||
+            value === "sub" ||
+            value === "reserve"
+          )
+        );
+'''
+
+          text, count = re.subn(
+              r'      function renderSubstitutionAlert\(\) \{\n\s*const wasSubbedIn = .*?;\n\s*const team = getMyTeam\(\);\n',
+              replacement,
+              text,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f'dashboard alert replacements: {count}')
+          dashboard.write_text(text)
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add check-in.html dashboard.html
+          git commit -m "Use current roster for substitute status"
+          git push

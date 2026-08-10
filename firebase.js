@@ -207,6 +207,35 @@ if (
 }
 
 /*
+  Make tournament selection guidance explicit on the Apply page without
+  changing eligibility requirements. Public Marvel Rivals history and active
+  creator/social links give staff more information to evaluate applicants.
+*/
+if (
+  /^\/apply(?:\.html)?\/?$/i.test(
+    window.location.pathname
+  )
+) {
+  const applyGuidanceScript =
+    document.createElement("script");
+
+  applyGuidanceScript.src =
+    "apply-selection-guidance.js?v=1";
+
+  applyGuidanceScript.async = false;
+
+  applyGuidanceScript.onerror = () => {
+    console.error(
+      "[RG] Application selection guidance failed to load."
+    );
+  };
+
+  document.head.appendChild(
+    applyGuidanceScript
+  );
+}
+
+/*
   Nexus notification automation is admin-side only.
   Load it from the shared Firebase bootstrap when the
   Control Center is open so public pages never run it.

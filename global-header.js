@@ -75,7 +75,7 @@
 ],
 
 friendRequestPaths: [
-    "userFriendRequests/{uid}/incoming"
+    "incomingFriendRequests/{uid}"
 ],
 
         navigation: [
@@ -2406,7 +2406,7 @@ if (
 
     const incomingRequestsRef =
     this.database.ref(
-        `userFriendRequests/${uid}/incoming`
+        `incomingFriendRequests/${uid}`
     );
 
 let requestLoadVersion = 0;

@@ -1,0 +1,67 @@
+name: One-time Team Link Highlight Fix
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  patch:
+    if: github.event.issue.title == '[maintenance] Tune Teams Anchor Highlight'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Patch teams anchor scroll and highlight
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('teams.html')
+          text = path.read_text()
+
+          old_css = '''    .team-card{\n      --team-accent:var(--purple);\n\n      position:relative;\n      scroll-margin-top:18px;'''
+          new_css = '''    .team-card{\n      --team-accent:var(--purple);\n\n      position:relative;\n      scroll-margin-top:84px;'''
+          if old_css not in text:
+              raise SystemExit('Expected team-card scroll-margin block not found')
+          text = text.replace(old_css, new_css, 1)
+
+          old_hover = '''    .team-card:hover{\n      transform:translateY(-2px);\n      border-color:rgba(192,132,252,.32);\n      box-shadow:\n        0 20px 48px\n        rgba(0,0,0,.28);\n    }\n'''
+          new_hover = '''    .team-card:hover{\n      transform:translateY(-2px);\n      border-color:rgba(192,132,252,.32);\n      box-shadow:\n        0 20px 48px\n        rgba(0,0,0,.28);\n    }\n\n    .team-card.linked-team{\n      border-color:rgba(208,156,255,.72);\n      background:\n        radial-gradient(\n          circle at 18% 0%,\n          rgba(168,85,247,.15),\n          transparent 42%\n        ),\n        linear-gradient(\n          180deg,\n          rgba(255,255,255,.035),\n          transparent 28%\n        ),\n        #100f16;\n      box-shadow:\n        0 0 0 1px rgba(168,85,247,.18),\n        0 22px 58px rgba(76,29,149,.26),\n        inset 0 0 34px rgba(168,85,247,.045);\n      animation:linkedTeamFocus .8s ease both;\n    }\n\n    .team-card.linked-team::before{\n      background:\n        linear-gradient(\n          90deg,\n          transparent,\n          var(--purple-2),\n          transparent\n        );\n      box-shadow:\n        0 0 24px rgba(192,132,252,.62);\n    }\n'''
+          if old_hover not in text:
+              raise SystemExit('Expected team-card hover block not found')
+          text = text.replace(old_hover, new_hover, 1)
+
+          old_keyframes = '''    @keyframes loadingSweep{\n      to{\n        transform:translateX(120%);\n      }\n    }\n'''
+          new_keyframes = '''    @keyframes linkedTeamFocus{\n      0%{\n        transform:translateY(0);\n        filter:brightness(1);\n      }\n\n      45%{\n        transform:translateY(-2px);\n        filter:brightness(1.08);\n      }\n\n      100%{\n        transform:translateY(0);\n        filter:brightness(1);\n      }\n    }\n\n    @keyframes loadingSweep{\n      to{\n        transform:translateX(120%);\n      }\n    }\n'''
+          if old_keyframes not in text:
+              raise SystemExit('Expected keyframes insertion point not found')
+          text = text.replace(old_keyframes, new_keyframes, 1)
+
+          old_js = '''      lastHandledTeamHash =\n        teamHash;\n\n      requestAnimationFrame(\n        () =>\n          requestAnimationFrame(\n            () =>\n              target.scrollIntoView({\n                behavior:"smooth",\n                block:"start",\n                inline:"nearest"\n              })\n          )\n      );\n'''
+          new_js = '''      lastHandledTeamHash =\n        teamHash;\n\n      document\n        .querySelectorAll(\n          ".team-card.linked-team"\n        )\n        .forEach(\n          card =>\n            card.classList.remove(\n              "linked-team"\n            )\n        );\n\n      target.classList.add(\n        "linked-team"\n      );\n\n      requestAnimationFrame(\n        () =>\n          requestAnimationFrame(\n            () =>\n              target.scrollIntoView({\n                behavior:"smooth",\n                block:"start",\n                inline:"nearest"\n              })\n          )\n      );\n'''
+          if old_js not in text:
+              raise SystemExit('Expected scrollToLinkedTeam block not found')
+          text = text.replace(old_js, new_js, 1)
+
+          path.write_text(text)
+          PY
+
+      - name: Commit fix and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/one-time-team-link-highlight.yml
+          git add teams.html
+          git commit -m "Tune bracket team scroll and highlight"
+          git push origin main
+
+      - name: Close maintenance issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --reason completed

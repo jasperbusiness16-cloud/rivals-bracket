@@ -378,7 +378,7 @@
       --team-accent:var(--purple);
 
       position:relative;
-      scroll-margin-top:18px;
+      scroll-margin-top:84px;
       min-width:0;
       overflow:hidden;
       border:1px solid var(--line);
@@ -405,6 +405,39 @@
       box-shadow:
         0 20px 48px
         rgba(0,0,0,.28);
+    }
+
+    .team-card.linked-team{
+      border-color:rgba(208,156,255,.72);
+      background:
+        radial-gradient(
+          circle at 18% 0%,
+          rgba(168,85,247,.15),
+          transparent 42%
+        ),
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.035),
+          transparent 28%
+        ),
+        #100f16;
+      box-shadow:
+        0 0 0 1px rgba(168,85,247,.18),
+        0 22px 58px rgba(76,29,149,.26),
+        inset 0 0 34px rgba(168,85,247,.045);
+      animation:linkedTeamFocus .8s ease both;
+    }
+
+    .team-card.linked-team::before{
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--purple-2),
+          transparent
+        );
+      box-shadow:
+        0 0 24px rgba(192,132,252,.62);
     }
 
     .team-card::before{
@@ -1150,6 +1183,23 @@
       font-size:7px;
       text-overflow:ellipsis;
       white-space:nowrap;
+    }
+
+    @keyframes linkedTeamFocus{
+      0%{
+        transform:translateY(0);
+        filter:brightness(1);
+      }
+
+      45%{
+        transform:translateY(-2px);
+        filter:brightness(1.08);
+      }
+
+      100%{
+        transform:translateY(0);
+        filter:brightness(1);
+      }
     }
 
     @keyframes loadingSweep{
@@ -2222,6 +2272,21 @@
 
       lastHandledTeamHash =
         teamHash;
+
+      document
+        .querySelectorAll(
+          ".team-card.linked-team"
+        )
+        .forEach(
+          card =>
+            card.classList.remove(
+              "linked-team"
+            )
+        );
+
+      target.classList.add(
+        "linked-team"
+      );
 
       requestAnimationFrame(
         () =>

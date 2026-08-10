@@ -1,16 +1,15 @@
 name: One-time stale substitute status fix
 
 on:
-  issues:
-    types: [opened]
+  push:
+    paths:
+      - '.github/trigger-fix-stale-substitute-status'
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   fix-stale-substitute-status:
-    if: github.event.issue.title == '[maintenance] Fix Stale Substitute Status'
     runs-on: ubuntu-latest
 
     steps:
@@ -141,19 +140,17 @@ jobs:
           dashboard.write_text(text.replace(old, new, 1))
 
           workflow = Path('.github/workflows/one-time-fix-stale-substitute-status.yml')
+          trigger = Path('.github/trigger-fix-stale-substitute-status')
           if workflow.exists():
               workflow.unlink()
+          if trigger.exists():
+              trigger.unlink()
           PY
 
       - name: Commit fix
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add check-in.html dashboard.html .github/workflows/one-time-fix-stale-substitute-status.yml
+          git add check-in.html dashboard.html .github/workflows/one-time-fix-stale-substitute-status.yml .github/trigger-fix-stale-substitute-status
           git commit -m "Use current roster for substitute status"
           git push
-
-      - name: Close maintenance issue
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh issue close "${{ github.event.issue.number }}" --reason completed

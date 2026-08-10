@@ -207,10 +207,27 @@ window.RGFriends = (() => {
       currentUser.uid
     );
 
+    /*
+      Do not pre-read friendRequests/{requestId} here. The RTDB rule for that
+      canonical record can only identify a normal user after the record exists,
+      so reading a brand-new/nonexistent request path returns PERMISSION_DENIED
+      for ordinary accounts while owner/admin accounts bypass the rule.
+
+      Duplicate checks belong on the signed-in user's own request indexes,
+      which the rules explicitly allow that user to read even when empty.
+    */
     return Promise.all([
       database.ref(`friendships/${friendshipId}`).once("value"),
-      database.ref(`friendRequests/${outgoingRequestId}`).once("value"),
-      database.ref(`friendRequests/${reverseRequestId}`).once("value")
+      database
+        .ref(
+          `outgoingFriendRequests/${currentUser.uid}/${outgoingRequestId}`
+        )
+        .once("value"),
+      database
+        .ref(
+          `incomingFriendRequests/${currentUser.uid}/${reverseRequestId}`
+        )
+        .once("value")
     ]).then(async results => {
       if (results[0].exists()) {
         throw new Error("You are already friends with this player.");

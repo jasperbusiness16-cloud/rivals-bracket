@@ -2,55 +2,48 @@ window.RGFriends = (() => {
   "use strict";
 
   /*
-    Friend-request path compatibility
-    ---------------------------------
-    The production UI historically used:
+    Canonical deployed RTDB schema:
+      friendRequests/{requestId}
       userFriendRequests/{uid}/incoming/{requestId}
       userFriendRequests/{uid}/outgoing/{requestId}
+      friendships/{friendshipId}
+      userFriends/{uid}/{friendUid}
 
-    The current RTDB rules expose:
-      incomingFriendRequests/{uid}/{requestId}
-      outgoingFriendRequests/{uid}/{requestId}
-
-    Keep old callers working by transparently mapping their references to the
-    rule-supported paths. We retain an unwrapped reference function so an
-    existing legacy index can be migrated once after sign-in.
+    A short-lived frontend build referenced top-level incomingFriendRequests /
+    outgoingFriendRequests paths. Keep those callers compatible by redirecting
+    them to the deployed userFriendRequests branches.
   */
   const rawDatabaseRef = database.ref.bind(database);
 
-  function normalizePath(value) {
-    return String(value || "").replace(/^\/+|\/+$/g, "");
+  function mapCompatibilityPath(value) {
+    if (typeof value !== "string") return value;
+
+    const path = String(value).replace(/^\/+|\/+$/g, "");
+
+    let match = path.match(/^incomingFriendRequests\/([^/]+)(?:\/(.*))?$/);
+    if (match) {
+      const tail = match[2] ? `/${match[2]}` : "";
+      return `userFriendRequests/${match[1]}/incoming${tail}`;
+    }
+
+    match = path.match(/^outgoingFriendRequests\/([^/]+)(?:\/(.*))?$/);
+    if (match) {
+      const tail = match[2] ? `/${match[2]}` : "";
+      return `userFriendRequests/${match[1]}/outgoing${tail}`;
+    }
+
+    return value;
   }
 
-  function mapFriendRequestIndexPath(value) {
-    const path = normalizePath(value);
-    const match = path.match(
-      /^userFriendRequests\/([^/]+)\/(incoming|outgoing)(?:\/(.+))?$/i
-    );
-
-    if (!match) return value;
-
-    const uid = match[1];
-    const direction = match[2].toLowerCase();
-    const tail = match[3] ? `/${match[3]}` : "";
-    const root = direction === "incoming"
-      ? "incomingFriendRequests"
-      : "outgoingFriendRequests";
-
-    return `${root}/${uid}${tail}`;
-  }
-
-  if (!window.__RG_FRIEND_REQUEST_PATH_BRIDGE__) {
-    window.__RG_FRIEND_REQUEST_PATH_BRIDGE__ = true;
+  if (!window.__RG_FRIEND_RULES_PATH_BRIDGE__) {
+    window.__RG_FRIEND_RULES_PATH_BRIDGE__ = true;
 
     database.ref = path => {
       if (typeof path !== "string") {
         return rawDatabaseRef(path);
       }
 
-      return rawDatabaseRef(
-        mapFriendRequestIndexPath(path)
-      );
+      return rawDatabaseRef(mapCompatibilityPath(path));
     };
   }
 
@@ -66,6 +59,13 @@ window.RGFriends = (() => {
     return `${senderUid}_${receiverUid}`;
   }
 
+  function friendIndexRecord(friendshipId, since) {
+    return {
+      friendshipId,
+      since: since || timestamp()
+    };
+  }
+
   function bestEffort(label, action) {
     return Promise.resolve()
       .then(action)
@@ -75,52 +75,9 @@ window.RGFriends = (() => {
       });
   }
 
-  function friendIndexRecord(friendshipId, since) {
-    return {
-      friendshipId,
-      since: since || timestamp()
-    };
-  }
-
-  async function migrateLegacyRequestIndexes(uid) {
-    if (!uid) return;
-
-    const legacyIncoming = rawDatabaseRef(
-      `userFriendRequests/${uid}/incoming`
-    );
-    const legacyOutgoing = rawDatabaseRef(
-      `userFriendRequests/${uid}/outgoing`
-    );
-
-    const [incomingResult, outgoingResult] =
-      await Promise.allSettled([
-        legacyIncoming.once("value"),
-        legacyOutgoing.once("value")
-      ]);
-
-    const updates = {};
-
-    if (incomingResult.status === "fulfilled") {
-      const incoming = incomingResult.value.val() || {};
-
-      Object.entries(incoming).forEach(([requestId, value]) => {
-        if (!requestId || !value) return;
-        updates[`incomingFriendRequests/${uid}/${requestId}`] = true;
-      });
-    }
-
-    if (outgoingResult.status === "fulfilled") {
-      const outgoing = outgoingResult.value.val() || {};
-
-      Object.entries(outgoing).forEach(([requestId, value]) => {
-        if (!requestId || !value) return;
-        updates[`outgoingFriendRequests/${uid}/${requestId}`] = true;
-      });
-    }
-
-    if (!Object.keys(updates).length) return;
-
-    await rawDatabaseRef().update(updates);
+  async function migrateLegacyRequestIndexes() {
+    // No migration is required. The deployed schema is userFriendRequests.
+    return;
   }
 
   function repairOwnFriendIndex(uid) {
@@ -138,7 +95,6 @@ window.RGFriends = (() => {
         snapshot.forEach(friendshipSnapshot => {
           const friendship = friendshipSnapshot.val() || {};
           const users = friendship.users || {};
-
           const friendUid = Object.keys(users).find(
             userUid => userUid !== uid && users[userUid] === true
           );
@@ -163,18 +119,12 @@ window.RGFriends = (() => {
           .update(updates)
           .then(() => friendMap)
           .catch(error => {
-            console.warn(
-              "[RG Friends] Could not repair the local friend index:",
-              error
-            );
+            console.warn("[RG Friends] Friend index repair failed:", error);
             return friendMap;
           });
       })
       .catch(error => {
-        console.warn(
-          "[RG Friends] Canonical friendship lookup failed:",
-          error
-        );
+        console.warn("[RG Friends] Friendship lookup failed:", error);
         return {};
       });
   }
@@ -189,56 +139,63 @@ window.RGFriends = (() => {
     }
 
     if (currentUser.uid === targetPlayer.uid) {
-      return Promise.reject(
-        new Error("You cannot add yourself as a friend.")
-      );
+      return Promise.reject(new Error("You cannot add yourself as a friend."));
     }
 
-    const friendshipId = getFriendshipId(
-      currentUser.uid,
-      targetPlayer.uid
-    );
+    const friendshipId = getFriendshipId(currentUser.uid, targetPlayer.uid);
     const outgoingRequestId = getFriendRequestId(
       currentUser.uid,
       targetPlayer.uid
     );
+    const reverseRequestId = getFriendRequestId(
+      targetPlayer.uid,
+      currentUser.uid
+    );
 
     /*
-      Do not pre-read friendRequests or request-index paths here. The deployed
-      rules can deny ordinary accounts on empty request/index paths before a
-      record exists. The canonical friendship path is readable to authenticated
-      users, so it is the only safe preflight check needed for sending.
+      friendRequests is readable to authenticated users in the deployed rules,
+      so these duplicate checks are safe and avoid a confusing permission error
+      when a pending request already exists.
     */
-    return database
-      .ref(`friendships/${friendshipId}`)
-      .once("value")
-      .then(async friendshipSnapshot => {
-        if (friendshipSnapshot.exists()) {
-          throw new Error("You are already friends with this player.");
-        }
+    return Promise.all([
+      database.ref(`friendships/${friendshipId}`).once("value"),
+      database.ref(`friendRequests/${outgoingRequestId}`).once("value"),
+      database.ref(`friendRequests/${reverseRequestId}`).once("value")
+    ]).then(async ([friendshipSnapshot, outgoingSnapshot, reverseSnapshot]) => {
+      if (friendshipSnapshot.exists()) {
+        throw new Error("You are already friends with this player.");
+      }
 
-        const request = {
-          id: outgoingRequestId,
-          senderUid: currentUser.uid,
-          senderName: currentUser.displayName || "Player",
-          receiverUid: targetPlayer.uid,
-          receiverName: targetPlayer.displayName || "Player",
-          status: "pending",
-          createdAt: timestamp()
-        };
+      if (outgoingSnapshot.exists()) {
+        throw new Error("Friend request already sent.");
+      }
 
-        const updates = {};
-        updates[`friendRequests/${outgoingRequestId}`] = request;
-        updates[
-          `outgoingFriendRequests/${currentUser.uid}/${outgoingRequestId}`
-        ] = true;
-        updates[
-          `incomingFriendRequests/${targetPlayer.uid}/${outgoingRequestId}`
-        ] = true;
+      if (reverseSnapshot.exists()) {
+        throw new Error("This player already sent you a friend request.");
+      }
 
-        await database.ref().update(updates);
-        return request;
-      });
+      const request = {
+        id: outgoingRequestId,
+        senderUid: currentUser.uid,
+        senderName: currentUser.displayName || "Player",
+        receiverUid: targetPlayer.uid,
+        receiverName: targetPlayer.displayName || "Player",
+        status: "pending",
+        createdAt: timestamp()
+      };
+
+      const updates = {};
+      updates[`friendRequests/${outgoingRequestId}`] = request;
+      updates[
+        `userFriendRequests/${currentUser.uid}/outgoing/${outgoingRequestId}`
+      ] = true;
+      updates[
+        `userFriendRequests/${targetPlayer.uid}/incoming/${outgoingRequestId}`
+      ] = true;
+
+      await database.ref().update(updates);
+      return request;
+    });
   }
 
   function acceptFriendRequest(currentUid, requestId) {
@@ -261,9 +218,7 @@ window.RGFriends = (() => {
         }
 
         if (request.status !== "pending") {
-          throw new Error(
-            "This friend request is no longer pending."
-          );
+          throw new Error("This friend request is no longer pending.");
         }
 
         const friendshipId = getFriendshipId(
@@ -271,37 +226,34 @@ window.RGFriends = (() => {
           request.receiverUid
         );
 
+        /*
+          The deployed friendship validation requires id, users, createdAt and
+          lifetimeGifts. lifetimeGifts begins at zero for a new friendship.
+        */
         const friendship = {
           id: friendshipId,
           users: {
             [request.senderUid]: true,
             [request.receiverUid]: true
           },
-          createdAt: timestamp()
+          createdAt: timestamp(),
+          lifetimeGifts: 0
         };
+
+        const receiverIndex = friendIndexRecord(friendshipId);
+        const senderIndex = friendIndexRecord(friendshipId);
 
         const updates = {};
         updates[`friendships/${friendshipId}`] = friendship;
-        updates[
-          `userFriends/${currentUid}/${request.senderUid}`
-        ] = friendIndexRecord(friendshipId);
+        updates[`userFriends/${currentUid}/${request.senderUid}`] = receiverIndex;
+        updates[`userFriends/${request.senderUid}/${currentUid}`] = senderIndex;
         updates[`friendRequests/${requestId}`] = null;
+        updates[`userFriendRequests/${currentUid}/incoming/${requestId}`] = null;
         updates[
-          `incomingFriendRequests/${currentUid}/${requestId}`
-        ] = null;
-        updates[
-          `outgoingFriendRequests/${request.senderUid}/${requestId}`
+          `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
         ] = null;
 
         await database.ref().update(updates);
-
-        await bestEffort(
-          "sender friend index",
-          () =>
-            database
-              .ref(`userFriends/${request.senderUid}/${currentUid}`)
-              .set(friendIndexRecord(friendshipId))
-        );
 
         return {
           friendshipId,
@@ -330,11 +282,9 @@ window.RGFriends = (() => {
 
         const updates = {};
         updates[`friendRequests/${requestId}`] = null;
+        updates[`userFriendRequests/${currentUid}/incoming/${requestId}`] = null;
         updates[
-          `incomingFriendRequests/${currentUid}/${requestId}`
-        ] = null;
-        updates[
-          `outgoingFriendRequests/${request.senderUid}/${requestId}`
+          `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
         ] = null;
 
         await database.ref().update(updates);
@@ -360,11 +310,9 @@ window.RGFriends = (() => {
 
         const updates = {};
         updates[`friendRequests/${requestId}`] = null;
+        updates[`userFriendRequests/${currentUid}/outgoing/${requestId}`] = null;
         updates[
-          `outgoingFriendRequests/${currentUid}/${requestId}`
-        ] = null;
-        updates[
-          `incomingFriendRequests/${request.receiverUid}/${requestId}`
+          `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
         ] = null;
 
         await database.ref().update(updates);
@@ -403,10 +351,7 @@ window.RGFriends = (() => {
       callback(friendMap);
 
       if (Object.keys(repairs).length) {
-        bestEffort(
-          "friend index repair",
-          () => database.ref().update(repairs)
-        );
+        bestEffort("friend index repair", () => database.ref().update(repairs));
       }
     };
 
@@ -424,11 +369,7 @@ window.RGFriends = (() => {
         .orderByChild(`users/${uid}`)
         .equalTo(true);
 
-      fallbackQuery.on(
-        "value",
-        handleFallbackSnapshot,
-        handleFallbackError
-      );
+      fallbackQuery.on("value", handleFallbackSnapshot, handleFallbackError);
     };
 
     const handleUserFriendsSnapshot = snapshot => {
@@ -463,6 +404,8 @@ window.RGFriends = (() => {
   }
 
   function listenToIncomingRequests(uid, callback) {
+    if (!uid || typeof callback !== "function") return null;
+
     const ref = database.ref(`userFriendRequests/${uid}/incoming`);
     const handler = snapshot => callback(snapshot.val() || {});
     const errorHandler = error => {
@@ -475,6 +418,8 @@ window.RGFriends = (() => {
   }
 
   function listenToOutgoingRequests(uid, callback) {
+    if (!uid || typeof callback !== "function") return null;
+
     const ref = database.ref(`userFriendRequests/${uid}/outgoing`);
     const handler = snapshot => callback(snapshot.val() || {});
     const errorHandler = error => {
@@ -514,20 +459,20 @@ window.RGFriends = (() => {
 
           const displayName = String(
             player.displayName ||
-            player.username ||
-            player.rivalsIgn ||
-            "Player"
+              player.username ||
+              player.rivalsIgn ||
+              "Player"
           ).trim();
 
-          const rgId = String(
-            player.rgId || player.rivalsId || ""
-          ).trim();
+          const rgId = String(player.rgId || player.rivalsId || "").trim();
 
           const searchText = [
             displayName,
             rgId,
             player.rivalsIgn || ""
-          ].join(" ").toLowerCase();
+          ]
+            .join(" ")
+            .toLowerCase();
 
           if (!searchText.includes(normalized)) return;
 
@@ -555,6 +500,8 @@ window.RGFriends = (() => {
   }
 
   function getFriends(uid) {
+    if (!uid) return Promise.resolve([]);
+
     return database
       .ref(`userFriends/${uid}`)
       .once("value")
@@ -575,15 +522,6 @@ window.RGFriends = (() => {
   if (window.auth?.onAuthStateChanged) {
     window.auth.onAuthStateChanged(user => {
       if (!user?.uid) return;
-
-      migrateLegacyRequestIndexes(user.uid)
-        .catch(error => {
-          console.warn(
-            "[RG Friends] Legacy request index migration was unavailable:",
-            error
-          );
-        });
-
       repairOwnFriendIndex(user.uid).catch(() => {});
     });
   }

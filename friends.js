@@ -1,4 +1,5 @@
 window.RGFriends = (() => {
+  "use strict";
 
   function getFriendshipId(uidA, uidB) {
     return [uidA, uidB].sort().join("_");
@@ -8,17 +9,103 @@ window.RGFriends = (() => {
     return `${senderUid}_${receiverUid}`;
   }
 
+  function timestamp() {
+    return firebase.database.ServerValue.TIMESTAMP;
+  }
+
+  function isPermissionError(error) {
+    const code = String(error?.code || "").toLowerCase();
+    const message = String(error?.message || "").toLowerCase();
+
+    return (
+      code.includes("permission") ||
+      code.includes("denied") ||
+      message.includes("permission_denied") ||
+      message.includes("permission denied")
+    );
+  }
+
+  function bestEffort(label, action) {
+    return Promise.resolve()
+      .then(action)
+      .catch(error => {
+        console.warn(`[RG Friends] ${label} failed:`, error);
+        return null;
+      });
+  }
+
+  function friendIndexRecord(friendshipId, since) {
+    return {
+      friendshipId,
+      since: since || timestamp()
+    };
+  }
+
+  function repairOwnFriendIndex(uid) {
+    if (!uid) return Promise.resolve({});
+
+    return database
+      .ref("friendships")
+      .orderByChild(`users/${uid}`)
+      .equalTo(true)
+      .once("value")
+      .then(snapshot => {
+        const updates = {};
+        const friendMap = {};
+
+        snapshot.forEach(friendshipSnapshot => {
+          const friendship = friendshipSnapshot.val() || {};
+          const users = friendship.users || {};
+
+          const friendUid = Object.keys(users).find(
+            userUid => userUid !== uid && users[userUid] === true
+          );
+
+          if (!friendUid) return;
+
+          const record = {
+            friendshipId: friendshipSnapshot.key,
+            since: Number(friendship.createdAt || 0)
+          };
+
+          friendMap[friendUid] = record;
+          updates[`userFriends/${uid}/${friendUid}`] = record;
+        });
+
+        if (!Object.keys(updates).length) {
+          return friendMap;
+        }
+
+        return database
+          .ref()
+          .update(updates)
+          .then(() => friendMap)
+          .catch(error => {
+            console.warn(
+              "[RG Friends] Could not repair the local friend index:",
+              error
+            );
+
+            return friendMap;
+          });
+      })
+      .catch(error => {
+        console.warn(
+          "[RG Friends] Canonical friendship lookup failed:",
+          error
+        );
+
+        return {};
+      });
+  }
+
   function sendFriendRequest(currentUser, targetPlayer) {
     if (!currentUser?.uid) {
-      return Promise.reject(
-        new Error("You must be signed in.")
-      );
+      return Promise.reject(new Error("You must be signed in."));
     }
 
     if (!targetPlayer?.uid) {
-      return Promise.reject(
-        new Error("Player account not found.")
-      );
+      return Promise.reject(new Error("Player account not found."));
     }
 
     if (currentUser.uid === targetPlayer.uid) {
@@ -43,36 +130,19 @@ window.RGFriends = (() => {
     );
 
     return Promise.all([
-      database
-        .ref(`friendships/${friendshipId}`)
-        .once("value"),
-
-      database
-        .ref(`friendRequests/${outgoingRequestId}`)
-        .once("value"),
-
-      database
-        .ref(`friendRequests/${reverseRequestId}`)
-        .once("value")
-    ])
-    .then(results => {
-      const friendship = results[0];
-      const outgoingRequest = results[1];
-      const incomingRequest = results[2];
-
-      if (friendship.exists()) {
-        throw new Error(
-          "You are already friends with this player."
-        );
+      database.ref(`friendships/${friendshipId}`).once("value"),
+      database.ref(`friendRequests/${outgoingRequestId}`).once("value"),
+      database.ref(`friendRequests/${reverseRequestId}`).once("value")
+    ]).then(results => {
+      if (results[0].exists()) {
+        throw new Error("You are already friends with this player.");
       }
 
-      if (outgoingRequest.exists()) {
-        throw new Error(
-          "Friend request already sent."
-        );
+      if (results[1].exists()) {
+        throw new Error("Friend request already sent.");
       }
 
-      if (incomingRequest.exists()) {
+      if (results[2].exists()) {
         throw new Error(
           "This player already sent you a friend request."
         );
@@ -80,29 +150,20 @@ window.RGFriends = (() => {
 
       const request = {
         id: outgoingRequestId,
-
         senderUid: currentUser.uid,
-        senderName:
-          currentUser.displayName || "Player",
-
+        senderName: currentUser.displayName || "Player",
         receiverUid: targetPlayer.uid,
-        receiverName:
-          targetPlayer.displayName || "Player",
-
+        receiverName: targetPlayer.displayName || "Player",
         status: "pending",
-        createdAt: firebase.database.ServerValue.TIMESTAMP
+        createdAt: timestamp()
       };
 
       const updates = {};
 
-      updates[
-        `friendRequests/${outgoingRequestId}`
-      ] = request;
-
+      updates[`friendRequests/${outgoingRequestId}`] = request;
       updates[
         `userFriendRequests/${currentUser.uid}/outgoing/${outgoingRequestId}`
       ] = true;
-
       updates[
         `userFriendRequests/${targetPlayer.uid}/incoming/${outgoingRequestId}`
       ] = true;
@@ -111,32 +172,23 @@ window.RGFriends = (() => {
     });
   }
 
-
   function acceptFriendRequest(currentUid, requestId) {
     if (!currentUid || !requestId) {
-      return Promise.reject(
-        new Error("Invalid friend request.")
-      );
+      return Promise.reject(new Error("Invalid friend request."));
     }
 
-    const requestRef = database.ref(
-      `friendRequests/${requestId}`
-    );
-
-    return requestRef.once("value")
-      .then(snapshot => {
+    return database
+      .ref(`friendRequests/${requestId}`)
+      .once("value")
+      .then(async snapshot => {
         if (!snapshot.exists()) {
-          throw new Error(
-            "Friend request no longer exists."
-          );
+          throw new Error("Friend request no longer exists.");
         }
 
-        const request = snapshot.val();
+        const request = snapshot.val() || {};
 
         if (request.receiverUid !== currentUid) {
-          throw new Error(
-            "You cannot accept this friend request."
-          );
+          throw new Error("You cannot accept this friend request.");
         }
 
         if (request.status !== "pending") {
@@ -152,276 +204,267 @@ window.RGFriends = (() => {
 
         const friendship = {
           id: friendshipId,
-
           users: {
             [request.senderUid]: true,
             [request.receiverUid]: true
           },
-
-          createdAt:
-            firebase.database.ServerValue.TIMESTAMP
+          createdAt: timestamp()
         };
 
-        const updates = {};
+        const ownIndex = friendIndexRecord(friendshipId);
 
-        updates[
-          `friendships/${friendshipId}`
-        ] = friendship;
+        /*
+          Keep the canonical friendship and the accepting player's own
+          state in the required transaction. The previous implementation
+          also required writes into the sender's protected userFriends
+          branch; one denied optional index write rejected the whole accept.
+        */
+        const requiredUpdates = {};
+        requiredUpdates[`friendships/${friendshipId}`] = friendship;
+        requiredUpdates[
+          `userFriends/${currentUid}/${request.senderUid}`
+        ] = ownIndex;
+        requiredUpdates[`friendRequests/${requestId}`] = null;
+        requiredUpdates[
+          `userFriendRequests/${currentUid}/incoming/${requestId}`
+        ] = null;
 
-        updates[
-          `userFriends/${request.senderUid}/${request.receiverUid}`
-        ] = {
+        try {
+          await database.ref().update(requiredUpdates);
+        } catch (error) {
+          /*
+            Some older rulesets do not expose userFriends at all. In that
+            case preserve the canonical friendship and request transition,
+            then repair the local index separately when permissions allow it.
+          */
+          if (!isPermissionError(error)) throw error;
+
+          const canonicalUpdates = {};
+          canonicalUpdates[`friendships/${friendshipId}`] = friendship;
+          canonicalUpdates[`friendRequests/${requestId}`] = null;
+          canonicalUpdates[
+            `userFriendRequests/${currentUid}/incoming/${requestId}`
+          ] = null;
+
+          await database.ref().update(canonicalUpdates);
+
+          await bestEffort(
+            "accepting player friend index",
+            () =>
+              database
+                .ref(`userFriends/${currentUid}/${request.senderUid}`)
+                .set(friendIndexRecord(friendshipId))
+          );
+        }
+
+        /* Sender-side mirrors are useful indexes, not friendship authority. */
+        await Promise.all([
+          bestEffort(
+            "sender friend index",
+            () =>
+              database
+                .ref(`userFriends/${request.senderUid}/${currentUid}`)
+                .set(friendIndexRecord(friendshipId))
+          ),
+          bestEffort(
+            "sender outgoing request cleanup",
+            () =>
+              database
+                .ref(
+                  `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
+                )
+                .remove()
+          )
+        ]);
+
+        return {
           friendshipId,
-          since:
-            firebase.database.ServerValue.TIMESTAMP
+          senderUid: request.senderUid,
+          receiverUid: request.receiverUid
         };
-
-        updates[
-          `userFriends/${request.receiverUid}/${request.senderUid}`
-        ] = {
-          friendshipId,
-          since:
-            firebase.database.ServerValue.TIMESTAMP
-        };
-
-        updates[
-          `friendRequests/${requestId}`
-        ] = null;
-
-        updates[
-          `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
-        ] = null;
-
-        updates[
-          `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
-        ] = null;
-
-        return database.ref().update(updates);
       });
   }
-
 
   function declineFriendRequest(currentUid, requestId) {
     if (!currentUid || !requestId) {
-      return Promise.reject(
-        new Error("Invalid friend request.")
-      );
+      return Promise.reject(new Error("Invalid friend request."));
     }
 
     return database
       .ref(`friendRequests/${requestId}`)
       .once("value")
-      .then(snapshot => {
+      .then(async snapshot => {
         if (!snapshot.exists()) return;
 
-        const request = snapshot.val();
+        const request = snapshot.val() || {};
 
         if (request.receiverUid !== currentUid) {
-          throw new Error(
-            "You cannot decline this friend request."
-          );
+          throw new Error("You cannot decline this friend request.");
         }
 
-        const updates = {};
-
-        updates[
-          `friendRequests/${requestId}`
+        const requiredUpdates = {};
+        requiredUpdates[`friendRequests/${requestId}`] = null;
+        requiredUpdates[
+          `userFriendRequests/${currentUid}/incoming/${requestId}`
         ] = null;
 
-        updates[
-          `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
-        ] = null;
+        await database.ref().update(requiredUpdates);
 
-        updates[
-          `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
-        ] = null;
-
-        return database.ref().update(updates);
+        await bestEffort(
+          "sender outgoing request cleanup",
+          () =>
+            database
+              .ref(
+                `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
+              )
+              .remove()
+        );
       });
   }
-
 
   function cancelFriendRequest(currentUid, requestId) {
     if (!currentUid || !requestId) {
-      return Promise.reject(
-        new Error("Invalid friend request.")
-      );
+      return Promise.reject(new Error("Invalid friend request."));
     }
 
     return database
       .ref(`friendRequests/${requestId}`)
       .once("value")
-      .then(snapshot => {
+      .then(async snapshot => {
         if (!snapshot.exists()) return;
 
-        const request = snapshot.val();
+        const request = snapshot.val() || {};
 
         if (request.senderUid !== currentUid) {
-          throw new Error(
-            "You cannot cancel this friend request."
-          );
+          throw new Error("You cannot cancel this friend request.");
         }
 
-        const updates = {};
-
-        updates[
-          `friendRequests/${requestId}`
+        const requiredUpdates = {};
+        requiredUpdates[`friendRequests/${requestId}`] = null;
+        requiredUpdates[
+          `userFriendRequests/${currentUid}/outgoing/${requestId}`
         ] = null;
 
-        updates[
-          `userFriendRequests/${request.senderUid}/outgoing/${requestId}`
-        ] = null;
+        await database.ref().update(requiredUpdates);
 
-        updates[
-          `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
-        ] = null;
-
-        return database.ref().update(updates);
+        await bestEffort(
+          "receiver incoming request cleanup",
+          () =>
+            database
+              .ref(
+                `userFriendRequests/${request.receiverUid}/incoming/${requestId}`
+              )
+              .remove()
+        );
       });
   }
 
+  function listenToFriends(uid, callback) {
+    if (!uid || typeof callback !== "function") return null;
 
- function listenToFriends(uid, callback) {
-  if (!uid || typeof callback !== "function") {
-    return null;
-  }
+    const userFriendsRef = database.ref(`userFriends/${uid}`);
+    let fallbackQuery = null;
+    let fallbackRunning = false;
 
-  const userFriendsRef = database.ref(
-    `userFriends/${uid}`
-  );
+    const handleFallbackSnapshot = snapshot => {
+      const friendMap = {};
+      const repairs = {};
 
-  let fallbackQuery = null;
-  let fallbackRunning = false;
+      snapshot.forEach(friendshipSnapshot => {
+        const friendship = friendshipSnapshot.val() || {};
+        const users = friendship.users || {};
+        const friendUid = Object.keys(users).find(
+          userUid => userUid !== uid && users[userUid] === true
+        );
 
-  const handleFallbackSnapshot = snapshot => {
-    const friendMap = {};
+        if (!friendUid) return;
 
-    snapshot.forEach(friendshipSnapshot => {
-      const friendship =
-        friendshipSnapshot.val() || {};
+        const record = {
+          friendshipId: friendshipSnapshot.key,
+          since: Number(friendship.createdAt || 0)
+        };
 
-      const users = friendship.users || {};
+        friendMap[friendUid] = record;
+        repairs[`userFriends/${uid}/${friendUid}`] = record;
+      });
 
-      const friendUid = Object.keys(users).find(
-        userUid =>
-          userUid !== uid &&
-          users[userUid] === true
+      callback(friendMap);
+
+      if (Object.keys(repairs).length) {
+        bestEffort(
+          "friend index repair",
+          () => database.ref().update(repairs)
+        );
+      }
+    };
+
+    const handleFallbackError = error => {
+      console.error("Friendship fallback listener failed:", error);
+      callback({});
+    };
+
+    const startFallbackListener = () => {
+      if (fallbackRunning) return;
+
+      fallbackRunning = true;
+      fallbackQuery = database
+        .ref("friendships")
+        .orderByChild(`users/${uid}`)
+        .equalTo(true);
+
+      fallbackQuery.on(
+        "value",
+        handleFallbackSnapshot,
+        handleFallbackError
       );
+    };
 
-      if (!friendUid) {
+    const handleUserFriendsSnapshot = snapshot => {
+      const friends = snapshot.val() || {};
+
+      if (Object.keys(friends).length > 0) {
+        callback(friends);
         return;
       }
 
-      friendMap[friendUid] = {
-        friendshipId: friendshipSnapshot.key,
-        since: Number(
-          friendship.createdAt || 0
-        )
-      };
-    });
+      startFallbackListener();
+    };
 
-    callback(friendMap);
-  };
+    const handleUserFriendsError = error => {
+      console.error("userFriends listener failed:", error);
+      startFallbackListener();
+    };
 
-  const handleFallbackError = error => {
-    console.error(
-      "Friendship fallback listener failed:",
-      error
-    );
-
-    callback({});
-  };
-
-  const startFallbackListener = () => {
-    if (fallbackRunning) {
-      return;
-    }
-
-    fallbackRunning = true;
-
-    fallbackQuery = database
-      .ref("friendships")
-      .orderByChild(`users/${uid}`)
-      .equalTo(true);
-
-    fallbackQuery.on(
+    userFriendsRef.on(
       "value",
-      handleFallbackSnapshot,
-      handleFallbackError
-    );
-  };
-
-  const handleUserFriendsSnapshot = snapshot => {
-    const friends = snapshot.val() || {};
-
-    if (Object.keys(friends).length > 0) {
-      callback(friends);
-      return;
-    }
-
-    startFallbackListener();
-  };
-
-  const handleUserFriendsError = error => {
-    console.error(
-      "userFriends listener failed:",
-      error
+      handleUserFriendsSnapshot,
+      handleUserFriendsError
     );
 
-    startFallbackListener();
-  };
+    return () => {
+      userFriendsRef.off("value", handleUserFriendsSnapshot);
 
-  userFriendsRef.on(
-    "value",
-    handleUserFriendsSnapshot,
-    handleUserFriendsError
-  );
-
-  return () => {
-    userFriendsRef.off(
-      "value",
-      handleUserFriendsSnapshot
-    );
-
-    if (fallbackQuery) {
-      fallbackQuery.off(
-        "value",
-        handleFallbackSnapshot
-      );
-    }
-  };
-}
-
+      if (fallbackQuery) {
+        fallbackQuery.off("value", handleFallbackSnapshot);
+      }
+    };
+  }
 
   function listenToIncomingRequests(uid, callback) {
-    const ref = database.ref(
-      `userFriendRequests/${uid}/incoming`
-    );
-
-    const handler = snapshot => {
-      callback(snapshot.val() || {});
-    };
+    const ref = database.ref(`userFriendRequests/${uid}/incoming`);
+    const handler = snapshot => callback(snapshot.val() || {});
 
     ref.on("value", handler);
-
     return () => ref.off("value", handler);
   }
-
 
   function listenToOutgoingRequests(uid, callback) {
-    const ref = database.ref(
-      `userFriendRequests/${uid}/outgoing`
-    );
-
-    const handler = snapshot => {
-      callback(snapshot.val() || {});
-    };
+    const ref = database.ref(`userFriendRequests/${uid}/outgoing`);
+    const handler = snapshot => callback(snapshot.val() || {});
 
     ref.on("value", handler);
-
     return () => ref.off("value", handler);
   }
-
 
   function getRequest(requestId) {
     return database
@@ -430,74 +473,56 @@ window.RGFriends = (() => {
       .then(snapshot => snapshot.val());
   }
 
-function searchPlayers(query) {
-  const normalized = String(query || "")
-    .trim()
-    .toLowerCase();
+  function searchPlayers(query) {
+    const normalized = String(query || "").trim().toLowerCase();
 
-  if (normalized.length < 3) {
-    return Promise.resolve([]);
-  }
+    if (normalized.length < 3) return Promise.resolve([]);
 
-  const currentUid =
-    window.auth?.currentUser?.uid || "";
+    const currentUid = window.auth?.currentUser?.uid || "";
 
-  return database
-    .ref("players")
-    .once("value")
-    .then(snapshot => {
-      const results = [];
+    return database
+      .ref("players")
+      .once("value")
+      .then(snapshot => {
+        const results = [];
 
-      snapshot.forEach(playerSnapshot => {
-        const uid = playerSnapshot.key;
-        const player =
-          playerSnapshot.val() || {};
+        snapshot.forEach(playerSnapshot => {
+          const uid = playerSnapshot.key;
+          const player = playerSnapshot.val() || {};
 
-        if (!uid || uid === currentUid) {
-          return;
-        }
+          if (!uid || uid === currentUid) return;
 
-        const displayName = String(
-          player.displayName ||
-          player.username ||
-          player.rivalsIgn ||
-          "Player"
-        ).trim();
+          const displayName = String(
+            player.displayName ||
+            player.username ||
+            player.rivalsIgn ||
+            "Player"
+          ).trim();
 
-        const rgId = String(
-          player.rgId ||
-          player.rivalsId ||
-          ""
-        ).trim();
+          const rgId = String(
+            player.rgId || player.rivalsId || ""
+          ).trim();
 
-        const searchText = [
-          displayName,
-          rgId,
-          player.rivalsIgn || ""
-        ]
-          .join(" ")
-          .toLowerCase();
+          const searchText = [
+            displayName,
+            rgId,
+            player.rivalsIgn || ""
+          ].join(" ").toLowerCase();
 
-        if (!searchText.includes(normalized)) {
-          return;
-        }
+          if (!searchText.includes(normalized)) return;
 
-        results.push({
-          uid,
-          displayName,
-          rgId
+          results.push({
+            uid,
+            displayName,
+            rgId
+          });
         });
-      });
 
-      return results
-        .sort((playerA, playerB) => {
-          return playerA.displayName.localeCompare(
-            playerB.displayName
-          );
-        })
-        .slice(0, 10);
-    });
-}
+        return results
+          .sort((a, b) => a.displayName.localeCompare(b.displayName))
+          .slice(0, 10);
+      });
+  }
 
   function getPlayer(uid) {
     return database
@@ -505,36 +530,39 @@ function searchPlayers(query) {
       .once("value")
       .then(snapshot => {
         const player = snapshot.val();
-
-        if (!player) return null;
-
-        return {
-          uid,
-          ...player
-        };
+        return player ? { uid, ...player } : null;
       });
   }
-
 
   function getFriends(uid) {
     return database
       .ref(`userFriends/${uid}`)
       .once("value")
-      .then(snapshot => {
-        const friendships = snapshot.val() || {};
-        const friendUids = Object.keys(friendships);
+      .then(async snapshot => {
+        let friendships = snapshot.val() || {};
+
+        if (!Object.keys(friendships).length) {
+          friendships = await repairOwnFriendIndex(uid);
+        }
 
         return Promise.all(
-          friendUids.map(friendUid =>
-            getPlayer(friendUid)
-          )
+          Object.keys(friendships).map(friendUid => getPlayer(friendUid))
         );
       })
-      .then(players =>
-        players.filter(Boolean)
-      );
+      .then(players => players.filter(Boolean));
   }
 
+  /*
+    Heal an old/missing per-user friend index whenever that user opens the
+    site. The canonical friendships collection remains the source of truth.
+  */
+  if (window.auth?.onAuthStateChanged) {
+    window.auth.onAuthStateChanged(user => {
+      if (!user?.uid) return;
+
+      repairOwnFriendIndex(user.uid).catch(() => {});
+    });
+  }
 
   return {
     getFriendshipId,
@@ -548,7 +576,7 @@ function searchPlayers(query) {
     listenToOutgoingRequests,
     getRequest,
     getPlayer,
-    getFriends
+    getFriends,
+    repairOwnFriendIndex
   };
-
 })();

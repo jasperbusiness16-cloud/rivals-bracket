@@ -1,0 +1,75 @@
+name: One-time fix team anchor scroll
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  fix:
+    if: github.event.issue.title == '[maintenance] Fix Teams Anchor Scroll'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Fix async team anchor scrolling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('teams.html')
+          text = path.read_text()
+
+          old_css = '''    .team-card{\n      --team-accent:var(--purple);\n\n      position:relative;'''
+          new_css = '''    .team-card{\n      --team-accent:var(--purple);\n\n      position:relative;\n      scroll-margin-top:18px;'''
+          if old_css not in text:
+              raise SystemExit('team-card CSS anchor not found')
+          text = text.replace(old_css, new_css, 1)
+
+          old_state = '''    let selectedTeamKey =\n      "";\n\n    let activeTeamRef ='''
+          new_state = '''    let selectedTeamKey =\n      "";\n\n    let lastHandledTeamHash =\n      "";\n\n    let activeTeamRef ='''
+          if old_state not in text:
+              raise SystemExit('selectedTeamKey state anchor not found')
+          text = text.replace(old_state, new_state, 1)
+
+          old_render = '''    function renderTeams(){\n      const grid ='''
+          new_render = '''    function scrollToLinkedTeam(\n      force = false\n    ){\n      let teamHash =\n        "";\n\n      try{\n        teamHash =\n          decodeURIComponent(\n            window.location.hash\n              .replace(/^#/,"")\n          );\n      }catch(error){\n        return;\n      }\n\n      if(\n        !/^team\\d+$/i.test(teamHash) ||\n        (\n          !force &&\n          lastHandledTeamHash === teamHash\n        )\n      ){\n        return;\n      }\n\n      const target =\n        document.getElementById(\n          teamHash\n        );\n\n      if(!target){\n        return;\n      }\n\n      lastHandledTeamHash =\n        teamHash;\n\n      requestAnimationFrame(\n        () =>\n          requestAnimationFrame(\n            () =>\n              target.scrollIntoView({\n                behavior:"smooth",\n                block:"start",\n                inline:"nearest"\n              })\n          )\n      );\n    }\n\n    function renderTeams(){\n      const grid ='''
+          if old_render not in text:
+              raise SystemExit('renderTeams anchor not found')
+          text = text.replace(old_render, new_render, 1)
+
+          old_join = '''          .join("");\n    }\n\n    function modalPlayerMarkup('''
+          new_join = '''          .join("");\n\n      scrollToLinkedTeam();\n    }\n\n    function modalPlayerMarkup('''
+          if old_join not in text:
+              raise SystemExit('renderTeams completion anchor not found')
+          text = text.replace(old_join, new_join, 1)
+
+          old_listener = '''    document\n      .addEventListener(\n        "click",'''
+          new_listener = '''    window\n      .addEventListener(\n        "hashchange",\n        () => {\n          lastHandledTeamHash =\n            "";\n\n          scrollToLinkedTeam(true);\n        }\n      );\n\n    document\n      .addEventListener(\n        "click",'''
+          if old_listener not in text:
+              raise SystemExit('click listener anchor not found')
+          text = text.replace(old_listener, new_listener, 1)
+
+          path.write_text(text)
+          PY
+
+      - name: Remove one-time workflow
+        run: rm -f .github/workflows/one-time-fix-team-anchor-scroll.yml
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add teams.html .github/workflows/one-time-fix-team-anchor-scroll.yml
+          git commit -m "Fix bracket team anchor scrolling"
+          git push origin main
+
+      - name: Close trigger issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue close "${{ github.event.issue.number }}" --reason completed

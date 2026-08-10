@@ -1691,11 +1691,20 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
         return ["yes", "true", "1"].includes(value);
       }
 
-      function isAssignedSubstitute() {
+      function isAssignedSubstitute(team = null) {
+        const myTeam =
+          team ||
+          (currentUser
+            ? findMyTeam(currentUser.uid)
+            : null);
+
+        const rosterPlayer =
+          myTeam?.player || null;
+
         return Boolean(
-          currentApplication?.addedAsSubstitute ||
-          currentApplication?.substitutedInto ||
-          currentApplication?.substituteTeam
+          rosterPlayer?.addedAsSubstitute === true ||
+          rosterPlayer?.substitutedAt ||
+          rosterPlayer?.replacedPlayerUid
         );
       }
 
@@ -1711,15 +1720,26 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           "selected"
         ].includes(status);
 
+        const assignedSubstitute =
+          isAssignedSubstitute(myTeam);
+
         const substitute =
-          isAssignedSubstitute() ||
-          (status === "waitlist" && wantsSubstituteRole());
+          assignedSubstitute ||
+          (
+            !myTeam &&
+            status === "waitlist" &&
+            wantsSubstituteRole()
+          );
 
         return {
           status,
           accepted,
           substitute,
-          eligible: accepted || substitute,
+          assignedSubstitute,
+          eligible:
+            Boolean(myTeam) ||
+            accepted ||
+            substitute,
           myTeam
         };
       }
@@ -1838,7 +1858,7 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           ) {
             applicationState = "complete";
             applicationText =
-              status === "waitlist"
+              status === "waitlist" && !eligibility.myTeam
                 ? "Substitute Player"
                 : "Application Approved";
           }
@@ -1920,7 +1940,7 @@ const SUBSTITUTE_CLOSES_AFTER_EVENT_HOURS = 24;
           ? isAssignedSubstitute()
             ? "Assigned Substitute"
             : "Substitute Pool"
-          : eligibility.accepted
+          : eligibility.accepted || myTeam
             ? "Main Roster"
             : currentApplication
               ? clean(app.status, "Application Recorded")

@@ -47,6 +47,445 @@ const database = window.database;
 const auth = window.auth;
 
 /*
+  Current-roster role guard.
+
+  Emergency substitutions deliberately stamp roster entries with
+  addedAsSubstitute / substitutedAt / replacedPlayerUid. A newly published
+  roster is a new baseline, so a substitution that happened before the newest
+  teams/{tournamentId}/publishedAt must not keep a player in substitute mode.
+
+  Player surfaces receive a sanitized read-only view of the roster. The legacy
+  Team Builder is also guarded so it cannot copy historical substitution fields
+  from an application back into a newly saved or published baseline roster.
+*/
+(() => {
+  "use strict";
+
+  if (window.__RG_ROSTER_ROLE_GUARD__) return;
+
+  const pathname = String(
+    window.location.pathname || ""
+  );
+
+  const playerRoleSurface =
+    /^\/(?:dashboard|check-in)(?:\.html)?\/?$/i.test(
+      pathname
+    );
+
+  const legacyTeamBuilder =
+    /^\/team-builder(?:\.html)?\/?$/i.test(
+      pathname
+    );
+
+  if (!playerRoleSurface && !legacyTeamBuilder) {
+    return;
+  }
+
+  window.__RG_ROSTER_ROLE_GUARD__ = true;
+
+  const originalRef =
+    database.ref.bind(database);
+
+  const substitutionFields = [
+    "addedAsSubstitute",
+    "substitutedAt",
+    "substitutedInto",
+    "substituteTeam",
+    "replacedPlayerUid",
+    "replacedBySubUid",
+    "replacedAt",
+    "discordSubstitutionStatus",
+    "discordSubstitutionJobId",
+    "discordSubstitutionError",
+    "discordSubstitutionUpdatedAt"
+  ];
+
+  function clonePlain(value) {
+    if (
+      !value ||
+      typeof value !== "object"
+    ) {
+      return value;
+    }
+
+    try {
+      return JSON.parse(
+        JSON.stringify(value)
+      );
+    } catch (error) {
+      console.warn(
+        "[RG] Roster role guard could not clone a Firebase value.",
+        error
+      );
+
+      return value;
+    }
+  }
+
+  function forEachRosterMember(
+    teamsValue,
+    callback
+  ) {
+    if (
+      !teamsValue ||
+      typeof teamsValue !== "object"
+    ) {
+      return;
+    }
+
+    Object.values(teamsValue).forEach(team => {
+      if (Array.isArray(team)) {
+        team.forEach(member => {
+          if (
+            member &&
+            typeof member === "object"
+          ) {
+            callback(member);
+          }
+        });
+
+        return;
+      }
+
+      if (
+        team &&
+        typeof team === "object"
+      ) {
+        const roster =
+          team.players ||
+          team.roster ||
+          team.members ||
+          team.lineup;
+
+        if (Array.isArray(roster)) {
+          roster.forEach(member => {
+            if (
+              member &&
+              typeof member === "object"
+            ) {
+              callback(member);
+            }
+          });
+
+          return;
+        }
+
+        if (
+          roster &&
+          typeof roster === "object"
+        ) {
+          Object.values(roster).forEach(member => {
+            if (
+              member &&
+              typeof member === "object"
+            ) {
+              callback(member);
+            }
+          });
+
+          return;
+        }
+
+        Object.values(team).forEach(member => {
+          if (
+            member &&
+            typeof member === "object" &&
+            (member.uid || member.userId || member.id)
+          ) {
+            callback(member);
+          }
+        });
+      }
+    });
+  }
+
+  function clearSubstitutionFields(member) {
+    substitutionFields.forEach(field => {
+      delete member[field];
+    });
+  }
+
+  function sanitizePublishedRoster(record) {
+    const copy = clonePlain(record);
+
+    if (
+      !copy ||
+      typeof copy !== "object"
+    ) {
+      return copy;
+    }
+
+    const publishedAt = Number(
+      copy.publishedAt || 0
+    );
+
+    if (!(publishedAt > 0)) {
+      return copy;
+    }
+
+    const teamsValue =
+      copy.teams ||
+      copy.rosters ||
+      null;
+
+    forEachRosterMember(
+      teamsValue,
+      member => {
+        const substitutedAt = Number(
+          member.substitutedAt || 0
+        );
+
+        const hasSubstitutionMarker = Boolean(
+          member.addedAsSubstitute === true ||
+          substitutedAt > 0 ||
+          member.replacedPlayerUid
+        );
+
+        if (
+          hasSubstitutionMarker &&
+          substitutedAt > 0 &&
+          substitutedAt < publishedAt
+        ) {
+          clearSubstitutionFields(member);
+        }
+      }
+    );
+
+    return copy;
+  }
+
+  function sanitizeBaselineRoster(record) {
+    const copy = clonePlain(record);
+
+    if (
+      !copy ||
+      typeof copy !== "object"
+    ) {
+      return copy;
+    }
+
+    const teamsValue =
+      copy.teams ||
+      copy.rosters ||
+      null;
+
+    forEachRosterMember(
+      teamsValue,
+      clearSubstitutionFields
+    );
+
+    return copy;
+  }
+
+  function sanitizeTeamsOnly(teamsValue) {
+    const copy = clonePlain(teamsValue);
+
+    forEachRosterMember(
+      copy,
+      clearSubstitutionFields
+    );
+
+    return copy;
+  }
+
+  function wrapSnapshot(snapshot) {
+    return new Proxy(snapshot, {
+      get(target, property) {
+        if (property === "val") {
+          return () =>
+            sanitizePublishedRoster(
+              target.val()
+            );
+        }
+
+        const value = target[property];
+
+        return typeof value === "function"
+          ? value.bind(target)
+          : value;
+      }
+    });
+  }
+
+  function wrapPlayerRosterReference(ref) {
+    const callbackMap = new WeakMap();
+    const originalOn = ref.on.bind(ref);
+    const originalOff = ref.off.bind(ref);
+    const originalOnce = ref.once.bind(ref);
+
+    ref.on = (
+      eventType,
+      callback,
+      cancelCallback,
+      context
+    ) => {
+      if (
+        eventType !== "value" ||
+        typeof callback !== "function"
+      ) {
+        return originalOn(
+          eventType,
+          callback,
+          cancelCallback,
+          context
+        );
+      }
+
+      const wrappedCallback = snapshot => {
+        return callback.call(
+          context || null,
+          wrapSnapshot(snapshot)
+        );
+      };
+
+      callbackMap.set(
+        callback,
+        wrappedCallback
+      );
+
+      return originalOn(
+        eventType,
+        wrappedCallback,
+        cancelCallback,
+        context
+      );
+    };
+
+    ref.off = (
+      eventType,
+      callback,
+      context
+    ) => {
+      const wrappedCallback =
+        callback &&
+        callbackMap.get(callback);
+
+      return originalOff(
+        eventType,
+        wrappedCallback || callback,
+        context
+      );
+    };
+
+    ref.once = (
+      eventType,
+      successCallback,
+      failureCallback,
+      context
+    ) => {
+      if (eventType !== "value") {
+        return originalOnce(
+          eventType,
+          successCallback,
+          failureCallback,
+          context
+        );
+      }
+
+      if (
+        typeof successCallback === "function"
+      ) {
+        return originalOnce(
+          eventType,
+          snapshot =>
+            successCallback.call(
+              context || null,
+              wrapSnapshot(snapshot)
+            ),
+          failureCallback,
+          context
+        );
+      }
+
+      return originalOnce(eventType).then(
+        wrapSnapshot
+      );
+    };
+
+    return ref;
+  }
+
+  function wrapLegacyBuilderReference(
+    ref,
+    refPath
+  ) {
+    const originalSet = ref.set.bind(ref);
+    const originalUpdate = ref.update.bind(ref);
+
+    ref.set = value => {
+      if (/^teams\/[^/]+$/i.test(refPath)) {
+        return originalSet(
+          sanitizeBaselineRoster(value)
+        );
+      }
+
+      return originalSet(value);
+    };
+
+    ref.update = updates => {
+      if (
+        !updates ||
+        typeof updates !== "object"
+      ) {
+        return originalUpdate(updates);
+      }
+
+      const cleanUpdates =
+        clonePlain(updates);
+
+      Object.keys(cleanUpdates).forEach(key => {
+        const normalizedKey = String(key)
+          .replace(/^\/+|\/+$/g, "");
+
+        if (/^teams\/[^/]+$/i.test(normalizedKey)) {
+          cleanUpdates[key] =
+            sanitizeBaselineRoster(
+              cleanUpdates[key]
+            );
+
+          return;
+        }
+
+        if (/^teams\/[^/]+\/teams$/i.test(normalizedKey)) {
+          cleanUpdates[key] =
+            sanitizeTeamsOnly(
+              cleanUpdates[key]
+            );
+        }
+      });
+
+      return originalUpdate(cleanUpdates);
+    };
+
+    return ref;
+  }
+
+  database.ref = path => {
+    const ref = originalRef(path);
+
+    const refPath = String(
+      path || ""
+    ).replace(/^\/+|\/+$/g, "");
+
+    if (
+      playerRoleSurface &&
+      /^teams\/[^/]+$/i.test(refPath)
+    ) {
+      return wrapPlayerRosterReference(ref);
+    }
+
+    if (legacyTeamBuilder) {
+      return wrapLegacyBuilderReference(
+        ref,
+        refPath
+      );
+    }
+
+    return ref;
+  };
+})();
+
+/*
   Launch guard for the shared header.
 
   firebase.js loads before global-header.js on the production pages, so the

@@ -1218,16 +1218,34 @@
         if (!currentUser) return null;
 
         for (const [teamKey, roster] of Object.entries(getTeamObject())) {
-          if (roster.some(member => member?.uid === currentUser.uid)) {
+          const currentMember =
+            roster.find(member => member?.uid === currentUser.uid);
+
+          if (currentMember) {
             return {
               teamKey,
               teamName: getFriendlyTeamName(teamKey),
-              players: roster
+              players: roster,
+              player: currentMember
             };
           }
         }
 
         return null;
+      }
+
+      function isCurrentRosterSubstitute(team = null) {
+        const currentTeam =
+          team || getMyTeam();
+
+        const currentMember =
+          currentTeam?.player || null;
+
+        return Boolean(
+          currentMember?.addedAsSubstitute === true ||
+          currentMember?.substitutedAt ||
+          currentMember?.replacedPlayerUid
+        );
       }
 
       function isPublishedActiveRoster(team) {
@@ -1317,8 +1335,8 @@
 
         if (!application) return { key: "no_application", ...base };
         if (applicationStatus === "pending") return { key: "pending", ...base };
-        if (applicationStatus === "waitlist") return { key: "waitlist", ...base };
         if (["declined", "rejected"].includes(applicationStatus)) return { key: "declined", ...base };
+        if (!team && applicationStatus === "waitlist") return { key: "waitlist", ...base };
         if (!team) return { key: "waiting_team", ...base };
         if (!checkIn?.checkedIn) return { key: "check_in", ...base };
         if (currentMatch && teamIsInMatch(team.teamName, currentMatch)) return { key: "live", ...base };
@@ -1503,7 +1521,27 @@
         renderActions(copy.actions);
 
         const applicationStatus = clean(application?.status).toLowerCase();
-        setPill("applicationPill", application ? (applicationStatus === "waitlist" ? "Substitute Player" : formatStatus(applicationStatus || "submitted")) : "Not Applied", applicationStatus === "accepted" ? "success" : applicationStatus === "waitlist" ? "warning" : "");
+        const currentRosterSubstitute =
+          isCurrentRosterSubstitute(state.team);
+        const substituteStatus =
+          currentRosterSubstitute ||
+          (!state.team && applicationStatus === "waitlist");
+
+        setPill(
+          "applicationPill",
+          application
+            ? substituteStatus
+              ? "Substitute Player"
+              : formatStatus(applicationStatus || "submitted")
+            : "Not Applied",
+          currentRosterSubstitute
+            ? "warning"
+            : applicationStatus === "accepted"
+              ? "success"
+              : applicationStatus === "waitlist"
+                ? "warning"
+                : ""
+        );
         setPill("checkInPill", checkIn?.checkedIn ? "Checked In" : "Not Checked In", checkIn?.checkedIn ? "success" : state.team ? "warning" : "");
         setPill("rosterPill", state.team ? state.team.teamName : "No Active Roster", state.team ? "purple" : "");
       }
@@ -1636,8 +1674,9 @@
       }
 
       function renderSubstitutionAlert() {
-        const wasSubbedIn = application?.addedAsSubstitute === true || Boolean(application?.substitutedInto || application?.substitutedAt);
         const team = getMyTeam();
+        const wasSubbedIn =
+          isCurrentRosterSubstitute(team);
         const dismissedKey = `rgSubAlertDismissed:${tournamentId}:${currentUser?.uid || ""}`;
         const dismissed = sessionStorage.getItem(dismissedKey) === "true";
         $("substitutionAlert").hidden = !(wasSubbedIn && team && !dismissed);

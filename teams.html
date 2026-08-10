@@ -378,6 +378,7 @@
       --team-accent:var(--purple);
 
       position:relative;
+      scroll-margin-top:18px;
       min-width:0;
       overflow:hidden;
       border:1px solid var(--line);
@@ -1518,6 +1519,9 @@
     let selectedTeamKey =
       "";
 
+    let lastHandledTeamHash =
+      "";
+
     let activeTeamRef =
       null;
 
@@ -2181,6 +2185,57 @@
           : "Rosters Not Published";
     }
 
+    function scrollToLinkedTeam(
+      force = false
+    ){
+      let teamHash =
+        "";
+
+      try{
+        teamHash =
+          decodeURIComponent(
+            window.location.hash
+              .replace(/^#/,"")
+          );
+      }catch(error){
+        return;
+      }
+
+      if(
+        !/^team\d+$/i.test(teamHash) ||
+        (
+          !force &&
+          lastHandledTeamHash === teamHash
+        )
+      ){
+        return;
+      }
+
+      const target =
+        document.getElementById(
+          teamHash
+        );
+
+      if(!target){
+        return;
+      }
+
+      lastHandledTeamHash =
+        teamHash;
+
+      requestAnimationFrame(
+        () =>
+          requestAnimationFrame(
+            () =>
+              target.scrollIntoView({
+                behavior:"smooth",
+                block:"start",
+                inline:"nearest"
+              })
+          )
+      );
+    }
+
     function renderTeams(){
       const grid =
         document.getElementById(
@@ -2231,6 +2286,8 @@
               )
           )
           .join("");
+
+      scrollToLinkedTeam();
     }
 
     function modalPlayerMarkup(
@@ -2653,6 +2710,17 @@
         activeTeamCallback
       );
     }
+
+    window
+      .addEventListener(
+        "hashchange",
+        () => {
+          lastHandledTeamHash =
+            "";
+
+          scrollToLinkedTeam(true);
+        }
+      );
 
     document
       .addEventListener(

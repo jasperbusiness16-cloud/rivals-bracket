@@ -216,19 +216,19 @@ const RGPosts = (() => {
 
         const updates = {};
 
-updates[
-  `postComments/${postId}/${commentId}/deleted`
-] = true;
+        updates[
+          `postComments/${postId}/${commentId}/deleted`
+        ] = true;
 
-updates[
-  `postComments/${postId}/${commentId}/deletedAt`
-] = firebase.database.ServerValue.TIMESTAMP;
+        updates[
+          `postComments/${postId}/${commentId}/deletedAt`
+        ] = firebase.database.ServerValue.TIMESTAMP;
 
-updates[
-  `officialPosts/${postId}/commentCount`
-] = firebase.database.ServerValue.increment(-1);
+        updates[
+          `officialPosts/${postId}/commentCount`
+        ] = firebase.database.ServerValue.increment(-1);
 
-return database.ref().update(updates);
+        return database.ref().update(updates);
       });
   }
 
@@ -271,4 +271,124 @@ return database.ref().update(updates);
     formatPostDate,
     getPostCategoryLabel
   };
+})();
+
+/* ========================================================================
+   POSTS PAGE LAUNCH HOTFIX
+   - Align owner/admin post deletion with deployed RTDB rules.
+   - Keep the mobile feed toolbar flush with the card top.
+   ======================================================================== */
+(() => {
+  "use strict";
+
+  if (!/\/posts(?:\.html)?$/i.test(window.location.pathname)) return;
+
+  const style = document.createElement("style");
+  style.setAttribute("data-rg-posts-launch-fix", "true");
+  style.textContent = `
+    @media (max-width: 680px) {
+      body.account-body .rg-feed-toolbar {
+        position: relative !important;
+        top: auto !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  function showPostsStatus(message, color = "#f7f5ff") {
+    const status = document.getElementById("postsStatus");
+    if (!status) return;
+
+    status.textContent = message || "";
+    status.style.color = color;
+    status.classList.toggle("show", Boolean(message));
+
+    if (message) {
+      window.setTimeout(() => {
+        status.classList.remove("show");
+      }, 3300);
+    }
+  }
+
+  async function deletePostUsingDeployedRules(postId) {
+    const user = window.auth?.currentUser;
+    if (!user?.uid || !postId) return;
+
+    const [roleSnapshot, postSnapshot] = await Promise.all([
+      database.ref(`users/${user.uid}/role`).once("value"),
+      database.ref(`officialPosts/${postId}`).once("value")
+    ]);
+
+    const role = String(roleSnapshot.val() || "player").toLowerCase();
+    if (role !== "owner" && role !== "admin") {
+      throw new Error("Only Rivals Gauntlet staff can delete official posts.");
+    }
+
+    const post = postSnapshot.val();
+    if (!post) {
+      throw new Error("This post no longer exists.");
+    }
+
+    const confirmed = window.confirm(
+      `Delete “${post.title || "Official Update"}”?\n\nThis permanently removes the post and its comments.`
+    );
+    if (!confirmed) return;
+
+    const commentsSnapshot = await database
+      .ref(`postComments/${postId}`)
+      .once("value");
+
+    const updates = {
+      [`officialPosts/${postId}`]: null,
+      [`postLikes/${postId}`]: null,
+      [`postCommentLikes/${postId}`]: null,
+      [`postCommentReplies/${postId}`]: null,
+      [`postCommentReplyLikes/${postId}`]: null
+    };
+
+    /*
+      Deployed rules grant staff writes at:
+        postComments/{postId}/{commentId}
+      but not at:
+        postComments/{postId}
+      So each comment must be deleted through its permitted child path.
+    */
+    commentsSnapshot.forEach(commentSnapshot => {
+      updates[`postComments/${postId}/${commentSnapshot.key}`] = null;
+    });
+
+    await database.ref().update(updates);
+    showPostsStatus("Post deleted.", "#ffcb6b");
+  }
+
+  document.addEventListener(
+    "click",
+    event => {
+      const deleteButton = event.target.closest?.("[data-delete-post]");
+      if (!deleteButton) return;
+
+      /* Stop the older inline delete handler from issuing its invalid
+         postComments/{postId} parent delete. */
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      deleteButton.disabled = true;
+
+      deletePostUsingDeployedRules(deleteButton.dataset.deletePost)
+        .catch(error => {
+          console.error("Post deletion failed:", error);
+          showPostsStatus(
+            String(error?.code || "").toLowerCase().includes("permission")
+              ? "Firebase denied this staff post deletion."
+              : error?.message || "The post could not be deleted.",
+            "#ff6a7f"
+          );
+        })
+        .finally(() => {
+          deleteButton.disabled = false;
+        });
+    },
+    true
+  );
 })();

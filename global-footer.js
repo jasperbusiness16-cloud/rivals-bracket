@@ -309,7 +309,7 @@
 
       .dynamic-prize-card .prize-split-second::after,
       .payout-panel .prize-split-second::after {
-        content: "20%\A 2ND PLACE";
+        content: "20%\\A 2ND PLACE";
         display: block;
         color: #fff;
         font-size: 9px;

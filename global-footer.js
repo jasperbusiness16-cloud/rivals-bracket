@@ -454,3 +454,61 @@
 
   document.head.appendChild(style);
 })();
+
+/* Desktop polish shared by public pages that load the global footer script. */
+(() => {
+  "use strict";
+
+  const pathname = String(window.location.pathname || "");
+  const isPredictions = /^\/predictions(?:\.html)?\/?$/i.test(pathname);
+  const style = document.createElement("style");
+  style.setAttribute("data-rg-desktop-launch-polish", "true");
+
+  style.textContent = `
+    @media (min-width: 1241px) {
+      #globalHeader .rg-header__nav-link {
+        min-width: 94px;
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+
+      #globalHeader .rg-header__nav-link::before {
+        inset: 19px 1px;
+        border-radius: 9px;
+      }
+
+      #globalHeader .rg-header__nav-link.is-active::after {
+        width: calc(100% - 30px);
+      }
+    }
+
+    ${isPredictions ? `
+      @media (min-width: 1401px) {
+        .live-match-hero {
+          grid-template-columns:
+            minmax(250px, 360px)
+            minmax(120px, 150px)
+            minmax(250px, 360px) !important;
+          justify-content: center;
+          gap: 28px !important;
+          padding-left: 40px !important;
+          padding-right: 40px !important;
+        }
+
+        .live-team {
+          justify-content: flex-end;
+        }
+
+        .live-team.right {
+          justify-content: flex-end;
+        }
+
+        .live-team-copy {
+          max-width: 240px;
+        }
+      }
+    ` : ""}
+  `;
+
+  document.head.appendChild(style);
+})();

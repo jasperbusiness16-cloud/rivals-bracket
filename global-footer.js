@@ -309,7 +309,7 @@
 
       .dynamic-prize-card .prize-split-second::after,
       .payout-panel .prize-split-second::after {
-        content: "20%\\A 2ND PLACE";
+        content: "20%\A 2ND PLACE";
         display: block;
         color: #fff;
         font-size: 9px;
@@ -351,4 +351,106 @@
     const shareLabel = details.querySelector("div:first-child span");
     if (shareLabel) shareLabel.textContent = "Team Share";
   });
+})();
+
+/* iPad/tablet launch polish for Home and Prediction Command. */
+(() => {
+  "use strict";
+
+  const pathname = String(window.location.pathname || "");
+  const isHome = pathname === "/" || /^\/index(?:\.html)?\/?$/i.test(pathname);
+  const isPredictions = /^\/predictions(?:\.html)?\/?$/i.test(pathname);
+
+  if (!isHome && !isPredictions) return;
+
+  const style = document.createElement("style");
+  style.setAttribute("data-rg-ipad-layout-fixes", "true");
+
+  style.textContent = `
+    ${isHome ? `
+      /* Prevent the 3-column countdown from using min-content widths that
+         push the Minutes box outside the tablet card. */
+      .count-panel,
+      .countdown,
+      .unit {
+        min-width: 0;
+      }
+
+      .countdown {
+        width: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+
+      @media (min-width: 981px) and (max-width: 1400px) {
+        .tournament-card {
+          grid-template-columns: minmax(0, 1.08fr) minmax(280px, .92fr) !important;
+          gap: 18px !important;
+          padding: 28px !important;
+        }
+
+        .count-panel {
+          padding: 20px 16px !important;
+          overflow: hidden;
+        }
+
+        .countdown {
+          gap: 6px !important;
+        }
+
+        .unit {
+          padding: 13px 3px !important;
+        }
+
+        .unit strong {
+          font-size: clamp(23px, 2.5vw, 28px) !important;
+        }
+
+        .unit span {
+          margin-top: 6px !important;
+          font-size: 8px !important;
+          letter-spacing: .65px !important;
+          white-space: nowrap;
+        }
+
+        .event-date {
+          font-size: 12px !important;
+          line-height: 1.35;
+        }
+      }
+    ` : ""}
+
+    ${isPredictions ? `
+      /* Keep both teams visually balanced around VS instead of letting the
+         left team sit at the far edge while the row-reversed right team hugs
+         the center. */
+      @media (min-width: 981px) and (max-width: 1400px) {
+        .live-match-hero {
+          grid-template-columns:
+            minmax(230px, 330px)
+            minmax(110px, 140px)
+            minmax(230px, 330px) !important;
+          justify-content: center;
+          gap: 22px !important;
+          padding-left: 24px !important;
+          padding-right: 24px !important;
+        }
+
+        .live-team {
+          justify-content: flex-end;
+        }
+
+        .live-team.right {
+          /* row-reverse makes flex-end the inner/left edge of this column,
+             which mirrors the left team around the center block. */
+          justify-content: flex-end;
+        }
+
+        .live-team-copy {
+          max-width: 220px;
+        }
+      }
+    ` : ""}
+  `;
+
+  document.head.appendChild(style);
 })();

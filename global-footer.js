@@ -144,3 +144,211 @@
     </footer>
   `;
 })();
+
+/*
+  Keep the prize-pool payout presentation identical on Tournament and Donate.
+  Both pages intentionally use their existing data bindings; this only
+  normalizes the visual component and the display copy.
+*/
+(() => {
+  "use strict";
+
+  const pathname = String(window.location.pathname || "");
+  const isTournament = /^\/tournament(?:\.html)?\/?$/i.test(pathname);
+  const isDonate = /^\/donate(?:\.html)?\/?$/i.test(pathname);
+
+  if (!isTournament && !isDonate) return;
+
+  const style = document.createElement("style");
+  style.setAttribute("data-rg-prize-payout-ui", "true");
+  style.textContent = `
+    .dynamic-prize-card .prize-split-bar,
+    .payout-panel .prize-split-bar {
+      display: flex;
+      width: 100%;
+      height: 46px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 12px;
+      background: #09080f;
+    }
+
+    .dynamic-prize-card .prize-split-first,
+    .dynamic-prize-card .prize-split-second,
+    .payout-panel .prize-split-first,
+    .payout-panel .prize-split-second {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      overflow: hidden;
+      padding: 0 4px;
+      color: #fff !important;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .055em;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-shadow: 0 1px 3px rgba(0,0,0,.58);
+    }
+
+    .dynamic-prize-card .prize-split-first,
+    .payout-panel .prize-split-first {
+      width: 80%;
+      background: linear-gradient(90deg, #6d28d9, #a855f7) !important;
+    }
+
+    .dynamic-prize-card .prize-split-second,
+    .payout-panel .prize-split-second {
+      width: 20%;
+      color: #fff !important;
+      background: linear-gradient(90deg, #414052, #5d596e) !important;
+      box-shadow: inset 1px 0 rgba(255,255,255,.08);
+    }
+
+    /* Donate uses a span for the placement badge. Its generic span rule was
+       overriding the badge display/font, so use higher specificity here. */
+    .payout-panel .placement-row .placement-number {
+      display: grid !important;
+      width: 46px !important;
+      height: 46px !important;
+      place-items: center !important;
+      flex: 0 0 46px;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 13px !important;
+      color: #fff !important;
+      background: linear-gradient(135deg, #6d28d9, #a855f7) !important;
+      font-size: 21px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0 !important;
+      line-height: 1 !important;
+      text-align: center !important;
+      text-transform: none !important;
+      box-shadow: inset 0 1px rgba(255,255,255,.08);
+    }
+
+    .payout-panel .payout-card:not(.first) .placement-number {
+      background: #414052 !important;
+    }
+
+    /* Match Donate payout cards/details to the Tournament component. */
+    .payout-panel .payout-card {
+      padding: 22px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .payout-panel .payout-card.first {
+      border-color: rgba(168,85,247,.30);
+      background:
+        radial-gradient(circle at top right, rgba(168,85,247,.12), transparent 40%),
+        rgba(255,255,255,.025);
+    }
+
+    .payout-panel .placement-row {
+      gap: 14px;
+    }
+
+    .payout-panel .placement-row > div > span {
+      color: #746e82;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .payout-panel .placement-row > div > strong {
+      margin-top: 3px;
+      font-size: 25px;
+    }
+
+    .payout-panel .payout-details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .payout-panel .payout-details > div {
+      padding: 13px;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 11px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .payout-panel .payout-details span {
+      color: #746e82;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+
+    .payout-panel .payout-details strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 20px;
+    }
+
+    @media (max-width: 470px) {
+      .dynamic-prize-card .prize-split-first,
+      .payout-panel .prize-split-first {
+        font-size: 9px;
+        letter-spacing: .02em;
+      }
+
+      .dynamic-prize-card .prize-split-second,
+      .payout-panel .prize-split-second {
+        font-size: 0 !important;
+        white-space: normal;
+      }
+
+      .dynamic-prize-card .prize-split-second::after,
+      .payout-panel .prize-split-second::after {
+        content: "20%\\A 2ND PLACE";
+        display: block;
+        color: #fff;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .02em;
+        line-height: 1.05;
+        text-align: center;
+        white-space: pre-line;
+        text-shadow: 0 1px 3px rgba(0,0,0,.62);
+      }
+
+      .payout-panel .payout-details {
+        grid-template-columns: 1fr;
+      }
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  if (!isDonate) return;
+
+  /* Match Tournament display copy without touching the live payout IDs. */
+  const firstSplit = document.getElementById("firstPlaceSplitBar");
+  const secondSplit = document.getElementById("secondPlaceSplitBar");
+  if (firstSplit) firstSplit.textContent = "80% First Place";
+  if (secondSplit) secondSplit.textContent = "20% Second Place";
+
+  const cards = document.querySelectorAll(".payout-panel .payout-card");
+  if (cards[0]) {
+    const label = cards[0].querySelector(".placement-row > div > span");
+    if (label) label.textContent = "First Place";
+  }
+  if (cards[1]) {
+    const label = cards[1].querySelector(".placement-row > div > span");
+    if (label) label.textContent = "Second Place";
+  }
+
+  document.querySelectorAll(".payout-panel .payout-details").forEach(details => {
+    const shareLabel = details.querySelector("div:first-child span");
+    if (shareLabel) shareLabel.textContent = "Team Share";
+  });
+})();

@@ -276,7 +276,7 @@ const RGPosts = (() => {
 /* ========================================================================
    POSTS PAGE LAUNCH HOTFIX
    - Align owner/admin post deletion with deployed RTDB rules.
-   - Keep the mobile feed toolbar flush with the card top.
+   - Keep the feed toolbar flush with the card top on every viewport.
    ======================================================================== */
 (() => {
   "use strict";
@@ -286,11 +286,9 @@ const RGPosts = (() => {
   const style = document.createElement("style");
   style.setAttribute("data-rg-posts-launch-fix", "true");
   style.textContent = `
-    @media (max-width: 680px) {
-      body.account-body .rg-feed-toolbar {
-        position: relative !important;
-        top: auto !important;
-      }
+    body.account-body .rg-feed-toolbar {
+      position: relative !important;
+      top: auto !important;
     }
   `;
   document.head.appendChild(style);

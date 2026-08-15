@@ -10,6 +10,14 @@
 
   if (!isSignup && !isApply) return;
 
+  const rgDatabase = window.database;
+  const rgAuth = window.auth;
+
+  if (!rgDatabase || !rgAuth) {
+    console.error("[RG Referral] Firebase was not ready for conversion attribution.");
+    return;
+  }
+
   const ATTRIBUTION_KEY = "rg_referral_attribution_v1";
 
   function clean(value, max = 100) {
@@ -81,7 +89,7 @@
 
     if (!attribution || !user || !user.uid) return;
 
-    await database
+    await rgDatabase
       .ref(`referralAnalytics/${attribution.code}/signups/${user.uid}`)
       .set(
         analyticsRecord(attribution, {
@@ -90,11 +98,11 @@
       );
   }
 
-  if (isSignup && auth && typeof auth.createUserWithEmailAndPassword === "function") {
+  if (isSignup && typeof rgAuth.createUserWithEmailAndPassword === "function") {
     const originalCreateUser =
-      auth.createUserWithEmailAndPassword.bind(auth);
+      rgAuth.createUserWithEmailAndPassword.bind(rgAuth);
 
-    auth.createUserWithEmailAndPassword = async (...args) => {
+    rgAuth.createUserWithEmailAndPassword = async (...args) => {
       const credential = await originalCreateUser(...args);
 
       try {
@@ -110,10 +118,10 @@
     };
   }
 
-  if (isApply && database && typeof database.ref === "function") {
-    const originalRef = database.ref.bind(database);
+  if (isApply && typeof rgDatabase.ref === "function") {
+    const originalRef = rgDatabase.ref.bind(rgDatabase);
 
-    database.ref = path => {
+    rgDatabase.ref = path => {
       const reference = originalRef(path);
       const normalizedPath = String(path || "")
         .replace(/^\/+|\/+$/g, "");
@@ -134,7 +142,7 @@
 
       reference.set = async value => {
         const attribution = getAttribution();
-        const currentUser = auth && auth.currentUser;
+        const currentUser = rgAuth.currentUser;
 
         let shouldAttribute = Boolean(
           attribution &&

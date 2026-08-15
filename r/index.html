@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08080d">
+  <title>Rivals Gauntlet</title>
+  <style>
+    :root{color-scheme:dark}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#08080d;color:#f7f4ff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{min-height:100dvh;display:grid;place-items:center;overflow:hidden}
+    .shell{display:grid;place-items:center;gap:14px;text-align:center;padding:28px}
+    .mark{width:52px;height:52px;display:grid;place-items:center;border:1px solid rgba(177,130,255,.48);border-radius:14px;background:linear-gradient(145deg,rgba(111,52,203,.85),rgba(122,73,203,.22));box-shadow:0 0 36px rgba(140,83,245,.18);font-weight:900;letter-spacing:-1px}
+    .label{margin:0;color:#aaa3b8;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase}
+    .dot{width:5px;height:5px;border-radius:999px;background:#b68cff;box-shadow:0 0 18px #9d70ff;animation:pulse 1s ease-in-out infinite alternate}
+    @keyframes pulse{to{opacity:.35;transform:scale(.72)}}
+  </style>
+</head>
+<body>
+  <main class="shell" aria-live="polite">
+    <div class="mark">RG</div>
+    <p class="label">Opening Rivals Gauntlet</p>
+    <span class="dot" aria-hidden="true"></span>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDKEp-XP1QDCvnAJjn_tGkvjg2nMveJdq8",
+        authDomain: "rivals-bracket-eb713.firebaseapp.com",
+        databaseURL: "https://rivals-bracket-eb713-default-rtdb.firebaseio.com",
+        projectId: "rivals-bracket-eb713",
+        storageBucket: "rivals-bracket-eb713.firebasestorage.app",
+        messagingSenderId: "248737838095",
+        appId: "1:248737838095:web:583b27b79021b8ac9c9f7a"
+      };
+
+      const VISITOR_KEY = "rg_referral_visitor_id";
+      const ATTRIBUTION_KEY = "rg_referral_attribution_v1";
+      const ATTRIBUTION_MS = 30 * 24 * 60 * 60 * 1000;
+      const params = new URLSearchParams(window.location.search);
+      let redirected = false;
+
+      function clean(value, max = 80) {
+        return String(value || "").trim().slice(0, max);
+      }
+
+      function cleanCode(value) {
+        const code = clean(value, 48)
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, "")
+          .replace(/^-+|-+$/g, "");
+        return code || "";
+      }
+
+      function visitorId() {
+        let id = localStorage.getItem(VISITOR_KEY);
+        if (id) return id;
+
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          id = window.crypto.randomUUID();
+        } else {
+          id = `rg_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 14)}`;
+        }
+
+        localStorage.setItem(VISITOR_KEY, id);
+        return id;
+      }
+
+      function safeDestination(value) {
+        const raw = clean(value, 180);
+        if (!raw) return "/";
+
+        try {
+          const target = new URL(raw, window.location.origin);
+          if (target.origin !== window.location.origin) return "/";
+          if (!target.pathname.startsWith("/")) return "/";
+          return `${target.pathname}${target.search}${target.hash}`;
+        } catch {
+          return "/";
+        }
+      }
+
+      function go(destination) {
+        if (redirected) return;
+        redirected = true;
+        window.location.replace(destination || "/");
+      }
+
+      function saveAttribution(code, creator, meta) {
+        const now = Date.now();
+        let previous = null;
+
+        try {
+          previous = JSON.parse(localStorage.getItem(ATTRIBUTION_KEY) || "null");
+        } catch {
+          previous = null;
+        }
+
+        const firstReferredAt =
+          previous && previous.code === code && Number(previous.firstReferredAt) > 0
+            ? Number(previous.firstReferredAt)
+            : now;
+
+        const attribution = {
+          code,
+          creatorName: clean(creator && creator.name, 100) || code,
+          platform: clean(creator && creator.platform, 40),
+          source: meta.source,
+          medium: meta.medium,
+          campaign: meta.campaign,
+          firstReferredAt,
+          lastReferredAt: now,
+          expiresAt: now + ATTRIBUTION_MS
+        };
+
+        localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify(attribution));
+      }
+
+      const code = cleanCode(params.get("ref"));
+      const destination = safeDestination(params.get("to"));
+
+      if (!code) {
+        go(destination);
+        return;
+      }
+
+      const meta = {
+        source: clean(params.get("utm_source") || params.get("source"), 60),
+        medium: clean(params.get("utm_medium") || "creator", 60),
+        campaign: clean(params.get("utm_campaign") || params.get("campaign"), 80)
+      };
+
+      // Never let analytics keep a visitor on the redirect page.
+      window.setTimeout(() => go(destination), 1600);
+
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const creatorRef = database.ref(`creatorReferrals/${code}`);
+
+        creatorRef.once("value")
+          .then(snapshot => {
+            if (!snapshot.exists()) return null;
+
+            const creator = snapshot.val() || {};
+            if (creator.active === false) return null;
+
+            const id = visitorId();
+            const timestamp = firebase.database.ServerValue.TIMESTAMP;
+            const referrer = clean(document.referrer, 300);
+            const common = {
+              visitorId: id,
+              source: meta.source || clean(creator.platform, 40).toLowerCase(),
+              medium: meta.medium,
+              campaign: meta.campaign,
+              referrer,
+              createdAt: timestamp
+            };
+
+            saveAttribution(code, creator, {
+              ...meta,
+              source: common.source
+            });
+
+            const clickWrite = database
+              .ref(`referralAnalytics/${code}/clicks`)
+              .push()
+              .set(common);
+
+            // This key is intentionally stable. Repeated visits overwrite the same
+            // browser record, so counting children gives a directional unique count.
+            const visitorWrite = database
+              .ref(`referralAnalytics/${code}/visitors/${id}`)
+              .set({
+                visitorId: id,
+                source: common.source,
+                medium: common.medium,
+                campaign: common.campaign,
+                lastSeenAt: timestamp
+              });
+
+            return Promise.allSettled([clickWrite, visitorWrite]);
+          })
+          .catch(error => {
+            console.warn("[RG Referral] Tracking unavailable:", error && error.message ? error.message : error);
+          })
+          .finally(() => go(destination));
+      } catch (error) {
+        console.warn("[RG Referral] Initialization failed:", error);
+        go(destination);
+      }
+    })();
+  </script>
+</body>
+</html>

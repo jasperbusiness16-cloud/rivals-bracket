@@ -1,10 +1,26 @@
 {
   "rules": {
     "creatorReferrals": {
-      ".read": true,
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
       "$code": {
+        ".read": true,
         ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
-        ".validate": "newData.hasChildren(['name', 'platform', 'active']) && newData.child('name').isString() && newData.child('platform').isString() && newData.child('active').isBoolean()"
+        ".validate": "!newData.exists() || (newData.hasChildren(['name', 'platform', 'active', 'createdAt']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 100 && newData.child('platform').isString() && newData.child('platform').val().length > 0 && newData.child('platform').val().length <= 40 && newData.child('active').isBoolean() && newData.child('createdAt').isNumber() && newData.child('createdAt').val() <= now + 300000)",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+        },
+        "platform": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 40"
+        },
+        "active": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now + 300000"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "referralAnalytics": {
@@ -12,27 +28,69 @@
         ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
         "clicks": {
           "$clickId": {
-            ".write": "!data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true",
-            ".validate": "newData.hasChildren(['visitorId', 'createdAt']) && newData.child('visitorId').isString()"
+            ".write": "!data.exists() && newData.exists() && root.child('creatorReferrals').child($code).child('active').val() === true",
+            ".validate": "newData.hasChildren(['visitorId', 'source', 'medium', 'campaign', 'referrer', 'createdAt'])",
+            "visitorId": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "source": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "medium": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "campaign": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "referrer": {
+              ".validate": "newData.isString() && newData.val().length <= 300"
+            },
+            "createdAt": {
+              ".validate": "newData.isNumber() && newData.val() <= now + 300000"
+            },
+            "$other": {
+              ".validate": false
+            }
           }
         },
         "visitors": {
           "$visitorId": {
-            ".write": "root.child('creatorReferrals').child($code).child('active').val() === true",
-            ".validate": "newData.hasChildren(['visitorId', 'lastSeenAt']) && newData.child('visitorId').isString() && newData.child('visitorId').val() === $visitorId"
+            ".write": "newData.exists() && root.child('creatorReferrals').child($code).child('active').val() === true",
+            ".validate": "newData.hasChildren(['visitorId', 'source', 'medium', 'campaign', 'lastSeenAt']) && newData.child('visitorId').val() === $visitorId",
+            "visitorId": {
+              ".validate": "newData.isString() && newData.val() === $visitorId && newData.val().length > 0 && newData.val().length <= 80"
+            },
+            "source": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "medium": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "campaign": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "lastSeenAt": {
+              ".validate": "newData.isNumber() && newData.val() <= now + 300000"
+            },
+            "$other": {
+              ".validate": false
+            }
           }
         },
         "signups": {
           "$uid": {
-            ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true"
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists() && root.child('creatorReferrals').child($code).exists()"
           }
         },
         "applications": {
           "$tournamentId": {
             "$uid": {
-              ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true"
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && newData.exists() && root.child('creatorReferrals').child($code).exists()"
             }
           }
+        },
+        "$other": {
+          ".validate": false
         }
       }
     }

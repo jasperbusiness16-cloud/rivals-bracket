@@ -10,18 +10,20 @@
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:#08080d;color:#f7f4ff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
     body{min-height:100dvh;display:grid;place-items:center;overflow:hidden}
-    .shell{display:grid;place-items:center;gap:14px;text-align:center;padding:28px}
+    .shell{display:grid;place-items:center;gap:14px;text-align:center;padding:28px;max-width:560px}
     .mark{width:52px;height:52px;display:grid;place-items:center;border:1px solid rgba(177,130,255,.48);border-radius:14px;background:linear-gradient(145deg,rgba(111,52,203,.85),rgba(122,73,203,.22));box-shadow:0 0 36px rgba(140,83,245,.18);font-weight:900;letter-spacing:-1px}
-    .label{margin:0;color:#aaa3b8;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase}
+    .label{margin:0;color:#aaa3b8;font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;line-height:1.5;word-break:break-word}
     .dot{width:5px;height:5px;border-radius:999px;background:#b68cff;box-shadow:0 0 18px #9d70ff;animation:pulse 1s ease-in-out infinite alternate}
+    .dot.ok{background:#54e6a2;box-shadow:0 0 18px #54e6a2;animation:none}
+    .dot.bad{background:#ff6b7d;box-shadow:0 0 18px #ff6b7d;animation:none}
     @keyframes pulse{to{opacity:.35;transform:scale(.72)}}
   </style>
 </head>
 <body>
   <main class="shell" aria-live="polite">
     <div class="mark">RG</div>
-    <p class="label">Opening Rivals Gauntlet</p>
-    <span class="dot" aria-hidden="true"></span>
+    <p id="statusLabel" class="label">Opening Rivals Gauntlet</p>
+    <span id="statusDot" class="dot" aria-hidden="true"></span>
   </main>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -44,10 +46,21 @@
       const ATTRIBUTION_KEY = "rg_referral_attribution_v1";
       const ATTRIBUTION_MS = 30 * 24 * 60 * 60 * 1000;
       const params = new URLSearchParams(window.location.search);
+      const debug = params.get("debug") === "1";
+      const statusLabel = document.getElementById("statusLabel");
+      const statusDot = document.getElementById("statusDot");
       let redirected = false;
 
       function clean(value, max = 80) {
         return String(value || "").trim().slice(0, max);
+      }
+
+      function setStatus(message, type = "") {
+        if (statusLabel) statusLabel.textContent = message;
+        if (statusDot) {
+          statusDot.classList.remove("ok", "bad");
+          if (type) statusDot.classList.add(type);
+        }
       }
 
       function cleanCode(value) {
@@ -87,7 +100,7 @@
       }
 
       function go(destination) {
-        if (redirected) return;
+        if (debug || redirected) return;
         redirected = true;
         window.location.replace(destination || "/");
       }
@@ -126,6 +139,7 @@
       const destination = safeDestination(params.get("to"));
 
       if (!code) {
+        setStatus("No referral code supplied", "bad");
         go(destination);
         return;
       }
@@ -136,20 +150,29 @@
         campaign: clean(params.get("utm_campaign") || params.get("campaign"), 80)
       };
 
-      // Never let analytics keep a visitor on the redirect page.
-      window.setTimeout(() => go(destination), 1600);
+      // Emergency fallback only. Successful/failed Firebase operations redirect
+      // as soon as they settle, so this does not slow down normal referrals.
+      if (!debug) {
+        window.setTimeout(() => go(destination), 5000);
+      }
 
       try {
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const creatorRef = database.ref(`creatorReferrals/${code}`);
 
+        setStatus(debug ? `Checking referral: ${code}` : "Opening Rivals Gauntlet");
+
         creatorRef.once("value")
-          .then(snapshot => {
-            if (!snapshot.exists()) return null;
+          .then(async snapshot => {
+            if (!snapshot.exists()) {
+              throw new Error(`Referral code '${code}' was not found.`);
+            }
 
             const creator = snapshot.val() || {};
-            if (creator.active === false) return null;
+            if (creator.active === false) {
+              throw new Error(`Referral code '${code}' is paused.`);
+            }
 
             const id = visitorId();
             const timestamp = firebase.database.ServerValue.TIMESTAMP;
@@ -173,8 +196,6 @@
               .push()
               .set(common);
 
-            // This key is intentionally stable. Repeated visits overwrite the same
-            // browser record, so counting children gives a directional unique count.
             const visitorWrite = database
               .ref(`referralAnalytics/${code}/visitors/${id}`)
               .set({
@@ -185,14 +206,22 @@
                 lastSeenAt: timestamp
               });
 
-            return Promise.allSettled([clickWrite, visitorWrite]);
+            await Promise.all([clickWrite, visitorWrite]);
+            setStatus(debug ? "Referral tracked: click + unique visitor write succeeded" : "Opening Rivals Gauntlet", "ok");
           })
           .catch(error => {
-            console.warn("[RG Referral] Tracking unavailable:", error && error.message ? error.message : error);
+            const message = error && error.message ? error.message : String(error);
+            console.warn("[RG Referral] Tracking unavailable:", message);
+            setStatus(debug ? `Tracking failed: ${message}` : "Opening Rivals Gauntlet", "bad");
           })
-          .finally(() => go(destination));
+          .finally(() => {
+            if (debug) return;
+            window.setTimeout(() => go(destination), 120);
+          });
       } catch (error) {
-        console.warn("[RG Referral] Initialization failed:", error);
+        const message = error && error.message ? error.message : String(error);
+        console.warn("[RG Referral] Initialization failed:", message);
+        setStatus(debug ? `Initialization failed: ${message}` : "Opening Rivals Gauntlet", "bad");
         go(destination);
       }
     })();

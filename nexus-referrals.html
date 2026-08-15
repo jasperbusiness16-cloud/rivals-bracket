@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08080d">
+  <title>Creator Referrals | Rivals Gauntlet Nexus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{
+      --bg:#08080d;--panel:#111118;--panel2:#16141f;--text:#f8f6ff;--muted:#aaa4b8;--dim:#777180;
+      --line:rgba(255,255,255,.09);--purple:#9a7cff;--purple2:#c3aaff;--green:#4adea0;--red:#ff647d;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:"Rajdhani",sans-serif;background:var(--bg);color:var(--text)}
+    body{background:radial-gradient(circle at 88% 0,rgba(120,74,210,.15),transparent 28%),#08080d}
+    button,input,select{font:inherit}.hidden{display:none!important}
+    .loading{min-height:100dvh;display:grid;place-items:center;text-align:center;padding:30px}.loading i{font-size:28px;color:var(--purple);margin-bottom:12px}.loading p{color:var(--muted)}
+    .shell{width:min(1500px,100%);margin:0 auto;padding:28px clamp(18px,3vw,42px) 50px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:26px}
+    .brand{display:flex;align-items:center;gap:13px}.brandmark{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(154,124,255,.5);border-radius:11px;background:rgba(154,124,255,.1);font-weight:800}.brand small{display:block;color:var(--dim);font-size:9px;letter-spacing:1.8px}.brand strong{font-size:17px;letter-spacing:.4px}
+    .actions{display:flex;gap:9px;flex-wrap:wrap}.btn{min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:9px;background:#12111a;color:#eeeaf7;font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer}.btn:hover{border-color:rgba(154,124,255,.5)}.btn.primary{border-color:rgba(154,124,255,.55);background:linear-gradient(135deg,#5e38b7,#8b63e8)}.btn.danger{color:#ff9bad}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:20px}.hero p{margin:0 0 6px;color:var(--purple2);font-size:10px;font-weight:800;letter-spacing:2px}.hero h1{margin:0;font-size:clamp(34px,5vw,64px);line-height:.88;letter-spacing:-1.8px;text-transform:uppercase}.hero .sub{max-width:560px;margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .notice{margin:0 0 18px;padding:12px 14px;border:1px solid rgba(154,124,255,.26);border-radius:10px;background:rgba(154,124,255,.06);color:#d9cff1;font-size:12px}.notice.error{border-color:rgba(255,100,125,.35);background:rgba(255,100,125,.07);color:#ffb0bd}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.card{padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel)}.card span{display:block;color:var(--dim);font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}.card strong{display:block;margin-top:7px;font-size:31px;line-height:1}.card small{display:block;margin-top:6px;color:var(--muted);font-size:10px}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}.panel{border:1px solid var(--line);border-radius:13px;background:var(--panel);overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 17px;border-bottom:1px solid var(--line)}.panel-head h2{margin:0;font-size:15px;text-transform:uppercase;letter-spacing:.5px}.panel-head small{color:var(--dim)}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.055);text-align:left}th{color:var(--dim);font-size:9px;letter-spacing:1.1px;text-transform:uppercase}td{font-size:12px}.creator-name{font-weight:800}.creator-code{color:var(--dim);font-size:10px}.num{font-variant-numeric:tabular-nums;font-weight:700}.row-actions{display:flex;gap:6px}.mini{height:30px;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:#0d0c12;color:#ccc5dc;font-size:9px;font-weight:800;text-transform:uppercase;cursor:pointer}.mini:hover{border-color:rgba(154,124,255,.5)}.status{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;text-transform:uppercase}.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}.status.off::before{background:#6f6979}.empty{padding:35px 20px;text-align:center;color:var(--muted)}
+    .side-body{padding:16px}.form-grid{display:grid;gap:11px}.field label{display:block;margin:0 0 5px;color:var(--dim);font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase}.field input,.field select{width:100%;height:42px;padding:0 11px;border:1px solid var(--line);border-radius:8px;outline:0;background:#0d0c12;color:#f5f2fb}.field input:focus,.field select:focus{border-color:rgba(154,124,255,.62);box-shadow:0 0 0 3px rgba(154,124,255,.08)}
+    .generated{margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:8px;background:#0c0b11;word-break:break-all;color:#bcb5c9;font-size:10px}.generated b{display:block;margin-bottom:4px;color:var(--purple2);font-size:8px;letter-spacing:1px;text-transform:uppercase}
+    .detail{margin-top:16px}.detail-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}.detail-title strong{font-size:15px}.detail-title span{color:var(--dim);font-size:10px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.metric{padding:10px;border:1px solid var(--line);border-radius:8px;background:#0d0c12}.metric span{display:block;color:var(--dim);font-size:8px;text-transform:uppercase}.metric strong{display:block;margin-top:3px;font-size:18px}.bars{display:grid;grid-template-columns:repeat(7,1fr);align-items:end;gap:5px;height:92px;margin-top:12px;padding-top:8px;border-bottom:1px solid var(--line)}.barcol{height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:4px}.bar{width:100%;min-height:2px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#ae8dff,#6d49c8)}.barcol small{font-size:7px;color:var(--dim)}
+    .campaigns{margin-top:12px;display:grid;gap:6px}.campaign{display:flex;justify-content:space-between;gap:12px;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:#0d0c12;font-size:10px}.campaign span{color:var(--muted)}
+    .modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.72)}.modal-card{width:min(450px,100%);padding:21px;border:1px solid rgba(154,124,255,.35);border-radius:14px;background:#111018;box-shadow:0 30px 90px rgba(0,0,0,.55)}.modal-card h2{margin:0 0 5px;text-transform:uppercase}.modal-card>p{margin:0 0 17px;color:var(--muted);font-size:11px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+    @media(max-width:980px){.cards{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.side{order:-1}}@media(max-width:600px){.shell{padding:18px 13px 36px}.topbar,.hero{align-items:flex-start;flex-direction:column}.cards{grid-template-columns:1fr 1fr}.card strong{font-size:25px}}
+  </style>
+</head>
+<body>
+  <section id="loading" class="loading"><div><i class="fa-solid fa-circle-notch fa-spin"></i><h2>Loading Referral Analytics</h2><p>Verifying Nexus access...</p></div></section>
+
+  <main id="app" class="shell hidden">
+    <div class="topbar">
+      <div class="brand"><div class="brandmark">RG</div><div><small>RIVALS GAUNTLET</small><strong>Nexus / Creator Referrals</strong></div></div>
+      <div class="actions"><a class="btn" href="nexus-control.html">Back to Nexus</a><button id="refreshBtn" class="btn"><i class="fa-solid fa-rotate"></i> Refresh</button><button id="signOutBtn" class="btn danger">Sign Out</button></div>
+    </div>
+
+    <section class="hero">
+      <div><p>ACQUISITION INTELLIGENCE</p><h1>Creator Referrals</h1><div class="sub">Compare creator links by total clicks, unique browsers, and downstream conversions as those hooks are added.</div></div>
+      <button id="openCreateBtn" class="btn primary"><i class="fa-solid fa-plus"></i> Add Creator</button>
+    </section>
+
+    <div id="notice" class="notice hidden"></div>
+
+    <section class="cards">
+      <div class="card"><span>Total Clicks</span><strong id="totalClicks">0</strong><small>All tracked referral opens</small></div>
+      <div class="card"><span>Unique Visitors</span><strong id="totalVisitors">0</strong><small>Unique browser IDs by creator</small></div>
+      <div class="card"><span>Accounts</span><strong id="totalSignups">0</strong><small>Ready for signup attribution hook</small></div>
+      <div class="card"><span>Applications</span><strong id="totalApps">0</strong><small>Ready for application attribution hook</small></div>
+    </section>
+
+    <section class="layout">
+      <div class="panel">
+        <div class="panel-head"><div><h2>Creator Performance</h2><small id="creatorCount">0 creators</small></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Creator</th><th>Status</th><th>Clicks</th><th>Unique</th><th>Accounts</th><th>Apps</th><th>Visitor → App</th><th>Actions</th></tr></thead>
+            <tbody id="creatorRows"></tbody>
+          </table>
+          <div id="emptyState" class="empty">No creator links yet. Add the first creator to generate a tracked URL.</div>
+        </div>
+      </div>
+
+      <aside class="panel side">
+        <div class="panel-head"><div><h2>Selected Creator</h2><small>Link + recent performance</small></div></div>
+        <div id="detailBody" class="side-body"><div class="empty">Select a creator from the table.</div></div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="createModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="createTitle">
+    <div class="modal-card">
+      <h2 id="createTitle">Add Creator</h2>
+      <p>Create a unique tracked link. The referral code becomes part of the public URL.</p>
+      <form id="creatorForm" class="form-grid">
+        <div class="field"><label for="creatorName">Creator Name</label><input id="creatorName" maxlength="100" required placeholder="Kaizen"></div>
+        <div class="field"><label for="creatorCode">Referral Code</label><input id="creatorCode" maxlength="48" required placeholder="kaizen" pattern="[a-z0-9_-]+"></div>
+        <div class="field"><label for="creatorPlatform">Primary Platform</label><select id="creatorPlatform"><option value="TikTok">TikTok</option><option value="YouTube">YouTube</option><option value="Twitch">Twitch</option><option value="X">X</option><option value="Discord">Discord</option><option value="Other">Other</option></select></div>
+        <div id="previewLink" class="generated"><b>Tracked URL</b>—</div>
+        <div class="modal-actions"><button type="button" id="cancelCreateBtn" class="btn">Cancel</button><button type="submit" id="createBtn" class="btn primary">Create Link</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const loading = document.getElementById("loading");
+      const app = document.getElementById("app");
+      const notice = document.getElementById("notice");
+      const modal = document.getElementById("createModal");
+      const rows = document.getElementById("creatorRows");
+      const emptyState = document.getElementById("emptyState");
+      const detailBody = document.getElementById("detailBody");
+      const nameInput = document.getElementById("creatorName");
+      const codeInput = document.getElementById("creatorCode");
+      const platformInput = document.getElementById("creatorPlatform");
+      const previewLink = document.getElementById("previewLink");
+      const createBtn = document.getElementById("createBtn");
+
+      let creators = {};
+      let analytics = {};
+      let selectedCode = "";
+      let creatorListener = null;
+      let analyticsListener = null;
+      let codeTouched = false;
+
+      const esc = value => String(value ?? "").replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+      const cleanCode = value => String(value || "").toLowerCase().trim().replace(/[^a-z0-9_-]/g, "").replace(/^-+|-+$/g, "").slice(0, 48);
+      const slug = value => cleanCode(String(value || "").replace(/\s+/g, "-"));
+      const count = value => value && typeof value === "object" ? Object.keys(value).length : 0;
+      const fmt = value => Math.max(0, Number(value) || 0).toLocaleString("en-US");
+      const pct = (a, b) => b ? `${((a / b) * 100).toFixed(1)}%` : "0.0%";
+
+      function applicationCount(value) {
+        if (!value || typeof value !== "object") return 0;
+        return Object.values(value).reduce((sum, tournament) => sum + count(tournament), 0);
+      }
+
+      function linkFor(code, platform = "") {
+        const url = new URL("/r/", window.location.origin);
+        url.searchParams.set("ref", code);
+        if (platform) {
+          url.searchParams.set("utm_source", String(platform).toLowerCase());
+          url.searchParams.set("utm_medium", "creator");
+        }
+        return url.toString();
+      }
+
+      function showNotice(message, isError = false) {
+        notice.textContent = message;
+        notice.className = `notice${isError ? " error" : ""}`;
+        notice.classList.remove("hidden");
+        window.clearTimeout(showNotice.timer);
+        showNotice.timer = window.setTimeout(() => notice.classList.add("hidden"), 4200);
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        const area = document.createElement("textarea");
+        area.value = text; document.body.appendChild(area); area.select(); document.execCommand("copy"); area.remove();
+        return Promise.resolve();
+      }
+
+      function statsFor(code) {
+        const data = analytics[code] || {};
+        return {
+          clicks: count(data.clicks),
+          visitors: count(data.visitors),
+          signups: count(data.signups),
+          applications: applicationCount(data.applications),
+          clickRecords: Object.values(data.clicks || {}).filter(item => item && typeof item === "object")
+        };
+      }
+
+      function render() {
+        const codes = Object.keys(creators).sort((a, b) => String(creators[a]?.name || a).localeCompare(String(creators[b]?.name || b)));
+        let totals = { clicks:0, visitors:0, signups:0, applications:0 };
+        rows.innerHTML = "";
+
+        codes.forEach(code => {
+          const creator = creators[code] || {};
+          const stats = statsFor(code);
+          totals.clicks += stats.clicks; totals.visitors += stats.visitors; totals.signups += stats.signups; totals.applications += stats.applications;
+
+          const tr = document.createElement("tr");
+          tr.dataset.code = code;
+          tr.innerHTML = `
+            <td><div class="creator-name">${esc(creator.name || code)}</div><div class="creator-code">${esc(code)} · ${esc(creator.platform || "Other")}</div></td>
+            <td><span class="status${creator.active === false ? " off" : ""}">${creator.active === false ? "Paused" : "Active"}</span></td>
+            <td class="num">${fmt(stats.clicks)}</td><td class="num">${fmt(stats.visitors)}</td><td class="num">${fmt(stats.signups)}</td><td class="num">${fmt(stats.applications)}</td>
+            <td class="num">${pct(stats.applications, stats.visitors)}</td>
+            <td><div class="row-actions"><button class="mini" data-action="copy" data-code="${esc(code)}">Copy</button><button class="mini" data-action="toggle" data-code="${esc(code)}">${creator.active === false ? "Enable" : "Pause"}</button></div></td>`;
+          rows.appendChild(tr);
+        });
+
+        document.getElementById("totalClicks").textContent = fmt(totals.clicks);
+        document.getElementById("totalVisitors").textContent = fmt(totals.visitors);
+        document.getElementById("totalSignups").textContent = fmt(totals.signups);
+        document.getElementById("totalApps").textContent = fmt(totals.applications);
+        document.getElementById("creatorCount").textContent = `${codes.length} creator${codes.length === 1 ? "" : "s"}`;
+        emptyState.classList.toggle("hidden", codes.length > 0);
+
+        if (selectedCode && creators[selectedCode]) renderDetail(selectedCode);
+        else if (codes.length) { selectedCode = codes[0]; renderDetail(selectedCode); }
+        else detailBody.innerHTML = '<div class="empty">Select a creator from the table.</div>';
+      }
+
+      function renderDetail(code) {
+        const creator = creators[code] || {};
+        const stats = statsFor(code);
+        const link = linkFor(code, creator.platform || "");
+        const clicks = [...stats.clickRecords].sort((a,b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+        const today = new Date(); today.setHours(0,0,0,0);
+        const dayData = [];
+        for (let i = 6; i >= 0; i--) {
+          const start = new Date(today); start.setDate(today.getDate() - i);
+          const end = new Date(start); end.setDate(start.getDate() + 1);
+          const n = clicks.filter(c => Number(c.createdAt || 0) >= start.getTime() && Number(c.createdAt || 0) < end.getTime()).length;
+          dayData.push({ label:start.toLocaleDateString("en-US",{weekday:"short"}).slice(0,2), value:n });
+        }
+        const max = Math.max(1, ...dayData.map(d => d.value));
+        const campaigns = {};
+        clicks.forEach(click => { const key = String(click.campaign || "Unspecified"); campaigns[key] = (campaigns[key] || 0) + 1; });
+        const campaignRows = Object.entries(campaigns).sort((a,b) => b[1]-a[1]).slice(0,6);
+
+        detailBody.innerHTML = `
+          <div class="detail-title"><div><strong>${esc(creator.name || code)}</strong><span> / ${esc(code)}</span></div><span>${esc(creator.platform || "Other")}</span></div>
+          <div class="generated"><b>Tracked URL</b>${esc(link)}</div>
+          <div style="display:flex;gap:7px;margin-top:8px"><button class="btn primary" style="flex:1" data-detail-copy="${esc(code)}">Copy Link</button></div>
+          <div class="detail">
+            <div class="detail-grid"><div class="metric"><span>Clicks</span><strong>${fmt(stats.clicks)}</strong></div><div class="metric"><span>Unique</span><strong>${fmt(stats.visitors)}</strong></div><div class="metric"><span>Accounts</span><strong>${fmt(stats.signups)}</strong></div><div class="metric"><span>Applications</span><strong>${fmt(stats.applications)}</strong></div></div>
+            <div class="bars">${dayData.map(d => `<div class="barcol"><div class="bar" style="height:${Math.max(2,(d.value/max)*72)}px" title="${d.value} clicks"></div><small>${esc(d.label)}</small></div>`).join("")}</div>
+            <div class="campaigns">${campaignRows.length ? campaignRows.map(([name,n]) => `<div class="campaign"><span>${esc(name)}</span><strong>${fmt(n)}</strong></div>`).join("") : '<div class="campaign"><span>No campaign data yet</span><strong>—</strong></div>'}</div>
+          </div>`;
+      }
+
+      function attachData() {
+        if (creatorListener) database.ref("creatorReferrals").off("value", creatorListener);
+        if (analyticsListener) database.ref("referralAnalytics").off("value", analyticsListener);
+        creatorListener = snap => { creators = snap.val() || {}; render(); };
+        analyticsListener = snap => { analytics = snap.val() || {}; render(); };
+        database.ref("creatorReferrals").on("value", creatorListener, error => showNotice(`Could not read creator referrals: ${error.message}`, true));
+        database.ref("referralAnalytics").on("value", analyticsListener, error => showNotice(`Could not read referral analytics: ${error.message}`, true));
+      }
+
+      async function verifyAccess(user) {
+        if (!user) { window.location.replace("login.html"); return; }
+        try {
+          const snap = await database.ref(`users/${user.uid}/role`).once("value");
+          const role = String(snap.val() || "").toLowerCase();
+          if (!["owner","admin"].includes(role)) throw new Error("This account does not have Nexus owner/admin access.");
+          loading.classList.add("hidden"); app.classList.remove("hidden"); attachData();
+        } catch (error) {
+          loading.innerHTML = `<div><i class="fa-solid fa-lock"></i><h2>Access Denied</h2><p>${esc(error.message || "Unable to verify Nexus access.")}</p><p><a href="index.html" style="color:#c3aaff">Return to website</a></p></div>`;
+        }
+      }
+
+      function updatePreview() {
+        const code = cleanCode(codeInput.value);
+        previewLink.innerHTML = `<b>Tracked URL</b>${code ? esc(linkFor(code, platformInput.value)) : "—"}`;
+      }
+
+      nameInput.addEventListener("input", () => { if (!codeTouched) codeInput.value = slug(nameInput.value); updatePreview(); });
+      codeInput.addEventListener("input", () => { codeTouched = true; codeInput.value = cleanCode(codeInput.value); updatePreview(); });
+      platformInput.addEventListener("change", updatePreview);
+      document.getElementById("openCreateBtn").addEventListener("click", () => { codeTouched = false; nameInput.value=""; codeInput.value=""; platformInput.value="TikTok"; updatePreview(); modal.classList.remove("hidden"); nameInput.focus(); });
+      document.getElementById("cancelCreateBtn").addEventListener("click", () => modal.classList.add("hidden"));
+      modal.addEventListener("click", event => { if (event.target === modal) modal.classList.add("hidden"); });
+
+      document.getElementById("creatorForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        const name = String(nameInput.value || "").trim();
+        const code = cleanCode(codeInput.value);
+        const platform = String(platformInput.value || "Other");
+        if (!name || !code) return showNotice("Creator name and referral code are required.", true);
+        createBtn.disabled = true;
+        try {
+          const ref = database.ref(`creatorReferrals/${code}`);
+          const existing = await ref.once("value");
+          if (existing.exists()) throw new Error("That referral code already exists.");
+          await ref.set({ name, platform, active:true, createdAt:firebase.database.ServerValue.TIMESTAMP });
+          selectedCode = code; modal.classList.add("hidden"); showNotice(`Created ${name}'s referral link.`);
+        } catch (error) { showNotice(error.message || "Could not create creator link.", true); }
+        finally { createBtn.disabled = false; }
+      });
+
+      rows.addEventListener("click", async event => {
+        const action = event.target.closest("[data-action]");
+        if (action) {
+          event.stopPropagation();
+          const code = action.dataset.code; const creator = creators[code] || {};
+          if (action.dataset.action === "copy") { await copyText(linkFor(code, creator.platform || "")); showNotice("Referral link copied."); }
+          if (action.dataset.action === "toggle") {
+            try { await database.ref(`creatorReferrals/${code}/active`).set(creator.active === false); showNotice(`${creator.name || code} ${creator.active === false ? "enabled" : "paused"}.`); }
+            catch (error) { showNotice(error.message || "Could not update creator.", true); }
+          }
+          return;
+        }
+        const row = event.target.closest("tr[data-code]"); if (!row) return; selectedCode = row.dataset.code; renderDetail(selectedCode);
+      });
+
+      detailBody.addEventListener("click", async event => {
+        const button = event.target.closest("[data-detail-copy]"); if (!button) return;
+        const code = button.dataset.detailCopy; const creator = creators[code] || {};
+        await copyText(linkFor(code, creator.platform || "")); showNotice("Referral link copied.");
+      });
+
+      document.getElementById("refreshBtn").addEventListener("click", () => { attachData(); showNotice("Referral analytics refreshed."); });
+      document.getElementById("signOutBtn").addEventListener("click", () => auth.signOut().then(() => window.location.replace("login.html")));
+
+      auth.onAuthStateChanged(verifyAccess, error => { loading.innerHTML = `<div><h2>Authentication Error</h2><p>${esc(error.message)}</p></div>`; });
+    })();
+  </script>
+</body>
+</html>

@@ -1,10 +1,15 @@
 (() => {
   "use strict";
 
-  const scripts = [
-    "/firebase-core.js?v=1",
-    "/referral-attribution.js?v=1"
-  ];
+  const pathname = String(window.location.pathname || "");
+  const needsReferralAttribution =
+    /^\/(?:signup|apply)(?:\.html)?\/?$/i.test(pathname);
+
+  const scripts = ["/firebase-core.js?v=1"];
+
+  if (needsReferralAttribution) {
+    scripts.push("/referral-attribution.js?v=1");
+  }
 
   if (document.readyState === "loading") {
     document.write(

@@ -1,0 +1,40 @@
+{
+  "rules": {
+    "creatorReferrals": {
+      ".read": true,
+      "$code": {
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        ".validate": "newData.hasChildren(['name', 'platform', 'active']) && newData.child('name').isString() && newData.child('platform').isString() && newData.child('active').isBoolean()"
+      }
+    },
+    "referralAnalytics": {
+      "$code": {
+        ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'owner' || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        "clicks": {
+          "$clickId": {
+            ".write": "!data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true",
+            ".validate": "newData.hasChildren(['visitorId', 'createdAt']) && newData.child('visitorId').isString()"
+          }
+        },
+        "visitors": {
+          "$visitorId": {
+            ".write": "root.child('creatorReferrals').child($code).child('active').val() === true",
+            ".validate": "newData.hasChildren(['visitorId', 'lastSeenAt']) && newData.child('visitorId').isString() && newData.child('visitorId').val() === $visitorId"
+          }
+        },
+        "signups": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true"
+          }
+        },
+        "applications": {
+          "$tournamentId": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid && !data.exists() && root.child('creatorReferrals').child($code).child('active').val() === true"
+            }
+          }
+        }
+      }
+    }
+  }
+}
